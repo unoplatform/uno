@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;

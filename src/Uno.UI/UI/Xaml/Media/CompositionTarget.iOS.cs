@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreAnimation;
 using Foundation;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class CompositionTarget
 	{
@@ -32,13 +32,8 @@ namespace Windows.UI.Xaml.Media
 
 				if (_handlers.Count == 0)
 				{
-#if NET6_0_OR_GREATER
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking);
-#else
-					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
-					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.UITrackingRunLoopMode);
-#endif
 					_displayLink = null;
 				}
 			}

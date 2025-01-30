@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
@@ -31,13 +31,14 @@ public sealed partial class SvgImageSource_Basic : Page
 		this.Loaded += SvgImageSource_Basic_Loaded;
 	}
 
-	private async void SvgImageSource_Basic_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+	private async void SvgImageSource_Basic_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
 		await SvgImageSourceHelpers.CopySourcesToAppDataAsync();
 	}
 
 	public SampleSvgSource[] Sources { get; } = new SampleSvgSource[]
 	{
+		new("Couch (ms-appx library)", new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg")),
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),
 		new("Calendar (ms-appx)", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Home (ms-appx)", new Uri("ms-appx:///Assets/Formats/home.svg")),

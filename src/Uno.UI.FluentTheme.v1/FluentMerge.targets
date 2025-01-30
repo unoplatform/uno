@@ -7,11 +7,9 @@
   <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
 
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceV1File" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="GenerateThemeResourceV1File" DependsOnTargets="ResolveProjectReferences" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
 	<ItemGroup>
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />	  
       <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager.xaml" />
       <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
 	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
@@ -35,7 +33,7 @@
 	<Message Text="Theme resources XAML file was generated" />
   </Target>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+  <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
     <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
 

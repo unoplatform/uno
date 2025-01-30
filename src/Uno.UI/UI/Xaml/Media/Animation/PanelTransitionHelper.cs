@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,19 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using View = Android.Views.View;
 using Point = Android.Graphics.Point;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Point = System.Drawing.PointF;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal class PanelTransitionHelper
 	{
@@ -50,12 +50,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private Dictionary<View, Point> GetChildrenPositionsFromSource()
 		{
 			var elements = new Dictionary<View, Point>();
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			foreach (View item in _source.Children)
 			{
 				elements.Add(item, new Point((int)item.GetX(), (int)item.GetY()));
 			}
-#elif XAMARIN_IOS
+#elif __IOS__
 			foreach (View item in _source.Children)
 			{
 				var x = (int)item.Frame.X;
@@ -78,9 +78,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			_previouslyAddedElements.Add(element);
 
 			//Hide the view before animation starts otherwise it will be seen as soon as its laid out
-#if XAMARIN_IOS
+#if __IOS__
 			((UIKit.UIView)element).Hidden = true;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 			((Android.Views.View)element).Visibility = Android.Views.ViewStates.Invisible;
 #endif
 
@@ -118,9 +118,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 
 				//Restore the view before animating
-#if XAMARIN_IOS
+#if __IOS__
 				((UIKit.UIView)child).Hidden = false;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 				((Android.Views.View)child).Visibility = Android.Views.ViewStates.Visible;
 #endif
 

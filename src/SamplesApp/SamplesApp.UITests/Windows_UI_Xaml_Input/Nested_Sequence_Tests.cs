@@ -20,7 +20,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.Nested_Sequence";
 
+#pragma warning disable SYSLIB1045
 		private static readonly Regex _resultRegex = new Regex(@"\s*\[(?<element>\w+)\]\s+(?<evt>\w+)\s*(\((?<param>(?<key>\w+)\s*=\s*(?<value>\w+)|\s*\|\s*)+\))?");
+#pragma warning restore SYSLIB1045
 
 		private static KeyValuePair<string, string> _inRange = new("in_range", "true");
 		private static KeyValuePair<string, string> _inContact = new("in_contact", "true");
@@ -31,6 +33,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		[InjectedPointer(PointerDeviceType.Touch)]
+#if IS_RUNTIME_UI_TESTS
+		[Uno.UI.RuntimeTests.RequiresFullWindow]
+#endif
 		public async Task When_PressOnNestedAndReleaseOnContainer_Touch()
 		{
 			await RunAsync(_sample);
@@ -62,6 +67,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 #if !__SKIA__
 		[Ignore("Inputs simulated by selenium are directly appreaing at the start location and wrongly inserting an exit.")]
 		//[ActivePlatforms(Platform.Browser)]
+#endif
+#if IS_RUNTIME_UI_TESTS
+		[Uno.UI.RuntimeTests.RequiresFullWindow]
 #endif
 		[InjectedPointer(PointerDeviceType.Mouse)]
 		public async Task When_PressOnNestedAndReleaseOnContainer_Mouse()

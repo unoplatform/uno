@@ -1,5 +1,6 @@
-﻿#if __MACOS__
-#nullable enable
+﻿#nullable enable
+
+#pragma warning disable CS0618 // Multiple obsoletion errors are happening starting with .NET 9 SDK Preview 6
 
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-
-#if NET6_0_OR_GREATER
 using NSDraggingInfo = AppKit.INSDraggingInfo;
-#endif
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -516,5 +514,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 	}
 }
-
-#endif

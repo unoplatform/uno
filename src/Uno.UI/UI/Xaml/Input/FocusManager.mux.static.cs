@@ -13,10 +13,11 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
@@ -38,7 +39,6 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		// TODO Uno: This should probably apply to multi-window as well #8341.
 		private static bool InIslandsMode() => WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly;
 
 		private static object? FindNextFocus(
@@ -488,7 +488,8 @@ namespace Windows.UI.Xaml.Input
 				focusState,
 				animateIfBringIntoView,
 				forceBringIntoView,
-				focusNavigationDirection);
+				focusNavigationDirection,
+				false);
 
 			return pFocusUpdated;
 		}
@@ -507,7 +508,8 @@ namespace Windows.UI.Xaml.Input
 			 FocusState focusState,
 			 bool animateIfBringIntoView,
 			 bool forceBringIntoView,
-			 FocusNavigationDirection focusNavigationDirection)
+			 FocusNavigationDirection focusNavigationDirection,
+			 bool requestInputActivation) // TODO Uno: Add support for input activation
 		{
 			DependencyObject? spElementToFocus = pElement;
 			Control? spControlToFocus;

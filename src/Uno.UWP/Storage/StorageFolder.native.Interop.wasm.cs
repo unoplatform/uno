@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
 namespace __Windows.Storage
@@ -9,6 +8,9 @@ namespace __Windows.Storage
 		internal static partial class NativeMethods
 		{
 			private const string JsType = "globalThis.Uno.Storage.NativeStorageFolder";
+
+			[JSImport("globalThis.Windows.Storage.StorageFolder.makePersistent")]
+			internal static partial void MakePersistent(string[] folders);
 
 			[JSImport($"{JsType}.createFileAsync")]
 			internal static partial Task<string> CreateFileAsync(string id, string name);
@@ -39,4 +41,3 @@ namespace __Windows.Storage
 		}
 	}
 }
-#endif

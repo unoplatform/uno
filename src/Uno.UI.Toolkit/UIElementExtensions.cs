@@ -1,14 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 #if HAS_UNO
 using Uno.Extensions;
@@ -23,7 +23,7 @@ using Microsoft.UI;
 using CoreGraphics;
 #endif
 
-#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+#if __IOS__ || __MACOS__
 using ObjCRuntime;
 #endif
 
@@ -33,13 +33,6 @@ using Uno.UI.Composition.Composition;
 
 namespace Uno.UI.Toolkit
 {
-#if !NET6_0_OR_GREATER // Moved to the linker definition file
-#if __IOS__
-	[global::Foundation.PreserveAttribute(AllMembers = true)]
-#elif __ANDROID__
-	[Android.Runtime.PreserveAttribute(AllMembers = true)]
-#endif
-#endif
 	public static class UIElementExtensions
 	{
 		#region Elevation
@@ -75,7 +68,7 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
@@ -158,7 +151,7 @@ namespace Uno.UI.Toolkit
 				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
 				visual.ShadowState = shadow;
 			}
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 			if (element is UIElement uiElement)
 			{
 				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;

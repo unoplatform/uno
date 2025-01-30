@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -14,16 +15,17 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media
+using ExifInterface = Android.Media.ExifInterface;
+using Orientation = Android.Media.Orientation;
+
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		//private const string DrawableUriPrefix = "drawable://";
-
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 
 		private static bool _resourceCacheLock;
-		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap>();
+		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap?> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap?>();
 
 		private int? _resourceId;
 
@@ -34,22 +36,22 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, global::System.Drawing.Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView? imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
 		/// </summary>
-		public static ImageLoaderHandler DefaultImageLoader { get; set; }
+		public static ImageLoaderHandler? DefaultImageLoader { get; set; }
 
 		/// <summary>
 		/// An optional image loader for this BindableImageView instance.
 		/// </summary>
-		public ImageLoaderHandler ImageLoader { get; set; }
+		public ImageLoaderHandler? ImageLoader { get; set; }
 
 		/// <summary>
 		/// The resource path for this ImageSource, if any. Useful for debugging purposes; internally the ResourceId is cached and used when fetching the resource.
 		/// </summary>
-		internal string ResourceString { get; private set; }
+		internal string? ResourceString { get; private set; }
 
 		internal bool IsImageLoadedToUiDirectly { get; private set; }
 
@@ -89,7 +91,9 @@ namespace Windows.UI.Xaml.Media
 				|| ResourceId != null;
 		}
 
-		internal BitmapDrawable BitmapDrawable { get; private set; }
+		internal bool ResourceFailed => ResourceString is not null && ResourceId is null;
+
+		internal BitmapDrawable? BitmapDrawable { get; private set; }
 
 		internal int? ResourceId
 		{
@@ -110,9 +114,19 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
+			if (
+				uri.OriginalString.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+				|| uri.OriginalString.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			{
+				// SVGs do not support direct assets reading so we use uri based loading
+				AbsoluteUri = uri;
+			}
+			else
+			{
+				ResourceString = uri.PathAndQuery.TrimStart('/');
 
-			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
+				ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
+			}
 		}
 
 		partial void CleanupResource()
@@ -140,41 +154,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open synchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="image">Returned image data.</param>
-		/// <returns>True if opening synchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-		{
-			image = default;
-			return false;
-		}
-
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open asynchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="asyncImage">Async task for image data retrieval.</param>
-		/// <returns>True if opening asynchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
-		{
-			asyncImage = default;
-			return false;
-		}
-
-		internal bool TryOpenSync(out Bitmap image, int? targetWidth = null, int? targetHeight = null)
+		internal bool TryOpenSync(out Bitmap? image, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (_imageData.Bitmap is not null)
 			{
@@ -192,7 +172,65 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
-		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
+		private static Bitmap RespectExifOrientation(ExifInterface exifInterface, Bitmap bitmap)
+		{
+			int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, (int)Orientation.Normal);
+			var rotationAngle = (Orientation)orientation switch
+			{
+				Orientation.Rotate270 => 270,
+				Orientation.Rotate180 => 180,
+				Orientation.Rotate90 => 90,
+				_ => 0, // for now, we handle only common orientations.
+			};
+
+			if (rotationAngle == 0)
+			{
+				return bitmap;
+			}
+
+			var matrix = new Android.Graphics.Matrix();
+			matrix.PostRotate(rotationAngle);
+
+			var createdBitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
+
+			// https://developer.android.com/reference/android/graphics/Bitmap#createBitmap(android.util.DisplayMetrics,%20int,%20int,%20android.graphics.Bitmap.Config,%20boolean,%20android.graphics.ColorSpace)
+			// Bitmap.CreateBitmap is marked as nullable, but it never returns null.
+			return createdBitmap!;
+		}
+
+		private static async Task<Bitmap?> DecodeStreamAsBitmapWithExifOrientation(Stream stream, Rect? outPadding = null, BitmapFactory.Options? options = null)
+		{
+			if (await BitmapFactory.DecodeStreamAsync(stream, outPadding, options) is not { } bitmap)
+			{
+				return null;
+			}
+
+			if (!stream.CanSeek)
+			{
+				// DecodeStreamAsync have read to the end, if we can't reset
+				// the Position to zero, ExifInterface will not be able to read the orientation correctly.
+				return bitmap;
+			}
+
+			stream.Position = 0;
+
+			var exifInterface = new ExifInterface(stream);
+
+			return RespectExifOrientation(exifInterface, bitmap);
+		}
+
+		private static async Task<Bitmap?> DecodeFileAsBitmapWithExifOrientation(string path, BitmapFactory.Options? options = null)
+		{
+			if (await BitmapFactory.DecodeFileAsync(path, options) is not { } bitmap)
+			{
+				return null;
+			}
+
+			var exifInterface = new ExifInterface(path);
+			return RespectExifOrientation(exifInterface, bitmap);
+		}
+
+		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -200,9 +238,6 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			IsImageLoadedToUiDirectly = false;
-
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.InJustDecodeBounds = true;
 
 			var targetSize = UseTargetSize && targetWidth != null && targetHeight != null
 				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
@@ -223,6 +258,9 @@ namespace Windows.UI.Xaml.Media
 				return _imageData = await FetchResourceWithDownsampling(ct, ResourceId.Value, targetSize);
 			}
 
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.InJustDecodeBounds = true;
+
 			if (Stream != null)
 			{
 				if (Stream.CanSeek)  //For now if we can only validate the size of streams that are seekable
@@ -236,11 +274,11 @@ namespace Windows.UI.Xaml.Media
 					if (ValidateIfImageNeedsResize(options))
 					{
 						options.InJustDecodeBounds = false;
-						return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options));
+						return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(Stream, emptyPadding, options));
 					}
 				}
 
-				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream));
+				return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(Stream));
 			}
 
 			if (!FilePath.IsNullOrEmpty())
@@ -249,9 +287,9 @@ namespace Windows.UI.Xaml.Media
 				if (ValidateIfImageNeedsResize(options))
 				{
 					options.InJustDecodeBounds = false;
-					return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(FilePath, options));
+					return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(FilePath, options));
 				}
-				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(FilePath));
+				return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(FilePath));
 			}
 
 			if (AbsoluteUri != null)
@@ -261,9 +299,12 @@ namespace Windows.UI.Xaml.Media
 					// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 					if (IsContactUri(AbsoluteUri))
 					{
-						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
+						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+						{
+							return _imageData = ImageData.Empty;
+						}
 
-						return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(stream));
+						return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(stream));
 					}
 
 					var filePath = await Download(ct, AbsoluteUri);
@@ -273,7 +314,7 @@ namespace Windows.UI.Xaml.Media
 						return ImageData.Empty;
 					}
 
-					return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(filePath.LocalPath));
+					return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(filePath.LocalPath));
 				}
 				else
 				{
@@ -360,7 +401,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			var key = Tuple.Create(resourceId, targetSize);
 
-			Bitmap bitmap;
+			Bitmap? bitmap;
 			if (!_resourceCache.TryGetValue(key, out bitmap))
 			{
 				try
@@ -419,7 +460,7 @@ namespace Windows.UI.Xaml.Media
 		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Type Drawables
+		public static Type? Drawables
 		{
 			get => Uno.Helpers.DrawableHelper.Drawables;
 			set => Uno.Helpers.DrawableHelper.Drawables = value;
@@ -469,74 +510,75 @@ namespace Windows.UI.Xaml.Media
 
 		public override string ToString()
 		{
-			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
+			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object?)BitmapDrawable ?? ResourceString ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
+	}
+#nullable disable
 
-		public class Converter : TypeConverter
+	public class Converter : TypeConverter
+	{
+		// Overrides the CanConvertFrom method of TypeConverter.
+		// The ITypeDescriptorContext interface provides the context for the
+		// conversion. Typically, this interface is used at design time to
+		// provide information about the design-time container.
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
-			// Overrides the CanConvertFrom method of TypeConverter.
-			// The ITypeDescriptorContext interface provides the context for the
-			// conversion. Typically, this interface is used at design time to
-			// provide information about the design-time container.
-			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+			if (sourceType == typeof(string))
 			{
-				if (sourceType == typeof(string))
-				{
-					return true;
-				}
-				if (sourceType == typeof(Uri))
-				{
-					return true;
-				}
-				if (sourceType == typeof(Bitmap))
-				{
-					return true;
-				}
-				if (sourceType == typeof(BitmapDrawable))
-				{
-					return true;
-				}
-				if (sourceType.Is(typeof(Stream)))
-				{
-					return true;
-				}
-
-				return base.CanConvertFrom(context, sourceType);
+				return true;
+			}
+			if (sourceType == typeof(Uri))
+			{
+				return true;
+			}
+			if (sourceType == typeof(Bitmap))
+			{
+				return true;
+			}
+			if (sourceType == typeof(BitmapDrawable))
+			{
+				return true;
+			}
+			if (sourceType.Is(typeof(Stream)))
+			{
+				return true;
 			}
 
-			// Overrides the ConvertFrom method of TypeConverter.
-			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-			{
-				if (value is string)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Uri)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Bitmap)
-				{
-					return (ImageSource)value;
-				}
-				if (value is BitmapDrawable)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Stream)
-				{
-					return (ImageSource)value;
-				}
+			return base.CanConvertFrom(context, sourceType);
+		}
 
-				return base.ConvertFrom(context, culture, value);
+		// Overrides the ConvertFrom method of TypeConverter.
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			if (value is string)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Uri)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Bitmap)
+			{
+				return (ImageSource)value;
+			}
+			if (value is BitmapDrawable)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Stream)
+			{
+				return (ImageSource)value;
 			}
 
-			// Overrides the ConvertTo method of TypeConverter.
-			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-			{
-				return base.ConvertTo(context, culture, value, destinationType);
-			}
+			return base.ConvertFrom(context, culture, value);
+		}
+
+		// Overrides the ConvertTo method of TypeConverter.
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		{
+			return base.ConvertTo(context, culture, value, destinationType);
 		}
 	}
 }

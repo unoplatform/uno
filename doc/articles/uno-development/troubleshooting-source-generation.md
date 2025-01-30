@@ -4,7 +4,7 @@ uid: Uno.Contributing.SourceGeneration
 
 # Troubleshooting Source Generation
 
-Source Generation in Uno is done in one of two ways:
+Before Uno 5.0, Source Generation in Uno was done in one of two ways:
 
 - Using [C# 9.0 source generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/)
 - Using [Uno.SourceGeneration](https://github.com/unoplatform/uno.sourcegeneration) generators
@@ -28,19 +28,25 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
 </PropertyGroup>
 ```
 
+Starting with Uno 5.0, the only way for source generation is using Roslyn source generators, and setting `UnoUIUseRoslynSourceGenerators` has no effect.
+
 ## Adding generated files C# pragma
 
 In some cases, the generated code may use patterns that cause C# to raise warnings, and in order to silence those warnings, the generated code can contain a set of custom C# pragma.
 
 The MSBuild `XamlGeneratorAnalyzerSuppressions` item is used to configure suppressions, with the format `CATEGORY-CODE_TEXT`:
-- If `CATEGORY` is `csharp`, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files
-- If `CATEGORY` is anything else, `SuppressMessageAttribute` attributes will be applied on generated classes.
+
+1. Starting with Uno Platform 5.3, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files.
+1. Prior to Uno Platform 5.3, the generation depends on the category:
+
+    - If `CATEGORY` is `csharp`, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files
+    - If `CATEGORY` is anything else, `SuppressMessageAttribute` attributes will be applied on generated classes.
 
 To define a pragma, in your csproj add the following:
 
 ```xml
 <ItemGroup>
-	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+ <XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
 </ItemGroup>
 ```
 
@@ -135,4 +141,6 @@ If ever the need arises to view the generated source code of a *failing* CI buil
 
 ## Xaml fuzzy matching
 
-The XAML source generator used to do fuzzy matching for types. This doesn't match Windows behavior and can cause performance issues. It is planned that fuzzy matching will be removed in Uno 5. You can set `UnoEnableXamlFuzzyMatching` MSBuild property to false to get the behavior planned in Uno 5. This property will be removed in Uno 5 and you will not be able to get the legacy fuzzy matching behavior. So, it's recommended to set this property to false. The property defaults to `true`.
+The XAML source generator used to do fuzzy matching for types. This doesn't match Windows behavior and can cause performance issues. The MSBuild property `UnoEnableXamlFuzzyMatching` controls whether fuzzy matching is enabled or not. The property was introduced in Uno 4.8 and defaulted to `true`. Starting with Uno 5.0, this property defaults to `false`. It is planned that fuzzy matching will be removed completely Uno 6.
+
+Note that for XAML-included namespaces (for example `android`, `ios`, etc.), The default namespaces are used (it's considered as if it is `http://schemas.microsoft.com/winfx/2006/xaml/presentation`).

@@ -1,37 +1,41 @@
 ﻿using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Polygon
 	{
-		private readonly SvgElement _polygon = new SvgElement("polygon");
-
-		partial void InitializePartial()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			SvgChildren.Add(_polygon);
+			WindowManagerInterop.SetSvgPolyPoints(_mainSvgElement.HtmlId, Points?.Flatten());
 
-			InitCommonShapeProperties();
+			return MeasureAbsoluteShape(availableSize, this);
 		}
 
-		protected override SvgElement GetMainSvgElement()
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			return _polygon;
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
 		}
 
-		partial void OnPointsChanged()
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			var points = Points;
-			if (points == null)
+			base.OnPropertyChanged2(args);
+
+			if (_bboxCacheKey != null && (
+				args.Property == PointsProperty
+			))
 			{
-				_polygon.RemoveAttribute("points");
-			}
-			else
-			{
-				_polygon.SetAttribute("points", points.ToCssString());
+				_bboxCacheKey = null;
 			}
 		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+			Points is { } points
+				? ("polygone:" + string.Join(',', points.Flatten()))
+				: null;
 	}
 }

@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.h, Popup.cpp
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {
@@ -11,7 +11,7 @@ public partial class Popup
 		// If this popup is associated with a flyout, then give it a chance to cancel closing.
 		if (AssociatedFlyout is { } flyout)
 		{
-			flyout.OnClosing(ref cancel);
+			cancel = flyout.Hide(canCancel: true);
 		}
 	}
 }

@@ -9,8 +9,9 @@ using Windows.Foundation;
 using Java.Nio;
 using Android.Views;
 using Uno.UI.Xaml.Media;
+using System.Runtime.InteropServices;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{
@@ -41,7 +42,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			return ImageData.FromBitmap(BitmapFactory.DecodeByteArray(buffer, 0, bufferLength));
+			var bitmap = Bitmap.CreateBitmap(MemoryMarshal.Cast<byte, int>(buffer).ToArray(), width, height, Bitmap.Config.Argb8888!);
+			return ImageData.FromBitmap(bitmap);
 		}
 
 		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
@@ -104,6 +106,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 				bitmap?.Dispose();
 				SetSoftwareRendering(element, false);
 			}
+		}
+
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
+		{
+			for (var i = 0; i < byteCount; i += 4)
+			{
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
+			}
+		}
+
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
 		}
 	}
 }

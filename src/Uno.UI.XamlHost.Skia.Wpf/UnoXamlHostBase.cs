@@ -1,23 +1,26 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
 
 using System;
+using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.XamlHost.Skia.Wpf;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.UI.Xaml;
-using WinUI = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
+using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Content;
+using Uno.UI.Xaml.Core;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	public abstract partial class UnoXamlHostBase : WpfControl, IWpfHost
+	public abstract partial class UnoXamlHostBase : WpfControl, IWpfApplicationHost
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -36,11 +39,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		static UnoXamlHostBase()
 		{
 			//TODO: These lines should be set in a different location, possibly in a more general way (for multi-window support) https://github.com/unoplatform/uno/issues/8978
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = d =>
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d, p) =>
 			{
 				if (global::System.Windows.Application.Current is { } app)
 				{
-					app.Dispatcher.BeginInvoke(d);
+					app.Dispatcher.BeginInvoke(d, p == Dispatching.NativeDispatcherPriority.Idle ? DispatcherPriority.SystemIdle : DispatcherPriority.Normal);
 				}
 				else
 				{
@@ -73,6 +76,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 						{
 							application = (WUX.Application)Activator.CreateInstance(type);
 						});
+
+						AppWindow.SkipMainWindowId();
 
 						return (WUX.Markup.IXamlMetadataProvider)application;
 					}
@@ -221,16 +226,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				if (currentRoot != null)
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
-					XamlRootMap.Unregister(currentRoot.XamlRoot);
+					WpfManager.XamlRootMap.Unregister(currentRoot.XamlRoot);
 				}
 
 				_childInternal = value;
 
-				if (_childInternal.XamlRoot is not null)
-				{
-					XamlRootMap.Register(_childInternal.XamlRoot, this);
-				}
-				else if (_childInternal is FrameworkElement element)
+				if (_childInternal is FrameworkElement element)
 				{
 					element.Loading += OnChildLoading;
 				}
@@ -238,34 +239,24 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				SetContent();
 
 				var frameworkElement = ChildInternal as WUX.FrameworkElement;
-				if (frameworkElement != null)
+				if (frameworkElement is not null)
 				{
 					// If XAML content has changed, check XAML size
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
-					XamlRootMap.Register(frameworkElement.XamlRoot, this);
 				}
 
 				OnChildChanged();
 
 				// Fire updated event
 				ChildChanged?.Invoke(this, new EventArgs());
-
-				UpdateUnoSize();
 			}
-		}
-
-
-		void IWpfHost.InvalidateRender()
-		{
-			//InvalidateOverlays();
-			InvalidateVisual();
 		}
 
 		private void OnChildLoading(FrameworkElement sender, object args)
 		{
 			// Ensure the XamlRoot is registered early.
-			XamlRootMap.Register(sender.XamlRoot, this);
+			WpfManager.XamlRootMap.Register(sender.XamlRoot, this);
 		}
 
 		/// <summary>
@@ -290,6 +281,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		public bool IsDisposed { get; private set; }
 
 		private System.Windows.Window _parentWindow;
+		private ContentIsland _contentIsland;
 
 		//     /// <summary>
 		//     /// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
@@ -333,6 +325,23 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (_xamlSource != null)
 			{
 				_xamlSource.Content = _childInternal;
+				_contentIsland ??= new ContentIsland(_contentSite.View);
+				_xamlSource.XamlIsland.XamlRoot.VisualTree.ContentRoot.SetContentIsland(_contentIsland);
+
+				UpdateContentSiteVisible();
+				UpdateContentSiteScale();
+
+				TryLoadContent();
+			}
+		}
+
+
+		protected void TryLoadContent()
+		{
+			if (IsLoaded && _childInternal.XamlRoot is not null)
+			{
+				ContentManager.TryLoadRootVisual(_xamlSource.XamlIsland.XamlRoot);
+				InvalidateMeasure();
 			}
 		}
 

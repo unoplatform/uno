@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
+	[ContentProperty(Name = nameof(Width))]
 	public partial class ColumnDefinition : DefinitionBase, DependencyObject
 	{
 		public ColumnDefinition()
@@ -27,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static GridLength GetWidthDefaultValue() => GridLengthHelper.OneStar;
 
-		[GeneratedDependencyProperty]
+		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
 
 		public GridLength Width
@@ -43,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 			return new ColumnDefinition { Width = GridLength.ParseGridLength(value).First() };
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = 0d)]
+		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
 
 		public double MinWidth
@@ -52,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetMinWidthValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
 
 		public double MaxWidth

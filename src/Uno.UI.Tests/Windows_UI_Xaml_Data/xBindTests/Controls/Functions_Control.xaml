@@ -12,6 +12,9 @@
 		<TextBlock x:Name="_InstanceProperty"
 				   x:FieldModifier="public"
 				   Text="{x:Bind InstanceProperty}" />
+		<TextBlock x:Name="_PrivateInstanceProperty"
+				   x:FieldModifier="public"
+				   Text="{x:Bind PrivateInstanceProperty, Mode=OneWay}" />
 		<TextBlock x:Name="_StaticProperty"
 				   x:FieldModifier="public"
 				   Text="{x:Bind local:Functions_Control.StaticProperty}" />

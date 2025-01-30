@@ -7,16 +7,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;
@@ -35,7 +31,7 @@ using _Color = AppKit.NSColor;
 using _Event = AppKit.NSEvent;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 namespace UIKit
 #elif __MACOS__
 namespace AppKit
@@ -650,7 +646,7 @@ namespace AppKit
 						.Append(fe != null && fe.TryGetCornerRadius(out var cr) && cr != default ? $" CornerRadius={cr.ToStringCompact()}" : "")
 						.Append(fe != null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 						.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-						.Append(uiElement != null ? $" AvailableSize={uiElement.LastAvailableSize}" : "")
+						.Append(uiElement != null ? $" AvailableSize={uiElement.m_previousAvailableSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.Append(uiElement?.GetElementSpecificDetails())
 						.Append(uiElement?.GetElementGridOrCanvasDetails())

@@ -10,7 +10,7 @@ using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
@@ -25,7 +25,7 @@ partial class SvgImageSource
 
 	private ISvgProvider? _svgProvider;
 
-	internal event EventHandler SourceLoaded;
+	internal event EventHandler? SourceLoaded;
 
 	private void InitSvgProvider()
 	{

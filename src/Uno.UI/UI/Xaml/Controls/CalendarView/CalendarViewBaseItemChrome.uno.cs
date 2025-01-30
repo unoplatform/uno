@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+#if !UNO_HAS_BORDER_VISUAL
+		private BorderLayerRenderer _borderRenderer;
+#endif
+
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
@@ -51,6 +56,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
+#if UNO_HAS_BORDER_VISUAL
+		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
+
 		private void UpdateChromeIfNeeded(Rect rect)
 		{
 			if (rect.Width > 0 && rect.Height > 0 && _lastSize != rect.Size)
@@ -62,6 +71,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+#if !UNO_HAS_BORDER_VISUAL
+			_borderRenderer ??= new BorderLayerRenderer(this);
+#endif
+
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
 			// DrawDensityBar			=> Not supported yet
@@ -69,36 +82,10 @@ namespace Windows.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-			var background = Background;
-			var borderThickness = GetItemBorderThickness();
-			var borderBrush = GetItemBorderBrush(forFocus: false);
-			var cornerRadius = GetItemCornerRadius();
-
-			if (IsClear(background))
-			{
-				if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
-					&& !IsClear(todaySelectedBackground))
-				{
-					background = todaySelectedBackground;
-				}
-				else if (FindSelectedBackgroundBrush() is { } selectedBackground
-					&& !IsClear(selectedBackground))
-				{
-					background = selectedBackground;
-				}
-				else
-				{
-					background = GetItemBackgroundBrush();
-				}
-			}
-
-			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
-			{
-				// We don't support inner border yet, so even if not optimal we just use it as border.
-				borderBrush = selectedBrush;
-			}
-
 #if __WASM__
+			var borderInfoProvider = (IBorderInfoProvider)this;
+			var borderThickness = borderInfoProvider.BorderThickness;
+			var borderBrush = borderInfoProvider.BorderBrush;
 			if (borderBrush is not null)
 			{
 				EffectiveBorderThickness = borderThickness;
@@ -109,7 +96,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			_borderRenderer.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+#if UNO_HAS_BORDER_VISUAL
+			this.UpdateAllBorderProperties();
+#else
+			_borderRenderer.Update();
+#endif
 		}
 
 

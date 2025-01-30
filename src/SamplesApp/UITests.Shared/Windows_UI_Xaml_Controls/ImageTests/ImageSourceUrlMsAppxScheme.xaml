@@ -7,27 +7,21 @@
     	xmlns:controls="using:Uno.UI.Samples.Controls"
 	  mc:Ignorable="d">
 
-	<controls:SampleControl SampleDescription="ImageMsAppxScheme">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<StackPanel>
-					<TextBlock Text="Image with ms-appx: scheme" />
-					<Image Width="100"
-						   Height="100"
-						   Source="ms-appx:///Assets/Diagnostics/avatar.png"
-						   Stretch="UniformToFill" />
-					<Image Source="ms-appx:///Assets/Diagnostics/movie_type_dbox.png"
-						   HorizontalAlignment="Left"
-						   VerticalAlignment="Center"
-						   Stretch="Uniform" />
-					<Image Width="100"
-						   Height="100"
-						   Source="ms-appx:///Assets/0_leading_number_asset.png" />
-					<Image Width="100"
-						   Height="100"
-						   Source="ms-appx:///Assets/asset-with-dashes.png" />
-				</StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<TextBlock Text="Image with ms-appx: scheme" />
+		<Image Width="100"
+					   Height="100"
+					   Source="ms-appx:///Assets/Diagnostics/avatar.png"
+					   Stretch="UniformToFill" />
+		<Image Source="ms-appx:///Assets/Diagnostics/movie_type_dbox.png"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center"
+					   Stretch="Uniform" />
+		<Image Width="100"
+					   Height="100"
+					   Source="ms-appx:///Assets/0_leading_number_asset.png" />
+		<Image Width="100"
+					   Height="100"
+					   Source="ms-appx:///Assets/asset-with-dashes.png" />
+	</StackPanel>
 </Page>

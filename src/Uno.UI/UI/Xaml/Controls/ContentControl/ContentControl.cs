@@ -7,19 +7,19 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections;
 using System.Linq;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -32,12 +32,12 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class ContentControl : Control, IEnumerable
 	{
 		private View? _contentTemplateRoot;
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public virtual object Content
+		public object Content
 		{
 			get
 			{
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
-				"Content",
+				nameof(Content),
 				typeof(object),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 					// (ie if created in code by new SomeControl())
 					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
 					// the DataContext won't get propagated and any bindings won't get updated.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
@@ -120,12 +120,12 @@ namespace Windows.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ContentTemplateProperty { get; } =
 			DependencyProperty.Register(
-				"ContentTemplate",
+				nameof(ContentTemplate),
 				typeof(DataTemplate),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -151,11 +151,11 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
-		protected virtual void OnContentChanged(object oldValue, object newValue)
+		protected virtual void OnContentChanged(object oldContent, object newContent)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
-				if (newValue is View
+				if (newContent is View
 					// This case is to support the ability for the content
 					// control to be templated while having a Content as a view.
 					// The template then needs to TemplateBind to the Content to function
@@ -164,22 +164,22 @@ namespace Windows.UI.Xaml.Controls
 				)
 				{
 					// If the content is a view, no need to delay the inclusion in the visual tree
-					ContentTemplateRoot = newValue as View;
+					ContentTemplateRoot = newContent as View;
 				}
-				else if (oldValue != null && newValue == null)
+				else if (oldContent != null && newContent == null)
 				{
 					// The content is being reset, remove the existing content properly.
 					ContentTemplateRoot = null;
 				}
 
-				if (newValue != null)
+				if (newContent != null)
 				{
 					SetUpdateTemplate();
 				}
 			}
 		}
 
-		protected virtual void OnContentTemplateChanged(DataTemplate oldTemplate, DataTemplate newTemplate)
+		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
@@ -192,11 +192,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
-				SetUpdateControlTemplate();
+				ApplyTemplate();
 			}
 		}
 
-		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
+		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void UnregisterContentTemplateRoot();
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
-		public virtual View ContentTemplateRoot
+		public View ContentTemplateRoot
 		{
 			get
 			{
@@ -245,7 +245,13 @@ namespace Windows.UI.Xaml.Controls
 
 					UpdateContentTransitions(null, this.ContentTransitions);
 				}
+
+				OnContentTemplateRootSet();
 			}
+		}
+
+		private protected virtual void OnContentTemplateRootSet()
+		{
 		}
 
 		#region Transitions Dependency Property
@@ -344,7 +350,13 @@ namespace Windows.UI.Xaml.Controls
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
 					_dataTemplateUsedLastUpdate = dataTemplate;
-					ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+
+					ContentTemplateRoot =
+						// Typically the ContentTemplate subtree should all have the ContentPresenter as templated-parent,
+						// but because we are doing without it, let's be explicit here.
+						// Generally, this is fine since we don't usually template-bind from a DataTemplate.
+						dataTemplate?.LoadContentCached(templatedParent: null) ??
+						Content as View;
 				}
 
 				if (Content != null
@@ -368,8 +380,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				OnApplyTemplate();
 			}
-
-			SyncDataContext();
 		}
 
 		private void SetContentTemplateRootToPlaceholder()
@@ -444,7 +454,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Android 5.0 does not have this limitation, because ART requires greater stack sizes.
 		/// </summary>
 		/// <remarks>
-		/// If the default style for the current type has a Template property, 
+		/// If the default style for the current type has a Template property,
 		/// we know that the IsContentPresenterBypassEnabled will be false once the style has been set.
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>
@@ -476,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// Support for the C# collection initializer style.
 		public void Add(View view)
 		{
@@ -511,5 +521,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #nullable enable
+
+		internal void ClearContentPresenterBypass()
+		{
+			if (Content is UIElement contentAsUIE && ContentTemplateRoot == contentAsUIE)
+			{
+
+				RemoveChild(contentAsUIE);
+				ContentTemplateRoot = null;
+			}
+		}
 	}
 }

@@ -36,15 +36,13 @@ public class ResourcesGenerationTask_v0 : Task
 	public string TargetProjectDirectory { get; set; }
 
 	[Required]
-	public string IntermediateOutputPath { get; set; }
+	public string OutputPath { get; set; }
 
 	[Required]
 	public string DefaultLanguage { get; set; }
 
 	[Output]
 	public ITaskItem[] GeneratedFiles { get; set; }
-
-	private string OutputPath => Path.Combine(TargetProjectDirectory, IntermediateOutputPath, "g", "ResourcesGenerator");
 
 	public override bool Execute()
 	{
@@ -80,7 +78,7 @@ public class ResourcesGenerationTask_v0 : Task
 		if (language == null)
 		{
 			// TODO: Add support for resources without a language qualifier
-			TraceLog("No language found, resources ignored");
+			TraceWarning("UNOB0003", $"Ignoring resource {resource.ItemSpec}, could not determine the language");
 			yield break;
 		}
 
@@ -167,7 +165,8 @@ public class ResourcesGenerationTask_v0 : Task
 			new Dictionary<string, string>()
 			{
 				{ "UnoResourceTarget", "Uno" },
-				{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') }
+				{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') },
+				{ "Language", language }
 			}
 		);
 	}
@@ -227,7 +226,7 @@ public class ResourcesGenerationTask_v0 : Task
 
 		// The file name have to be unique, otherwise it could be overwritten by a file with the same named defined directly in the application's head
 		var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec)?.ToLowerInvariant();
-		var logicalTargetPath = Path.Combine(localizedDirectory, $"{resourceMapName}_resw-strings.xml");
+		var logicalTargetPath = Path.Combine("r", localizedDirectory, $"{resourceMapName}_resw-strings.xml");
 		var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 		var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
@@ -253,11 +252,17 @@ public class ResourcesGenerationTask_v0 : Task
 			}
 		);
 	}
+
 	private void TraceLog(string message)
 	{
 		if (EnableTraceLogging)
 		{
 			Log.LogMessage(message);
 		}
+	}
+
+	private void TraceWarning(string warningCode, string message)
+	{
+		Log.LogWarning(null, warningCode, null, null, 0, 0, 0, 0, message);
 	}
 }

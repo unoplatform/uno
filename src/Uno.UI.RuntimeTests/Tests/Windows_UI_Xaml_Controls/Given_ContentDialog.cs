@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
@@ -10,12 +11,15 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml.Automation.Peers;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -23,6 +27,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ContentDialog
 	{
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+
+		public async Task When_Press_Should_Not_Lose_Focus()
+		{
+			var SUT = new MyContentDialog
+			{
+				Content = "Hello World",
+				PrimaryButtonText = "OK",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			try
+			{
+				await ShowDialog(SUT);
+
+				SUT.ContentScrollViewer.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+
+				await WindowHelper.WaitForIdle();
+
+				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+
+				var bounds = SUT.ContentScrollViewer.GetAbsoluteBounds();
+				var bottomRight = new Point(bounds.Right, bounds.Bottom);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				mouse.MoveTo(bottomRight.X - 5, bottomRight.Y - 5);
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+
+				mouse.MoveTo(bottomRight.X - 5, bottomRight.Y + 5);
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
+				Assert.IsInstanceOfType<Button>(focused);
+				Assert.AreEqual("OK", ((Button)focused).Content.ToString());
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -382,13 +447,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+#if __SKIA__ || __WASM__
+		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
+#endif
+		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
+		{
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(27, 38, 14, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				var SUT = new MyContentDialog
+				{
+					Title = "Dialog title",
+					Content = "Hello",
+					PrimaryButtonText = "Accept",
+					SecondaryButtonText = "Nope"
+				};
+
+				SetXamlRootForIslandsOrWinUI(SUT);
+
+				try
+				{
+					await ShowDialog(SUT);
+
+					var layoutRootBounds = SUT.LayoutRoot.GetRelativeBounds((FrameworkElement)WindowHelper.EmbeddedTestRoot.control.XamlRoot.Content);
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					RectAssert.Contains(visibleBounds, layoutRootBounds);
+				}
+				finally
+				{
+					SUT.Hide();
+				}
+			}
+		}
+
+		[TestMethod]
+		[DataRow(ContentDialogButton.Primary)]
+		[DataRow(ContentDialogButton.Secondary)]
+		[DataRow(ContentDialogButton.Close)]
+		public async Task When_Hide_In_Click(ContentDialogButton buttonType)
+		{
+			var contentDialog = new ContentDialog
+			{
+				Content = "Test",
+				PrimaryButtonText = "Primary",
+				SecondaryButtonText = "Secondary",
+				CloseButtonText = "Close",
+				XamlRoot = WindowHelper.XamlRoot,
+			};
+
+			static void OnButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+			{
+				e.Cancel = true;
+				sender.Hide();
+			};
+
+			switch (buttonType)
+			{
+				case ContentDialogButton.Primary:
+					contentDialog.PrimaryButtonClick += OnButtonClick;
+					break;
+				case ContentDialogButton.Secondary:
+					contentDialog.SecondaryButtonClick += OnButtonClick;
+					break;
+				case ContentDialogButton.Close:
+					contentDialog.CloseButtonClick += OnButtonClick;
+					break;
+			}
+
+			int closingCount = 0;
+			var closed = false;
+			contentDialog.Closed += (s, e) => closed = true;
+			contentDialog.Closing += (s, e) => closingCount++;
+
+			var dialogTask = contentDialog.ShowAsync();
+
+			Button button = null;
+
+			var buttonName = buttonType switch
+			{
+				ContentDialogButton.Primary => "PrimaryButton",
+				ContentDialogButton.Secondary => "SecondaryButton",
+				ContentDialogButton.Close => "CloseButton",
+				_ => throw new NotSupportedException()
+			};
+
+			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
+
+			await WindowHelper.WaitForLoaded(button);
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
+
+			await WindowHelper.WaitFor(() => closed);
+
+			await dialogTask;
+
+			Assert.AreEqual(1, closingCount);
+		}
+
+		[TestMethod]
+		[DataRow(ContentDialogButton.Primary)]
+		[DataRow(ContentDialogButton.Secondary)]
+		[DataRow(ContentDialogButton.Close)]
+		public async Task When_Button_Click(ContentDialogButton buttonType)
+		{
+			var contentDialog = new ContentDialog
+			{
+				Content = "Test",
+				PrimaryButtonText = "Primary",
+				SecondaryButtonText = "Secondary",
+				CloseButtonText = "Close",
+				XamlRoot = WindowHelper.XamlRoot,
+			};
+
+			int closingCount = 0;
+			var closed = false;
+			contentDialog.Closed += (s, e) => closed = true;
+			contentDialog.Closing += (s, e) => closingCount++;
+
+			var dialogTask = contentDialog.ShowAsync();
+
+			Button button = null;
+
+			var buttonName = buttonType switch
+			{
+				ContentDialogButton.Primary => "PrimaryButton",
+				ContentDialogButton.Secondary => "SecondaryButton",
+				ContentDialogButton.Close => "CloseButton",
+				_ => throw new NotSupportedException()
+			};
+
+			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
+
+			await WindowHelper.WaitForLoaded(button);
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
+
+			await WindowHelper.WaitFor(() => closed);
+
+			await dialogTask;
+
+			Assert.AreEqual(1, closingCount);
+		}
+
 #if HAS_UNO
 		[DataTestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
 		{
 			var closeButtonClickEvent = new Event();
@@ -410,7 +615,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (!isCloseButtonEnabled)
 			{
 				var disabledStyle = new Style(typeof(Button));
-				disabledStyle.Setters.Add(new Setter(FrameworkElement.IsEnabledProperty, false));
+				disabledStyle.Setters.Add(new Setter(Control.IsEnabledProperty, false));
 
 				SUT.CloseButtonStyle = disabledStyle;
 			}
@@ -519,10 +724,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
 		{
 			var tcs = new TaskCompletionSource<bool>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => tcs.TrySetException(new TimeoutException()));
+
 			var inputPane = InputPane.GetForCurrentView();
 			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
 			{
-				tcs.SetResult(true);
+				tcs.TrySetResult(true);
 			}
 			try
 			{
@@ -552,8 +761,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			_ = dialog.ShowAsync();
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement != null);
-#if !NETFX_CORE
-			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on current version of Uno because the template is materialized too early  
+#if !WINAPPSDK
+			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on the current version of Uno because the template is materialized too early
 #endif
 		}
 
@@ -572,13 +781,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
-
+		public Grid LayoutRoot { get; private set; }
+		public ScrollViewer ContentScrollViewer { get; private set; }
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
 			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
 			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
+			ContentScrollViewer = GetTemplateChild("ContentScrollViewer") as ScrollViewer;
 		}
 	}
 }

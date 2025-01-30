@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		private bool _browserContextMenuEnabled = true;
 		private bool _isReadOnly;
@@ -40,17 +43,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_foregroundChanged.Disposable = null;
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => this.SetForeground(e.NewValue));
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(scb, ref _foregroundChanged, () => SetForeground(scb));
 			}
-
-			this.SetForeground(e.NewValue);
 		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
-			: base(isMultiline ? "textarea" : "input")
+			// We need to use textarea regardless of isMultiline
+			// because "input" native HTML element can't have its text top-aligned.
+			// For PasswordBox, it must be input. So, for now we can't match WinUI and it will
+			// remain center-aligned instead of top-aligned.
+			: base(textBox is PasswordBox ? "input" : "textarea")
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
@@ -73,6 +78,12 @@ namespace Windows.UI.Xaml.Controls
 			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
+		private event RoutedEventHandlerWithHandled HtmlPaste
+		{
+			add => RegisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+			remove => UnregisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+		}
+
 		internal bool IsMultiline { get; }
 
 		private protected override void OnLoaded()
@@ -80,8 +91,21 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			HtmlInput += OnInput;
+			HtmlPaste += OnPaste;
+
+			if (!IsMultiline)
+			{
+				WindowManagerInterop.SetSingleLine(this);
+			}
 
 			SetTextNative(_textBox.Text);
+		}
+
+		private bool OnPaste(object sender, RoutedEventArgs e)
+		{
+			var args = new TextControlPasteEventArgs();
+			_textBox.RaisePaste(args);
+			return args.Handled;
 		}
 
 		private protected override void OnUnloaded()
@@ -89,6 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			HtmlInput -= OnInput;
+			HtmlPaste -= OnPaste;
 		}
 
 		private void OnInput(object sender, EventArgs eventArgs)
@@ -116,6 +141,9 @@ namespace Windows.UI.Xaml.Controls
 			=> WindowManagerInterop.SelectInputRange(HtmlId, start, length);
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 
 		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{

@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal sealed class ImmediateAnimator<T> : IValueAnimator, IDisposable where T : struct
 	{
-		private T _from;
 		private T _to;
 		private long _duration;
 
-		public ImmediateAnimator(T from, T to)
+		public ImmediateAnimator(T to)
 		{
 			_to = to;
-			_from = from;
 
 			StartDelay = 0;
 			CurrentPlayTime = 0;

@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class WebView : Control
 {
@@ -63,7 +63,7 @@ public partial class WebView : Control
 	/// </summary>
 	public string DocumentTitle
 	{
-		get => (string)GetValue(DocumentTitleProperty);
+		get => (string)GetValue(DocumentTitleProperty) ?? "";
 		private set => SetValue(DocumentTitleProperty, value);
 	}
 
@@ -71,7 +71,7 @@ public partial class WebView : Control
 	/// Identifies the DocumentTitle dependency property.
 	/// </summary>
 	public static DependencyProperty DocumentTitleProperty { get; } =
-		DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(string.Empty));
 
 	public bool IsScrollEnabled
 	{

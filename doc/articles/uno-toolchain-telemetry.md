@@ -2,14 +2,14 @@
 uid: Uno.Development.ToolchainTelemetry
 ---
 
-## Uno Platform Build tools telemetry
+# Uno Platform Build tools telemetry
 
 The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
 that collects usage information. It is important that the Uno Platform Team understands how the build tools are used so they can be improved.
 
 The collected data is anonymous.
 
-The telemetry behavior is based on the [.NET Core telemetry feature](https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry).
+The telemetry behavior is based on the [.NET Core telemetry feature](https://learn.microsoft.com/dotnet/core/tools/telemetry).
 
 ## Scope
 
@@ -25,6 +25,7 @@ setting a global environment variable `UNO_PLATFORM_TELEMETRY_OPTOUT` set to `1`
 an msbuild property named `UnoPlatformTelemetryOptOut` set to `1` or `true`.
 
 ## Data points
+
 The feature collects the following data:
 
 * Timestamp of invocation
@@ -37,7 +38,6 @@ The feature collects the following data:
 * Target frameworks
 * Hashed (SHA256) current working directory
 * Hashed (SHA256) MAC address: a cryptographically anonymous and unique ID for a machine.
-
 
 The feature doesn't collect personal data, such as usernames or email addresses. It doesn't scan your code and doesn't extract
 sensitive project-level data, such as name, repo, or author. The data is sent securely to Microsoft servers using Microsoft Azure

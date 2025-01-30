@@ -3,16 +3,16 @@
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a glyph from the specified font.
 /// </summary>
-public partial class FontIcon : IconElement
+public partial class FontIcon : IconElement, IThemeChangeAware
 {
 	private readonly TextBlock _textBlock;
 
@@ -137,7 +137,7 @@ public partial class FontIcon : IconElement
 	/// <summary>
 	/// Gets or sets whether automatic text enlargement, to reflect the system text size setting, is enabled.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public bool IsTextScaleFactorEnabled
 	{
 		get => (bool)this.GetValue(IsTextScaleFactorEnabledProperty);
@@ -147,7 +147,7 @@ public partial class FontIcon : IconElement
 	/// <summary>
 	/// Identifies the IsTextScaleFactorEnabled dependency property.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		DependencyProperty.Register(
 			nameof(IsTextScaleFactorEnabled),
@@ -183,7 +183,7 @@ public partial class FontIcon : IconElement
 		_textBlock.Style = null;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
-		_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
+		_textBlock.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center;
 		_textBlock.SetValue(AutomationProperties.AccessibilityViewProperty, AccessibilityView.Raw);
 
 		_textBlock.Text = Glyph;
@@ -218,6 +218,16 @@ public partial class FontIcon : IconElement
 		if (_textBlock is not null)
 		{
 			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = Foreground;
 		}
 	}
 }

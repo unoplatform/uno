@@ -7,23 +7,24 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupPanel : Panel
 {
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 	private ManagedWeakReference _popup;
 
 	public Popup Popup
@@ -35,6 +36,9 @@ internal partial class PopupPanel : Panel
 			_popup = WeakReferencePool.RentWeakReference(this, value);
 		}
 	}
+#else
+	public Popup Popup { get; }
+#endif
 
 	public PopupPanel(Popup popup)
 	{
@@ -68,15 +72,7 @@ internal partial class PopupPanel : Panel
 		}
 		else
 		{
-			Rect visibleBounds;
-			if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
-			else
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
 
@@ -125,12 +121,12 @@ internal partial class PopupPanel : Panel
 		}
 		else if (Popup.CustomLayouter == null)
 		{
-			// TODO: For now, the layouting logic for managed DatePickerFlyout does not correctly work
+			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
-				Popup.AssociatedFlyout is DatePickerFlyout
+				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
 #if __ANDROID__ || __IOS__
-				&& Popup.AssociatedFlyout is not NativeDatePickerFlyout
+				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
 #endif
 				;
 
@@ -181,6 +177,28 @@ internal partial class PopupPanel : Panel
 
 			ArrangeElement(child, finalFrame);
 
+			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
+			// MenuFlyout so, for now, we restrict to to only Android
+			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
+#if !__IOS__
+			var updatedFinalFrame = new Rect(
+				anchorLocation.X + (float)Popup.HorizontalOffset,
+				anchorLocation.Y + (float)Popup.VerticalOffset,
+				size.Width,
+				size.Height);
+
+			if (updatedFinalFrame != finalFrame)
+			{
+				// Workraround:
+				// The HorizontalOffset is updated to the correct value in CascadingMenuHelper.OnPresenterSizeChanged
+				// This update appears to be happening *during* ArrangeElement which was already passed wrong finalFrame.
+				// We re-arrange with the new updated finalFrame.
+				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
+				// See MenuFlyoutSubItem_Placement sample.
+				ArrangeElement(child, updatedFinalFrame);
+			}
+#endif
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={anchorLocation} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
@@ -190,15 +208,7 @@ internal partial class PopupPanel : Panel
 		{
 			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-			Rect visibleBounds;
-			if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
-			else
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
@@ -221,19 +231,18 @@ internal partial class PopupPanel : Panel
 	private protected override void OnLoaded()
 	{
 		base.OnLoaded();
-		// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
-		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
-		this.SetLogicalParent(Popup);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
+		this.XamlRoot.Changed += XamlRootChanged;
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
-		this.SetLogicalParent(null);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
+		if (XamlRoot is { } xamlRoot)
+		{
+			xamlRoot.Changed -= XamlRootChanged;
+		}
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
@@ -241,18 +250,28 @@ internal partial class PopupPanel : Panel
 	private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 	{
 		// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
-		if (args.OriginalSource == this && Popup is { } popup
-		)
+		if (args.OriginalSource == this && Popup is { } popup)
 		{
-			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
-			// disabled for ContentDialogs
-			if (popup.IsLightDismissEnabled)
+			// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+			// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+			// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+			// rely on this workaround to close CommandBar's popup.
+			if (popup.GetTemplatedParent() is CommandBar cb)
 			{
+				cb.TryDismissInlineAppBarInternal();
+			}
+			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
+			// disabled for ContentDialogs.
+			else if (popup.IsLightDismissEnabled)
+			{
+				OnPointerPressedDismissed(args);
 				ClosePopup(popup);
 			}
 			args.Handled = true;
 		}
 	}
+
+	private protected virtual void OnPointerPressedDismissed(PointerRoutedEventArgs args) { }
 
 	private static void ClosePopup(Popup popup)
 	{
@@ -265,5 +284,17 @@ internal partial class PopupPanel : Panel
 		}
 	}
 
-	internal override bool IsViewHit() => Popup?.IsLightDismissEnabled ?? false;
+	internal override bool IsViewHit()
+	{
+		// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+		// rely on this workaround to close CommandBar's popup.
+		if (Popup?.GetTemplatedParent() is CommandBar { IsSticky: false })
+		{
+			return true;
+		}
+
+		return Popup?.IsLightDismissEnabled ?? false;
+	}
 }

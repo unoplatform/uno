@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+	xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
 	xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -17,14 +17,14 @@
 	<StackPanel Margin="50">
 		<TextBlock Text="Determinate to Indeterminate"/>
 		<muxc:ProgressRing IsActive="True"
-						   DeterminateSource="{StaticResource SquirrelAnimation}"
+						   not_win:DeterminateSource="{StaticResource SquirrelAnimation}"
 						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
-						   IndeterminateSource="{StaticResource SquirrelAnimation}"/>
+						   not_win:IndeterminateSource="{StaticResource SquirrelAnimation}"/>
 
 		<muxc:ProgressRing IsActive="True"
-						   DeterminateSource="{StaticResource AcrobatAnimation}"
+						   not_win:DeterminateSource="{StaticResource AcrobatAnimation}"
 						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
-						   IndeterminateSource="{StaticResource AcrobatAnimation}"/>
+						   not_win:IndeterminateSource="{StaticResource AcrobatAnimation}"/>
 		<ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
 
 		<TextBlock Text="Indeterminate"/>

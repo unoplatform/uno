@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Data
+﻿namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Describes how the data propagates in a binding.
@@ -8,15 +8,15 @@
 		/// <summary>
 		/// Updates the target property when the binding is created. Changes to the source object can also propagate to the target.
 		/// </summary>
-		OneWay,
+		OneWay = 1,
 		/// <summary>
 		/// Updates the target property when the binding is created.
 		/// </summary>
-		OneTime,
+		OneTime = 2,
 		/// <summary>
 		/// Updates either the target or the source object when either changes. When the binding is created, the target property is updated from the source.
 		/// </summary>
-		TwoWay,
+		TwoWay = 3,
 	}
 }
 

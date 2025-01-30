@@ -1,7 +1,6 @@
-﻿#if __SKIA__
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
@@ -11,4 +10,3 @@ namespace Windows.UI.Xaml.Input
 		}
 	}
 }
-#endif

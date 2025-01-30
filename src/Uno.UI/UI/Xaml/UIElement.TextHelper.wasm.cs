@@ -2,17 +2,20 @@
 using System.Web;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
+
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
@@ -40,7 +43,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetFontStyle(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-style");
 			}
@@ -64,7 +67,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetFontWeight(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-weight");
 			}
@@ -76,7 +79,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetFontFamily(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				ResetStyle("font-family");
 			}
@@ -94,9 +97,33 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal void SetFontStretch(object localValue)
+		{
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				ResetStyle("font-stretch");
+			}
+			else
+			{
+				string cssStretch = (FontStretch)localValue switch
+				{
+					FontStretch.UltraCondensed => "ultra-condensed",
+					FontStretch.ExtraCondensed => "extra-condensed",
+					FontStretch.Condensed => "condensed",
+					FontStretch.SemiCondensed => "semi-condensed",
+					FontStretch.SemiExpanded => "semi-expanded",
+					FontStretch.Expanded => "expanded",
+					FontStretch.ExtraExpanded => "extra-expanded",
+					FontStretch.UltraExpanded => "ultra-expanded",
+					_ => "normal",
+				};
+				this.SetStyle("font-stretch", cssStretch);
+			}
+		}
+
 		internal void SetFontSize(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-size");
 			}
@@ -109,7 +136,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetMaxLines(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
 			}
@@ -143,61 +170,66 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private SerialDisposable _brushSubscription;
-
 		internal void SetForeground(object localValue)
 		{
-			if (_brushSubscription != null)
-			{
-				_brushSubscription.Disposable = null;
-			}
-
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
 					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
 				case GradientBrush gradient:
+					// background-size not supported for inlines (e.g, Run) because DesiredSize is always zero there.
+					// In fact, inlines shouldn't have DesiredSize in the first place as they are TextElement → DependencyObject
+					// They don't inherit from UIElement.
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
+						("color", "transparent"),
+						("background-clip", "text"),
+						("background-size", this is TextBlock ? $"{this.DesiredSize.Width}px" : "auto")
+					);
+					break;
+
+				case RadialGradientBrush radialGradient:
+					this.SetStyle(
+						("background", radialGradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);
 					break;
 
 				case ImageBrush imageBrush:
-					_brushSubscription ??= new SerialDisposable();
-
-					_brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					if (imageBrush.ImageDataCache is not { } img)
 					{
-						switch (img.Kind)
-						{
-							case ImageDataKind.Empty:
-							case ImageDataKind.Error:
-								this.ResetStyle(
-									"background-color",
-									"background-image",
-									"background-size");
-								this.SetStyle(
-									("color", "transparent"),
-									("background-clip", "text"));
-								break;
+						return;
+					}
 
-							case ImageDataKind.DataUri:
-							case ImageDataKind.Url:
-							default:
-								this.SetStyle(
-									("color", "transparent"),
-									("background-clip", "text"),
-									("background-color", ""),
-									("background-origin", "content-box"),
-									("background-position", imageBrush.ToCssPosition()),
-									("background-size", imageBrush.ToCssBackgroundSize()),
-									("background-image", "url(" + img.Value + ")")
-								);
-								break;
-						}
-					});
+					switch (img.Kind)
+					{
+						case ImageDataKind.Empty:
+						case ImageDataKind.Error:
+							this.ResetStyle(
+								"background-color",
+								"background-image",
+								"background-size");
+							this.SetStyle(
+								("color", "transparent"),
+								("background-clip", "text"));
+							break;
+
+						case ImageDataKind.DataUri:
+						case ImageDataKind.Url:
+						default:
+							this.SetStyle(
+								("color", "transparent"),
+								("background-clip", "text"),
+								("background-color", ""),
+								("background-origin", "content-box"),
+								("background-position", imageBrush.ToCssPosition()),
+								("background-size", imageBrush.ToCssBackgroundSize()),
+								("background-image", "url(" + img.Value + ")")
+							);
+							break;
+					}
 					break;
 				case AcrylicBrush acrylic:
 					acrylic.Apply(this);
@@ -216,7 +248,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetCharacterSpacing(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("letter-spacing");
 			}
@@ -229,7 +261,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetLineHeight(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("line-height");
 			}
@@ -249,7 +281,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetTextAlignment(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("text-align");
 			}
@@ -280,7 +312,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetTextWrappingAndTrimming(object textWrapping, object textTrimming)
 		{
-			if (textWrapping is UnsetValue)
+			if (textWrapping == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("white-space", "word-break", "text-overflow");
 			}
@@ -318,7 +350,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetTextDecorations(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("text-decoration");
 			}
@@ -345,7 +377,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetTextPadding(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("padding");
 			}

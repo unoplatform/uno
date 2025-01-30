@@ -1,15 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
 #if !__ANDROID__ && !__IOS__ && !__MACOS__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Media.Playback;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{
@@ -25,10 +25,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Unable to create an instance of IMediaPlayerPresenterExtension. MediaPlayerPresenter will not work.");
+					this.Log().Error("The MediaPlayer extension is not installed. For more information aka.platform.uno/mediaplayerelement");
 				}
 			}
 		}
+
+		internal uint NaturalVideoHeight => _extension?.NaturalVideoHeight ?? 0;
+		internal uint NaturalVideoWidth => _extension?.NaturalVideoWidth ?? 0;
 
 		partial void OnMediaPlayerChangedPartial(MediaPlayer mediaPlayer)
 			=> _extension?.MediaPlayerChanged();
@@ -44,6 +47,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void ExitFullScreen()
 			=> _extension?.ExitFullScreen();
+
+		internal void RequestCompactOverlay()
+			=> _extension?.RequestCompactOverlay();
+
+		internal void ExitCompactOverlay()
+			=> _extension?.ExitCompactOverlay();
 	}
 }
 #endif

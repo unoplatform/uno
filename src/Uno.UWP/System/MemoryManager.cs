@@ -7,6 +7,10 @@ namespace Windows.System;
 public partial class MemoryManager
 {
 	internal static bool IsAvailable { get; private set; }
+#if __ANDROID__ || __WASM__ || __SKIA__
+		= true;
+#endif
+
 	internal static float HighPressureThreshold { get; set; } = .90f;
 	internal static float MediumPressureThreshold { get; set; } = .70f;
 

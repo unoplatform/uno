@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	partial class RecyclePool
 	{

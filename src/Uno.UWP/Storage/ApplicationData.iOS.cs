@@ -1,4 +1,3 @@
-#if __IOS__
 using System;
 using Foundation;
 using System.IO;
@@ -42,4 +41,3 @@ namespace Windows.Storage
 
 	}
 }
-#endif

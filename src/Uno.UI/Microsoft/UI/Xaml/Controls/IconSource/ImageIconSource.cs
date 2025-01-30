@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ImageIconSource.cpp, commit 083796a
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+// MUX Reference ImageIconSource.cpp & ImageIconSource.properties.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class ImageIconSource : IconSource
 {
@@ -19,7 +20,10 @@ public partial class ImageIconSource : IconSource
 	public static DependencyProperty ImageSourceProperty { get; } =
 		DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(ImageIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-	private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
 	{
 		var imageIcon = new ImageIcon();
 		if (ImageSource is { } imageSource)
@@ -33,13 +37,16 @@ public partial class ImageIconSource : IconSource
 		return imageIcon;
 	}
 
-	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == ImageSourceProperty)
+		if (iconSourceProperty == ImageSourceProperty)
 		{
 			return ImageIcon.SourceProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

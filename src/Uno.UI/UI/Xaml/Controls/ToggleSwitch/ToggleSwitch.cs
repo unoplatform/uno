@@ -1,16 +1,18 @@
-using System;
+﻿using System;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a switch that can be toggled between two states.
 	/// </summary>
+	[ContentProperty(Name = nameof(Header))]
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
@@ -76,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the Header dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -95,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the HeaderTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -114,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the IsOn dependency property.
 		/// </summary>
 		public static DependencyProperty IsOnProperty { get; } =
-			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -133,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the OffContent dependency property.
 		/// </summary>
 		public static DependencyProperty OffContentProperty { get; } =
-			DependencyProperty.Register(nameof(OffContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OffContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -152,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the OffContentTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty OffContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(OffContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(OffContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -171,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the OnContent dependency property.
 		/// </summary>
 		public static DependencyProperty OnContentProperty { get; } =
-			DependencyProperty.Register(nameof(OnContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OnContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -190,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Identifies the OnContentTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty OnContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(OnContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(OnContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -198,35 +200,6 @@ namespace Windows.UI.Xaml.Controls
 		/// Gets an object that provides calculated values that can be referenced as TemplateBinding sources when defining templates for a ToggleSwitch control.
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
-
-		private double GetEndAbsoluteOffset()
-		{
-			var minOffset = 0;
-			var maxOffset = GetMaxOffset();
-			var startOffset = IsOn ? maxOffset : 0;
-			var absoluteOffset = startOffset;
-			absoluteOffset = Math.Max(minOffset, absoluteOffset);
-			absoluteOffset = Math.Min(maxOffset, absoluteOffset);
-			return absoluteOffset;
-		}
-
-		private double GetMaxOffset()
-		{
-			if (_tpKnobBounds == null || _tpKnob == null)
-			{
-				return 0;
-			}
-
-			return _tpKnobBounds.ActualWidth - _tpKnob.ActualWidth;
-		}
-
-		private void ForceSwitchKnobEndPosition()
-		{
-			if (_spKnobTransform != null)
-			{
-				_spKnobTransform.X = GetEndAbsoluteOffset();
-			}
-		}
 
 		public void OnTemplateRecycled()
 		{

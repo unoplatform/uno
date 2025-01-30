@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
@@ -8,7 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class UnoTimePickerDialog : TimePickerDialog
 	{
@@ -131,4 +130,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

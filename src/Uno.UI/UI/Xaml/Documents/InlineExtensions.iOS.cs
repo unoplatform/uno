@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using UIKit;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
 	{
@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Documents
 			return Uno.UI.UIStringAttributesHelper.GetAttributes(
 				inline.FontWeight,
 				inline.FontStyle,
+				inline.FontStretch,
 				inline.FontFamily,
 				inline.Foreground,
 				inline.FontSize,

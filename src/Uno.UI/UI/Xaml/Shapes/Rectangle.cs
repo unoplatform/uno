@@ -1,15 +1,14 @@
-﻿#if !__IOS__ && !__MACOS__ && !__NETSTD_REFERENCE__ && !__SKIA__ && !__ANDROID__
-#define LEGACY_SHAPE_MEASURE
-#endif
+﻿using Windows.Foundation;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{
+#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureRelativeShape(availableSize);
+#endif
 
 		#region RadiusY (DP)
 		public static DependencyProperty RadiusYProperty { get; } = DependencyProperty.Register(
@@ -18,11 +17,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-#if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusYChangedPartial()
-#else
-				options: FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
 
@@ -40,11 +35,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-#if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusXChangedPartial()
-#else
-				options: FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
 
@@ -55,9 +46,9 @@ namespace Windows.UI.Xaml.Shapes
 		}
 		#endregion
 
-#if LEGACY_SHAPE_MEASURE
-		partial void OnRadiusXChangedPartial();
-		partial void OnRadiusYChangedPartial();
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
 #endif
 	}
 }

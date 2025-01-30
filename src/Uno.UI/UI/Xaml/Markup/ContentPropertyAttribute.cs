@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Markup;
+namespace Microsoft.UI.Xaml.Markup;
 
 /// <summary>
 /// Defines the property that will be used in Xaml when using implicit content.
@@ -22,5 +22,5 @@ public sealed partial class ContentPropertyAttribute : Attribute
 	/// <summary>
 	/// Gets or sets the Content property name.
 	/// </summary>
-	public string Name { get; set; }
+	public string Name;
 }

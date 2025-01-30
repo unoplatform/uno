@@ -9,14 +9,45 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<StackPanel>
-		<TextBlock Text="Battery status" FontWeight="Bold" />
-		<TextBlock x:Name="BatteryStatusOutput" />
-		<TextBlock Text="Energy saver status" FontWeight="Bold" />
-		<TextBlock x:Name="EnergySaverStatusOuptut" />
-		<TextBlock Text="Power supply status" FontWeight="Bold" />
-		<TextBlock x:Name="PowerSupplyStatusOuptut" />
-		<TextBlock Text="Remaining charge percent" FontWeight="Bold" />
-		<TextBlock x:Name="RemainingChargePercentOutput" />
-	</StackPanel>
+	<ContentControl IsEnabled="{x:Bind Model.IsInitialized, Mode=OneWay}">
+		<Grid RowSpacing="4" Padding="12">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<StackPanel Spacing="8">
+				<Button Command="{x:Bind Model.RefreshValuesCommand}" Content="Refresh values" />
+				<TextBlock>
+					<Run Text="Battery status:" FontWeight="Bold" />
+					<Run Text="{x:Bind Model.BatteryStatus, Mode=OneWay}" />
+				</TextBlock>
+				<TextBlock>
+					<Run Text="Energy saver status:" FontWeight="Bold" />
+					<Run Text="{x:Bind Model.EnergySaverStatus, Mode=OneWay}" />
+				</TextBlock>
+				<TextBlock>
+					<Run Text="Power supply status:" FontWeight="Bold" />
+					<Run Text="{x:Bind Model.PowerSupplyStatus, Mode=OneWay}" />
+				</TextBlock>
+				<TextBlock>
+					<Run Text="Remaining charge percent:" FontWeight="Bold" />
+					<Run Text="{x:Bind Model.RemainingChargePercent, Mode=OneWay}" />
+				</TextBlock>
+				<TextBlock>
+					<Run Text="Remaining discharge time:" FontWeight="Bold" />
+					<Run Text="{x:Bind Model.RemainingDischargeTime, Mode=OneWay}" />
+				</TextBlock>
+
+				<TextBlock Text="Event subscriptions" FontWeight="Bold" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<ToggleButton IsChecked="{x:Bind Model.IsBatteryStatusChangedSubscribed, Mode=TwoWay}" Content="Battery status changed" />
+				<ToggleButton IsChecked="{x:Bind Model.IsEnergySaverStatusChangedSubscribed, Mode=TwoWay}" Content="Energy saver status changed" />
+				<ToggleButton IsChecked="{x:Bind Model.IsPowerSupplyStatusChangedSubscribed, Mode=TwoWay}" Content="Power supply status changed" />
+				<ToggleButton IsChecked="{x:Bind Model.IsRemainingChargePercentChangedSubscribed, Mode=TwoWay}" Content="Remaining charge percent changed" />
+				<ToggleButton IsChecked="{x:Bind Model.IsRemainingDischargeTimeChangedSubscribed, Mode=TwoWay}" Content="Remaining discharge time changed" />
+
+				<Button Margin="0,16,0,0" Command="{x:Bind Model.ClearEventLogCommand}" Content="Clear event log" />
+			</StackPanel>
+			<ListView ItemsSource="{x:Bind Model.EventLog}" Grid.Row="1" />
+		</Grid>
+	</ContentControl>
 </UserControl>

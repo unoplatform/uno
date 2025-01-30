@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if !NET461
+#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +10,12 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 #if __ANDROID__ || __IOS__
-using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
+using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
 #else
-using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.VirtualizingPanelLayout;
+using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Handles creation, recycling and binding of items for an <see cref="IVirtualizingPanel"/>.
@@ -202,6 +202,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						// https://github.com/unoplatform/uno/issues/11957
 						container.PrepareForRecycle();
+					}
+
+					if (container.Parent is Panel parent)
+					{
+						parent.Children.Remove(container);
 					}
 				}
 				else

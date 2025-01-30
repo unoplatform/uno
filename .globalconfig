@@ -28,6 +28,9 @@ dotnet_diagnostic.CA1815.severity = error
 # CA1821: Remove empty Finalizers
 dotnet_diagnostic.CA1821.severity = error
 
+# CA1821: Remove empty Finalizers
+dotnet_diagnostic.CA1823.severity = error
+
 # CA1825: Avoid zero-length array allocations
 dotnet_diagnostic.CA1825.severity = error
 
@@ -46,6 +49,9 @@ dotnet_diagnostic.CA1829.severity = error
 # CA2200: Rethrow to preserve stack details
 dotnet_diagnostic.CA2200.severity = error
 
+# CA2211: Non-constant fields should not be visible
+dotnet_diagnostic.CA2211.severity = error
+
 # CA2218: Override GetHashCode on overriding Equals
 dotnet_diagnostic.CA2218.severity = error
 
@@ -53,7 +59,7 @@ dotnet_diagnostic.CA2218.severity = error
 dotnet_diagnostic.CA1802.severity = none
 
 # CA1806: Do not ignore method results
-dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CA1806.severity = error
 
 # CA1810: Initialize reference type static fields inline
 dotnet_diagnostic.CA1810.severity = none
@@ -97,6 +103,28 @@ dotnet_diagnostic.CA1848.severity = none
 # CA1849: Call async methods when in an async method
 dotnet_diagnostic.CA1849.severity = none
 
+# CA1850: Prefer static 'System.Security.Cryptography.SHA256.HashData' method over 'ComputeHash'
+dotnet_diagnostic.CA1850.severity = none
+
+# CA1851: Possible multiple enumerations of 'IEnumerable' collection.
+dotnet_diagnostic.CA1851.severity = none
+
+# CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey'
+dotnet_diagnostic.CA1854.severity = none
+
+# CA1852: Type 'XX' can be sealed because
+dotnet_diagnostic.CA1852.severity = none
+
+# CA1859: Change return type of method 'XX' from 'XX' to 'XX' for improved performance
+dotnet_diagnostic.CA1859.severity = none
+
+# CA1860: Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance
+dotnet_diagnostic.CA1860.severity = none
+
+# CA1863: Use composite format
+# TODO: Enable when we are .NET 8+ to avoid conditional code between net7.0 and net8.0
+dotnet_diagnostic.CA1863.severity = none
+
 dotnet_code_quality.CA1822.api_surface = private, internal
 
 # CA1303: Do not pass literals as localized parameters
@@ -114,8 +142,48 @@ dotnet_diagnostic.CA1309.severity = none
 # CA2101: Specify marshalling for P/Invoke string arguments
 dotnet_diagnostic.CA2101.severity = none
 
+# IDE0005: Remove unnecessary using directives
+dotnet_diagnostic.IDE0005.severity = none
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by TreatWarningsAsErrors but also allows usage of WarningsNotAsErrors in debug
 
 # IDE0051: Remove unused private member
 dotnet_diagnostic.IDE0051.severity = warning
+
+# MSTEST0004: Public types should be test classes
+# dotnet_diagnostic.MSTEST0004.severity = warning
+
+# MSTEST0007: Use test attributes only on test methods
+dotnet_diagnostic.MSTEST0007.severity = warning
+
+# MSTEST0016: Test class should have test method
+# Enabled only as an IDE suggestion for now. Violations can be addressed later
+dotnet_diagnostic.MSTEST0016.severity = suggestion
+
+# MSTEST0017: Assertion arguments should be passed in the correct order
+dotnet_diagnostic.MSTEST0017.severity = warning
+
+# MSTEST0023: Do not negate boolean assertions
+dotnet_diagnostic.MSTEST0023.severity = warning
+
+# MSTEST0025: Use 'Assert.Fail' instead of an always-failing assert
+dotnet_diagnostic.MSTEST0025.severity = warning
+
+# MSTEST0026: Avoid conditional access in assertions
+dotnet_diagnostic.MSTEST0026.severity = suggestion
+
+# MSTEST0029: Public method should be test method
+dotnet_diagnostic.MSTEST0029.severity = warning
+
+# MSTEST0030: Type containing [TestMethod] should be marked with [TestClass]
+dotnet_diagnostic.MSTEST0030.severity = warning
+
+# MSTEST0031: System.ComponentModel.DescriptionAttribute has no effect on test methods
+dotnet_diagnostic.MSTEST0031.severity = warning
+
+# MSTEST0032: Review or remove the assertion as its condition is known to be always true
+dotnet_diagnostic.MSTEST0032.severity = warning
+
+# MSTEST0037: Use proper 'Assert' methods
+dotnet_diagnostic.MSTEST0037.severity = warning

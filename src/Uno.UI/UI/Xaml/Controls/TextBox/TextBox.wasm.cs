@@ -1,9 +1,10 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox : Control
 	{
@@ -11,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal TextBoxView TextBoxView => _textBoxView;
 
-		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
+		private protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
 
@@ -79,6 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView.SetFontSize(FontSize);
 			_textBoxView.SetFontStyle(FontStyle);
 			_textBoxView.SetFontWeight(FontWeight);
+			_textBoxView.SetFontStretch(FontStretch);
 			_textBoxView.SetFontFamily(FontFamily);
 		}
 
@@ -100,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var color = brush.ColorWithOpacity;
 
-					Windows.UI.Color foregroundColor = Colors.White;
+					Color foregroundColor = Colors.White;
 
 					// Check highlight color luminance to choose if black or white foreground is more appropriate
 					if (color.Luminance > 0.5)
@@ -186,6 +188,21 @@ namespace Windows.UI.Xaml.Controls
 
 				_textBoxView.SelectionEnd = _textBoxView.SelectionStart + value;
 			}
+		}
+
+		protected override void OnPointerMoved(PointerRoutedEventArgs e)
+		{
+			base.OnPointerMoved(e);
+		}
+
+		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			base.OnDoubleTapped(e);
+		}
+
+		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			base.OnRightTapped(e);
 		}
 	}
 }

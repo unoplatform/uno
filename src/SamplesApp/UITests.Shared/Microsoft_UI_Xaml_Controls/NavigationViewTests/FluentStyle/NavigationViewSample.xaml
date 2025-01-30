@@ -2,11 +2,11 @@
 	x:Class="SamplesApp.Samples.Microsoft_UI_Xaml_Controls.NavigationViewTests.FluentStyle.FluentStyle_NavigationViewSample"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d xamarin"
+	mc:Ignorable="d not_win"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<UserControl.Resources>
@@ -19,7 +19,7 @@
 						HorizontalAlignment="Stretch" 
 						SelectionChanged="NavigationView_SelectionChanged"
 						ItemInvoked="NvSample_ItemInvoked"
-						xamarin:BackRequested="NvSample_BackRequested"
+						not_win:BackRequested="NvSample_BackRequested"
 						x:Name="BasicNavigation"
 						IsSettingsVisible="true"
 						IsTabStop="False"						

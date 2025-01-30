@@ -1,19 +1,16 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		internal override CALayer GetLayer(CGSize size)
+		internal CALayer GetLayer(CGSize size)
 		{
 			var center = Center;
 			var radiusX = RadiusX;

@@ -1,21 +1,21 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-using static Uno.UI.Helpers.WinUI.MathHelpers;
+using static Uno.Helpers.MathHelpers;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines a content decorator that can stretch and scale a single child to fill the available space.
 /// </summary>
-[ContentProperty(Name = "Child")]
-public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement, ILayoutOptOut
+[ContentProperty(Name = nameof(Child))]
+public partial class Viewbox : global::Microsoft.UI.Xaml.FrameworkElement, ILayoutOptOut
 {
 	public UIElement Child
 	{
@@ -25,9 +25,7 @@ public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement, ILayout
 
 	bool ILayoutOptOut.ShouldUseMinSize => false;
 
-	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
-
-	private void AddChildNative(UIElement child) => OnChildChangedPartial(null, child);
+	private void AddChildNative(UIElement child) => AddChild(child);
 }
 
 public partial class Viewbox // Viewbox.h
@@ -336,7 +334,7 @@ UIElement GetChild()
 		infiniteSize.Height = double.PositiveInfinity;
 
 		m_pContainerVisual.Measure(infiniteSize);
-		//m_pContainerVisual.EnsureLayoutStorage();
+		m_pContainerVisual.EnsureLayoutStorage();
 
 		// Desired size would be my child's desired size plus the border
 		childDesiredSize.Width = m_pContainerVisual.DesiredSize.Width;
@@ -361,7 +359,7 @@ UIElement GetChild()
 		//IFCEXPECT(m_pContainerVisual);
 
 		// Determine the scale factor given the final size
-		//m_pContainerVisual.EnsureLayoutStorage();
+		m_pContainerVisual.EnsureLayoutStorage();
 		var desiredSize = m_pContainerVisual.DesiredSize;
 		var scale = ComputeScaleFactor(finalSize, desiredSize);
 

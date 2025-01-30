@@ -1,14 +1,14 @@
 ﻿using Microsoft.UI.Private.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-public partial class RefreshContainer : ContentControl
+public partial class RefreshContainer : ContentControl, IRefreshContainerPrivate
 {
 	private const int MAX_BFS_DEPTH = 10;
 	private const int DEFAULT_PULL_DIMENSION_SIZE = 100;
@@ -278,7 +278,7 @@ public partial class RefreshContainer : ContentControl
 	private IRefreshInfoProvider SearchTreeForIRefreshInfoProvider()
 	{
 		//PTR_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
-		if (m_root == null)
+		if (m_root != null)
 		{
 			IRefreshInfoProvider rootAsIRIP = m_root as IRefreshInfoProvider;
 			int depth = 0;
@@ -382,20 +382,21 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-#if false
 	//Private interface implementations
-	private IRefreshInfoProviderAdapter RefreshInfoProviderAdapter()
-	{
-		//PTR_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
-		return m_refreshInfoProviderAdapter;
-	}
 
-	private void RefreshInfoProviderAdapter(IRefreshInfoProviderAdapter value)
+	IRefreshInfoProviderAdapter IRefreshContainerPrivate.RefreshInfoProviderAdapter
 	{
-		//PTR_TRACE_INFO(this, TRACE_MSG_METH_PTR, METH_NAME, this, value);
-		m_refreshInfoProviderAdapter = value;
-		m_hasDefaultRefreshInfoProviderAdapter = false;
-		OnRefreshInfoProviderAdapterChanged();
+		get
+		{
+			//PTR_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
+			return m_refreshInfoProviderAdapter;
+		}
+		set
+		{
+			//PTR_TRACE_INFO(this, TRACE_MSG_METH_PTR, METH_NAME, this, value);
+			m_refreshInfoProviderAdapter = value;
+			m_hasDefaultRefreshInfoProviderAdapter = false;
+			OnRefreshInfoProviderAdapterChanged();
+		}
 	}
-#endif
 }

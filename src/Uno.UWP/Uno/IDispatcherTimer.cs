@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Uno
+namespace Uno;
+
+internal interface IDispatcherTimer
 {
-	internal interface IDispatcherTimer
-	{
-		TimeSpan Interval { get; set; }
-		bool IsEnabled { get; }
+	TimeSpan Interval { get; set; }
 
-		event EventHandler<object> Tick;
+	bool IsEnabled { get; }
 
-		void Start();
-		void Stop();
-	}
+	event EventHandler<object> Tick;
+
+	void Start();
+
+	void Stop();
 }

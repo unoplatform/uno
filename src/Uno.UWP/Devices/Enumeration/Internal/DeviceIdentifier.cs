@@ -11,6 +11,8 @@ namespace Uno.Devices.Enumeration.Internal
 	/// </summary>
 	internal class DeviceIdentifier
 	{
+		private static readonly char[] _bracesArray = new[] { '{', '}' };
+
 		/// <summary>
 		/// Initializes device identifier.
 		/// </summary>
@@ -41,19 +43,31 @@ namespace Uno.Devices.Enumeration.Internal
 		internal static bool TryParse(string deviceId, out DeviceIdentifier deviceIdentifier)
 		{
 			deviceIdentifier = null;
-			var parts = deviceId.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
 
 			// serialized identifier must have exactly two parts
-			if (parts.Length != 2)
+			// This is equivalent to deviceId.Split('#') then checking that the resulting array is of Length == 2.
+			// But it's more efficient to get the first and last indices of '#' and make sure they are the same.
+			var firstIndexOfHash = deviceId.IndexOf('#');
+			if (firstIndexOfHash <= 0 || firstIndexOfHash == deviceId.Length - 1)
 			{
 				return false;
 			}
 
-			var id = Uri.UnescapeDataString(parts[0]);
-			var deviceClassString = parts[1].Trim(new[] { '{', '}' });
+			var lastIndexOfHash = deviceId.LastIndexOf('#');
+			if (firstIndexOfHash != lastIndexOfHash)
+			{
+				return false;
+			}
+
+			// Uri.UnescapeDataString doesn't have a ReadOnlySpan<char> overload. So we have to substring.
+			var firstPart = deviceId.Substring(0, firstIndexOfHash);
+			var secondPart = deviceId.AsSpan().Slice(firstIndexOfHash + 1);
+
+			var id = Uri.UnescapeDataString(firstPart);
+			var deviceClassSpan = secondPart.Trim(_bracesArray);
 
 			// second part must be valid GUID
-			if (!Guid.TryParse(deviceClassString, out var deviceClassGuid))
+			if (!Guid.TryParse(deviceClassSpan, out var deviceClassGuid))
 			{
 				return false;
 			}

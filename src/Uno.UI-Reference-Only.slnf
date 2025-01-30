@@ -10,7 +10,8 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
-      "T4Generator\\T4Generator.csproj",
+      "SourceGenerators\\XamlGenerationTests.Core\\XamlGenerationTests.Core.csproj",
+      "SourceGenerators\\XamlGenerationTests\\XamlGenerationTests.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
@@ -22,6 +23,8 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Reference.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Reference.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
+      "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
       "Uno.UWP\\Uno.Reference.csproj"
     ]
   }

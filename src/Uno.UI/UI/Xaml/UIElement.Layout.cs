@@ -7,7 +7,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		[Flags]
-		internal enum LayoutFlag : byte
+		internal enum LayoutFlag : short
 		{
 			/// <summary>
 			/// Means the Measure is dirty for the current element
@@ -116,6 +116,16 @@ namespace Windows.UI.Xaml
 			/// Means the Measure is dirty on at least one child of this element
 			/// </summary>
 			MeasureDirtyPath = 0b0000_0010,
+
+			/// <summary>
+			/// Indicates that the element is currently being measured during the Arrange cycle.
+			/// </summary>
+			MeasureDuringArrange = 0b0000_0001_0000_0000,
+
+			/// <summary>
+			/// Indicates that the element is currently being measured.
+			/// </summary>
+			MeasuringSelf = 0b0000_0010_0000_0000,
 #endif
 
 			/// <summary>
@@ -167,6 +177,8 @@ namespace Windows.UI.Xaml
 			LayoutFlag.MeasureDirty |
 #if IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH
 			LayoutFlag.MeasureDirtyPath |
+			LayoutFlag.MeasureDuringArrange |
+			LayoutFlag.MeasuringSelf |
 #endif
 #if !__ANDROID__
 			LayoutFlag.ArrangeDirty |

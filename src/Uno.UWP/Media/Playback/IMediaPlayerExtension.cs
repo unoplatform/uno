@@ -30,6 +30,11 @@ namespace Uno.Media.Playback
 		bool IsLoopingEnabled { get; set; }
 
 		/// <summary>
+		/// Gets or sets the looping all mode
+		/// </summary>
+		bool IsLoopingAllEnabled { get; set; }
+
+		/// <summary>
 		/// Gets the current player state
 		/// </summary>
 		MediaPlayerState CurrentState { get; }
@@ -88,6 +93,11 @@ namespace Uno.Media.Playback
 		/// Gets or sets the current position in the media
 		/// </summary>
 		TimeSpan Position { get; set; }
+
+		/// <summary>
+		/// Determines if the current media content is video
+		/// </summary>
+		bool? IsVideo { get; }
 
 		/// <summary>
 		/// Sets the transport controls bounds so that video can be displayed around controls
@@ -168,5 +178,15 @@ namespace Uno.Media.Playback
 		/// Notifies the extension that an option has changed
 		/// </summary>
 		void OnOptionChanged(string name, object value);
+
+		/// <summary>
+		/// Previous Track on a Playlist
+		/// </summary>
+		void PreviousTrack();
+
+		/// <summary>
+		/// Next Track on a Playlist
+		/// </summary>
+		void NextTrack();
 	}
 }

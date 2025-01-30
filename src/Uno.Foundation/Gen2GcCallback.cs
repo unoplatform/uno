@@ -38,7 +38,7 @@ internal sealed class Gen2GcCallback
 	public static void Register(Func<bool> callback)
 	{
 		// Create a unreachable object that remembers the callback function and target object.
-		new Gen2GcCallback(callback);
+		_ = new Gen2GcCallback(callback);
 	}
 
 	/// <summary>
@@ -51,7 +51,7 @@ internal sealed class Gen2GcCallback
 	public static void Register(Func<object, bool> callback, object targetObj)
 	{
 		// Create a unreachable object that remembers the callback function and target object.
-		new Gen2GcCallback(callback, targetObj);
+		_ = new Gen2GcCallback(callback, targetObj);
 	}
 
 	~Gen2GcCallback()

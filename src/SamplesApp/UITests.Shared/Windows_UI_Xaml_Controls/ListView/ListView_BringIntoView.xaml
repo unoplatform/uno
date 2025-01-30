@@ -5,6 +5,7 @@
     xmlns:local="using:SamplesApp.Windows_UI_Xaml_Controls.ListView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -16,12 +17,18 @@
 			</StackPanel>
 		</DataTemplate>
 	</UserControl.Resources>
-	
-    <Grid>
-		<ListView x:Name="myList"
-				  ItemsSource="{Binding [SampleItemsMed]}"
-				  ItemTemplate="{StaticResource ListItemTemplate}"/>
-		<Button Content="Bring into view"
-				Click="BringIntoView" />		
-    </Grid>
+
+	<StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<muxc:NumberBox x:Name="nb" Minimum="0" SmallChange="1" />
+			<StackPanel>
+				<TextBlock Text="Leading" />
+				<CheckBox x:Name="chkBox" />
+			</StackPanel>
+			<Button Content="Bring into view" Click="BringIntoView" />
+		</StackPanel>
+		<Grid Height="400">
+			<ListView x:Name="myList" ItemTemplate="{StaticResource ListItemTemplate}" />
+	    </Grid>
+	</StackPanel>
 </UserControl>

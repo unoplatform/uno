@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno;
@@ -13,30 +15,20 @@ using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 using Uno.Storage.Pickers.Internal;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Storage.Pickers.FileOpenPicker.NativeMethods;
-#endif
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
-#endif
-
 		private static bool? _fileSystemAccessApiSupported;
+		private static readonly string[] _asteriskArray = new[] { "*" };
 
 		internal static bool IsNativePickerSupported()
 		{
 			if (_fileSystemAccessApiSupported is null)
 			{
-#if NET7_0_OR_GREATER
 				_fileSystemAccessApiSupported = NativeMethods.IsNativeSupported();
-#else
-				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
-#endif
 			}
 
 			return _fileSystemAccessApiSupported.Value;
@@ -76,20 +68,12 @@ namespace Windows.Storage.Pickers
 		private async Task<FilePickerSelectedFilesArray> NativePickerPickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var fileTypeAcceptTypes = BuildFileTypesMap();
-			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
+			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes, StorageSerializationContext.Default);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
-#if NET7_0_OR_GREATER
 			var nativeStorageItemInfosJson = await NativeMethods.PickFilesAsync(multiple, FileTypeFilter.Contains("*"), fileTypeAcceptTypesJson, SettingsIdentifier, startIn);
-#else
-			var multipleParameter = multiple ? "true" : "false";
-			var showAllEntryParameter = FileTypeFilter.Contains("*") ? "true" : "false";
-			var fileTypeMapParameter = WebAssemblyRuntime.EscapeJs(fileTypeAcceptTypesJson);
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
-			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}','{id}','{startIn}')");
-#endif
 
-			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
+			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson, StorageSerializationContext.Default);
 
 			var results = new List<StorageFile>();
 			foreach (var info in infos)
@@ -103,7 +87,7 @@ namespace Windows.Storage.Pickers
 
 		private NativeFilePickerAcceptType[] BuildFileTypesMap()
 		{
-			var allExtensions = FileTypeFilter.Except(new[] { "*" });
+			var allExtensions = FileTypeFilter.Except(_asteriskArray);
 
 			var acceptTypes = allExtensions
 				.Select(fileType => BuildNativeFilePickerAcceptType(fileType))
@@ -157,17 +141,9 @@ namespace Windows.Storage.Pickers
 			}
 			var targetFolder = Directory.CreateDirectory(Path.Combine(temporaryFolder.Path, Guid.NewGuid().ToString()));
 
-#if NET7_0_OR_GREATER
 			var fileCountString = await NativeMethods.UploadPickFilesAsync(multiple, targetFolder.FullName, BuildAcceptString());
-#else
-			var multipleParameter = multiple ? "true" : "false";
-			var targetFolderParameter = WebAssemblyRuntime.EscapeJs(targetFolder.FullName);
-			var acceptParameter = WebAssemblyRuntime.EscapeJs(BuildAcceptString());
-			var jsUploadQuery = $"{JsType}.uploadPickFilesAsync({multipleParameter},'{targetFolderParameter}','{acceptParameter}')";
-			var fileCountString = await WebAssemblyRuntime.InvokeAsync(jsUploadQuery);
-#endif
 
-			if (int.TryParse(fileCountString, out var fileCount))
+			if (int.TryParse(fileCountString, CultureInfo.InvariantCulture, out var fileCount))
 			{
 				var files = targetFolder
 					.GetFiles()
@@ -190,10 +166,7 @@ namespace Windows.Storage.Pickers
 				}
 
 				var mimeType = MimeTypeService.GetFromExtension(fileExtension);
-				if (!mimeTypes.Contains(mimeType))
-				{
-					mimeTypes.Add(mimeType);
-				}
+				mimeTypes.Add(mimeType);
 			}
 
 			if (mimeTypes.Count == 0)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls.Maps.Presenters
+namespace Microsoft.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 		{
 			_ownerSubscription.Disposable = null;
 
-			_owner = TemplatedParent as MapControl;
+			_owner = this.GetTemplatedParent() as MapControl;
 
 			if (_owner != null)
 			{

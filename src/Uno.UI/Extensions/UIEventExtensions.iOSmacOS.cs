@@ -4,7 +4,7 @@ using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 #if __IOS__
 using UIKit;
@@ -57,6 +57,22 @@ namespace Uno.UI.Extensions
 				&& screenLocation.Y >= bounds.Y
 				&& screenLocation.X < bounds.Right
 				&& screenLocation.Y < bounds.Bottom;
+		}
+
+		internal static UIElement FindOriginalSource(this _Touch touch)
+		{
+			var view = touch.View;
+			while (view != null)
+			{
+				if (view is UIElement elt)
+				{
+					return elt;
+				}
+
+				view = view.Superview;
+			}
+
+			return null;
 		}
 #endif
 

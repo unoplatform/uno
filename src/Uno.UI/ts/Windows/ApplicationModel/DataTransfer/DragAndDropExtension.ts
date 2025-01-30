@@ -15,7 +15,11 @@
 
 		public static enable(pArgs: number): void {
 			if (!DragDropExtension._dispatchDropEventMethod) {
-				DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			if (DragDropExtension._current) {
@@ -51,6 +55,9 @@
 			//document.addEventListener("dragstart", this._dragHandler);
 			//document.addEventListener("drag", this._dragHandler);
 			//document.addEventListener("dragend", this._dragHandler);
+
+			// #18854: Prevent the browser default selection drag preview.
+			document.addEventListener('dragstart', e => e.preventDefault());
 		}
 
 		public dispose() {
@@ -160,7 +167,7 @@
 			});
 		}
 
-		public static async retrieveFiles(...itemIds: number[]): Promise<string> {
+		public static async retrieveFiles(itemIds: number[]): Promise<string> {
 
 			const data = DragDropExtension._current?._pendingDropData;
 			if (data == null) {

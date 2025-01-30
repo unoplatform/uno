@@ -2,15 +2,17 @@
 using System.Numerics;
 using System.Threading;
 using Common;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
-using TextBox = Windows.UI.Xaml.Controls.TextBox;
+using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public partial class ColorPickerTests : MUXApiTestBase
@@ -182,7 +184,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void ColorPickerDerivationTest()
+		public async Task ColorPickerDerivationTest()
 		{
 			RunOnUIThread.Execute(() =>
 			{
@@ -191,11 +193,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				MyColorSpectrum colorSpectrum = new MyColorSpectrum();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
-		public void ValidateHueRange()
+		public async Task ValidateHueRange()
 		{
 			RunOnUIThread.Execute(() =>
 			{
@@ -211,14 +213,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				}
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
 #if __WASM__
 		[Ignore("WaitOne doesn't work on mono.")]
+#else
+		[Ignore("Fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 #endif
-		public void ValidateFractionalWidthDoesNotCrash()
+		public async Task ValidateFractionalWidthDoesNotCrash()
 		{
 			ColorSpectrum colorSpectrum = null;
 
@@ -234,11 +238,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				colorSpectrum.Height = 332.75;
 			});
 
-			SetAsRootAndWaitForColorSpectrumFill(colorSpectrum);
+			await SetAsRootAndWaitForColorSpectrumFill(colorSpectrum);
 		}
 
 		[TestMethod]
-		public void VerifyClearingHexInputFieldDoesNotCrash()
+		public async Task VerifyClearingHexInputFieldDoesNotCrash()
 		{
 			ColorPicker colorPicker = null;
 
@@ -250,7 +254,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = colorPicker;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -264,7 +268,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyClearingAlphaChannelInputFieldDoesNotCrash()
+		public async Task VerifyClearingAlphaChannelInputFieldDoesNotCrash()
 		{
 			ColorPicker colorPicker = null;
 
@@ -276,7 +280,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = colorPicker;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -306,23 +310,23 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[TestProperty("Ignore", "True")]
-		public void VerifyVisualTree()
+		public async Task VerifyVisualTree()
 		{
 			ColorPicker colorPicker = null;
 			RunOnUIThread.Execute(() =>
 			{
 				colorPicker = new ColorPicker { IsAlphaEnabled = true, Width = 300, Height = 600 };
 			});
-			TestUtilities.SetAsVisualTreeRoot(colorPicker);
+			await TestUtilities.SetAsVisualTreeRoot(colorPicker);
 
 			// Uno docs: Commented out as this requires additional test infrastructure.
 			//VisualTreeTestHelper.VerifyVisualTree(root: colorPicker, verificationFileNamePrefix: "ColorPicker");
 		}
 
 		// This takes a FrameworkElement parameter so you can pass in either a ColorPicker or a ColorSpectrum.
-		private void SetAsRootAndWaitForColorSpectrumFill(FrameworkElement element)
+		private async Task SetAsRootAndWaitForColorSpectrumFill(FrameworkElement element)
 		{
-			ManualResetEvent spectrumLoadedEvent = new ManualResetEvent(false);
+			UnoManualResetEvent spectrumLoadedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -341,7 +345,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			if (!spectrumLoadedEvent.WaitOne(timeout: TimeSpan.FromSeconds(10)))
+			if (!await spectrumLoadedEvent.WaitOne(timeout: TimeSpan.FromSeconds(10)))
 			{
 				Assert.Fail("Timeout waiting on SpectrumRectangle.Fill to be set.");
 			}

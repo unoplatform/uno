@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+
 #if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;
@@ -13,6 +14,9 @@ using CoreGraphics;
 using _View = AppKit.NSView;
 #elif __ANDROID__
 using Android.Views;
+#elif __WASM__
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 #endif
 
 
@@ -22,7 +26,7 @@ namespace Uno.UI.Toolkit
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
 	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
-#if HAS_UNO
+#if HAS_UNO && !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		, ICustomClippingElement
 #endif
 	{
@@ -57,12 +61,11 @@ namespace Uno.UI.Toolkit
 		{
 			DefaultStyleKey = typeof(ElevatedView);
 
-#if HAS_UNO
-			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
 #if __ANDROID__
 			Unloaded += (snd, evt) => DisposeShadow();
 #endif
 
+#if HAS_UNO
 			// Patch to deactivate the clipping by ContentControl
 			RenderTransform = new CompositeTransform();
 #endif
@@ -77,7 +80,7 @@ namespace Uno.UI.Toolkit
 #if __IOS__ || __MACOS__
 			if (_border != null)
 			{
-				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+				_border.BorderRenderer.BoundsPathUpdated += (s, e) => UpdateElevation();
 			}
 #endif
 
@@ -133,41 +136,9 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-		public new static DependencyProperty CornerRadiusProperty { get; } = DependencyProperty.Register(
-			"CornerRadius",
-			typeof(CornerRadius),
-			typeof(ElevatedView),
-#if __IOS__ || __MACOS__
-			new FrameworkPropertyMetadata(default(CornerRadius))
-#else
-			new FrameworkPropertyMetadata(default(CornerRadius), OnChanged)
+#if !__IOS__ && !__MACOS__
+		private protected override void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
 #endif
-		);
-
-		public new CornerRadius CornerRadius
-		{
-			get => (CornerRadius)GetValue(CornerRadiusProperty);
-			set => SetValue(CornerRadiusProperty, value);
-		}
-
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			// This is required to ensure that FrameworkElement.FindName can dig through the tree after
-			// the control has been created.
-			SynchronizeContentTemplatedParent();
-		}
-
-		private void SynchronizeContentTemplatedParent()
-		{
-			// Manual propagation of the templated parent to the content property
-			// until we get the propagation running properly
-			if (ElevatedContent is FrameworkElement content)
-			{
-				content.TemplatedParent = this.TemplatedParent;
-			}
-		}
 #endif
 
 		private static void OnChanged(DependencyObject snd, DependencyPropertyChangedEventArgs evt) => ((ElevatedView)snd).UpdateElevation();
@@ -179,10 +150,6 @@ namespace Uno.UI.Toolkit
 				return; // not initialized yet
 			}
 
-#if HAS_UNO
-			SynchronizeContentTemplatedParent();
-#endif
-
 			if (Background == null)
 			{
 				this.SetElevationInternal(0, default);
@@ -191,21 +158,25 @@ namespace Uno.UI.Toolkit
 			{
 #if __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
-				this.SetCornerRadius(CornerRadius);
+				// We don't pass BorderThickness here to avoid "double" border being created. The BorderThickness will flow through ElevatedView template to PART_Border
+				// Note that this line was necessary as of writing it even though we pass zero for BorderThickness. Setting the CornerRadius alone has a noticeable effect.
+				// and not setting CornerRadius properly results in wrong rendering.
+				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
+				BorderLayerRenderer.SetCornerRadius(this, CornerRadius, default);
 #elif __IOS__ || __MACOS__
-				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
+				this.SetElevationInternal(Elevation, ShadowColor, _border.BorderRenderer.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}
 
-#if HAS_UNO
+#if HAS_UNO && !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;

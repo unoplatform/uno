@@ -7,15 +7,17 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "4abadfc93ffeddc82420cc28af04cd7f6b2693ab"
-    "uno.themes"         = "3d12f341f3ce9ecd7738e163a3a0904e9b94466f"
-    "uno.toolkit.ui"     = "e358da0eb3e912ed0c8ba01d022ad0fcdb83b0f0"
-    "uno.check"          = "5dec33b3cb4c26f578c8d6bd7a84000bf265a14e"
-    "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
-    "figma-docs"         = "a74bc3b13b73a7b5f9a93dd7b9533f9b24784e63"
-    "uno.resizetizer"    = "6ebb69b1e9d442b2304e9e4d41274bf46c00de87"
-    "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
-    "uno.extensions"     = "539d6b0f2e61fbc2ae5d6e35a77de41cafacf5ce"      
+    "uno.wasm.bootstrap" = "e4a2307f24accd267b77c361b30bc20ba5ccd978" #latest release/stable/9.0 branch commit
+    "uno.themes"         = "22df5299701fe9a6f96e4414b559f8dfd5789540" #latest release/stable/5.4 branch commit
+    "uno.toolkit.ui"     = "f45468269d8f7b24f820bfedce8a45bea2809864" #latest release/stable/6.4 branch commit
+    "uno.check"          = "c327cb365d29a2b53911a3ea9f8cd89254f5729d" #latest main commit
+    "uno.xamlmerge.task" = "528874f7f95bf18c9267eaf50474bf9f6b951696" #latest main commit
+    "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
+    "uno.resizetizer"    = "dfcb976c40eb66cb33c5def4c81d2e4e374dc678" #latest main commit
+    "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
+    "uno.extensions"     = "caadf295630fb154d7d75c8d820f75aa8e014d92" #latest release/stable/5.2 branch commit
+    "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
+    "uno.samples"        = "e9ccf60d7d830acf7db4108a8aa5a2a1fc90c481" #latest master commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
@@ -77,14 +79,15 @@ foreach ($repoPath in $external_docs.keys)
     pushd $repoPath
 
     echo "Checking out $repoUrl@$repoBranch..."
-    git checkout $repoBranch
+    git fetch
+    git checkout --force $repoBranch
     Assert-ExitCodeIsZero
 
     # if not detached
     if ((git symbolic-ref -q HEAD) -ne $null)
     {
-        echo "Pulling $repoUrl@$repoBranch..."
-        git pull
+        echo "Resetting to $repoUrl@$repoBranch..."
+        git reset --hard origin/$repoBranch
         Assert-ExitCodeIsZero
     }
 

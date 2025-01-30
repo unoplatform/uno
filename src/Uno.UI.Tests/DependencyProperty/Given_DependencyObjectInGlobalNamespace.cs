@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
 public sealed partial class NavigateToUriAction : DependencyObject
 {

@@ -4,27 +4,31 @@ using System.Text;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Native;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Hosting;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia
 {
 	class Renderer
 	{
+		private readonly IXamlRootHost _host;
 		private FrameBufferDevice _fbDev;
 		private SKBitmap? _bitmap;
 		private bool _needsScanlineCopy;
 		private int renderCount;
 		private DisplayInformation? _displayInformation;
 
-		public Renderer()
+		public Renderer(IXamlRootHost host)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
 
-			WUX.Window.Current.ToString();
+			_host = host;
 		}
 
 		public FrameBufferDevice FrameBufferDevice => _fbDev;
@@ -38,7 +42,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			_displayInformation ??= DisplayInformation.GetForCurrentView();
+			_displayInformation ??= DisplayInformation.GetForCurrentViewSafe();
 
 			var scale = _displayInformation.RawPixelsPerViewPixel;
 
@@ -56,16 +60,25 @@ namespace Uno.UI.Runtime.Skia
 
 				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
 
-				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
+				FrameBufferWindowWrapper.Instance.RaiseNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
 			}
 
 			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
 			{
 				surface.Canvas.Clear(SKColors.White);
-
 				surface.Canvas.Scale((float)scale);
 
-				WUX.Window.Current.Compositor.Render(surface);
+				if (_host.RootElement?.Visual is { } rootVisual)
+				{
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual, null);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Unable to render frame, _host.RootElement?.Visual is null");
+					}
+				}
 
 				_fbDev.VSync();
 
@@ -77,15 +90,19 @@ namespace Uno.UI.Runtime.Skia
 
 					for (int line = 0; line < height; line++)
 					{
+#pragma warning disable CA1806 // Do not ignore method results
 						Libc.memcpy(
 							_fbDev.BufferAddress + line * _fbDev.RowBytes,
 							pixels + line * bitmapRowBytes,
 							new IntPtr(width * bitmapBytesPerPixel));
+#pragma warning restore CA1806 // Do not ignore method results
 					}
 				}
 				else
 				{
+#pragma warning disable CA1806 // Do not ignore method results
 					Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+#pragma warning restore CA1806 // Do not ignore method results
 				}
 			}
 		}

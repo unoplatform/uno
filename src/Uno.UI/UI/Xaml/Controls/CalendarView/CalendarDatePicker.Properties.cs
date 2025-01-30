@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Calendar = Windows.Globalization.Calendar;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarDatePicker
 	{
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DateFormat
 		{
-			get => (string)GetValue(DateFormatProperty);
+			get => (string)GetValue(DateFormatProperty) ?? "";
 			set => SetValue(DateFormatProperty, value);
 		}
 
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DayOfWeekFormat
 		{
-			get => (string)GetValue(DayOfWeekFormatProperty);
+			get => (string)GetValue(DayOfWeekFormatProperty) ?? "";
 			set => SetValue(DayOfWeekFormatProperty, value);
 		}
 
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
-			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
+			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata("select a date")); // TODO: Localize?
 
 		public string PlaceholderText
 		{
@@ -195,12 +195,12 @@ namespace Windows.UI.Xaml.Controls
 				return _gregorianCalendar;
 			}
 
-			DateTime ClampDate(
+			DateTimeOffset ClampDate(
 				DateTime date,
 				DateTime minDate,
 				DateTime maxDate)
 			{
-				return date < minDate ? minDate : date > maxDate ? maxDate : date;
+				return date.UniversalTime < minDate.UniversalTime ? minDate : date.UniversalTime > maxDate.UniversalTime ? maxDate : date;
 			}
 
 			if (property == CalendarDatePicker.MinDateProperty)

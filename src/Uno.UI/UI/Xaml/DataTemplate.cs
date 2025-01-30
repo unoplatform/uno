@@ -1,25 +1,23 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using ViewGroup = MonoTouch.UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class DataTemplate : FrameworkTemplate
 	{
@@ -35,20 +33,24 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="owner">The owner of the DataTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public DataTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
-		public static implicit operator DataTemplate?(Func<View?>? obj)
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
 		{
-			if (obj == null)
-			{
-				return null;
-			}
-
-			return new DataTemplate(obj);
 		}
+#endif
+
+		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public View? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
+
+		internal View? LoadContentCached(DependencyObject? templatedParent = null) => base.LoadContentCachedCore(templatedParent);
 	}
 }
 

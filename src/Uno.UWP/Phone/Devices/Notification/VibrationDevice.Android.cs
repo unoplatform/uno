@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
@@ -62,4 +61,3 @@ namespace Windows.Phone.Devices.Notification
 		public void Cancel() => _vibrator.Cancel();
 	}
 }
-#endif

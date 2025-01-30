@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using Android.Graphics;
 using Android.Hardware.Camera2;
@@ -113,7 +112,7 @@ namespace Windows.Devices.Lights
 			var isOn = _isEnabled && _brightness > 0;
 			lock (_lock)
 			{
-#if ANDROID33_0_OR_GREATER || (MONOANDROID && !MONOANDROID12_0)
+#if ANDROID33_0_OR_GREATER
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.Tiramisu)
 				{
 					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
@@ -185,4 +184,3 @@ namespace Windows.Devices.Lights
 		}
 	}
 }
-#endif

@@ -7,7 +7,7 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatformProvider
 {
@@ -65,6 +65,6 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	public Task Delay(TimeSpan duration)
 		=> Task.Delay(duration);
 
-	public void Schedule(IdleDispatchedHandler action)
-		=> _ = CoreDispatcher.Main.RunIdleAsync(action);
+	public void Schedule(Action action)
+		=> NativeDispatcher.Main.Enqueue(action, NativeDispatcherPriority.Idle);
 }

@@ -7,7 +7,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 
 namespace Uno.UI.Runtime.Skia.Native
 {
@@ -37,7 +36,9 @@ namespace Uno.UI.Runtime.Skia.Native
 		}
 
 		static void CloseRestricted(int fd, IntPtr userData)
+#pragma warning disable CA1806 // Do not ignore method results
 			=> Libc.close(fd);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		private static readonly IntPtr* s_Interface;
 

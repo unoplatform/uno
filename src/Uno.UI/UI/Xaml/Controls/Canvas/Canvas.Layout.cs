@@ -15,13 +15,16 @@ using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
 using ObjCRuntime;
-#elif UNO_REFERENCE_API || NET461
-using _View = Windows.UI.Xaml.UIElement;
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Canvas : ICustomClippingElement
+	public partial class Canvas
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		: ICustomClippingElement
+#endif
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -45,21 +48,21 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (child is _View childView)
 				{
-					var childAsDO = child as DependencyObject;
+					var childAsUIElement = child as UIElement;
 					var desiredSize = GetElementDesiredSize(childView);
 
 					var childRect = new Rect
 					{
-						X = GetLeft(childAsDO),
-						Y = GetTop(childAsDO),
+						X = GetLeft(childAsUIElement),
+						Y = GetTop(childAsUIElement),
 						Width = desiredSize.Width,
 						Height = desiredSize.Height,
 					};
 
 #if __IOS__
-					child.Layer.ZPosition = (nfloat)GetZIndex(childAsDO);
+					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
 #endif
-
+					child.EnsureLayoutStorage();
 					ArrangeElement(child, childRect);
 				}
 			}
@@ -67,7 +70,11 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
+#if __SKIA__ || __WASM__
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin) => null;
+#elif !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

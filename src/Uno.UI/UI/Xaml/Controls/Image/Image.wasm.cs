@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
@@ -13,7 +13,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{
@@ -93,6 +93,10 @@ namespace Windows.UI.Xaml.Controls
 			UpdateHitTest();
 
 			_lastMeasuredSize = _zeroSize;
+			// Hide the old image until the new image is loaded. This is the behaviour on WinUI.
+			// Attempting to set src to "" will incorrectly raise ImageFailed
+			_htmlImage.SetStyle("visibility", "hidden");
+			_currentImg = default;
 
 			if (newValue is ImageSource source)
 			{
@@ -129,10 +133,6 @@ namespace Windows.UI.Xaml.Controls
 
 				_sourceDisposable.Disposable = null;
 				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
-			}
-			else
-			{
-				_htmlImage.SetAttribute("src", "");
 			}
 		}
 
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
-			_htmlImage.ArrangeVisual(finalPosition, clipRect: null);
+			_htmlImage.ArrangeVisual(finalPosition, clipRect: new Rect(new Point(-finalPosition.Left, -finalPosition.Top), finalSize));
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{

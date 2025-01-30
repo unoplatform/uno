@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public abstract partial class RangeBase : Control
+public partial class RangeBase : Control
 {
 	private double m_uncoercedValue;
 

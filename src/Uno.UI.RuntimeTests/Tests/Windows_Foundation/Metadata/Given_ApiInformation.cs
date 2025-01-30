@@ -15,10 +15,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 			// but the second call resulted in false
 
 			// Application.Current is implemented on all targets
-			var isPresent = ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Application", "Current");
+			var isPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application", "Current");
 			Assert.IsTrue(isPresent);
-			var secondIsPresent = ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Application", "Current");
+			var secondIsPresent = ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Application", "Current");
 			Assert.IsTrue(secondIsPresent);
+		}
+
+		[TestMethod]
+		public void When_StoreContract()
+		{
+			var isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 1);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 2, 3);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 4);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 100);
+			Assert.IsFalse(isPresent);
 		}
 	}
 }

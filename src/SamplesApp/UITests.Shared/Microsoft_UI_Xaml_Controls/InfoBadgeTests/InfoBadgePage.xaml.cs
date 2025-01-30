@@ -4,22 +4,22 @@
 #pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
-using BitmapIconSource = Microsoft.UI.Xaml.Controls.BitmapIconSource;
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
-using PathIconSource = Microsoft.UI.Xaml.Controls.PathIconSource;
-using Windows.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
-using ColorChangedEventArgs = Microsoft.UI.Xaml.Controls.ColorChangedEventArgs;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
+using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
+using BitmapIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource;
+using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
+using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
+using ColorChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorChangedEventArgs;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests
@@ -38,31 +38,31 @@ namespace UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests
 
 		public void IconComboBoxSelectionChanged(object sender, SelectionChangedEventArgs args)
 		{
-			if (IconComboBox.SelectedItem == this.NullIcon)
+			if (ReferenceEquals(IconComboBox.SelectedItem, this.NullIcon))
 			{
 				UpdateIcon(null);
 			}
-			else if (IconComboBox.SelectedItem == this.FontIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.FontIcon))
 			{
 				UpdateIcon(MakeFontIcon());
 			}
-			else if (IconComboBox.SelectedItem == this.BitmapIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.BitmapIcon))
 			{
 				UpdateIcon(MakeBitmapIcon());
 			}
-			else if (IconComboBox.SelectedItem == this.ImageIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.ImageIcon))
 			{
 				UpdateIcon(MakeImageIcon());
 			}
-			else if (IconComboBox.SelectedItem == this.SymbolIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.SymbolIcon))
 			{
 				UpdateIcon(MakeSymbolIcon());
 			}
-			else if (IconComboBox.SelectedItem == this.PathIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.PathIcon))
 			{
 				UpdateIcon(MakePathIcon());
 			}
-			else if (IconComboBox.SelectedItem == this.AnimatedIcon)
+			else if (ReferenceEquals(IconComboBox.SelectedItem, this.AnimatedIcon))
 			{
 				UpdateIcon(MakeAnimatedIcon());
 			}

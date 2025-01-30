@@ -1,5 +1,4 @@
-﻿
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Runtime.InteropServices;
@@ -9,9 +8,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Helpers;
+using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
-using WinUI = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
@@ -21,28 +21,41 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
 	private readonly WpfControl _hostControl;
-	private readonly IWpfHost _host;
-	private DisplayInformation? _displayInformation;
+	private readonly IWpfXamlRootHost _host;
+	private WinUI.XamlRoot? _xamlRoot;
 	private nint _hwnd;
 	private nint _hdc;
+	private int _pixelFormat;
 	private nint _glContext;
 	private GRContext? _grContext;
 	private SKSurface? _surface;
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfHost host)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
 	}
 
-	public bool Initialize()
+	public SKColor BackgroundColor { get; set; }
+
+	public bool TryInitialize()
 	{
 		// Get the window from the wpf control
-		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
+		var window = Window.GetWindow(_hostControl);
+		if (window is null)
+		{
+			throw new InvalidOperationException("The host control is not associated with any Window");
+		}
 
-		if (hwnd != IntPtr.Zero && hwnd == _hwnd)
+		var hwnd = new WindowInteropHelper(window).EnsureHandle();
+		if (hwnd == IntPtr.Zero)
+		{
+			throw new InvalidOperationException("HWND should be initialized");
+		}
+
+		if (hwnd == _hwnd)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -59,26 +72,31 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		_hwnd = hwnd;
 
 		// Get the device context for the window
-		_hdc = NativeMethods.GetDC(_hwnd);
+		_hdc = WindowsRenderingNativeMethods.GetDC(_hwnd);
 
 		// Set the pixel format
-		NativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
+		WindowsRenderingNativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
 		pfd.nSize = (ushort)Marshal.SizeOf(pfd);
 		pfd.nVersion = 1;
-		pfd.dwFlags = NativeMethods.PFD_DRAW_TO_WINDOW | NativeMethods.PFD_SUPPORT_OPENGL | NativeMethods.PFD_DOUBLEBUFFER;
-		pfd.iPixelType = NativeMethods.PFD_TYPE_RGBA;
-		pfd.cColorBits = 24;
+		pfd.dwFlags = WindowsRenderingNativeMethods.PFD_DRAW_TO_WINDOW | WindowsRenderingNativeMethods.PFD_SUPPORT_OPENGL | WindowsRenderingNativeMethods.PFD_DOUBLEBUFFER;
+		pfd.iPixelType = WindowsRenderingNativeMethods.PFD_TYPE_RGBA;
+		pfd.cColorBits = 32;
 		pfd.cRedBits = 8;
 		pfd.cGreenBits = 8;
 		pfd.cBlueBits = 8;
-		pfd.cAlphaBits = 0;
+		pfd.cAlphaBits = 8;
 		pfd.cDepthBits = 16;
-		pfd.iLayerType = NativeMethods.PFD_MAIN_PLANE;
+		pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
+		pfd.iLayerType = WindowsRenderingNativeMethods.PFD_MAIN_PLANE;
 
 		// Choose the best matching pixel format
-		var pixelFormat = NativeMethods.ChoosePixelFormat(_hdc, ref pfd);
+		_pixelFormat = WindowsRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
-		if (pixelFormat == 0)
+		// To inspect the chosen pixel format:
+		// NativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
+		// NativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<NativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
+
+		if (_pixelFormat == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -89,7 +107,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		// Set the pixel format for the device context
-		if (NativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
+		if (WindowsRenderingNativeMethods.SetPixelFormat(_hdc, _pixelFormat, ref pfd) == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -100,7 +118,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		// Create the OpenGL context
-		_glContext = NativeMethods.wglCreateContext(_hdc);
+		_glContext = WindowsRenderingNativeMethods.wglCreateContext(_hdc);
 
 		if (_glContext == IntPtr.Zero)
 		{
@@ -112,9 +130,11 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return false;
 		}
 
-		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning disable CA1806 // Do not ignore method results
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
-		var version = NativeMethods.GetOpenGLVersion();
+		var version = WindowsRenderingNativeMethods.GetOpenGLVersion();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -122,7 +142,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 
-		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning disable CA1806 // Do not ignore method results
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		return TryCreateGRGLContext(out _grContext);
 	}
@@ -130,24 +152,23 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public void Render(DrawingContext drawingContext)
 	{
 		if (_hostControl.ActualWidth == 0
-				|| _hostControl.ActualHeight == 0
-				|| double.IsNaN(_hostControl.ActualWidth)
-				|| double.IsNaN(_hostControl.ActualHeight)
-				|| double.IsInfinity(_hostControl.ActualWidth)
-				|| double.IsInfinity(_hostControl.ActualHeight)
-				|| _hostControl.Visibility != Visibility.Visible
-				|| _hdc == 0
-				|| _glContext == 0
-				|| _grContext is null)
+			|| _hostControl.ActualHeight == 0
+			|| double.IsNaN(_hostControl.ActualWidth)
+			|| double.IsNaN(_hostControl.ActualHeight)
+			|| double.IsInfinity(_hostControl.ActualWidth)
+			|| double.IsInfinity(_hostControl.ActualHeight)
+			|| _hostControl.Visibility != Visibility.Visible
+			|| _hdc == 0
+			|| _glContext == 0
+			|| _grContext is null)
 		{
 			return;
 		}
 
 		int width, height;
 
-		_displayInformation ??= DisplayInformation.GetForCurrentView();
-
-		var dpi = _displayInformation.RawPixelsPerViewPixel;
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_hostControl) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		var dpi = _xamlRoot!.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)
@@ -164,7 +185,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			height = (int)(_hostControl.ActualHeight * dpiScaleY);
 		}
 
-		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning disable CA1806 // Do not ignore method results
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
 		{
@@ -187,7 +210,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			_surface?.Dispose();
 			_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
 
-			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+			_backBuffer = new WriteableBitmap(width, height, 96, 96, PixelFormats.Pbgra32, null);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -195,25 +218,18 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			}
 		}
 
-		NativeMethods.glClear(NativeMethods.GL_COLOR_BUFFER_BIT | NativeMethods.GL_STENCIL_BUFFER_BIT | NativeMethods.GL_DEPTH_BUFFER_BIT);
+		WindowsRenderingNativeMethods.glClear(WindowsRenderingNativeMethods.GL_COLOR_BUFFER_BIT | WindowsRenderingNativeMethods.GL_STENCIL_BUFFER_BIT | WindowsRenderingNativeMethods.GL_DEPTH_BUFFER_BIT);
 
 		var canvas = _surface.Canvas;
 
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(BackgroundColor);
-			_surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
+			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 
-			if (!_host.IsIsland)
+			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WinUI.Window.Current.Compositor.Render(_surface);
-			}
-			else
-			{
-				if (_host.RootElement?.Visual != null)
-				{
-					WinUI.Window.Current.Compositor.RenderVisual(_surface, _host.RootElement?.Visual!);
-				}
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, _surface);
 			}
 		}
 
@@ -224,7 +240,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		if (_backBuffer != null)
 		{
 			_backBuffer.Lock();
-			NativeMethods.glReadPixels(0, 0, width, height, NativeMethods.GL_BGRA_EXT, NativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
+			WindowsRenderingNativeMethods.glReadPixels(0, 0, width, height, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
 			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, width, height));
 			_backBuffer.Unlock();
 
@@ -232,16 +248,18 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 	}
 
+	public void Dispose() => Release();
+
 	private (int framebuffer, int stencil, int samples) GetGLBuffers()
 	{
-		NativeMethods.glGetIntegerv(NativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
-		NativeMethods.glGetIntegerv(NativeMethods.GL_STENCIL, out var stencil);
-		NativeMethods.glGetIntegerv(NativeMethods.GL_SAMPLES, out var samples);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_STENCIL_BITS, out var stencil);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_SAMPLES, out var samples);
 
 		return (framebuffer, stencil, samples);
 	}
 
-	internal bool TryCreateGRGLContext(out GRContext? context)
+	private bool TryCreateGRGLContext(out GRContext? context)
 	{
 		context = null;
 
@@ -272,16 +290,13 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return true;
 	}
 
-	public void Dispose()
-	{
-		Release();
-	}
-
 	private void Release()
 	{
 		// Cleanup resources
-		NativeMethods.wglDeleteContext(_glContext);
-		NativeMethods.ReleaseDC(_hwnd, _hdc);
+#pragma warning disable CA1806 // Do not ignore method results
+		WindowsRenderingNativeMethods.wglDeleteContext(_glContext);
+		WindowsRenderingNativeMethods.ReleaseDC(_hwnd, _hdc);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		_glContext = 0;
 		_hwnd = 0;
@@ -298,9 +313,4 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		_backBuffer = null;
 	}
-
-	public SKSize CanvasSize
-		=> _backBuffer == null ? SKSize.Empty : new SKSize(_backBuffer.PixelWidth, _backBuffer.PixelHeight);
-
-	public SKColor BackgroundColor { get; set; }
 }

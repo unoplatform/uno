@@ -10,8 +10,8 @@
 	xmlns:ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://nventive.com/android"
-	xmlns:xamarin="http://nventive.com/xamarin"
-	mc:Ignorable="d android xamarin">
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d android not_win">
 	 <UserControl.Resources>
 
 		<Style TargetType="ListViewHeaderItem"
@@ -21,9 +21,9 @@
 					<ControlTemplate>
 						<Border BorderBrush="Orange"
 								BorderThickness="10">
-							<ContentPresenter xamarin:Content="{TemplateBinding Content}"
-											  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
-											  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+							<ContentPresenter not_win:Content="{TemplateBinding Content}"
+											  not_win:ContentTemplate="{TemplateBinding ContentTemplate}"
+											  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>

@@ -20,7 +20,7 @@ partial class ElevatedView
 	private AndroidBitmap? _shadowBitmap;
 	private bool _invalidateShadow = true;
 
-	protected override void DispatchDraw(Canvas? canvas)
+	protected override void DispatchDraw(Canvas canvas)
 	{
 		if (Elevation > 0)
 		{
@@ -32,7 +32,7 @@ partial class ElevatedView
 		}
 
 		// Draw children
-		base.DispatchDraw(canvas);
+		base.DispatchDraw(canvas!);
 	}
 
 	private void DisposeShadow()
@@ -88,7 +88,7 @@ partial class ElevatedView
 
 				// Create the local copy of all content to draw bitmap as a
 				// bottom layer of natural canvas.
-				base.DispatchDraw(_shadowCanvas);
+				base.DispatchDraw(_shadowCanvas!);
 
 				// Get the alpha bounds of bitmap
 				var extractAlpha = _shadowBitmap!.ExtractAlpha();

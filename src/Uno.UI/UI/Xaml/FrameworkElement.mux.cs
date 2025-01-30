@@ -4,15 +4,15 @@
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private protected virtual string GetPlainText() => "";
+		internal virtual string GetPlainText() => "";
 
-		private protected static string GetStringFromObject(object pObject)
+		internal protected static string GetStringFromObject(object pObject)
 		{
 			// First, try IFrameworkElement
 			var spFrameworkElement = pObject as FrameworkElement;
@@ -46,5 +46,19 @@ namespace Windows.UI.Xaml
 			//TODO MZ: Should default to null instead of ToString?
 			return pObject.ToString() ?? null;
 		}
+
+		// Get property value from style.
+		internal bool TryGetValueFromStyle(DependencyProperty dp, out object value)
+		{
+			Style activeStyle = GetActiveStyle();
+			if (activeStyle is not null)
+			{
+				return activeStyle.TryGetPropertyValue(dp, out value, this);
+			}
+
+			value = null;
+			return false;
+		}
+
 	}
 }

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Helpers
 {
@@ -18,7 +18,7 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		/// <param name="frame">The frame used for navigation</param>
 		/// /// <returns><see cref="PageStackEntry"/></returns>
-		public static PageStackEntry? GetCurrentEntry(Frame? frame) => frame?.CurrentEntry;
+		public static PageStackEntry? GetCurrentEntry(Frame? frame) => frame?.GetCurrentPageStackEntry();
 
 		/// <summary>
 		/// Returns the actual <see cref="Page"/> instance of the given <paramref name="entry"/>.

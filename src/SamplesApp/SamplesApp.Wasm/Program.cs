@@ -1,5 +1,5 @@
 ﻿using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Wasm
 {
@@ -9,6 +9,11 @@ namespace SamplesApp.Wasm
 
 		public static void Main(string[] args)
 		{
+			// Workaround a net9 nuget bug where :
+			// <Import Project="$(NuGetPackageRoot)/uno.fonts.fluent/2.6.1/buildTransitive/Uno.Fonts.Fluent.props" Condition="Exists('$(NuGetPackageRoot)/uno.fonts.fluent/2.6.1/buildTransitive/Uno.Fonts.Fluent.props')" />
+			// is not imported properly. Linux only?
+			Uno.UI.FeatureConfiguration.Font.SymbolsFont = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
+
 			// Required to allow for Puppeteer to select XAML elements in the HTML DOM.
 			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
 #if !DEBUG
@@ -18,7 +23,8 @@ namespace SamplesApp.Wasm
 			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
 #endif
 
-			Windows.UI.Xaml.Application.Start(_ => _app = new App());
+			Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+
 		}
 	}
 }

@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Toolkit.Extensions
 {
 	internal static class RectExtensions
 	{
-#if !XAMARIN && !UNO_REFERENCE_API && !NET461
+#if !HAS_UNO
 		/// <summary>
 		/// Gets the center of the rectangle.
 		/// </summary>
@@ -47,6 +48,21 @@ namespace Uno.UI.Toolkit.Extensions
 				return DisplayOrientations.None;
 			}
 		}
+
+		internal static Rect InflateBy(this Rect left, Thickness right)
+		{
+			var newWidth = right.Left + left.Width + right.Right;
+			var newHeight = right.Top + left.Height + right.Bottom;
+
+			// The origin is always following the left/top
+			var newX = left.X - right.Left;
+			var newY = left.Y - right.Top;
+
+			return new Rect(newX, newY, Math.Max(newWidth, 0d), Math.Max(newHeight, 0d));
+		}
+
+		internal static Rect DeflateBy(this Rect left, Thickness right)
+			=> left.InflateBy(new Thickness(-right.Left, -right.Top, -right.Right, -right.Bottom));
 #endif
 	}
 }

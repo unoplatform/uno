@@ -1,15 +1,17 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using System.Net.Http;
 using Uno.UI.Xaml.Controls;
-using System.Threading;
-using System.Globalization;
 using Windows.Foundation;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -19,6 +21,7 @@ public partial class CoreWebView2
 	internal const string DataUriFormatString = "data:text/html;charset=utf-8;base64,{0}";
 	internal static readonly Uri BlankUri = new Uri(BlankUrl);
 
+	private readonly Dictionary<string, string> _hostToFolderMap = new();
 	private readonly IWebView _owner;
 
 	private bool _scrollEnabled = true;
@@ -28,8 +31,13 @@ public partial class CoreWebView2
 
 	internal CoreWebView2(IWebView owner)
 	{
+		HostToFolderMap = _hostToFolderMap.AsReadOnly();
 		_owner = owner;
 	}
+
+	internal IWebView Owner => _owner;
+
+	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
@@ -64,7 +72,41 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
-	internal void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage)
+	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
+	{
+		if (hostName is null)
+		{
+			throw new ArgumentNullException(nameof(hostName));
+		}
+
+		if (folderPath is null)
+		{
+			throw new ArgumentNullException(nameof(folderPath));
+		}
+
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+		}
+		else
+		{
+			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		}
+	}
+
+	public void ClearVirtualHostNameToFolderMapping(string hostName)
+	{
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.ClearVirtualHostNameToFolderMapping(hostName);
+		}
+		else
+		{
+			_hostToFolderMap.Remove(hostName);
+		}
+	}
+
+	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
 		if (requestMessage?.RequestUri is null)
 		{
@@ -113,7 +155,7 @@ public partial class CoreWebView2
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
 
-		//The nativate WebView already navigate to a blank page if no source is set.
+		//The native WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
 		UpdateFromInternalSource();
 		OnScrollEnabledChanged(_scrollEnabled);
@@ -123,6 +165,11 @@ public partial class CoreWebView2
 	{
 		_scrollEnabled = newValue;
 		_nativeWebView?.SetScrollingEnabled(newValue);
+	}
+
+	internal void OnDocumentTitleChanged()
+	{
+		DocumentTitleChanged?.Invoke(this, null);
 	}
 
 	internal void RaiseNavigationStarting(object navigationData, out bool cancel)
@@ -155,29 +202,45 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
 	{
-		Source = (uri ?? BlankUri).ToString();
+		if (shouldSetSource)
+		{
+			Source = (uri ?? BlankUri).ToString();
+		}
+
 		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
 
-	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
-
-	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
-	{
-		var args = new Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
-		UnsupportedUriSchemeIdentified?.Invoke(this, args);
-
-		handled = args.Handled;
-	}
-
 	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
 	{
 		CanGoBack = canGoBack;
 		CanGoForward = canGoForward;
-		RaiseHistoryChanged();
+	}
+
+	internal void RaiseWebMessageReceived(string message)
+	{
+		// WebMessageReceived must be called on the UI thread.
+		if (_owner.Dispatcher.HasThreadAccess)
+		{
+			WebMessageReceived?.Invoke(this, new(message));
+		}
+		else
+		{
+			_ = _owner.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => WebMessageReceived?.Invoke(this, new(message)));
+		}
+	}
+
+	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
+	{
+		var args = new Microsoft.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
+		UnsupportedUriSchemeIdentified?.Invoke(this, args);
+
+		handled = args.Handled;
 	}
 
 	internal static bool GetIsHistoryEntryValid(string url) =>
@@ -217,8 +280,16 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(html);
 		}
-		else if (_processedSource is HttpRequestMessage httpRequestMessage)
+		else if (_processedSource is global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
+			var httpRequestMessage = new HttpRequestMessage()
+			{
+				RequestUri = requestMessage.RequestUri
+			};
+			foreach (var header in requestMessage.Headers)
+			{
+				httpRequestMessage.Headers.Add(header.Key, header.Value);
+			}
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 

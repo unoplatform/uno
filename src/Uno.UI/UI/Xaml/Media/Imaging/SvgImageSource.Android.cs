@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -10,16 +11,17 @@ using Android.OS;
 using Android.Provider;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using static Android.Provider.DocumentsContract;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
@@ -32,52 +34,55 @@ partial class SvgImageSource
 	{
 		try
 		{
-			if (ResourceId.HasValue)
+			if (Stream is not null)
 			{
-				return await FetchSvgResource(ct, ResourceId.Value);
-			}
-
-			if (ResourceString is not null)
-			{
-				return await FetchSvgAssetAsync(ct, ResourceString);
-			}
-
-			if (Stream != null)
-			{
-				return await ReadFromStreamAsync(Stream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(Stream, ct);
 			}
 
 			if (!FilePath.IsNullOrEmpty())
 			{
 				using var fileStream = File.OpenRead(FilePath);
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 			}
 
-			if (AbsoluteUri != null)
+			if (AbsoluteUri is not null)
 			{
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 				if (IsContactUri(AbsoluteUri))
 				{
-					var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
-					return await ReadFromStreamAsync(stream, ct);
+					if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+					{
+						return ImageData.Empty;
+					}
+
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(stream, ct);
+				}
+
+				if (AbsoluteUri.IsLocalResource())
+				{
+					var file = await StorageFile.GetFileFromApplicationUriAsync(AbsoluteUri);
+
+					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
+					using var ioStream = fileStream.AsStream();
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
 				{
 					var filePath = await Download(ct, AbsoluteUri);
 
-					if (filePath == null)
+					if (filePath is null)
 					{
 						return ImageData.Empty;
 					}
 
-					using var fileStream = File.OpenRead(FilePath);
-					return await ReadFromStreamAsync(fileStream, ct);
+					using var fileStream = File.OpenRead(filePath.LocalPath);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 				}
 				else
 				{
-					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
-					return await ReadFromStreamAsync(imageStream, ct);
+					using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(imageStream, ct);
 				}
 			}
 
@@ -87,18 +92,6 @@ partial class SvgImageSource
 		{
 			return ImageData.FromError(ex);
 		}
-	}
 
-	private async Task<ImageData> FetchSvgResource(CancellationToken ct, int resourceId)
-	{
-		var rawResourceStream = ContextHelper.Current.Resources.OpenRawResource(resourceId);
-		return await ReadFromStreamAsync(rawResourceStream, ct);
-	}
-
-	private async Task<ImageData> FetchSvgAssetAsync(CancellationToken ct, string assetPath)
-	{
-		AssetManager assets = ContextHelper.Current.Assets;
-		using var stream = assets.Open(assetPath);
-		return await ReadFromStreamAsync(stream, ct);
 	}
 }

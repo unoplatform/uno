@@ -7,11 +7,11 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static AndroidX.RecyclerView.Widget.RecyclerView;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase
 	{

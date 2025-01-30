@@ -2,7 +2,7 @@
 
 using Silk.NET.OpenGL;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions;
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions;
 
 internal static class TypeConversionExtensions
 {

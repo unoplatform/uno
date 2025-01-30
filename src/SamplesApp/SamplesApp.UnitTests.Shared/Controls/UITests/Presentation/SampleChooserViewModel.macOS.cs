@@ -3,13 +3,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Storage;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace SampleControl.Presentation
 {
@@ -49,9 +46,6 @@ namespace SampleControl.Presentation
 				).AsTask(ct);
 			return folder;
 		}
-
-		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
-			=> (400, 400, 1280, 800);
 	}
 }
 #endif

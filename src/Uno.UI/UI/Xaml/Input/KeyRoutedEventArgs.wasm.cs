@@ -1,9 +1,9 @@
 ﻿using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input;
+
+public partial class KeyRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 {
-	public partial class KeyRoutedEventArgs : IPreventDefaultHandling
-	{
-		bool IPreventDefaultHandling.DoNotPreventDefault { get; set; }
-	}
+	/// <inheritdoc />
+	HtmlEventDispatchResult IHtmlHandleableRoutedEventArgs.HandledResult { get; set; } = HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
 }

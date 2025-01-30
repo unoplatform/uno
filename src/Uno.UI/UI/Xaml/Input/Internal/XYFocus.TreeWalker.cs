@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input
 {
@@ -35,10 +35,10 @@ namespace Uno.UI.Xaml.Input
 				return focusList;
 			}
 
-			var kidCount = collection.Length;
+			var kidCount = collection.Count;
 
 			//Iterate though every node in the tree that is focusable
-			for (uint i = 0; i < kidCount; i++)
+			for (int i = 0; i < kidCount; i++)
 			{
 				DependencyObject child = collection[i];
 

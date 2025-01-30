@@ -1,14 +1,16 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
+using Uno.Extensions;
+using Uno.UI.Composition;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class CompositionSurfaceBrush : CompositionBrush
+	public partial class CompositionSurfaceBrush : CompositionBrush, I2DTransformableObject
 	{
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
+		private Matrix3x2 _relativeTransform = Matrix3x2.Identity;
 		private Vector2 _scale;
-		private float _rotationAngleInDegrees;
 		private float _rotationAngle;
 		private Vector2 _offset;
 		private Vector2 _centerPoint;
@@ -38,13 +40,13 @@ namespace Windows.UI.Composition
 		public ICompositionSurface? Surface
 		{
 			get => _surface;
-			set => SetProperty(ref _surface, value);
+			set => SetObjectProperty(ref _surface, value);
 		}
 
 		public CompositionStretch Stretch
 		{
 			get => _stretch;
-			set => SetProperty(ref _stretch, value);
+			set => SetEnumProperty(ref _stretch, value);
 		}
 
 		public float HorizontalAlignmentRatio
@@ -56,13 +58,19 @@ namespace Windows.UI.Composition
 		public CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
 			get => _bitmapInterpolationMode;
-			set => SetProperty(ref _bitmapInterpolationMode, value);
+			set => SetEnumProperty(ref _bitmapInterpolationMode, value);
 		}
 
 		public Matrix3x2 TransformMatrix
 		{
 			get => _transformMatrix;
 			set => SetProperty(ref _transformMatrix, value);
+		}
+
+		internal Matrix3x2 RelativeTransform
+		{
+			get => _relativeTransform;
+			set => SetProperty(ref _relativeTransform, value);
 		}
 
 		public Vector2 Scale
@@ -73,8 +81,8 @@ namespace Windows.UI.Composition
 
 		public float RotationAngleInDegrees
 		{
-			get => _rotationAngleInDegrees;
-			set => SetProperty(ref _rotationAngleInDegrees, value);
+			get => (float)MathEx.ToDegree(_rotationAngle);
+			set => RotationAngle = (float)MathEx.ToRadians(value);
 		}
 
 		public float RotationAngle

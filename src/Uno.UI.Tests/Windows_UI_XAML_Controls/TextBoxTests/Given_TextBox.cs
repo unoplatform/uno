@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.TextBoxTests
 {
@@ -128,7 +128,7 @@ namespace Uno.UI.Tests.TextBoxTests
 		public void When_Multi_Line_Text_And_Not_AcceptsReturn()
 		{
 			var textBox = new TextBox();
-			Assert.AreEqual(false, textBox.AcceptsReturn);
+			Assert.IsFalse(textBox.AcceptsReturn);
 			textBox.Text = "Hello\nWorld";
 			Assert.AreEqual("Hello", textBox.Text);
 

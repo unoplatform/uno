@@ -6,10 +6,7 @@ jobs:
   displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
-  dependsOn: winui_convert_tree
-
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -18,11 +15,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -37,19 +34,17 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-install.yml
-
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
+      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net9.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build sample app (net7.0)'
+    displayName: 'Build sample app (net9.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net7.0)'
+    displayName: 'Publish Wasm Site (net9.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net7.0/dist
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/publish/wwwroot
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site-net7.0-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.artifactstagingdirectory)/site-net9.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -67,16 +62,14 @@ jobs:
   displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
 
   container: nv-bionic-wasm
 
-  pool:
-    vmImage: 'ubuntu-20.04'
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net7.0'
+    SITE_SUFFIX: 'net9.0'
 
   steps:
   - checkout: self
@@ -89,14 +82,6 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
-
   - bash: |
       set -euo pipefail
       set -x
@@ -105,7 +90,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net7.0-UWP" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net9.0-UWP" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -136,68 +121,83 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'Run WebAssembly Automated Test'
+  displayName: ' WebAssembly Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   strategy:
     matrix:
-      net7_default:
-        SITE_SUFFIX: 'net7.0-UWP'
+      net9_default:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '120s'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
-      net7_benchmarks:
-        SITE_SUFFIX: 'net7.0-UWP'
+      net9_benchmarks:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '15m'
+        IS_RUNTIME_TESTS: false
+        IS_UI_TESTS: true
 
-      net7_uwp_runtimetests_group_00:
-        SITE_SUFFIX: 'net7.0-UWP'
+      net9_uwp_runtimetests_group_00:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-      net7_uwp_runtimetests_group_01:
-        SITE_SUFFIX: 'net7.0-UWP'
+      net9_uwp_runtimetests_group_01:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-      net7_uwp_runtimetests_group_02:
-        SITE_SUFFIX: 'net7.0-UWP'
+      net9_uwp_runtimetests_group_02:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-      net7_winui_runtimetests_group_00:
-        SITE_SUFFIX: 'net7.0-WinUI'
+      net9_winui_runtimetests_group_00:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-      net7_winui_runtimetests_group_01:
-        SITE_SUFFIX: 'net7.0-WinUI'
+      net9_winui_runtimetests_group_01:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-      net7_winui_runtimetests_group_02:
-        SITE_SUFFIX: 'net7.0-WinUI'
+      net9_winui_runtimetests_group_02:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        IS_RUNTIME_TESTS: true
+        IS_UI_TESTS: false
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -212,15 +212,13 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
@@ -250,6 +248,8 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
+      # This is the first run, we don't fail if there are failed tests, or if results file is missing. We'll wait for the second run.
+      # Note: failTaskOnMissingResultsFile default is false.
       failTaskOnFailedTests: false
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
@@ -272,6 +272,8 @@ jobs:
       testRunTitle: 'WebAssembly Test Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_UI_TESTS)
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
   - task: PublishTestResults@2
@@ -281,6 +283,8 @@ jobs:
       testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
+      # This is the second run, if RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
+      failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
     condition: always()

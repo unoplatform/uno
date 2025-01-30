@@ -133,7 +133,7 @@
 					Maximum="100"
 					x:Name="LeftBorderThicknessSlider"
 					Value="{x:Bind LeftBorderThickness, Mode=TwoWay}" />
-			<Slider Header="Left:"
+			<Slider Header="Top:"
 					Minimum="0"
 					Maximum="100"
 					x:Name="TopBorderThicknessSlider"

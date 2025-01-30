@@ -10,9 +10,9 @@ using Uno.UI.Extensions;
 using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Android.App;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -162,6 +162,11 @@ namespace Uno.UI.Controls
 			// Content
 			var content = element.Content;
 			native.Title = content as string;
+			if (_contentContainer.Child != content && content is UIElement contentAsUIElement && contentAsUIElement.Parent is UIElement parent)
+			{
+				parent.RemoveChild(contentAsUIElement);
+			}
+
 			_contentContainer.Child = content as UIElement;
 			_contentContainer.VerticalAlignment = element.VerticalContentAlignment;
 			_contentContainer.HorizontalAlignment = element.HorizontalContentAlignment;

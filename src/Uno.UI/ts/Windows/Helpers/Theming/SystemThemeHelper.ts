@@ -17,7 +17,11 @@ namespace Uno.Helpers.Theming {
 
 		public static observeSystemTheme() {
 			if (!SystemThemeHelper.dispatchThemeChange) {
-				SystemThemeHelper.dispatchThemeChange = (<any>Module).mono_bind_static_method("[Uno] Uno.Helpers.Theming.SystemThemeHelper:DispatchSystemThemeChange");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChange;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			if (window.matchMedia) {

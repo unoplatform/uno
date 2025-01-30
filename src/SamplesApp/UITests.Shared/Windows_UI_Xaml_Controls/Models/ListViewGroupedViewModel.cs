@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using Uno.UI.Samples.UITests.Helpers;
 
@@ -47,7 +47,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			}
 		}
 
-		public ListViewGroupedViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewGroupedViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_rnd = new Random();
 

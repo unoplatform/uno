@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +12,7 @@ using Android.Widget;
 using Android.Util;
 using System.Collections;
 using System.Windows.Input;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
@@ -60,19 +60,6 @@ namespace Uno.UI.Controls
 			SetupItemClickListeners();
 		}
 
-#if !__ANDROID_16__
-		public override void SetColumnWidth(int columnWidth)
-		{
-			base.SetColumnWidth(columnWidth);
-			ColumnWidth = columnWidth;
-		}
-
-		public int ColumnWidth
-		{
-			get; private set;
-		}
-#endif
-
 		public IEnumerable ItemsSource
 		{
 			get { return (IEnumerable)this.GetValue(ItemsSourceProperty); }
@@ -116,7 +103,7 @@ namespace Uno.UI.Controls
 			set { BindableAdapter.ItemTemplateId = value; }
 		}
 
-		public Windows.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
+		public Microsoft.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
 		{
 			get { return BindableAdapter.ItemTemplateSelector; }
 			set { BindableAdapter.ItemTemplateSelector = value; }

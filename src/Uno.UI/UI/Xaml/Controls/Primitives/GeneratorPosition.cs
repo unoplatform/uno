@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial struct GeneratorPosition
 	{
 		public GeneratorPosition(int index, int offset) { throw new NotImplementedException(); }
 
-		public int Index { get; set; }
+		public int Index;
 
-		public int Offset { get; set; }
+		public int Offset;
 
 		public override bool Equals(object o) { throw new NotImplementedException(); }
 

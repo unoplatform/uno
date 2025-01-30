@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UIKit;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MultilineTextBoxDelegate : UITextViewDelegate
 	{
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			var bindableTextView = textView as MultilineTextBoxView;
 			bindableTextView?.OnTextChanged();
 
-			if (_textBox.GetTarget() is TextBox textBox && textBox.FocusState != FocusState.Unfocused)
+			if (_textBox.GetTarget() is TextBox { FocusState: not FocusState.Unfocused, IsKeepingFocusOnEndEditing: false } textBox)
 			{
 				textBox.Unfocus();
 			}

@@ -1,10 +1,17 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿// MUX Reference Button_Partial.cpp, tag winui3/release/1.4.2
 
-namespace Windows.UI.Xaml.Controls
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{
+		// TODO Uno: Uncomment this code and all commented out code related to this field once we know where
+		// to call SuppressFlyoutOpening method.
+		// private bool _suppressFlyoutOpening;
+
 		/// <summary>
 		/// Change to the correct visual state for the button.
 		/// </summary>
@@ -72,12 +79,51 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>Automation peer.</returns>
 		protected override AutomationPeer OnCreateAutomationPeer() => new ButtonAutomationPeer(this);
 
+		//protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+		//{
+		//	_suppressFlyoutOpening = false;
+		//	base.OnPointerCanceled(e);
+		//}
+
+		//protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
+		//{
+		//	_suppressFlyoutOpening = false;
+		//	base.OnPointerCaptureLost(args);
+		//}
+
+		//protected override void OnPointerExited(PointerRoutedEventArgs e)
+		//{
+		//	_suppressFlyoutOpening = false;
+		//	base.OnPointerExited(e);
+		//}
+
 		/// <summary>
 		/// In case if Button has set Flyout property, get associated Flyout and open it next to this Button.
 		/// </summary>
-		private protected virtual void OpenAssociatedFlyout() => Flyout?.ShowAt(this);
+		private protected virtual void OpenAssociatedFlyout()
+		{
+			//using var guard = Disposable.Create(() => _suppressFlyoutOpening = false);
 
-		// TODO Uno: Keyboard accelerators not supported yet.
-		//private void OnProcessKeyboardAcceleratorsImplLocal()
+			//if (!_suppressFlyoutOpening)
+			{
+				Flyout?.ShowAt(this);
+			}
+		}
+
+		internal void OnProcessKeyboardAcceleratorsImplLocal(ProcessKeyboardAcceleratorEventArgs args)
+		{
+			var spButtonFlyout = Flyout;
+			if (spButtonFlyout is null)
+			{
+				return;
+			}
+
+			spButtonFlyout.TryInvokeKeyboardAccelerator(args);
+		}
+
+		//internal void SuppressFlyoutOpening()
+		//{
+		//	_suppressFlyoutOpening = true;
+		//}
 	}
 }

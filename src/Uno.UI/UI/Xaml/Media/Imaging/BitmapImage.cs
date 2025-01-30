@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
@@ -36,6 +36,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if UNO_REFERENCE_API
 			InvalidateSource();
 #endif
+			InvalidateImageSource();
 		}
 
 		#endregion
@@ -120,11 +121,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public BitmapImage(Uri uriSource) : base(uriSource)
 		{
 			UriSource = uriSource;
-		}
-
-		internal BitmapImage(string stringSource) : base(stringSource)
-		{
-			UriSource = AbsoluteUri ?? TryCreateUriFromString(stringSource);
 		}
 
 		public BitmapImage() { }

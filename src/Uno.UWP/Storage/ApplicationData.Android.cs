@@ -1,4 +1,3 @@
-#if __ANDROID__
 using System;
 using System.IO;
 
@@ -29,4 +28,3 @@ namespace Windows.Storage
 					"with the Windows.UI.Xaml.NativeApplication.AppBuilder delegate.");
 	}
 }
-#endif

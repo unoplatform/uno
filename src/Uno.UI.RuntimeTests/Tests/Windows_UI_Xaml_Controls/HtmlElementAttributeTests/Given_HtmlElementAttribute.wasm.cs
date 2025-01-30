@@ -1,15 +1,14 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.WebAssembly;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HtmlElementAttributeTests
 {
 	[TestClass]
-	class Given_HtmlElementAttribute
+	public class Given_HtmlElementAttribute
 	{
 		[TestMethod]
 		public void Given_TagOverride()
@@ -26,4 +25,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HtmlElementAttribut
 
 	}
 }
-#endif

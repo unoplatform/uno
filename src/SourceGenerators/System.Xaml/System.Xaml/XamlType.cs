@@ -30,9 +30,11 @@ using System.Windows.Markup;
 using Uno.Xaml.Schema;
 using System.Xml.Serialization;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Xaml
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlType : IEquatable<XamlType>
 	{
 		public XamlType (Type underlyingType, XamlSchemaContext schemaContext)
@@ -794,7 +796,7 @@ namespace Uno.Xaml
 			return a != null && a.Usable;
 		}
 
-#if NET461
+#if IS_UNIT_TESTS
 		static XamlValueConverter<ValueSerializer> string_value_serializer;
 #endif
 
@@ -808,7 +810,7 @@ namespace Uno.Xaml
 			if (provider == null)
 				return null;
 
-#if NET461
+#if IS_UNIT_TESTS
             var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
 			if (a != null)
 				return new XamlValueConverter<ValueSerializer> (a.ValueSerializerType ?? Type.GetType (a.ValueSerializerTypeName), targetType);

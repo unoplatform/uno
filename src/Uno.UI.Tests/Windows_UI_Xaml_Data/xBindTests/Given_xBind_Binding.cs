@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -412,8 +412,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var myTextBlock = SUT.FindName("myTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
-			var myTextBlock2 = SUT.FindName("myTextBlock2") as Windows.UI.Xaml.Controls.TextBlock;
+			var myTextBlock = SUT.FindName("myTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var myTextBlock2 = SUT.FindName("myTextBlock2") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual("v:0 p:test", myTextBlock.Text);
 			Assert.AreEqual("v:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.Binding_Converter_DataTempate_Model p:test", myTextBlock2.Text);
@@ -910,11 +910,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.TopLevelVisiblity = true;
 
-			Assert.IsNotNull(SUT.topLevelContent);
-			Assert.IsNotNull(SUT.innerTextBlock);
-			Assert.AreEqual("My inner text", SUT.innerTextBlock.Text);
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
+			Assert.IsNull(SUT.topLevelContent);
+			Assert.IsNull(SUT.innerTextBlock);
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.IsNotNull(SUT.topLevelContent);
+			Assert.IsNotNull(SUT.innerTextBlock);
 			Assert.AreEqual(Visibility.Visible, topLevelContent.Visibility);
 
 			SUT.InnerText = "Updated !";
@@ -946,15 +948,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			data.TopLevelVisiblity = true;
 
-			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
 
+			// Calling FindName on an element inside a lazy-loaded element won't materialize the lazy-loaded element
 			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
-			Assert.IsNotNull(innerTextBlock);
-			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.IsNull(innerTextBlock);
 
 			data.TopLevelVisiblity = false;
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
+			Assert.IsNotNull(innerTextBlock);
+			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
 
@@ -1356,6 +1364,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(42, SUT.tb1.Tag);
 			Assert.AreEqual("TextBlockTag", SUT.tb3.Tag);
 			Assert.AreEqual("Formatted TextBlockTag", SUT.tb4.Tag);
+			Assert.AreEqual("Hello World!!!", SUT.tb5.Text);
 		}
 
 		[TestMethod]
@@ -1458,6 +1467,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("Updated1", SUT.tbList2.Text);
 			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_XBind_In_ResourceDictionary()
+		{
+			var SUT = new XBind_ResourceDictionary_Control();
+			SUT.ForceLoaded();
+
+			Assert.IsTrue(SUT.ElementLoadedInvoked);
 		}
 
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class

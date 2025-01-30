@@ -1,8 +1,10 @@
-﻿using Private.Infrastructure;
+﻿using System.Drawing;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 
@@ -13,14 +15,19 @@ public class Given_BitmapIcon
 	[TestMethod]
 	public async Task When_Themed()
 	{
-		var textBlock = new TextBlock() { Text = "test" };
-		var bitmapIcon = new BitmapIcon() { UriSource = new System.Uri("ms-appx:///Assets/Icons/search.png") };
+		var textBlock = new TextBlock()
+		{
+			Text = "test"
+		};
+		var bitmapIcon = new BitmapIcon()
+		{
+			UriSource = new System.Uri("ms-appx:///Assets/Icons/search.png")
+		};
 		var stackPanel = new StackPanel()
 		{
 			Children =
 			{
-				textBlock,
-				bitmapIcon
+				textBlock, bitmapIcon
 			}
 		};
 		TestServices.WindowHelper.WindowContent = stackPanel;
@@ -39,11 +46,55 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_Fluent()
+	public async Task When_Themed_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed();
+	}
+
+	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
+	public async Task When_Foreground_Set_With_ShowAsMonochrome_False()
+	{
+		var bitmapIcon = new BitmapIcon()
 		{
-			await When_Themed();
-		}
+			Width = 50,
+			Height = 50,
+			ShowAsMonochrome = false,
+			UriSource = new System.Uri("ms-appx:///Assets/Icons/search.png"),
+			Foreground = new SolidColorBrush(Colors.Green)
+		};
+
+		TestServices.WindowHelper.WindowContent = bitmapIcon;
+		await TestServices.WindowHelper.WaitForLoaded(bitmapIcon);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Foreground is ignored when ShowAsMonochrome is false
+		var sc = await UITestHelper.ScreenShot(bitmapIcon);
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Green);
+	}
+
+	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
+	public async Task When_Foreground_Set_With_ShowAsMonochrome_True()
+	{
+		var bitmapIcon = new BitmapIcon
+		{
+			Width = 50,
+			Height = 50,
+			ShowAsMonochrome = true,
+			UriSource = new System.Uri("ms-appx:///Assets/image.png"),
+			Foreground = new SolidColorBrush(Colors.Green)
+		};
+
+		await UITestHelper.Load(bitmapIcon);
+
+		var sc = await UITestHelper.ScreenShot(bitmapIcon);
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 255, 255, 255));
 	}
 }

@@ -168,9 +168,9 @@ The next steps will show how migrate the Silverlight styles to work in the Uno a
 
 1. Right-click the new **Resources** folder, select **Add &gt; New Item**, select **Resource Dictionary** and name it **Styles.xaml**.
 
-    To ensure the resource dictionary is loaded, it must be added to **AppResources.xaml**.
+    To ensure the resource dictionary is loaded, it must be added to **App.xaml**.
 
-1. Open **AppResources.xaml** and the reference to the **Styles.xaml** as shown below:
+1. Open **App.xaml** and the reference to the **Styles.xaml** as shown below:
 
     ```xml
     <Application.Resources>
@@ -268,7 +268,7 @@ The next steps will show how migrate the Silverlight styles to work in the Uno a
     > [!TIP]
     > You can learn more about the available XAML theme resources here:
     >
-    > * [XAML theme resources](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
+    > * [XAML theme resources](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
 
 1. To add the **HomeNavButtonsBackground** style using the **SystemAccentColor** resource, insert the following below the **ContentPanelBackground** definition:
 
@@ -367,7 +367,7 @@ As mentioned earlier, the navigation implementation differs between Silverlight 
     > [!TIP]
     > You can learn more about the UWP page class here:
     >
-    > * [Page class](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Page)
+    > * [Page class](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Page)
 
 1. Update the remaining two **HyperlinkButton** declarations to use **Click** events and add the methods to the code-behind:
 

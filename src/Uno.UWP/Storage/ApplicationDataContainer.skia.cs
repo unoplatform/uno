@@ -2,11 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
 
@@ -21,37 +18,16 @@ namespace Windows.Storage
 
 		private class FilePropertySet : IPropertySet
 		{
-			private const string UWPFileName = ".UWPAppSettings";
-			private readonly Dictionary<string, string> _values = new Dictionary<string, string>();
+			private readonly Dictionary<string, string> _values = new();
 			private readonly string _folderPath;
 			private readonly string _filePath;
 
 			public FilePropertySet(ApplicationData owner, ApplicationDataLocality locality)
 			{
-				StorageFolder folder;
-				switch (locality)
-				{
-					case ApplicationDataLocality.Local:
-						folder = owner.LocalFolder;
-						break;
+				var settingsFolderPath = owner.GetSettingsFolderPath();
 
-					case ApplicationDataLocality.Roaming:
-						folder = owner.RoamingFolder;
-						break;
-					case ApplicationDataLocality.LocalCache:
-						folder = owner.LocalCacheFolder;
-						break;
-
-					case ApplicationDataLocality.Temporary:
-						folder = owner.TemporaryFolder;
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(locality));
-				}
-
-				_folderPath = folder.Path;
-				_filePath = Path.Combine(folder.Path, UWPFileName);
+				_folderPath = settingsFolderPath;
+				_filePath = Path.Combine(settingsFolderPath, $"{locality}.dat");
 
 				ReadFromFile();
 			}
@@ -159,7 +135,7 @@ namespace Windows.Storage
 				=> _values.Keys;
 
 			public ICollection<object> Values
-				=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
+				=> _values.Values.Select(DataTypeSerializer.Deserialize).Where(item => item is not null).Select(item => item!).ToList();
 
 			public int Count
 				=> _values.Count;

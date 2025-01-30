@@ -1,10 +1,6 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -13,7 +9,13 @@
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.Skia.Gtk</AssemblyName>
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.Gtk</RootNamespace>
-		<IsPackable>false</IsPackable>
+
+		<!-- Don't install GTK at this step, let the app head do it -->
+		<SkipGtkInstall>true</SkipGtkInstall>
+
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MediaPlayer.Skia.Gtk</PackageId>
+		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+Gtk apps</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -27,13 +29,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="PolySharp" Version="1.13.2">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-		<PackageReference Include="LibVLCSharp" Version="3.6.8" />
+		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,9 +48,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MediaPlayer.Skia.Gtk\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.mediaplayer.skia.gtk\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

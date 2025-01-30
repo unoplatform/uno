@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Text))]
 	public partial class Run : Inline
 	{
 		#region Text Dependency Property
@@ -64,6 +64,13 @@ namespace Windows.UI.Xaml.Documents
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
+		}
+
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
 			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}

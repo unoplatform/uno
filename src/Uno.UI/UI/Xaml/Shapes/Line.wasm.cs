@@ -1,44 +1,51 @@
 ﻿using System;
 using Uno.Extensions;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Line
 	{
-		private readonly SvgElement _line = new SvgElement("line");
-
-		partial void InitializePartial()
+		public Line() : base("line")
 		{
-			SvgChildren.Add(_line);
-
-			InitCommonShapeProperties();
 		}
 
-		protected override SvgElement GetMainSvgElement()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			return _line;
+			WindowManagerInterop.SetSvgLineAttributes(_mainSvgElement.HtmlId, X1, X2, Y1, Y2);
+
+			return MeasureAbsoluteShape(availableSize, this);
 		}
 
-		partial void OnX1PropertyChangedPartial(double oldValue, double newValue)
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			_line.SetAttribute("x1", newValue.ToStringInvariant());
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
 		}
 
-		partial void OnX2PropertyChangedPartial(double oldValue, double newValue)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			_line.SetAttribute("x2", newValue.ToStringInvariant());
+			base.OnPropertyChanged2(args);
+
+			// invalidate cache key if dp of interests changed
+			if (_bboxCacheKey != null && (
+				args.Property == X1Property ||
+				args.Property == Y1Property ||
+				args.Property == X2Property ||
+				args.Property == Y2Property
+			))
+			{
+				_bboxCacheKey = null;
+			}
 		}
 
-		partial void OnY1PropertyChangedPartial(double oldValue, double newValue)
-		{
-			_line.SetAttribute("y1", newValue.ToStringInvariant());
-		}
-
-		partial void OnY2PropertyChangedPartial(double oldValue, double newValue)
-		{
-			_line.SetAttribute("y2", newValue.ToStringInvariant());
-		}
+		private protected override string GetBBoxCacheKeyImpl() => string.Join(',',
+			"line",
+			X1.ToStringInvariant(), Y1.ToStringInvariant(),
+			X2.ToStringInvariant(), Y2.ToStringInvariant()
+		);
 	}
 }

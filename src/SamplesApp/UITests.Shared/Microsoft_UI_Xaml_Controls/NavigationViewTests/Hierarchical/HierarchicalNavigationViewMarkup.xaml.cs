@@ -3,14 +3,14 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemExpandingEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs;
-using NavigationViewItemCollapsedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemCollapsedEventArgs;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemExpandingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs;
+using NavigationViewItemCollapsedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemCollapsedEventArgs;
+using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 

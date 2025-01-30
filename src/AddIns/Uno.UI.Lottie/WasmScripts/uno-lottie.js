@@ -16,6 +16,15 @@ var Uno;
                 });
                 return "ok";
             }
+            static setAnimationPropertiesNative(id, path, autoplay, stretch, rate, cacheKey, data) {
+                if (data === undefined) {
+                    Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey });
+                }
+                else {
+                    const animationData = data !== null ? JSON.parse(data) : null;
+                    Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey }, animationData);
+                }
+            }
             static stop(elementId) {
                 Lottie.withPlayer(p => {
                     const a = Lottie._runningAnimations[elementId].animation;
@@ -199,7 +208,7 @@ var Uno;
                         return;
                     }
                     const dependencyToLoad = "/lottie";
-                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad));
+                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad) || d.endsWith(dependencyToLoad + ".js"));
                     require([lottieDependencyName], (p) => {
                         if (!p) {
                             console.error("Unable to load lottie player.");

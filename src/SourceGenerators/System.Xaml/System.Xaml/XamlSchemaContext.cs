@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -43,8 +44,11 @@ namespace Uno.Xaml
 	// it registers AssemblyLoaded event on CurrentDomain when it should
 	// reflect dynamic in-scope asemblies.
 	// It should be released at finalizer.
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlSchemaContext
 	{
+		private static readonly char[] _semicolonArray = new char[] { ';' };
 		public XamlSchemaContext ()
 			: this (null, null)
 		{
@@ -410,7 +414,7 @@ namespace Uno.Xaml
 			}
 
 			// convert xml namespace to clr namespace and assembly
-			string [] split = ns.Split (new char[] { ';' });
+			string [] split = ns.Split (_semicolonArray);
 			if (split.Length != 2 || split [0].Length < clr_ns_len || split [1].Length <= clr_ass_len)
 				throw new XamlParseException (string.Format (CultureInfo.InvariantCulture, "Cannot resolve runtime namespace from XML namespace '{0}'", ns));
 			string tns = split [0].Substring (clr_ns_len);

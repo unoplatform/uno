@@ -18,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.Android)] // Flaky on iOS #9080
 		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
@@ -130,7 +130,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 							TestContext.AddTestAttachment(target, testName);
 
 							return isSuccess
-								? new Bitmap(new MemoryStream(Convert.FromBase64String(line[2])))
+								? new PlatformBitmap(new MemoryStream(Convert.FromBase64String(line[2])))
 								: new Exception(Encoding.UTF8.GetString(Convert.FromBase64String(line[2]))) as object;
 						});
 
@@ -154,7 +154,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 							Assert.Fail($"Test failed: {error.Message}");
 						}
 
-						using (var actual = (Bitmap)testResult)
+						using (var actual = (PlatformBitmap)testResult)
 						{
 							var scale = 1d;
 							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);

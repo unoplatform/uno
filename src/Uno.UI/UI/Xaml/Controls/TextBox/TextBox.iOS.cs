@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.System;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
 using Foundation;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
@@ -90,6 +91,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets whether the focus should be kept on the TextBox when the user taps outside of it.
+		/// </summary>
+		/// <remarks>
+		/// In some cases, like when the TextBox is inside an <see cref="AutoSuggestBox"/>,
+		/// the focus must be kept on the TextBox when making a selection.
+		/// </remarks>
+		/// Fix issue # https://github.com/unoplatform/uno/issues/11961
+		internal bool IsKeepingFocusOnEndEditing { get; set; }
+
 		private void UpdateTextBoxView()
 		{
 			if (_contentElement != null)
@@ -125,7 +136,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
+			// TODO: include modifier info
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey(), VirtualKeyModifiers.None)
 			{
 				CanBubbleNatively = true
 			};
@@ -202,9 +214,13 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
-			if (!IsTextPredictionEnabledErrorMessageShown)
+			if (newValue != IsSpellCheckEnabled && !IsTextPredictionEnabledErrorMessageShown)
 			{
-				this.Log().Warn("IsTextPredictionEnabled isn't supported on iOS. Use IsSpellCheckeEnabled instead.");
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("IsTextPredictionEnabled isn't supported on iOS. Use IsSpellCheckEnabled instead.");
+				}
+
 				IsTextPredictionEnabledErrorMessageShown = true;
 			}
 		}
@@ -297,7 +313,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 
-		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? UIReturnKeyType.Search

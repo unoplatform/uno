@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #pragma warning disable CS0168 // Disable TestCleanupWrapper warnings
@@ -9,27 +9,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Tests.Common;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using CalendarView = Windows.UI.Xaml.Controls.CalendarView;
+using CalendarView = Microsoft.UI.Xaml.Controls.CalendarView;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
 using Uno.UI.RuntimeTests;
 
-namespace Windows.UI.Xaml.Tests.Enterprise
+namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
@@ -41,13 +41,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -99,27 +99,27 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				var cv = new CalendarView();
 				VERIFY_ARE_EQUAL(cv.NumberOfWeeksInView, 6);
-				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, Windows.Globalization.DayOfWeek.Sunday);
+				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, global::Windows.Globalization.DayOfWeek.Sunday);
 				VERIFY_ARE_EQUAL(cv.SelectionMode, CalendarViewSelectionMode.Single);
 
 				VERIFY_ARE_EQUAL(cv.DisplayMode, CalendarViewDisplayMode.Month);
 				VERIFY_ARE_EQUAL(cv.IsTodayHighlighted, true);
 				VERIFY_ARE_EQUAL(cv.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cv.IsGroupLabelVisible, false);
-				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
-				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Windows.UI.Text.FontWeights.SemiBold.Weight);
+				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Microsoft.UI.Text.FontWeights.SemiBold.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontSize, 20.0);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 
-				Windows.Globalization.Calendar calendar = new Windows.Globalization.Calendar();
+				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
 
 				calendar.AddYears(-100);
@@ -504,7 +504,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// on desktop, move the mouse away to avoid hover state.
 			LOG_OUTPUT("Moving mouse to prevent hover state on phone.");
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			await WindowHelper.WaitForIdle();
 			LOG_OUTPUT("Release successful.");
@@ -1518,8 +1518,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			// the first day item is on Saturday, when we change FirstDayOfWeek from Sunday (0) to Saturday (6), the col of first item will be from 6 to 0
 			for (int i = 0; i < 7; i++)
 			{
-				Windows.Globalization.DayOfWeek dayofWeek =
-					(Windows.Globalization.DayOfWeek)((int)(Windows.Globalization.DayOfWeek.Sunday) + i);
+				global::Windows.Globalization.DayOfWeek dayofWeek =
+					(global::Windows.Globalization.DayOfWeek)((int)(global::Windows.Globalization.DayOfWeek.Sunday) + i);
 
 				await RunOnUIThread(() =>
 				{
@@ -1769,7 +1769,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				firstItem.Focus(FocusState.Programmatic);
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1822,8 +1822,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1832,7 +1832,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence(
+			await TestServices.KeyboardHelper.PressKeySequence(
 				"$d$_left#$u$_left#$d$_left#$u$_left#$d$_left#$u$_left#$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
@@ -1842,7 +1842,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1851,7 +1851,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 			});
 
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1860,7 +1860,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 7)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1870,7 +1870,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1879,7 +1879,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1888,7 +1888,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1897,7 +1897,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 			// sometime the following right key press event is not handled by App, can't repro this issue locally with or without stress.
 			// try an additional UpdateLayout to see if it helps.
 			await RunOnUIThread(() =>
@@ -1905,7 +1905,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.UpdateLayout();
 			});
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1915,7 +1915,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 31)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1925,7 +1925,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2045,7 +2045,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestCanTryToNavigateOutOfBoundary()
 		{
 			TestCleanupWrapper cleanup;
@@ -2089,7 +2089,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2101,7 +2101,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2112,7 +2112,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2122,7 +2122,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2218,7 +2218,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 
 				// tab out
-				TestServices.KeyboardHelper.Tab();
+				await TestServices.KeyboardHelper.Tab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2227,7 +2227,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				});
 
 				// shift tab back
-				TestServices.KeyboardHelper.ShiftTab();
+				await TestServices.KeyboardHelper.ShiftTab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2236,7 +2236,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				});
 
 				// shift tab out
-				TestServices.KeyboardHelper.ShiftTab();
+				await TestServices.KeyboardHelper.ShiftTab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2245,7 +2245,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				});
 
 				// tab back
-				TestServices.KeyboardHelper.Tab();
+				await TestServices.KeyboardHelper.Tab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2256,7 +2256,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestSpaceEnterTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -2302,7 +2302,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2313,7 +2313,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2324,7 +2324,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2335,7 +2335,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			// right, ctrl + down - > to select year 2015 and switch back to Year mode
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2346,7 +2346,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			// right, ctrl + down - > to select month Feburary and switch back to month mode
 			// we should on 2/28/2015
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2358,7 +2358,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + down . nothing should happen
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2569,7 +2569,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 						await RunOnUIThread(() =>
 						{
 							var distance = scrollViewer.TransformToVisual(calendarPanel)
-								.TransformPoint(new Windows.Foundation.Point(0, 0));
+								.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 							distance.Y -= (float)(itemTopMargin);
 							LOG_OUTPUT("actual position %f, expected %f", distance.Y,
 								itemHeight * testData.snapPoints[i]);
@@ -2584,6 +2584,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __SKIA__
+		[Ignore("Currently flaky on Skia, part of #9080 epic")]
 #endif
 		public async Task CanChangeDisplayModeBeforeLoaded()
 		{
@@ -3140,11 +3143,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				cv.SelectedForeground = new SolidColorBrush(Windows.UI.Colors.Red);
-				cv.BorderThickness = ThicknessHelper.FromUniformLength(3);
+				cv.SelectedForeground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				cv.BorderThickness = new Thickness(3);
 				cv.HorizontalDayItemAlignment = HorizontalAlignment.Left;
 				cv.HorizontalFirstOfMonthLabelAlignment = HorizontalAlignment.Right;
-				cv.CalendarItemBorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow);
+				cv.CalendarItemBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -3294,7 +3297,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task CanChangeDecadeCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Decade);
@@ -3308,7 +3311,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			var helper = new CalendarHelper.CalendarViewHelper();
 			CalendarView cv = await helper.GetCalendarView();
 			rootPanel = await CalendarHelper.CreateTestResources();
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 			var today = defaultCalendar.GetDateTime();
 
 			//TestServices.WindowHelper.SetWindowSizeOverride(wf.Count(400, 400));
@@ -3321,7 +3324,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				// set MinDate/MaxDate to the maximium range that calendar can support.
 				cv.CalendarIdentifier = cid;
-				var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+				var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 					defaultCalendar.GetClock());
 				cal.SetToMin();
 				cv.MinDate = cal.GetDateTime();
@@ -3357,13 +3360,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			// press Right once, Left twice,
 			// press PgDn once, PgUp twice
 
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Up();
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_left#$u$_left#$d$_left#$u$_left");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_left#$u$_left#$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown#$d$_pageup#$u$_pageup#$d$_pageup#$u$_pageup");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown#$d$_pageup#$u$_pageup#$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 
 			await RunOnUIThread(() =>
@@ -3387,13 +3390,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			// press Left once, Right twice,
 			// press PgUp once, PgDown twice
 
-			TestServices.KeyboardHelper.Up();
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left#$d$_right#$u$_right#$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left#$d$_right#$u$_right#$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence(
+			await TestServices.KeyboardHelper.PressKeySequence(
 				"$d$_pageup#$u$_pageup#$d$_pagedown#$u$_pagedown#$d$_pagedown#$u$_pagedown");
 			await WindowHelper.WaitForIdle();
 
@@ -3765,7 +3768,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				VERIFY_ARE_VERY_CLOSE(distance.Y, 0, 1.0, "distance.Y 1");
 			});
 
@@ -3780,7 +3783,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var itemHeight = firstItem.ActualHeight;
 				var itemMargin = firstItem.Margin;
 				itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3873,7 +3876,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 						"Tapped on the first yearitem Jan/2000, we should go back to month mode and dayitem 1/20/2000 should be focused.");
 					CalendarHelper.CheckFocusedItem();
 					var distance = monthScrollViewer.TransformToVisual(monthPanel)
-						.TransformPoint(new Windows.Foundation.Point(0, 0));
+						.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 					var itemHeight = firstItem.ActualHeight;
 					var itemMargin = firstItem.Margin;
 					itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3928,8 +3931,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				cv.DayItemFontFamily = new Media.FontFamily("Segoe UI Symbol");
 				cv.DayItemFontSize = 50;
-				cv.DayItemFontStyle = Windows.UI.Text.FontStyle.Italic;
-				cv.DayItemFontWeight = Windows.UI.Text.FontWeights.ExtraBold;
+				cv.DayItemFontStyle = global::Windows.UI.Text.FontStyle.Italic;
+				cv.DayItemFontWeight = Microsoft.UI.Text.FontWeights.ExtraBold;
 				cv.UpdateLayout();
 
 				actualHeight = dayItem.ActualHeight;
@@ -4046,7 +4049,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = firstVisibleItem.TransformToVisual(scrollViewer).TransformPoint(origin);
 				LOG_OUTPUT("actual position of display date is (%f, %f)., expected (1, 1)", itemPos.X, itemPos.Y);
 
@@ -4172,10 +4175,10 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.DayItemFontSize = 25;
 				cv.FirstOfMonthLabelFontSize = 20;
 				cv.IsGroupLabelVisible = true;
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Thursday;
-				cv.OutOfScopeBackground = new SolidColorBrush(Windows.UI.Colors.Red);
-				cv.CalendarItemBackground = new SolidColorBrush(Windows.UI.Colors.Blue);
-				cv.SelectedBorderBrush = new SolidColorBrush(Windows.UI.Colors.White);
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Thursday;
+				cv.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				cv.CalendarItemBackground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
+				cv.SelectedBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.White);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -4202,14 +4205,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				// half transparent green background will be drawn on below Red background
 				dayDec31.Background =
-					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 				dayJan1.Background =
-					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 
 				ColorCollection colors = new ColorCollection();
 				for (int i = 0; i < 8; i++)
 				{
-					colors.Add(Windows.UI.Colors.Yellow);
+					colors.Add(Microsoft.UI.Colors.Yellow);
 				}
 
 				dayDec31.SetDensityColors(colors);
@@ -4277,7 +4280,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				var yearScrollViewer = ScrollViewer(helper.GetTemplateChild("YearViewScrollViewer"));
 				var headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 				var offset = yearPanel.TransformToVisual(yearScrollViewer)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2050");
@@ -4291,7 +4294,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				cv.UpdateLayout();
 				cv.DisplayMode = CalendarViewDisplayMode.Year;
 				cv.UpdateLayout();
-				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new Windows.Foundation.Point(0, 0));
+				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2000");
@@ -4586,7 +4589,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 
 			await WindowHelper.WaitForIdle();
 
@@ -4599,7 +4602,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				VERIFY_ARE_EQUAL(focusedElement, itemJan30);
 
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = focusedElement.TransformToVisual(scrollViewer).TransformPoint(origin);
 
 				var itemHeight = FrameworkElement(focusedElement).ActualHeight;
@@ -4608,7 +4611,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 				itemHeight += margin.Top + margin.Bottom;
 
-				Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
+				global::Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
 				LOG_OUTPUT("actual position of Jan30 is (%f, %f)., expected (%f, %f)", itemPos.X, itemPos.Y,
 					expectedPos.X, expectedPos.Y);
 
@@ -4766,7 +4769,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await RunOnUIThread(() =>
 				{
 					CalendarViewDayItem lastItem;
-					Windows.Foundation.Rect layoutSlot;
+					global::Windows.Foundation.Rect layoutSlot;
 					int lastIndex = monthPanel.Children.Count;
 
 					// find the last realized item. The realized item's layout slot will
@@ -4820,7 +4823,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				cv.MinDate = ConvertToDateTime(1, 2011, 12, 31); // Saturday
 				cv.MaxDate = ConvertToDateTime(1, 2012, 1, 2); // Monday
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Saturday;
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Saturday;
 			});
 
 			await WindowHelper.WaitForIdle();
@@ -4910,7 +4913,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "5"); //Today+Hover
 																										 // move mouse away to avoid any unexpected hover state.
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			TestServices.InputHelper.DynamicPressCenter(todayItem, 0, 0, PointerFinger.Finger1);
 
@@ -5128,7 +5131,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Windows.UI.Color newColor = Windows.UI.Colors.Red;
+			global::Windows.UI.Color newColor = Microsoft.UI.Colors.Red;
 
 			Button flyoutButton = null;
 			Flyout flyout = null;
@@ -5224,7 +5227,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 
 			(CalendarViewDisplayMode displayMode, string panelName, string scrollViewerName)[] modes = {
 				(
@@ -5270,7 +5273,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 					// set the limits from current calendaridentifier on CalendarView.
 					cv.CalendarIdentifier = cid;
-					var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+					var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 						defaultCalendar.GetClock());
 
 					cal.SetToMin();
@@ -5528,6 +5531,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if !__SKIA__
+		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanScrollAcrossJapaneseEraOnMonthView()
 		{
 			TestCleanupWrapper cleanup;
@@ -5564,6 +5570,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if !__SKIA__
+		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanScrollAcrossJapaneseEraOnYearView()
 		{
 			TestCleanupWrapper cleanup;
@@ -5772,11 +5781,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		static LinearGradientBrush MakeLinearGradientBrush(float startX, float endX)
 		{
 			GradientStop stop1 = new GradientStop();
-			stop1.Color = Windows.UI.Colors.Green;
+			stop1.Color = Microsoft.UI.Colors.Green;
 			stop1.Offset = 0.2;
 
 			GradientStop stop2 = new GradientStop();
-			stop2.Color = Windows.UI.Colors.Red;
+			stop2.Color = Microsoft.UI.Colors.Red;
 			stop2.Offset = 0.8;
 
 			GradientStopCollection stopCollection = new GradientStopCollection();
@@ -5784,8 +5793,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			stopCollection.Add(stop2);
 
 			LinearGradientBrush brush = new LinearGradientBrush();
-			brush.StartPoint = new Windows.Foundation.Point(startX, 0);
-			brush.EndPoint = new Windows.Foundation.Point(endX, 0);
+			brush.StartPoint = new global::Windows.Foundation.Point(startX, 0);
+			brush.EndPoint = new global::Windows.Foundation.Point(endX, 0);
 			brush.GradientStops = stopCollection;
 			return brush;
 		}

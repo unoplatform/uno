@@ -10,11 +10,26 @@ namespace Uno.UI.Media {
 		}
 
 		public static getCurrentPosition(htmlId: number): number {
-			return document.getElementById(htmlId.toString()).currentTime;
+			const element = document.getElementById(htmlId);
+			if (element !== null && element !== undefined) {
+				return element.currentTime;
+			} else {
+				return 0;
+			}
+		}
+
+		public static getPaused(htmlId: number): number {
+			const element = document.getElementById(htmlId);
+			if (element !== null && element !== undefined) {
+				return element.paused;
+			}
 		}
 
 		public static setCurrentPosition(htmlId: number, currentTime: number) {
-			document.getElementById(htmlId.toString()).currentTime = currentTime;
+			const element = document.getElementById(htmlId);
+			if (element !== null && element !== undefined) {
+				element.currentTime = currentTime;
+			}
 		}
 
 		public static setAttribute(htmlId: number, name: string, value: string) {
@@ -53,7 +68,7 @@ namespace Uno.UI.Media {
 				|| elem.webkitRequestFullscreen
 				|| elem.mozRequestFullScreen
 				|| elem.msRequestFullscreen;
-			fullscreen.call(elem); 
+			fullscreen.call(elem);
 		}
 
 		public static exitFullScreen() {
@@ -63,6 +78,27 @@ namespace Uno.UI.Media {
 				|| document.webkitExitFullscreen
 				|| document.msExitFullscreen
 			closeFullScreen.call(document);
+		}
+
+		public static requestPictureInPicture(htmlId: number) {
+			var elem = Uno.UI.WindowManager.current.getView(htmlId.toString());
+			if (elem !== null && document.pictureInPictureEnabled) {
+				var fullscreen =
+					elem.requestPictureInPicture
+					|| elem.webkitRequestPictureInPicture
+					|| elem.mozRequestPictureInPicture;
+				fullscreen.call(elem);
+			}
+		}
+
+		public static exitPictureInPicture() {
+			if (document.pictureInPictureEnabled) {
+				const closePictureInPicture =
+					document.exitPictureInPicture
+					|| document.mozCancelPictureInPicture
+					|| document.webkitExitPictureInPicture
+				closePictureInPicture.call(document);
+			}
 		}
 
 		public static pause(htmlId: number) {

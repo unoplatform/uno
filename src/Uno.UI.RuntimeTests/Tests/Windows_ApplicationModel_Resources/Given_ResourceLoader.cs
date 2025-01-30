@@ -6,27 +6,32 @@ using System.Text;
 using System.Threading;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
+using Windows.Globalization;
 
 namespace Uno.UI.RuntimeTests.Tests
 {
 	[TestClass]
 	public class Given_ResourceLoader
 	{
+		private const string DefaultLanguage = "en-US";
+
 		[TestInitialize]
 		public void Init()
 		{
-			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
+			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
 #if __XAMARIN__ || __WASM__
-			ResourceLoader.DefaultLanguage = "en-US";
+			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}
 
 		[TestCleanup]
 		public void Cleanup()
 		{
-			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
+			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
 #if __XAMARIN__ || __WASM__
-			ResourceLoader.DefaultLanguage = "en-US";
+			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}
 
@@ -130,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests
 
 			foreach (var language in languages)
 			{
-				CultureInfo.CurrentUICulture = new CultureInfo(language);
+				ApplicationLanguages.PrimaryLanguageOverride = language;
 				Assert.AreEqual($@"Text in '{language}'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 			}
 		}
@@ -140,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
 
-			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
+			ApplicationLanguages.PrimaryLanguageOverride = "fr-FR";
 			Assert.AreEqual(@"Text in 'fr'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
@@ -149,16 +154,19 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
 
-			CultureInfo.CurrentUICulture = new CultureInfo("es");
+			ApplicationLanguages.PrimaryLanguageOverride = "es";
 			Assert.AreEqual(@"Text in 'es-MX'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.")]
+#endif
 		public void When_MissingLocalizedResource_FallbackOnDefault()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
 
-			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
+			ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
 			Assert.AreEqual(@"Text in 'en-US'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
@@ -174,6 +182,5 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.AreEqual(@"", SUT.GetString("/this-does-not-exist"));
 			Assert.AreEqual(@"", SUT.GetString("//this-does-not-exist"));
 		}
-
 	}
 }

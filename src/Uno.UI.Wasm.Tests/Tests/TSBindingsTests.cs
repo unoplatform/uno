@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,9 +9,7 @@ using Uno.Foundation.Interop;
 using System.Net.WebSockets;
 using System.Diagnostics;
 
-#if NET7_0_OR_GREATER
 using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace SamplesApp.UnitTests.TSBindings
 {
@@ -21,7 +18,6 @@ namespace SamplesApp.UnitTests.TSBindings
 
 	public class TSBindingsTests
 	{
-#if NET7_0_OR_GREATER
 		[TestMethod]
 		public void When_TestPerf()
 		{
@@ -47,7 +43,6 @@ namespace SamplesApp.UnitTests.TSBindings
 
 			Console.WriteLine($"uno ts interop: {sw2.Elapsed}");
 		}
-#endif
 
 		[TestMethod]
 		public void When_IntPtr()
@@ -141,80 +136,12 @@ namespace SamplesApp.UnitTests.TSBindings
 
 			Assert.AreEqual("true", ret.Value);
 		}
-
-		[TestMethod]
-		public void When_ArrayOfStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 4,
-				MyArray = new[] { "1", "2", "3", "42" }
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("1;2;3;42", ret.Value);
-		}
-
-		[TestMethod]
-		public void When_ArrayOfUnicodeStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 1,
-				MyArray = new[] { "🎉🤣😊👆🎁" }
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfUnicodeStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual(param.MyArray[0], ret.Value);
-		}
-
-		[TestMethod]
-		public void When_NullArrayOfStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 0,
-				MyArray = null
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("true", ret.Value);
-		}
-
-		[TestMethod]
-		public void When_ArrayOfNullStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 4,
-				MyArray = new string[4]
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfNullStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("true;true;true;true", ret.Value);
-		}
 	}
 
-#if NET7_0_OR_GREATER
 	partial class TestImport
 	{
 		[JSImport("globalThis.When_SingleStringNet7")]
 		internal static partial string When_SingleStringNet7(string value);
-	}
-#endif
-
-	[TSInteropMessage]
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	public struct When_ArrayOfStringsParams
-	{
-		public int MyArray_Length;
-
-		[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
-		public string[] MyArray;
 	}
 
 	[TSInteropMessage]
@@ -248,4 +175,3 @@ namespace SamplesApp.UnitTests.TSBindings
 		public string Value;
 	}
 }
-#endif

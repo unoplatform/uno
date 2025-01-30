@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using Windows.Media.Playback;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls
 	{
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsCompact),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(false, OnIsCompactChanged));
+				new FrameworkPropertyMetadata(false));
 
 		#endregion
 
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsSeekEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(true, OnIsSeekEnabledChanged));
+				new FrameworkPropertyMetadata(true));
 
 		#endregion
 
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsSeekBarVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(true, OnIsSeekBarVisibleChanged));
+				new FrameworkPropertyMetadata(true));
 
 		#endregion
 
@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(ShowAndHideAutomatically),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(true, OnShowAndHideAutomaticallyChanged));
+				new FrameworkPropertyMetadata(true));
 
 		#endregion
 

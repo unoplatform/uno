@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using System;
+using System.Diagnostics;
 using Uno.Foundation.Logging;
 using Uno.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
@@ -8,6 +10,7 @@ namespace Windows.ApplicationModel.Core;
 
 partial class CoreApplication
 {
+	private static Action<object?>? _invalidateRender;
 	private static ICoreApplicationExtension? _coreApplicationExtension;
 
 	static partial void InitializePlatform()
@@ -29,4 +32,13 @@ partial class CoreApplication
 			}
 		}
 	}
+
+	internal static void SetInvalidateRender(Action<object?> invalidateRender)
+	{
+		Debug.Assert(_invalidateRender is null);
+		_invalidateRender ??= invalidateRender;
+	}
+
+	internal static void QueueInvalidateRender(object? visual)
+		=> _invalidateRender?.Invoke(visual);
 }

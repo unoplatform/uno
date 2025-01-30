@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI
@@ -94,12 +94,12 @@ namespace Uno.UI
 		public static class CompositionTarget
 		{
 			/// <summary>
-			/// The delay between invocations of the <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
+			/// The delay between invocations of the <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
 			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
 			///
 			/// This property is only used on WebAssembly.
 			/// </summary>
-			/// <remarks>The <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
+			/// <remarks>The <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
 			public static int RenderEventThrottle { get; set; } = 30;
 		}
 
@@ -117,12 +117,12 @@ namespace Uno.UI
 		public static class Control
 		{
 			/// <summary>
-			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Stretch instead of Center
+			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
 			/// </summary>
 			public static bool UseLegacyContentAlignment { get; set; }
 
 			/// <summary>
-			/// Enables the lazy materialization of <see cref="Windows.UI.Xaml.Controls.Control"/> template. This behavior
+			/// Enables the lazy materialization of <see cref="Microsoft.UI.Xaml.Controls.Control"/> template. This behavior
 			/// is not aligned with UWP, which materializes templates immediately, making x:Name controls available
 			/// in the constructor of a control.
 			/// </summary>
@@ -160,13 +160,17 @@ namespace Uno.UI
 			/// instead of weak references for some highly used fields, in common cases to improve the
 			/// overall performance.
 			/// </summary>
-			/// <remarks>
-			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
-			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
-			/// See https://github.com/unoplatform/uno/issues/4730 for details.
-			/// </remarks>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
 				= true;
+		}
+
+		public static class ResourceDictionary
+		{
+			/// <summary>
+			/// Determines whether unreferenced ResourceDictionary present in the assembly
+			/// are accessible from app resources.
+			/// </summary>
+			public static bool IncludeUnreferencedDictionaries { get; set; }
 		}
 
 		public static class Font
@@ -192,6 +196,15 @@ namespace Uno.UI
 			}
 
 			/// <summary>
+			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
+			/// </summary>
+			/// <remarks>
+			/// The default is Segoe UI, which is not available on Mac and Linux as well as browsers running on Mac and Linux.
+			/// So, you can change to OpenSans. For more information, see https://aka.platform.uno/feature-opensans
+			/// </remarks>
+			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
+
+			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
@@ -206,18 +219,10 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static bool UseLegacyApplyStylePhase { get; set; }
-
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static bool ClearPreviousOnStyleChange { get; set; }
-
 #if __ANDROID__
 			/// <summary>
-			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
+			/// Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
+			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
 			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
@@ -227,16 +232,12 @@ namespace Uno.UI
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
 #endif
 
+#if __ANDROID__
 			/// <summary>
-			/// [WebAssembly Only] Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
+			/// Invalidate native android measure cache when measure-spec has changed since last measure.
 			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on WebAssembly.
-			/// Setting it to true avoids the use of costly JavaScript->C# interop.
-			/// </remarks>
-			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
+			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
+#endif
 
 			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
@@ -326,18 +327,24 @@ namespace Uno.UI
 
 			/// <summary>
 			/// By default, light dismiss is disabled in UWP/WinUI unless
-			/// <see cref="Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
+			/// <see cref="Microsoft.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
 			/// In earlier versions of Uno Platform, this property defaulted
 			/// to true, which was an incorrect behavior. If your code depends on this
 			/// legacy behavior, use this property to override it.
 			/// </summary>
 			public static bool EnableLightDismissByDefault { get; set; }
+
+			/// <summary>
+			/// When set to true, light dismiss UI popups will not be dismissed when the window is deactivated.
+			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
+			/// </summary>
+			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 		}
 
 		public static class ProgressRing
 		{
-			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
-			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
+			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+			public static Uri DeterminateProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.ProgressRing.ProgressRingDeterminate.json");
 		}
 
 		public static class ListViewBase
@@ -348,15 +355,15 @@ namespace Uno.UI
 			/// performance at the expense of consuming more memory and taking longer to initially load. Setting this to null will leave
 			/// the default value at the UWP default of 4.0.
 			/// </summary>
-			public static double? DefaultCacheLength = 1.0;
+			public static double? DefaultCacheLength { get; set; } = 1.0;
 
 #if __IOS__ || __ANDROID__
 			/// <summary>
-			/// Sets a flag indicating whether <see cref="Windows.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
+			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
 			/// </summary>
 			/// <remarks>
-			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
-			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Microsoft.UI.Xaml.Controls.ListViewBase, int)"/>
 			/// can be used to force a specific behavior.
 			/// </remarks>
 			public static bool AnimateScrollIntoView { get; set; } = true;
@@ -370,7 +377,7 @@ namespace Uno.UI
 			/// Sets this value to remove item animation for <see cref="UnoRecyclerView"/>. This prevents <see cref="UnoRecyclerView"/>
 			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
 			/// </summary>
-			public static bool RemoveItemAnimator = true;
+			public static bool RemoveItemAnimator { get; set; } = true;
 
 			/// <summary>
 			/// Indicates if a full recycling pass should be achieved on drop (re-order) on a ListView instead of a simple layout pass.
@@ -379,12 +386,12 @@ namespace Uno.UI
 			/// This flag should be kept to 'false' if you turned <see cref="RemoveItemAnimator"/> to 'false'.
 			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
 			/// </remarks>
-			public static bool ForceRecycleOnDrop;
+			public static bool ForceRecycleOnDrop { get; set; }
 
 			/// <summary>
 			/// Sets a value indicating whether the item snapping will be implemented by the native <see cref="AndroidX.RecyclerView.Widget.SnapHelper"/> or by Uno.
 			/// </summary>
-			public static bool UseNativeSnapHelper = true;
+			public static bool UseNativeSnapHelper { get; set; } = true;
 		}
 #endif
 
@@ -394,6 +401,18 @@ namespace Uno.UI
 			/// Enables reuse of <see cref="Page"/> instances. Enabling can improve performance when using <see cref="Frame"/> navigation.
 			/// </summary>
 			public static bool IsPoolingEnabled { get; set; }
+		}
+
+		public static class Frame
+		{
+			/// <summary>
+			/// On non-Skia targets, Frame pools page instances to improve performance by default.
+			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
+			/// </summary>
+			public static bool UseWinUIBehavior { get; set; }
+#if __SKIA__
+				= true;
+#endif
 		}
 
 		public static class PointerRoutedEventArgs
@@ -446,23 +465,23 @@ namespace Uno.UI
 
 			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
-			/// and <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
+			/// and <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
 			{
-				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Frame_Available)
+				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
-				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CommandBar_Available)
+				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
 				{
-					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
 				}
 
-				if (__LinkerHints.Is_Windows_UI_Xaml_Controls_AppBarButton_Available)
+				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_AppBarButton_Available)
 				{
-					SetUWPDefaultStylesOverride<Windows.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
 				}
 			}
 
@@ -474,7 +493,7 @@ namespace Uno.UI
 			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
 			/// If false, the native default style (if one exists) will be used.
 			/// </param>
-			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Windows.UI.Xaml.Controls.Control
+			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Microsoft.UI.Xaml.Controls.Control
 				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
 		}
 
@@ -484,6 +503,18 @@ namespace Uno.UI
 			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static bool IsJavaStringCachedEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines the maximum capacity of the Java string-cache.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static int JavaStringCachedCapacity { get; set; } = 1000;
 		}
 
 		public static class TextBox
@@ -495,9 +526,15 @@ namespace Uno.UI
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
 			public static bool HideCaret { get; set; }
 
+			/// <summary>
+			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
+			/// Uno skia-based TextBox implementation.
+			/// </summary>
+			public static bool UseOverlayOnSkia { get; set; }
+
 #if __ANDROID__
 			/// <summary>
-			/// The legacy <see cref="Windows.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
+			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
 			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
 			/// but doesn't do any validation.
 			/// </summary>
@@ -557,7 +594,7 @@ namespace Uno.UI
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
-#if __WASM__
+#if __WASM__ || __SKIA__
 				= true;
 #endif
 
@@ -591,12 +628,13 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseInvalidateArrangePath { get; set; } = true;
 
+#if __ANDROID__
 			/// <summary>
-			/// [DEPRECATED]
-			/// Not used anymore, does nothing.
+			/// On Android, rollback the clipping to the previous behavior, which was to apply the clipping
+			/// on the assigned children bounds instead of the parent bounds. 
 			/// </summary>
-			[NotImplemented]
-			public static bool UseLegacyClipping { get; set; } = true;
+			public static bool UseLegacyClipping { get; set; }
+#endif
 
 			/// <summary>
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
@@ -640,12 +678,23 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
+
+			/// <summary>
+			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
+			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
+			/// </summary>
+			public static bool DisablePointersSpecificEventPrevention { get; set; }
+
+			/// <summary>
+			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
+			/// </summary>
+			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class VisualState
 		{
 			/// <summary>
-			/// When this is set, the <see cref="Windows.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
+			/// When this is set, the <see cref="Microsoft.UI.Xaml.VisualState.Setters"/> will be applied synchronously when changing state,
 			/// unlike UWP which waits the for the end of the <see cref="VisualTransition.Storyboard"/> (if any) to apply them.
 			/// </summary>
 			/// <remarks>This flag is for backward compatibility with old versions of uno and should not be turned on.</remarks>
@@ -666,18 +715,22 @@ namespace Uno.UI
 #endif
 		}
 
-		public static class Xaml
+		public static class WebView2
 		{
+#if __IOS__
 			/// <summary>
-			/// Maximal "BasedOn" recursive resolution depth.
+			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
 			/// </summary>
 			/// <remarks>
-			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
+			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
+			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+			public static bool IsInspectable { get; set; }
+#endif
+		}
 
+		public static class Xaml
+		{
 			/// <summary>
 			/// By default, XAML hot reload will be enabled when building in debug. Setting this flag to 'true' will force it to be disabled.
 			/// </summary>
@@ -688,7 +741,7 @@ namespace Uno.UI
 		{
 #if __IOS__
 			/// <summary>
-			/// Gets or set whether the <see cref="Windows.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
+			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
 			/// <remarks>
 			/// Important: This flag will only have an impact on iOS 14 devices
@@ -714,9 +767,9 @@ namespace Uno.UI
 		{
 #if __ANDROID__
 			/// <summary>
-			/// Gets or sets whether the <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
+			/// Gets or sets whether the <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
 			/// Legacy time setting is about preserving days, seconds, and milliseconds of
-			/// <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
+			/// <see cref="Microsoft.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
 			/// </summary>
 			/// <remarks>
 			/// This flag defaults to <see langword="false"/> to match UWP behavior, where a value set from UI is
@@ -750,8 +803,8 @@ namespace Uno.UI
 			/// Gets or set whether the EnableBitmapIconTint feature is on or off.
 			/// </summary>
 			/// <remarks>
-			/// This Feature will allow any <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>
-			/// inside a <see cref="Windows.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
+			/// This Feature will allow any <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>
+			/// inside a <see cref="Microsoft.UI.Xaml.Controls.CommandBar"/> to use the Foreground <see cref="SolidColorBrush"/>
 			/// as their tint Color.
 			/// <para/>Default value is False.
 			/// </remarks>
@@ -779,6 +832,78 @@ namespace Uno.UI
 			/// will be from the animated value or local value, when the From property is omitted.
 			/// </summary>
 			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
+		}
+
+		public static class Rendering
+		{
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
+			/// OpenGL if available. Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseOpenGLOnX11 { get; set; }
+		}
+
+		public static class DependencyProperty
+		{
+			/// <summary>
+			/// Accessing the dependency property system isn't thread safe and should only
+			/// happen on the UI thread.
+			/// By default, attempting to access it from non UI thread will throw an exception.
+			/// Setting this flag to true will prevent the exception from being thrown at the risk
+			/// of having an undefined behavior and/or race conditions.
+			/// </summary>
+			public static bool DisableThreadingCheck { get; set; }
+
+			/// <summary>
+			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
+			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
+			/// set/got.
+			/// </summary>
+			public static bool ValidatePropertyOwnerOnReadWrite { get; set; } =
+#if DEBUG
+				true;
+#else
+				global::System.Diagnostics.Debugger.IsAttached;
+#endif
+		}
+
+		/// <summary>
+		/// This is for internal use to facilitate turning on/off certain logic that makes it easier/harder
+		/// to debug.
+		/// </summary>
+		internal static class DebugOptions
+		{
+			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
+
+			public static bool WaitIndefinitelyInEventTester { get; set; }
+		}
+
+		public static class Shape
+		{
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
+			/// </summary>
+			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
+			public static bool WasmDelayUpdateUntilFirstArrange { get; set; } = true;
+
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native getBBox() result will be cached.
+			/// </summary>
+			public static bool WasmCacheBBoxCalculationResult { get; set; } = true;
+
+			internal const int WasmDefaultBBoxCacheSize = 64;
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
+			/// </summary>
+#if __WASM__
+			public static int WasmBBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+#else
+			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
+#endif
 		}
 	}
 }

@@ -17,7 +17,11 @@ namespace Windows.Devices.Sensors {
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Gyroscope === "function") {
-					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
+					if ((<any>globalThis).DotnetExports !== undefined) {
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReading;
+					} else {
+						throw `Unable to find dotnet exports`;
+					}
 					let GyroscopeClass: any = window.Gyroscope;
 					this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
 					return true;

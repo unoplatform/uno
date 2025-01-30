@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class DropCompletedEventArgs : RoutedEventArgs
 	{

@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DirectUI;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class Selector
 {
@@ -306,4 +307,37 @@ partial class Selector
 		//	// SelectionChanged event handler
 		//	return S_OK;
 	}
+
+	/// <summary>
+	/// Handles selection of single item, and only that item
+	/// </summary>
+	internal void MakeSingleSelection(int index, bool animateIfBringIntoView, object selectedItem, FocusNavigationDirection focusNavigationDirection)
+	{
+		//UNO TODO: Implement SelectJustThisItemInternal on Selector
+		//SelectJustThisItemInternal(SelectedIndex, index, selectedItem, animateIfBringIntoView, focusNavigationDirection);
+	}
+
+	internal void ScrollIntoViewInternal(object item, bool isHeader, bool isFooter, bool isFromPublicAPI, ScrollIntoViewAlignment alignment, double offset, bool animateIfBringIntoView)
+	{
+		//UNO TODO: Implement ScrollIntoViewInternal on Selector
+	}
+
+	internal void AutomationPeerAddToSelection(int index, object item)
+	{
+		//UNO TODO: Implement AutomationPeerAddToSelection on Selector
+	}
+
+	internal void AutomationPeerRemoveFromSelection(int index, object item)
+	{
+		//UNO TODO: Implement AutomationPeerRemoveFromSelection on Selector
+	}
+
+	internal bool AutomationPeerIsSelected(object item)
+	{
+		//UNO TODO: Implement AutomationPeerIsSelected on Selector
+
+		return false;
+	}
+
+	internal bool IsSelectionPatternApplicable() => true;
 }

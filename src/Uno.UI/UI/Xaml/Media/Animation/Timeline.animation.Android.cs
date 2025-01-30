@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	partial class Timeline
 	{
@@ -22,6 +23,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				// TODO: apply easing function - https://github.com/unoplatform/uno/issues/2948
+
+				if (Duration.HasTimeSpan && Duration.TimeSpan == TimeSpan.Zero)
+				{
+					Debug.Assert(_animator is ImmediateAnimator<T>);
+					SetValue(_endValue.Value);
+					return;
+				}
 
 				var totalDiff = AnimationOwner.Subtract(_endValue.Value, _startingValue.Value);
 				var currentDiff = AnimationOwner.Multiply(((NativeValueAnimatorAdapter)_animator).AnimatedFraction, totalDiff);

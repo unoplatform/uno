@@ -1,8 +1,9 @@
-using System.Numerics;
+﻿using System.Numerics;
+using Microsoft.UI.Xaml;
+using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorSpectrum
 	{
@@ -156,6 +157,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					ColorSpectrumShape.Box,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
-		public event Windows.Foundation.TypedEventHandler<ColorSpectrum, ColorChangedEventArgs> ColorChanged;
+		public event TypedEventHandler<ColorSpectrum, ColorChangedEventArgs> ColorChanged;
 	}
 }

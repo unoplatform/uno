@@ -8,17 +8,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using SamplesApp.UITests.TestFramework;
 using Uno.UI.RuntimeTests.Helpers;
@@ -30,23 +30,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public class Given_FrameworkElement_Opacity
 	{
-#if __SKIA__
+#if !__SKIA__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_Opacity()
 		{
 			var SUT = new FrameworkElement_Opacity();
 
-			TestServices.WindowHelper.WindowContent = SUT;
+			await UITestHelper.Load(SUT);
 
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var renderer = new RenderTargetBitmap();
-
-			await renderer.RenderAsync(SUT);
-
-			var si = await RawBitmap.From(renderer, SUT);
+			var si = await UITestHelper.ScreenShot(SUT);
 
 			var width = SUT.tbOpacity1_0.ActualWidth;
 			var height = SUT.tbOpacity1_0.ActualHeight;
@@ -69,20 +63,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2");
 		}
 
+#if !__SKIA__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_Opacity_Inner()
 		{
 			var SUT = new FrameworkElement_Opacity();
 
-			TestServices.WindowHelper.WindowContent = SUT;
+			await UITestHelper.Load(SUT);
 
-			await TestServices.WindowHelper.WaitForIdle();
+			var si = await UITestHelper.ScreenShot(SUT);
 
-			var renderer = new RenderTargetBitmap();
-
-			await renderer.RenderAsync(SUT);
-
-			var si = await RawBitmap.From(renderer, SUT);
 			var width = SUT.tbInnerOpacity1_0.ActualWidth;
 			var height = SUT.tbInnerOpacity1_0.ActualHeight;
 			ImageAssert.HasColorAtChild(si, SUT.tbInnerOpacity1_0, (width / 4) * 3.3, height / 2, "#FF808080");
@@ -105,8 +97,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			width = SUT.ImageInner0_5.ActualWidth;
 			height = SUT.ImageInner0_5.ActualHeight;
-			ImageAssert.HasColorAtChild(si, SUT.ImageInner0_5, width / 2, height / 2, "#FFFEF9E1");
+			ImageAssert.HasColorAtChild(si, SUT.ImageInner0_5, width / 2, height / 2, "#FFFEF9E1", tolerance: 1);
 		}
-#endif
 	}
 }

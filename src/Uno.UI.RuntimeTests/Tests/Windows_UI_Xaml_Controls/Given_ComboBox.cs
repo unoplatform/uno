@@ -1,36 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Specialized;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Data;
-
-
-#if NETFX_CORE
+using System.Collections.Specialized;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using SamplesApp.UITests;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.ComboBoxTests;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.Storage.Pickers;
+using Windows.UI.Input.Preview.Injection;
+using static Private.Infrastructure.TestServices;
+using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
-#elif __IOS__
-using UIKit;
+
+#if __IOS__
 using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Windows.UI.Xaml.Controls.Primitives;
-
-#elif __MACOS__
-using AppKit;
-#else
-using Uno.UI;
+using Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -42,6 +46,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
+
+		private Style ComboBoxItemContainerStyle => _testsResources["ComboBoxItemContainerStyle"] as Style;
 
 		private Style ComboBoxWithSeparatorStyle => _testsResources["ComboBoxWithSeparatorStyle"] as Style;
 
@@ -60,6 +66,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		const int BorderThicknessAdjustment = 2; // Deduct BorderThickness on PopupBorder
+
+#if HAS_UNO
+		[TestMethod]
+		[DataRow(0)]
+		[DataRow(1)]
+		[DataRow(2)]
+		public async Task When_ReOpened_Remains_Selected_VisualState(int selectedIndex)
+		{
+			var SUT = new ComboBox();
+			var items = new[] { "First", "Second", "Third" };
+			SUT.ItemsSource = items;
+			await UITestHelper.Load(SUT);
+
+			SUT.IsDropDownOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.SelectedIndex = selectedIndex;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			var container = (ComboBoxItem)SUT.ContainerFromItem(items[selectedIndex]);
+			Assert.AreEqual("Selected", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_IsEditable_False()
+		{
+			// EditableText is only available in fluent style.
+			var SUT = new ComboBox();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsFalse(SUT.IsEditable);
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
+		}
+
+		[TestMethod]
+		public async Task When_IsEditable_True()
+		{
+			// EditableText is only available in fluent style.
+			var SUT = new ComboBox() { IsEditable = true };
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(SUT.IsEditable);
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
+		}
+
+		[TestMethod]
+		public async Task When_IsEditable_False_Changes_To_True()
+		{
+			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
+			{
+				Assert.Inconclusive();
+			}
+
+			// EditableText is only available in fluent style.
+			var SUT = new ComboBox();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsFalse(SUT.IsEditable);
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
+
+			SUT.IsEditable = true;
+
+			Assert.IsTrue(SUT.IsEditable);
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
+		}
+
+		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
 #if __MACOS__
@@ -134,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromItem(item) as ComboBoxItem) != null);
 					await WindowHelper.WaitForLoaded(cbi); // Required on Android
-					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth);
+					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth, 0.5); // Account for layout rounding
 				}
 			}
 			finally
@@ -143,6 +219,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_PointerWheel()
+		{
+			var SUT = new ComboBox();
+			var items = new[] { "First", "Second", "Third" };
+			SUT.ItemsSource = items;
+			var rect = await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 0;
+			SUT.Focus(FocusState.Programmatic);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(rect.X + 2, rect.Y + 2);
+
+			mouse.WheelDown();
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
@@ -359,35 +473,152 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var comboBox = new ComboBox
 			{
-				var comboBox = new ComboBox
-				{
-					ItemsSource = new[] { 1, 2, 3 },
-					PlaceholderText = "Select..."
-				};
+				ItemsSource = new[] { 1, 2, 3 },
+				PlaceholderText = "Select..."
+			};
 
-				WindowHelper.WindowContent = comboBox;
-				await WindowHelper.WaitForLoaded(comboBox);
+			WindowHelper.WindowContent = comboBox;
+			await WindowHelper.WaitForLoaded(comboBox);
 
-				var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
+			var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
 
-				Assert.IsNotNull(placeholderTextBlock);
+			Assert.IsNotNull(placeholderTextBlock);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 
-				using (ThemeHelper.UseDarkTheme())
-				{
-					Assert.AreEqual(darkThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
-				}
-
-				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				Assert.AreEqual(darkThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
+
+			Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedItem_Set_Before_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedItem_Set_Then_SelectedIndex_Then_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 3;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+			Assert.AreEqual(5, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public async Task When_Tabbed()
+		{
+			var SUT = new ComboBox
+			{
+				Items =
+				{
+					new ComboBoxItem { Content = new TextBox { Text = "item1" } },
+					new ComboBoxItem { Content = new TextBox { Text = "item2" } }
+				}
+			};
+			var btn = new Button();
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT,
+					btn
+				}
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			await KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
+		}
+
+		[TestMethod]
+		public async Task When_Popup_Open_Tabbed()
+		{
+			var SUT = new ComboBox
+			{
+				Items =
+				{
+					new ComboBoxItem { Content = new TextBox { Text = "item1" } },
+					new ComboBoxItem { Content = new TextBox { Text = "item2" } }
+				}
+			};
+			var btn = new Button();
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT,
+					btn
+				}
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			await KeyboardHelper.Space();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsDropDownOpen);
+			Assert.IsTrue(FocusManager.GetFocusedElement(SUT.XamlRoot) is ComboBoxItem);
+
+			await KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsDropDownOpen);
+			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
 		}
 
 		[TestMethod]
@@ -483,7 +714,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(SUT.Items.Count, 3);
+				Assert.AreEqual(3, SUT.Items.Count);
 
 				using (c.BatchUpdate())
 				{
@@ -496,7 +727,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(SUT.Items.Count, 5);
+				Assert.AreEqual(5, SUT.Items.Count);
 				Assert.IsNotNull(SUT.ContainerFromItem("One"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
@@ -505,6 +736,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				SUT.IsDropDownOpen = false;
 			}
+		}
+
+		[TestMethod]
+		public async Task When_ComboBoxItem_DataContext_Cleared()
+		{
+			// Arrange
+			var stackPanel = new StackPanel();
+			stackPanel.DataContext = Guid.NewGuid().ToString();
+			var comboBox = new ComboBox();
+			var originalSource = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			comboBox.ItemsSource = originalSource;
+			comboBox.SelectedIndex = 0;
+			stackPanel.Children.Add(comboBox);
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+			FrameworkElement itemContainer = null;
+
+			// Act
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitFor(() => (itemContainer = comboBox.ContainerFromIndex(0) as ComboBoxItem) is not null);
+			itemContainer.DataContextChanged += (s, e) =>
+			{
+				// Assert
+				Assert.AreNotEqual(stackPanel.DataContext, itemContainer.DataContext);
+			};
+			comboBox.IsDropDownOpen = false;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = false;
+			var updatedSource = new List<int>() { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+			comboBox.ItemsSource = updatedSource;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = false;
 		}
 
 		[TestMethod]
@@ -529,8 +796,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				c.Add("2-Five");
 				c.Add("2-Six");
 
-				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("MySource") });
-				SUT.SetBinding(ComboBox.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
+				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("MySource") });
+				SUT.SetBinding(ComboBox.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
 
 				SUT.DataContext = new { MySource = c, SelectedItem = "One" };
 
@@ -551,7 +818,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
 
-				Assert.AreEqual(SUT.Items.Count, 12);
+				Assert.AreEqual(12, SUT.Items.Count);
 			}
 			finally
 			{
@@ -571,8 +838,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -594,7 +861,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				SUT.IsDropDownOpen = false;
 
-				Assert.AreEqual(SUT.Items.Count, 3);
+				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(3, SUT.Items.Count);
 
 				using (c.BatchUpdate())
 				{
@@ -634,8 +904,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -693,7 +963,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		public void When_SelectedItem_TwoWay_Binding()
+		public async Task When_SelectedItem_TwoWay_Binding()
 		{
 			var itemsControl = new ItemsControl()
 			{
@@ -720,12 +990,457 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			itemsControl.ItemsSource = test;
 
+			await WindowHelper.WaitForIdle();
+
 			var comboBox = itemsControl.FindName("combo") as ComboBox;
 
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SelectedItem_Active_VisualState()
+		{
+			var source = Enumerable.Range(0, 10).ToArray();
+			var SUT = new ComboBox
+			{
+				ItemsSource = source,
+				ItemContainerStyle = ComboBoxItemContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			SUT.SelectedItem = 2;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			try
+			{
+				// force ItemsPanel to materialized, otherwise ContainerFromIndex will always return 0
+				// and also while closed, the CBI's "CommonStates" will be forced to "Normal".
+				// at least, _should be_ forced to "Normal" as winui suggests.
+				SUT.IsDropDownOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				var container2 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container2, "failed to resolve container#2");
+				var container2States = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				Assert.IsTrue(container2States.Any(x => x.Contains("Selected")), $"container#2 is not selected: states={container2States.JoinBy("|")}");
+
+				// changing selection to 6
+				SUT.SelectedItem = 6;
+				await WindowHelper.WaitForIdle();
+
+				var container6 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container6, "failed to resolve container#6");
+				var container2PostStates = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				var container6PostStates = VisualStateHelper.GetCurrentVisualStateName(container6).ToArray();
+				Assert.IsFalse(container2PostStates.Any(x => x.Contains("Selected")), $"container#2 is still selected: states={container2PostStates.JoinBy("|")}");
+				Assert.IsTrue(container6PostStates.Any(x => x.Contains("Selected")), $"container#6 is not selected: states={container6PostStates.JoinBy("|")}");
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
+		public async Task When_Mouse_Opened_And_Closed()
+		{
+			// Create a comboBox with some sample items
+			ComboBox comboBox = new ComboBox();
+			for (int i = 0; i < 10; i++)
+			{
+				comboBox.Items.Add(i);
+			}
+			var stackPanel = new StackPanel()
+			{
+				Orientation = Orientation.Horizontal,
+				Spacing = 10,
+				Padding = new Thickness(10),
+				VerticalAlignment = VerticalAlignment.Top
+			};
+
+			var text = new TextBlock() { Text = "Click me", VerticalAlignment = VerticalAlignment.Top };
+			stackPanel.Children.Add(comboBox);
+			stackPanel.Children.Add(text);
+
+			// Set the comboBox as Window content
+			WindowHelper.WindowContent = stackPanel;
+
+			// Wait for it to load
+			await WindowHelper.WaitForLoaded(comboBox);
+
+			comboBox.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+
+			// Take a screenshot of the comboBox before opening
+			var screenshotBefore = await TakeScreenshot(stackPanel);
+
+			// Use input injection to tap the comboBox and open the popup
+			var comboBoxCenter = comboBox.GetAbsoluteBounds().GetCenter();
+
+			using var finger = InputInjector.TryCreate().GetFinger();
+			finger.MoveTo(comboBoxCenter);
+			finger.Press(comboBoxCenter);
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+
+			// Wait for the popup to load and render
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+			await WindowHelper.WaitForIdle();
+
+			// Take a screenshot of the UI after opening the comboBox
+			var screenshotOpened = await TakeScreenshot(stackPanel);
+
+			// Verify that the UI changed
+			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotOpened);
+
+			var textCenter = text.GetAbsoluteBounds().GetCenter();
+			finger.Press(textCenter.X, textCenter.Y + 100);
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the popup to close and the UI to stabilize
+			// Take a screenshot of the UI after closing the comboBox
+			var screenshotAfter = await TakeScreenshot(stackPanel);
+
+			// Verify that the UI looks the same as at the beginning
+			await ImageAssert.AreSimilarAsync(screenshotBefore, screenshotAfter);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
+		public async Task When_Mouse_Opened_And_Closed_Uwp()
+		{
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_Mouse_Opened_And_Closed();
+		}
+
+		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		{
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			return result;
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_SelectedItem_TwoWay_Binding_Clear()
+		{
+			var root = new Grid();
+
+			var comboBox = new ComboBox();
+
+			root.Children.Add(comboBox);
+
+			comboBox.SetBinding(ComboBox.ItemsSourceProperty, new Binding { Path = new("Items") });
+			comboBox.SetBinding(ComboBox.SelectedItemProperty, new Binding { Path = new("Item"), Mode = BindingMode.TwoWay });
+
+			WindowHelper.WindowContent = root;
+
+			var dc = new TwoWayBindingClearViewModel();
+			root.DataContext = dc;
+
+			await WindowHelper.WaitForIdle();
+
+			dc.Dispose();
+			root.DataContext = null;
+
+			Assert.AreEqual(1, dc.ItemGetCount);
+			Assert.AreEqual(1, dc.ItemSetCount);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			Assert.IsFalse(comboBox.IsDropDownOpen);
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : null;
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+			comboBox.SelectedIndex = 3;
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			comboBox.IsDropDownOpen = true;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, comboBox.SelectedIndex);
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : 3;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : "Elephant";
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+			await KeyboardHelper.Space();
+
+			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
+
+			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.
+
+			await KeyboardHelper.Space();
+
+			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[DataRow(PopupPlacementMode.Bottom, 0)]
+		[DataRow(PopupPlacementMode.Top, 0)]
+		[DataRow(PopupPlacementMode.Bottom, 20)]
+		[DataRow(PopupPlacementMode.Top, -20)]
+		[UnoWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
+		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
+		{
+			var grid = new Grid();
+			var comboBox = new PopupPlacementComboBox();
+			comboBox.Margin = new Thickness(150, 150, 0, 0);
+			// Add items as itmes source
+			comboBox.ItemsSource = new List<string> { "Cat", "Dog" };
+			comboBox.DesiredPlacement = mode;
+			comboBox.VerticalOffset = verticalOffset;
+			grid.Children.Add(comboBox);
+			try
+			{
+				TestServices.WindowHelper.WindowContent = grid;
+				await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+				comboBox.ApplyPlacement();
+				comboBox.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(comboBox.XamlRoot).FirstOrDefault();
+				Assert.IsNotNull(popup);
+
+				var child = (FrameworkElement)popup.Child;
+				await WindowHelper.WaitFor(() => child.ActualHeight > 0);
+
+				var popupBounds = child.TransformToVisual(null).TransformBounds(new Rect(0, 0, child.ActualWidth, child.ActualHeight));
+				var comboBoxBounds = comboBox.TransformToVisual(null).TransformBounds(new Rect(0, 0, comboBox.ActualWidth, comboBox.ActualHeight));
+				// For some reason WinUI's ComboBox popup border has a -1 vertical Margin, which pushes it up by 1 pixel, and can be inacurrate due to rounding
+				double tolerance = 1.5;
+				if (mode == PopupPlacementMode.Bottom)
+				{
+					Assert.AreEqual(comboBoxBounds.Bottom + verticalOffset, popupBounds.Top, tolerance);
+				}
+				else
+				{
+					Assert.AreEqual(comboBoxBounds.Top + verticalOffset, popupBounds.Bottom, tolerance);
+				}
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Are_Enum_Values()
+		{
+			var comboBox = new ComboBox();
+			comboBox.ItemsSource = Enum.GetValues(typeof(PickerLocationId)).Cast<PickerLocationId>();
+			comboBox.SelectedIndex = 0;
+			TestServices.WindowHelper.WindowContent = comboBox;
+			await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+			await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(comboBox.XamlRoot).FirstOrDefault();
+			Assert.IsNotNull(popup);
+
+			var child = (FrameworkElement)popup.Child;
+			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
+			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ComboPopup_Rearrange_ScrollShouldNotReset()
+		{
+			var SUT = new ComboBox()
+			{
+				ItemsSource = Enumerable.Range(0, 50).Select(x => $"Item {x}").ToArray(),
+				SelectedIndex = 0,
+			};
+			await UITestHelper.Load(SUT);
+
+			// open down-drop
+			SUT.IsDropDownOpen = true;
+			var host = SUT.GetTemplateChild<Border>("PopupBorder") ?? throw new InvalidOperationException("Failed to find Border#PopupBorder");
+			await WindowHelper.WaitForLoaded(host);
+			await UITestHelper.WaitForIdle();
+
+			// scroll to 2 screens away
+			var sv = host.Child as ScrollViewer ?? throw new InvalidOperationException("Failed to find Border#PopupBorder>ScrollViewer");
+			var origin = sv.VerticalOffset;
+			var destination = origin + sv.ViewportHeight * 2;
+			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
+			await UITestHelper.WaitForIdle();
+			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+
+			// force an arrange
+			var cbi = sv.FindFirstChild<ComboBoxItem>();
+			cbi.InvalidateArrange();
+			await UITestHelper.WaitForIdle();
+			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+		}
+#endif
+
+#if __SKIA__ // Requires input injection
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15531")]
+		public async Task When_Tap_Twice()
+		{
+			var grid = new Grid();
+			var comboBox = new PopupPlacementComboBox();
+			comboBox.Margin = new Thickness(200);
+			// Add items as itmes source
+			comboBox.ItemsSource = new List<string> { "Cat", "Dog", "Rabbit", "Elephant" };
+			comboBox.DesiredPlacement = PopupPlacementMode.Bottom;
+			comboBox.VerticalOffset = 50;
+			grid.Children.Add(comboBox);
+			try
+			{
+				TestServices.WindowHelper.WindowContent = grid;
+				await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+				comboBox.ApplyPlacement();
+				TestServices.InputHelper.Tap(comboBox);
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(comboBox.IsDropDownOpen);
+
+				TestServices.InputHelper.Tap(comboBox);
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(comboBox.IsDropDownOpen);
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+			}
+		}
+#endif
+
+		public sealed class TwoWayBindingClearViewModel : IDisposable
+		{
+			public enum Themes
+			{
+				Invalid,
+				Day,
+				Night
+			}
+
+			public TwoWayBindingClearViewModel()
+			{
+				_item = Items[0];
+			}
+
+			public Themes[] Items { get; } = new Themes[] { Themes.Day, Themes.Night };
+			private Themes _item;
+			private bool _isDisposed;
+			public Themes Item
+			{
+				get
+				{
+					ItemGetCount++;
+
+					if (_isDisposed)
+					{
+						return Themes.Invalid;
+					}
+
+					return _item;
+				}
+				set
+				{
+					ItemSetCount++;
+
+					if (_isDisposed)
+					{
+						_item = Themes.Invalid;
+						return;
+					}
+
+					_item = value;
+				}
+			}
+
+			public int ItemGetCount { get; private set; }
+			public int ItemSetCount { get; private set; }
+
+			public void Dispose()
+			{
+				_isDisposed = true;
+			}
+		}
 
 		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
 		{
@@ -797,6 +1512,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
+
+
 #if __IOS__
 	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
 	public partial class MultiFrame : Grid
@@ -819,7 +1536,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var uiViewController = new UiViewController(page);
 
-			var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+			var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
 
 			await rootController.PresentViewControllerAsync(uiViewController, animated: false);
 		}
@@ -828,7 +1545,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			try
 			{
-				var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+				var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
 
 				await rootController.DismissViewControllerAsync(false);
 			}
@@ -960,7 +1677,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class UIViewControllerSectionsTransitionInfo : FrameSectionsTransitionInfo
 		{
-			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIModalPresentationStyle modalPresentationStyle = UIModalPresentationStyle.PageSheet, UIModalTransitionStyle modalTransitionStyle = UIModalTransitionStyle.CoverVertical)
+			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIKit.UIModalPresentationStyle modalPresentationStyle = UIKit.UIModalPresentationStyle.PageSheet, UIKit.UIModalTransitionStyle modalTransitionStyle = UIKit.UIModalTransitionStyle.CoverVertical)
 			{
 				AllowDismissFromGesture = allowDismissFromGesture;
 				ModalPresentationStyle = modalPresentationStyle;
@@ -969,9 +1686,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			public bool AllowDismissFromGesture { get; }
 
-			public UIModalPresentationStyle ModalPresentationStyle { get; }
+			public UIKit.UIModalPresentationStyle ModalPresentationStyle { get; }
 
-			public UIModalTransitionStyle ModalTransitionStyle { get; }
+			public UIKit.UIModalTransitionStyle ModalTransitionStyle { get; }
 
 			public override FrameSectionsTransitionInfoTypes Type => FrameSectionsTransitionInfoTypes.UIViewControllerBased;
 		}

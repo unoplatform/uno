@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
@@ -27,6 +27,11 @@ namespace Windows.UI.Composition
 				case nameof(Brush):
 					OnBrushChangedPartial(Brush);
 					break;
+#if __SKIA__
+				case nameof(Size):
+					UpdatePaint();
+					break;
+#endif
 				default:
 					break;
 			}

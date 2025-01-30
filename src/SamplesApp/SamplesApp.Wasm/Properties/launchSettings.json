@@ -18,13 +18,13 @@
     },
     "SampleApp.Wasm": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "http://localhost:55838/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://0.0.0.0:55838/;http://localhost:55838/"
+      "applicationUrl": "http://localhost:55838/"
     }
   }
 }

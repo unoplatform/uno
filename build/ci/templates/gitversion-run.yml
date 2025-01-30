@@ -1,0 +1,70 @@
+parameters:
+  skipCacheDownload: ''
+
+steps:
+
+  # This step changes the PR version ID so that produced nuget packages can be tied
+  # to specific builds. This can be used to create canaries from PR artifacts.
+  - powershell: |
+      $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-"
+      echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
+      (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
+
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    displayName: Update GitVersion file for PullRequests
+
+  - task: gitversion/setup@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      versionSpec: '5.10.3'
+
+  - task: gitversion/execute@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      updateAssemblyInfo: 'False'
+      useConfigFile: true
+      configFilePath: gitversion.yml
+    displayName: Use GitVersion
+
+  - powershell: |
+      $outputFile="$(System.artifactsdirectory)/git_variables"
+      echo "##vso[task.setvariable variable=GitVersion.major]$(GitVersion.major)" > $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.minor]$(GitVersion.minor)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.patch]$(GitVersion.patch)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseTag]$(GitVersion.preReleaseTag)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseTagWithDash]$(GitVersion.preReleaseTagWithDash)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseLabel]$(GitVersion.preReleaseLabel)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseNumber]$(GitVersion.preReleaseNumber)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.weightedPreReleaseNumber]$(GitVersion.weightedPreReleaseNumber)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.buildMetaData]$(GitVersion.buildMetaData)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.fullBuildMetaData]$(GitVersion.fullBuildMetaData)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.majorMinorPatch]$(GitVersion.majorMinorPatch)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.semVer]$(GitVersion.semVer)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.legacySemVer]$(GitVersion.legacySemVer)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.legacySemVerPadded]$(GitVersion.legacySemVerPadded)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.assemblySemVer]$(GitVersion.assemblySemVer)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.assemblySemFileVer]$(GitVersion.assemblySemFileVer)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.fullSemVer]$(GitVersion.fullSemVer)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.informationalVersion]$(GitVersion.informationalVersion)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.branchName]$(GitVersion.branchName)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.escapedBranchName]$(GitVersion.escapedBranchName)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.sha]$(GitVersion.sha)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.shortSha]$(GitVersion.shortSha)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.nuGetVersionV2]$(GitVersion.nuGetVersionV2)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.nuGetVersion]$(GitVersion.nuGetVersion)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.nuGetPreReleaseTagV2]$(GitVersion.nuGetPreReleaseTagV2)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.nuGetPreReleaseTag]$(GitVersion.nuGetPreReleaseTag)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.versionSourceSha]$(GitVersion.versionSourceSha)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.commitsSinceVersionSource]$(GitVersion.commitsSinceVersionSource)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.commitsSinceVersionSourcePadded]$(GitVersion.commitsSinceVersionSourcePadded)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.uncommittedChanges]$(GitVersion.uncommittedChanges)" >> $outputFile
+      echo "##vso[task.setvariable variable=GitVersion.commitDate]$(GitVersion.commitDate)" >> $outputFile
+    displayName: Generate GitVersion Variables
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    displayName: Publish variables
+    inputs:
+      PathtoPublish: $(System.artifactsdirectory)
+      ArtifactName: gitversion_cache
+      ArtifactType: Container

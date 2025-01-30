@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if NET6_0_OR_GREATER
 using System;
 using System.Collections;
 using System.Collections.Immutable;
@@ -166,4 +165,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		}
 	}
 }
-#endif

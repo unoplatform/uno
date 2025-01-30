@@ -8,7 +8,7 @@ using LibVLCSharp.Shared;
 using Uno.Extensions;
 using Uno.Logging;
 
-namespace LibVLCSharp.GTK
+namespace Uno.UI.Media
 {
 	/// <summary>
 	/// GTK VideoView for Windows, Linux and Mac.
@@ -62,12 +62,14 @@ namespace LibVLCSharp.GTK
 		/// </summary>
 		public VideoView()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			if (OperatingSystem.IsLinux())
 			{
+#pragma warning disable CA1806 // Do not ignore method results
 				Native.XInitThreads();
+#pragma warning restore CA1806 // Do not ignore method results
 			}
 
-			Core.Initialize();
+			LibVLCSharp.Shared.Core.Initialize();
 
 			Realized += (s, e) => AttachToWidget();
 			Unrealized += (s, e) => DetachFromWidget();
@@ -86,11 +88,43 @@ namespace LibVLCSharp.GTK
 
 			if (Visible)
 			{
-				_videoWindow?.Show();
-				ApplyLastArrange();
+				if (_videoWindow?.TransientFor is not null)
+				{
+					if (_lastArrange is { Width: > 1, Height: > 1 })
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"{GetHashCode():X8} Showing video window");
+						}
+
+						// Only show the child window if there's a parent set. If not, the window will
+						// appear floating outside the app.
+						_videoWindow.Show();
+						ApplyLastArrange();
+					}
+					else
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"{GetHashCode():X8} Skipping show video window, the parent widget is not arranged");
+						}
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Unable to show video window, the parent window is not set");
+					}
+				}
 			}
 			else
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"{GetHashCode():X8} Hiding video window");
+				}
+
 				_videoWindow?.Hide();
 			}
 		}
@@ -116,7 +150,6 @@ namespace LibVLCSharp.GTK
 
 				DestroyChildWindow();
 				_mediaPlayer = value;
-				CreateChildWindow();
 			}
 		}
 
@@ -126,7 +159,7 @@ namespace LibVLCSharp.GTK
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Unable to attach player (_mediaPlayer: {_mediaPlayer is not null})");
+					this.Log().Debug($"{GetHashCode():X8} Unable to attach player (_mediaPlayer: {_mediaPlayer is not null})");
 				}
 
 				return;
@@ -142,13 +175,14 @@ namespace LibVLCSharp.GTK
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"VideoView is already attached, skipping");
+					this.Log().Debug($"{GetHashCode():X8} VideoView is already attached, skipping");
 				}
+				return;
 			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug("Attaching player");
+				this.Log().Debug($"{GetHashCode():X8} Creating Child Window");
 			}
 
 			//
@@ -172,15 +206,17 @@ namespace LibVLCSharp.GTK
 			_videoWindow.ButtonPressEvent += OnVideoWindowButtonPressEvent;
 			_videoWindow.MotionNotifyEvent += OnVideoWindowMotionNotifyEvent;
 
-			// Show the window once, so that we can get an ID for it.
-			_videoWindow.Show();
+			// Make the video window black (as we're will not be rendering it)
+			_videoWindow.AppPaintable = true;
 
-			// Hide it immediately so it does not show outside of our own window
-			_videoWindow.Hide();
+			// Realize the window, so that we can get an ID for it to provide to VLC
+			// It is important to create the window without showing it first, otherwise
+			// the window will be rendered on top of the app, and will not be able to
+			// be moved or resized, or may not be rendered at the right position in the current
+			// widget's window.
+			_videoWindow.Realize();
 
 			AssignWindowId();
-
-			AttachToWidget();
 		}
 
 		internal static void ReportMacOSNotSupported()
@@ -193,13 +229,82 @@ namespace LibVLCSharp.GTK
 
 		private void AttachToWidget()
 		{
-			if (IsRealized && _videoWindow is not null)
+			if (IsRealized)
 			{
-				// Reparent the window to the current window, so it appears inside.
-				_videoWindow.Window.Reparent(Toplevel.Window, 0, 0);
+				CreateChildWindow();
 
-				// Show the window once the ID has been associated in libVLC
-				_videoWindow.Show();
+				if (_videoWindow is null)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Skipping AttachToWidget (no video window available)");
+					}
+
+					return;
+				}
+
+				// Reparent the window to the current window, so it appears inside, positioned outside the bounds of the window
+				// to avoid a temporary visual glitch
+				_videoWindow.Window.Reparent(Toplevel.Window, Allocation.X, Allocation.Y);
+
+				if (Toplevel is Gtk.Window gtkWindow)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Setting transient for {Toplevel} ({Allocation.X}x{Allocation.Y};{AllocatedWidth}x{AllocatedHeight})");
+					}
+
+					// Set the transient window as well, to be more compatible 
+					// with recent GTK versions.
+					_videoWindow.TransientFor = gtkWindow;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Toplevel widget is not a window ({Toplevel})");
+					}
+				}
+
+				if (Allocation.X != -1 && Allocation.Y != -1)
+				{
+					// Show the window once the ID has been associated in libVLC, only
+					// when the VideoView has been arranged.
+					_videoWindow.Show();
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Showing child player window {Toplevel.Window}");
+					}
+
+					ApplyLastArrange();
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Not showing child player window, the parent has not been arranged yet");
+					}
+				}
+
+			}
+		}
+
+		protected override void OnSizeAllocated(Rectangle allocation)
+		{
+			base.OnSizeAllocated(allocation);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"{GetHashCode():X8} OnSizeAllocated({allocation.Width}x{allocation.Height})");
+			}
+
+			if (_lastArrange is null && allocation is { Width: > 1, Height: > 1 })
+			{
+				// Store the first valid allocation to avoid the
+				// child window to show at a wrong initial position.
+
+				_lastArrange = allocation;
 
 				ApplyLastArrange();
 			}
@@ -209,6 +314,11 @@ namespace LibVLCSharp.GTK
 		{
 			if (!IsRealized && _videoWindow is not null)
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"{GetHashCode():X8} Hiding child player window");
+				}
+
 				_videoWindow.Hide();
 			}
 		}
@@ -237,6 +347,11 @@ namespace LibVLCSharp.GTK
 				if (xid != 0)
 				{
 					_mediaPlayer.XWindow = xid;
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Using X11 Window Id {xid}");
+					}
 				}
 				else
 				{
@@ -266,12 +381,17 @@ namespace LibVLCSharp.GTK
 
 		private void DestroyChildWindow()
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"{GetHashCode():X8} Destroying child video window");
+			}
+
 			RemoveWindowId();
 
 			if (_videoWindow is not null)
 			{
 				_videoWindow.Hide();
-				_videoWindow.Destroy();
+				_videoWindow.Dispose();
 				_videoWindow = null;
 			}
 		}
@@ -309,13 +429,16 @@ namespace LibVLCSharp.GTK
 
 		internal void Arrange(Gdk.Rectangle value)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Trace($"Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height}");
+				this.Log().Debug($"{GetHashCode():X8} Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height} (_videoWindow: {_videoWindow is not null}, visible:{_videoWindow?.Visible})");
 			}
 
 			_lastArrange = value;
 
+			// Showing the window, even if visible, fixes positioning and sizing issues that may arise
+			// during the interactions between the gdk window and the gtk window.
+			_videoWindow?.Show();
 			_videoWindow?.Window.MoveResize(value.X, value.Y, value.Width, value.Height);
 		}
 	}

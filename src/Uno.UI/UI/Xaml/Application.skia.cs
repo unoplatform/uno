@@ -1,67 +1,89 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
+using Windows.ApplicationModel.Core;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Core;
+using Windows.Globalization;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked;
-		private static string _arguments = "";
 
-		public Application()
+		[ThreadStatic]
+		private static Application _current;
+
+		partial void InitializePartial()
 		{
-			Current = this;
+			_current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
-
-			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			CoreApplication.SetInvalidateRender(compositionTarget =>
+			{
+				Debug.Assert(compositionTarget is null or CompositionTarget);
+
+				if (compositionTarget is CompositionTarget { Root: { } root })
+				{
+					foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+					{
+						if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
+						{
+							xRoot.QueueInvalidateRender();
+							return;
+						}
+					}
+				}
+			});
 		}
 
-		internal ISkiaHost? Host { get; set; }
+		internal ISkiaApplicationHost? Host { get; set; }
+
+		internal static SynchronizationContext ApplicationSynchronizationContext { get; private set; }
 
 		private void SetCurrentLanguage()
 		{
 			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
 				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
 			{
-				try
+				if (!ApplicationLanguages.InvariantCulture)
 				{
-					// Fallback to English
-					var cultureInfo = CultureInfo.CreateSpecificCulture("en");
-					CultureInfo.CurrentUICulture = cultureInfo;
-					CultureInfo.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentUICulture = cultureInfo;
+
+					try
+					{
+						// Fallback to English
+						var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+						CultureInfo.CurrentUICulture = cultureInfo;
+						CultureInfo.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentUICulture = cultureInfo;
+					}
+					catch (Exception ex)
+					{
+						this.Log().Error($"Failed to set default culture", ex);
+					}
 				}
-				catch (Exception ex)
+				else
 				{
-					this.Log().Error($"Failed to set default culture", ex);
+					if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(ApplicationLanguages).Log().Debug("InvariantCulture mode is enabled");
+					}
 				}
 			}
-		}
-
-		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
-		{
-			_arguments = GetCommandLineArgsWithoutExecutable();
-			Start(callback);
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -69,22 +91,25 @@ namespace Windows.UI.Xaml
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
-				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
+
+			_current.InvokeOnLaunched();
 		}
 
-		private void Initialize()
+		private void InvokeOnLaunched()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
-
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				// OnLaunched should execute only for full apps, not for individual islands.
+				if (CoreApplication.IsFullFledgedApp)
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
+				}
 			}
 		}
 

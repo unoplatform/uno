@@ -1,23 +1,20 @@
-using Uno.UI.Controls;
+﻿using Uno.UI.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
@@ -117,28 +114,18 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
-#if __IOS__
-			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-#elif __MACOS__
 			throw new NotImplementedException();
-#endif
 		}
 
 		/// <inheritdoc />
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
 
-
-		internal static void LoadingRootElement(UIElement visualTreeRoot) { }
-
-		internal static void RootElementLoaded(UIElement visualTreeRoot) =>
-			visualTreeRoot.SetHitTestVisibilityForRoot();
-
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode), VirtualKeyHelper.FromFlagsToVirtualModifiers(evt.ModifierFlags))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};
@@ -153,11 +140,12 @@ namespace Windows.UI.Xaml
 		private protected override void OnNativeFlagsChanged(NSEvent evt)
 		{
 			var newFlags = evt.ModifierFlags;
+			var modifiers = VirtualKeyHelper.FromFlagsToVirtualModifiers(newFlags);
 
-			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			var flags = Enum.GetValues<NSEventModifierMask>();
 			foreach (var flag in flags)
 			{
-				var key = VirtualKeyHelper.FromFlags(flag);
+				var key = VirtualKeyHelper.FromFlagsToKey(flag);
 				if (key == null)
 				{
 					continue;
@@ -168,7 +156,7 @@ namespace Windows.UI.Xaml
 
 				if (raiseKeyDown || raiseKeyUp)
 				{
-					var args = new KeyRoutedEventArgs(this, key.Value)
+					var args = new KeyRoutedEventArgs(this, key.Value, modifiers)
 					{
 						CanBubbleNatively = false // Only the first responder gets the event
 					};
@@ -192,7 +180,7 @@ namespace Windows.UI.Xaml
 
 		private bool CheckFlagKeyDown(NSEventModifierMask flag, NSEventModifierMask newMask) => !_lastFlags.HasFlag(flag) && newMask.HasFlag(flag);
 
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -242,7 +230,7 @@ namespace Windows.UI.Xaml
 
 		private protected override void OnNativeKeyUp(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode), VirtualKeyHelper.FromFlagsToVirtualModifiers(evt.ModifierFlags))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};

@@ -1,6 +1,6 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
+using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {

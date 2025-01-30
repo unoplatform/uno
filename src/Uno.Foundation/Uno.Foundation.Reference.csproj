@@ -1,18 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
-    	<RootNamespace>Windows.Foundation</RootNamespace>
+		<RootNamespace>Windows.Foundation</RootNamespace>
 		<NoWarn>$(NoWarn);1572;1712;1711;1574</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -22,13 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<PackageReference Include="System.Memory" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -2,12 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Uno.Core.Comparison;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal static class HtmlElementHelper
 {
@@ -16,6 +17,8 @@ internal static class HtmlElementHelper
 	private static readonly PropertyInfo _htmlElementAttributeTagGetter;
 	private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "HtmlElementAttribute is suppressed from the linker")]
+	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "HtmlElementAttribute is suppressed from the linker")]
 	static HtmlElementHelper()
 	{
 		_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true)!;
@@ -26,16 +29,9 @@ internal static class HtmlElementHelper
 	{
 		const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
 
-		if (PlatformHelper.IsNetCore)
-		{
-			// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
-			return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
-				?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
-		}
-		else
-		{
-			return Assembly.Load(UnoUIRuntimeWebAssemblyName);
-		}
+		// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
+		return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
+			?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
 	}
 
 	internal static HtmlTag GetHtmlTag(Type type, string defaultHtmlTag)

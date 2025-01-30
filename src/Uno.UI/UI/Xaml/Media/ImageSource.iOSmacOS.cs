@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -22,17 +23,18 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 public partial class ImageSource
 {
 	private readonly bool _isOriginalSourceUIImage;
+	private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 	partial void InitFromResource(Uri uri)
 	{
 		var path = uri
 			.PathAndQuery
-			.TrimStart(new[] { '/' })
+			.TrimStart('/')
 
 			// UWP supports backward slash in path for directory separators.
 			.Replace("\\", "/");
@@ -101,55 +103,20 @@ public partial class ImageSource
 	{
 		var image = OpenBundleFromString(BundleName) ?? OpenBundleFromString(BundlePath);
 
-		if (image is not null)
+		if (image is null)
 		{
-			_imageData = ImageData.FromNative(image);
-		}
-		else
-		{
-			_imageData = ImageData.Empty;
+			this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundleName ?? BundlePath ?? "");
+
+			return _imageData = ImageData.Empty;
 		}
 
-		if (!_imageData.HasData)
-		{
-			this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundleName ?? BundlePath);
-		}
-
-		return _imageData;
+		return _imageData = ImageData.FromNative(image);
 	}
 
 	/// <summary>
 	/// Indicates that this ImageSource has enough information to be opened
 	/// </summary>
 	private protected virtual bool IsSourceReady => false;
-
-	/// <summary>
-	/// Override to provide the capability of concrete ImageSource to open synchronously.
-	/// </summary>
-	/// <param name="image">Returned image data.</param>
-	/// <returns>True if opening synchronously is possible.</returns>
-	private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-	{
-		image = default;
-		return false;
-	}
-
-	/// <summary>
-	/// Override to provide the capability of concrete ImageSource to open asynchronously.
-	/// </summary>
-	/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-	/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-	/// <param name="asyncImage">Async task for image data retrieval.</param>
-	/// <returns>True if opening asynchronously is possible.</returns>
-	/// <remarks>
-	/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-	/// Depending on stretching, only one of each can be provided.
-	/// </remarks>
-	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
-	{
-		asyncImage = default;
-		return false;
-	}
 
 	/// <summary>
 	/// Retrieves the already loaded image, or for supported source (eg. WriteableBitmap, cf remarks),

@@ -1,10 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
@@ -29,12 +25,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -43,15 +34,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
-		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -61,22 +47,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="AssemblyInfo.cs" />
+		<UpToDateCheckInput Remove="AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

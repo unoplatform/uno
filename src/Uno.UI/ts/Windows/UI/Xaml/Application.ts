@@ -1,11 +1,15 @@
-﻿namespace Windows.UI.Xaml {
+﻿namespace Microsoft.UI.Xaml {
 
 	export class Application {
 		private static dispatchVisibilityChange: (isVisible: boolean) => number;
 
 		public static observeVisibility() {
 			if (!Application.dispatchVisibilityChange) {
-				Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					Application.dispatchVisibilityChange = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Application.DispatchVisibilityChange;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			if (document.onvisibilitychange !== undefined) {

@@ -7,7 +7,7 @@
   <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
 
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+  <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
 	<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
 

@@ -1,79 +1,24 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Windows.Foundation;
-using System.IO;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
-using Windows.System;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Input;
-using Uno.UI.Media;
+using Windows.Foundation;
+using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls
+
+#if HAS_UNO_WINUI
+using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
+#else
+using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+#endif
+
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement
+	public partial class ScrollContentPresenter : ContentPresenter
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
-		// Default physical amount to scroll with Up/Down/Left/Right key
-		//const double ScrollViewerLineDelta = 16.0;
-
-		// This value comes from WHEEL_DELTA defined in WinUser.h. It represents the universal default mouse wheel delta.
-		const int ScrollViewerDefaultMouseWheelDelta = 120;
-
-		// These macros compute how many integral pixels need to be scrolled based on the viewport size and mouse wheel delta.
-		// - First the maximum between 48 and 15% of the viewport size is picked.
-		// - Then that number is multiplied by (mouse wheel delta/120), 120 being the universal default value.
-		// - Finally if the resulting number is larger than the viewport size, then that viewport size is picked instead.
-		private static double GetVerticalScrollWheelDelta(Size size, double delta)
-			=> Math.Min(Math.Floor(size.Height), Math.Round(delta * Math.Max(48.0, Math.Round(size.Height * 0.15, 0)) / ScrollViewerDefaultMouseWheelDelta, 0));
-		private static double GetHorizontalScrollWheelDelta(Size size, double delta)
-			=> Math.Min(Math.Floor(size.Width), Math.Round(delta * Math.Max(48.0, Math.Round(size.Width * 0.15, 0)) / ScrollViewerDefaultMouseWheelDelta, 0));
-
-		// Minimum value of MinZoomFactor, ZoomFactor and MaxZoomFactor
-		// ZoomFactor can be manipulated to a slightly smaller value, but
-		// will jump back to 0.1 when the manipulation completes.
-		//const double ScrollViewerMinimumZoomFactor = 0.1f;
-
-		// Tolerated rounding delta in pixels between requested scroll offset and
-		// effective value. Used to handle non-DM-driven scrolls.
-		//const double ScrollViewerScrollRoundingTolerance = 0.05f;
-
-		// Tolerated rounding delta in pixels between requested scroll offset and
-		// effective value for cases where IScrollInfo is implemented by a
-		// IManipulationDataProvider provider. Used to handle non-DM-driven scrolls.
-		//const double ScrollViewerScrollRoundingToleranceForProvider = 1.0f;
-
-		// Delta required between the current scroll offsets and target scroll offsets
-		// in order to warrant a call to BringIntoViewport instead of
-		// SetOffsetsWithExtents, SetHorizontalOffset, SetVerticalOffset.
-		//const double ScrollViewerScrollRoundingToleranceForBringIntoViewport = 0.001f;
-
-		// Tolerated rounding delta in between requested zoom factor and
-		// effective value. Used to handle non-DM-driven zooms.
-		//const double ScrollViewerZoomExtentRoundingTolerance = 0.001f;
-
-		// Tolerated rounding delta in between old and new zoom factor
-		// in DM delta handling.
-		//const double ScrollViewerZoomRoundingTolerance = 0.000001f;
-
-		// Delta required between the current zoom factor and target zoom factor
-		// in order to warrant a call to BringIntoViewport instead of ZoomToFactor.
-		//const double ScrollViewerZoomRoundingToleranceForBringIntoViewport = 0.00001f;
-
-		// When a snap point is within this tolerance of the scrollviewer's extent
-		// minus its viewport we nudge the snap point back into place.
-		//const double ScrollViewerSnapPointLocationTolerance = 0.0001f;
-
-		// If a ScrollViewer is going to reflow around docked CoreInputView occlussions
-		// by shrinking its viewport, we want to at least guarantee that it will keep
-		// an appropriate size.
-		//const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
-
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 
 		private bool _canHorizontallyScroll;
@@ -112,6 +57,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private object RealContent => Content;
 
+		private readonly SerialDisposable _eventSubscriptions = new();
+
 		partial void InitializePartial()
 		{
 #if __SKIA__
@@ -122,21 +69,63 @@ namespace Windows.UI.Xaml.Controls
 
 			_strategy.Initialize(this);
 
-			// Mouse wheel support
-			PointerWheelChanged += ScrollContentPresenter_PointerWheelChanged;
-
-			// Touch scroll support
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
-			ManipulationStarting += PrepareTouchScroll;
-			ManipulationDelta += UpdateTouchScroll;
-			ManipulationCompleted += CompleteTouchScroll;
 		}
 
-		public void SetVerticalOffset(double offset)
-			=> Set(verticalOffset: offset);
+		private void HookScrollEvents(ScrollViewer sv)
+		{
+			UnhookScrollEvents(sv);
 
-		public void SetHorizontalOffset(double offset)
-			=> Set(horizontalOffset: offset);
+			// Note: the way WinUI does scrolling is very different, and doesn't use
+			// PointerWheelChanged changes, etc.
+			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
+			// the way hit-testing works (see #16201), the SCP will not receive any pointer
+			// events. On WinUI, this is also the case: pointer presses are received on the SV,
+			// not on the SCP.
+
+			// Mouse wheel support
+			sv.PointerWheelChanged += PointerWheelScroll;
+
+			// Touch scroll support
+			// Note: Events are hooked on the SCP itself, not the ScrollViewer
+			ManipulationStarting += PrepareTouchScroll;
+			ManipulationStarted += TouchScrollStarted;
+			ManipulationDelta += UpdateTouchScroll;
+			ManipulationCompleted += CompleteTouchScroll;
+
+			_eventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				sv.PointerWheelChanged -= PointerWheelScroll;
+
+				ManipulationStarting -= PrepareTouchScroll;
+				ManipulationStarted -= TouchScrollStarted;
+				ManipulationDelta -= UpdateTouchScroll;
+				ManipulationCompleted -= CompleteTouchScroll;
+			});
+		}
+
+		private void UnhookScrollEvents(ScrollViewer sv)
+		{
+			_eventSubscriptions.Disposable = null;
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (Scroller is { } sv)
+			{
+				HookScrollEvents(sv);
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			if (Scroller is { } sv)
+			{
+				UnhookScrollEvents(sv);
+			}
+		}
 
 		/// <inheritdoc />
 		protected override void OnContentChanged(object oldValue, object newValue)
@@ -162,16 +151,16 @@ namespace Windows.UI.Xaml.Controls
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
-			bool disableAnimation = true,
+			bool disableAnimation = false,
 			bool isIntermediate = false)
 		{
 			var success = true;
 
 			if (horizontalOffset is double hOffset)
 			{
-				var extentWidth = ExtentWidth;
-				var viewportWidth = ViewportWidth;
-				var scrollX = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
+
+				var scrollX = ValidateInputOffset(hOffset, 0, maxOffset);
 
 				success &= scrollX == hOffset;
 
@@ -183,9 +172,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (verticalOffset is double vOffset)
 			{
-				var extentHeight = ExtentHeight;
-				var viewportHeight = ViewportHeight;
-				var scrollY = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
+				var maxOffset = Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
+				var scrollY = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= scrollY == vOffset;
 
@@ -215,44 +203,6 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateViewport();
 		}
 
-		// Ensure the offset we're scrolling to is valid.
-		private double ValidateInputOffset(double offset, int minOffset, double maxOffset)
-		{
-			if (offset.IsNaN())
-			{
-				throw new InvalidOperationException($"Invalid scroll offset value");
-			}
-
-			return Math.Max(minOffset, Math.Min(offset, maxOffset));
-		}
-
-		private void ScrollContentPresenter_PointerWheelChanged(object sender, Input.PointerRoutedEventArgs e)
-		{
-			var properties = e.GetCurrentPoint(null).Properties;
-
-			if (Content is UIElement)
-			{
-				var canScrollHorizontally = CanHorizontallyScroll;
-				var canScrollVertically = CanVerticallyScroll;
-
-				if (e.KeyModifiers == VirtualKeyModifiers.Control)
-				{
-					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
-				}
-				else if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift)
-				{
-					if (canScrollHorizontally)
-					{
-						SetHorizontalOffset(HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, -properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
-					}
-				}
-				else
-				{
-					SetVerticalOffset(VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, properties.MouseWheelDelta * ScrollViewerDefaultMouseWheelDelta));
-				}
-			}
-		}
-
 		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
 		{
 			if (e.Container != this)
@@ -267,6 +217,11 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			if (Scroller?.IsScrollInertiaEnabled is true)
+			{
+				e.Mode |= ManipulationModes.TranslateInertia;
+			}
+
 			if (!CanVerticallyScroll || ExtentHeight <= 0)
 			{
 				e.Mode &= ~ManipulationModes.TranslateY;
@@ -275,6 +230,21 @@ namespace Windows.UI.Xaml.Controls
 			if (!CanHorizontallyScroll || ExtentWidth <= 0)
 			{
 				e.Mode &= ~ManipulationModes.TranslateX;
+			}
+		}
+
+		private void TouchScrollStarted(object sender, ManipulationStartedRoutedEventArgs e)
+		{
+			if (e.Container != this)
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
+			if (e.PointerDeviceType == _PointerDeviceType.Touch)
+			{
+				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+				this.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 			}
 		}
 
@@ -289,6 +259,7 @@ namespace Windows.UI.Xaml.Controls
 			Set(
 				horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
 				verticalOffset: VerticalOffset - e.Delta.Translation.Y,
+				disableAnimation: true,
 				isIntermediate: true);
 		}
 
@@ -299,11 +270,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			Set(isIntermediate: false);
+			Set(disableAnimation: true, isIntermediate: false);
+
+			Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+			this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 		}
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+#endif
 	}
 }
 #endif

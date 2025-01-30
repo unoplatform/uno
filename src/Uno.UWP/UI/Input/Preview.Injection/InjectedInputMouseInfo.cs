@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -19,7 +20,7 @@ public partial class InjectedInputMouseInfo
 
 	public int DeltaX { get; set; }
 
-	internal PointerEventArgs ToEventArgs(InjectedInputState state)
+	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers)
 	{
 		var update = default(PointerUpdateKind);
 		var position = state.Position;
@@ -100,9 +101,10 @@ public partial class InjectedInputMouseInfo
 
 		properties.PointerUpdateKind = update;
 
+		var timestampInMicroseconds = state.Timestamp + TimeOffsetInMilliseconds * 1000;
 		var point = new PointerPoint(
 			state.FrameId + TimeOffsetInMilliseconds,
-			state.Timestamp + TimeOffsetInMilliseconds,
+			timestampInMicroseconds,
 			PointerDevice.For(PointerDeviceType.Mouse),
 			uint.MaxValue - 42, // Try to avoid conflict with the real mouse pointer
 			position,
@@ -110,6 +112,6 @@ public partial class InjectedInputMouseInfo
 			isInContact: properties.HasPressedButton,
 			properties);
 
-		return new PointerEventArgs(point, default);
+		return new PointerEventArgs(point, modifiers);
 	}
 }

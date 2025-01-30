@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -22,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_ThemeResource
 	{
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("Fails on UWP with 'The parameter is incorrect.'")]
 #endif
 #if __MACOS__
@@ -69,7 +65,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_DefaultForeground_Non_Fluent() => await When_DefaultForeground(Colors.Black, Colors.White);
+		public async Task When_DefaultForeground_Non_Fluent()
+		{
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_DefaultForeground(Colors.Black, Colors.White);
+		}
 #endif
 
 		[TestMethod]
@@ -79,10 +79,126 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		public async Task When_DefaultForeground_Fluent()
 		{
-			using (StyleHelper.UseFluentStyles())
+			await When_DefaultForeground(Color.FromArgb(228, 0, 0, 0), Colors.White);
+		}
+
+		[TestMethod]
+		public async Task When_AppLevel_Resource_CheckBox_Override()
+		{
+			// Use fluent styles to rely on known Theme Resources
+			var SUT = new When_AppLevel_Resource_CheckBox_Override();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var normalRectangle = SUT.cb01.FindName("NormalRectangle") as Rectangle;
+
+			Assert.IsNotNull(normalRectangle);
+
+			// Validation for early ThemeResource resolution in Storyboard timeline
+			Assert.AreEqual(Colors.Yellow, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
+
+			SUT.cb01.IsChecked = true;
+
+			// Validation for late (OnLoaded) ThemeResource resolution in Storyboard timeline
+			Assert.AreEqual(Colors.Red, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
+		}
+
+		[TestMethod]
+		public async Task When_AppLevel_Resource_SplitButton_Override()
+		{
+			// Use fluent styles to rely on known Theme Resources
+			var SUT = new When_AppLevel_Resource_SplitButton_Override();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var contentPresenter = SUT.sb01.FindName("ContentPresenter") as ContentPresenter;
+
+			Assert.IsNotNull(contentPresenter);
+
+			var color = contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty);
+
+			SUT.sb01.IsEnabled = false;
+
+			// Validation for late (OnLoaded) ThemeResource resolution in Setter value
+			Assert.AreEqual(Colors.Yellow, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
+			Assert.AreNotEqual(color, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
+		}
+
+		[TestMethod]
+		public async Task When_ThemeResource_Style_Switch()
+		{
+			var SUT = new When_ThemeResource_Style_Switch_Page();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+
+			Assert.AreEqual(Colors.Blue, color);
+
+			SUT.TestButton.Style = (Style)SUT.Resources["SecondButtonStyle"];
+
+			await WindowHelper.WaitForIdle();
+
+			color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+
+			Assert.AreEqual(Colors.Red, color);
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed()
+		{
+			var control = new ThemeResource_Theme_Changing_Override();
+			WindowHelper.WindowContent = control;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Colors.Red, (control.button01.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button02.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button03.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button04.Background as SolidColorBrush)?.Color);
+
+			Assert.AreEqual(Colors.Green, (control.button01_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button02_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button03_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button04_override.Background as SolidColorBrush)?.Color);
+
+			using (ThemeHelper.UseDarkTheme())
 			{
-				await When_DefaultForeground(Color.FromArgb(228, 0, 0, 0), Colors.White);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(Colors.DarkRed, (control.button01.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button02.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button03.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button04.Background as SolidColorBrush)?.Color);
+
+				Assert.AreEqual(Colors.DarkGreen, (control.button01_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button02_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button03_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button04_override.Background as SolidColorBrush)?.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Refresh_On_Loading()
+		{
+			var userControl = new ThemeResource_Refresh_On_Loading();
+			WindowHelper.WindowContent = userControl;
+			await WindowHelper.WaitForLoaded(userControl);
+
+			var expected = new Thickness(40);
+
+			var loaded = false;
+			var datePicker = new DatePicker();
+			datePicker.Loaded += (s, e) => loaded = true;
+			userControl.SetContent(datePicker);
+
+			await WindowHelper.WaitFor(() => loaded);
+
+			var datePart = (TextBlock)datePicker.FindVisualChildByName("DayTextBlock");
+
+			Assert.AreEqual(expected, datePart.Padding);
 		}
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)

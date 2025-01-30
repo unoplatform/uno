@@ -7,13 +7,10 @@ using CoreGraphics;
 using Uno.Extensions;
 using Uno.UI.Controls;
 using UIKit;
-using Windows.UI.Xaml.Controls.Primitives;
-
-#if NET6_0_OR_GREATER
+using Microsoft.UI.Xaml.Controls.Primitives;
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PickerModel : UIPickerViewModel
 	{

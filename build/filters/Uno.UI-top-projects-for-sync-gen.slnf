@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "..\\..\\src\\Uno.UI.sln",
+    "projects": [
+      "Uno.UI\\Uno.UI.netcoremobile.csproj",
+      "Uno.UI\\Uno.UI.Skia.csproj",
+      "Uno.UI\\Uno.UI.Wasm.csproj",
+      "Uno.UI\\Uno.UI.Reference.csproj",
+      "Uno.UI\\Uno.UI.Tests.csproj",
+    ]
+  }
+}

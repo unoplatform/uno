@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using System.Collections.Generic;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace MUXControlsTestApp.Utilities
 {
 	public static class VisualTreeUtils
 	{
 		public static T FindVisualChildByType<T>(this DependencyObject element)
-#if !NETFX_CORE
+#if !WINAPPSDK
 			where T : class, DependencyObject
 #else
 			where T : DependencyObject
@@ -39,7 +40,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static T FindElementOfTypeInSubtree<T>(this DependencyObject element)
-#if !NETFX_CORE
+#if !WINAPPSDK
 			where T : class, DependencyObject
 #else
 			where T : DependencyObject
@@ -110,6 +111,37 @@ namespace MUXControlsTestApp.Utilities
 			return element is T elementAsT
 				? elementAsT
 				: VisualTreeHelper.GetParent(element).FindVisualParentByType<T>();
+		}
+
+		public static List<T> FindVisualChildrenByType<T>(DependencyObject parent)
+#if !WINAPPSDK
+			where T : class, DependencyObject
+#else
+			where T : DependencyObject
+#endif
+		{
+			List<T> children = new List<T>();
+			T parentAsT = parent as T;
+
+			if (parentAsT != null)
+			{
+				children.Add(parentAsT);
+			}
+
+			int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+
+			for (int i = 0; i < childrenCount; i++)
+			{
+				var childAsFE = VisualTreeHelper.GetChild(parent, i) as DependencyObject;
+
+				if (childAsFE != null)
+				{
+					List<T> result = FindVisualChildrenByType<T>(childAsFE);
+					children.AddRange(result);
+				}
+			}
+
+			return children;
 		}
 	}
 }

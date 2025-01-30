@@ -1,12 +1,12 @@
 ﻿using Android.Views;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{
@@ -26,10 +26,10 @@ namespace Windows.UI.Xaml
 
 				if (unoViewGroup != null)
 				{
-					var newContentAsFrameworkElement = newView as IFrameworkElement;
+					var newContentAsFrameworkElement = newView as FrameworkElement;
 					if (newContentAsFrameworkElement != null)
 					{
-						newContentAsFrameworkElement.TemplatedParent = (unoViewGroup as IFrameworkElement)?.TemplatedParent;
+						newContentAsFrameworkElement.SetTemplatedParent((unoViewGroup as FrameworkElement)?.GetTemplatedParent());
 					}
 					unoViewGroup.AddView(newView, currentPosition.Value);
 				}

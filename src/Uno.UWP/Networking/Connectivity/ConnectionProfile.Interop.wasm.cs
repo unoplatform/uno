@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.Networking.Connectivity
 {
@@ -12,4 +11,3 @@ namespace __Windows.Networking.Connectivity
 		}
 	}
 }
-#endif

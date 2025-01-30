@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -57,6 +58,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			PivotItem pi = null;
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[0]) as PivotItem) != null);
 
+			// This requires two calls to WaitForIdle, even in Windows.
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
 			var tbs = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs.Should().NotBeNull();
@@ -65,14 +70,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[1]) as PivotItem) != null);
 
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
 			var tbs2 = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs2.Should().NotBeNull();
+
+#if !__IOS__ && !__ANDROID__
+			// Pivot items are materialized on demand, there should not be any text block in the second item.
+			tbs2.Should().HaveCount(0);
+#else
+			// iOS/Android still materializes the content of the second item, even if it's not visible.
 			tbs2.Should().HaveCount(1);
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
+#endif
 		}
 
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Check_Changing_Header_Affects_UI()
@@ -115,6 +130,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectedIndex.Should().Be(1);
 			SUT.SelectedItem.Should().Be(pivotItem2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Pivot_Single_ItemContent_Visible()
+		{
+			var items = Enumerable.Range(0, 3).ToArray();
+			var setup = new Pivot
+			{
+				ItemsSource = items,
+				SelectedItem = items.Last(),
+			};
+			await UITestHelper.Load(setup);
+
+			var containers = items.Select((x, i) => setup.ContainerFromIndex(i)).OfType<PivotItem>().ToArray();
+
+			Assert.AreEqual(3, containers.Length, "Should have 3 containers");
+			Assert.AreEqual(1, containers.Count(x => x.Visibility == Visibility.Visible), "Only one PivotItem should be visible");
 		}
 
 		private class MyContext

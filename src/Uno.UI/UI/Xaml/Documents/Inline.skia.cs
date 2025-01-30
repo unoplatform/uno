@@ -1,42 +1,32 @@
 ﻿using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Inline
 	{
 		private FontDetails? _fontInfo;
-		private SKPaint? _paint;
 
-		internal SKPaint Paint
+		internal FontDetails FontInfo
 		{
 			get
 			{
-				var paint = _paint ??= new SKPaint(FontInfo.SKFont)
+				_fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+
+				if (_fontInfo.CanChange)
 				{
-					TextEncoding = SKTextEncoding.Utf16,
-					IsStroke = false,
-					IsAntialias = true,
-				};
+					_fontInfo.RegisterElementForFontLoaded(this);
+				}
 
-				return paint;
+				return _fontInfo;
 			}
 		}
 
-		internal FontDetails FontInfo => _fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
-
-		internal float LineHeight
-		{
-			get
-			{
-				var metrics = FontInfo.SKFontMetrics;
-				return metrics.Descent - metrics.Ascent;
-			}
-		}
+		internal float LineHeight => FontInfo.LineHeight;
 
 		internal float AboveBaselineHeight => -FontInfo.SKFontMetrics.Ascent;
 
@@ -51,6 +41,12 @@ namespace Windows.UI.Xaml.Documents
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
+			InvalidateFontInfo();
+		}
+
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
 			InvalidateFontInfo();
 		}
 

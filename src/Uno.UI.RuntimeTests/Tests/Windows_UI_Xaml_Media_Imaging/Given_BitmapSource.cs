@@ -4,22 +4,22 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Private.Infrastructure;
 using Windows.Storage;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 #endif
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_SetSource_Stream_Then_StreamClonedSynchronously()
@@ -159,64 +159,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_WriteableBitmap_Assigned_With_Data_Present()
-		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
-			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-			}
-
-			var wb = new WriteableBitmap(20, 20);
-
-			var parent = new Border()
-			{
-				Width = 50,
-				Height = 50,
-				Background = new SolidColorBrush(Colors.Blue),
-			};
-
-			var rect = new Rectangle
-			{
-				Width = 20,
-				Height = 20,
-				VerticalAlignment = VerticalAlignment.Center,
-				HorizontalAlignment = HorizontalAlignment.Center,
-			};
-
-			parent.Child = rect;
-
-			WindowHelper.WindowContent = parent;
-
-			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitForLoaded(rect);
-
-			var bgraPixelData = Enumerable.Repeat<byte>(255, (int)wb.PixelBuffer.Length).ToArray();
-
-			using (Stream stream = wb.PixelBuffer.AsStream())
-			{
-				stream.Write(bgraPixelData, 0, bgraPixelData.Length);
-			}
-
-			rect.Fill = new ImageBrush
-			{
-				ImageSource = wb
-			};
-
-			await WindowHelper.WaitForIdle();
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(parent);
-			var snapshot = await RawBitmap.From(renderer, rect);
-			var coords = parent.GetRelativeCoords(rect);
-			await WindowHelper.WaitForIdle();
-
-			ImageAssert.DoesNotHaveColorInRectangle(
-				snapshot, new System.Drawing.Rectangle((int)coords.X, (int)coords.Y, (int)coords.Width, (int)coords.Height), Colors.Blue);
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ImageBrush_Source_Changes()
 		{
 			var imageBrush = new ImageBrush();
@@ -241,6 +183,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_100_150.png");
 			await WindowHelper.WaitFor(() => imageOpened);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Uri_Nullified()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive("Taking screenshots is not possible on this target platform.");
+			}
+
+			var image = new Image();
+			var bitmapImage = new BitmapImage();
+			image.Source = bitmapImage;
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+			};
+			border.Child = image;
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+
+			var initialScreenshot = await UITestHelper.ScreenShot(border);
+
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
+			bool opened = false;
+			bitmapImage.ImageOpened += (s, e) => opened = true;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => opened);
+
+			var screenshotWithImage = await UITestHelper.ScreenShot(border);
+
+			await ImageAssert.AreNotEqualAsync(initialScreenshot, screenshotWithImage);
+
+			bitmapImage.UriSource = null;
+			await WindowHelper.WaitForIdle();
+
+			var screenshotWithoutImage = await UITestHelper.ScreenShot(border);
+
+			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
 		}
 
 		private class Given_BitmapSource_Exception : Exception

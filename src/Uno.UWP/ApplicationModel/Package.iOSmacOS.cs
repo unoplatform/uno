@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,4 +36,3 @@ namespace Windows.ApplicationModel
 		}
 	}
 }
-#endif

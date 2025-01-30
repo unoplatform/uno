@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Windows.Media;
-using SkiaSharp;
+using Uno.UI.Rendering;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
-internal interface IWpfRenderer : IDisposable
+internal interface IWpfRenderer : IRenderer, IDisposable
 {
-	SKColor BackgroundColor { get; set; }
+	bool TryInitialize();
 
 	void Render(DrawingContext drawingContext);
-	bool Initialize();
-
-	SKSize CanvasSize { get; }
 }

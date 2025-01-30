@@ -1,24 +1,30 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Uno;
+using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
 namespace SampleControl.Entities
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{
+		// Keep all property getters and setters public to avoid issues when serializing/deserializing recent samples
+		// See https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
 		public string ControlName { get; set; }
 		public Type ViewModelType { get; set; }
 		public Type ControlType { get; set; }
 		public string[] Categories { get; set; }
+		public string CategoriesString => Categories?.JoinBy(", ");
 		public string Description { get; set; }
-		public bool IgnoreInSnapshotTests { get; internal set; }
-		public bool IsManualTest { get; internal set; }
-		public bool UsesFrame { get; internal set; }
+		public string QueryString => $"?sample={Categories.FirstOrDefault() ?? ""}/{ControlName}";
+		public bool IgnoreInSnapshotTests { get; set; }
+		public bool IsManualTest { get; set; }
+		public bool UsesFrame { get; set; }
 
 		bool _isFavorite;
 		public bool IsFavorite

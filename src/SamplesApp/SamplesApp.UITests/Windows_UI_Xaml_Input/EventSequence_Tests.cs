@@ -24,11 +24,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)] // Wasm is flaky, failing on Android https://github.com/unoplatform/uno/issues/9080
 		public void TestTranslatedTap()
 			=> RunSequence("TranslatedTap", TranslateOverElement);
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Wasm is disabled https://github.com/unoplatform/uno/issues/13844
 		public void TestTranslatedClick()
 			=> RunSequence("TranslatedClick", TranslateOverElement);
 

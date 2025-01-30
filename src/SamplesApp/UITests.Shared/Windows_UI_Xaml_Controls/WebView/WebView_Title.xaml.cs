@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace UITests.Windows_UI_Xaml_Controls.WebView
 {

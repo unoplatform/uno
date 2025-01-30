@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Drawing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class StackPanel
 	{

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +10,11 @@ using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	//TODO#2780: support Day/Month/YearVisible
 	public partial class NativeDatePickerFlyout : DatePickerFlyout
@@ -24,17 +24,18 @@ namespace Windows.UI.Xaml.Controls
 		public const string DismissButtonPartName = "DismissButton";
 		#endregion
 
-		private readonly SerialDisposable _presenterCommandsDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
+		internal DatePickerSelector _selector;
 
 		private NativeDatePickerFlyoutPresenter _presenter
 		{
 			get => _tpPresenter as NativeDatePickerFlyoutPresenter;
 			set => _tpPresenter = value;
 		}
-		private DatePickerSelector _selector;
+
+		internal bool IsNativeDialogOpen { get; private set; }
 
 		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
 			"UseNativeMinMaxDates",
@@ -129,7 +130,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
-					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 					binder.Store.SetValue(binder.Store.DataContextProperty, flyout.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
 
@@ -147,8 +147,8 @@ namespace Windows.UI.Xaml.Controls
 			// of where to place the user's position in the looping selectors.
 			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
 			{
-				var temp = new Windows.Globalization.Calendar();
-				var calendar = new Windows.Globalization.Calendar(
+				var temp = new global::Windows.Globalization.Calendar();
+				var calendar = new global::Windows.Globalization.Calendar(
 					temp.Languages,
 					CalendarIdentifier,
 					temp.GetClock());
@@ -169,12 +169,14 @@ namespace Windows.UI.Xaml.Controls
 			AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss());
 
 			_presenterLoadedDisposable.Disposable = null;
+			IsNativeDialogOpen = true;
 		}
 
 		private void OnPresenterUnloaded(object sender, RoutedEventArgs e)
 		{
 			_presenterLoadedDisposable.Disposable = null;
 			_presenterUnloadedDisposable.Disposable = null;
+			IsNativeDialogOpen = false;
 		}
 
 		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)

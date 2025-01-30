@@ -1,6 +1,5 @@
-#nullable enable
+﻿#nullable enable
 
-#if __IOS__
 using System;
 using System.Collections.Generic;
 using CoreAnimation;
@@ -9,7 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
@@ -25,19 +24,21 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal override void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		internal override bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 		{
 			base.StartAnimationCore(propertyName, animation);
 
 			switch (animation)
 			{
-				case KeyFrameAnimation kfa:
+				case ScalarKeyFrameAnimation kfa:
 					AnimateKeyFrameAnimation(propertyName, kfa);
-					break;
+					return true;
 			}
+
+			return false;
 		}
 
-		private void AnimateKeyFrameAnimation(string propertyName, KeyFrameAnimation kfa)
+		private void AnimateKeyFrameAnimation(string propertyName, ScalarKeyFrameAnimation kfa)
 		{
 			switch (propertyName)
 			{
@@ -58,8 +59,8 @@ namespace Windows.UI.Composition
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			CALayer layer,
-			KeyFrameAnimation.KeyFrame from,
-			KeyFrameAnimation.KeyFrame to,
+			ScalarKeyFrameAnimation.KeyFrame from,
+			ScalarKeyFrameAnimation.KeyFrame to,
 			string property,
 			Func<float, NSValue> nsValueConversion
 		)
@@ -83,4 +84,3 @@ namespace Windows.UI.Composition
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
-#endif

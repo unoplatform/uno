@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -108,6 +107,11 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
+				if (!ContainsKey(key))
+				{
+					return false;
+				}
+
 				NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
 				NSUserDefaults.StandardUserDefaults.Synchronize();
 
@@ -132,4 +136,3 @@ namespace Windows.Storage
 		}
 	}
 }
-#endif

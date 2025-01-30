@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
@@ -11,55 +11,53 @@ using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Describes the changes made to a dependency property
 	/// </summary>
-	public partial class DependencyPropertyChangedEventArgs : EventArgs
+	public sealed partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
 		internal DependencyPropertyChangedEventArgs(
 			DependencyProperty property,
 			object oldValue,
-			DependencyPropertyValuePrecedences oldPrecedence,
-			object newValue,
+			object newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+			, DependencyPropertyValuePrecedences oldPrecedence,
 			DependencyPropertyValuePrecedences newPrecedence,
-			bool bypassesPropagation = false)
+			bool bypassesPropagation
+#endif
+			)
 		{
 			Property = property;
 			OldValue = oldValue;
-			OldPrecedence = oldPrecedence;
 			NewValue = newValue;
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+			OldPrecedence = oldPrecedence;
 			NewPrecedence = newPrecedence;
 			BypassesPropagation = bypassesPropagation;
+#endif
 		}
 
 		/// <summary>
 		/// Gets the new value of the dependency property.
 		/// </summary>
-		public object NewValue
-		{
-			get;
-			private set;
-		}
+		public object NewValue { get; }
 
 		/// <summary>
 		/// Gets the old value of the dependency property.
 		/// </summary>
-		public object OldValue
-		{
-			get;
-			private set;
-		}
+		public object OldValue { get; }
 
+		public DependencyProperty Property { get; }
+
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 		/// <summary>
 		/// Gets the dependency property value precedence of the new value
 		/// </summary>
@@ -88,10 +86,6 @@ namespace Windows.UI.Xaml
 			get;
 			private set;
 		}
-
-		public DependencyProperty Property
-		{
-			get;
-		}
+#endif
 	}
 }

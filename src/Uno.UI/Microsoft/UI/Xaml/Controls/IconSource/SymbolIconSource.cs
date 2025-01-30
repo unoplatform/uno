@@ -1,11 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference SymbolIconSource.cpp, commit 083796a
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+// MUX Reference SymbolIconSource_Partial.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class SymbolIconSource : IconSource
 {
@@ -18,28 +19,32 @@ public partial class SymbolIconSource : IconSource
 	public static DependencyProperty SymbolProperty { get; } =
 		DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new FrameworkPropertyMetadata(Symbol.Emoji, OnPropertyChanged));
 
-	private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
 	{
-		var symbolIcon = new SymbolIcon()
-		{
-			Symbol = Symbol
-		};
+		Symbol symbol = Symbol;
 
-		if (Foreground != null)
-		{
-			symbolIcon.Foreground = Foreground;
-		}
+		var symbolIcon = new SymbolIcon();
+
+		symbolIcon.Symbol = symbol;
 
 		return symbolIcon;
 	}
 
-	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == SymbolProperty)
+		if (iconSourceProperty == SymbolProperty)
 		{
 			return SymbolIcon.SymbolProperty;
 		}
-
-		return base.GetIconElementPropertyCore(sourceProperty);
+		else
+		{
+			return base.GetIconElementPropertyCore(iconSourceProperty);
+		}
 	}
 }

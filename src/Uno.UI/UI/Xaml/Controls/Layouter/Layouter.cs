@@ -1,15 +1,14 @@
-// #define LOG_LAYOUT
+﻿// #define LOG_LAYOUT
 
 #if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -20,11 +19,11 @@ using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -34,16 +33,11 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using CoreGraphics;
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-#elif NET461 || __WASM__
-using View = Windows.UI.Xaml.UIElement;
+#elif IS_UNIT_TESTS || __WASM__
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal abstract partial class Layouter : ILayouter
 	{
@@ -112,6 +106,14 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeastZero()
 					.AtMost(maxSize);
 
+				// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+				// We are reverting those changes as they require more changes, but keeping them
+				// commented for future reference.
+				//if (Panel is not ILayoutOptOut { ShouldUseMinSize: false })
+				//{
+				//	frameworkAvailableSize = frameworkAvailableSize.AtLeast(minSize);
+				//}
+
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 				LayoutInformation.SetAvailableSize(Panel, availableSize);
 
@@ -131,11 +133,25 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
+				}
+
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
-					.AtMost(frameworkAvailableSize)
+					// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+					// We are reverting those changes as they require more changes, but keeping them
+					// commented for future reference.
+					//.AtMost(maxSize)
+					.AtMost(frameworkAvailableSize) // TODO: This line shouldn't be there (ie, frameworkAvailableSize should be maxSize).
 					.Add(marginSize)
+					// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
+					// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+					// We are reverting those changes as they require more changes, but keeping them
+					// commented for future reference.
+					//.AtMost(availableSize)
 					// Margin may be negative
 					.AtLeastZero();
 
@@ -155,14 +171,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		[Pure]
 		private static bool IsCloseReal(double a, double b)
 		{
 			var x = Math.Abs((a - b) / (b == 0d ? 1d : b));
 			return x < 1.85e-3d;
 		}
 
-		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
 			return (a < b) && !IsCloseReal(a, b);
@@ -193,6 +207,11 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
+				}
+
 				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty
 					? clip.Size
 					: finalRect.Size;
@@ -200,6 +219,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
+#if !IS_UNIT_TESTS
 				if (Panel is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
@@ -207,6 +227,7 @@ namespace Windows.UI.Xaml.Controls
 					needsClipToSlot = customClippingElement.ForceClippingToLayoutSlot;
 				}
 				else
+#endif
 				{
 					allowClipToSlot = true;
 					needsClipToSlot = false;
@@ -214,26 +235,52 @@ namespace Windows.UI.Xaml.Controls
 
 				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, clippedArrangeSize={clippedArrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
+				var arrangeSize = finalRect
+					.Size
+					.AtLeastZero(); // 0.0,0.0
+
 				if (allowClipToSlot && !needsClipToSlot)
 				{
 					if (IsLessThanAndNotCloseTo(clippedArrangeSize.Width, _unclippedDesiredSize.Width))
 					{
 						_logDebug?.Debug($"{this}: (arrangeSize.Width) {clippedArrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+						// We are reverting those changes as they require more changes, but keeping them
+						// commented for future reference.
+						//arrangeSize.Width = _unclippedDesiredSize.Width;
 					}
 
-					else if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
+					if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (arrangeSize.Height) {clippedArrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+						// We are reverting those changes as they require more changes, but keeping them
+						// commented for future reference.
+						//arrangeSize.Height = _unclippedDesiredSize.Height;
 					}
 				}
 
-				var (minSize, maxSize) = this.Panel.GetMinMax();
+				// Alignment==Stretch --> arrange at the slot size minus margins
+				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
+				if (Panel is not Microsoft.UI.Xaml.Shapes.Shape and not ContentControl)
+				{
+					// Uno specific: Shapes arrange is relying on "wrong" layouter logic to be arranged properly
+					// The "Panel is not Shape" check should be removed when we're removing the legacy shape measure/arrange
+					// Also, it seems ContentControl is causing issues (probably related to content presenter bypass?)
+					if (Panel.HorizontalAlignment != HorizontalAlignment.Stretch)
+					{
+						arrangeSize.Width = _unclippedDesiredSize.Width;
+					}
+					if (Panel.VerticalAlignment != VerticalAlignment.Stretch)
+					{
+						arrangeSize.Height = _unclippedDesiredSize.Height;
+					}
+				}
 
-				var arrangeSize = finalRect
-					.Size
-					.AtLeastZero(); // 0.0,0.0
+				var (_, maxSize) = this.Panel.GetMinMax();
+				//var marginSize = this.Panel.GetMarginSize();
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
 				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
@@ -257,11 +304,51 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				var renderSize = ArrangeOverride(arrangeSize);
+				var innerInkSize = ArrangeOverride(arrangeSize);
+				var clippedInkSize = innerInkSize.AtMost(maxSize);
+
+				// TODO: This commented code was done as part of aligning layouting on mobile platforms.
+				// We are reverting those changes as they require more changes, but keeping them
+				// commented for future reference.
+				//if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) || IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
+				//{
+				//	needsClipToSlot = true;
+				//}
+
+				//var clientSize = finalRect.Size
+				//	.Subtract(marginSize)
+				//	.AtLeastZero();
+
+				//var (offset, overflow) = Panel.GetAlignmentOffset(clientSize, clippedInkSize);
+				//var margin = Panel.Margin;
+
+				//offset = new Point(
+				//	offset.X + finalRect.X + margin.Left,
+				//	offset.Y + finalRect.Y + margin.Top
+				//);
+
+				//if (overflow)
+				//{
+				//	needsClipToSlot = true;
+				//}
+
 
 				if (_elementAsUIElement != null)
 				{
-					_elementAsUIElement.RenderSize = renderSize.AtMost(maxSize);
+					//_elementAsUIElement.LayoutSlotWithMarginsAndAlignments = new Rect(offset, innerInkSize);
+					//var layoutFrame = new Rect(offset, clippedInkSize);
+
+					// Calculate clipped frame.
+					//var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
+
+					// Rebase the origin of the clipped frame to layout
+					//_elementAsUIElement.ClippedFrame = new Rect(
+					//	clippedFrameWithParentOrigin.X - layoutFrame.X,
+					//	clippedFrameWithParentOrigin.Y - layoutFrame.Y,
+					//	clippedFrameWithParentOrigin.Width,
+					//	clippedFrameWithParentOrigin.Height);
+
+					_elementAsUIElement.RenderSize = clippedInkSize; // TODO: This should be innerInkSize
 					_elementAsUIElement.NeedsClipToSlot = needsClipToSlot;
 					_elementAsUIElement.ApplyClip();
 
@@ -466,12 +553,15 @@ namespace Windows.UI.Xaml.Controls
 
 			LayoutInformation.SetLayoutSlot(view, frame);
 
+			// Note: This is not matching Windows.
+			// Applying alignments should depend on what ArrangeOverride returns (as in Skia and Wasm).
 			var (finalFrame, clippedFrame) = ApplyMarginAndAlignments(view, frame);
 			if (view is UIElement elt)
 			{
 				elt.LayoutSlotWithMarginsAndAlignments = finalFrame;
 				elt.ClippedFrame = clippedFrame;
 			}
+
 
 			ArrangeChildOverride(view, finalFrame);
 		}
@@ -489,18 +579,6 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 #endif
-
-		protected Thickness MarginChild(View view)
-		{
-			if (view is IFrameworkElement frameworkElement)
-			{
-				return frameworkElement.Margin;
-			}
-			else
-			{
-				return Thickness.Empty;
-			}
-		}
 
 		protected abstract string Name { get; }
 
@@ -740,10 +818,11 @@ namespace Windows.UI.Xaml.Controls
 				childSize += childMarginSize;
 			}
 
-			return childSize
-				.Min(frameSize) // at most
-				.Min(max) // at most
-				.Max(min); // at least
+			return Math.Max(
+				Math.Min(
+					Math.Min(childSize, frameSize),
+					max),
+				min);
 		}
 
 		/// <summary>

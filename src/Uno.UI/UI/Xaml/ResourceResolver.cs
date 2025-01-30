@@ -10,10 +10,11 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Resources;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI
 {
@@ -30,8 +31,8 @@ namespace Uno.UI
 			Uno.UI.GlobalStaticResources.MasterDictionary;
 #endif
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
-		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>(StringComparer.Ordinal);
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new(StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new(StringComparer.Ordinal);
 		/// <summary>
 		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
 		/// </summary>
@@ -82,7 +83,10 @@ namespace Uno.UI
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static object ResolveResourceStatic(object key, Type type, object context = null)
+		public static object ResolveResourceStatic(
+			object key,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
 			{
@@ -92,7 +96,7 @@ namespace Uno.UI
 				}
 				else
 				{
-					var convertedValue = BindingPropertyHelper.Convert(() => type, value);
+					var convertedValue = BindingPropertyHelper.Convert(type, value);
 					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
 					{
 						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{type}'");
@@ -110,7 +114,7 @@ namespace Uno.UI
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static bool ResolveResourceStatic(object key, out object value, object context = null)
+		internal static bool ResolveResourceStatic(object key, out object value, object context = null)
 			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out value);
 
 		/// <summary>
@@ -233,10 +237,6 @@ namespace Uno.UI
 
 			return fallbackValue;
 		}
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		// This overload is kept for backwards compatibility
-		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
-			=> ApplyResource(owner, property, resourceKey, isThemeResourceExtension, false, context);
 
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
@@ -249,6 +249,27 @@ namespace Uno.UI
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context = null)
+			=> ApplyResource(
+				owner: owner,
+				property: property,
+				resourceKey: resourceKey,
+				isThemeResourceExtension: isThemeResourceExtension,
+				isHotReloadSupported,
+				fromXamlParser: false,
+				context: context);
+
+		/// <summary>
+		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
+		/// made immediately using Application.Resources if possible, and retried at load-time using the visual-tree scope.
+		/// </summary>
+		/// <param name="owner">Owner of the property</param>
+		/// <param name="property">The property to assign</param>
+		/// <param name="resourceKey">Key to the resource</param>
+		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
+		/// <param name="fromXamlParser">True when the invocation is performed from generated markup code</param>
+		/// <param name="context">Optional parameter that provides parse-time context</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, bool fromXamlParser, object context = null)
 		{
 			var updateReason = ResourceUpdateReason.None;
 			if (isThemeResourceExtension)
@@ -264,15 +285,27 @@ namespace Uno.UI
 				updateReason |= ResourceUpdateReason.HotReload;
 			}
 
+			if (fromXamlParser && ResourceResolver.CurrentScope.Sources.IsEmpty)
+			{
+				updateReason |= ResourceUpdateReason.XamlParser;
+			}
+
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
+			// If the invocation comes from XAML and from theme resources, resolution
+			// must happen lazily, done through walking the visual tree.
+			var immediateResolution =
+				(updateReason & ResourceUpdateReason.XamlParser) != 0
+				&& (updateReason & ResourceUpdateReason.ThemeResource) != 0;
+
 			// Set initial value based on statically-available top-level resources.
-			if (TryStaticRetrieval(specializedKey, context, out var value))
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
-				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
+				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
@@ -351,7 +384,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
-		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
@@ -362,9 +395,11 @@ namespace Uno.UI
 
 				var source = sourcesEnumerator.Current;
 
-				var dictionary = (source.Target as FrameworkElement)?.Resources
+				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;
-				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+
+				if (dictionary != null
+					&& dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -387,9 +422,9 @@ namespace Uno.UI
 		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
-				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
-				TrySystemResourceRetrieval(resourceKey, out value);
+			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
+				|| TryAssemblyResourceRetrieval(resourceKey, context, out value)
+				|| TrySystemResourceRetrieval(resourceKey, out value);
 		}
 
 		/// <summary>
@@ -409,14 +444,17 @@ namespace Uno.UI
 				return false;
 			}
 
-			if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
+			if (parseContext.AssemblyName is not null)
 			{
-				foreach (var kvp in assemblyDict)
+				if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
 				{
-					var rd = kvp.Value as ResourceDictionary;
-					if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					foreach (var kvp in assemblyDict)
 					{
-						return true;
+						var rd = kvp.Value as ResourceDictionary;
+						if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -504,11 +542,21 @@ namespace Uno.UI
 
 			if (context != null)
 			{
-				// We store the dictionaries inside a ResourceDictionary to utilize the lazy-loading machinery
-				var assemblyDict = _registeredDictionariesByAssembly.FindOrCreate(context.AssemblyName, () => new ResourceDictionary());
-				var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
-				_assemblyRef++; // We don't actually use this key, we just need it to be unique
-				assemblyDict[_assemblyRef] = initializer;
+				var isGenericXaml = uri.EndsWith("themes/generic.xaml", StringComparison.OrdinalIgnoreCase);
+
+				if (isGenericXaml || FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+				{
+					// We store the dictionaries inside a ResourceDictionary to utilize the lazy-loading machinery
+					// to convert ResourceDictionary.ResourceInitializer into actual instances
+					if (!_registeredDictionariesByAssembly.TryGetValue(context.AssemblyName, out var assemblyDict))
+					{
+						_registeredDictionariesByAssembly[context.AssemblyName] = assemblyDict = new();
+					}
+
+					var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
+					_assemblyRef++; // We don't actually use this key, we just need it to be unique
+					assemblyDict[_assemblyRef] = initializer;
+				}
 			}
 
 			if (filePath != null)

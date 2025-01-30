@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary 
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:xamarin="http:///umbrella/ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:u="using:Uno.UI.Samples.Controls"
 	xmlns:controls="using:Uno.UI.Samples.Controls">
   <!-- Merged Dictionaries -->
@@ -27,17 +27,6 @@
 											Content="{TemplateBinding Content}"
 											u:StarStackPanel.Size="*"
 											Padding="10,10,10,0"/>
-							<StackPanel Background="{StaticResource Color08Brush}"
-													u:StarStackPanel.Size="Auto"
-													Padding="10,0">
-								<TextBlock Text="DESCRIPTION"
-											 Style="{StaticResource Typo03}"
-											 Margin="0,10,0,5" />
-								<TextBlock Text="{TemplateBinding SampleDescription}"
-											 Style="{StaticResource Typo05}"
-											 MaxHeight="80"
-											 Margin="0,0,0,10" />
-							</StackPanel>
 						</u:StarStackPanel>
 					</Border>
 				</ControlTemplate>

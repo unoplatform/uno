@@ -7,10 +7,12 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
+using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -18,7 +20,7 @@ using View = AppKit.NSView;
 using View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 
 	/// <summary>
@@ -54,6 +56,10 @@ namespace Windows.UI.Xaml
 		/// the tree.
 		/// </summary>
 		private bool _isMaterializing;
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		private bool _fromLegacyTemplate;
+#endif
 
 		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
@@ -115,11 +121,14 @@ namespace Windows.UI.Xaml
 #else
 			ContentBuilder = contentBuilder;
 #endif
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+			_fromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+#endif
 		}
 
 		public ElementStub()
 		{
-			Visibility = Visibility.Collapsed;
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -140,34 +149,37 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Func<View> ContentBuilder { get; set; }
 
-		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
-		{
-			base.OnVisibilityChanged(oldValue, newValue);
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
 
-			if (ContentBuilder != null
-				&& oldValue == Visibility.Collapsed
-				&& newValue == Visibility.Visible
-				&& Parent != null
-			)
-			{
-				Materialize(isVisibilityChanged: true);
-			}
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			// the base impl would cause immediately materialization by loading this stub
+			// which is not something we want here.
 		}
+
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			// do nothing
+		}
+#endif
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			if (ContentBuilder != null
-				&& Visibility == Visibility.Visible
-			)
+			if (ContentBuilder != null && Load)
 			{
 				Materialize();
 			}
 		}
 
 		public void Materialize()
-			=> Materialize(isVisibilityChanged: false);
+			=> MaterializeInner();
 
 		private void RaiseMaterializing()
 		{
@@ -177,40 +189,31 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void Materialize(bool isVisibilityChanged)
+		private void MaterializeInner()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+				this.Log().Debug($"ElementStub.Materialize()");
 			}
 
 			if (_content == null && !_isMaterializing)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isMaterializing = true;
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(GetTemplatedParent(), _fromLegacyTemplate);
+#endif
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-					var targetDependencyObject = _content as DependencyObject;
-
-					if (isVisibilityChanged && targetDependencyObject != null)
-					{
-						var visibilityProperty = GetVisibilityProperty(_content);
-
-						// Set the visibility at the same precedence it was currently set with on the stub.
-						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
-
-						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
-					}
 
 					MaterializationChanged?.Invoke(this);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
 					_isMaterializing = false;
 				}
 			}
@@ -232,18 +235,6 @@ namespace Windows.UI.Xaml
 				}
 
 				MaterializationChanged?.Invoke(this);
-			}
-		}
-
-		private static DependencyProperty GetVisibilityProperty(View view)
-		{
-			if (view is FrameworkElement)
-			{
-				return VisibilityProperty;
-			}
-			else
-			{
-				return DependencyProperty.GetProperty(view.GetType(), nameof(Visibility));
 			}
 		}
 	}

@@ -3,7 +3,7 @@ using Uno.UI.Extensions;
 
 #if __IOS__ || __ANDROID__
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// This file only contains support of NativeScrollContentPresenter
 
@@ -13,18 +13,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private object RealContent => Native?.Content;
 
-		public void OnTemplateRecycled()
+		public void OnTemplateRecycled() // #18317 re-impl template recycling
 		{
 			// If the template is being recycled and it's TemplatedParent is null, this means that
 			// this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.
 			// We need to ensure that we're not keeping any content coming from ScrollView.Content.
-			if (TemplatedParent is null && Native is { })
+			if (GetTemplatedParent() is null && Native is { })
 			{
 				Native.Content = null;
 				Native = null;
 			}
 		}
 
+#if false
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Clear the native content, in case this instance is being explicitly removed from its templated parent.
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnTemplatedParentChanged(e);
 		}
+#endif
 
 		#region SCP to Native SCP
 #pragma warning disable CA1044 // Properties should not be write only

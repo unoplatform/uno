@@ -4,95 +4,61 @@ uid: Uno.GetStarted.Rider
 
 # Get Started on JetBrains Rider
 
+> [!IMPORTANT]
+> Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
+>
+> [!IMPORTANT]
+> Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
+>
+> - **Current Rider (2024.2 and above)**: For the current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
+>
+> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
+
 ## Prerequisites
-* [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
 
-## Rider Platforms support
+- [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2) or [**Previous Rider Version 2024.1**](https://aka.platform.uno/rider-version-2024-1)
+- [**Rider Xamarin Android Support**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) plugin from Rider in **Settings** / **Plugins**
 
-|                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
-| --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
-| **Rider for Linux**   | ❌                   | ❌†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
-| **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
-| **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
+## Check your environment
 
-† Notes:
+[!include[use-uno-check](includes/use-uno-check-inline-noheader.md)]
 
-* **Wasm**: debugging from the IDE is not available yet on Rider.  But you can use the [Chromium in-browser debugger](https://github.com/unoplatform/Uno.Wasm.Bootstrap#how-to-use-the-browser-debugger) instead.
+## Supported Platforms
 
-  To start the app from the IDE (using the "Run" button), **dotnet core 3.1** must be installed on the machine:
+|                       | **Rider for Windows** | **Rider for Mac**  | **Rider for Linux** |
+|-----------------------|-----------------------|--------------------|---------------------|
+| Windows (UWP/WinUI)   | ✔️                   | ❌                 | ❌                 |
+| Android               | ✔️                   | ✔️                 | ✔️                |
+| iOS                   | ❌                   | ✔️                 | ❌                 |
+| Wasm                  | ✔️†                  | ✔️†                | ✔️†                |
+| Catalyst              | ❌                   | ✔️                 | ❌                 |
+| Skia Desktop          | ✔️                   | ✔️                 | ✔️                |
 
-  ``` bash
-  # dotnet 3.1 sdk is required to launch Wasm app from Rider
-  # For Ubuntu, use apt install like that:
-  sudo apt install dotnet-sdk-3.1
-  ```
+<details>
+    <summary>† Notes (Click to expand)</summary>
 
-  For Mac, you should install it [from here](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-aspnetcore-3.1.10-macos-x64-binaries).
+- **WebAssembly**: debugging from the IDE is not available yet on Rider. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
 
-* **Skia-GTK** on Mac: you need to make sure to install `gtk+3` package using the following command line:
-  
-  ```bash
-  brew install gtk+3
-  ```
+</details>
 
-* **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
+## Install the Uno Platform plugin
 
-* **Android** on Linux: Xamarin.Android does not natively support Linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on Linux fail](https://github.com/xamarin/xamarin-android).
+In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, then search for **Uno Platform**:
 
-[!include[getting-help](use-uno-check-inline.md)]
+![Visual Studio Installer - .NET desktop development workload](Assets/ide-rider-plugin-search.png)
 
-## Creating a new Uno Platform project
+Then click the install button.
 
-At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
-[using dotnet new](get-started-dotnet-new.md) by following these steps:
+## Platform specific setup
 
-1. In your terminal, navigate to the folder that contains your Rider solutions.
+You may need to follow additional directions, depending on your development environment.
 
-2. Run these commands:
+### Linux
 
-Installs Uno template:  
-```bash
-dotnet new -i Uno.Templates
-```
-Creates a new project:  
-```bash
-dotnet new unoapp -o MyApp
-```
+[!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
-You should now have a folder structure that looks like this:  
-![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
+---
 
-### Android
-1. Set Android as your startup project. Run.  
-![run-android-rider](Assets/quick-start/run-android-rider.JPG)
+## Next Steps
 
-Note: Whether you're using a physical device or the emulator, the app will install but will not automatically open.
-You will have to manually open.
-
-### Wasm
-1. Select Wasm as your startup project. Run.  
-![run-wasm-rider](Assets/quick-start/run-wasm-rider.JPG)  
-A new browser window will automatically run your application.  
-
-Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
-
-### macOS
-You will be able to build the macOS project.  
-![run-ios-rider](Assets/quick-start/run-ios-rider.JPG)  
-Alternatively, you can use a tool like VNC to run the simulator on a mac.  
-
-### UWP
-You will be able to build the UWP project, however, Rider currently does not support debugging or deploying for UWP.   
-![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
-
-
-### Video Tutorial
-
-[![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo)
-
-### Troubleshooting Uno Platform Installation Issues
-
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
-
-[!include[getting-help](getting-help.md)]
+You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.Rider).

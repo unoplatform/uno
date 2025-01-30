@@ -4,7 +4,7 @@ namespace Windows.UI.Text
 {
 	partial struct FontWeight
 	{
-		public string ToCssString()
+		internal string ToCssString()
 		{
 			return Weight == 400 ? "normal" : Weight.ToStringInvariant();
 		}

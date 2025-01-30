@@ -1,11 +1,8 @@
-using System;
+﻿using System;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock
 	{

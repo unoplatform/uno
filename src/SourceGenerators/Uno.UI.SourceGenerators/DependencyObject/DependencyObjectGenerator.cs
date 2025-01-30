@@ -9,10 +9,6 @@ using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
 	[Generator]
@@ -35,6 +31,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
+			private static readonly char[] _commaArray = new[] { ',' };
+
 			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol? _unoViewgroupSymbol;
@@ -64,11 +62,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
 				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
-				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
+				_frameworkElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
-				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -146,18 +144,24 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 // </auto-generated>
 
 #pragma warning disable 1591 // Ignore missing XML comment warnings
+");
+
+					AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+
+					builder.Append(@"
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Uno.Diagnostics.Eventing;
 #if __MACOS__
 using AppKit;
@@ -167,22 +171,23 @@ using AppKit;
 					{
 						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
 						{
-							builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
+							builder.AppendLineIndented(@"[global::Microsoft.UI.Xaml.Data.Bindable]");
 						}
-
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
 					};
 
-					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+					var implementations = new string?[]
 					{
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
-
+						"IDependencyObjectStoreProvider",
+						_isUnoSolution && !typeSymbol.IsSealed ? "IDependencyObjectInternal" : null,
+						"IWeakReferenceProvider",
+					}.Where(x => x is not null);
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: " : " + string.Join(", ", implementations)))
+					{
 						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 						GenerateIBinderImplementation(typeSymbol, builder);
 					}
 
-					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+					_context.AddSource(typeSymbol.GetFullMetadataNameForFileName(), builder.ToString());
 				}
 			}
 
@@ -237,19 +242,9 @@ public override void WillMoveToSuperview(UIKit.UIView newsuper)
 	base.WillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(UIKit.UIView newsuper);
-
-private void SyncBinder(UIKit.UIView superview, UIKit.UIWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -275,19 +270,9 @@ public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
 	base.ViewWillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(AppKit.NSView newsuper);
-
-private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -311,11 +296,6 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 
 				if (isAndroidView || isAndroidActivity || isAndroidFragment)
 				{
-					if (!isAndroidActivity && !isAndroidFragment)
-					{
-						WriteRegisterLoadActions(typeSymbol, builder);
-					}
-
 					builder.AppendMultiLineIndented($@"
 #if {hasOverridesAttachedToWindowAndroid} //Is Android view (that doesn't already override OnAttachedToWindow)
 
@@ -325,15 +305,11 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 
 					protected override void OnNativeLoaded()
 					{{
-						_loadActions.ForEach(a => a.Item1());
-
 						BinderAttachedToWindow();
 					}}
 
 					protected override void OnNativeUnloaded()
 					{{
-						_loadActions.ForEach(a => a.Item2());
-
 						BinderDetachedFromWindow();
 					}}
 #else //Not UnoViewGroup
@@ -345,7 +321,6 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 						OnLoading();
 						OnLoaded();
 #endif
-						_loadActions.ForEach(a => a.Item1());
 						BinderAttachedToWindow();
 					}}
 
@@ -353,7 +328,6 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 					protected override void OnDetachedFromWindow()
 					{{
 						base.OnDetachedFromWindow();
-						_loadActions.ForEach(a => a.Item2());
 #if {implementsIFrameworkElement} //Is IFrameworkElement
 						OnUnloaded();
 #endif
@@ -391,41 +365,6 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 				}
 			}
 
-			private static void WriteRegisterLoadActions(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
-			{
-				builder.AppendMultiLineIndented($@"
-					// A list of actions to be executed on Load and Unload
-					private List<(Action loaded, Action unloaded)> _loadActions = new List<(Action loaded, Action unloaded)>(2);
-
-					/// <summary>
-					/// Registers actions to be executed when the control is Loaded and Unloaded.
-					/// </summary>
-					/// <param name=""loaded""></param>
-					/// <param name=""unloaded""></param>
-					/// <returns></returns>
-					/// <remarks>The loaded action may be executed immediately if the control is already loaded.</remarks>
-					public IDisposable RegisterLoadActions(Action loaded, Action unloaded)
-					{{
-						var actions = (loaded, unloaded);
-
-						_loadActions.Add(actions);
-
-#if __ANDROID__
-						if(this.IsLoaded())
-#elif __IOS__ || __MACOS__
-						if(Window != null)
-#else
-#error Unsupported platform
-#endif
-						{{
-							loaded();
-						}}
-
-						return Disposable.Create(() => _loadActions.Remove(actions));
-					}}
-				");
-			}
-
 			private void WriteAttachToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_iosViewSymbol) &&
@@ -435,8 +374,6 @@ private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
 
 				if (hasOverridesAttachedToWindowiOS)
 				{
-					WriteRegisterLoadActions(typeSymbol, builder);
-
 					builder.AppendMultiLineIndented($@"
 public override void MovedToWindow()
 {{
@@ -444,12 +381,10 @@ public override void MovedToWindow()
 
 	if(Window != null)
 	{{
-		_loadActions.ForEach(a => a.loaded());
 		OnAttachedToWindowPartial();
 	}}
 	else
 	{{
-		_loadActions.ForEach(a => a.unloaded());
 		OnDetachedFromWindowPartial();
 	}}
 }}
@@ -481,8 +416,6 @@ partial void OnDetachedFromWindowPartial();
 
 				if (hasOverridesAttachedToWindowiOS)
 				{
-					WriteRegisterLoadActions(typeSymbol, builder);
-
 					builder.AppendMultiLineIndented($@"
 public override void ViewDidMoveToWindow()
 {{
@@ -490,12 +423,10 @@ public override void ViewDidMoveToWindow()
 
 	if(Window != null)
 	{{
-		_loadActions.ForEach(a => a.loaded());
 		OnAttachedToWindowPartial();
 	}}
 	else
 	{{
-		_loadActions.ForEach(a => a.unloaded());
 		OnDetachedFromWindowPartial();
 	}}
 }}
@@ -529,23 +460,9 @@ partial void OnDetachedFromWindowPartial();
 				if (hasBinderDetails)
 				{
 					builder.AppendMultiLineIndented($@"
-///<summary>
-/// Should not be used directly.
-/// Helper method to provide Xaml debugging information to tools like Stetho.
-///</summary>
-[Java.Interop.ExportField(""xamlBinder"")]
 public BinderDetails GetBinderDetail()
 {{
 	return null;
-}}
-
-partial void UpdateBinderDetails()
-{{
-	if (BinderDetails.IsBinderDetailsEnabled)
-	{{
-		var field = this.Class.GetField(""xamlBinder"");
-		field.Set(this, new BinderDetails(this));
-	}}
 }}
 					");
 				}
@@ -557,7 +474,7 @@ partial void UpdateBinderDetails()
 private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 private BinderReferenceHolder _refHolder;
 
-public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 partial void InitializeBinder();
 
@@ -566,13 +483,8 @@ private void __InitializeBinder()
 	if(BinderReferenceHolder.IsEnabled)
 	{{
 		_refHolder = new BinderReferenceHolder(this.GetType(), this);
-
-		UpdateBinderDetails();
 	}}
 }}
-
-
-partial void UpdateBinderDetails();
 
 /// <summary>
 /// Obsolete method kept for binary compatibility
@@ -592,15 +504,6 @@ public void ClearBindings()
 public void RestoreBindings()
 {{
 	__Store.RestoreBindings();
-}}
-
-/// <summary>
-/// Obsolete method kept for binary compatibility
-/// </summary>
-[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-public void ApplyCompiledBindings()
-{{
 }}
 
 private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
@@ -634,9 +537,21 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					[SuppressMessage(
 						""Microsoft.Usage"",
 						""CA2215:DisposeMethodsShouldCallBaseClassDispose"",
-						Justification = ""The dispose is re-scheduled using the ValidateDispose method"")]
+						Justification = ""The dispose is re-scheduled in order to properly remove children from their parent"")]
 					protected sealed override void Dispose(bool disposing)
 					{{
+						// This method is present in order to ensure for faster collection of a disposed visual tree
+						// as well as ensure that instances can be properly returned to the FrameworkTemplatePool.
+						//
+						// This method can be called by the finalizer, in which case the object is re-registered 
+						// for finalization, and the Dispose method is invoked explicitly during a idle dispatch.
+						// 
+						// This operation can fail if Dispose() is called by user code on UIView instances.
+						// The Roslyn analyzer UnoDoNotDisposeNativeViews will warn the developer if this is the case.
+						// 
+						// For native exceptions that may be raised if Disposed is called incorrectly, see 
+						// https://github.com/xamarin/xamarin-macios/issues/19493.
+
 						if(_isDisposed)
 						{{
 							base.Dispose(disposing);
@@ -679,8 +594,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 						{{
 							GC.ReRegisterForFinalize(this);
 
-#if !(NET6_0_OR_GREATER && __MACOS__)
-							// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
+#if __MACOS__
+							// net7.0-macos and later uses CoreCLR (not mono) and the notification mechanism is different
 							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
 							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif
@@ -696,6 +611,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
+
 				string dataContextChangedInvokeArgument;
 				if (typeSymbol.Is(_frameworkElementSymbol))
 				{
@@ -747,15 +664,16 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 
 #endregion
 
-#region TemplatedParent DependencyProperty
+#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 
-public DependencyObject TemplatedParent
+{legacyNonBrowsable}public DependencyObject TemplatedParent
 {{
 	get => (DependencyObject)GetValue(TemplatedParentProperty);
 	set => SetValue(TemplatedParentProperty, value);
 }}
 
 // Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+{legacyNonBrowsable}
 public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(TemplatedParent),
@@ -763,31 +681,31 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 		ownerType: typeof({typeSymbol.Name}),
 		typeMetadata: new FrameworkPropertyMetadata(
 			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+			options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
 			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
 		)
 	);
 
 
+{legacyNonBrowsable}
 {protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 {{
-	__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
 	OnTemplatedParentChangedPartial(e);
 }}
 
 #endregion
 
-public void SetBinding(object target, string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(target, dependencyProperty, binding);
 }}
 
-public void SetBinding(string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(dependencyProperty, binding);
 }}
 
-public void SetBinding(DependencyProperty dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(DependencyProperty dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(dependencyProperty, binding);
 }}
@@ -802,9 +720,10 @@ internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyI
 
 partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 
+{legacyNonBrowsable}
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	=>  __Store.GetBindingExpression(dependencyProperty);
 
 public void ResumeBindings()
@@ -849,7 +768,7 @@ public override bool Equals(object other)
 			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder, bool hasDispatcherQueue)
 			{
 				builder.AppendLineIndented(@"private DependencyObjectStore __storeBackingField;");
-				builder.AppendLineIndented(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
+				builder.AppendLineIndented(@"public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				if (hasDispatcherQueue)
 				{
@@ -862,7 +781,7 @@ public override bool Equals(object other)
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);");
+							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty);");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 
@@ -889,11 +808,11 @@ public override bool Equals(object other)
 
 				if (_isUnoSolution && !typeSymbol.IsSealed)
 				{
-					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
+					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
 
 					if (typeSymbol.GetMethodsWithName("OnPropertyChanged2").None(m => m.Parameters.Length == 1))
 					{
-						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
+						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
 					}
 				}
 			}

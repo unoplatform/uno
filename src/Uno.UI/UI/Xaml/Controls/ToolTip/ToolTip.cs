@@ -2,17 +2,19 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{
@@ -20,7 +22,8 @@ namespace Windows.UI.Xaml.Controls
 		private const double DEFAULT_KEYBOARD_OFFSET = 12;  // Default offset for automatic tooltips opened by keyboard.
 		private const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
 		private const double DEFAULT_TOUCH_OFFSET = 44;  // Default offset for automatic tooltips opened by touch.
-		private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
+
+		//private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
 
 		private const int m_mousePlacementVerticalOffset = 11;  // Mouse placement vertical offset
 
@@ -46,8 +49,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal long CurrentHoverId { get; set; }
-
 		internal IDisposable? OwnerEventSubscriptions { get; set; }
 
 		internal IDisposable? OwnerVisibilitySubscription { get; set; }
@@ -57,8 +58,8 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable CS0414
 		private PlacementMode? m_pToolTipServicePlacementModeOverride;
 		private bool m_bIsPopupPositioned;
-		private bool m_bClosing;
-		private bool m_bIsOpenAsAutomaticToolTip;
+		//private bool m_bClosing;
+		//private bool m_bIsOpenAsAutomaticToolTip;
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
 		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
 		internal bool m_isSliderThumbToolTip;
@@ -73,7 +74,13 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ToolTip);
 
 			SizeChanged += OnToolTipSizeChanged;
-			Loading += (sender, e) => PerformPlacementInternal(); // Update placement on Loading, because this is the point at which Uno sets the default Style
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			Loaded
+#else
+			Loading
+#endif
+				+= (sender, e) => PerformPlacementInternal();
 		}
 
 		public static DependencyProperty PlacementProperty { get; } =
@@ -113,7 +120,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(XamlRoot?.Size ?? (_owner as FrameworkElement)?.XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size);
+				var availableSize =
+					XamlRoot?.Size ??
+					(_owner as FrameworkElement)?.XamlRoot?.Size ??
+					Xaml.Window.CurrentSafe?.Bounds.Size ??
+					default;
+				Measure(availableSize);
 			}
 
 			return DesiredSize;
@@ -269,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			var bounds = XamlRoot?.Bounds ?? Target?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			screenWidth = bounds.Width;
 			screenHeight = bounds.Height;
 
@@ -292,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var spPopup = Popup;
 
-			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
+			var lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 			left = lastPointerEnteredPoint.X;
 			top = lastPointerEnteredPoint.Y;
@@ -441,10 +453,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			var constraint = visibleRect;
 
-			var windowRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 
@@ -469,7 +481,7 @@ namespace Windows.UI.Xaml.Controls
 				var lastPointerEnteredPoint = default(Point);
 
 				// UNO TODO: PointerPoint.GetCurrentPoint(uint pointerId)
-				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
+				lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 				rcDockTo.X = lastPointerEnteredPoint.X;
 				rcDockTo.Y = lastPointerEnteredPoint.Y;

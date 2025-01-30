@@ -1,5 +1,3 @@
-#if __IOS__ || __MACOS__
-
 using Uno.Networking.Connectivity.Internal;
 #if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 using CoreTelephony;
@@ -51,4 +49,3 @@ namespace Windows.Networking.Connectivity
 		}
 	}
 }
-#endif

@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using static Android.Views.View;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Android.Content;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {

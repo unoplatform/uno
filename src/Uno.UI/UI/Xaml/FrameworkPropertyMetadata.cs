@@ -1,6 +1,7 @@
-﻿using Windows.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
@@ -13,9 +14,6 @@ namespace Windows.UI.Xaml
 	/// </remarks>
 	public class FrameworkPropertyMetadata : PropertyMetadata
 	{
-		private bool _isDefaultUpdateSourceTriggerSet;
-		private UpdateSourceTrigger _defaultUpdateSourceTrigger;
-
 		public FrameworkPropertyMetadata(
 			object defaultValue
 		) : base(defaultValue)
@@ -33,9 +31,8 @@ namespace Windows.UI.Xaml
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			CoerceValueCallback coerceValueCallback
-		) : base(defaultValue)
+		) : base(defaultValue, coerceValueCallback)
 		{
-			CoerceValueCallback = coerceValueCallback;
 		}
 
 		public FrameworkPropertyMetadata(
@@ -101,6 +98,18 @@ namespace Windows.UI.Xaml
 
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			CreateDefaultValueCallback createDefaultValueCallback
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback, createDefaultValueCallback)
+		{
+			Options = options.WithDefault();
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
 			PropertyChangedCallback propertyChangedCallback
 		) : base(defaultValue, propertyChangedCallback)
 		{
@@ -139,51 +148,20 @@ namespace Windows.UI.Xaml
 			Options = options.WithDefault();
 		}
 
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback,
-			UpdateSourceTrigger defaultUpdateSourceTrigger
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
-		{
-			Options = options.WithDefault();
-			DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
-		}
-
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
 
+		// Kept for binary compat only.
+		// This property should be removed, and the whole FrameworkPropertyMetadata should be internal.
 		public UpdateSourceTrigger DefaultUpdateSourceTrigger
 		{
 			get
 			{
-				// UpdateSourceTrigger.Default doesn't make sense as a value for DefaultUpdateSourceTrigger,
-				// as it is usually used to indicate that a binding should use DefaultUpdateSourceTrigger,
-				// which should be either UpdateSourceTrigger.PropertyChanged (by default) or UpdateSourceTrigger.Explicit.
-				return _defaultUpdateSourceTrigger == UpdateSourceTrigger.Default
-					? UpdateSourceTrigger.PropertyChanged
-					: _defaultUpdateSourceTrigger;
-			}
-			private set
-			{
-				_defaultUpdateSourceTrigger = value;
-				_isDefaultUpdateSourceTriggerSet = true;
-			}
-		}
-
-		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
-		{
-			base.Merge(baseMetadata, dp);
-
-			if (baseMetadata is FrameworkPropertyMetadata baseFrameworkMetadata)
-			{
-				if (!_isDefaultUpdateSourceTriggerSet)
+				if (this == TextBox.TextProperty.Metadata)
 				{
-					DefaultUpdateSourceTrigger = baseFrameworkMetadata.DefaultUpdateSourceTrigger;
+					return UpdateSourceTrigger.Explicit;
 				}
 
-				// Merge options flags
-				Options |= baseFrameworkMetadata.Options;
+				return UpdateSourceTrigger.PropertyChanged;
 			}
 		}
 
@@ -207,6 +185,11 @@ namespace Windows.UI.Xaml
 			set => Options = value
 				? Options |= FrameworkPropertyMetadataOptions.WeakStorage
 				: Options &= ~FrameworkPropertyMetadataOptions.WeakStorage;
+		}
+
+		internal override PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
+		{
+			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
 		}
 	}
 }

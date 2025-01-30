@@ -12,6 +12,8 @@ namespace Windows.Storage
 {
 	partial class StorageFile
 	{
+		internal static string ResourcePathBase { get; set; } = Package.Current.InstalledPath;
+
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
 			if (uri.Scheme != "ms-appx")
@@ -20,9 +22,9 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx or ms-appdata scheme");
 			}
 
-			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
+			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart('/');
 
-			var resourcePathname = global::System.IO.Path.Combine(Package.Current.InstalledPath, uri.Host, path);
+			var resourcePathname = global::System.IO.Path.Combine(ResourcePathBase, uri.Host, path);
 
 			if (resourcePathname != null)
 			{

@@ -7,7 +7,7 @@ using Foundation;
 using Uno.UI.Controls;
 using AppKit;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool RemoveCore(UIElement item)
 		{
 			item.RemoveFromSuperview();
-
+			item.Shutdown();
 			return true;
 		}
 

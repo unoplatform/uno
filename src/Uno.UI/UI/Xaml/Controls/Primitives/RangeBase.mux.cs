@@ -1,13 +1,13 @@
 ﻿using System;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Represents an element that has a value within a specific range,
 /// such as the ProgressBar, ScrollBar, and Slider controls.
 /// </summary>
-public abstract partial class RangeBase : Control
+public partial class RangeBase : Control
 {
 	/// <summary>
 	/// Called when the Minimum property changes.

@@ -7,13 +7,15 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using Windows.Foundation;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Controls
+using Size = Windows.Foundation.Size;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsWrapGrid"/> behaviour.
@@ -24,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		private int? _implicitItemWidth;
 		private int? _implicitItemHeight;
 
-		protected override Line CreateLine(GeneratorDirection direction,
+		private protected override Line CreateLine(GeneratorDirection direction,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,
@@ -40,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			//Find first item in line, since the item we are passed is the last
 			if (direction == GeneratorDirection.Backward)
 			{
-				// We are recreating the last line of the group - it may be truncated (if the total items are not an even multiple 
+				// We are recreating the last line of the group - it may be truncated (if the total items are not an even multiple
 				// of the items-per-line).
 				if (isNewGroup)
 				{
@@ -76,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				//Add view before we measure it, this ensures that DP inheritances are correctly applied
 				AddView(view, direction);
 
-				var slotSize = new Windows.Foundation.Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
+				var slotSize = new Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
 				var measuredSize = _layouter.MeasureChild(view, slotSize);
 				var physicalMeasuredSize = measuredSize.LogicalToPhysicalPixels();
 				var measuredWidth = (int)physicalMeasuredSize.Width;
@@ -143,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Resolve the width available for a single item view, using, in decreasing order of priority, the <see cref="ItemWidth"/> if 
+		/// Resolve the width available for a single item view, using, in decreasing order of priority, the <see cref="ItemWidth"/> if
 		/// defined, the width of the first item in the grid, or the maximum available space if we are measuring the first item.
 		/// </summary>
 		private int ResolveAvailableWidth(int availableBreadth)
@@ -169,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Resolve the height available for a single item view, using, in decreasing order of priority, the <see cref="ItemHeight"/> if 
+		/// Resolve the height available for a single item view, using, in decreasing order of priority, the <see cref="ItemHeight"/> if
 		/// defined, the height of the first item in the grid, or the maximum available space if we are measuring the first item.
 		/// </summary>
 
@@ -264,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 			return Math.Min(maximumItemsBySetting, maximumItemsBySpace);
 		}
 
-		protected override Windows.Foundation.Size ApplyChildStretch(Windows.Foundation.Size childSize, Windows.Foundation.Size slotSize, ViewType viewType)
+		protected override Size ApplyChildStretch(Size childSize, Size slotSize, ViewType viewType)
 		{
 			//Item views in a grid layout shouldn't be stretched
 			if (viewType == ViewType.Item)
@@ -274,9 +276,9 @@ namespace Windows.UI.Xaml.Controls
 			return base.ApplyChildStretch(childSize, slotSize, viewType);
 		}
 
-		protected override Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
+		private protected override Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
-			//Get the first preceding item that is at the end of a line 
+			//Get the first preceding item that is at the end of a line
 			var currentItem = firstVisibleItem;
 			var itemsPerLine = ResolveMaximumItemsInLine(availableBreadth);
 			while (currentItem != null)

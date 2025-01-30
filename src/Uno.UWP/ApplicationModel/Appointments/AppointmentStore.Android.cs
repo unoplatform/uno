@@ -131,11 +131,8 @@ public partial class AppointmentStore
 
 		for (uint pageGuard = options.MaxCount; pageGuard > 0; pageGuard--)
 		{
-			var entry = new Appointment();
-
 			// two properties always present in result
-			entry.CalendarId = cursor.GetString(colCalId);
-			entry.LocalId = cursor.GetString(colId);
+			var entry = new Appointment(cursor.GetString(colCalId), cursor.GetString(colId));
 
 			// rest of properties can be switched off (absent in result set)
 			if (colAllDay > -1)

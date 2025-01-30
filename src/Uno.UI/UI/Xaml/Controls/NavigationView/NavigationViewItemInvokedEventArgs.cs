@@ -5,11 +5,7 @@
 // This file is a C# translation of the NavigationViewItemInvokedEventArgs.cpp file from WinUI controls.
 //
 
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Media.Animation;
-#else
 using Windows.UI.Xaml.Media.Animation;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

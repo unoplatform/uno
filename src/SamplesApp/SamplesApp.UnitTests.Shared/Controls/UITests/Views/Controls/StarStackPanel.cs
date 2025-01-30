@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Uno.UI.Samples.Helper;
 
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
+#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
 using System.Windows;
 using System.Windows.Controls;
 #else
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Samples.Controls
@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.Controls
 			double starTotal = 0;
 
 			var children = Children
-#if !NETFX_CORE && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.OrderBy(GetPriority)
@@ -220,7 +220,7 @@ namespace Uno.UI.Samples.Controls
 			finalSize.Height -= VerticalTrim;
 
 			var children = Children
-#if !NETFX_CORE // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.ToArray(); // Materialize the list (prevent interop on Jupiter Platform)
@@ -522,12 +522,14 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		private static readonly Regex GridLengthParsingRegex =
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 			new Regex(
 				@"^(?:(?<stars>\d*(?:.\d*))\*)|(?<abs>\d+(?:.\d*))|(?<auto>Auto)|(?<star>\*)$",
-#if NETFX_CORE
+#if WINAPPSDK
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 #else
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 #endif
 
 		private static GridLength[] ParseGridLength(string s)

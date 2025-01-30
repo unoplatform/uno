@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Toolkit
@@ -26,7 +26,7 @@ namespace UITests.Toolkit
 		{
 			if (sender is Button btn && btn.Tag != null)
 			{
-#if !NETFX_CORE
+#if !WINAPPSDK
 				var colorBrush = SolidColorBrushHelper.Parse(btn.Tag as string);
 				colorBrush.Opacity = 0.25;
 				elevation1.Tag = colorBrush.ColorWithOpacity;

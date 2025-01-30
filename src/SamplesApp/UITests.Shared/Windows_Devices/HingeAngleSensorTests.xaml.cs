@@ -11,13 +11,14 @@ using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -44,7 +45,7 @@ namespace UITests.Shared.Windows_Devices
 			private double _angle;
 			private string _timestamp;
 
-			public HingeAngleSensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public HingeAngleSensorTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 			}
@@ -126,7 +127,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void HingeAngleSensor_ReadingChanged(HingeAngleSensor sender, HingeAngleSensorReadingChangedEventArgs args)
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					Angle = args.Reading.AngleInDegrees;
 					Timestamp = args.Reading.Timestamp.ToString("R");

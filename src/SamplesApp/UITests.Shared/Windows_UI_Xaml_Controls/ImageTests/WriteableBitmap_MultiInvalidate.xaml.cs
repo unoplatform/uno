@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
@@ -24,26 +26,18 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 		private void UpdateSource(object sender, RoutedEventArgs e)
 		{
 			var randomizer = new Random(_seed++);
-			if (_bitmap.PixelBuffer is Windows.Storage.Streams.Buffer buffer
-				&& buffer.GetType().GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(buffer) is Memory<byte> data)
+			var stream = _bitmap.PixelBuffer.AsStream();
+			var length = _bitmap.PixelBuffer.Length;
+			for (var i = 0; i < length; i++)
 			{
-				var span = data.Span;
-				for (var i = 0; i < data.Length; i++)
+				if (i % 4 == 3)
 				{
-					if (i % 4 == 3)
-					{
-						// Alpha channel
-						span[i] = 255;
-					}
-					else
-					{
-						span[i] = (byte)randomizer.Next(256);
-					}
+					stream.WriteByte(255);
 				}
-			}
-			else
-			{
-				throw new InvalidOperationException("Could not access _data field in Buffer type.");
+				else
+				{
+					stream.WriteByte((byte)randomizer.Next(256));
+				}
 			}
 
 			// This request to the image to redraw the buffer

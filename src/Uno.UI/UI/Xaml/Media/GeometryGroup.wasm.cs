@@ -4,9 +4,10 @@ using System.Globalization;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{
@@ -28,13 +29,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (property == FillRuleProperty)
 			{
-				var rule = FillRule switch
-				{
-					FillRule.EvenOdd => "evenodd",
-					FillRule.Nonzero => "nonzero",
-					_ => "evenodd"
-				};
-				_svgElement.SetAttribute("fill-rule", rule);
+				WindowManagerInterop.SetSvgFillRule(_svgElement.HtmlId, FillRule == FillRule.Nonzero);
 			}
 			else if (property == ChildrenProperty)
 			{

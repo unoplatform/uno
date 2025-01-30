@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml.Resources;
 
 namespace Uno.UI.Tests.App.Views
 {

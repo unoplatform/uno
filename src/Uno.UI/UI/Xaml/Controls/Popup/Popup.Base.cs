@@ -3,11 +3,11 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if XAMARIN_IOS
+#if __IOS__
 using CoreGraphics;
 using UIKit;
 #elif __MACOS__
@@ -15,15 +15,13 @@ using CoreGraphics;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup : FrameworkElement, IPopup
 {
 	private ManagedWeakReference _lastFocusedElement;
 	private FocusState _lastFocusState = FocusState.Unfocused;
 	private IDisposable _openPopupRegistration;
-
-	private bool _childHasOwnDataContext;
 
 	public event EventHandler<object> Closed;
 	public event EventHandler<object> Opened;
@@ -71,7 +69,9 @@ public partial class Popup : FrameworkElement, IPopup
 	/// <inheritdoc />
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		// As the Child is NOT part of the visual tree, it does not have to be arranged
+		// As the Child is NOT part of the visual tree, it does not have to be arranged,
+		// but we need to manually propagate Translation
+		PopupPanel.Translation = Translation;
 		return finalSize;
 	}
 
@@ -79,15 +79,25 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
-			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator?.CoreWindowContentRoot?.XamlRoot;
+			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.XamlRoot;
+
+			if (xamlRoot != XamlRoot)
+			{
+				XamlRoot = xamlRoot;
+			}
 
 			if (xamlRoot is not null)
 			{
 				_openPopupRegistration = xamlRoot.VisualTree.PopupRoot.RegisterOpenPopup(this);
 			}
 
-			if (IsLightDismissEnabled)
+			if (IsLightDismissEnabled || AssociatedFlyout is { })
 			{
+				if (IsLightDismissEnabled)
+				{
+					m_fIsLightDismiss = true;
+				}
+
 				// Store last focused element
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				var focusedElement = focusManager?.FocusedElement as UIElement;
@@ -98,43 +108,53 @@ public partial class Popup : FrameworkElement, IPopup
 					_lastFocusState = focusState;
 				}
 
-				// Give the child focus if allowed
+				// Usually, FrameworkElements handle focus management inside OnLoaded/OnUnloaded,
+				// but since popups are (un)loaded, we have to do it here.
 				if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
 				{
+					// Give the child focus if allowed
 					Focus(FocusState.Programmatic);
 				}
 			}
-
-			Opened?.Invoke(this, newIsOpen);
 		}
 		else
 		{
 			_openPopupRegistration?.Dispose();
 			if (IsLightDismissEnabled)
 			{
-				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target)
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				var focusedElement = focusManager?.FocusedElement as UIElement;
+
+				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
 					target.Focus(_lastFocusState);
 					_lastFocusedElement = null;
 				}
 			}
 
-			Closed?.Invoke(this, newIsOpen);
+			m_fIsLightDismiss = false;
 		}
 	}
 
 	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 	{
-		if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
+		if (oldChild is FrameworkElement oldChildFe && oldChildFe.LogicalParentOverride == this)
 		{
-			provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+			oldChildFe.SetLogicalParent(null);
+		}
+		if (newChild is FrameworkElement newChildFe)
+		{
+			newChildFe.SetLogicalParent(this);
+		}
+
+		if (oldChild is IDependencyObjectStoreProvider provider &&
+			provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+		{
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
 		}
 
 		UpdateDataContext(null);
-		UpdateTemplatedParent();
 		PropagateFocusProperties();
 	}
 
@@ -145,44 +165,11 @@ public partial class Popup : FrameworkElement, IPopup
 		UpdateDataContext(e);
 	}
 
-	protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnTemplatedParentChanged(e);
-
-		UpdateTemplatedParent();
-	}
-
 	private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 	{
-		_childHasOwnDataContext = false;
-		if (PropagatesDataContextToChild && Child is IDependencyObjectStoreProvider provider)
+		if (PropagatesDataContextToChild)
 		{
-			var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
-
-			var shouldClearValue = e != null && e.NewValue == null && dataContextProperty == e.OldValue;
-			if (shouldClearValue)
-			{
-				//In this case we are clearing the DataContext that was previously set by the Popup
-				//This usually occurs when the owner of the Popup is removed from the Visual Tree
-				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			}
-			else if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
-			{
-				// Child already has locally set DataContext, we shouldn't overwrite it.
-				_childHasOwnDataContext = true;
-			}
-			else
-			{
-				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
-			}
-		}
-	}
-
-	private void UpdateTemplatedParent()
-	{
-		if (Child is IDependencyObjectStoreProvider provider)
-		{
-			provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+			((IDependencyObjectStoreProvider)PopupPanel).Store.SetValue(((IDependencyObjectStoreProvider)PopupPanel).Store.DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

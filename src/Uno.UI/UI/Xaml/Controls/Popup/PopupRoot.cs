@@ -1,21 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Islands;
+using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
+using Windows.System;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+#if HAS_UNO_WINUI
+using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+#else
+using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+#endif
 
-internal partial class PopupRoot : Panel
+namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+internal partial class PopupRoot : Canvas
 {
 	private readonly List<ManagedWeakReference> _openPopups = new();
 
+	private readonly SerialDisposable _subscriptions = new();
+
 	public PopupRoot()
 	{
+		KeyDown += OnKeyDown;
+		Loaded += OnRootLoaded;
+		Unloaded += OnRootUnloaded;
+
+		// See https://github.com/unoplatform/uno/issues/16358#issuecomment-2115276460
+		// This is a hack to prevent Unfocus from being called.
+		PointerReleased += (_, e) => e.Handled = true;
+	}
+
+	private void OnRootLoaded(object sender, RoutedEventArgs args)
+	{
+		if (XamlRoot is { } xamlRoot)
+		{
+			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
+
+			CompositeDisposable disposables = new();
+			xamlRoot.Changed += OnChanged;
+			disposables.Add(() => xamlRoot.Changed -= OnChanged);
+
+			if (xamlRoot.HostWindow is { } window)
+			{
+				window.Activated += OnWindowActivated;
+				disposables.Add(() => window.Activated -= OnWindowActivated);
+			}
+
+			_subscriptions.Disposable = disposables;
+		}
+	}
+
+	private void OnWindowActivated(object sender, _WindowActivatedEventArgs e)
+	{
+		if (FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
+		{
+			return;
+		}
+
+		CloseLightDismissablePopups();
+	}
+
+	private void OnRootUnloaded(object sender, RoutedEventArgs args)
+	{
+		_subscriptions.Disposable = null;
+	}
+
+	internal void CloseLightDismissablePopups()
+	{
+		for (var i = _openPopups.Count - 1; i >= 0; i--)
+		{
+			var reference = _openPopups[i];
+			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
+			{
+				if (popup.AssociatedFlyout is { } flyout)
+				{
+					flyout.Hide();
+				}
+				else
+				{
+					popup.IsOpen = false;
+				}
+			}
+		}
 	}
 
 	protected override void OnChildrenChanged()
@@ -47,6 +117,7 @@ internal partial class PopupRoot : Panel
 				continue;
 			}
 
+			child.EnsureLayoutStorage();
 			// Note: The popup alignment is ensure by the PopupPanel itself
 			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}
@@ -103,6 +174,18 @@ internal partial class PopupRoot : Panel
 			{
 				_openPopups.RemoveAt(i);
 			}
+		}
+	}
+
+	// The ESC key closes the topmost light-dismiss-enabled popup.
+	// Handling must be done by CPopupRoot because the popups reparent their children to be under CPopupRoot,
+	// so routed events from beneanth the popups route to CPopupRoot and skip the popups themselves.
+	protected void OnKeyDown(object sender, KeyRoutedEventArgs args)
+	{
+		if (args.Key == VirtualKey.Escape)
+		{
+			CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout, out var didCloseAPopup);
+			args.Handled = didCloseAPopup;
 		}
 	}
 }

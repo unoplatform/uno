@@ -17,7 +17,10 @@ namespace Windows.Storage.Pickers
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			var savePicker = new NSSavePanel();
-			savePicker.DirectoryUrl = new NSUrl(GetStartPath(), true);
+			if (GetStartPath() is string path)
+			{
+				savePicker.DirectoryUrl = new NSUrl(path, true);
+			}
 			savePicker.AllowedFileTypes = GetFileTypes();
 			if (!string.IsNullOrEmpty(CommitButtonText))
 			{
@@ -37,7 +40,7 @@ namespace Windows.Storage.Pickers
 			}
 		}
 
-		private string GetStartPath()
+		private string? GetStartPath()
 		{
 			var specialFolder = SuggestedStartLocation switch
 			{
@@ -53,6 +56,6 @@ namespace Windows.Storage.Pickers
 			return (urls.Length == 0) ? NSFileManager.HomeDirectory : urls[0].AbsoluteString!;
 		}
 
-		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();
+		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart('.'))).ToArray();
 	}
 }

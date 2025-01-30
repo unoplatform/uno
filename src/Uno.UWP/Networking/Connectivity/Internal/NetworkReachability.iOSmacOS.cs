@@ -1,5 +1,4 @@
 ﻿// Adapted from https://github.com/xamarin/Essentials/blob/1.6.0/Xamarin.Essentials/Connectivity/Connectivity.ios.tvos.macos.reachability.cs
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -193,4 +192,3 @@ namespace Uno.Networking.Connectivity.Internal
 		}
 	}
 }
-#endif

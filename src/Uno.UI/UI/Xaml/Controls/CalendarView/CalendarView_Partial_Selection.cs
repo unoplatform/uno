@@ -1,16 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Linq;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
-using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.CalendarView, Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
@@ -42,6 +42,11 @@ namespace Windows.UI.Xaml.Controls
 
 			return ppItem;
 		}
+
+		internal DateTime GetMaxDate()
+			=> m_maxDate;
+		internal DateTime GetMinDate()
+			=> m_minDate;
 
 		internal void OnSelectDayItem(CalendarViewDayItem pItem)
 		{
@@ -296,11 +301,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SelectedDatesChangedEventSourceType pEventSource = null;
 				CalendarViewSelectedDatesChangedEventArgs spEventArgs;
-				ValueTypeCollection<DateTime> spAddedDates;
-				ValueTypeCollection<DateTime> spRemovedDates;
+				ValueTypeCollection<DateTimeOffset> spAddedDates;
+				ValueTypeCollection<DateTimeOffset> spRemovedDates;
 
-				spAddedDates = new ValueTypeCollection<DateTime>();
-				spRemovedDates = new ValueTypeCollection<DateTime>();
+				spAddedDates = new ValueTypeCollection<DateTimeOffset>();
+				spRemovedDates = new ValueTypeCollection<DateTimeOffset>();
 
 				foreach (var it in addedDates)
 				{
@@ -313,8 +318,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				spEventArgs = new CalendarViewSelectedDatesChangedEventArgs();
-				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
-				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
+				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTimeOffset>;
+				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTimeOffset>;
 				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
 				pEventSource?.Invoke(this, spEventArgs);
 
@@ -388,7 +393,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void OnSelectedDatesChanged(
-			IObservableVector<DateTime> pSender,
+			IObservableVector<DateTimeOffset> pSender,
 			IVectorChangedEventArgs e)
 		{
 			// only raise event for the changes from external.

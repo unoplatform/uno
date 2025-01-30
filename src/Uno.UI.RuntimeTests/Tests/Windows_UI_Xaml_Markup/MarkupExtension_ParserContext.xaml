@@ -7,6 +7,9 @@
 	  mc:Ignorable="d">
 
 	<StackPanel>
+		<StackPanel.Resources>
+			<ResourceDictionary Source="MarkupExtension_ParserContext_RD.xaml" />
+		</StackPanel.Resources>
 
 		<TextBlock x:Name="SimpleMarkupExtension"
 				   x:FieldModifier="Public"
@@ -14,6 +17,21 @@
 		<TextBlock x:Name="NestedMarkupExtension"
 				   x:FieldModifier="Public"
 				   Tag="{Binding Source={local:ParserContextMarkupExtension}}" />
+
+		<StackPanel x:Name="EnumMarkupExtension_Horizontal"
+					x:FieldModifier="Public"
+					Orientation="{local:HorOrientation}" />
+
+		<StackPanel x:Name="EnumMarkupExtension_Vertical"
+					x:FieldModifier="Public"
+					Orientation="{local:VerOrientation}" />
+
+		<Button x:Name="ButtonMarkupExtension_Style"
+				x:FieldModifier="Public"
+				Style="{StaticResource TestButtonStyle}" />
+		<Button x:Name="ButtonMarkupExtension_Template"
+				x:FieldModifier="Public"
+				Template="{StaticResource TestButtonControlTemplate}" />
 
 	</StackPanel>
 

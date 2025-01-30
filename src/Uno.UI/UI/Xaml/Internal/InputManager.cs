@@ -5,35 +5,48 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager : IInputInjectorTarget
 {
-	private ContentRoot _contentRoot;
-
 	public InputManager(ContentRoot contentRoot)
 	{
-		_contentRoot = contentRoot;
+		ContentRoot = contentRoot;
 
-		ConstructManagedPointers();
+		ConstructKeyboardManager();
+
+		ConstructPointerManager();
+
+#if ANDROID // for some reason, moving InitDragAndDrop to Initialize breaks Android in CI
+		InitDragAndDrop();
+#endif
 	}
-	partial void ConstructManagedPointers();
+
+	partial void ConstructKeyboardManager();
+
+	partial void ConstructPointerManager();
 
 	/// <summary>
 	/// Initialize the InputManager.
 	/// </summary>
 	internal void Initialize(object host)
 	{
-		InitializeManagedPointers(host);
+		InitializeKeyboard(host);
+		InitializePointers(host);
+#if !ANDROID
+		InitDragAndDrop();
+#endif
 	}
-	partial void InitializeManagedPointers(object host);
 
+	partial void InitializeKeyboard(object host);
+
+	internal ContentRoot ContentRoot { get; }
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
@@ -46,9 +59,16 @@ internal partial class InputManager : IInputInjectorTarget
 		return false;
 	}
 
-	internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+	internal void NotifyFocusChanged(DependencyObject focusedElement, bool bringIntoView, bool animateIfBringIntoView)
 	{
-		//TODO Uno: Implement
+		//TODO Uno: match WinUI
+		if (bringIntoView)
+		{
+			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = animateIfBringIntoView
+			});
+		}
 	}
 
 	internal bool LastInputWasNonFocusNavigationKeyFromSIP()

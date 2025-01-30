@@ -5,6 +5,7 @@ steps:
     inputs:
       SourceFolder: $(build.sourcesdirectory)
       Contents: |
+        **/Uno.Sdk/bin/**/*.nupkg
         **/bin/**/*.dll
         **/bin/**/*.pdb
         **/bin/**/*.xml

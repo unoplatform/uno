@@ -9,8 +9,8 @@
 			 xmlns:ios="http://uno.ui/ios"
 			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:android="http://uno.ui/android"
-			 xmlns:xamarin="http://uno.ui/xamarin"
-			 mc:Ignorable="d ios android xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d ios android not_win"
 			 d:DesignHeight="200" 
 			 d:DesignWidth="600">
     <UserControl.Resources>
@@ -62,7 +62,7 @@
 										  Opacity="1"
 										  AutomationProperties.AccessibilityView="Raw"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Margin="{TemplateBinding Padding}"

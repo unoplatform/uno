@@ -10,9 +10,9 @@ using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A TextBlock measure cache for non-formatted text.
@@ -21,8 +21,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		internal static int MaxMeasureKeyEntries { get; set; } = 500;
 		internal static int MaxMeasureSizeKeyEntries { get; set; } = 50;
-
-		private static Stopwatch _timer = Stopwatch.StartNew();
 
 		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
 		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();

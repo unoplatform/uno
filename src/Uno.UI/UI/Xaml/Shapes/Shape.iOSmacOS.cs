@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
@@ -19,7 +19,7 @@ using AppKit;
 using _Color = AppKit.NSColor;
 #endif
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
@@ -55,6 +55,10 @@ namespace Windows.UI.Xaml.Shapes
 			_shapeLayer = CreateLayer(path, fillRule);
 			Layer.AddSublayer(_shapeLayer);
 		}
+
+		private void OnFillBrushChanged() => UpdateRender();
+
+		private void OnStrokeBrushChanged() => UpdateRender();
 
 		private void UpdateRender()
 		{
@@ -98,8 +102,15 @@ namespace Windows.UI.Xaml.Shapes
 					fillColor = Colors.Transparent;
 					break;
 
+				case XamlCompositionBrushBase compositionBrush: // Use Fallback for unsupported brushes
+					fillColor = compositionBrush.FallbackColorWithOpacity;
+					break;
+
 				default:
-					Application.Current.RaiseRecoverableUnhandledException(new NotSupportedException($"The brush {Fill} is not supported as Fill for a {this} on this platform."));
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning($"The brush {Fill} is not supported as Fill for a {this} on this platform.");
+					}
 					fillColor = Colors.Transparent;
 					break;
 			}

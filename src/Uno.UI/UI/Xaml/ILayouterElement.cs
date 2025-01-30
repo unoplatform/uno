@@ -1,13 +1,15 @@
 ﻿#nullable enable
+
+#if !UNO_REFERENCE_API
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal partial interface ILayouterElement
 {
@@ -72,6 +74,7 @@ internal static class LayouterElementExtensions
 			if (isDirty || frameworkElement is null)
 			{
 				// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+				// TODO: We are not controlling measure dirty path on Android. If we did in future, we must clear it here as well.
 				frameworkElement?.ClearLayoutFlags(UIElement.LayoutFlag.MeasureDirty);
 
 				// The dirty flag is explicitly set on this element
@@ -89,7 +92,10 @@ internal static class LayouterElementExtensions
 					LayoutInformation.SetAvailableSize(element, availableSize);
 				}
 
-				return true; // end of isDirty processing
+				// TODO: This is NOT correct.
+				// We shouldn't return here. Skipping children measure is incorrect but fixing it on Android isn't trivial.
+				return true;
+
 			}
 
 			// The measure dirty flag is set on one of the descendents:
@@ -104,11 +110,14 @@ internal static class LayouterElementExtensions
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 
-				if (child is UIElement { IsMeasureDirtyOrMeasureDirtyPath: true })
+				if (child is UIElement { IsMeasureDirtyOrMeasureDirtyPath: true } childAsUIElement)
 				{
-					var previousDesiredSize = LayoutInformation.GetDesiredSize(child);
-					element.Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));
-					var newDesiredSize = LayoutInformation.GetDesiredSize(child);
+					var previousDesiredSize = childAsUIElement.m_desiredSize;
+					childAsUIElement.EnsureLayoutStorage();
+
+					// TODO: This is NOT correct. This should call DoMeasure (the same method we are in currently!)
+					element.Layouter.MeasureChild(child, childAsUIElement.m_previousAvailableSize);
+					var newDesiredSize = childAsUIElement.m_desiredSize;
 					if (newDesiredSize != previousDesiredSize)
 					{
 						isDirty = true;
@@ -136,3 +145,4 @@ internal static class LayouterElementExtensions
 		return false; // UIElement.MaxLayoutIterations reached. Maybe an exception should be raised instead.
 	}
 }
+#endif

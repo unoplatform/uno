@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Security;
 
 [assembly: AssemblyProduct("Uno")]
-[assembly: AssemblyCompany("nventive")]
+[assembly: AssemblyCompany("Uno Platform Inc.")]
 
 #if !METRO && !WINPRT && !SILVERLIGHT
 [assembly: SecurityTransparent]
@@ -24,7 +24,7 @@ using System.Security;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
-[assembly: AssemblyCopyright("Copyright (C) 2009-2019 nVentive.")]
+[assembly: AssemblyCopyright("Copyright (C) 2009-2023 Uno Platform")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

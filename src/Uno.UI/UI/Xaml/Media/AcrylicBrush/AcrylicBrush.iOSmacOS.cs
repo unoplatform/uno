@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #if __IOS__
 using UIKit;
 using _Color = UIKit.UIColor;
@@ -16,7 +16,7 @@ using _View = AppKit.NSView;
 using _VisualEffectView = AppKit.NSVisualEffectView;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{

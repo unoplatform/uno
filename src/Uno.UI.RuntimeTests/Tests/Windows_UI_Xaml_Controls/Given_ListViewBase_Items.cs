@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -15,10 +15,10 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -119,7 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
 #endif
 		public void When_ItemsSource_List_Modified_Change_Is_Reflected()
@@ -145,7 +145,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				notified = true;
 			};
 			items.Add(2);
-#if NETFX_CORE // #12183: ItemsControl.Items no longer map to ItemsSource for simple collection.
+#if WINAPPSDK // #12183: ItemsControl.Items no longer map to ItemsSource for simple collection.
 			Assert.AreEqual(2, listView.Items.Count);
 #endif
 			Assert.IsFalse(notified);
@@ -196,7 +196,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
 #endif
 		public void When_ItemsSource_Updated_Items_Sync()
@@ -303,7 +303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			source.Add(10);
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(11, listView.Items.Count);
 			Assert.AreEqual(1, timesRaised);
 			Assert.AreEqual(CollectionChange.ItemInserted, change);
@@ -358,7 +358,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var a = source.Single(g => g.Key == "A");
 			a.Add("Arendelle");
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(CountriesABC.Length + 1, listView.Items.Count);
 			Assert.AreEqual(1, timesRaised);
 			Assert.AreEqual(CollectionChange.ItemInserted, change);
@@ -397,7 +397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var d = new GroupingObservableCollection<string, string>("D", CountriesD);
 			source.Add(d);
 
-#if NETFX_CORE // CollectionView doesn't implement VectorChanged
+#if WINAPPSDK // CollectionView doesn't implement VectorChanged
 			Assert.AreEqual(CountriesABC.Length + CountriesD.Length, listView.Items.Count);
 			Assert.AreEqual(4, timesRaised);
 			Assert.IsTrue(changeWasExpected);

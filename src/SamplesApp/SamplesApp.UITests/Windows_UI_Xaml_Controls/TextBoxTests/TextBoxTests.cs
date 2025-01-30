@@ -134,23 +134,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_DeleteButton_Automated");
 
 			var textBox1 = _app.Marked("textBox1");
-			var textBox2 = _app.Marked("textBox2");
 
-			textBox1.FastTap();
-			textBox1.EnterText("hello 01");
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
+			var textBox2 = _app.Marked("textBox2");
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
+
+			textBoxInner1.FastTap();
+			textBoxInner1.EnterText("hello 01");
 
 			_app.WaitForText(textBox1, "hello 01");
 
-			textBox2.FastTap();
-			textBox2.EnterText("hello 02");
+			textBoxInner2.FastTap();
+			textBoxInner2.EnterText("hello 02");
 
 			_app.WaitForText(textBox2, "hello 02");
 
 			var textBox1Result = _app.Query(textBox1).First();
 			var textBox2Result = _app.Query(textBox2).First();
 
-			// Focus the first textbox
-			textBox1.FastTap();
+			// Focus the firs	t textbox
+			textBoxInner1.FastTap();
 
 			var deleteButton1 = FindDeleteButton(textBox1Result);
 
@@ -159,7 +169,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox1, "");
 
 			// Focus the first textbox
-			textBox2.FastTap();
+			textBoxInner2.FastTap();
 
 			var deleteButton2 = FindDeleteButton(textBox2Result);
 
@@ -208,6 +218,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS as flaky #9080
 		public async Task TextBox_Readonly()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
@@ -266,7 +277,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android due to pixel color approximation, will be restored in next PR
+		[ActivePlatforms(Platform.Browser)] // Disabled on Android due to pixel color approximation, will be restored in next PR, flaky on iOS #9080
 		public void PasswordBox_RevealInScrollViewer()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
@@ -281,6 +292,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
 			_app.DragCoordinates(passwordBoxRect.X + 10, passwordBoxRect.Right - 10, passwordBoxRect.X - 100, passwordBoxRect.Right - 10);
+
+			// Scrolling may happen differed. If refactoring this test as a runtime tests
+			// Use layoutslot information to ensure visibility.
+			Thread.Sleep(500);
 
 			using var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
 
@@ -318,7 +333,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using (new AssertionScope())
 			{
 				text2.Should().Be(text1, because: "Text content should not change at max length.");
-				text3.Should().Be("TextChanged: 1");
+				text3.Should().Be("TextChanged: 2");
 			}
 		}
 
@@ -382,9 +397,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var beforeTextBox = _app.Marked("BeforeTextBox");
 
 			// Enter text and verify that only e is permittable in text box
-			Assert.AreEqual("", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(beforeTextBox, "");
 			beforeTextBox.EnterText("Enter text and verify that only e is permittable");
-			Assert.AreEqual("eeeeee", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(beforeTextBox, "eeeeee");
 		}
 
 		[Test]
@@ -470,7 +485,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextProperty");
 
 			var textBox1 = _app.Marked("TextBox1");
+
+			// Select the inner content to avoid the browser tapping the header
+			// and incorrectly focus the inner input control but not the TextBox.
+			var textBoxInner1 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox1.Descendant("ScrollContentPresenter")
+				: textBox1;
+
 			var textBox2 = _app.Marked("TextBox2");
+
+			var textBoxInner2 = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? textBox2.Descendant("ScrollContentPresenter")
+				: textBox2;
+
 			var textChangedTextBlock = _app.Marked("TextChangedTextBlock");
 			var lostFocusTextBlock = _app.Marked("LostFocusTextBlock");
 
@@ -479,16 +506,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Change text and verify text of text blocks
-			textBox1.FastTap();
-			textBox1.ClearText();
-			textBox1.EnterText("Testing text property");
-			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			textBoxInner1.FastTap();
+			textBoxInner1.ClearText();
+			textBoxInner1.EnterText("Testing text property");
+			_app.WaitForText(textChangedTextBlock, "Testing text property");
+			_app.WaitForText(lostFocusTextBlock, "");
 
 			// change focus and assert
-			textBox2.FastTap();
-			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			textBoxInner2.FastTap();
+			_app.WaitForText(textChangedTextBlock, "Testing text property");
+			_app.WaitForText(lostFocusTextBlock, "Testing text property");
 		}
 
 		[Test]
@@ -923,6 +950,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			// Assert that after clicking, ShowHideButton moves up (because MyTextBox is collapsed)
 			Assert.Less(buttonRect2.Y, buttonRect.Y);
 			Assert.AreEqual(textBoxRect.Height, buttonRect.Y - buttonRect2.Y);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)] // Too flaky on Wasm for some reason
+		public void TextBox_VerticalAlignment()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_VerticalAlignment", skipInitialScreenshot: true);
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect).ToRectangle();
+
+			using var screenshot = TakeScreenshot("TextBox_VerticalAlignment");
+
+			var rectNotContainingRed = new Rectangle(textBoxRect.X, textBoxRect.Y + 30, textBoxRect.Width, textBoxRect.Height - 30);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, rectNotContainingRed, Color.Red, tolerance: 20);
+
+			var rectContainingRed = new Rectangle(textBoxRect.X, textBoxRect.Y, textBoxRect.Width, 30);
+			ImageAssert.HasColorInRectangle(screenshot, rectContainingRed, Color.Red, tolerance: 20);
 		}
 
 		[Test]

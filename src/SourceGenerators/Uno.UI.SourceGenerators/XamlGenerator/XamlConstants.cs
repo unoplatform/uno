@@ -15,11 +15,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
-		public const string RootMUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = "Windows.UI.Xaml";
-		public const string UnoXamlNamespace = "Windows.UI.Xaml";
+		public const string RootMUINamespace = "Microsoft.UI";
+		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
 
 		public const int MaxFluentResourcesVersion = 2;
+
+		public const string UnknownContent = "_UnknownContent";
+		public const string PositionalParameters = "_PositionalParameters";
+
+		public static class Xmlnses
+		{
+			/// <summary>
+			/// <code>xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"</code>
+			/// </summary>
+			public const string Default = PresentationXamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"</code>
+			/// </summary>
+			public const string X = XamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"</code>
+			/// </summary>
+			public const string MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+		}
 
 		public static class Namespaces
 		{
@@ -40,7 +61,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				Controls,
 #if HAS_UNO_WINUI
-				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Windows.UI.Xaml.Controls even in WinUI tree
+				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Microsoft.UI.Xaml.Controls even in WinUI tree
 #endif
 				Primitives,
 				Shapes,
@@ -109,6 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ColorHelper = RootMUINamespace + ".ColorHelper";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application";
+			public const string Window = BaseXamlNamespace + ".Window";
 
 			// Media
 			public const string LinearGradientBrush = Namespaces.Media + ".LinearGradientBrush";
@@ -157,6 +179,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Markup
 			public const string MarkupHelper = "Uno.UI.Helpers.MarkupHelper";
+			public const string MarkupXamlBindingHelper = Markup + ".XamlBindingHelper";
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
 		}

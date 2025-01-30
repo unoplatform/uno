@@ -5,7 +5,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml.Documents;
+namespace Microsoft.UI.Xaml.Documents;
 
 public partial class TextElement
 {

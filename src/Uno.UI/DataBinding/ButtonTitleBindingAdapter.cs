@@ -1,16 +1,11 @@
-﻿#if XAMARIN_IOS
+﻿#if __IOS__
 using Uno.UI.DataBinding;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Uno.UI.DataBindingAdapters
 {

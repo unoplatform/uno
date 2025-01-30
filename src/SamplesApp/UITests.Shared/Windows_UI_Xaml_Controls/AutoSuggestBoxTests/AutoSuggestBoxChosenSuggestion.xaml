@@ -19,7 +19,7 @@
 
 		<AutoSuggestBox x:Name="autoSuggestBox"  Text="{Binding book.Author}" QuerySubmitted="autoSuggestBox_QuerySubmitted" TextChanged="autoSuggestBox_TextChanged"  VerticalAlignment="Top">
 		</AutoSuggestBox>
-		<TextBlock x:Name="localTextBlock" Grid.Row="0" FontSize="12" />
+		<TextBlock x:Name="localTextBlock" Grid.Row="1" FontSize="12" />
 		<TextBlock x:Name="logger" Grid.Row="3" FontSize="12" />
     </Grid>
 </UserControl>

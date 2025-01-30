@@ -10,9 +10,9 @@ using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -30,13 +30,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			_previousPoolingEnabled = FrameworkTemplatePool.IsPoolingEnabled;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(_mockProvider = new());
 
-			FrameworkTemplatePool.IsPoolingEnabled = true;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = true;
 		}
 
 		[TestCleanup]
 		public void Cleanup()
 		{
-			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = _previousPoolingEnabled;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(null);
 			FrameworkTemplatePool.Scavenge();
 		}
@@ -75,7 +75,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_ContentPresenter_Recylced()
+		[Ignore("Pooling has been disabled")]
+		public void When_ContentPresenter_Recycled()
 		{
 			_mockProvider.CanUseMemoryManager = false;
 
@@ -91,6 +92,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var template = new ControlTemplate(() =>
 			{
 				var presenter = new ContentPresenter();
+				presenter.DataContextChanged += (s, e) =>
+				{
+				};
 				presenter.Loaded += (s, e) =>
 				{
 					var field = presenter.GetType().GetField("_firstLoadResetDone", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -112,7 +116,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Template = template;
 			Assert.AreEqual(1, templateCreatedCount);
 			Assert.AreEqual(2, flagValues.Count);
-			Assert.AreEqual(flagValues[1], false);
+			Assert.IsFalse(flagValues[1]);
 		}
 
 		[TestMethod]
@@ -259,7 +263,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			public ulong AppMemoryUsageLimit { get; set; }
 
 			public Task Delay(TimeSpan duration) => throw new NotImplementedException();
-			public void Schedule(IdleDispatchedHandler action) => throw new NotImplementedException();
+			public void Schedule(Action action) => throw new NotImplementedException();
 		}
 	}
 

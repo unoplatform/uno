@@ -6,18 +6,19 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Windows.Devices.Sensors;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Uno.UI.Samples.Controls;
 using Uno.Disposables;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -44,7 +45,7 @@ namespace UITests.Shared.Windows_Devices
 		private string _shakenTimestamp;
 		private string _sensorStatus;
 
-		public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public AccelerometerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_accelerometer = Accelerometer.GetDefault();
 			if (_accelerometer != null)
@@ -174,7 +175,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				AccelerationX = args.Reading.AccelerationX;
 				AccelerationY = args.Reading.AccelerationY;
@@ -185,7 +186,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
 		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal,
 				() => ShakenTimestamp = args.Timestamp.ToString("R"));
 		}
 	}

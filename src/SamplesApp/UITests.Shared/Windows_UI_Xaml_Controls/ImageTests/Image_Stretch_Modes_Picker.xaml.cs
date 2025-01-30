@@ -5,10 +5,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using SamplesApp.Windows_UI_Xaml_Controls.ListView;
 using Uno.Extensions.Specialized;
 
@@ -142,11 +142,11 @@ namespace Uno.UI.Samples.UITests.Image
 			}
 		}
 
-		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : Enum
+		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : struct, Enum
 		{
 			yield return new ComboBoxItem { Content = $"All {typeof(T).Name} Modes", Tag = null };
 
-			foreach (T t in Enum.GetValues(typeof(T)))
+			foreach (T t in Enum.GetValues<T>())
 			{
 				yield return new ComboBoxItem { Content = t.ToString(), Tag = t };
 			}

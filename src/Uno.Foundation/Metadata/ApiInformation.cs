@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Uno.Foundation.Logging;
 
@@ -14,8 +15,6 @@ public partial class ApiInformation
 	private static HashSet<string> _notImplementedOnce = new HashSet<string>();
 	private static readonly object _gate = new object();
 	private static Dictionary<string, bool> _isTypePresent = new Dictionary<string, bool>();
-	private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent
-		= new Dictionary<(string typeName, string methodName, uint inputParameterCount), bool>();
 
 	private readonly static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
 	private readonly static List<Assembly> _assemblies = new List<Assembly>(3 /* All three uno assemblies */) {
@@ -52,6 +51,11 @@ public partial class ApiInformation
 		}
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetMethod may return null, normal flow of operation")]
+	internal static bool IsMethodPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetMethod(methodName));
+
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
 	public static bool IsMethodPresent(string typeName, string methodName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
@@ -63,11 +67,19 @@ public partial class ApiInformation
 			?.GetMethods()
 			?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
+	internal static bool IsEventPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetEvent(methodName));
+
 	public static bool IsEventPresent(string typeName, string eventName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetEvent(eventName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetField may return null, normal flow of operation")]
+	internal static bool IsPropertyPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetProperty(methodName));
+
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetProperty may return null, normal flow of operation")]
 	public static bool IsPropertyPresent(string typeName, string propertyName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
@@ -99,7 +111,11 @@ public partial class ApiInformation
 		return false;
 	}
 
-	public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName)
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
+	public static bool IsEnumNamedValuePresent(
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] string enumTypeName,
+		string valueName)
 		=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
 	/// <summary>
@@ -115,8 +131,9 @@ public partial class ApiInformation
 	/// <summary>
 	/// The message log level used when a not implemented member is used at runtime, if <see cref="IsFailWhenNotImplemented"/> is false.
 	/// </summary>
-	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Error;
+	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Debug;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 	private static Type? GetValidType(string typeName)
 	{
 		lock (_assemblies)
@@ -142,9 +159,9 @@ public partial class ApiInformation
 		}
 	}
 
-	internal static void TryRaiseNotImplemented(string type, string memberName)
+	internal static void TryRaiseNotImplemented(string type, string memberName, LogLevel errorLogLevelOverride = LogLevel.Error)
 	{
-		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m={Uri.EscapeDataString(type + "." + memberName)}";
+		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
 
 		if (IsFailWhenNotImplemented)
 		{
@@ -158,7 +175,9 @@ public partial class ApiInformation
 				{
 					_notImplementedOnce.Add(memberName);
 
-					LogExtensionPoint.Factory.CreateLogger(type).Log(NotImplementedLogLevel, message);
+					var logLevel = NotImplementedLogLevel == LogLevel.Error ? errorLogLevelOverride : NotImplementedLogLevel;
+
+					LogExtensionPoint.Factory.CreateLogger(type).Log(logLevel, message);
 				}
 			}
 		}

@@ -4,9 +4,10 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 
@@ -23,7 +24,7 @@ namespace UITests.Shared.Windows_Devices
 
 		internal GeolocatorTestsViewModel ViewModel { get; private set; }
 
-		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as GeolocatorTestsViewModel;
 		}
@@ -42,7 +43,7 @@ namespace UITests.Shared.Windows_Devices
 		private bool _statusChangedAttached;
 		private string _error = "";
 
-		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public GeolocatorTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			PositionStatus = _geolocator.LocationStatus;
 			timeout = TimeSpan.FromSeconds(10);
@@ -168,8 +169,10 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
-		private async void RequestAccess() =>
+		private async void RequestAccess()
+		{
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
+		}
 
 		private async void GetGeoposition()
 		{
@@ -202,7 +205,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				PositionStatus = args.Status;
 			});
@@ -210,7 +213,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				TrackedGeoposition = args.Position;
 			});

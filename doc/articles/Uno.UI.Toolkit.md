@@ -1,8 +1,8 @@
 ---
-uid: Uno.Development.Toolkit
+uid: Uno.Development.AdditionalFeatures
 ---
 
-# Uno.UI.Toolkit
+# Other Uno.UI Features
 
 Uno.UI.Toolkit is a set of extension methods or behaviors used to enhance UWP and activate device/OS specific features.
 
@@ -22,7 +22,7 @@ And declare your `MenuFlyoutItem` as follow
 
 ```xml
 <MenuFlyoutItem Text="Destructive action"
-				toolkit:MenuFlyoutItemExtensions.IsDestructive="True" />
+                toolkit:MenuFlyoutItemExtensions.IsDestructive="True" />
 ```
 
 ## UICommand - Destructive style

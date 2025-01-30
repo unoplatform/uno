@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
@@ -103,12 +103,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			completed1Count.Should().Be(0);
 			completed2Count.Should().Be(0);
 
-			// This is to workaround to the fact that the state is applied as soon as it's injected
-			// in the states list, so it will be complete twice (once when added in the collection,
-			// second when element is set ... which is not the behavior on Windows but is required for some other tests)
-			// This should be removed once the VisualStateGroup (and other tests) have been fixed.
-			completed1Count = -1;
-
 			dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
 
 			trigger1.Set();
@@ -176,10 +170,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			group.Transitions.Add(transition);
 
 			VisualStateManager.GoToState(control, "state1", true);
-			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Active);
+			Assert.AreEqual(Timeline.TimelineState.Active, transition.Storyboard.State);
 
 			VisualStateManager.GoToState(control, "state2", true);
-			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Stopped);
+			Assert.AreEqual(Timeline.TimelineState.Stopped, transition.Storyboard.State);
 		}
 
 		[TestMethod]
@@ -189,10 +183,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			var animation = group.States[0].Storyboard = AnimateTag(control, "state1", 5);
 
 			VisualStateManager.GoToState(control, "state1", true);
-			Assert.IsTrue(animation.State == Timeline.TimelineState.Active);
+			Assert.AreEqual(Timeline.TimelineState.Active, animation.State);
 
 			VisualStateManager.GoToState(control, "state2", true);
-			Assert.IsTrue(animation.State == Timeline.TimelineState.Stopped);
+			Assert.AreEqual(Timeline.TimelineState.Stopped, animation.State);
 		}
 
 		[TestMethod]

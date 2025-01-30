@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,13 +11,16 @@ using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using View = Windows.UI.Xaml.FrameworkElement;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 {
 	[TestClass]
-	public class Given_Canvas
+	public partial class Given_Canvas
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Canvas_have_Fixed_size()
 		{
@@ -81,7 +84,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 			Assert.AreEqual(42d, SUT.GetValue(Canvas.TopProperty));
 
 			SUT.SetValue(Canvas.ZIndexProperty, "42");
-			Assert.AreEqual(42d, SUT.GetValue(Canvas.ZIndexProperty));
+			Assert.AreEqual(42, SUT.GetValue(Canvas.ZIndexProperty));
 		}
 	}
 }

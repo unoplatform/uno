@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -11,9 +12,12 @@ namespace Uno.Foundation.Interop
 	/// <summary>
 	/// Provider of <see cref="IJSObjectMetadata"/>
 	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2041", Justification = "Types manipulated here have been marked earlier")]
 	internal static class JSObjectMetadataProvider
 	{
-		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = t => new ReflectionMetadata(t);
+		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = (t) => new ReflectionMetadata(t);
+
 		static JSObjectMetadataProvider() => _getByReflection = _getByReflection.AsMemoized();
 
 		/// <summary>
@@ -26,13 +30,19 @@ namespace Uno.Foundation.Interop
 
 		private class ReflectionMetadata : IJSObjectMetadata
 		{
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
 			private readonly Type _type;
+
 			private static long _handles;
 
 			private bool _isPrototypeExported;
 			private Dictionary<string, MethodInfo> _methods;
 
-			public ReflectionMetadata(Type type)
+			private static readonly char[] _parametersTrimArray = new char[] { '{', '}', ' ' };
+			private static readonly char[] _doubleQuoteSpaceArray = new[] { '"', ' ' };
+
+			public ReflectionMetadata(
+				[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
 			{
 				_type = type;
 			}
@@ -68,10 +78,10 @@ namespace Uno.Foundation.Interop
 			{
 				// TODO: Properly parse parameters
 				var parameters = jsonParameters
-					.Trim('{', '}', ' ')
-					.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+					.Trim(_parametersTrimArray)
+					.Split(',', StringSplitOptions.RemoveEmptyEntries)
 					.Where(parameter => parameter.HasValueTrimmed())
-					.Select(parameter => parameter.Split(new[] { ':' }, 2)[1].Trim('"', ' '))
+					.Select(parameter => parameter.Split(':', 2)[1].Trim(_doubleQuoteSpaceArray))
 					.ToArray();
 
 				return _methods[method].Invoke(instance, parameters);
@@ -102,8 +112,8 @@ namespace Uno.Foundation.Interop
 						// We log only methods, which are not declared by Uno/WinUI directly.
 						var reportMethods = duplicateMethods
 							.Where(m =>
-								!m.DeclaringType.FullName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal) &&
 								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft" + /* UWP don't rename */ ".UI.Xaml", StringComparison.Ordinal) &&
 								!m.DeclaringType.FullName.StartsWith("Uno", StringComparison.Ordinal))
 							.Select(m => m.Name)
 							.Distinct();

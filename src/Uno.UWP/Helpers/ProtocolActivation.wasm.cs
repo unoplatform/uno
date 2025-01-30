@@ -1,15 +1,14 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Web;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Uno.Helpers
 {
-	public static class ProtocolActivation
+	public static partial class ProtocolActivation
 	{
 		internal const string QueryKey = "unoprotocolactivation";
 
@@ -72,8 +71,7 @@ namespace Uno.Helpers
 			uriString += "%s";
 
 			// register scheme
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
-				$"navigator.registerProtocolHandler('{scheme}', '{uriString}' , '{prompt.Replace("'", "\\'")}')");
+			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
 		}
 
 		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
@@ -107,6 +105,11 @@ namespace Uno.Helpers
 			// arguments did not contain activation URI or it could not be parsed
 			return false;
 		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.navigator.registerProtocolHandler")]
+			internal static partial void RegisterProtocolHandler(string scheme, string uri, string prompt);
+		}
 	}
 }
-#endif

@@ -17,6 +17,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
+using System.Collections.Immutable;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -24,6 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
 		private readonly string _excludeXamlNamespacesProperty;
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
@@ -82,10 +84,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", file);
-#endif
-
 				var sourceText = file.GetText(cancellationToken)!;
 				if (sourceText is null)
 				{
@@ -118,7 +116,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
+						var xamlFileDefinition = Visit(reader, file, targetFilePath, cancellationToken);
 						if (!reader.DisableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -169,13 +167,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
+		private static bool IsSkiaNotConditional(string localName, string namespaceUri)
+		{
+			// Not ideal, but we want to avoid breaking changes.
+			// See discussion at https://github.com/unoplatform/uno/issues/17028
+			// For xmlns that are named "skia", there are 3 scenarios:
+			// 1. If project being built is for Skia, we just include that element.
+			// 2. If project being built is not for Skia and namespaceUri is using SkiaSharp, it's not conditional XAML and we should include that element
+			// 3. If project being built is not for Skia and namespaceUri is not using SkiaSharp, this is conditional XAML.
+			// For case 1, IsIncluded will return ForceInclude
+			// For case 2, we'll go through regular rules, as with any xmlns (rely on Ignorable and normal XAML conditional rules).
+			// For case 3, this method will return false and IsIncluded will return ForceExclude.
+			// Above explains the "current" behavior meant by this code.
+			// The ideal behavior is really that we ignore localName completely and just rely on namespaceUris
+			// NOTE: We check StartsWith("using") as well as Contains("SkiaSharp") to avoid breaking scenarios like
+			// xmlns:skia="http://uno.ui/skia#using:SkiaSharp.Views.Windows"
+			return localName == "skia" &&
+				namespaceUri.StartsWith("using:", StringComparison.Ordinal) &&
+				namespaceUri.Contains("SkiaSharp", StringComparison.Ordinal);
+		}
+
 		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
+				var result = __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
+				return namespaceUri.Contains("using:")
+					? result
+					: result.WithUpdatedNamespace(XamlConstants.PresentationXamlXmlNamespace);
 			}
-			else if (_excludeXamlNamespaces.Contains(localName))
+			else if (_excludeXamlNamespaces.Contains(localName) && !IsSkiaNotConditional(localName, namespaceUri))
 			{
 				return __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 			}
@@ -187,7 +208,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return __uno::Uno.Xaml.IsIncludedResult.Default;
 			}
 
-			var elements = valueSplit[1].Split('(', ',', ')');
+			namespaceUri = valueSplit[0];
+			var elements = valueSplit[1].Split(_splitChars);
 
 			var methodName = elements[0];
 
@@ -203,9 +225,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isIncluded1 = methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
 						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
-					return isIncluded1
+					return (isIncluded1
 						? __uno::Uno.Xaml.IsIncludedResult.ForceInclude
-						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -216,22 +238,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isIncluded2 = methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
 						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
-					return isIncluded2
+					return (isIncluded2
 						? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
-						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
 				default:
-					return __uno::Uno.Xaml.IsIncludedResult.Default; // TODO: support IsPropertyPresent
+					return __uno::Uno.Xaml.IsIncludedResult.Default.WithUpdatedNamespace(namespaceUri); // TODO: support IsPropertyPresent
 			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)
+		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file, targetFilePath);
+			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, source.GetText(cancellationToken)?.GetChecksum() ?? ImmutableArray<byte>.Empty);
 
 			do
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				switch (reader.NodeType)
 				{
 					case XamlNodeType.StartObject:
@@ -259,9 +282,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// );
 		}
 
-		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner)
+		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
 		{
-			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner);
+			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces);
 
 			Visit(reader, xamlObject);
 
@@ -309,6 +332,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
 			var lastWasLiteralInline = false;
 			var lastWasTrimSurroundingWhiteSpace = false;
+			List<NamespaceDeclaration>? namespaces = null;
+
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -344,7 +369,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						var obj = VisitObject(reader, owner);
+						var obj = VisitObject(reader, owner, namespaces);
 						if (!reader.PreserveWhitespace &&
 							lastWasLiteralInline &&
 							obj.Type.TrimSurroundingWhitespace &&
@@ -368,6 +393,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.NamespaceDeclaration:
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
+						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
 						// Skip
 						break;
 
@@ -405,7 +431,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var textMember = new XamlMember("Text", runType, false);
 
-			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, null)
+			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
 			{
 				Members =
 				{

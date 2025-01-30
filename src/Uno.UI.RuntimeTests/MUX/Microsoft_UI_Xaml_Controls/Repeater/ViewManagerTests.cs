@@ -1,8 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,13 +10,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Common;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Common;
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;
@@ -26,18 +25,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
-using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
+using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using Private.Infrastructure;
+using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class ViewManagerTests : MUXApiTestBase
@@ -87,8 +90,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue #1018
-		public void CanPinFocusedElements()
+		[TestMethod] // Issue #1018
+		[Ignore]
+		public async Task CanPinFocusedElements()
 		{
 			// Setup a grouped repeater scenario with two groups each containing two items.
 			var data = new ObservableCollection<ObservableCollection<string>>(Enumerable
@@ -100,7 +104,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater[] innerRepeaters = null;
 			List<StackPanel> groupElements = null;
 			ItemsRepeater rootRepeater = null;
-			var gotFocus = new ManualResetEvent(false);
+			var gotFocus = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -132,8 +136,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				itemElements[0][0].Focus(FocusState.Keyboard);
 			});
 
-			Verify.IsTrue(gotFocus.WaitOne(DefaultWaitTimeInMS), "Waiting for focus event on the first element of the first group.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await gotFocus.WaitOne(DefaultWaitTimeInMS), "Waiting for focus event on the first element of the first group.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -162,8 +166,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				itemElements[1][1].Focus(FocusState.Keyboard);
 			});
 
-			Verify.IsTrue(gotFocus.WaitOne(DefaultWaitTimeInMS), "Waiting for focus event on the second element of the second group.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await gotFocus.WaitOne(DefaultWaitTimeInMS), "Waiting for focus event on the second element of the second group.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -188,8 +192,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
-		public void CanReuseElementsDuringUniqueIdReset()
+		[TestMethod] // Issue 1018
+		[Ignore]
+		public async Task CanReuseElementsDuringUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
 			List<UIElement> mapping = null;
@@ -211,7 +216,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				focusedElement = (ContentControl)repeater.TryGetElement(1);
 				focusedElement.Focus(FocusState.Keyboard);
 			});
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -257,15 +262,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void CanChangeFocusAfterUniqueIdReset()
+		public async Task CanChangeFocusAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
 			object dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = MockItemsSource.CreateDataSource(data, supportsUniqueIds: true));
-			ItemsRepeater repeater = SetupRepeater(dataSource);
+			var (repeater, _) = await SetupRepeater(dataSource);
 			Control focusedElement = null;
 
 			RunOnUIThread.Execute(() =>
@@ -274,13 +277,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				focusedElement.Focus(FocusState.Keyboard);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			RunOnUIThread.Execute(() =>
 			{
 				data.Reset();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			RunOnUIThread.Execute(() =>
 			{
 				// Still focused.
@@ -291,7 +294,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				focusedElement.Focus(FocusState.Keyboard);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			RunOnUIThread.Execute(() =>
 			{
 				// Focus is on the new element.
@@ -303,12 +306,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
-		public void ValidateElementEvents()
+		public async Task ValidateElementEvents()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 
-			var repeater = SetupRepeater(dataSource);
+			var (repeater, _) = await SetupRepeater(dataSource);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -373,12 +376,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
-		public void ValidateElementIndexChangedEventOnStableReset()
+		public async Task ValidateElementIndexChangedEventOnStableReset()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSourceWithUniqueId(Enumerable.Range(0, 10).ToList()));
 
-			var repeater = SetupRepeater(dataSource);
+			var (repeater, _) = await SetupRepeater(dataSource);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -439,13 +442,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidateGetElementAtCachingForLayout()
+		public async Task ValidateGetElementAtCachingForLayout()
 		{
 			List<int> data = Enumerable.Range(0, 15).ToList();
 			ItemsSourceView dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new InspectingDataSource(data));
-			ScrollViewer scrollViewer = null;
-			var repeater = SetupRepeater(dataSource, null /*layout*/, out scrollViewer);
+			var (repeater, scrollViewer) = await SetupRepeater(dataSource, layout: null);
 			bool layoutRan = false;
 
 			RunOnUIThread.Execute(() =>
@@ -485,7 +487,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.IsTrue(layoutRan);
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		// Validate that when we clear containers during panning in flow layouts, we always do it 
@@ -493,14 +495,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ViewManager. Breaking this can cause a performance regression.
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidateElementClearingOrderFromFlowLayout()
+		public async Task ValidateElementClearingOrderFromFlowLayout()
 		{
 			ItemsSourceView dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new InspectingDataSource(Enumerable.Range(0, 15).ToList()));
-			ScrollViewer scrollViewer = null;
-			var repeater = SetupRepeater(dataSource, null /*layout*/, out scrollViewer);
+			var (repeater, scrollViewer) = await SetupRepeater(dataSource, layout: null);
 			List<int> clearedIndices = new List<int>();
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -529,8 +530,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 100.0, null, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -545,8 +546,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 0.0, null, disableAnimation: true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -560,12 +561,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-		public void CanResetLayoutAfterUniqueIdReset()
+		public async Task CanResetLayoutAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
 			object dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = MockItemsSource.CreateDataSource(data, supportsUniqueIds: true));
-			ItemsRepeater repeater = SetupRepeater(dataSource);
+			var (repeater, _) = await SetupRepeater(dataSource);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -679,21 +680,21 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
-		public void ValidateFocusMoveOnElementCleared()
+		[TestMethod] // Issue 1018
+		[Ignore]
+		public async Task ValidateFocusMoveOnElementCleared()
 		{
-			ItemsRepeater repeater = null;
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() =>
 			{
 				dataSource = new CustomItemsSource(Enumerable.Range(0, 5).ToList());
 			});
 
-			repeater = SetupRepeater(dataSource, "<Button Content='{Binding}' Height='10' />");
+			var (repeater, _) = await SetupRepeater(dataSource, "<Button Content='{Binding}' Height='10' />");
 
 			// dataSource: 0 1 2 3 4 
 			// Index 0 deleted, focus should be on the new element which has index 0
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, 0); },
@@ -704,7 +705,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			// dataSource: 1 2 3 4 
 			// Last element deleted, focus should move to the previous element
 			int lastIndex = dataSource.Inner.Count - 1;
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, lastIndex); },
@@ -714,7 +715,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			// dataSource: 1 2 3 
 			// Remove multiple elements
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, 0); },
@@ -723,21 +724,21 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 		}
 
-		// [TestMethod] Issue 1018
-		public void ValidateFocusMoveOnElementClearedWithUniqueIds()
+		[TestMethod] // Issue 1018
+		[Ignore]
+		public async Task ValidateFocusMoveOnElementClearedWithUniqueIds()
 		{
-			ItemsRepeater repeater = null;
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() =>
 			{
 				dataSource = new CustomItemsSourceWithUniqueId(Enumerable.Range(0, 5).ToList());
 			});
 
-			repeater = SetupRepeater(dataSource, "<Button Content='{Binding}' Height='10' />");
+			var (repeater, _) = await SetupRepeater(dataSource, "<Button Content='{Binding}' Height='10' />");
 
 			// dataSource: 0 1 2 3 4 
 			// Index 0 deleted, focus should be on the new element which has index 0
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, 0); },
@@ -748,7 +749,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			// dataSource: 1 2 3 4 
 			// Last element deleted, focus should move to the previous element
 			int lastIndex = dataSource.Inner.Count - 1;
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, lastIndex); },
@@ -758,7 +759,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			// dataSource: 1 2 3 
 			// Reset should keep the focused element as long as the unique id matches.
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, 0); },
@@ -772,7 +773,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			// dataSource: 1 2 3 
 			// Remove multiple elements
-			SharedHelpers.RunActionsWithWait(
+			await SharedHelpers.RunActionsWithWait(
 				new Action[]
 				{
 					() => { MoveFocusToIndex(repeater, 0); },
@@ -877,20 +878,19 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return layout;
 		}
 
-		private ItemsRepeater SetupRepeater(object dataSource, string itemContent = @"<Button Content='{Binding}' Height='100' />")
+		private async Task<(ItemsRepeater, ScrollViewer)> SetupRepeater(object dataSource, string itemContent = @"<Button Content='{Binding}' Height='100' />")
 		{
 			VirtualizingLayout layout = null;
 			RunOnUIThread.Execute(() => layout = new StackLayout());
-			ScrollViewer scrollViewer = null;
-			return SetupRepeater(dataSource, layout, itemContent, out scrollViewer);
+			return await SetupRepeater(dataSource, layout, itemContent);
 		}
 
-		private ItemsRepeater SetupRepeater(object dataSource, VirtualizingLayout layout, out ScrollViewer scrollViewer)
+		private async Task<(ItemsRepeater, ScrollViewer)> SetupRepeater(object dataSource, VirtualizingLayout layout)
 		{
-			return SetupRepeater(dataSource, layout, @"<Button Content='{Binding}' Height='100' />", out scrollViewer);
+			return await SetupRepeater(dataSource, layout, @"<Button Content='{Binding}' Height='100' />");
 		}
 
-		private ItemsRepeater SetupRepeater(object dataSource, VirtualizingLayout layout, string itemContent, out ScrollViewer scrollViewer)
+		private async Task<(ItemsRepeater, ScrollViewer)> SetupRepeater(object dataSource, VirtualizingLayout layout, string itemContent)
 		{
 			ItemsRepeater repeater = null;
 			ScrollViewer sv = null;
@@ -923,9 +923,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			IdleSynchronizer.Wait();
-			scrollViewer = sv;
-			return repeater;
+			await TestServices.WindowHelper.WaitForIdle();
+			return (repeater, sv);
 		}
 
 		private int DefaultWaitTime = 2000;

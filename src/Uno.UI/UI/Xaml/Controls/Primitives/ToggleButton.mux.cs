@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ToggleButton_Partial.h, ToggleButton_Partial.cpp
+// ToggleButton_Partial.h, ToggleButton_Partial.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ToggleButton
 	{
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value false
+#if false // Uno docs: This appears to be unused, even on WinUI.
 		private bool _skipCreateAutomationPeer;
-#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value false
+#endif
+
 		private protected override void Initialize()
 		{
 			base.Initialize();
@@ -252,13 +253,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-#if false
-		private void AutomationToggleButtonOnToggle()
+		internal void AutomationToggleButtonOnToggle()
 		{
 			// OnToggle through UIAutomation
 			OnClick();
 		}
-#endif
 
 		/// <summary>
 		/// Create ToggleButtonAutomationPeer to represent the ToggleButton.
@@ -266,15 +265,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <returns>Automation peer.</returns>
 		protected override AutomationPeer? OnCreateAutomationPeer()
 		{
-			if (!_skipCreateAutomationPeer)
+			//if (!_skipCreateAutomationPeer)
 			{
 				return new ToggleButtonAutomationPeer(this);
 			}
 
-			return null;
+			//return null;
 		}
 
-#if false
+#if false // Uno docs: This appears to be unused, even on WinUI.
 		private void SetSkipAutomationPeerCreation() => _skipCreateAutomationPeer = true;
 #endif
 	}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -11,8 +11,9 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UITests.Windows_Storage
 {
@@ -26,7 +27,7 @@ namespace UITests.Windows_Storage
 			this.DataContextChanged += DataContextChangedHandler;
 		}
 
-		private void DataContextChangedHandler(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataContextChangedHandler(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			var newViewModel = args.NewValue as NativeStorageRuntimeTestsViewModel;
 			ViewModel = newViewModel;
@@ -47,7 +48,7 @@ namespace UITests.Windows_Storage
 
 		public string ErrorMessage { get; set; }
 
-		public NativeStorageRuntimeTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NativeStorageRuntimeTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
@@ -96,6 +97,7 @@ namespace UITests.Windows_Storage
 		}
 	}
 
+#pragma warning disable MSTEST0030 // Type containing [TestMethod] should be marked with [TestClass] - instantiated explicitly.
 	public class Pickable_StorageFolder_Tests : Given_StorageFolder_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -131,4 +133,5 @@ namespace UITests.Windows_Storage
 
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
+#pragma warning restore MSTEST0030
 }

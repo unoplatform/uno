@@ -19,36 +19,42 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_NoSelection_Then_PointersEvents()
 		=> RunTest("_noSelection_noClick", clicked: false);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_SingleSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_singleSelection_noClick", clicked: false);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_MultipleSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_multipleSelection_noClick", clicked: false);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_ExtendedSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_extendedSelection_noClick", clicked: false);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_NoSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_noSelection_withClick", clicked: true);
 
 	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+	[InjectedPointer(PointerDeviceType.Mouse)]
 	public Task When_SingleSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_singleSelection_withClick", clicked: true);
 
@@ -59,6 +65,11 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 		var d = App.Query(q => q.Marked(test).Descendant().Marked(test + "_item")).Skip(3).First();
 
 		App.TapCoordinates(d.Rect.CenterX, d.Rect.CenterY);
+
+#if !IS_RUNTIME_UI_TESTS
+		//	Delay may be required for Xamarin.UITest for iOS
+		await Task.Delay(250);
+#endif
 
 		var pageEntered = App.Marked("_pageEntered").GetDependencyPropertyValue<string>("Text");
 		var itemEntered = App.Marked("_itemEntered").GetDependencyPropertyValue<string>("Text");

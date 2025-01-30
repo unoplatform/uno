@@ -1,14 +1,23 @@
-﻿using System;
-using Android.Animation;
+﻿using Android.Animation;
 using Android.Views.Animations;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public abstract partial class EasingFunctionBase
+	public partial class EasingFunctionBase
 	{
-		internal virtual ITimeInterpolator CreateTimeInterpolator()
+		private sealed class AndroidTimeInterpolator : BaseInterpolator
 		{
-			return new LinearInterpolator();
+			private readonly EasingFunctionBase _easingFunctionBase;
+
+			public AndroidTimeInterpolator(EasingFunctionBase easingFunctionBase)
+				=> _easingFunctionBase = easingFunctionBase;
+
+			public override float GetInterpolation(float input) => (float)_easingFunctionBase.Ease(input);
+		}
+
+		internal ITimeInterpolator CreateTimeInterpolator()
+		{
+			return new AndroidTimeInterpolator(this);
 		}
 	}
 }

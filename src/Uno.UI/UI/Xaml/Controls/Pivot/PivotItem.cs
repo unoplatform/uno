@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
-#if XAMARIN_ANDROID
+using Microsoft.UI.Xaml.Controls.Primitives;
+#if __ANDROID__
 using Android.Views;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PivotItem : ContentControl
 	{
@@ -46,11 +46,10 @@ namespace Windows.UI.Xaml.Controls
 			if (dependencyObject is PivotItem item && item.PivotHeaderItem != null)
 			{
 				item.PivotHeaderItem.Content = args.NewValue;
-
 			}
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// This allows the PivotItem to fill the whole available space.
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{

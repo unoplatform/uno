@@ -14,6 +14,7 @@ using NUnit.Framework;
 using SamplesApp.UITests._Utils;
 using Uno.UITest;
 using static System.Math;
+using SkiaSharp;
 
 namespace SamplesApp.UITests.TestFramework
 {
@@ -36,14 +37,25 @@ namespace SamplesApp.UITests.TestFramework
 		#region Are[Almost]Equal
 		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), expectedToActualScale, tolerance, line);
+		public static async Task AreEqualAsync(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), expectedToActualScale, tolerance, line);
 
 		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, expectedToActualScale, tolerance, line);
+
+		public static async Task AreEqualAsync(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, expectedToActualScale, tolerance, line);
 
 		public static void AreEqual(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), expectedToActualScale, tolerance, line);
 
+		public static async Task AreEqualAsync(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), expectedToActualScale, tolerance, line);
+
 		public static void AreEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
+
+		public static async Task AreEqualAsync(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
 		/// <summary>
@@ -81,7 +93,7 @@ namespace SamplesApp.UITests.TestFramework
 		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
-		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, Bitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, PlatformBitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, null, actual, actualRect, expectedToActualScale, tolerance, line);
 
 		private static void AreEqualImpl(
@@ -104,7 +116,7 @@ namespace SamplesApp.UITests.TestFramework
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
 			ScreenshotInfo? actual,
-			Bitmap actualBitmap,
+			PlatformBitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
@@ -133,7 +145,7 @@ namespace SamplesApp.UITests.TestFramework
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
 			ScreenshotInfo? actual,
-			Bitmap actualBitmap,
+			PlatformBitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
@@ -151,13 +163,13 @@ namespace SamplesApp.UITests.TestFramework
 			if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 			{
 				var effectiveExpectedBitmapSize = new Size(
-					(int)(expectedBitmap.Size.Width * expectedToActualScale),
-					(int)(expectedBitmap.Size.Height * expectedToActualScale));
-				Assert.AreEqual(effectiveExpectedBitmapSize, actualBitmap.Size, WithContext("Screenshots don't have the same size"));
+					(int)(expectedBitmap.Width * expectedToActualScale),
+					(int)(expectedBitmap.Height * expectedToActualScale));
+				Assert.AreEqual(effectiveExpectedBitmapSize, new Size(actualBitmap.Width, actualBitmap.Height), WithContext("Screenshots don't have the same size"));
 			}
 
-			expectedRect = Normalize(expectedRect, expectedBitmap.Size);
-			actualRect = Normalize(actualRect, actualBitmap.Size);
+			expectedRect = Normalize(expectedRect, new(expectedBitmap.Width, expectedBitmap.Height));
+			actualRect = Normalize(actualRect, new(actualBitmap.Width, actualBitmap.Height));
 
 			var expectedPixels = ExpectedPixels
 				.At(actualRect.Location)
@@ -174,8 +186,8 @@ namespace SamplesApp.UITests.TestFramework
 				=> new StringBuilder()
 					.AppendLine($"ImageAssert.AreEqual @ line {line}")
 					.AppendLine("pixelTolerance: " + tolerance)
-					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name} {expectedBitmap.Size}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
-					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name} {actualBitmap.Size}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
+					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name} {expectedBitmap.Width}x{expectedBitmap.Height}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
+					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name} {actualBitmap.Width}x{actualBitmap.Height}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
 					.AppendLine("====================");
 
 			string WithContext(string message)
@@ -215,7 +227,7 @@ namespace SamplesApp.UITests.TestFramework
 					ScreenshotInfo expected,
 					Rectangle expectedRect,
 					ScreenshotInfo actual,
-					Bitmap actualBitmap,
+					PlatformBitmap actualBitmap,
 					Rectangle actualRect,
 					double expectedToActualScale,
 					PixelTolerance tolerance,
@@ -266,6 +278,27 @@ namespace SamplesApp.UITests.TestFramework
 			Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
 		}
 
+		/// <summary>
+		/// Asserts that a given screenshot has a color anywhere at a given rectangle.
+		/// </summary>
+		public static void DoesNotHaveColorInRectangle(ScreenshotInfo screenshot, Rectangle rect, Color unexpectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		{
+			TryIgnoreImageAssert();
+
+			var bitmap = screenshot.GetBitmap();
+			for (var x = rect.Left; x < rect.Right; x++)
+			{
+				for (var y = rect.Top; y < rect.Bottom; y++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					if (AreSameColor(unexpectedColor, pixel, tolerance, out _))
+					{
+						Assert.Fail($"Unexpected '{ToArgbCode(unexpectedColor)}' in rectangle '{rect}'.");
+					}
+				}
+			}
+		}
+
 		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, double scale, int line)
 		{
 			TryIgnoreImageAssert();
@@ -277,7 +310,7 @@ namespace SamplesApp.UITests.TestFramework
 
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Width}x{bitmap.Height}"));
 			}
 
 			var pixel = bitmap.GetPixel(x, y);
@@ -320,7 +353,7 @@ namespace SamplesApp.UITests.TestFramework
 			var bitmap = screenshot.GetBitmap();
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Width}x{bitmap.Height}"));
 			}
 
 			var pixel = bitmap.GetPixel(x, y);
@@ -328,7 +361,7 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				Assert.Fail(WithContext(builder: builder => builder
 					.AppendLine($"Color at ({x},{y}) is not expected")
-					.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.Name}")
+					.AppendLine($"excluded: {ToArgbCode(excludedColor)}")
 					.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 					.AppendLine($"tolerance: {tolerance}")
 					.AppendLine($"difference: {difference}")

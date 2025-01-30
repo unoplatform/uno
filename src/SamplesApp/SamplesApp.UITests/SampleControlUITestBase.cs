@@ -13,6 +13,10 @@ using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
+using SkiaSharp;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace SamplesApp.UITests
 {
@@ -28,7 +32,14 @@ namespace SamplesApp.UITests
 		[OneTimeSetUp]
 		public void SingleSetup()
 		{
-			ValidateAppMode();
+			try
+			{
+				ValidateAppMode();
+			}
+			catch
+			{
+				_app = ResetSimulator();
+			}
 		}
 
 		protected IApp App => _app;
@@ -51,9 +62,74 @@ namespace SamplesApp.UITests
 			// Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
 			// Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot");
 
-			// Start the app only once, so the tests runs don't restart it
-			// and gain some time for the tests.
-			AppInitializer.ColdStartApp();
+			try
+			{
+				if (AppInitializer.GetLocalPlatform() == Platform.iOS)
+				{
+					AppInitializer.ColdStartApp();
+				}
+				else
+				{
+					// Start the app only once, so the tests runs don't restart it
+					// and gain some time for the tests.
+					var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
+
+					// Force an explicit timeout to avoid excessive waiting on iOS
+					var timeout = TimeSpan.FromMinutes(5);
+					var timeoutTask = Task.Delay(timeout);
+
+					var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
+					allTasks.Wait();
+
+					if (allTasks.Result == timeoutTask)
+					{
+						throw new Exception($"Cold start timeout after {timeout}");
+					}
+				}
+
+			}
+			catch
+			{
+				ResetSimulator();
+				throw;
+			}
+
+			TryInitializeSkiaSharpLoader();
+		}
+
+		private static void TryInitializeSkiaSharpLoader()
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser
+				&& !OperatingSystem.IsWindows())
+			{
+#if DEBUG
+				Console.WriteLine("Initializing SkiaSharp loader");
+#endif
+
+				NativeLibrary.SetDllImportResolver(
+					typeof(SkiaSharpVersion).Assembly,
+					ImportResolver);
+			}
+		}
+
+		private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+		{
+#if DEBUG
+			Console.WriteLine($"Searching SkiaSharp loader ({libraryName}, {assembly})");
+#endif
+
+			IntPtr libHandle = IntPtr.Zero;
+
+			if (libraryName == "libSkiaSharp")
+			{
+				NativeLibrary.TryLoad(
+					"libSkiaSharp.so",
+					typeof(SampleControlUITestBase).Assembly,
+					DllImportSearchPath.AssemblyDirectory,
+					out libHandle);
+			}
+
+			return libHandle;
 		}
 
 		/// <summary>
@@ -95,6 +171,13 @@ namespace SamplesApp.UITests
 			_startTime = DateTime.Now;
 
 			ValidateAutoRetry();
+
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser
+				&& TestContext.CurrentContext.CurrentRepeatCount > 0)
+			{
+				Console.WriteLine("Refreshing browser for test retry");
+				_app.InvokeGeneric("browser:SampleRunner|RefreshBrowser", "");
+			}
 
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
@@ -154,6 +237,32 @@ namespace SamplesApp.UITests
 			WriteSystemLogs(GetCurrentStepTitle("log"));
 		}
 
+		private static IApp ResetSimulator()
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.iOS
+								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
+			{
+				// Shutdown the simulator to avoid errors like
+				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
+				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
+				// libc++abi: terminating due to uncaught exception of type NSException
+				// Simulator is already booted.
+				// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
+				// --DeviceAgentException
+				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
+				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
+				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
+
+				// Retry a cold startup after the erasure
+				return AppInitializer.ColdStartApp();
+			}
+			else
+			{
+				return null;
+			}
+		}
+
 		private void WriteSystemLogs(string fileName)
 		{
 			if (_app != null && AppInitializer.GetLocalPlatform() == Platform.Browser)
@@ -172,6 +281,9 @@ namespace SamplesApp.UITests
 			}
 		}
 
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, bool? ignoreInSnapshotCompare = null)
+			=> TakeScreenshot(stepName, ignoreInSnapshotCompare);
+
 		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
@@ -179,6 +291,9 @@ namespace SamplesApp.UITests
 					? new ScreenshotOptions { IgnoreInSnapshotCompare = ignoreInSnapshotCompare.Value }
 					: null
 			);
+
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, ScreenshotOptions options)
+			=> TakeScreenshot(stepName, options);
 
 		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{
@@ -369,7 +484,8 @@ namespace SamplesApp.UITests
 			{
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
-			}, retryFrequency: TimeSpan.FromMilliseconds(50));
+			}, retryFrequency: TimeSpan.FromMilliseconds(50)
+			, timeout: TimeSpan.FromSeconds(30));
 
 			if (!skipInitialScreenshot)
 			{

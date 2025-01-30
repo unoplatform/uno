@@ -1,4 +1,4 @@
-﻿#if NET461 || __NETSTD_REFERENCE__
+﻿#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 #nullable enable
 
 using System;
@@ -11,6 +11,6 @@ internal static partial class SystemThemeHelper
 	/// <summary>
 	/// For unsupported targets we default to light theme.
 	/// </summary>
-	private static SystemTheme GetSystemTheme() => SystemTheme.Light;
+	internal static SystemTheme GetSystemTheme() => SystemTheme.Light;
 }
 #endif

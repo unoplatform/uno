@@ -65,7 +65,7 @@ namespace Windows.Storage
 				await MoveAsync(ct, parent, desiredName, option);
 			}
 
-			public virtual async Task<StorageFile> CopyAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			public async Task<StorageFile> CopyAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
 			{
 				var dst = await CreateDestination(ct, destinationFolder, desiredNewName, option);
 				await CopyAndReplaceAsync(ct, dst);
@@ -81,7 +81,7 @@ namespace Windows.Storage
 				}
 			}
 
-			public virtual async Task MoveAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
+			public async Task MoveAsync(CancellationToken ct, IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option)
 			{
 				var dst = await CreateDestination(ct, destinationFolder, desiredNewName, option);
 				await MoveAndReplaceAsync(ct, dst);

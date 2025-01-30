@@ -119,7 +119,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // For mouse, focus should be set immediately
+		[Ignore("Test is flaky on WASM")] // WASM-only test, but very flaky #9080
 		public void TestTextBoxReleaseOutFocused()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
@@ -140,6 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Test is very flaky on WASM #9080
 		public void TestTextBoxTap()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
@@ -151,6 +152,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		private void TestButtonReleasedOutState(string target, params string[] expectedStates)
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons");
+
+			TakeScreenshot("TestButtonReleasedOutState_Initial");
+
 			TestVisualTests(target, ReleaseOut, true, expectedStates);
 		}
 

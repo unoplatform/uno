@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Samples.UnitTests
@@ -16,11 +16,7 @@ namespace SamplesApp.Samples.UnitTests
 
 		private async void Go(object sender, RoutedEventArgs e)
 		{
-#if __WASM__
-			var handler = new Uno.UI.Wasm.WasmHttpHandler();
-#else
 			var handler = new HttpClientHandler();
-#endif
 
 			try
 			{

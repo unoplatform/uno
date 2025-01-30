@@ -8,11 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -194,7 +194,7 @@ namespace Uno.UI.Tests.BinderTests
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_NoDefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata(null, cb));
 
-			Assert.AreEqual(null, SUT.GetValue(testProperty));
+			Assert.IsNull(SUT.GetValue(testProperty));
 		}
 
 		[TestMethod]
@@ -242,7 +242,7 @@ namespace Uno.UI.Tests.BinderTests
 						break;
 					case 2:
 						Assert.AreEqual("test2", e.OldValue);
-						Assert.AreEqual(null, e.NewValue);
+						Assert.IsNull(e.NewValue);
 						break;
 				}
 			};
@@ -256,7 +256,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("test2", SUT.GetValue(testProperty));
 
 			SUT.SetValue(testProperty, null);
-			Assert.AreEqual(null, SUT.GetValue(testProperty));
+			Assert.IsNull(SUT.GetValue(testProperty));
 
 			Assert.AreEqual(3, raisedCount);
 		}
@@ -367,7 +367,7 @@ namespace Uno.UI.Tests.BinderTests
 				switch (raisedCount++)
 				{
 					case 0:
-						Assert.AreEqual(null, e.OldValue);
+						Assert.IsNull(e.OldValue);
 						Assert.AreEqual(o1, e.NewValue);
 						break;
 
@@ -397,12 +397,11 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void When_Property_RegisterTwice_then_Fail()
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			var testProperty2 = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			Assert.ThrowsException<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42")));
 		}
 
 		[TestMethod]
@@ -467,13 +466,11 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void When_Setting_UnsetValue_On_DefaultValue_Then_Fails()
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_On_DefaultValue_Then_Fails), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-
-			SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue);
+			Assert.ThrowsException<InvalidOperationException>(() => SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue));
 		}
 
 		[TestMethod]
@@ -627,7 +624,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			Action callback = null;
 
-			object Coerce(object dependencyObject, object baseValue)
+			object Coerce(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 			{
 				callback?.Invoke();
 
@@ -794,7 +791,7 @@ namespace Uno.UI.Tests.BinderTests
 			var actualValue = SUT.GetValue(testProperty);
 			var localValue = SUT.ReadLocalValue(testProperty);
 
-			Assert.AreEqual(null, actualValue);
+			Assert.IsNull(actualValue);
 			Assert.AreEqual(baseValue, localValue);
 		}
 
@@ -920,53 +917,50 @@ namespace Uno.UI.Tests.BinderTests
 			var actualValue = (DateTime)SUT.GetValue(testProperty);
 
 			var later = DateTime.Now.AddMinutes(1);
-
-			Assert.IsNotNull(actualValue);
-			Assert.IsNotNull(defaultValue);
 			Assert.IsTrue(defaultValue < actualValue && actualValue < later);
 		}
 
 		#region CoerceValueCallbacks
 
-		private object PreventSet(object dependencyObject, object baseValue)
+		private object PreventSet(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return DependencyProperty.UnsetValue;
 		}
 
-		private object DoNothing(object dependencyObject, object baseValue)
+		private object DoNothing(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return baseValue;
 		}
 
-		private object ReturnNull(object dependencyObject, object baseValue)
+		private object ReturnNull(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return null;
 		}
 
-		private object AbsoluteInteger(object dependencyObject, object baseValue)
+		private object AbsoluteInteger(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return Math.Abs((int)baseValue);
 		}
 
-		private object IgnoreNegative(object dependencyObject, object baseValue)
+		private object IgnoreNegative(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return (int)baseValue < 0
 				? DependencyProperty.UnsetValue
 				: baseValue;
 		}
 
-		private object StringTake10(object dependencyObject, object baseValue)
+		private object StringTake10(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return new string(((string)baseValue).Take(10).ToArray());
 		}
 
-		private object Now(object dependencyObject, object baseValue)
+		private object Now(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return DateTime.Now;
 		}
 
 		private static object _customCoercion;
-		private object Custom(object dependencyObject, object baseValue)
+		private object Custom(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			if (_customCoercion != null)
 			{
@@ -979,41 +973,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		#endregion
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_Metadata_Is_Not_Derived_From_BaseMetadata_Then_Fail()
-		{
-			var testProperty = DependencyProperty.Register(
-				nameof(When_OverrideMetadata_With_Metadata_Is_Not_Derived_From_BaseMetadata_Then_Fail),
-				typeof(string),
-				typeof(MockDependencyObject),
-				new FrameworkPropertyMetadata(null)
-			);
-
-			testProperty.OverrideMetadata(typeof(MockDependencyObject2), new PropertyMetadata(null));
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_ForType_Is_OwnerType_Then_Fail()
-		{
-			var testProperty = DependencyProperty.Register(
-				nameof(When_OverrideMetadata_With_ForType_Is_OwnerType_Then_Fail),
-				typeof(string),
-				typeof(MockDependencyObject),
-				null
-			);
-
-			testProperty.OverrideMetadata(typeof(MockDependencyObject), new PropertyMetadata("test"));
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_Same_ForType_Twice_Then_Fail()
-		{
-			MyDependencyObject1.MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), new PropertyMetadata("test"));
-		}
 
 		[TestMethod]
 		public void When_PropertyMetadata_Is_Null()
@@ -1035,7 +994,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
 		public void When_SetValue_With_Coercion_Precedence_Then_Fail()
 		{
 			var SUT = new MockDependencyObject();
@@ -1045,56 +1003,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(MockDependencyObject),
 				null
 			);
-
-			SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion);
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_DefaultValue()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			Assert.AreEqual("default1", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject1)).DefaultValue);
-			Assert.AreEqual("default2", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject2)).DefaultValue);
-			Assert.AreEqual("default3", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject3)).DefaultValue);
-
-			Assert.AreEqual("default1", SUT1.GetValue(MyDependencyObject1.MyPropertyProperty));
-			Assert.AreEqual("default2", SUT2.GetValue(MyDependencyObject1.MyPropertyProperty));
-			Assert.AreEqual("default3", SUT3.GetValue(MyDependencyObject1.MyPropertyProperty));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_CoerceValueCallback()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			// +1 CoerceValueCallback (1)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-
-			// +1 CoerceValueCallback (2)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-
-			// +1 CoerceValueCallback (3)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-
-			// +1 CoerceValueCallback (4)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-			SUT2.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-			SUT3.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-
-			Assert.AreEqual(4, SUT1.CoerceValueCallbackCount);
-			Assert.AreEqual(4, SUT2.CoerceValueCallbackCount);
-			Assert.AreEqual(4, SUT3.CoerceValueCallbackCount);
+			Assert.ThrowsException<ArgumentException>(() => SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion));
 		}
 
 		[TestMethod]
@@ -1105,78 +1014,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetValue(MyDependencyObject1.MyPropertyProperty, "value", DependencyPropertyValuePrecedences.Inheritance);
 			SUT.CoerceValue(MyDependencyObject1.MyPropertyProperty);
 
-			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.GetValue(MyDependencyObject1.MyPropertyProperty, DependencyPropertyValuePrecedences.Local));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_PropertyChangedCallback()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +1 PropertyChangedCallback (1)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +2 PropertyChangedCallback (2)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +3 PropertyChangedCallback (3)
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (1)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (2)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (3)
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +1 PropertyChangedCallback (2)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +2 PropertyChangedCallback (4)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +3 PropertyChangedCallback (6)
-
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (2)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (4)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (6)
-
-			var propertyChangedCallbacks1 = new[]
-			{
-				"changed1: coercion1: A",
-				"changed1: coercion1: B",
-			};
-
-			var propertyChangedCallbacks2 = new[]
-			{
-				"changed1: coercion2: A",
-				"changed2: coercion2: A",
-				"changed1: coercion2: B",
-				"changed2: coercion2: B",
-			};
-
-			var propertyChangedCallbacks3 = new[]
-			{
-				"changed1: coercion3: A",
-				"changed2: coercion3: A",
-				"changed3: coercion3: A",
-				"changed1: coercion3: B",
-				"changed2: coercion3: B",
-				"changed3: coercion3: B",
-			};
-
-			Assert.IsTrue(SUT1.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks1));
-			Assert.IsTrue(SUT2.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks2));
-			Assert.IsTrue(SUT3.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks3));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_FrameworkPropertyMetadata_Options()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			var metadata1 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject1));
-			var metadata2 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject2));
-			var metadata3 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject3));
-
-			Assert.IsNotInstanceOfType(metadata1, typeof(FrameworkPropertyMetadata));
-			Assert.IsInstanceOfType(metadata2, typeof(FrameworkPropertyMetadata));
-			Assert.IsInstanceOfType(metadata3, typeof(FrameworkPropertyMetadata));
-
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
+			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.ReadLocalValue(MyDependencyObject1.MyPropertyProperty));
 		}
 
 		[TestMethod]
@@ -1431,9 +1269,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_AddParentChanged_OnParentChanged()
 		{
-			var firstParent = new Windows.UI.Xaml.Controls.Border();
-			var secondParent = new Windows.UI.Xaml.Controls.Border();
-			var border = new Windows.UI.Xaml.Controls.Border();
+			var firstParent = new Microsoft.UI.Xaml.Controls.Border();
+			var secondParent = new Microsoft.UI.Xaml.Controls.Border();
+			var border = new Microsoft.UI.Xaml.Controls.Border();
 			firstParent.Child = border;
 
 			IDisposable disposable = null;
@@ -1458,9 +1296,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_RemoveParentChanged_OnParentChanged()
 		{
-			var firstParent = new Windows.UI.Xaml.Controls.Border();
-			var secondParent = new Windows.UI.Xaml.Controls.Border();
-			var border = new Windows.UI.Xaml.Controls.Border();
+			var firstParent = new Microsoft.UI.Xaml.Controls.Border();
+			var secondParent = new Microsoft.UI.Xaml.Controls.Border();
+			var border = new Microsoft.UI.Xaml.Controls.Border();
 			firstParent.Child = border;
 			IDisposable disposable = null;
 			IDisposable disposable2 = null;
@@ -1485,12 +1323,12 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_NullablePropertyBinding()
 		{
-			var SUT = new Windows.UI.Xaml.Controls.Border();
+			var SUT = new Microsoft.UI.Xaml.Controls.Border();
 			SUT.Tag = new NullablePropertyOwner() { MyNullable = 42 };
 
-			var o2 = new Windows.UI.Xaml.Controls.Border();
+			var o2 = new Microsoft.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Windows.UI.Xaml.Controls.Border.TagProperty,
+				Microsoft.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyNullable.Value",
@@ -1506,16 +1344,16 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_NullableStructRecordPropertyBinding()
 		{
-			var SUT = new Windows.UI.Xaml.Controls.Border();
+			var SUT = new Microsoft.UI.Xaml.Controls.Border();
 			var propertyOwner = new NullableStructRecordPropertyOwner()
 			{
 				MyProperty = null
 			};
 			SUT.Tag = propertyOwner;
 
-			var o2 = new Windows.UI.Xaml.Controls.Border();
+			var o2 = new Microsoft.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Windows.UI.Xaml.Controls.Border.TagProperty,
+				Microsoft.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyProperty.Value.OtherProperty",
@@ -1537,16 +1375,16 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_StructRecordWithValuePropertyBinding()
 		{
-			var SUT = new Windows.UI.Xaml.Controls.Border();
+			var SUT = new Microsoft.UI.Xaml.Controls.Border();
 			var propertyOwner = new StructRecordWithValuePropertyOwner()
 			{
 				MyProperty = new StructRecordWithValuePropertyOwner.MyRecord()
 			};
 			SUT.Tag = propertyOwner;
 
-			var o2 = new Windows.UI.Xaml.Controls.Border();
+			var o2 = new Microsoft.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Windows.UI.Xaml.Controls.Border.TagProperty,
+				Microsoft.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyProperty.Value",
@@ -1813,32 +1651,32 @@ namespace Uno.UI.Tests.BinderTests
 			void OnSourceChanged(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(false, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsFalse(target.Test);
 				Assert.AreEqual(1, order);
 			}
 
 			void OnTargetChanged(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(2, order);
 			}
 
 			void OnTargetCallback(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(3, order);
 			}
 
 			void OnSourceCallback(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(4, order);
 			}
 
@@ -1871,18 +1709,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.PropA.Should().Be("LocalValue");
 			sut.PropB.Should().Be("StyleValueForB");
 
-#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
-
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
-#endif
-
 			sut.ClearValue(MyDependencyObject.PropBProperty);
 			sut.PropB.Should().Be("StyleValueForB");
 
@@ -1900,18 +1726,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.PropA.Should().Be(null);
 			sut.PropB.Should().Be(null);
-
-#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
-
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
-#endif
 		}
 
 		[TestMethod]
@@ -2029,46 +1843,12 @@ namespace Uno.UI.Tests.BinderTests
 				new PropertyMetadata(
 					"default1",
 					(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue); },
-					(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion1: " + baseValue; }
-
+					(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion1: " + baseValue; }
 				)
 			);
 
 		public List<string> PropertyChangedCallbacks = new List<string>();
 		public int CoerceValueCallbackCount { get; set; } = 0;
-	}
-
-	partial class MyDependencyObject2 : MyDependencyObject1
-	{
-		static MyDependencyObject2()
-		{
-			var metadata = new FrameworkPropertyMetadata(
-				"default2",
-				FrameworkPropertyMetadataOptions.Inherits,
-				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed2: " + e.NewValue); },
-				(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion2: " + baseValue; }
-			);
-
-			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), metadata);
-		}
-
-		public MyDependencyObject2() { }
-	}
-
-	partial class MyDependencyObject3 : MyDependencyObject2
-	{
-		static MyDependencyObject3()
-		{
-			var metadata = new FrameworkPropertyMetadata(
-				"default3",
-				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed3: " + e.NewValue); },
-				(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion3: " + baseValue; }
-			);
-
-			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject3), metadata);
-		}
-
-		public MyDependencyObject3() { }
 	}
 
 	partial class NullablePropertyOwner : FrameworkElement
@@ -2182,7 +1962,7 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-	public class ChangedCallbackOrderElement : FrameworkElement
+	internal class ChangedCallbackOrderElement : FrameworkElement
 	{
 		public ChangedCallbackOrderElement()
 		{
@@ -2217,7 +1997,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 	}
 
-	public partial class FastLocalTestObject : DependencyObject
+	internal partial class FastLocalTestObject : DependencyObject
 	{
 		public object MyProperty
 		{

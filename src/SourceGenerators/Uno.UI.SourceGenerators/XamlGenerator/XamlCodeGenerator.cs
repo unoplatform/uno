@@ -8,58 +8,37 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
-using Uno.UI.SourceGenerators.Telemetry;
-
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
+using Uno.DevTools.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-#if NETFRAMEWORK
-	[GenerateAfter("Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator")]
-#endif
 	[Generator]
 	public partial class XamlCodeGenerator : ISourceGenerator
 	{
-		private readonly GenerationRunInfoManager _generationRunInfoManager = new GenerationRunInfoManager();
-		private readonly object _gate = new();
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			// No initialization required for this one
-			//if (!Process.GetCurrentProcess().ProcessName.Equals("omnisharp.exe", StringComparison.OrdinalIgnoreCase))
+			//var process = Process.GetCurrentProcess().ProcessName;
+			//if (process.IndexOf("VBCSCompiler", StringComparison.OrdinalIgnoreCase) is not -1
+			//	|| process.IndexOf("csc", StringComparison.OrdinalIgnoreCase) is not -1)
 			//{
 			//	Debugger.Launch();
 			//}
 
-			//
-			// Lock the current generator instance, as it may be invoked concurrently
-			// in the context of omnisharp when saving and editing fast enough, causing
-			// corruption issues in the GenerationRunInfoManager.
-			//
-			lock (_gate)
+			if (PlatformHelper.IsValidPlatform(context))
 			{
-				if (PlatformHelper.IsValidPlatform(context))
+				var gen = new XamlCodeGeneration(context);
+				var generatedTrees = gen.Generate();
+
+				foreach (var tree in generatedTrees)
 				{
-					_generationRunInfoManager.Update(context);
-
-					var gen = new XamlCodeGeneration(context);
-					var generatedTrees = gen.Generate(_generationRunInfoManager.CreateRun(context));
-
-					foreach (var tree in generatedTrees)
-					{
-						context.AddSource(tree.Key, tree.Value);
-					}
-
-#if !NETFRAMEWORK
-					DumpXamlSourceGeneratorState(context, generatedTrees);
-#endif
+					context.AddSource(tree.Key, tree.Value);
 				}
+
+				DumpXamlSourceGeneratorState(context, generatedTrees);
 			}
 		}
 	}

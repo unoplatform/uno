@@ -1,5 +1,4 @@
-﻿#if __WASM__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.ComponentModel;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 using Uno;
 using Windows.Storage.Helpers;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{
@@ -32,7 +31,7 @@ namespace Windows.UI.Xaml.Media
 		[MemberNotNull(nameof(CssFontName))]
 		private void ParseSource(string source)
 		{
-			var sourceParts = source.Split(new[] { '#' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			var sourceParts = source.Split('#', 2, StringSplitOptions.RemoveEmptyEntries);
 
 			if (sourceParts.Length > 0)
 			{
@@ -58,7 +57,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				uri = new Uri(source, UriKind.RelativeOrAbsolute);
 
-				if (!uri.IsAbsoluteUri || source.StartsWith("/", StringComparison.Ordinal))
+				if (!uri.IsAbsoluteUri || source.StartsWith('/'))
 				{
 					// Support for implicit ms-appx resolution
 					var assetUri = AssetsPathBuilder.BuildAssetUri(Uri.EscapeDataString(source.TrimStart('/')).Replace("%2F", "/"));
@@ -93,4 +92,3 @@ namespace Windows.UI.Xaml.Media
 		}
 	}
 }
-#endif

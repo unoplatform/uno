@@ -4,10 +4,13 @@
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks
 {
 	class MockNonVirtualizingLayout : NonVirtualizingLayout
 	{

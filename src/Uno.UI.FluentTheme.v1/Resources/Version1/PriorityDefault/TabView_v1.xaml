@@ -142,23 +142,22 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                         contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
-						<ScrollViewer x:Name="ScrollViewer"
+                        <ScrollViewer x:Name="ScrollViewer"
                             Grid.Column="1"
                             AutomationProperties.AccessibilityView="Raw"
-                            BringIntoViewOnFocusChange="True"
-                            HorizontalScrollBarVisibility="Auto"
-                            HorizontalScrollMode="Enabled"
-                            IsDeferredScrollingEnabled="False"
-                            IsHorizontalRailEnabled="False"
-                            IsHorizontalScrollChainingEnabled="False"
-                            IsVerticalRailEnabled="False"
-                            IsVerticalScrollChainingEnabled="False"
+                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
+                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
                             TabNavigation="{TemplateBinding TabNavigation}"
-                            VerticalScrollBarVisibility="Disabled"
-                            VerticalScrollMode="Disabled"
-                            ZoomMode="Disabled"
+                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
                             Style="{StaticResource TabScrollViewerStyle}">
-							<!-- TODO: Uno specific: Original template uses attached property template bindings (issue #4259) -->
 
                             <ItemsPresenter x:Name="TabsItemsPresenter"
                                 Padding="{TemplateBinding Padding}" />
@@ -263,7 +262,7 @@
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         Padding="{TemplateBinding Padding}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
-                        
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -403,7 +402,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition x:Name="RightColumn" Width="0"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <Grid.RenderTransform>
                             <ScaleTransform x:Name="LayoutRootScale" />
                         </Grid.RenderTransform>
@@ -647,7 +646,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                        <Path 
+                        <Path
                             x:Name="LeftRadiusRender"
                             x:Load="False"
                             Grid.Column="0"
@@ -658,7 +657,7 @@
                                 Converter={StaticResource TabViewLeftInsetCornerConverter}}"
                             Stretch="Uniform"
                             Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}"
-                            Data="M4 0 L4 4 L0 4 A4,4 90 0 0 4 0 Z" /> 
+                            Data="M4 0 L4 4 L0 4 A4,4 90 0 0 4 0 Z" />
                         <Path
                             x:Name="RightRadiusRender"
                             x:Load="False"
@@ -706,7 +705,7 @@
                                     Foreground="{ThemeResource TabViewItemIconForeground}"
                                     HighContrastAdjustment="None" />
                             </Viewbox>
-                            
+
                             <!-- If we template bind the ContentPresenter's Content property to the TabViewItem.Header property
                                  we unfortunately run into the following issue if the header is [null] or empty:
                                  The TabViewItem.Content property will be implictly bound to the Content property of the ContentPresenter.

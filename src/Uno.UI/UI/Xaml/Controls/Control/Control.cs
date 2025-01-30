@@ -1,24 +1,24 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Uno.UI;
 using System.Linq;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
-using System.Reflection;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-#if XAMARIN_ANDROID
+using System.Diagnostics.CodeAnalysis;
+
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -30,21 +30,20 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
-#elif UNO_REFERENCE_API || NET461
-using View = Windows.UI.Xaml.UIElement;
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
 	{
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
-		private bool _updateTemplate;
+		private bool _suppressIsEnabled;
 
 		private void InitializeControl()
 		{
-			SetDefaultForeground(ForegroundProperty);
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 
@@ -54,19 +53,9 @@ namespace Windows.UI.Xaml.Controls
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
 
-		private protected override bool IsTabStopDefaultValue => true;
-
 		protected override bool IsSimpleLayout => true;
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
-
-		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
-		{
-			base.UpdateThemeBindings(updateReason);
-
-			//override the default value from dependency property based on application theme
-			SetDefaultForeground(ForegroundProperty);
-		}
 
 		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
 
@@ -74,9 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// this is defined in the FrameworkElement mixin, and must not be used in Control.
 			// When setting the background color in a Control, the property is simply used as a placeholder
-			// for children controls, applied by inheritance. 
-
-			// base.OnBackgroundChanged(e);
+			// for children controls, applied by inheritance.
 		}
 
 		internal virtual void UpdateVisualState(bool useTransitions = true)
@@ -91,13 +78,113 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		/// <summary>
-		/// Will be set to Template when it is applied
-		/// </summary>
-		private ControlTemplate _controlTemplateUsedLastUpdate;
-
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
+
+		#region IsEnabled DependencyProperty
+
+		// Note: we keep the event args as a private field for perf consideration: This avoids creating a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			UpdateHitTest();
+#endif
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+
+#if __ANDROID__
+			var newValue = (bool)args.NewValue;
+			base.SetNativeIsEnabled(newValue);
+			this.Enabled = newValue;
+#elif __IOS__
+			UserInteractionEnabled = (bool)args.NewValue;
+#elif __MACOS__
+			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
+#endif
+
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+		#endregion
+
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
+		}
+
+		private protected virtual object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
+		{
+			if (_suppressIsEnabled)
+			{
+				return false;
+			}
+
+			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
+			// reading soon-to-be-outdated values
+
+			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
+				baseValue :
+				((IDependencyObjectStoreProvider)this).Store.ReadInheritedValueOrDefaultValue(IsEnabledProperty);
+
+			// If the parent is disabled, this control must be disabled as well
+			if (parentValue is false)
+			{
+				return false;
+			}
+
+			// otherwise use the more local value
+			var store = ((IDependencyObjectStoreProvider)this).Store;
+
+			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				(localValue, localPrecedence) = store.GetBaseValue(IsEnabledProperty);
+			}
+
+			if (localPrecedence >= precedence) // > means weaker precedence
+			{
+				// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
+				// using the old weaker value when a new stronger value is being set
+				localValue = baseValue;
+			}
+
+			return localValue;
+		}
 
 
 		#region Template DependencyProperty
@@ -108,35 +195,48 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TemplateProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TemplateProperty { get; } =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+			DependencyProperty.Register(
+				nameof(Template),
+				typeof(ControlTemplate),
+				typeof(Control),
+				new FrameworkPropertyMetadata(
+					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, // WinUI also has AffectsMeasure here, but we only do this conditionally in SetUpdateControlTemplate.
+					(s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
-		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
+		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			if (e.OldValue != e.NewValue)
+			{
+				// Reset the template bindings for this control
+				//ClearPropertySubscriptions();
+
+				// When the control template property is set, we clear the visual children
+				var pUIElement = this.GetFirstChild();
+				if (pUIElement is { })
+				{
+					//CFrameworkTemplate* pNewTemplate = NULL;
+					//if (e.NewValue?.GetType() == valueObject)
+					//{
+					//	IFC(DoPointerCast(pNewTemplate, args.m_value.AsObject()));
+					//}
+					//else if (args.m_value.GetType() != valueNull)
+					//{
+					//	IFC(E_INVALIDARG);
+					//}
+					RemoveChild(pUIElement);
+					//IFC(GetContext()->RemoveNameScope(this, Jupiter::NameScoping::NameScopeType::TemplateNameScope));
+				}
+			}
+#else
 			_updateTemplate = true;
 			SetUpdateControlTemplate();
+#endif
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Defines a method that will request the update of the control's template and request layout update.
-		/// </summary>
-		/// <param name="forceUpdate">If true, forces an update even if the control has no parent.</param>
-		internal void SetUpdateControlTemplate(bool forceUpdate = false)
-		{
-			if (
-				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
-				|| forceUpdate
-				|| this.HasParent()
-				|| CanCreateTemplateWithoutParent
-			)
-			{
-				UpdateTemplate();
-				this.InvalidateMeasure();
-			}
-		}
 
 		/// <summary>
 		/// Represents the single child that is the result of the control template application.
@@ -153,17 +253,14 @@ namespace Windows.UI.Xaml.Controls
 
 				CleanupView(_templatedRoot);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				UnregisterSubView();
+#endif
 
 				_templatedRoot = value;
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				if (value != null)
 				{
-					if (_templatedRoot is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
-					}
-
 					RegisterSubView(value);
 
 					if (_templatedRoot != null)
@@ -171,9 +268,6 @@ namespace Windows.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if __NETSTD__
-							!IsLoading &&
-#endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
@@ -193,15 +287,16 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
+							_applyTemplateShouldBeInvoked = false;
 							OnApplyTemplate();
 						}
 					}
 				}
+#endif
 			}
 		}
 
-		private bool _applyTemplateShouldBeInvoked;
-
+#if __ANDROID__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
@@ -212,16 +307,9 @@ namespace Windows.UI.Xaml.Controls
 			// in visual parents get applied.
 			this.UpdateResourceBindings();
 		}
+#endif
 
-		private void TryCallOnApplyTemplate()
-		{
-			if (_applyTemplateShouldBeInvoked)
-			{
-				_applyTemplateShouldBeInvoked = false;
-				OnApplyTemplate();
-			}
-		}
-
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -230,154 +318,176 @@ namespace Windows.UI.Xaml.Controls
 
 			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerPressed))
 			{
 				PointerPressed += OnPointerPressedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerReleased))
 			{
 				PointerReleased += OnPointerReleasedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerMoved))
 			{
 				PointerMoved += OnPointerMovedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerEntered))
 			{
 				PointerEntered += OnPointerEnteredHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerExited))
 			{
 				PointerExited += OnPointerExitedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerCanceled))
 			{
 				PointerCanceled += OnPointerCanceledHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerCaptureLost))
 			{
 				PointerCaptureLost += OnPointerCaptureLostHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerWheelChanged))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerWheelChanged))
 			{
 				PointerWheelChanged += OnPointerWheelChangedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarting))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationStarting))
 			{
 				ManipulationStarting += OnManipulationStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarted))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationStarted))
 			{
 				ManipulationStarted += OnManipulationStartedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationDelta))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationDelta))
 			{
 				ManipulationDelta += OnManipulationDeltaHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationInertiaStarting))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationInertiaStarting))
 			{
 				ManipulationInertiaStarting += OnManipulationInertiaStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationCompleted))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationCompleted))
 			{
 				ManipulationCompleted += OnManipulationCompletedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Tapped))
 			{
 				Tapped += OnTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DoubleTapped))
 			{
 				DoubleTapped += OnDoubleTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.RightTapped))
 			{
 				RightTapped += OnRightTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragEnter))
 			{
 				DragEnter += OnDragEnterHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragOver))
 			{
 				DragOver += OnDragOverHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragLeave))
 			{
 				DragLeave += OnDragLeaveHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Drop))
 			{
 				Drop += OnDropHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Holding))
 			{
 				Holding += OnHoldingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
+			if (HasFlag(implementedEvents, RoutedEventFlag.KeyDown))
 			{
 				KeyDown += OnKeyDownHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
+			if (HasFlag(implementedEvents, RoutedEventFlag.KeyUp))
 			{
 				KeyUp += OnKeyUpHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
+			if (HasFlag(implementedEvents, RoutedEventFlag.GotFocus))
 			{
 				GotFocus += OnGotFocusHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
+			if (HasFlag(implementedEvents, RoutedEventFlag.LostFocus))
 			{
 				LostFocus += OnLostFocusHandler;
 			}
+
+			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
 
 		private protected override void OnLoaded()
 		{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			SetUpdateControlTemplate();
+#endif
 
 			base.OnLoaded();
-
 		}
 
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var child = this.FindFirstChild();
+			if (child is not null)
+			{
+				var measuredSize = MeasureElement(child, availableSize);
+				if (child is UIElement childAsUIElement)
+				{
+					childAsUIElement.EnsureLayoutStorage();
+				}
+
+				return measuredSize;
+			}
+
+			return new Size(0, 0);
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>
 		/// <returns>A value that indicates whether the visual tree was rebuilt by this call. True if the tree was rebuilt; false if the previous visual tree was retained.</returns>
 		public bool ApplyTemplate()
 		{
-			var currentTemplateRoot = _templatedRoot;
-			SetUpdateControlTemplate(forceUpdate: true);
-
-			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
-			TryCallOnApplyTemplate();
-
-			return currentTemplateRoot != _templatedRoot;
+			InvokeApplyTemplate(out var addedVisuals);
+			return addedVisuals;
 		}
+#endif
+
+		private protected override FrameworkTemplate GetTemplate() => Template;
 
 		/// <summary>
 		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
@@ -427,7 +537,6 @@ namespace Windows.UI.Xaml.Controls
 			if (view is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.Parent = null;
-				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -439,7 +548,7 @@ namespace Windows.UI.Xaml.Controls
 		/// no parent view has been set. This is used for the ListView control (and other virtualizing controls)
 		/// to measure items properly. These controls set the size of the view based on the size reported
 		/// immediately after the BaseAdapter.GetView method returns, but the parent still has not been set.
-		/// 
+		///
 		/// The Content control uses this delayed creation as an optimization technique for layout creation, when controls
 		/// are created but not yet used.
 		/// </remarks>
@@ -449,51 +558,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
 			{
 				SetUpdateControlTemplate();
 			}
+#endif
 
 			OnIsFocusableChanged();
 		}
 
-		private void UpdateTemplate()
-		{
-			// If TemplatedRoot is null, it must be updated even if the templates haven't changed
-			if (TemplatedRoot == null)
-			{
-				_controlTemplateUsedLastUpdate = null;
-			}
-
-			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-			{
-				_controlTemplateUsedLastUpdate = Template;
-
-				if (Template != null)
-				{
-					TemplatedRoot = Template.LoadContentCached();
-				}
-				else
-				{
-					TemplatedRoot = null;
-				}
-
-				_updateTemplate = false;
-
-			}
-		}
-
 		partial void RegisterContentTemplateRoot();
-
-
-		protected override void OnApplyTemplate()
-		{
-		}
 
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
@@ -526,12 +606,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty FontWeightProperty { get; } =
 			DependencyProperty.Register(
-				"FontWeight",
+				nameof(FontWeight),
 				typeof(FontWeight),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontWeights.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
 				)
 			);
@@ -548,12 +628,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty FontSizeProperty { get; } =
 			DependencyProperty.Register(
-				"FontSize",
+				nameof(FontSize),
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					14.0,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
 			);
@@ -570,12 +650,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty FontFamilyProperty { get; } =
 			DependencyProperty.Register(
-				"FontFamily",
+				nameof(FontFamily),
 				typeof(FontFamily),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontFamily.Default,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
 				)
 			);
@@ -591,15 +671,27 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty FontStyleProperty { get; } =
 			DependencyProperty.Register(
-				"FontStyle",
+				nameof(FontStyle),
 				typeof(FontStyle),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontStyle.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 				)
 			);
+		#endregion
+
+		#region FontStretch
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 		#endregion
 
 		#region Padding DependencyProperty
@@ -613,12 +705,12 @@ namespace Windows.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
-				"Padding",
+				nameof(Padding),
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -636,12 +728,12 @@ namespace Windows.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
 		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
-				"BorderThickness",
+				nameof(BorderThickness),
 				typeof(Thickness),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -650,7 +742,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -662,7 +754,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.SetValue(BorderBrushProperty, value);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_borderBrushStrongReference = value;
 #endif
 			}
@@ -689,8 +781,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
-		[GeneratedDependencyProperty]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+		private protected virtual void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args)
+		{
+		}
+
 
 		#endregion
 
@@ -769,9 +866,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
 
 			// Part of logic from MUX Control.cpp Enabled method.
@@ -857,6 +953,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
 
+		private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			OnFontStretchChangedPartial(oldValue, newValue);
+		}
+
+		partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
+
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
@@ -900,12 +1003,16 @@ namespace Windows.UI.Xaml.Controls
 		[NotImplemented] // For WinUI code compatibility, not implemented yet
 		private protected virtual void OnRightTappedUnhandled(RightTappedRoutedEventArgs e) { }
 		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
-		protected virtual void OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
-		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
+		protected virtual void OnDragEnter(global::Microsoft.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragOver(global::Microsoft.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDragLeave(global::Microsoft.UI.Xaml.DragEventArgs e) { }
+		protected virtual void OnDrop(global::Microsoft.UI.Xaml.DragEventArgs e) { }
+#if __WASM__ || __SKIA__
+		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
+		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
+#endif
+		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
+		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
 		protected virtual void OnLostFocus(RoutedEventArgs e) { }
 
@@ -961,19 +1068,35 @@ namespace Windows.UI.Xaml.Controls
 			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
 
 		private static readonly DragEventHandler OnDragEnterHandler =
-			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
+			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragEnter(args);
 
 		private static readonly DragEventHandler OnDragOverHandler =
-			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
+			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragOver(args);
 
 		private static readonly DragEventHandler OnDragLeaveHandler =
-			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
+			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDragLeave(args);
 
 		private static readonly DragEventHandler OnDropHandler =
-			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+			(object sender, global::Microsoft.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+#if __WASM__ || __SKIA__
+		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
+
+		private static readonly KeyEventHandler OnPreviewKeyUpHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyUp(args);
+#endif
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
-			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
+			(object sender, KeyRoutedEventArgs args) =>
+			{
+				var senderAsControl = (Control)sender;
+				// ToolTipService.CloseToolTipInternal(args); TODO:MZ:KA
+				ProcessAcceleratorsIfApplicable(args, senderAsControl);
+				if (!args.Handled)
+				{
+					senderAsControl.OnKeyDown(args);
+				}
+			};
 
 		private static readonly KeyEventHandler OnKeyUpHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyUp(args);
@@ -989,7 +1112,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
 		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
 		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
-		private static readonly Type[] _dragArgsType = new[] { typeof(global::Windows.UI.Xaml.DragEventArgs) };
+		private static readonly Type[] _dragArgsType = new[] { typeof(global::Microsoft.UI.Xaml.DragEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
@@ -998,10 +1121,9 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		// TODO: GetImplementedRoutedEvents method can be removed as a breaking change.
-		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
-
-		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
+		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+			Type type)
 		{
 			var result = RoutedEventFlag.None;
 
@@ -1109,7 +1231,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
+#if __WASM__ || __SKIA__
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyDown), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyDown;
+			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyUp), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyUp;
+			}
+#endif
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;
@@ -1138,7 +1270,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <remarks>
 		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
-		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed'
 		/// under inheritance unless explicitly changed by an inheriting type.
 		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control

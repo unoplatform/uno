@@ -1,6 +1,4 @@
-﻿#if !NETFRAMEWORK
-
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -91,4 +89,3 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 	}
 }
-#endif

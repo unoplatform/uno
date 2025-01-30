@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Input.Preview.Injection;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Shapes;
-#if NETFX_CORE
+using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -69,6 +75,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.Height);
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.ActualHeight);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Value_Decimal()
+		{
+			var slider = new Slider()
+			{
+				Value = 0.5,
+				Minimum = 0,
+				Maximum = 1,
+				StepFrequency = 0.01,
+				Orientation = Orientation.Horizontal,
+			};
+			WindowHelper.WindowContent = slider;
+			await WindowHelper.WaitForLoaded(slider);
+
+			var thumb = VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+			var toolTip = ToolTipService.GetToolTipReference(thumb);
+			var tb = (TextBlock)toolTip.Content;
+			var text = tb.Text;
+			Assert.AreEqual("0.50", text);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Slider_Dragged()
+		{
+			var slider = new MySlider
+			{
+				Minimum = 0,
+				Maximum = 100,
+				Orientation = Orientation.Horizontal,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Stretch
+			};
+			var container = new Grid
+			{
+				Width = 80,
+				Height = 80
+			};
+			container.Children.Add(slider);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press(slider.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			slider.Value.Should().BeInRange(49, 52, "we dragged the thumb at the center of the slider");
+
+			var clickableLength = slider.ActualWidth - slider.FindVisualChildByType<Thumb>().ActualWidth;
+
+			mouse.MoveBy(clickableLength / 4, 0);
+
+			slider.Value.Should().BeInRange(74, 76, "we dragged the thumb 1/4 of width on right");
+
+			mouse.Release();
+		}
+#endif
 	}
 
 	public partial class MySlider : Slider

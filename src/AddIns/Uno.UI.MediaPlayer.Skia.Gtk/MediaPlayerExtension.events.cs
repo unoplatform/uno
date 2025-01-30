@@ -15,14 +15,14 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
+using Microsoft.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using GLib;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
@@ -37,12 +37,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_player is not null)
 			{
-				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
-
-				if (mp.IsVideo && Events is not null)
-				{
-					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
-				}
+				IsVideo = _player.IsVideo;
 
 				if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 				{
@@ -68,6 +63,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 			}
 		}
+
+		if (Events is not null)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Raising MediaOpened");
+			}
+
+			Events?.RaiseMediaOpened();
+		}
 	}
 
 	public void OnError(object? sender, object what)
@@ -84,12 +89,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		Events?.RaiseMediaEnded();
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
-
-		// Play next item in playlist, if any
-		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		if (IsLoopingEnabled && !IsLoopingAllEnabled)
 		{
-			_uri = _playlistItems[++_playlistIndex];
-			ApplyVideoSource();
+			ReInitializeSource();
+			Play();
+		}
+		else
+		{
+			// Play first item in playlist, if any and repeat all
+			if (_playlistItems != null && _playlistIndex >= _playlistItems.Count - 1 && IsLoopingAllEnabled)
+			{
+				_playlistIndex = 0;
+				_uri = _playlistItems[_playlistIndex];
+				ReInitializeSource();
+				Play();
+			}
+			else
+			{
+				// Play next item in playlist, if any
+				if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+				{
+					_uri = _playlistItems[++_playlistIndex];
+					ReInitializeSource();
+					Play();
+				}
+			}
 		}
 	}
 
@@ -109,11 +133,26 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player?.SetVolume(volume);
 	}
 
+	private void OnNaturalVideoDimensionChanged()
+	{
+		if (_player is not null
+			&& _player.IsVideo
+			&& Events is not null)
+		{
+			IsVideo = _player.IsVideo;
+			Events?.RaiseNaturalVideoDimensionChanged();
+		}
+	}
+
 	private void OnTimeUpdate(object? sender, object o)
 	{
 		try
 		{
-			var time = o is TimeSpan e ? e : TimeSpan.Zero;
+			if (_player is not null)
+			{
+				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
+			}
+
 			_updatingPosition = true;
 			Events?.RaisePositionChanged();
 		}

@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
-public partial class FontFamilyHelper
+internal partial class FontFamilyHelper
 {
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
 	/// </summary>
 	/// <returns>True is the font loaded successfuly, otherwise false.</returns>
-	public static Task<bool> PreloadAsync(FontFamily family)
+	internal static Task<bool> PreloadAsync(FontFamily family)
 		=> FontFamily.PreloadAsync(family);
 
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
 	/// </summary>
 	/// <returns>True is the font loaded successfuly, otherwise false.</returns>
-	public static Task<bool> PreloadAsync(string familyName)
+	internal static Task<bool> PreloadAsync(string familyName)
 		=> PreloadAsync(new FontFamily(familyName));
 }

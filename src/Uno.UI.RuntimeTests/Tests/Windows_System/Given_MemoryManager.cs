@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		{
 			EnsureApiAvailable("AppMemoryUsage");
 
-			Assert.AreNotEqual(0, MemoryManager.AppMemoryUsage);
+			Assert.AreNotEqual<ulong>(0, MemoryManager.AppMemoryUsage);
 		}
 
 		[TestMethod]
@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		{
 			EnsureApiAvailable("AppMemoryUsageLimit");
 
-			Assert.AreNotEqual(0, MemoryManager.AppMemoryUsageLimit);
+			Assert.AreNotEqual<ulong>(0, MemoryManager.AppMemoryUsageLimit);
 		}
 
 		private void EnsureApiAvailable(string propertyName)

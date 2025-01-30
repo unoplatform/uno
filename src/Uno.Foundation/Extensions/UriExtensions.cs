@@ -3,13 +3,14 @@
 public static class UriExtensions
 {
 	private const int EscapeDataStringCharactersMaxLength = 10000;
+	private static readonly char[] _uriSplitChars = new[] { '?', '&' };
 
 	public static IDictionary<string, string> GetParameters(this Uri uri)
 	{
 		return uri
 			.OriginalString
-			.Split(new[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries)
-			.Select(p => p.Split(new[] { '=' }))
+			.Split(_uriSplitChars, StringSplitOptions.RemoveEmptyEntries)
+			.Select(p => p.Split('='))
 			.Where(parts => parts.Length > 1)
 			.ToDictionary(parts => parts[0], parts => String.Join("=", parts.Skip(1)));
 	}
@@ -47,7 +48,7 @@ public static class UriExtensions
 		return String.Empty;
 	}
 
-	internal static bool IsAppData(this Uri uri)
+	public static bool IsAppData(this Uri uri)
 	{
 		if (uri is null)
 		{

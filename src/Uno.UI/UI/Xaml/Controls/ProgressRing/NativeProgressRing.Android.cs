@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Uno.UI.Controls.Legacy;
 
 partial class NativeProgressRing : BindableProgressBar
 {

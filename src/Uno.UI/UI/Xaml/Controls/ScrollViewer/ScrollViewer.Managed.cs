@@ -1,38 +1,49 @@
 ﻿#nullable enable
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
 using Windows.UI;
 using Uno;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
-		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
-
-		[NotImplemented]
-		public Color BackgroundColor
+		public bool IsScrollInertiaEnabled
 		{
-			get => throw new NotImplementedException();
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "Color ScrollContentPresenter.BackgroundColor");
+			get => (bool)GetValue(IsScrollInertiaEnabledProperty);
+			set => SetValue(IsScrollInertiaEnabledProperty, value);
 		}
 
-		[NotImplemented]
-		private void UpdateZoomedContentAlignment()
-			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "float ZoomFactor");
+		public static DependencyProperty IsScrollInertiaEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				nameof(IsScrollInertiaEnabled),
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+
+		public static bool GetIsScrollInertiaEnabled(DependencyObject element) =>
+			(bool)element.GetValue(IsScrollInertiaEnabledProperty);
+
+		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled) =>
+			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
+
+		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
+
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
 
 		#region Over scroll support
 		/// <summary>

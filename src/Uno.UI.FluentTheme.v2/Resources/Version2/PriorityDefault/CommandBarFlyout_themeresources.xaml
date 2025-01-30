@@ -2,7 +2,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls.Primitives"
+    xmlns:localmuxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)"
     xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
     xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)"
@@ -142,7 +142,7 @@
         <Setter Property="AllowFocusOnInteraction" Value="False" />
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
-        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
+        <!-- <Setter Property="localmuxcp:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarButton">
@@ -373,7 +373,7 @@
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="AllowFocusOnInteraction" Value="False" />
         <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
-        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
+        <!-- <Setter Property="localmuxcp:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarToggleButton">
@@ -766,7 +766,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DefaultCommandBarFlyoutCommandBarStyle" TargetType="local:CommandBarFlyoutCommandBar">
+    <Style x:Key="DefaultCommandBarFlyoutCommandBarStyle" TargetType="localmuxcp:CommandBarFlyoutCommandBar">
         <Setter Property="Background" Value="{ThemeResource CommandBarFlyoutBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource CommandBarFlyoutForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource CommandBarFlyoutBorderBrush}" />
@@ -786,10 +786,10 @@
         <contract7NotPresent:Setter Property="CommandBarOverflowPresenterStyle" Value="{StaticResource CommandBarFlyoutCommandBarOverflowPresenterStyleRS4}" />
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
         <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
-        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="Menu" /> -->
+        <!-- <Setter Property="localmuxcp:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="Menu" /> -->
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:CommandBarFlyoutCommandBar">
+                <ControlTemplate TargetType="localmuxcp:CommandBarFlyoutCommandBar">
                     <Grid x:Name="LayoutRoot"
                          contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                          contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}">
@@ -1369,7 +1369,7 @@
                                                         <Setter Property="AllowFocusOnInteraction" Value="False" />
                                                         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
                                                         <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
-                                                        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
+                                                        <!-- <Setter Property="localmuxcp:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
                                                     </Style>
                                                 </contract9NotPresent:CommandBarOverflowPresenter.ItemContainerStyle>
                                             </CommandBarOverflowPresenter>

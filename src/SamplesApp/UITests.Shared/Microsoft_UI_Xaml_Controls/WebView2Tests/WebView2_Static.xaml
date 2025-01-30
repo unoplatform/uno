@@ -6,10 +6,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d xamarin not_win"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

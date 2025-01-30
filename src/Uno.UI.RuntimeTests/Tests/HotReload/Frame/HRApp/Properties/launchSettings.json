@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Uno.UI.RuntimeTests.HRApp.Skia.Gtk": {
+      "commandName": "Project",
+      "commandLineArgs": "--uitest C:\\Users\\jerome.uno\\AppData\\Local\\Temp\\tmpA474.tmp"
+    }
+  }
+}

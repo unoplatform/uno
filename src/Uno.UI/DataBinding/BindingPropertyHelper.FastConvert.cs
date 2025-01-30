@@ -1,37 +1,31 @@
-#if !NETFX_CORE
+﻿#if !NETFX_CORE
 using System;
 
 using Uno.Extensions;
 using System.Globalization;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Text;
+using FontWeight = Windows.UI.Text.FontWeight;
+using System.Diagnostics.CodeAnalysis;
 
-#if XAMARIN_ANDROID
+
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#endif
-
-#if HAS_UNO_WINUI
-using Microsoft.UI.Text;
-using FontWeights = Windows.UI.Text.FontWeights;
-using FontWeight = Windows.UI.Text.FontWeight;
-#else
-using Windows.UI.Text;
-using FontWeights = Windows.UI.Text.FontWeights;
-using FontWeight = Windows.UI.Text.FontWeight;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -343,6 +337,16 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToBoolean(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToCollection(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			// Fallback for Enums. Leave it at the end.
 			if (outputType.IsEnum)
 			{
@@ -355,10 +359,10 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToIconElement(Type outputType, string input, ref object output)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_IconElement_Available
-				&& outputType == typeof(Windows.UI.Xaml.Controls.IconElement))
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_IconElement_Available
+				&& outputType == typeof(Microsoft.UI.Xaml.Controls.IconElement))
 			{
-				output = (Windows.UI.Xaml.Controls.IconElement)input;
+				output = (Microsoft.UI.Xaml.Controls.IconElement)input;
 				return true;
 			}
 
@@ -367,61 +371,61 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToInputScope(Type outputType, string input, ref object output)
 		{
-			if (outputType != typeof(Windows.UI.Xaml.Input.InputScope)) return false;
+			if (outputType != typeof(Microsoft.UI.Xaml.Input.InputScope)) return false;
 
 			var nameValue = input.ToLowerInvariant().Trim() switch
 			{
-				"0" or "default" => Windows.UI.Xaml.Input.InputScopeNameValue.Default,
-				"1" or "url" => Windows.UI.Xaml.Input.InputScopeNameValue.Url,
-				"5" or "emailsmtpaddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailSmtpAddress,
-				"7" or "personalfullname" => Windows.UI.Xaml.Input.InputScopeNameValue.PersonalFullName,
-				"20" or "currencyamountandsymbol" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmountAndSymbol,
-				"21" or "currencyamount" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmount,
-				"23" or "datemonthnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateMonthNumber,
-				"24" or "datedaynumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateDayNumber,
-				"25" or "dateyear" => Windows.UI.Xaml.Input.InputScopeNameValue.DateYear,
-				"28" or "digits" => Windows.UI.Xaml.Input.InputScopeNameValue.Digits,
-				"29" or "number" => Windows.UI.Xaml.Input.InputScopeNameValue.Number,
-				"31" or "password" => Windows.UI.Xaml.Input.InputScopeNameValue.Password,
-				"32" or "telephonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneNumber,
-				"33" or "telephonecountrycode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneCountryCode,
-				"34" or "telephoneareacode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneAreaCode,
-				"35" or "telephonelocalnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneLocalNumber,
-				"37" or "timehour" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeHour,
-				"38" or "timeminutesorseconds" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeMinutesOrSeconds,
-				"39" or "numberfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.NumberFullWidth,
-				"40" or "alphanumerichalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericHalfWidth,
-				"41" or "alphanumericfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericFullWidth,
-				"44" or "hiragana" => Windows.UI.Xaml.Input.InputScopeNameValue.Hiragana,
-				"45" or "katakanahalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaHalfWidth,
-				"46" or "katakanafullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaFullWidth,
-				"47" or "hanja" => Windows.UI.Xaml.Input.InputScopeNameValue.Hanja,
-				"48" or "hangulhalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulHalfWidth,
-				"49" or "hangulfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulFullWidth,
-				"50" or "search" => Windows.UI.Xaml.Input.InputScopeNameValue.Search,
-				"51" or "formula" => Windows.UI.Xaml.Input.InputScopeNameValue.Formula,
-				"52" or "searchincremental" => Windows.UI.Xaml.Input.InputScopeNameValue.SearchIncremental,
-				"53" or "chinesehalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseHalfWidth,
-				"54" or "chinesefullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseFullWidth,
-				"55" or "nativescript" => Windows.UI.Xaml.Input.InputScopeNameValue.NativeScript,
-				"57" or "text" => Windows.UI.Xaml.Input.InputScopeNameValue.Text,
-				"58" or "chat" => Windows.UI.Xaml.Input.InputScopeNameValue.Chat,
-				"59" or "nameorphonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber,
-				"60" or "emailnameoraddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress,
-				"62" or "maps" => Windows.UI.Xaml.Input.InputScopeNameValue.Maps,
-				"63" or "numericpassword" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPassword,
-				"64" or "numericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPin,
-				"65" or "alphanumericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericPin,
-				"67" or "formulanumber" => Windows.UI.Xaml.Input.InputScopeNameValue.FormulaNumber,
-				"68" or "chatwithoutemoji" => Windows.UI.Xaml.Input.InputScopeNameValue.ChatWithoutEmoji,
+				"0" or "default" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Default,
+				"1" or "url" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Url,
+				"5" or "emailsmtpaddress" => Microsoft.UI.Xaml.Input.InputScopeNameValue.EmailSmtpAddress,
+				"7" or "personalfullname" => Microsoft.UI.Xaml.Input.InputScopeNameValue.PersonalFullName,
+				"20" or "currencyamountandsymbol" => Microsoft.UI.Xaml.Input.InputScopeNameValue.CurrencyAmountAndSymbol,
+				"21" or "currencyamount" => Microsoft.UI.Xaml.Input.InputScopeNameValue.CurrencyAmount,
+				"23" or "datemonthnumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.DateMonthNumber,
+				"24" or "datedaynumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.DateDayNumber,
+				"25" or "dateyear" => Microsoft.UI.Xaml.Input.InputScopeNameValue.DateYear,
+				"28" or "digits" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Digits,
+				"29" or "number" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Number,
+				"31" or "password" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Password,
+				"32" or "telephonenumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TelephoneNumber,
+				"33" or "telephonecountrycode" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TelephoneCountryCode,
+				"34" or "telephoneareacode" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TelephoneAreaCode,
+				"35" or "telephonelocalnumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TelephoneLocalNumber,
+				"37" or "timehour" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TimeHour,
+				"38" or "timeminutesorseconds" => Microsoft.UI.Xaml.Input.InputScopeNameValue.TimeMinutesOrSeconds,
+				"39" or "numberfullwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.NumberFullWidth,
+				"40" or "alphanumerichalfwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.AlphanumericHalfWidth,
+				"41" or "alphanumericfullwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.AlphanumericFullWidth,
+				"44" or "hiragana" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Hiragana,
+				"45" or "katakanahalfwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.KatakanaHalfWidth,
+				"46" or "katakanafullwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.KatakanaFullWidth,
+				"47" or "hanja" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Hanja,
+				"48" or "hangulhalfwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.HangulHalfWidth,
+				"49" or "hangulfullwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.HangulFullWidth,
+				"50" or "search" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Search,
+				"51" or "formula" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Formula,
+				"52" or "searchincremental" => Microsoft.UI.Xaml.Input.InputScopeNameValue.SearchIncremental,
+				"53" or "chinesehalfwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.ChineseHalfWidth,
+				"54" or "chinesefullwidth" => Microsoft.UI.Xaml.Input.InputScopeNameValue.ChineseFullWidth,
+				"55" or "nativescript" => Microsoft.UI.Xaml.Input.InputScopeNameValue.NativeScript,
+				"57" or "text" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Text,
+				"58" or "chat" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Chat,
+				"59" or "nameorphonenumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber,
+				"60" or "emailnameoraddress" => Microsoft.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress,
+				"62" or "maps" => Microsoft.UI.Xaml.Input.InputScopeNameValue.Maps,
+				"63" or "numericpassword" => Microsoft.UI.Xaml.Input.InputScopeNameValue.NumericPassword,
+				"64" or "numericpin" => Microsoft.UI.Xaml.Input.InputScopeNameValue.NumericPin,
+				"65" or "alphanumericpin" => Microsoft.UI.Xaml.Input.InputScopeNameValue.AlphanumericPin,
+				"67" or "formulanumber" => Microsoft.UI.Xaml.Input.InputScopeNameValue.FormulaNumber,
+				"68" or "chatwithoutemoji" => Microsoft.UI.Xaml.Input.InputScopeNameValue.ChatWithoutEmoji,
 
 				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
 			};
-			output = new Windows.UI.Xaml.Input.InputScope
+			output = new Microsoft.UI.Xaml.Input.InputScope
 			{
 				Names =
 				{
-					new Windows.UI.Xaml.Input.InputScopeName
+					new Microsoft.UI.Xaml.Input.InputScopeName
 					{
 						NameValue = nameValue
 					}
@@ -433,10 +437,10 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToToolTip(Type outputType, string input, ref object output)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ToolTip_Available
-				&& outputType == typeof(Windows.UI.Xaml.Controls.ToolTip))
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ToolTip_Available
+				&& outputType == typeof(Microsoft.UI.Xaml.Controls.ToolTip))
 			{
-				output = new Windows.UI.Xaml.Controls.ToolTip { Content = input };
+				output = new Microsoft.UI.Xaml.Controls.ToolTip { Content = input };
 				return true;
 			}
 
@@ -516,7 +520,7 @@ namespace Uno.UI.DataBinding
 		private static bool FastStringToPath(Type outputType, string input, ref object output)
 		{
 #if __WASM__
-			if (__LinkerHints.Is_Windows_UI_Xaml_Media_Geometry_Available
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Geometry_Available
 				&& outputType == typeof(Geometry))
 			{
 				output = (Geometry)input;
@@ -542,11 +546,11 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToMatrix(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Media.Matrix))
+			if (outputType == typeof(Microsoft.UI.Xaml.Media.Matrix))
 			{
 				var fields = GetDoubleValues(input);
 
-				output = new Windows.UI.Xaml.Media.Matrix(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
+				output = new Microsoft.UI.Xaml.Media.Matrix(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
 				return true;
 			}
 
@@ -628,7 +632,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.UI.Color))
 			{
-				output = Windows.UI.Colors.Parse(input);
+				output = Microsoft.UI.Colors.Parse(input);
 				return true;
 			}
 
@@ -637,10 +641,10 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToImageSource(Type outputType, string input, ref object output)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Media_ImageSource_Available
-				&& outputType == typeof(Windows.UI.Xaml.Media.ImageSource))
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_ImageSource_Available
+				&& outputType == typeof(Microsoft.UI.Xaml.Media.ImageSource))
 			{
-				output = (Windows.UI.Xaml.Media.ImageSource)input;
+				output = (Microsoft.UI.Xaml.Media.ImageSource)input;
 				return true;
 			}
 
@@ -841,12 +845,12 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToOrientationConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType != typeof(Windows.UI.Xaml.Controls.Orientation)) return false;
+			if (outputType != typeof(Microsoft.UI.Xaml.Controls.Orientation)) return false;
 
 			output = input.ToLowerInvariant().Trim() switch
 			{
-				"0" or "vertical" => Windows.UI.Xaml.Controls.Orientation.Vertical,
-				"1" or "horizontal" => Windows.UI.Xaml.Controls.Orientation.Horizontal,
+				"0" or "vertical" => Microsoft.UI.Xaml.Controls.Orientation.Vertical,
+				"1" or "horizontal" => Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
 
 				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
 			};
@@ -960,6 +964,7 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 		private static bool FastStringToTypeConvert(Type outputType, string input, ref object output)
 		{
 			if (outputType == typeof(Type))
@@ -973,6 +978,34 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		private static bool FastStringToBoolean(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
+			{
+				output = result;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToCollection(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(DoubleCollection))
+			{
+				output = (DoubleCollection)input;
+				return true;
+			}
+
+			if (outputType == typeof(PointCollection))
+			{
+				output = (PointCollection)input;
+				return true;
+			}
+
+			return false;
+		}
+
 		private static List<double> GetDoubleValues(string input)
 		{
 			var list = new List<double>();
@@ -980,7 +1013,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
+				list.Add(double.Parse(s.Slice(0, length), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}
@@ -995,7 +1028,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
+				list.Add(float.Parse(s.Slice(0, length), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}

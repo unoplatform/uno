@@ -8,7 +8,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
@@ -23,7 +23,10 @@ namespace Windows.UI.Xaml.Input
 			_originalSource = originalSource;
 			PointerDeviceType = args.PointerDeviceType;
 			_position = args.Position;
+			PointerId = args.PointerId;
 		}
+
+		internal uint PointerId { get; }
 
 		public bool Handled { get; set; }
 

@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the WebView.NewWindowRequested event.

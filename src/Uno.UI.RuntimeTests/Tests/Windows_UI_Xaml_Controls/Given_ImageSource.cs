@@ -1,11 +1,11 @@
-﻿#if !WINDOWS_UWP
+﻿#if !WINAPPSDK
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -27,11 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageSource imageSource = "ms-appx:///Assets/File.png";
 
 			var actual = ((BitmapImage)imageSource).UriSource.ToString();
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("Assets/File.png", actual);
-#else
 			Assert.AreEqual("ms-appx:///Assets/File.png", actual);
-#endif
 		}
 
 		[TestMethod]
@@ -39,11 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			ImageSource imageSource = "/Assets/File.png";
 			var actual = ((BitmapImage)imageSource).UriSource.ToString();
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("Assets/File.png", actual);
-#else
 			Assert.AreEqual("ms-appx:///Assets/File.png", actual);
-#endif
 		}
 
 		[TestMethod]
@@ -51,11 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			ImageSource imageSource = "Assets/File.png";
 			var actual = ((BitmapImage)imageSource).UriSource.ToString();
-#if __WASM__ // Wasm doesn't align with UWP currently.
-			Assert.AreEqual("Assets/File.png", actual);
-#else
 			Assert.AreEqual("ms-appx:///Assets/File.png", actual);
-#endif
 		}
 
 		[TestMethod]

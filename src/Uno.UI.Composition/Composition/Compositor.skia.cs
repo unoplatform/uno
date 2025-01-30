@@ -1,174 +1,144 @@
-#nullable enable
+﻿#nullable enable
 
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using Windows.UI.Core;
+using SkiaSharp;
+using Uno.UI.Dispatching;
+using Windows.ApplicationModel.Core;
+using Windows.UI;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition;
+
+public partial class Compositor
 {
-	public partial class Compositor
+	private List<CompositionAnimation> _runningAnimations = new();
+	private List<ColorBrushTransitionState> _backgroundTransitions = new();
+
+	internal bool? IsSoftwareRenderer { get; set; }
+
+	internal void RegisterAnimation(CompositionAnimation animation)
 	{
-		private readonly Stack<float> _opacityStack = new Stack<float>();
-		private float _currentOpacity = 1.0f;
-		private bool _isDirty;
-		private SKColorFilter? _currentOpacityColorFilter;
-
-		private OpacityDisposable PushOpacity(float opacity)
+		if (animation.IsTrackedByCompositor)
 		{
-			_opacityStack.Push(_currentOpacity);
-			_currentOpacity *= opacity;
-			_currentOpacityColorFilter = null;
-
-			return new OpacityDisposable(this);
+			_runningAnimations.Add(animation);
 		}
+	}
 
-		private struct OpacityDisposable : IDisposable
+	internal void UnregisterAnimation(CompositionAnimation animation)
+	{
+		if (animation.IsTrackedByCompositor)
 		{
-			private readonly Compositor Compositor;
+			_runningAnimations.Remove(animation);
+		}
+	}
 
-			public OpacityDisposable(Compositor compositor)
+	internal void DeactivateBackgroundTransition(BorderVisual visual)
+	{
+		for (int i = 0; i < _backgroundTransitions.Count; i++)
+		{
+			if (_backgroundTransitions[i].Visual == visual)
 			{
-				Compositor = compositor;
-			}
-
-			public void Dispose()
-			{
-				Compositor._currentOpacity = Compositor._opacityStack.Pop();
-				Compositor._currentOpacityColorFilter?.Dispose();
-				Compositor._currentOpacityColorFilter = null;
+				_backgroundTransitions[i] = _backgroundTransitions[i] with { IsActive = false };
+				break;
 			}
 		}
+	}
 
-		internal ContainerVisual? RootVisual { get; set; }
+	internal void RegisterBackgroundTransition(BorderVisual visual, Color fromColor, Color toColor, TimeSpan duration)
+	{
+		var start = TimestampInTicks;
+		var end = start + duration.Ticks;
 
-		internal float CurrentOpacity => _currentOpacity;
-		internal SKColorFilter? CurrentOpacityColorFilter
+		for (int i = 0; i < _backgroundTransitions.Count; i++)
 		{
-			get
+			var transition = _backgroundTransitions[i];
+			if (transition.Visual == visual)
 			{
-				if (_currentOpacity != 1.0f)
+				// when the background changes when already in a transition, the new transition
+				// picks up from where the preexisting transition stopped UNLESS the preexisting
+				// transition was inactive (i.e. an animation started during the transition.
+				// In that case, just reactivate the preexisting transition.
+
+				if (!transition.IsActive)
 				{
-					if (_currentOpacityColorFilter is null)
-					{
-						var opacity = 255 * _currentOpacity;
-						_currentOpacityColorFilter = SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)opacity), SKBlendMode.Modulate);
-					}
+					_backgroundTransitions[i] = transition with { IsActive = true };
+					return;
+				}
 
-					return _currentOpacityColorFilter;
+				fromColor = transition.CurrentColor;
+				_backgroundTransitions.RemoveAt(i);
+				break;
+			}
+		}
+
+		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end, true));
+	}
+
+	internal bool TryGetEffectiveBackgroundColor(CompositionSpriteShape shape, out Color color)
+	{
+		foreach (var transition in _backgroundTransitions)
+		{
+			if (transition.Visual.IsMyBackgroundShape(shape))
+			{
+				if (transition.IsActive)
+				{
+					color = transition.CurrentColor;
+					return true;
 				}
 				else
 				{
-					return null;
+					break;
 				}
 			}
 		}
 
-		internal void Render(SKSurface surface)
+		color = default;
+		return false;
+	}
+
+	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, Action<Visual.PaintingSession, Visual>? postRenderAction)
+	{
+		if (rootVisual is null)
 		{
-			_isDirty = false;
-
-			if (RootVisual != null)
-			{
-				var children = RootVisual.GetChildrenInRenderOrder();
-				for (var i = 0; i < children.Count; i++)
-				{
-					RenderVisual(surface, children[i]);
-				}
-			}
+			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		internal void RenderVisual(SKSurface surface, Visual visual)
+		foreach (var animation in _runningAnimations.ToArray())
 		{
-			if (visual.Opacity != 0 && visual.IsVisible)
-			{
-				if (visual.ShadowState is { } shadow)
-				{
-					surface.Canvas.SaveLayer(shadow.Paint);
-				}
-				else
-				{
-					surface.Canvas.Save();
-				}
-
-				var visualMatrix = surface.Canvas.TotalMatrix;
-
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.Offset.X, visual.Offset.Y));
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.AnchorPoint.X, visual.AnchorPoint.Y));
-
-				if (visual.RotationAngleInDegrees != 0)
-				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateRotationDegrees(visual.RotationAngleInDegrees, visual.CenterPoint.X, visual.CenterPoint.Y));
-				}
-
-				if (visual.TransformMatrix != Matrix4x4.Identity)
-				{
-					visualMatrix = visualMatrix.PreConcat(visual.TransformMatrix.ToSKMatrix44().Matrix);
-				}
-
-				surface.Canvas.SetMatrix(visualMatrix);
-
-				ApplyClip(surface, visual);
-
-				using var opacityDisposable = PushOpacity(visual.Opacity);
-
-				visual.Render(surface);
-
-
-				surface.Canvas.Restore();
-			}
+			animation.RaiseAnimationFrame();
 		}
 
-		private static void ApplyClip(SKSurface surface, Visual visual)
+		rootVisual.RenderRootVisual(surface, null, postRenderAction);
+
+		RecursiveDispatchAnimationFrames();
+
+		var removedCount = _backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
+
+		if (removedCount > 0 || _backgroundTransitions.Count > 0)
 		{
-			if (visual.Clip is InsetClip insetClip)
-			{
-				var clipRect = new SKRect
-				{
-					Top = insetClip.TopInset - 1,
-					Bottom = insetClip.BottomInset + 1,
-					Left = insetClip.LeftInset - 1,
-					Right = insetClip.RightInset + 1
-				};
-
-				surface.Canvas.ClipRect(clipRect, SKClipOperation.Intersect, true);
-			}
-			else if (visual.Clip is RectangleClip rectangleClip)
-			{
-				surface.Canvas.ClipRoundRect(rectangleClip.SKRoundRect, SKClipOperation.Intersect, true);
-			}
-			else if (visual.Clip is CompositionGeometricClip geometricClip)
-			{
-				if (geometricClip.Geometry is CompositionPathGeometry cpg)
-				{
-					if (cpg.Path?.GeometrySource is SkiaGeometrySource2D geometrySource)
-					{
-						surface.Canvas.ClipPath(geometrySource.Geometry, antialias: true);
-					}
-					else
-					{
-						throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
-					}
-				}
-				else if (geometricClip.Geometry is null)
-				{
-					// null is nop
-				}
-				else
-				{
-					throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
-				}
-			}
+			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
 		}
+	}
 
-		partial void InvalidateRenderPartial()
+	private void RecursiveDispatchAnimationFrames()
+	{
+		if (_runningAnimations.Count > 0)
 		{
-			if (!_isDirty)
+			foreach (var animation in _runningAnimations.ToArray())
 			{
-				_isDirty = true;
-				CoreWindow.QueueInvalidateRender();
+				animation.RaiseAnimationFrame();
+			}
+
+			if (_runningAnimations.Count > 0)
+			{
+				NativeDispatcher.Main.Enqueue(RecursiveDispatchAnimationFrames, NativeDispatcherPriority.Idle);
 			}
 		}
+	}
+
+	partial void InvalidateRenderPartial(Visual visual)
+	{
+		visual.SetMatrixDirty();
+		CoreApplication.QueueInvalidateRender(visual.CompositionTarget);
 	}
 }

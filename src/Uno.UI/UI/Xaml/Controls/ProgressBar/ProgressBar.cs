@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ProgressBar : RangeBase
 	{
 		private FrameworkElement _determinateRoot;
 		private FrameworkElement _progressBarIndicator;
-
-		static ProgressBar()
-		{
-			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new FrameworkPropertyMetadata(100d));
-		}
 
 		public ProgressBar()
 		{
@@ -23,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ProgressBar);
 		}
 
-		public global::Windows.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
+		public global::Microsoft.UI.Xaml.Controls.Primitives.ProgressBarTemplateSettings TemplateSettings
 		{
 			get;
 		}

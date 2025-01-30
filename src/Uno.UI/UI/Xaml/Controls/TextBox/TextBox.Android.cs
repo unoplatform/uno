@@ -19,15 +19,16 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Android.Widget.TextView;
 using Math = System.Math;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox : View.IOnFocusChangeListener, IOnEditorActionListener
 	{
@@ -69,10 +70,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(false));
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
@@ -84,12 +83,6 @@ namespace Windows.UI.Xaml.Controls
 				// more details.
 				ProcessFocusChanged(false);
 			}
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			SetupTextBoxView();
 		}
 
 		partial void InitializePropertiesPartial()
@@ -135,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private static object CoerceImeOptions(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceImeOptions(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope?.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? ImeAction.Search
@@ -394,10 +387,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Parent != null && _textBoxView != null)
 			{
-				var style = TypefaceStyleHelper.GetTypefaceStyle(FontStyle, FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
-
-				_textBoxView.SetTypeface(typeface, style);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight, FontStyle, FontStretch);
+				_textBoxView.Typeface = typeface;
 				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}
@@ -470,11 +461,10 @@ namespace Windows.UI.Xaml.Controls
 			//We get the view token early to avoid nullvalues when the view has already been detached
 			var viewWindowToken = _textBoxView.WindowToken;
 
-			_keyboardDisposable.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
+			_keyboardDisposable.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
-				.RunAsync(
-					Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+				.EnqueueOperation(
 					async () =>
 					{
 						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
@@ -554,8 +544,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			//We need to force a keypress event on editor action.
 			//the key press event is not triggered if we press the enter key depending on the ime.options
-
-			OnKeyPress(v, new KeyEventArgs(true, Keycode.Enter, new KeyEvent(KeyEventActions.Up, Keycode.Enter)));
+			var modifiers = e is not null ? VirtualKeyHelper.FromModifiers(e.Modifiers) : VirtualKeyModifiers.None;
+			RaiseEvent(KeyDownEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.

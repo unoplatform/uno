@@ -8,11 +8,31 @@
     xmlns:valueConverters="using:UITests.ValueConverters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<StackPanel>
-		<MediaPlayerElement x:Name="playbaby"
-		                    Source="{x:Bind ToMediaPlaybackItem(SoundToPlay)}"
-		                    AreTransportControlsEnabled="True"
-		                    Visibility="Visible"
-		                    AutoPlay="True"/>
-	</StackPanel>
+	<ScrollViewer>
+		<StackPanel>
+
+			<MediaPlayerElement x:Name="MediaPlayerElementSample1"
+									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
+									AreTransportControlsEnabled="True"
+									AutoPlay="False"
+									MaxWidth="720">
+				<MediaPlayerElement.TransportControls>
+					<MediaTransportControls IsCompact="False" 
+											ShowAndHideAutomatically="False"/>
+				</MediaPlayerElement.TransportControls>
+			</MediaPlayerElement>
+
+			<MediaPlayerElement x:Name="MediaPlayerElementSample2"
+									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
+									AreTransportControlsEnabled="True"
+									AutoPlay="False"
+									MaxWidth="720">
+				<MediaPlayerElement.TransportControls>
+					<MediaTransportControls IsCompact="True" 
+											ShowAndHideAutomatically="False"/>
+				</MediaPlayerElement.TransportControls>
+			</MediaPlayerElement>
+
+		</StackPanel>
+	</ScrollViewer>
 </Page>

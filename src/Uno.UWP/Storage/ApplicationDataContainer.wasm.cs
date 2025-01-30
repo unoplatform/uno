@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
@@ -82,7 +83,10 @@ namespace Windows.Storage
 					for (int i = 0; i < Count; i++)
 					{
 						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue));
+						if (DataTypeSerializer.Deserialize(rawValue) is { } value)
+						{
+							values.Add(value);
+						}
 					}
 
 					return values.AsReadOnly();
@@ -217,232 +221,65 @@ namespace Windows.Storage
 		}
 	}
 
-	class ApplicationDataContainerInterop
+	static partial class ApplicationDataContainerInterop
 	{
-		#region TryGetValue
 		internal static bool TryGetValue(ApplicationDataLocality locality, string key, out string? value)
 		{
-			var parms = new ApplicationDataContainer_TryGetValueParams
+			if (!ContainsKey(locality, key))
 			{
-				Key = key,
-				Locality = locality.ToStringInvariant()
-			};
-
-			var ret = (ApplicationDataContainer_TryGetValueReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:tryGetValue", parms, typeof(ApplicationDataContainer_TryGetValueReturn));
-
-			value = ret.Value;
-
-			return ret.HasValue;
+				value = null;
+				return false;
+			}
+			else
+			{
+				value = GetValue(locality.ToStringInvariant(), key);
+				return true;
+			}
 		}
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_TryGetValueParams
-		{
-			public string Key;
-			public string Locality;
-		}
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getValue")]
+		private static partial string GetValue(string locality, string key);
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_TryGetValueReturn
-		{
-			public string? Value;
-			public bool HasValue;
-		}
-		#endregion
-
-		#region SetValue
 		internal static void SetValue(ApplicationDataLocality locality, string key, string value)
-		{
-			var parms = new ApplicationDataContainer_SetValueParams
-			{
-				Key = key,
-				Value = value,
-				Locality = locality.ToStringInvariant()
-			};
+			=> SetValue(locality.ToStringInvariant(), key, value);
 
-			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:setValue", parms);
-		}
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.setValue")]
+		private static partial void SetValue(string locality, string key, string value);
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_SetValueParams
-		{
-			public string Key;
-			public string Value;
-			public string Locality;
-		}
-
-		#endregion
-
-		#region ContainsKey
 		internal static bool ContainsKey(ApplicationDataLocality locality, string key)
-		{
-			var parms = new ApplicationDataContainer_ContainsKeyParams
-			{
-				Key = key,
-				Locality = locality.ToStringInvariant()
-			};
+			=> ContainsKey(locality.ToStringInvariant(), key);
 
-			var ret = (ApplicationDataContainer_ContainsKeyReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:containsKey", parms, typeof(ApplicationDataContainer_ContainsKeyReturn));
-			return ret.ContainsKey;
-		}
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.containsKey")]
+		private static partial bool ContainsKey(string locality, string key);
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_ContainsKeyParams
-		{
-			public string Key;
-			public string Value;
-			public string Locality;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_ContainsKeyReturn
-		{
-			public bool ContainsKey;
-		}
-		#endregion
-
-		#region GetKeyByIndex
 		internal static string GetKeyByIndex(ApplicationDataLocality locality, int index)
-		{
-			var parms = new ApplicationDataContainer_GetKeyByIndexParams
-			{
-				Locality = locality.ToStringInvariant(),
-				Index = index
-			};
+			=> GetKeyByIndex(locality.ToStringInvariant(), index);
 
-			var ret = (ApplicationDataContainer_GetKeyByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getKeyByIndex", parms, typeof(ApplicationDataContainer_GetKeyByIndexReturn));
-			return ret.Value;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_GetKeyByIndexParams
-		{
-			public string Locality;
-			public int Index;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_GetKeyByIndexReturn
-		{
-			public string Value;
-		}
-		#endregion
-
-		#region GetCount
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getKeyByIndex")]
+		private static partial string GetKeyByIndex(string locality, int index);
 
 		internal static int GetCount(ApplicationDataLocality locality)
-		{
-			var parms = new ApplicationDataContainer_GetCountParams
-			{
-				Locality = locality.ToStringInvariant()
-			};
+			=> GetCount(locality.ToStringInvariant());
 
-			var ret = (ApplicationDataContainer_GetCountReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getCount", parms, typeof(ApplicationDataContainer_GetCountReturn));
-			return ret.Count;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_GetCountParams
-		{
-			public string Locality;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_GetCountReturn
-		{
-			public int Count;
-		}
-		#endregion
-
-		#region Clear
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getCount")]
+		private static partial int GetCount(string locality);
 
 		internal static void Clear(ApplicationDataLocality locality)
-		{
-			var parms = new ApplicationDataContainer_ClearParams
-			{
-				Locality = locality.ToStringInvariant()
-			};
+			=> Clear(locality.ToStringInvariant());
 
-			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:clear", parms);
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_ClearParams
-		{
-			public string Locality;
-		}
-
-		#endregion
-
-		#region Remove
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.clear")]
+		private static partial void Clear(string locality);
 
 		internal static bool Remove(ApplicationDataLocality locality, string key)
-		{
-			var parms = new ApplicationDataContainer_RemoveParams
-			{
-				Locality = locality.ToStringInvariant(),
-				Key = key
-			};
+			=> Remove(locality.ToStringInvariant(), key);
 
-			var ret = (ApplicationDataContainer_RemoveReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:remove", parms, typeof(ApplicationDataContainer_RemoveReturn));
-			return ret.Removed;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_RemoveParams
-		{
-			public string Locality;
-			public string Key;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		private struct ApplicationDataContainer_RemoveReturn
-		{
-			public bool Removed;
-		}
-
-		#endregion
-
-		#region GetValueByIndex
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.remove")]
+		private static partial bool Remove(string locality, string key);
 
 		internal static string GetValueByIndex(ApplicationDataLocality locality, int index)
-		{
-			var parms = new ApplicationDataContainer_GetValueByIndexParams
-			{
-				Locality = locality.ToStringInvariant(),
-				Index = index
-			};
+			=> GetValueByIndex(locality.ToStringInvariant(), index);
 
-			var ret = (ApplicationDataContainer_GetValueByIndexReturn)TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_ApplicationDataContainer:getValueByIndex", parms, typeof(ApplicationDataContainer_GetValueByIndexReturn));
-			return ret.Value;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct ApplicationDataContainer_GetValueByIndexParams
-		{
-			public string Locality;
-			public int Index;
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		private struct ApplicationDataContainer_GetValueByIndexReturn
-		{
-			public string Value;
-		}
-		#endregion
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getValueByIndex")]
+		private static partial string GetValueByIndex(string locality, int index);
 	}
 }

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Media;
 
 /// <summary>
 /// WebAssembly specific <see cref="FontFamily"/> helper
 /// </summary>
-public partial class FontFamilyHelper
+public static class FontFamilyHelper
 {
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.

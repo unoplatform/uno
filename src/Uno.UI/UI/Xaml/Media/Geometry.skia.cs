@@ -1,8 +1,8 @@
 ﻿using System;
 using SkiaSharp;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class Geometry
 	{
@@ -11,6 +11,11 @@ namespace Windows.UI.Xaml.Media
 		// this class doesn't have public constructors in UWP, which makes it not-inheritable either way.
 		internal virtual SKPath GetSKPath() => throw new NotSupportedException($"Geometry {this} is not supported");
 
-		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(GetSKPath());
+		/// <remarks>
+		/// Note: Try not to depend on this. See the note in <see cref="CompositionSpriteShape.NegativeFillGeometry"/>
+		/// </remarks>
+		internal virtual SKPath GetFilledSKPath() => null;
+
+		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(new SKPath(GetSKPath()));
 	}
 }

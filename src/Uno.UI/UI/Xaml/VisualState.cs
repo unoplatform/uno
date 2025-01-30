@@ -6,17 +6,24 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	[ContentProperty(Name = "Storyboard")]
+	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder;
-
+		/// <summary>
+		/// Lazy builder provided by the source generator. Invoking this will
+		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
+		/// </summary>
+		internal Action LazyBuilder { get; set; }
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal bool? FromLegacyTemplate { get; set; }
+#endif
 		public VisualState()
 		{
 			InitializeBinder();
@@ -149,16 +156,6 @@ namespace Windows.UI.Xaml
 		internal VisualStateGroup Owner => this.GetParent() as VisualStateGroup;
 
 		/// <summary>
-		/// Lazy builder provided by the source generator. Invoking this will
-		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
-		/// </summary>
-		internal Action LazyBuilder
-		{
-			get => lazyBuilder;
-			set => lazyBuilder = value;
-		}
-
-		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
 		private void EnsureMaterialized()
@@ -167,20 +164,25 @@ namespace Windows.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				builder.Invoke();
-
-				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
+				try
 				{
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
+#endif
+					builder.Invoke();
+				}
+				finally
+				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
 				}
 
-				foreach (var setter in Setters)
-				{
-					if (setter is IDependencyObjectStoreProvider setterProvider)
-					{
-						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-					}
-				}
+				// Resolve all theme resources from storyboard children
+				// and setters values. This step is needed to ensure that
+				// Theme Resources are resolved using the proper visual tree
+				// parents, particularly when resources a locally overriden.
+				this.UpdateResourceBindings();
 			}
 		}
 

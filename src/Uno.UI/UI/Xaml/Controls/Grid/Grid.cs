@@ -1,20 +1,20 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Extensions;
 using XSIZEF = Windows.Foundation.Size;
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 using XRECTF = Windows.Foundation.Rect;
-using PropertyChangedParams = Windows.UI.Xaml.DependencyPropertyChangedEventArgs;
-using CDOCollection = Windows.UI.Xaml.Controls.DefinitionCollectionBase;
+using PropertyChangedParams = Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs;
+using CDOCollection = Microsoft.UI.Xaml.Controls.DefinitionCollectionBase;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Grid
 	{
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!ignoreColumnDesiredSize)
 				{
 					Xuint columnSpan = GetColumnSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (columnSpan == 1)
 					{
 						DefinitionBase pChildColumn = GetColumnNoRef(pChild);
@@ -398,7 +398,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!forceRowToInfinity)
 				{
 					Xuint rowSpan = GetRowSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (rowSpan == 1)
 					{
 						DefinitionBase pChildRow = GetRowNoRef(pChild);
@@ -1038,24 +1038,14 @@ namespace Windows.UI.Xaml.Controls
 			//	UnlockDefinitions();
 			//});
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
-				var result = InnerMeasureOverride(availableSize);
-
-#if HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-				UnlockDefinitions();
-#endif
-
-				return result;
+				return InnerMeasureOverride(availableSize);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 			{
 				UnlockDefinitions();
 			}
-#endif
 		}
 
 		/// <remarks>
@@ -1093,10 +1083,9 @@ namespace Windows.UI.Xaml.Controls
 
 						//currentChild.Measure(innerAvailableSize);
 						this.MeasureElement(currentChild, innerAvailableSize);
-						//currentChild.EnsureLayoutStorage();
+						currentChild.EnsureLayoutStorage();
 
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
 						desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
 					}
@@ -1351,27 +1340,16 @@ namespace Windows.UI.Xaml.Controls
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
-				var result = InnerArrangeOverride(finalSize);
-
-#if HAS_EXPENSIVE_TRYFINALLY
-				m_ppTempDefinitions = null;
-				m_cTempDefinitions = 0;
-				UnlockDefinitions();
-#endif
-				return result;
+				return InnerArrangeOverride(finalSize);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
 			{
 				m_ppTempDefinitions = null;
 				m_cTempDefinitions = 0;
 				UnlockDefinitions();
 			}
-#endif
 		}
 
 		/// <remarks>
@@ -1396,11 +1374,16 @@ namespace Windows.UI.Xaml.Controls
 					while (childrenEnumerator.MoveNext())
 					{
 						var currentChild = childrenEnumerator.Current;
+#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+						if (currentChild is null)
+						{
+							continue;
+						}
+#endif
 						ASSERT(currentChild is { });
 
-						//currentChild.EnsureLayoutStorage();
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						currentChild.EnsureLayoutStorage();
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						innerRect.Width = Math.Max(innerRect.Width, childDesiredSize.Width);
 						innerRect.Height = Math.Max(innerRect.Height, childDesiredSize.Height);
 						//currentChild.Arrange(innerRect);
@@ -1437,6 +1420,12 @@ namespace Windows.UI.Xaml.Controls
 				for (Xuint childIndex = 0; childIndex < count; childIndex++)
 				{
 					UIElement currentChild = children[childIndex];
+#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+					if (currentChild is null)
+					{
+						continue;
+					}
+#endif
 					ASSERT(currentChild is { });
 
 					DefinitionBase row = GetRowNoRef(currentChild);

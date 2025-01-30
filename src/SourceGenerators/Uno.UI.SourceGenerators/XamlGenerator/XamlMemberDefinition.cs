@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 	[DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
 #endif
-	internal class XamlMemberDefinition
+	internal class XamlMemberDefinition : IXamlLocation
 	{
 		private XamlMember _xamlMember;
 

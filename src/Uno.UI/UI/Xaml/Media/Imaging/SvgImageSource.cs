@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Windows.UI.Core;
 using Uno;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Provides a source object for properties that use a Scalable Vector Graphics (SVG) source. You can define a SvgImageSource
@@ -19,8 +20,8 @@ public partial class SvgImageSource : ImageSource
 {
 	private SvgImageSourceLoadStatus? _lastStatus;
 
-#if __NETSTD__
-	private IRandomAccessStream _stream;
+#if __CROSSRUNTIME__
+	private IRandomAccessStream? _stream;
 #endif
 
 	/// <summary>
@@ -56,10 +57,13 @@ public partial class SvgImageSource : ImageSource
 		{
 			UnloadImageData();
 		}
+
 		InitFromUri(e.NewValue as Uri);
-#if __NETSTD__
+
+#if __CROSSRUNTIME__
 		InvalidateSource();
 #endif
+		InvalidateImageSource();
 	}
 
 	/// <summary>
@@ -74,7 +78,7 @@ public partial class SvgImageSource : ImageSource
 	{
 		UnloadImageData();
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		async
 #endif
 		Task<SvgImageSourceLoadStatus> SetSourceAsync(CancellationToken ct)
@@ -87,7 +91,7 @@ public partial class SvgImageSource : ImageSource
 
 			_lastStatus = null;
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
 			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
@@ -103,6 +107,8 @@ public partial class SvgImageSource : ImageSource
 			{
 				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
+#elif IS_UNIT_TESTS
+			return Task.FromResult(SvgImageSourceLoadStatus.Other);
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
@@ -114,8 +120,8 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__NETSTD__
-	internal event EventHandler StreamLoaded;
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+	internal event EventHandler? StreamLoaded;
 #endif
 
 	partial void InitPartial();
@@ -132,20 +138,22 @@ public partial class SvgImageSource : ImageSource
 		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 	}
 
-#if __ANDROID__ || __SKIA__
-	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
+	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
+
+#if __CROSSRUNTIME__
+	public override string ToString()
 	{
-		if (stream.CanSeek && stream.Position != 0)
+		if (AbsoluteUri is { } uri)
 		{
-			stream.Position = 0;
+			return $"{GetType().Name}/{uri}";
 		}
 
-		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream, 81920, ct);
-		var data = memoryStream.ToArray();
-		return ImageData.FromBytes(data);
+		if (_stream is { } stream)
+		{
+			return $"{GetType().Name}/{stream.GetType()}";
+		}
+
+		return $"{GetType().Name}/-empty-";
 	}
 #endif
-
-	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 }

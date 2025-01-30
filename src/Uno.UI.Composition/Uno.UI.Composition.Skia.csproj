@@ -1,10 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -12,7 +8,8 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
-  </PropertyGroup>
+		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
@@ -26,18 +23,24 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="AssemblyInfo.skia.cs" />
+		<None Remove="AssemblyInfo.skia.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Xaml\CornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\FullCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.skia.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Thickness.cs" />
 	</ItemGroup>
 
 </Project>

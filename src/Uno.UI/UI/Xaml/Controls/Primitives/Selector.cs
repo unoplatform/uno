@@ -1,26 +1,32 @@
-﻿using Uno.UI.Controls;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
 using System.Collections.Specialized;
-using Uno.Extensions.Specialized;
-using System.Diagnostics;
-using Uno.UI;
+using System.Linq;
+using DirectUI;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
-using Windows.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
-using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Windows.System;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
 		private protected ScrollViewer m_tpScrollViewer;
+		private protected bool _changingSelectedIndex;
+		private protected bool _isUpdatingSelection;
+
+		// The order at which the XAML properties are set on Selector should not matter.
+		// SelectedItem might be set before ItemsSource is set, in which case the SelectedItem
+		// value in m_itemPendingSelection until ItemsSource is set.
+		private protected object m_itemPendingSelection;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
@@ -74,6 +80,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnApplyTemplate();
 			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+			if (m_tpScrollViewer is { })
+			{
+				m_tpScrollViewer.TemplatedParentHandlesScrolling = true;
+			}
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =
@@ -114,7 +124,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
 			var isSelectionUnset = false;
 			var items = GetItems();
-			if (!items?.Contains(selectedItem) ?? false)
+			if ((!items?.Contains(selectedItem) ?? false) && !AreCustomValuesAllowed())
 			{
 				if (selectedItem == null)
 				{
@@ -122,6 +132,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else
 				{
+					if (ItemsSource is null)
+					{
+						m_itemPendingSelection = selectedItem;
+					}
+
 					var selectionToReset = items?.Contains(oldSelectedItem) ?? false ?
 						oldSelectedItem
 						// Note: in this scenario (previous SelectedItem no longer in collection either), Windows still leaves it at the
@@ -144,6 +159,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
+			var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+			_isUpdatingSelection = true;
+
 			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
 			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
 			// on user interactions setting SelectedIndex which then sets SelectedItem.)
@@ -152,25 +170,58 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				isSelectionUnset = true;
 			}
 
-			var newIndex = IndexFromItem(selectedItem);
-			if (SelectedIndex != newIndex)
+			var newIndex = -1;
+			if (!_changingSelectedIndex)
 			{
-				SelectedIndex = newIndex;
+				newIndex = IndexFromItem(selectedItem);
+				if (SelectedIndex != newIndex)
+				{
+					SelectedIndex = newIndex;
+				}
 			}
 
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
 
-			if (updateItemSelectedState)
+			if (updateItemSelectedState && !_changingSelectedIndex)
 			{
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
-				isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
-			);
+#if !IS_UNIT_TESTS
+			if (newIndex != -1 && IsInLiveTree)
+			{
+				if (this is ListViewBase lvb
+#if __IOS__
+					// workaround to prevent scrolling when it is not ready
+					// without this, the ios TabView could render blank if the selection happens too early.
+					&& ContainerFromIndex(newIndex) is FrameworkElement { IsLoaded: true }
+#endif
+				)
+				{
+#if __IOS__ || __ANDROID__
+					lvb.InstantScrollToIndex(newIndex);
+#elif __MACOS__
+					// not implemented
+#else
+					lvb.ScrollIntoView(selectedItem);
+#endif
+				}
+			}
+#endif
+
+			_isUpdatingSelection = false;
+
+			if (shouldRaiseSelectionChanged)
+			{
+				// Setting SelectedIndex above will have already invoked the SelectionChanged.
+				InvokeSelectionChanged(
+					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
+					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
+				);
+			}
 		}
 
 		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
@@ -243,7 +294,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private int _uncoercedSelectedIndex = -1;
 
-		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			if (baseValue is not int desiredIndex)
 			{
@@ -289,19 +340,45 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			var newSelectedItem = ItemFromIndex(newSelectedIndex);
-
-			if (ItemsSource is ICollectionView collectionView)
+			try
 			{
-				collectionView.MoveCurrentToPosition(newSelectedIndex);
-				//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
-			}
-			if (!object.Equals(SelectedItem, newSelectedItem))
-			{
-				SelectedItem = newSelectedItem;
-			}
+				var wasAlreadyUpdatingSelection = _isUpdatingSelection;
 
-			SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+				_changingSelectedIndex = true;
+				var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+				_isUpdatingSelection = true;
+				var oldSelectedItem = SelectedItem;
+				var newSelectedItem = ItemFromIndex(newSelectedIndex);
+
+				if (ItemsSource is ICollectionView collectionView)
+				{
+					collectionView.MoveCurrentToPosition(newSelectedIndex);
+					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
+				}
+				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem) && !wasAlreadyUpdatingSelection)
+				{
+					SelectedItem = newSelectedItem;
+				}
+
+				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+
+				OnSelectionChanged(oldSelectedIndex, newSelectedIndex, oldSelectedItem, newSelectedItem);
+
+				if (!wasAlreadyUpdatingSelection)
+				{
+					_isUpdatingSelection = false;
+				}
+				if (shouldRaiseSelectionChanged)
+				{
+					InvokeSelectionChanged(
+						oldSelectedIndex == -1 ? Array.Empty<object>() : new[] { oldSelectedItem },
+						newSelectedIndex == -1 ? Array.Empty<object>() : new[] { newSelectedItem });
+				}
+			}
+			finally
+			{
+				_changingSelectedIndex = false;
+			}
 		}
 
 		public string SelectedValuePath
@@ -310,8 +387,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValuePathProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValuePath),
 			propertyType: typeof(string),
 			ownerType: typeof(Selector),
@@ -324,8 +401,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValueProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValue),
 			propertyType: typeof(object),
 			ownerType: typeof(Selector),
@@ -334,19 +411,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnSelectedValueChanged(object oldValue, object newValue)
 		{
+			if (_changingSelectedIndex)
+			{
+				return;
+			}
 
 			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
 			SelectedIndex = indexOfItemWithValue;
 		}
 
-		private static object SelectedValueCoerce(DependencyObject snd, object baseValue)
+		private static object SelectedValueCoerce(DependencyObject snd, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			var selector = (Selector)snd;
 			if (selector?._selectedValueBindingPath != null)
 			{
 				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
 			}
-			return selector.GetItems()?.Contains(baseValue) ?? false ? baseValue : null;
+			return (selector.GetItems()?.Contains(baseValue) ?? false) || selector.AreCustomValuesAllowed() ? baseValue : null;
 		}
 
 		public bool? IsSynchronizedWithCurrentItem
@@ -356,7 +437,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(IsSynchronizedWithCurrentItem),
 				typeof(bool?),
 				typeof(Selector),
@@ -384,6 +465,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnItemsSourceChanged(e);
 			TrySubscribeToCurrentChanged();
 			Refresh();
+
+			if (e.NewValue is { } && m_itemPendingSelection is { })
+			{
+				bool itemFound;
+
+				var items = GetItems();
+
+				// Check if we're trying to restore a value that's not in the collection.
+				itemFound = items.IndexOf(m_itemPendingSelection) != -1;
+				if (itemFound)
+				{
+					SelectedItem = m_itemPendingSelection;
+				}
+
+				m_itemPendingSelection = null;
+			}
 		}
 
 		private void TrySubscribeToCurrentChanged()
@@ -402,7 +499,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			else
 			{
 				_collectionViewSubscription.Disposable = null;
-				ResetIndexIfNeeded();
+
+				if (IsSynchronizedWithCurrentItem is { } value && !value)
+				{
+					ResetIndexIfNeeded();
+				}
 			}
 		}
 
@@ -424,6 +525,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (element is SelectorItem selectorItem)
 			{
 				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
+			}
+
+			var newIndex = IndexFromContainer(element);
+
+			if (newIndex == GetFocusedIndex())
+			{
+				SetFocusedItem(newIndex, false);
 			}
 		}
 
@@ -555,9 +663,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
+		internal void OnItemClicked(SelectorItem selectorItem, VirtualKeyModifiers modifiers) => OnItemClicked(IndexFromContainer(selectorItem), modifiers);
 
-		internal virtual void OnItemClicked(int clickedIndex)
+		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			if (ItemsSource is ICollectionView collectionView)
 			{
@@ -588,14 +696,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					if (item is SelectorItem selectorItem && selectorItem.IsSelected)
 					{
 						ChangeSelectedItem(selectorItem, false, true);
-					}
-				}
-				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
-				{
-					// If the removed item is the currently selected one, Set SelectedIndex to -1
-					if ((int)iVCE.Index == SelectedIndex)
-					{
-						ResetIndexIfNeeded();
 					}
 				}
 				//Prevent SelectedIndex been >= Items.Count
@@ -695,76 +795,137 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RefreshPartial();
 		}
 
+		public bool IsSelectionActive
+		{
+			get => (bool)GetValue(IsSelectionActiveProperty);
+			set => SetValue(IsSelectionActiveProperty, value);
+		}
 
+		internal static DependencyProperty IsSelectionActiveProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsSelectionActive),
+				typeof(bool),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(false));
 
-		public bool IsSelectionActive { get; set; }
+		// This method returns a value indicating whether the object is selectable.
+		private protected bool IsSelectableHelper(object obj)
+		{
+			if (obj is Control control)
+			{
+				return control.IsEnabled && control.Visibility != Visibility.Collapsed &&
+					(control.IsTabStop || FocusProperties.CanHaveFocusableChildren(control));
+			}
+			else if (obj is UIElement uiElement)
+			{
+				return uiElement.Visibility != Visibility.Collapsed;
+			}
+
+			return true;
+		}
+
 
 		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
 		{
-			return (Orientation.Horizontal, Orientation.Horizontal);
+			// TODO Uno: This implementation is simplified, should be ported from WinUI
+			var panel = ItemsPanelRoot;
+
+			var logicalOrientation = Orientation.Vertical;
+			var physicalOrientation = Orientation.Vertical;
+
+			if (panel is StackPanel sp)
+			{
+				logicalOrientation = sp.Orientation;
+				physicalOrientation = logicalOrientation;
+			}
+			else if (panel is IOrientedPanel orientedPanel)
+			{
+				logicalOrientation = orientedPanel.LogicalOrientation;
+				physicalOrientation = orientedPanel.PhysicalOrientation;
+			}
+
+			return (physicalOrientation, logicalOrientation);
 		}
 
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool forceFocus,
-									  FocusState focusState,
-									  bool animateIfBringIntoView)
+		private protected void SetFocusedItem(
+			int index,
+			bool shouldScrollIntoView,
+			bool animateIfBringIntoView = false,
+			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
+			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
+			FocusState focusState = FocusState.Programmatic;
+
+			var hasFocus = HasFocus();
+			if (hasFocus)
+			{
+				var spFocused = this.GetFocusedElement();
+				var spFocusedAsElement = spFocused as UIElement;
+				if (spFocusedAsElement is { })
+				{
+					focusState = spFocusedAsElement.FocusState;
+					global::System.Diagnostics.Debug.Assert(FocusState.Unfocused != focusState, "FocusState_Unfocused unexpected since spFocusedAsElement is focused");
+				}
+			}
+
+			SetFocusedItem(index, shouldScrollIntoView, false /*forceFocus*/, focusState, animateIfBringIntoView, focusNavigationDirection, inputActivationBehavior);
 		}
 
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool forceFocus,
-									  FocusState focusState,
-									  bool animateIfBringIntoView,
-									  FocusNavigationDirection focusNavigationDirection)
+		private protected void SetFocusedItem(
+			int index,
+			bool shouldScrollIntoView,
+			bool forceFocus,
+			FocusState focusState,
+			bool animateIfBringIntoView,
+			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
+			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
-			//bool bFocused = false;
-			//bool shouldFocus = false;
+			bool bFocused = false;
+			bool shouldFocus = false;
 
-			//var spItems = Items;
-			//var nCount = spItems?.Size;
+			var spItems = Items;
+			var nCount = spItems?.Size;
 
-			//if (index < 0 || nCount <= index)
-			//{
-			//	index = -1;
-			//}
+			if (index < 0 || nCount <= index)
+			{
+				index = -1;
+			}
 
-			//if (index >= 0)
-			//{
-			//	m_lastFocusedIndex = index;
-			//}
+			if (index >= 0)
+			{
+				SetLastFocusedIndex(index);
+			}
 
-			//if (!forceFocus)
-			//{
-			//	//shouldFocus = HasFocus();
-			//}
-			//else
-			//{
-			//	shouldFocus = true;
-			//}
+			if (!forceFocus)
+			{
+				shouldFocus = HasFocus();
+			}
+			else
+			{
+				shouldFocus = true;
+			}
 
-			//if (shouldFocus)
-			//{
-			//	m_iFocusedIndex = index;
-			//}
+			if (shouldFocus)
+			{
+				SetFocusedIndex(index);
+			}
 
-			//if (m_iFocusedIndex == -1)
-			//{
-			//	if (shouldFocus)
-			//	{
-			//		// Since none of our child items have the focus, put the focus back on the main list box.
-			//		//
-			//		// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
-			//		// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
-			//		// to the next focusable element (or clear focus if none is found).
-			//		bFocused = Focus(focusState);
-			//	}
+			if (GetFocusedIndex() == -1)
+			{
+				if (shouldFocus)
+				{
+					// Since none of our child items have the focus, put the focus back on the main list box.
+					//
+					// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
+					// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
+					// to the next focusable element (or clear focus if none is found).
+					bFocused = Focus(focusState);
+				}
 
-			//	return;
-			//}
+				return;
+			}
 
 			//if (shouldScrollIntoView)
 			//{
@@ -784,15 +945,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//		ScrollIntoViewAlignment.Default);
 			//}
 
-			//if (shouldFocus)
-			//{
-			//	var spContainer = ContainerFromIndex(index);
+			if (shouldFocus)
+			{
+				var spContainer = ContainerFromIndex(index);
 
-			//	if (spContainer is SelectorItem spSelectorItem)
-			//	{
-			//		//spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection);
-			//	}
-			//}
+				if (spContainer is SelectorItem spSelectorItem)
+				{
+					spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, out bFocused, focusNavigationDirection, inputActivationBehavior);
+				}
+			}
 		}
 
 #if false
@@ -801,43 +962,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 #endif
-
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool animateIfBringIntoView,
-									  FocusNavigationDirection focusNavigationDirection)
-		{
-
-			//bool hasFocus = false;
-			FocusState focusState = FocusState.Programmatic;
-
-			//hasFocus = HasFocus();
-
-			//if (hasFocus)
-			//{
-			//	DependencyObject spFocused;
-
-			//	//spFocused = GetFocusedElement();
-
-			//	if (spFocused is UIElement spFocusedAsElement)
-			//	{
-			//		focusState = spFocusedAsElement.FocusState;
-			//	}
-			//}
-
-			SetFocusedItem(index,
-							shouldScrollIntoView,
-							forceFocus: false,
-							focusState,
-							animateIfBringIntoView,
-							focusNavigationDirection);
-		}
-
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView)
-		{
-
-		}
 
 #if false
 		bool CanScrollIntoView()

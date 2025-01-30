@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a delegate to be called when a property value changes.
@@ -16,14 +16,15 @@ namespace Windows.UI.Xaml
 	/// Provides a template for a method that is called whenever a dependency property value is being re-evaluated, or coercion is specifically requested.
 	/// </summary>
 	/// <param name="dependencyObject">The object that the property exists on. When the callback is invoked, the property system will pass this value.</param>
-	/// <param name="args">The new value of the property, prior to any coercion attempt.</param>
-	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
+	/// <param name="baseValue">The new value of the property, prior to any coercion attempt.</param>
+	/// <param name="precedence">The precedence at which the new value is being set.</param>
+	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence);
 
 	/// <summary>
 	/// Provides a delegate for a method used to update backing fields of a dependency property
 	/// </summary>
 	/// <param name="dependencyObject">The object that the property exists on.</param>
-	/// <param name="args">The new value of the property</param>
+	/// <param name="newValue">The new value of the property</param>
 	internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
 
 	/// <summary>
@@ -31,17 +32,6 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public partial class PropertyMetadata
 	{
-		private bool _isDefaultValueSet;
-		private object _defaultValue;
-
-		private bool _isCoerceValueCallbackSet;
-		private CoerceValueCallback _coerceValueCallback;
-
-		/// <summary>
-		/// Should <see cref="CoerceValueCallback"/> be raised even if value has not changed?
-		/// </summary>
-		internal bool CoerceWhenUnchanged { get; set; } = true;
-
 		internal PropertyMetadata() { }
 
 		public PropertyMetadata(
@@ -49,6 +39,15 @@ namespace Windows.UI.Xaml
 		)
 		{
 			DefaultValue = defaultValue;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			CoerceValueCallback coerceValueCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			CoerceValueCallback = coerceValueCallback;
 		}
 
 		internal PropertyMetadata(
@@ -120,76 +119,74 @@ namespace Windows.UI.Xaml
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
-		public object DefaultValue
+		internal PropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			CreateDefaultValueCallback createDefaultValueCallback
+		)
 		{
-			get => _defaultValue;
-			internal set
-			{
-				_defaultValue = value;
-				_isDefaultValueSet = true;
-			}
+			DefaultValue = defaultValue;
+			PropertyChangedCallback = propertyChangedCallback;
+			CoerceValueCallback = coerceValueCallback;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
+			CreateDefaultValueCallback = createDefaultValueCallback;
 		}
+
+		private PropertyMetadata(CreateDefaultValueCallback createDefaultValueCallback)
+		{
+			CreateDefaultValueCallback = createDefaultValueCallback;
+		}
+
+		private PropertyMetadata(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback)
+		{
+			CreateDefaultValueCallback = createDefaultValueCallback;
+			PropertyChangedCallback = propertyChangedCallback;
+		}
+
+		public CreateDefaultValueCallback CreateDefaultValueCallback { get; }
+
+		public object DefaultValue { get; }
 
 		public PropertyChangedCallback PropertyChangedCallback { get; internal set; }
 
-		internal CoerceValueCallback CoerceValueCallback
-		{
-			get => _coerceValueCallback;
-			set
-			{
-				_coerceValueCallback = value;
-				_isCoerceValueCallbackSet = true;
-			}
-		}
+		internal CoerceValueCallback CoerceValueCallback { get; set; }
 
 		internal BackingFieldUpdateCallback BackingFieldUpdateCallback { get; set; }
 
-		internal protected virtual void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
-		{
-			// The supplied metadata is merged with the property metadata for 
-			// the dependency property as it exists on the base owner. Any 
-			// characteristics that were specified in the original base 
-			// metadata will persist; only those characteristics that were 
-			// specifically changed in the new metadata will override the 
-			// characteristics of the base metadata. Some characteristics such
-			// as DefaultValue are replaced if specified in the new metadata. 
-			// Others, such as PropertyChangedCallback, are combined. 
-			// Ultimately, the merge behavior depends on the property metadata 
-			// type being used for the override, so the behavior described here 
-			// is for the existing property metadata classes used by WPF 
-			// dependency properties. For details, see Dependency Property 
-			// Metadata and Framework Property Metadata.
-			// Source: https://msdn.microsoft.com/en-us/library/ms597491(v=vs.110).aspx
+		public static PropertyMetadata Create(object defaultValue)
+			=> new PropertyMetadata(defaultValue: defaultValue);
 
-			if (!_isCoerceValueCallbackSet)
-			{
-				CoerceValueCallback = baseMetadata.CoerceValueCallback;
-			}
+		public static PropertyMetadata Create(object defaultValue, PropertyChangedCallback propertyChangedCallback)
+			=> new PropertyMetadata(defaultValue: defaultValue, propertyChangedCallback: propertyChangedCallback);
 
-			if (!_isDefaultValueSet)
-			{
-				DefaultValue = baseMetadata.DefaultValue;
-			}
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback);
 
-			// Merge PropertyChangedCallback delegates
-			PropertyChangedCallback = baseMetadata.PropertyChangedCallback + PropertyChangedCallback;
-			BackingFieldUpdateCallback = baseMetadata.BackingFieldUpdateCallback + BackingFieldUpdateCallback;
-		}
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback, propertyChangedCallback: propertyChangedCallback);
 
 		internal void MergePropertyChangedCallback(PropertyChangedCallback callback)
 		{
 			PropertyChangedCallback += callback;
 		}
 
+		internal bool HasPropertyChanged => PropertyChangedCallback is not null;
 
-		internal void RaisePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
+		internal void RaisePropertyChangedNoNullCheck(DependencyObject source, DependencyPropertyChangedEventArgs e)
 		{
-			PropertyChangedCallback?.Invoke(source, e);
+			PropertyChangedCallback.Invoke(source, e);
 		}
 
 		internal void RaiseBackingFieldUpdate(DependencyObject source, object newValue)
 		{
 			BackingFieldUpdateCallback?.Invoke(source, newValue);
+		}
+
+		internal virtual PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
+		{
+			return new PropertyMetadata(newDefaultValue, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
 		}
 	}
 }

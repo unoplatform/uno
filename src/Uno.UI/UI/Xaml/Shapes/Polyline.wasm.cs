@@ -1,41 +1,45 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Polyline
 	{
-		private readonly SvgElement _polyline = new SvgElement("polyline");
-
-		partial void InitializePartial()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			SvgChildren.Add(_polyline);
+			WindowManagerInterop.SetSvgPolyPoints(_mainSvgElement.HtmlId, Points?.Flatten());
 
-			InitCommonShapeProperties();
+			return MeasureAbsoluteShape(availableSize, this);
 		}
 
-		protected override SvgElement GetMainSvgElement()
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			return _polyline;
+			UpdateRender();
+			return ArrangeAbsoluteShape(finalSize, this);
 		}
 
-		partial void OnPointsChanged()
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			var points = Points;
-			if (points == null)
+			base.OnPropertyChanged2(args);
+
+			if (_bboxCacheKey != null && (
+				args.Property == PointsProperty
+			))
 			{
-				_polyline.RemoveAttribute("points");
-			}
-			else
-			{
-				_polyline.SetAttribute("points", points.ToCssString());
+				_bboxCacheKey = null;
 			}
 		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+			Points is { } points
+				? ("polyline:" + string.Join(',', points.Flatten()))
+				: null;
 	}
 }

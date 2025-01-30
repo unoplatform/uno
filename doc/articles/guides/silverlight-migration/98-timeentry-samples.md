@@ -10,7 +10,7 @@ The sample application is made up of 3 solutions containing multiple projects an
 
 * Uno.Samples
   * reference
-    * [TimeEntryRia](https://github.com/unoplatform/Uno.Samples/tree/master/reference/TimeEntryRia)
+    * [TimeEntryRia](https://github.com/unoplatform/Uno.Samples/tree/master/ArchivedProjects/UI/TimeEntryRia/TimeEntryRia)
   * UI
     * TimeEntry
       * [TimeEntryServices](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TimeEntry/TimeEntryServices)
@@ -88,11 +88,11 @@ The **TimeEntryRia** sample is a Visual Studio 2015 solution and is, of course, 
 1. Scroll to the bottom of the **Web.Config** file to locate the connection string. Update as required.
 
 ```xml
-    <connectionStrings>
-        <add name="TimeEntryEntities"
-             connectionString="metadata=res://*/TimeEntryModel.csdl|res://*/TimeEntryModel.ssdl|res://*/TimeEntryModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=.\SQLEXPRESS;initial catalog=TimeEntry;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&quot;"
-             providerName="System.Data.EntityClient" />
-    </connectionStrings>
+<connectionStrings>
+    <add name="TimeEntryEntities"
+         connectionString="metadata=res://*/TimeEntryModel.csdl|res://*/TimeEntryModel.ssdl|res://*/TimeEntryModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=.\SQLEXPRESS;initial catalog=TimeEntry;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&quot;"
+         providerName="System.Data.EntityClient" />
+</connectionStrings>
 ```
 
 ### Running the Silverlight sample

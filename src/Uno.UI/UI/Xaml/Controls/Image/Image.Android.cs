@@ -12,28 +12,25 @@ using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Image
 	{
 		private bool _isInLayout;
 		private double _sourceImageScale = 1;
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
-		private Windows.Foundation.Size _sourceImageSize;
-		private Windows.Foundation.Size SourceImageSize
-		{
-			get { return _sourceImageSize; }
-		}
+		private Size _sourceImageSize;
+		private Size SourceImageSize => _sourceImageSize;
 
 		/// <summary>
 		/// Updates the size of the image source (drawable, bitmap, etc.)
 		/// </summary>
 		/// <param name="size">size of the image source (in physical pixels)</param>
 		/// <param name="isLogicalPixels">indicates that the size of the image source is in logical pixels (this is the case when the source is an URI)</param>
-		internal void UpdateSourceImageSize(Windows.Foundation.Size size, bool isLogicalPixels = false)
+		internal void UpdateSourceImageSize(Size size, bool isLogicalPixels = false)
 		{
 			if (_sourceImageSize == size)
 			{
@@ -50,14 +47,14 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMatrix(_lastLayoutSize);
 
-			if (Source is BitmapSource bitmapSource)
+			if (Source is BitmapImage bitmapImage)
 			{
-				bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-				bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				bitmapImage.PixelWidth = (int)_sourceImageSize.Width;
+				bitmapImage.PixelHeight = (int)_sourceImageSize.Height;
 			}
 		}
 
-		private Windows.Foundation.Size _lastLayoutSize;
+		private Size _lastLayoutSize;
 
 
 		private int? _targetWidth;
@@ -135,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_imageFetchDisposable.Disposable = null;
 
-			if (imageSource != null && imageSource.UseTargetSize)
+			if (imageSource is not null && imageSource.UseTargetSize)
 			{
 				// If the ImageSource has the UseTargetSize set, the image
 				// must not be loaded until the first layout has been done.
@@ -147,6 +144,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 					return;
 				}
+			}
+
+			if (imageSource?.ResourceFailed == true)
+			{
+				// Currently resource-based images are evaluated immediately
+				// in the constructor - so we have to raise ImageFailed late.				
+				OnImageFailed(imageSource, new InvalidOperationException("Resource could not be found"));
 			}
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -472,7 +476,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Sets the value of ImageView.ImageMatrix based on Stretch.
 		/// </summary>
 		/// <param name="frameSize">In logical pixels</param>
-		internal void UpdateMatrix(Windows.Foundation.Size frameSize)
+		internal void UpdateMatrix(Size frameSize)
 		{
 			if (_nativeImageView == null)
 			{

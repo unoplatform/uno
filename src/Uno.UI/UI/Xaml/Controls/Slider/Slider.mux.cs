@@ -13,15 +13,16 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 // TODO MZ: HasXamlTemplate parts may need to be integrated.
 
@@ -532,7 +533,7 @@ public partial class Slider
 	//		in the absence of an explicitly defined one
 	//
 	//---------------------------------------------------------------------------
-	private protected override string GetPlainText()
+	internal override string GetPlainText()
 	{
 		var header = Header;
 
@@ -815,12 +816,14 @@ public partial class Slider
 		//TODO MZ: Should include handled too?
 		spSliderContainer.PointerPressed += OnPointerPressed;
 		spSliderContainer.PointerReleased += OnPointerReleased;
+		spSliderContainer.PointerMoved += OnPointerMoved;
 		spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
 		spSliderContainer.SizeChanged += OnSizeChanged;
 		_sliderContainerToken.Disposable = Disposable.Create(() =>
 		{
 			spSliderContainer.PointerPressed -= OnPointerPressed;
 			spSliderContainer.PointerReleased -= OnPointerReleased;
+			spSliderContainer.PointerMoved -= OnPointerMoved;
 			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
 			spSliderContainer.SizeChanged -= OnSizeChanged;
 		});
@@ -869,9 +872,7 @@ public partial class Slider
 		object sender,
 		DragDeltaEventArgs args)
 	{
-#if !HAS_EXPENSIVE_TRYFINALLY
 		try
-#endif
 		{
 			Grid spRootGrid;
 			double nominator = 0.0;
@@ -955,9 +956,7 @@ public partial class Slider
 				}
 			}
 		}
-#if !HAS_EXPENSIVE_TRYFINALLY
 		finally
-#endif
 		{
 			_processingInputEvent = false;
 		}
@@ -1513,16 +1512,16 @@ public partial class Slider
 						szFormat = "{0:0}";
 						break;
 					case 1:
-						szFormat = "{0:0.0}f";
+						szFormat = "{0:0.0}";
 						break;
 					case 2:
-						szFormat = "{0:0.00}f";
+						szFormat = "{0:0.00}";
 						break;
 					case 3:
-						szFormat = "{0:0.000}f";
+						szFormat = "{0:0.000}";
 						break;
 					default:
-						szFormat = "{0:0.0000}f";
+						szFormat = "{0:0.0000}";
 						break;
 				}
 			}
@@ -1546,9 +1545,7 @@ public partial class Slider
 	// IntermediateValue and Value accordingly.
 	private void MoveThumbToPoint(Point point)
 	{
-#if !HAS_EXPENSIVE_TRYFINALLY
 		try
-#endif
 		{
 			Grid rootGrid;
 			Orientation orientation = Orientation.Horizontal;
@@ -1635,9 +1632,7 @@ public partial class Slider
 				}
 			}
 		}
-#if !HAS_EXPENSIVE_TRYFINALLY
 		finally
-#endif
 		{
 			_processingInputEvent = false;
 		}

@@ -5,49 +5,34 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.ApplicationModel.Contacts.Internal;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.ApplicationModel.Contacts.ContactPicker.NativeMethods;
-#endif
 
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.ApplicationModel.Contacts.ContactPicker";
-#endif
-
 		private static Task<bool> IsSupportedTaskAsync(CancellationToken token)
 		{
-#if NET7_0_OR_GREATER
 			return Task.FromResult(NativeMethods.IsSupported());
-#else
-			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()");
-			return Task.FromResult(bool.TryParse(isSupportedString, out var isSupported) && isSupported);
-#endif
 		}
 
 		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
-			var pickResultJson = await
-#if NET7_0_OR_GREATER
-				NativeMethods.PickContactsAsync(multiple);
-#else
-				WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
-#endif
+			var pickResultJson = await NativeMethods.PickContactsAsync(multiple);
 
 			if (string.IsNullOrEmpty(pickResultJson) || token.IsCancellationRequested)
 			{
 				return Array.Empty<Contact>();
 			}
 
-			var contacts = JsonHelper.Deserialize<WasmContact[]>(pickResultJson);
+			var contacts = JsonHelper.Deserialize<WasmContact[]>(pickResultJson, PickerSerializationContext.Default);
 			return contacts.Where(c => c != null).Select(c => ContactFromContactInfo(c)).ToArray();
 		}
 
@@ -90,6 +75,13 @@ namespace Windows.ApplicationModel.Contacts
 			}
 
 			return contact;
+		}
+
+
+		[JsonSerializable(typeof(WasmContact[]))]
+		[JsonSerializable(typeof(WasmContact))]
+		internal partial class PickerSerializationContext : JsonSerializerContext
+		{
 		}
 	}
 }

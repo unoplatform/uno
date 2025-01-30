@@ -1,11 +1,7 @@
 ﻿using System;
 using Uno.Extensions;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Views.Controls
 {
@@ -35,7 +31,7 @@ namespace Uno.UI.Views.Controls
 
 		void OnCurrentStrategyChanged()
 		{
-			ContentTemplate = SelectTemplateFactory(Content);
+			ContentTemplate = new DataTemplate(SelectTemplateFactory(Content));
 		}
 
 		#endregion

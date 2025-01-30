@@ -1,10 +1,14 @@
-﻿<Project ToolsVersion="15.0">
+﻿<Project>
 
+	<PropertyGroup>
+		<IsCrossruntime>false</IsCrossruntime>
+		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+	</PropertyGroup>
 	<ItemGroup>
 		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
-		<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" Condition="!$(_IsNetStd)" />
-		<Compile Remove="**\*.netstd.cs" Condition="!$(_IsNetStd)" />
+		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
+		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
 		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
 		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
@@ -12,8 +16,8 @@
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 
-		<None Include="**\*.netstdref.cs" Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
+		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
@@ -30,86 +34,100 @@
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 
-		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
-		<Compile Remove="**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
+		<None Include="**\*.unittests.cs" Exclude="bin\**\*.unittests.cs;obj\**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
+		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
-		<NoWarn>$(NoWarn);0105</NoWarn>
-	</PropertyGroup>
 
 	<!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
-  - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
-  - HAS_EXPENSIVE_TRYFINALLY: Used on WebAssembly until exceptions are supported by the WebAssembly specification
-  - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
+  - UNO_REFERENCE_API: Used when the Reference API is used (it's true for Skia, Wasm, and Reference).
+  - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
+  - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
   - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
 										UIElements. On iOS, this means additional weak references
 										backed fields to handle opaque native reference pinning and avoid
 										memory leaks.
-  - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
+  - HAS_NATIVE_IMPLICIT_POINTER_CAPTURE: Indicate if the OS once a pointer is pressed, OS will send all pointer event to the same target (a.k.a. OriginalSource)
+  - HAS_RENDER_TARGET_BITMAP : Determines if the render target bitmap is implemented (and can be used to take screenshot in runtime tests)
+  - UNO_HAS_BORDER_VISUAL: Determine if borders are rendered using compostion APIs by Uno (or using native promitives)
+  - HAS_COMPOSITION_API : Determines if teh composition APIs (i.e. UIElement.Visual) are supported or not.
 
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-	<PropertyGroup Condition="$(_IsNetStd)">
-		<DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
+	<PropertyGroup Condition="$(IsCrossruntime)">
+		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_MANAGED_POINTERS;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
+		<DefineConstants>$(DefineConstants);__SKIA__;SUPPORTS_RTL;UNO_SUPPORTS_NATIVEHOST;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_HAS_MANAGED_POINTERS;UNO_HAS_MANAGED_SCROLL_PRESENTER;HAS_INPUT_INJECTOR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_COMPOSITION_API;UNO_HAS_BORDER_VISUAL</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
-		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
+		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(_IsUnitTests)">
+		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
-		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsCatalyst)">
-		<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsMacOS)">
-		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-		<SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<SupportedOSPlatformVersion>10.15</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
-		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;XAMARIN_ANDROID</DefineConstants>
+		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+
+		<!-- Hint the VS's XAML parser -->
+		<!-- https://github.com/unoplatform/uno/issues/15517 -->
+    	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
-		<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
-		<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
-		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
+	<PropertyGroup Condition="$(TargetFramework.EndsWith('-windows10.0.19041.0'))">
+		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
+		<TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
+	</PropertyGroup>
 
-	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
-		<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
-	</Target>
+	<PropertyGroup Condition="'$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true'">
+		<DefineConstants>$(DefineConstants);IS_CI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true' OR '$(Configuration)'=='Debug'">
+		<DefineConstants>$(DefineConstants);IS_CI_OR_DEBUG</DefineConstants>
+	</PropertyGroup>
 
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
@@ -118,12 +136,15 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_overridePackageId>$(AssemblyName)</_overridePackageId>
-			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
+			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName.ToLowerInvariant())</_overridePackageId>
+			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetRefFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />
@@ -151,12 +172,11 @@
 			<!-- Current nuget publishing uses netX.0-android30.0 -->
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
-			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
+			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 		</PropertyGroup>
 
 		<ItemGroup>

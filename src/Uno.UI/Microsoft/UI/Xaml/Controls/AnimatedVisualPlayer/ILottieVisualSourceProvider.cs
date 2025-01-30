@@ -1,14 +1,14 @@
 ﻿using System;
 
 // Keep this using in place until UWP support is dropped.
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public interface ILottieVisualSourceProvider
 	{
-		Windows.UI.Xaml.Controls.IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile);
-		Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile);
-		public bool TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
+		IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile);
+		IThemableAnimatedVisualSource CreateThemableFromLottieAsset(Uri sourceFile);
+		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
 	}
 }

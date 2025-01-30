@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis.PooledObjects;
+using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -129,24 +130,42 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol? symbol, string name)
 		{
-			do
+			if (symbol != null)
 			{
-				if (symbol != null)
+				foreach (var member in symbol.GetMembers(name))
 				{
-					foreach (var member in symbol.GetMembers(name))
+					yield return member;
+				}
+			}
+
+			if (symbol?.TypeKind == TypeKind.Interface)
+			{
+				foreach (var @interface in symbol.AllInterfaces)
+				{
+					foreach (var member in @interface.GetMembers(name))
 					{
 						yield return member;
 					}
 				}
-
-				symbol = symbol?.BaseType;
-
-				if (symbol == null)
+			}
+			else
+			{
+				do
 				{
-					break;
-				}
+					symbol = symbol?.BaseType;
 
-			} while (symbol.SpecialType != SpecialType.System_Object);
+					if (symbol == null)
+					{
+						break;
+					}
+
+					foreach (var member in symbol.GetMembers(name))
+					{
+						yield return member;
+					}
+
+				} while (symbol.SpecialType != SpecialType.System_Object);
+			}
 		}
 
 		/// <summary>
@@ -191,17 +210,31 @@ namespace Microsoft.CodeAnalysis
 		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
 
-		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name)
+		// includeBaseTypes was added to fix a bug for a specific caller without affecting anything else.
+		// But, we should revise it and make sure whether other callers need it or not, and potentially remove it completely and default to true.
+		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name, bool includeBaseTypes = false)
 		{
-			var members = resolvedType.GetMembers(name);
-
-			for (int i = 0; i < members.Length; i++)
+			var baseType = resolvedType;
+			while (baseType is not null)
 			{
-				if (members[i] is IMethodSymbol method)
+				var members = baseType.GetMembers(name);
+
+				for (int i = 0; i < members.Length; i++)
 				{
-					return method;
+					if (members[i] is IMethodSymbol method)
+					{
+						return method;
+					}
 				}
+
+				if (!includeBaseTypes)
+				{
+					return null;
+				}
+
+				baseType = baseType.BaseType;
 			}
+
 
 			return null;
 		}
@@ -250,14 +283,14 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
+		public static ISymbol? GetMemberIncludingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
 		{
 			if (symbol is INamespaceSymbol)
 			{
 				return symbol.GetMembers(memberName).FirstOrDefault();
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				if (typeSymbol.GetMembers(memberName).FirstOrDefault() is { } member)
@@ -271,22 +304,22 @@ namespace Microsoft.CodeAnalysis
 			return null;
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
+		public static ISymbol? GetMemberIncludingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
 		{
 			if (symbol is INamespaceSymbol)
 			{
-				foreach (var candicate in symbol.GetMembers())
+				foreach (var candidate in symbol.GetMembers())
 				{
-					if (predicate(candicate, arg))
+					if (predicate(candidate, arg))
 					{
-						return candicate;
+						return candidate;
 					}
 				}
 
 				return null;
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				foreach (var candidate in typeSymbol.GetMembers())
@@ -384,7 +417,10 @@ namespace Microsoft.CodeAnalysis
 			return type?.GetFullyQualifiedTypeExcludingGlobal();
 		}
 
-		public static string GetFullMetadataName(this ITypeSymbol symbol)
+		// forRegisterAttributeDotReplacement is used specifically by NativeCtorsGenerator to generate for the Android/iOS RegisterAttribute
+		// A non-null value means we are generating for RegisterAttribute, and we replace invalid characters with '_'.
+		// The '.' is special cased to be replaced by the value of forRegisterAttributeDotReplacement, whether it's '_' or '/'
+		public static string GetFullMetadataName(this ITypeSymbol symbol, char? forRegisterAttributeDotReplacement = null)
 		{
 			ISymbol s = symbol;
 			var sb = new StringBuilder(s.MetadataName);
@@ -414,9 +450,19 @@ namespace Microsoft.CodeAnalysis
 
 			var namedType = symbol as INamedTypeSymbol;
 
-			if (namedType?.TypeArguments.Any() ?? false)
+			// When generating for RegisterAttribute, the name we pass to the attribute is used by Xamarin tooling for generating Java files, specifically, it's used for the class name.
+			// The characters '.', '+', and '`' are not valid characters for a class name.
+			// On Android, we use '/' as replacement for '.' to match Jni name:
+			// https://github.com/xamarin/java.interop/blob/38c8a827e78ffe9c80ad2313a9e0e0d4f8215184/src/Java.Interop.Tools.TypeNameMappings/Java.Interop.Tools.TypeNameMappings/JavaNativeTypeManager.cs#L693-L699
+			if (forRegisterAttributeDotReplacement.HasValue)
 			{
-				var genericArgs = namedType.TypeArguments.Select(GetFullMetadataName).JoinBy(",");
+				var replacement = forRegisterAttributeDotReplacement.Value;
+				sb.Replace('.', replacement).Replace('+', '_').Replace('`', '_');
+			}
+			else if (namedType?.TypeArguments.Any() ?? false)
+			{
+				// We don't append type arguments when generating for RegisterAttribute because '[' and ']' are invalid characters for a class name.
+				var genericArgs = namedType.TypeArguments.Select(a => GetFullMetadataName(a, null)).JoinBy(",");
 				sb.Append($"[{genericArgs}]");
 			}
 
@@ -547,5 +593,27 @@ namespace Microsoft.CodeAnalysis
 			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
 				? (T)arg.Value!
 				: default(T?);
+
+		/// <summary>
+		/// Returns the property type of a dependency-property or an attached dependency-property setter.
+		/// </summary>
+		/// <param name="propertyOrSetter">The dependency-property or the attached dependency-property setter</param>
+		/// <returns>The property type</returns>
+		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter, bool unwrapNullable = true)
+		{
+			var type = propertyOrSetter switch
+			{
+				IPropertySymbol dp => dp.Type,
+				IMethodSymbol { IsStatic: true, Parameters.Length: 2 } adpSetter => adpSetter.Parameters[1].Type,
+
+				_ => null,
+			};
+			if (unwrapNullable && type?.IsNullable(out var innerType) == true)
+			{
+				type = innerType;
+			}
+
+			return type as INamedTypeSymbol;
+		}
 	}
 }

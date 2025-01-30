@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Source")]
 	public partial class AnimatedVisualPlayer : FrameworkElement
@@ -96,10 +97,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Pause() => Source?.Pause();
 
-		public Task PlayAsync(double fromProgress, double toProgress, bool looped)
+		public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
 		{
 			Source?.Play(fromProgress, toProgress, looped);
-			return Task.CompletedTask;
+			return Task.CompletedTask.AsAsyncAction();
 		}
 
 		public void Resume() => Source?.Resume();
@@ -131,8 +132,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return base.MeasureOverride(availableSize);
+				return MeasureFirstChild(availableSize);
 			}
 		}
+
+		protected override Size ArrangeOverride(Size finalSize) => ArrangeFirstChild(finalSize);
 	}
 }

@@ -16,7 +16,6 @@ renderNavbar();
 renderLogo();
 updateLogo()
 updateLogoOnResize();
-updateNavbarHeightOnResize();
 updateTocHeightOnResize();
 updateSidenavTopOnResize();
 renderFooter();

@@ -1,7 +1,6 @@
 parameters:
   vmImage: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
   JobName: ''
   JobTimeoutInMinutes: ''
   JobDisplayName: ''
@@ -13,10 +12,10 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+  cancelTimeoutInMinutes: 1
   dependsOn:
   - iOS_Build
-  - SamplesApp_UITests_Build
-  - Commitsar
+
   displayName: ${{ parameters.JobDisplayName }}
 
   pool:
@@ -27,6 +26,8 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
+    
+    UNO_UITEST_BUCKET_COUNT: 5
 
   steps:
   - checkout: self
@@ -36,12 +37,6 @@ jobs:
     displayName: 'Download iOS Samples App'
     inputs:
         artifactName: ios-uitest-build
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
@@ -61,14 +56,11 @@ jobs:
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist
-
     # https://github.com/actions/virtual-environments/issues/1932
     displayName: Apply workaround for Azure Devops issue 1932
-
 
   - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
@@ -155,6 +147,17 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
+  # them in a separate artifacts container.
+  # This is needed so that screenshot comparison doesn't unnecessarily download large files, which slows it down.
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
+      ArtifactName: uitests-results-ios-logs
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1

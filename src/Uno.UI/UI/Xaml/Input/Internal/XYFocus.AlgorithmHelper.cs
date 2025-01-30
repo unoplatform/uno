@@ -4,8 +4,8 @@
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using static Uno.UI.Helpers.WinUI.MathHelpers;
+using Microsoft.UI.Xaml.Input;
+using static Uno.Helpers.MathHelpers;
 
 namespace Uno.UI.Xaml.Input
 {

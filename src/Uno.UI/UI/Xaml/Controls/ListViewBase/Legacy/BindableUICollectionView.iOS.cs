@@ -1,23 +1,13 @@
-using System;
+﻿using System;
 using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using ObjCRuntime;
-
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Views.Controls
 {

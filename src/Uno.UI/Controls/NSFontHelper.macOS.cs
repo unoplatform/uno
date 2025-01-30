@@ -5,18 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using CoreGraphics;
 using Foundation;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
 using AppKit;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI
 {
@@ -83,7 +80,16 @@ namespace Windows.UI
 
 		private static NSFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
 		{
-			return ApplyStyle(NSFont.SystemFontOfSize(size, fontWeight.ToNSFontWeight()), size, fontStyle);
+			var font = NSFont.SystemFontOfSize(size, fontWeight.ToNSFontWeight());
+
+			if (font is not null)
+			{
+				return ApplyStyle(font, size, fontStyle);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unable to find {font}");
+			}
 		}
 
 		#region Load Custom Font
@@ -91,13 +97,11 @@ namespace Windows.UI
 		{
 			NSFont? font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
-			if (fontPath.Contains("#"))
+			var indexOfHash = fontPath.IndexOf('#');
+			if (indexOfHash > 0 && indexOfHash < fontPath.Length - 1)
 			{
-				var pathParts = fontPath.Split(new[] { '#' });
-				var file = pathParts[0];
-				var familyName = pathParts[1];
-
-				font = GetFontFromFamilyName(size, familyName) ?? GetFontFromFile(size, file);
+				font = GetFontFromFamilyName(size, fontPath.Substring(indexOfHash + 1))
+					?? GetFontFromFile(size, fontPath.Substring(0, indexOfHash));
 			}
 			else
 			{
@@ -256,7 +260,19 @@ namespace Windows.UI
 				{
 					// Use the font even if the registration failed if the error code
 					// reports the fonts have already been registered.
-					return NSFont.FromFontName(font.PostScriptName, size);
+					if (font.PostScriptName is not null)
+					{
+						return NSFont.FromFontName(font.PostScriptName, size);
+					}
+					else
+					{
+						if (typeof(NSFontHelper).Log().IsEnabled(LogLevel.Debug))
+						{
+							typeof(NSFontHelper).Log().Debug($"Unable to register font from {file} ({error})");
+						}
+
+						return null;
+					}
 				}
 				else
 				{
@@ -284,7 +300,7 @@ namespace Windows.UI
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
-			var rootFontFamilyName = fontFamilyName.Split(new[] { '-' }).FirstOrDefault();
+			var rootFontFamilyName = fontFamilyName.Split('-').FirstOrDefault();
 
 			if (!rootFontFamilyName.IsNullOrEmpty())
 			{

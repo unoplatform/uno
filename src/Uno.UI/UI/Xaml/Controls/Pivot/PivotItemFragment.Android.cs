@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class PivotItemFragment : Fragment
 	{
@@ -40,17 +40,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private IFrameworkElement _templatedParent;
-		internal IFrameworkElement TemplatedParent
-		{
-			get { return _templatedParent; }
-			set
-			{
-				_templatedParent = value;
-				Update();
-			}
-		}
-
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
 			_created = true;
@@ -64,7 +53,6 @@ namespace Windows.UI.Xaml.Controls
 			if (UserVisibleHint && _created && _item != null)
 			{
 				_item.DataContext = _dataContext;
-				_item.TemplatedParent = _templatedParent;
 			}
 		}
 

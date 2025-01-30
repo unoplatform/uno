@@ -1,19 +1,20 @@
-﻿using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Uno.Disposables;
 using System.Text;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Core;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Core;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline
+	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -240,8 +241,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Fill()
 		{
-			var lastTime = KeyFrames.Max(k => k.KeyTime.TimeSpan);
-			var lastKeyFrame = KeyFrames.First(k => k.KeyTime.TimeSpan.Equals(lastTime));
+			var lastKeyFrame = KeyFrames.MaxBy(k => k.KeyTime.TimeSpan);
 
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Destroys the animation
 		/// </summary>
 		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 
@@ -284,5 +284,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_frameScheduler = null;
 			}
 		}
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

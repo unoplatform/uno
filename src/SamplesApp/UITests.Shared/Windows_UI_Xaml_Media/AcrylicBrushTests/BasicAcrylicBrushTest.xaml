@@ -8,11 +8,16 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid x:Name="Example3Grid" MinWidth="320" MinHeight="200">
+	<Grid x:Name="Example3Grid" MinWidth="320" MinHeight="200" Padding="50">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="250"/>
 		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="30"/>
+		</Grid.RowDefinitions>
 		<Grid>
 			<Rectangle Fill="Aqua" Height="200" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 			<Ellipse Fill="Magenta" Height="150" Width="150" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -20,9 +25,13 @@
 		</Grid>
 		<Border x:Name="CustomAcrylicShapeInApp" Margin="12">
 			<Border.Background>
-				<AcrylicBrush BackgroundSource="Backdrop" TintOpacity="0.5" TintColor="Red" FallbackColor="Green" />
+				<AcrylicBrush x:Name="acrylicBrush" TintOpacity="0.5" TintColor="Red" FallbackColor="Green" />
 			</Border.Background>
 			<Rectangle Fill="White" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
+		<TextBlock Text="TintOpacity: " Grid.Row="1" VerticalAlignment="Center"/>
+		<Slider Grid.Row="1" Value="50" Padding="85,0,0,0" ValueChanged="Slider_ValueChanged"/>
+		<TextBlock Text="TintLuminosityOpacity: " Grid.Row="2" VerticalAlignment="Center"/>
+		<Slider Grid.Row="2" Value="0" Padding="150,0,0,0" ValueChanged="LuminositySlider_ValueChanged"/>
 	</Grid>
 </Page>

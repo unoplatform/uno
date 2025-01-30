@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public abstract partial class RangeBase
+public partial class RangeBase
 {
 	/// <summary>
 	/// Gets or sets a value to be added to or subtracted from the Value of a RangeBase control.

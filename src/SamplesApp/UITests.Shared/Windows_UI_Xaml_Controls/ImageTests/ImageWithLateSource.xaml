@@ -11,26 +11,20 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d ios android xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d ios android not_win"
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-    <controls:SampleControl SampleDescription="ImageWithLateSource - source is set after the image is loaded and visible.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-                <StackPanel>
-                    <Button Content="Set image source" 
-                            Command="{Binding [SetSource]}"/>
-                    <Border Background="Firebrick"
-                            BorderThickness="2"
-                            BorderBrush="Azure">
-                        <Image Source="{Binding [SourceUri]}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<StackPanel>
+		<Button Content="Set image source" 
+            Command="{Binding [SetSource]}"/>
+		<Border Background="Firebrick"
+            BorderThickness="2"
+            BorderBrush="Azure">
+			<Image Source="{Binding [SourceUri]}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+		</Border>
+	</StackPanel>
 </UserControl>

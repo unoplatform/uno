@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Common;
 
-public class DelegateCommand : ICommand
+internal class DelegateCommand : ICommand
 {
 	private Action _action;
 	private bool _canExecuteEnabled = true;
@@ -16,7 +16,15 @@ public class DelegateCommand : ICommand
 
 	public bool CanExecute(object parameter) => CanExecuteEnabled;
 
-	public void Execute(object parameter) => _action?.Invoke();
+	public void Execute(object parameter)
+	{
+		if (!CanExecuteEnabled)
+		{
+			return;
+		}
+
+		_action?.Invoke();
+	}
 
 	private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 

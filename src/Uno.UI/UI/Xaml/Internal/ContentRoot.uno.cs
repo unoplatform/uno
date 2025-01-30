@@ -2,10 +2,11 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Core;
 
-internal partial class ContentRoot
+partial class ContentRoot
 {
 	private object? _host;
 
@@ -23,4 +24,6 @@ internal partial class ContentRoot
 			Debug.Assert(_host == host);
 		}
 	}
+
+	internal CoreDispatcher Dispatcher => CoreDispatcher.Main; //TODO:MZ: set dispatcher per content root (from SetHost?)
 }

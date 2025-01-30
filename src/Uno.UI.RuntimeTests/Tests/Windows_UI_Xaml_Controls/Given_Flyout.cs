@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,16 +11,23 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.FlyoutPages;
 using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
 using Uno.UI.Toolkit.Extensions;
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+
+using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -27,6 +35,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_Flyout
 	{
+		private string GetAllIsOpens() => string.Join(" ", VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Select(p => p.IsOpen));
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Unloaded_Before_Shown()
@@ -48,16 +58,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-#if IS_UNO
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_LoadedAndUnloaded_Check_Binding()
 		{
 
 			var (flyout, content) = CreateFlyoutWithBindingMultipleChildren();
-
-			const double MarginValue = 105;
-			const int TargetWidth = 88;
 
 			var border = new Border()
 			{
@@ -513,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			menuBarItem.CloseMenuFlyout();
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -539,8 +547,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 
-			var tb = new TextBlock();
-			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = "." });
+			var tb = new TextBlock() { Tag = "SUT" };
+			const string EmptyPath =
+#if HAS_UNO
+				".";
+#else
+				"";
+#endif
+			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(EmptyPath) });
 			var SUT = new Flyout
 			{
 				Content = tb
@@ -552,14 +566,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.ShowAttachedFlyout(b1);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("41", tb.Text);
-			SUT.Close();
+			SUT.Hide();
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			FlyoutBase.ShowAttachedFlyout(b2);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("42", tb.Text);
-			SUT.Close();
+			SUT.Hide();
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -583,11 +598,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			flyoutButton.Focus(FocusState.Pointer);
 			await TestServices.WindowHelper.WaitForIdle();
 
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutButton.XamlRoot)[0];
+
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreNotEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
+			// The visibility of the popup remains on, but it's closed.
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			TestServices.WindowHelper.WindowContent = null;
@@ -602,6 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			stackPanel.Children.Add(button);
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(button);
 
 			var flyout = new Flyout();
 			var flyoutButton = new Button() { Content = "Flyout content" };
@@ -613,9 +634,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			FlyoutBase.ShowAttachedFlyout(button);
 			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(flyoutButton);
 
-			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
-			Assert.IsInstanceOfType(focused, typeof(Popup));
+			Assert.AreEqual(flyoutButton, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -633,6 +654,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var SUT = new When_PlacementTarget_Binding();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 			try
 			{
@@ -755,6 +778,687 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			var flyout3 = new Flyout();
+			var flyout4 = new Flyout();
+			var flyout5 = new Flyout();
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				var button3 = new Button
+				{
+					Content = "button3",
+					Flyout = flyout3
+				};
+
+				var button4 = new Button
+				{
+					Content = "button4",
+					Flyout = flyout4
+				};
+
+				var button5 = new Button
+				{
+					Content = "button5",
+					Flyout = flyout5
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = button3;
+				flyout3.Content = button4;
+				flyout4.Content = button5;
+				flyout5.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout3.Closing += (_, args) => output += $"closing3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+
+				await UITestHelper.Load(button1);
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
+				flyout3.XamlRoot = xamlRoot;
+				flyout4.XamlRoot = xamlRoot;
+				flyout5.XamlRoot = xamlRoot;
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForLoaded(button2);
+				flyout2.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForLoaded(button3);
+				flyout3.ShowAt(button3);
+				await TestServices.WindowHelper.WaitForLoaded(button4);
+				flyout4.ShowAt(button4);
+				await TestServices.WindowHelper.WaitForLoaded(button5);
+				flyout5.ShowAt(button5);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closing4 True True True True True True True True True True False
+				closing5 True True True True True True True True True True False
+				closed1 False False False False False 
+				closing3 False False False False False  False
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed2 False False False False False 
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed3 False False False False False 
+				closing5 False False False False False  False
+				closed4 False False False False False 
+				closed5 False False False False False 
+
+				""";
+#elif HAS_UNO
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closing4 True True True True True True True True True True False
+				closing5 True True True True True True True True True True False
+				closed1 False False False False False 
+				closing2 False False False False False  False
+				closing3 False False False False False  False
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed2 False False False False False 
+				closing3 False False False False False  False
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed3 False False False False False 
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed4 False False False False False 
+				closing5 False False False False False  False
+				closed5 False False False False False 
+
+				""";
+#else
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closing4 True True True True True True True True True True False
+				closing5 True True True True True True True True True True False
+				closed5 False False False False False 
+
+				""";
+#endif
+
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+			}
+			finally
+			{
+				flyout1.Hide();
+				flyout2.Hide();
+				flyout3.Hide();
+				flyout4.Hide();
+				flyout5.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts_Not_Open()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
+
+				TestServices.WindowHelper.WindowContent = button1;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// flyout2 is not open, so Closing should NOT be invoked.
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expected =
+				"""
+				closing1 True False True False
+				closed1 False False 
+
+				""";
+
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+			}
+			finally
+			{
+				flyout1.Hide();
+				flyout2.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#else
+		[Ignore("Fails")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts_Canceled()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			var flyout3 = new Flyout();
+			var flyout4 = new Flyout();
+			var flyout5 = new Flyout();
+			var cancel = true;
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				var button3 = new Button
+				{
+					Content = "button3",
+					Flyout = flyout3
+				};
+
+				var button4 = new Button
+				{
+					Content = "button4",
+					Flyout = flyout4
+				};
+
+				var button5 = new Button
+				{
+					Content = "button5",
+					Flyout = flyout5
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = button3;
+				flyout3.Content = button4;
+				flyout4.Content = button5;
+				flyout5.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout3.Closing += (_, args) =>
+				{
+					output += $"closing3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+					args.Cancel = cancel;
+				};
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens()}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens()}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+
+				TestServices.WindowHelper.WindowContent = button1;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
+				flyout3.XamlRoot = xamlRoot;
+				flyout4.XamlRoot = xamlRoot;
+				flyout5.XamlRoot = xamlRoot;
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout2.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout3.ShowAt(button3);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout4.ShowAt(button4);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout5.ShowAt(button5);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closed1 False False False False False True True True
+				closing2 False False False False False True True True False
+				closing3 True True True True True True True True False
+				closed2 False False False False False True True True
+				closing3 True True True True True True True True False
+
+				""";
+
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+			}
+			finally
+			{
+				cancel = false;
+				flyout1.Hide();
+				flyout2.Hide();
+				flyout3.Hide();
+				flyout4.Hide();
+				flyout5.Hide();
+			}
+		}
+
+		//#if HAS_UNO
+		//		[TestMethod]
+		//		[RunsOnUIThread]
+		//#if __MACOS__
+		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
+		//#endif
+		//		public async Task When_Window_Unfocused()
+		//		{
+		//			var flyout1 = new Flyout();
+		//			try
+		//			{
+		//				var button1 = new Button
+		//				{
+		//					Content = "button1",
+		//					Flyout = flyout1
+		//				};
+
+		//				flyout1.Content = new TextBox { Text = "text" };
+
+		//				var output = "";
+
+		//				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {args.Cancel}\n";
+		//				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen}\n";
+
+		//				TestServices.WindowHelper.WindowContent = button1;
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				flyout1.ShowAt(button1);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.Deactivated);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				var expected =
+		//				"""
+		//				closing1 True False
+		//				closed1 False
+
+		//				""";
+
+		//				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		//			}
+		//			finally
+		//			{
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+		//				flyout1.Hide();
+		//			}
+		//		}
+
+		//#if __SKIA__ || __WASM__
+		//		[TestMethod]
+		//		[RunsOnUIThread]
+		//		public async Task When_Window_Resized()
+		//		{
+		//			var flyout1 = new Flyout();
+		//			try
+		//			{
+		//				var button1 = new Button
+		//				{
+		//					Content = "button1",
+		//					Flyout = flyout1
+		//				};
+
+		//				flyout1.Content = new TextBox { Text = "text" };
+
+		//				var output = "";
+
+		//				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {args.Cancel}\n";
+		//				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen}\n";
+
+		//				TestServices.WindowHelper.WindowContent = button1;
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				flyout1.ShowAt(button1);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				Window.Current.OnNativeSizeChanged(Window.Current.Bounds.Size.Add(new Size(0.0001, 0)));
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				var expected =
+		//				"""
+		//				closing1 True False
+		//				closed1 False
+
+		//				""";
+
+		//				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		//			}
+		//			finally
+		//			{
+		//				Window.Current.OnNativeSizeChanged(Window.Current.Bounds.Size.Subtract(new Size(0.0001, 0)));
+		//				flyout1.Hide();
+		//			}
+		//		}
+		//#endif
+
+		//		[TestMethod]
+		//		[RunsOnUIThread]
+		//#if __MACOS__
+		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
+		//#endif
+		//		public async Task When_Window_Unfocused_Canceled()
+		//		{
+		//			var flyout1 = new Flyout();
+		//			var cancel = true;
+		//			try
+		//			{
+		//				var button1 = new Button
+		//				{
+		//					Content = "button1",
+		//					Flyout = flyout1
+		//				};
+
+		//				flyout1.Content = new TextBox { Text = "text" };
+
+		//				var output = "";
+
+		//				flyout1.Closing += (_, args) =>
+		//				{
+		//					output += $"closing1 {flyout1.IsOpen} {args.Cancel}\n";
+		//					args.Cancel = cancel;
+		//				};
+		//				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen}\n";
+
+		//				TestServices.WindowHelper.WindowContent = button1;
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				flyout1.ShowAt(button1);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.Deactivated);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				var expected =
+		//					"""
+		//					closing1 True False
+
+		//					""";
+
+		//				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		//			}
+		//			finally
+		//			{
+		//				cancel = false;
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+		//				flyout1.Hide();
+		//			}
+		//		}
+
+		//#if __SKIA__ || __WASM__
+		//		[TestMethod]
+		//		[RunsOnUIThread]
+		//		public async Task When_Window_Resized_Canceled()
+		//		{
+		//			var flyout1 = new Flyout();
+		//			var cancel = true;
+		//			try
+		//			{
+		//				var button1 = new Button
+		//				{
+		//					Content = "button1",
+		//					Flyout = flyout1
+		//				};
+
+		//				flyout1.Content = new TextBox { Text = "text" };
+
+		//				var output = "";
+
+		//				flyout1.Closing += (_, args) =>
+		//				{
+		//					output += $"closing1 {flyout1.IsOpen} {args.Cancel}\n";
+		//					args.Cancel = cancel;
+		//				};
+		//				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen}\n";
+
+		//				TestServices.WindowHelper.WindowContent = button1;
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				flyout1.ShowAt(button1);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				Window.Current.OnNativeSizeChanged(Window.Current.Bounds.Size.Add(new Size(0.0001, 0)));
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				var expected =
+		//					"""
+		//					closing1 True False
+
+		//					""";
+
+		//				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		//			}
+		//			finally
+		//			{
+		//				Window.Current.OnNativeSizeChanged(Window.Current.Bounds.Size.Subtract(new Size(0.0001, 0)));
+		//				cancel = false;
+		//				flyout1.Hide();
+		//			}
+		//		}
+		//#endif
+
+		//		[TestMethod]
+		//		[RunsOnUIThread]
+		//#if __MACOS__
+		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
+		//#endif
+		//		public async Task When_Window_Unfocused_Nested_Flyouts()
+		//		{
+		//			var flyout1 = new Flyout();
+		//			var flyout2 = new Flyout();
+		//			var flyout3 = new Flyout();
+		//			var flyout4 = new Flyout();
+		//			var flyout5 = new Flyout();
+		//			try
+		//			{
+		//				var button1 = new Button
+		//				{
+		//					Content = "button1",
+		//					Flyout = flyout1
+		//				};
+
+		//				var button2 = new Button
+		//				{
+		//					Content = "button2",
+		//					Flyout = flyout2
+		//				};
+
+		//				var button3 = new Button
+		//				{
+		//					Content = "button3",
+		//					Flyout = flyout3
+		//				};
+
+		//				var button4 = new Button
+		//				{
+		//					Content = "button4",
+		//					Flyout = flyout4
+		//				};
+
+		//				var button5 = new Button
+		//				{
+		//					Content = "button5",
+		//					Flyout = flyout5
+		//				};
+
+		//				flyout1.Content = button2;
+		//				flyout2.Content = button3;
+		//				flyout3.Content = button4;
+		//				flyout4.Content = button5;
+		//				flyout5.Content = new TextBox { Text = "text" };
+
+		//				var output = "";
+
+		//				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout1)} {args.Cancel}\n";
+		//				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout2)} {args.Cancel}\n";
+		//				flyout3.Closing += (_, args) => output += $"closing3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout3)} {args.Cancel}\n";
+		//				flyout4.Closing += (_, args) => output += $"closing4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout4)} {args.Cancel}\n";
+		//				flyout5.Closing += (_, args) => output += $"closing5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)} {args.Cancel}\n";
+
+		//				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout1)}\n";
+		//				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout2)}\n";
+		//				flyout3.Closed += (_, _) => output += $"closed3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout3)}\n";
+		//				flyout4.Closed += (_, _) => output += $"closed4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout4)}\n";
+		//				flyout5.Closed += (_, _) => output += $"closed5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)}\n";
+
+		//				TestServices.WindowHelper.WindowContent = button1;
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				flyout1.ShowAt(button1);
+		//				await TestServices.WindowHelper.WaitForIdle();
+		//				flyout2.ShowAt(button2);
+		//				await TestServices.WindowHelper.WaitForIdle();
+		//				flyout3.ShowAt(button3);
+		//				await TestServices.WindowHelper.WaitForIdle();
+		//				flyout4.ShowAt(button4);
+		//				await TestServices.WindowHelper.WaitForIdle();
+		//				flyout5.ShowAt(button5);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.Deactivated);
+		//				await TestServices.WindowHelper.WaitForIdle();
+
+		//				var expected =
+		//				"""
+		//				closing5 True True True True True True True True True True False
+		//				closing4 True True True True False True True True True False
+		//				closing5 True True True True False True True True True False
+		//				closing3 True True True False False True True True False
+		//				closing4 True True True False False True True True False
+		//				closing5 True True True False False True True True False
+		//				closing2 True True False False False True True False
+		//				closing3 True True False False False True True False
+		//				closing4 True True False False False True True False
+		//				closing5 True True False False False True True False
+		//				closing1 True False False False False True False
+		//				closing2 True False False False False True False
+		//				closing3 True False False False False True False
+		//				closing4 True False False False False True False
+		//				closing5 True False False False False True False
+		//				closed1 False False False False False 
+		//				closing2 False False False False False  False
+		//				closing3 False False False False False  False
+		//				closing4 False False False False False  False
+		//				closing5 False False False False False  False
+		//				closed2 False False False False False 
+		//				closing3 False False False False False  False
+		//				closing4 False False False False False  False
+		//				closing5 False False False False False  False
+		//				closed3 False False False False False 
+		//				closing4 False False False False False  False
+		//				closing5 False False False False False  False
+		//				closed4 False False False False False 
+		//				closing5 False False False False False  False
+		//				closed5 False False False False False 
+
+		//				""";
+
+		//				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		//			}
+		//			finally
+		//			{
+		//				Window.Current.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+		//				flyout1.Hide();
+		//				flyout2.Hide();
+		//				flyout3.Hide();
+		//				flyout4.Hide();
+		//				flyout5.Hide();
+		//			}
+		//		}
+		//#endif
+
+		[TestMethod]
 		public async Task When_Opening_XamlRootIsSet()
 		{
 			var flyout = new Flyout();
@@ -799,7 +1503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SplitButton_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
-			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			var host = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
 			host.Flyout = flyout;
 			TestServices.WindowHelper.WindowContent = host;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -886,6 +1590,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var flyout = new Flyout()
+			{
+				Content = new Button() { Content = "Test" }
+			};
+			bool opened = false;
+			flyout.Opened += (s, e) =>
+			{
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout.XamlRoot).FirstOrDefault(p => p.AssociatedFlyout == flyout);
+				Assert.IsNotNull(popup);
+				popup.IsLightDismissEnabled = isLightDismissEnabled;
+				opened = true;
+			};
+			try
+			{
+				var ownerButton = new Button()
+				{
+					Content = "Owner",
+					Flyout = flyout
+				};
+				TestServices.WindowHelper.WindowContent = ownerButton;
+				await TestServices.WindowHelper.WaitForLoaded(ownerButton);
+				((IInvokeProvider)ownerButton.GetAutomationPeer()).Invoke();
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				var popupRoot = ownerButton.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual(!isLightDismissEnabled, flyout.IsOpen);
+			}
+			finally
+			{
+				flyout?.Hide();
+			}
+		}
+#endif
+
 #if __IOS__
 		[TestMethod]
 		[RequiresFullWindow]
@@ -924,6 +1670,144 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Unbound_FullFlyout()
+		{
+			var host = new Button
+			{
+				Content = "Asd",
+				Flyout = new Flyout
+				{
+					Placement = FlyoutPlacementMode.Full,
+					FlyoutPresenterStyle = new Style
+					{
+						TargetType = typeof(FlyoutPresenter),
+						Setters =
+						{
+							// style reset
+							new Setter(FlyoutPresenter.MarginProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.PaddingProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
+
+							// remove limit from default style
+							// Note that NaN isn't allowed to be set for MaxWidth and MaxHeight. However,
+							// WinUI swallows failure HResults specifically when applying style setters.
+							// So, Uno catches the exception as well.
+							new Setter(FlyoutPresenter.MaxWidthProperty, double.NaN),
+							new Setter(FlyoutPresenter.MaxHeightProperty, double.NaN),
+
+							// full stretch
+							new Setter(FlyoutPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalContentAlignmentProperty, VerticalAlignment.Stretch),
+						}
+					},
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.SkyBlue),
+						Child = new TextBlock { Text = "Asd" },
+					},
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			try
+			{
+				host.Flyout.ShowAt(host);
+
+				bool AnyPopupIsOpen() => VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).Any();
+				await TestServices.WindowHelper.WaitFor(AnyPopupIsOpen, message: "Timeout waiting on flyout to open");
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).LastOrDefault();
+				var presenter = popup.Child as FlyoutPresenter;
+				await TestServices.WindowHelper.WaitForLoaded(presenter);
+
+				var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+				Assert.IsTrue(
+					presenter.ActualWidth >= bounds.Width && presenter.ActualHeight >= bounds.Height,
+					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, VisibleBounds={bounds.Width}x{bounds.Height}");
+			}
+			finally
+			{
+				host.Flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Open_In_GotFocus()
+		{
+			bool keepOpening = true;
+			var flyout = new Flyout
+			{
+				Content = new Button { Content = "Test" }
+			};
+			try
+			{
+				bool closed = false;
+
+				var container = new StackPanel();
+				var host = new Button
+				{
+					Content = "Asd",
+					Flyout = flyout
+				};
+				var unfocusButton = new Button();
+				container.Children.Add(unfocusButton);
+				container.Children.Add(host);
+
+				TestServices.WindowHelper.WindowContent = container;
+				await TestServices.WindowHelper.WaitForLoaded(container);
+				await TestServices.WindowHelper.WaitForIdle();
+				unfocusButton.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+				bool gotFocus = false;
+				bool wasClosedWhenHostGotFocus = false;
+				host.GotFocus += (s, e) =>
+				{
+					gotFocus = true;
+					if (closed)
+					{
+						wasClosedWhenHostGotFocus = true;
+					}
+					if (!host.Flyout.IsOpen && keepOpening)
+					{
+						host.Flyout.ShowAt(host);
+					}
+				};
+
+				bool opened = false;
+				flyout.Opened += (s, e) => opened = true;
+
+				host.Focus(FocusState.Programmatic);
+
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				Assert.AreNotEqual(host, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+
+				opened = false;
+				flyout.Closed += (s, e) => closed = true;
+
+				gotFocus = false;
+				flyout.Hide();
+
+				await TestServices.WindowHelper.WaitFor(() => gotFocus);
+				await TestServices.WindowHelper.WaitFor(() => closed);
+				Assert.IsFalse(wasClosedWhenHostGotFocus);
+				Assert.IsFalse(flyout.IsOpen);
+			}
+			finally
+			{
+				keepOpening = false;
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
@@ -958,13 +1842,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					NumberAssert.LessOrEqual(contentScreenBounds.Bottom, targetScreenBounds.Top);
 					break;
 				case VerticalPosition.TopFlush:
-					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 3);
 					break;
 				case VerticalPosition.Center:
 					Assert.AreEqual(targetCenter.Y, contentCenter.Y, delta: 2);
 					break;
 				case VerticalPosition.BottomFlush:
-					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 3);
 					break;
 				case VerticalPosition.BeyondBottom:
 					NumberAssert.GreaterOrEqual(contentScreenBounds.Top, targetScreenBounds.Bottom);

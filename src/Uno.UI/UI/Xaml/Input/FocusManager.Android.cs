@@ -5,12 +5,12 @@ using Android.Widget;
 using Uno.UI;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Android.Graphics;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{

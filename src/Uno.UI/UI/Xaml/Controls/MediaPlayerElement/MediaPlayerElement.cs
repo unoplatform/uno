@@ -1,23 +1,18 @@
-using System;
+﻿using System;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
 	[TemplatePart(Name = MediaPlayerPresenterName, Type = typeof(MediaPlayerPresenter))]
 	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
 	public partial class MediaPlayerElement
-#if __IOS__ || __ANDROID__ || __MACOS__
-		// To avoid causing FrameworkElement.Dispose to become virtual (and cause a breaking change),
-		// we keep the disposable for existing platforms, but we don't implement it for the other targets.
-		: IDisposable
-#endif
 	{
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
@@ -63,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (source == null)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			}
 		}
@@ -83,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(PosterSource),
 				typeof(ImageSource),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(ImageSource), OnPosterSourceChanged));
+				new FrameworkPropertyMetadata(default(ImageSource), FrameworkPropertyMetadataOptions.AffectsMeasure, OnPosterSourceChanged));
 
 		private static void OnPosterSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -91,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			});
 		}
@@ -139,26 +134,38 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
-				mpe.ToogleFullScreen((bool)args.NewValue);
+				mpe.ToggleFullScreen((bool)args.NewValue);
 			});
 		}
 
-		private void ToogleFullScreen(bool showFullscreen)
+		private void ToggleFullScreen(bool showFullscreen)
 		{
 			try
 			{
+				if (XamlRoot?.HostWindow is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning(
+							$"Cannot toggle Full Screen as the media player was not yet " +
+							$"loaded in the visual tree.");
+					}
+
+					return;
+				}
+
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
 				{
-					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
@@ -167,15 +174,15 @@ namespace Windows.UI.Xaml.Controls
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
-#if !__NETSTD_REFERENCE__ && !NET461
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
-					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-#if !__NETSTD_REFERENCE__ && !NET461
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).ExitFullScreenMode();
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
 #endif
 
 #if __ANDROID__
@@ -184,13 +191,15 @@ namespace Windows.UI.Xaml.Controls
 					this.Add(_layoutRoot);
 #elif __MACOS__
 					this.AddSubview(_layoutRoot);
-#elif __SKIA__
+#elif __SKIA__ || __WASM__
 					this.AddChild(_layoutRoot);
 					_mediaPlayerPresenter?.ExitFullScreen();
 #else
 					_mediaPlayerPresenter?.ExitFullScreen();
 #endif
 				}
+				TransportControls.SetMeasureCommandBar();
+
 			}
 			finally
 			{
@@ -202,55 +211,62 @@ namespace Windows.UI.Xaml.Controls
 
 		#region MediaPlayer Property
 
-		public Windows.Media.Playback.MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(Windows.Media.Playback.MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
+			if (sender is MediaPlayerElement mpe)
 			{
-				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
-					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
-					oldMediaPlayer?.Dispose();
+					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
+					oldMediaPlayer.NaturalVideoDimensionChanged -= mpe.OnNaturalVideoDimensionChanged;
+					oldMediaPlayer.Dispose();
 				}
 
-				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
+					newMediaPlayer.NaturalVideoDimensionChanged += mpe.OnNaturalVideoDimensionChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
-			});
+			};
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				TogglePosterImage(true);
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
-		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				TogglePosterImage(false);
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(true));
+		}
+
+		private void OnMediaOpened(global::Windows.Media.Playback.MediaPlayer sender, object args)
+		{
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
 		#endregion
@@ -268,7 +284,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -285,7 +301,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Stretch.Uniform));
+				new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -322,15 +338,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				MediaPlayer.AutoPlay = AutoPlay;
 
-				if (MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
+				if (MediaPlayer.PlaybackSession.PlaybackState is not MediaPlaybackState.None
+					&& AutoPlay)
 				{
 					MediaPlayer.Play();
-					TogglePosterImage(false);
 				}
 			}
 		}
 
-		private void TogglePosterImage(bool showPoster)
+		// The PosterSource is displayed in the following situations:
+		//  - When a valid source is not set.For example, Source is not set, Source was set to Null, or the source is invalid (as is the case when a MediaFailed event fires).
+		//  - While media is loading. For example, a valid source is set, but the MediaOpened event has not fired yet.
+		//  - When media is streaming to another device.
+		//  - When the media is audio only.
+		private void ShowPosterImage(bool showPoster)
 		{
 			if (PosterSource != null)
 			{
@@ -353,6 +374,7 @@ namespace Windows.UI.Xaml.Controls
 			_layoutRoot = this.GetTemplateChild(LayoutRootName) as Grid;
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
+			_mediaPlayerPresenter?.SetOwner(this);
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
@@ -360,14 +382,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+				MediaPlayer = new global::Windows.Media.Playback.MediaPlayer();
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
-			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
-			{
-				TogglePosterImage(true);
-			}
+			// For video content, show the poster source until it is ready to be displayed.
+			ShowPosterImage(true);
 
 			if (!_isTransportControlsBound)
 			{
@@ -376,9 +396,27 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
+		public void SetMediaPlayer(global::Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			MediaPlayer = mediaPlayer;
 		}
+
+		public void ToggleCompactOverlay(bool showCompactOverlay)
+		{
+#if __WASM__
+			if (_mediaPlayerPresenter != null)
+			{
+				if (showCompactOverlay)
+				{
+					_mediaPlayerPresenter.RequestCompactOverlay();
+				}
+				else
+				{
+					_mediaPlayerPresenter.ExitCompactOverlay();
+				}
+			}
+#endif
+		}
+
 	}
 }

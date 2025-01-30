@@ -16,12 +16,12 @@ namespace Windows.Media.Playback
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
-					UpdateTimePositionRate = 0;
+					UpdateTimePositionRate = 1;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
-					UpdateTimePositionRate = 0;
+					UpdateTimePositionRate = 1;
 				}
 				else
 				{
@@ -40,12 +40,12 @@ namespace Windows.Media.Playback
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
-					UpdateTimePositionRate = 0;
+					UpdateTimePositionRate = 1;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
-					UpdateTimePositionRate = 0;
+					UpdateTimePositionRate = 1;
 				}
 				else
 				{
@@ -103,6 +103,10 @@ namespace Windows.Media.Playback
 				PlaybackStateChanged?.Invoke(this, _playbackState);
 			}
 		}
+
+		internal bool IsPlaying => PlaybackState
+			is MediaPlaybackState.Playing
+			or MediaPlaybackState.Buffering;
 
 		public event TypedEventHandler<MediaPlaybackSession, object> BufferingProgressChanged;
 

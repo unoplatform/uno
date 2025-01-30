@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Windows.Web;
 using Microsoft.Web.WebView2.Core;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class UnoWKWebView
 {

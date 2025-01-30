@@ -14,17 +14,22 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
+using Private.Infrastructure;
+
+#if !WINAPPSDK
+using Uno.UI.Controls.Legacy;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -63,7 +68,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				Y2 = 100
 			}),
 
-			Factory.New(() => new Windows.UI.Xaml.Shapes.Path
+			Factory.New(() => new Microsoft.UI.Xaml.Shapes.Path
 			{
 				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
 				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
@@ -262,7 +267,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 #if __SKIA__
 			// Workaround to avoid issue #7829
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, GenerateScreenshots);
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, GenerateScreenshots);
 #else
 			await GenerateScreenshots();
 #endif
@@ -295,11 +300,20 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				{
 					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
 					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
+					var loaded = new TaskCompletionSource<object>();
+					grid.SizeChanged += (snd, e) =>
+					{
+						if (e.NewSize != default)
+						{
+							loaded.SetResult(default);
+						}
+					};
 					_testZone.Child = grid;
+					await loaded.Task;
 					await Task.Yield();
 
 					var renderer = new RenderTargetBitmap();
-					await renderer.RenderAsync(grid);
+					await renderer.RenderAsync(grid, (int)grid.ActualWidth, (int)grid.ActualHeight); // We explicitly set the size to ignore the screen scaling
 
 					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -324,7 +338,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var tests = testNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 
@@ -340,7 +354,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					try
 					{
 						var elt = await RenderById(test);
-						await renderer.RenderAsync(elt); ;
+						await renderer.RenderAsync(elt, (int)elt.ActualWidth, (int)elt.ActualHeight); // We explicitly set the size to ignore the screen scaling
 						var pixels = await renderer.GetPixelsAsync();
 						byte[] testResult = default;
 
@@ -351,8 +365,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 							, BitmapAlphaMode.Premultiplied
 							, (uint)renderer.PixelWidth
 							, (uint)renderer.PixelHeight
-							, DisplayInformation.GetForCurrentView().RawDpiX
-							, DisplayInformation.GetForCurrentView().RawDpiY
+							, XamlRoot.RasterizationScale
+							, XamlRoot.RasterizationScale
 							, pixels.ToArray()
 							);
 						await encoder.FlushAsync();
@@ -410,7 +424,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			FrameworkElement GetElement()
 			{
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				if (!parsedId.Success)
 				{
 					return new TextBlock { Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red) };
@@ -533,7 +549,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Text = text?.ToString() ?? "N/A",
 					VerticalAlignment = VerticalAlignment.Center,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
-					TextAlignment = Windows.UI.Xaml.TextAlignment.Center
+					TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center
 				};
 		}
 
@@ -578,7 +594,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				_alter = alter;
 				Name = name;
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 
 				var desc = !details.IsNullOrEmpty() ? $"{name} ({details})" : name;
 				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };
@@ -591,7 +609,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
 	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
 	internal static class GridExtensions

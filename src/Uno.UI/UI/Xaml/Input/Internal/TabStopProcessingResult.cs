@@ -1,13 +1,18 @@
 ﻿#nullable enable
 
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Uno.UI.Xaml.Input
+namespace Uno.UI.Xaml.Input;
+
+internal struct TabStopProcessingResult
 {
-	internal struct TabStopProcessingResult
+	public TabStopProcessingResult(bool isOverriden, DependencyObject? newTabStop)
 	{
-		public DependencyObject? NewTabStop { get; set; }
-
-		public bool IsOverriden { get; set; }
+		IsOverriden = isOverriden;
+		NewTabStop = newTabStop;
 	}
+
+	public bool IsOverriden { get; set; }
+
+	public DependencyObject? NewTabStop { get; set; }
 }

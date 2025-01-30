@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using System.Linq;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
+	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private bool _wasBeginScheduled;
@@ -40,6 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
+
 		internal override TimeSpan GetCalculatedDuration()
 		{
 			var duration = Duration;
@@ -59,6 +61,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.Begin()
 		{
+			// It's important to keep this line here, and not
+			// inside the if (!_wasBeginScheduled)
+			// If Begin(), Stop(), Begin() are called successively in sequence,
+			// we want _wasRequestedToStop to be false.
+			_wasRequestedToStop = false;
+
 			if (!_wasBeginScheduled)
 			{
 				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
@@ -66,9 +74,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
 
 				_wasBeginScheduled = true;
-				_wasRequestedToStop = false;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 #if __ANDROID__
 				_ = Dispatcher.RunAnimation(() =>
 #else
@@ -91,7 +98,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					//Start the animation
 					Play();
 				}
-#if !NET461
+#if !IS_UNIT_TESTS
 				);
 #endif
 			}
@@ -266,7 +273,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				var i = index;
 
-#if __ANDROID_19__
+#if __ANDROID__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
@@ -353,7 +360,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -370,8 +377,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET461
+#if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

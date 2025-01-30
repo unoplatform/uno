@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,4 +67,3 @@ namespace Windows.Services.Maps
 		}
 	}
 }
-#endif

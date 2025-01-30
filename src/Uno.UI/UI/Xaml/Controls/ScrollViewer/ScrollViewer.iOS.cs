@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,12 +15,9 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
@@ -41,11 +38,12 @@ namespace Windows.UI.Xaml.Controls
 			SetScrollableContainer();
 		}
 
-		private protected override void OnLoaded()
+		private partial void OnLoadedPartial()
 		{
 			SetScrollableContainer();
-			base.OnLoaded();
 		}
+
+		private partial void OnUnloadedPartial() { }
 
 		private void SetScrollableContainer()
 		{
@@ -83,8 +81,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// iOS doesn't limit the offset to the scrollable bounds by itself
 				var limit = _scrollableContainer.UpperScrollLimit;
-				var desiredOffsets = new Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
-				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
+				var desiredOffsets = new global::Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
+				var clampedOffsets = new global::Windows.Foundation.Point(Math.Clamp(desiredOffsets.X, 0, limit.X), Math.Clamp(desiredOffsets.Y, 0, limit.Y));
 
 				var success = desiredOffsets == clampedOffsets;
 
@@ -198,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 		public override void WillMoveToSuperview(UIView newsuper)
 		{
 			base.WillMoveToSuperview(newsuper);
-			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
+			UpdateSizeChangedSubscription(newsuper == null);
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;

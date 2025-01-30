@@ -1,38 +1,32 @@
 parameters:
-  poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
 
 jobs:
+- template: .azure-devops-package-skia-native-assets.yml
+  parameters:
+    UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+    XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+    macOSImageName: ${{ parameters.macOSImageName }}
+
 - job: skia_package_build
-  displayName: 'Build Skia Package Binaries'
+  displayName: 'Skia Package Binaries'
   container: nv-bionic-wasm
+  dependsOn: skia_package_macos_native_build
 
-  dependsOn: winui_convert_tree
-
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
-
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
     # We're building packages on linux, so we need to enable WPF support
     EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self
@@ -46,8 +40,15 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-
+  
   - template: templates/dotnet-install.yml
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

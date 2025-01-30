@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests
 {
@@ -73,12 +73,12 @@ namespace Uno.UI.Tests
 			var child = new MyObject(12);
 			var parent = new MyObject(144);
 
-			var store = new DependencyObjectStore(child, MyObject.DataContextProperty, MyObject.TemplatedParentProperty);
+			var store = new DependencyObjectStore(child, MyObject.DataContextProperty);
 			store.Parent = parent;
 			Assert.AreEqual(parent, store.Parent);
 
 			store.Parent = null;
-			Assert.AreEqual(null, store.Parent);
+			Assert.IsNull(store.Parent);
 		}
 
 		[TestMethod]
@@ -87,12 +87,12 @@ namespace Uno.UI.Tests
 			var child = new MyObject(12);
 			var parent = new MyProvider();
 
-			var store = new DependencyObjectStore(child, MyObject.DataContextProperty, MyObject.TemplatedParentProperty);
+			var store = new DependencyObjectStore(child, MyObject.DataContextProperty);
 			store.Parent = parent;
 			Assert.AreEqual(parent, store.Parent);
 
 			store.Parent = null;
-			Assert.AreEqual(null, store.Parent);
+			Assert.IsNull(store.Parent);
 		}
 
 		[TestMethod]

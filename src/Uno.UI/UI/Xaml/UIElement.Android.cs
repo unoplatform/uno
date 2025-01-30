@@ -1,4 +1,4 @@
-using Uno.UI;
+﻿using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
@@ -9,22 +9,22 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using AndroidX.Core.View;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views;
-using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Matrix = Microsoft.UI.Xaml.Media.Matrix;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
 		/// <summary>
-		/// Keeps the count of native children (non-UIElements), for clipping purpoess.
+		/// Keeps the count of native children (non-UIElements), for clipping purposes.
 		/// </summary>
 		private int _nativeChildrenCount;
 		private bool _nativeClipChildren;
@@ -59,18 +59,12 @@ namespace Windows.UI.Xaml
 			ComputeAreChildrenNativeViewsOnly();
 		}
 
-		/// <summary>
-		/// Invoked when a child view has been added.
-		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <inheritdoc />
 		protected override void OnChildViewAdded(View view)
 		{
 			if (view is UIElement uiElement)
 			{
-				uiElement.ResetLayoutFlags();
-				SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+				OnChildManagedViewAddedOrRemoved(uiElement);
 			}
 			else
 			{
@@ -78,6 +72,31 @@ namespace Windows.UI.Xaml
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		/// <inheritdoc />
+		protected override void OnChildViewRemoved(View view)
+		{
+			if (view is UIElement uiElement)
+			{
+				OnChildManagedViewAddedOrRemoved(uiElement);
+			}
+			else
+			{
+				_nativeChildrenCount--;
+			}
+
+			ComputeAreChildrenNativeViewsOnly();
+
+			Shutdown();
+		}
+
+		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		{
+			uiElement.ResetLayoutFlags();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
 		}
 
 		public UIElement()
@@ -170,7 +189,18 @@ namespace Windows.UI.Xaml
 
 			ViewCompat.SetClipBounds(this, physicalRect);
 
-			SetClipChildren(NeedsClipToSlot);
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
+			{
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
+			}
+			else
+			{
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
+			}
 		}
 
 		/// <summary>
@@ -238,7 +268,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'ViewGroup' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -272,7 +302,7 @@ namespace Windows.UI.Xaml
 					matrix.M32 += (float)offset.Y;
 
 					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
-					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix, ref context);
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix);
 
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];

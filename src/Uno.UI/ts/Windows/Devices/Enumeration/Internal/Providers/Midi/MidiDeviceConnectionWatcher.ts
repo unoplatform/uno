@@ -14,9 +14,11 @@
 
 		public static onStateChanged(event: WebMidi.MIDIConnectionEvent) {
 			if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
-				MidiDeviceConnectionWatcher.dispatchStateChanged =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					MidiDeviceConnectionWatcher.dispatchStateChanged = (<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChanged;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			const port = event.port;

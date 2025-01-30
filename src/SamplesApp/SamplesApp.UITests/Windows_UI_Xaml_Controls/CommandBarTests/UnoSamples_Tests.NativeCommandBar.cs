@@ -54,6 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test is flaky on iOS: https://github.com/unoplatform/uno/issues/9080
 		public async Task NativeCommandBar_Size()
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
@@ -69,18 +70,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			async Task ToggleOrientation()
 			{
-				if (currentModeIsLandscape)
-				{
-					_app.SetOrientationPortrait();
-				}
-				else
-				{
-					_app.SetOrientationLandscape();
-				}
-
 				currentModeIsLandscape = !currentModeIsLandscape;
 
-				_app.WaitFor(() => GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape);
+				_app.WaitFor(() =>
+				{
+					if (currentModeIsLandscape)
+					{
+						_app.SetOrientationLandscape();
+					}
+					else
+					{
+						_app.SetOrientationPortrait();
+					}
+
+					return GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape;
+				}, timeout: TimeSpan.FromSeconds(60));
 
 				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
 			}

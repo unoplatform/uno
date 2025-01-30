@@ -1,13 +1,13 @@
-#if UNO_ISLANDS
+﻿#if UNO_ISLANDS
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.XamlHost;
 
 namespace SamplesApp;
 
-sealed public partial class App
+partial class App
 {
 	public App(List<IXamlMetadataProvider> providers)
 	{

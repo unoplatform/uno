@@ -2,34 +2,42 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Windows.Foundation.Metadata;
+using Windows.UI.Text;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Resources;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Markup;
 using Uno.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Text;
-using Windows.Foundation.Metadata;
-using Color = Windows.UI.Color;
-using Windows.UI.Xaml.Resources;
 
-#if XAMARIN_ANDROID
+using Color = Windows.UI.Color;
+
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
-	internal class XamlObjectBuilder
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Normal flow of operations")]
+	internal partial class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
 		private readonly string? _fileUri;
@@ -37,7 +45,6 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
-		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -53,6 +60,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(Media.Matrix),
 			typeof(FontWeight),
 		};
+
+		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
@@ -78,99 +87,166 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return instance;
 		}
 
-		private object? LoadObject(XamlObjectDefinition? control, object? rootInstance, object? component = null, bool createInstanceFromXClass = false)
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
+		// But because they are not referenced anywhere, they could be trimmed and leads to:
+		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
+		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
+		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
+		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
+		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
+#endif
+		private object? LoadObject(
+			XamlObjectDefinition? control,
+			object? rootInstance,
+			object? component = null,
+			TemplateMaterializationSettings? settings = null,
+			MemberInitializationContext? memberContext = null,
+			bool createInstanceFromXClass = false)
 		{
 			if (control == null)
 			{
 				return null;
 			}
 
-			if (
-				control.Type.Name == "NullExtension"
-				&& control.Type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-			)
+			if (control.Type.PreferredXamlNamespace == XamlConstants.Xmlnses.X &&
+				control.Type.Name == "NullExtension")
 			{
 				return null;
 			}
 
-			var type = TypeResolver.FindType(control.Type);
-			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace);
+			void TrySetContextualProperties(object? instance, XamlObjectDefinition control)
+			{
+				if (instance is FrameworkElement fe)
+				{
+					if (_fileUri is { })
+					{
+						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+					}
+					if (settings?.TemplatedParent is { } tp)
+					{
+						fe.SetTemplatedParent(tp);
+						settings.TemplateMemberCreatedCallback?.Invoke(fe);
+					}
+				}
+			}
 
-			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
+			if (createInstanceFromXClass && TypeResolver.FindTypeByXClass(control) is { } classType)
 			{
 				var created = Activator.CreateInstance(classType);
-
-				if (created is FrameworkElement fe && _fileUri is not null)
-				{
-					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-				}
+				TrySetContextualProperties(created, control);
 
 				return created;
 			}
 
+			var type = TypeResolver.FindType(control.Type);
+#if false
+			// This region is a failed attempt at "-Extension" resolution priority. It is disabled because we still don't understand the exact behavior.
+
+			// The order of lookup is to look for the Extension-suffixed class name first and then look for the class name without the Extension suffix.
+			// -- https://learn.microsoft.com/en-us/dotnet/desktop/xaml-services/markup-extensions-overview#defining-the-support-type-for-a-custom-markup-extension
+			// This rule is quite complicated..:
+			// ScenarioA. Given (Sanity,SanityExtension) defined:
+			//		{Sanity}->SanityExtension, {SanityExtension}->SanityExtension
+			// ScenarioB. Given (Sanity,SanityExtension,SanityExtensionExtension) defined:
+			//		{Sanity}->SanityExtension, {SanityExtension}->SanityExtension, {SanityExtensionExtension}->SanityExtensionExtension
+			// ScenarioC. Given (SanityExtensionExtension) defined:
+			//		{SanityExtension}->SanityExtensionExtension
+			// ScenarioD. Given (SanityExtension,SanityExtensionExtension) defined:
+			//		{SanityExtension}->SanityExtensionExtension, {SanityExtensionExtension}->SanityExtensionExtension
+			// ^ And, it doesnt explain why {SanityExtension} resolves to different things between scenario B and D...
+			if (type?.Is<MarkupExtension>() == true && !control.Type.Name.EndsWith("Extension", StringComparison.Ordinal))
+			{
+				// prefer $"{name}Extension" match if we dont already have this suffix
+				if (TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension") is { } extensionType &&
+					extensionType.Is<MarkupExtension>())
+				{
+					type = extensionType;
+				}
+			}
+#endif
 			if (type == null)
 			{
-				throw new InvalidOperationException($"Unable to find type {control.Type}");
-			}
-
-			var unknownContent = control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault();
-			var unknownContentValue = unknownContent?.Value;
-			var initializationMember = control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault();
-
-			var isBrush = type == typeof(Media.Brush);
-
-			if (type.Is<FrameworkTemplate>())
-			{
-				Func<_View?> builder = () =>
+				// If we can match a $"{name}Extension" class and it extends from MarkupExtension, that is also a valid match.
+				// This shortcut syntax is not limited for {Markup} markup declaration syntax, but also works on <Markup> xaml-node declaration. (verified on WinAppSdk)
+				// note: On windows, the custom markup type MUST BE ALREADY used/referenced in the xaml once, in order for XamlReader to work with it, otherwise it will throws:
+				//		Microsoft.UI.Xaml.Markup.XamlParseException: 'The text associated with this error code could not be found.
+				//		The type 'Sanity' was not found. [Line: 1 Position: 9]'
+				if (TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension") is { } extensionType &&
+					extensionType.Is<MarkupExtension>())
 				{
-					var contentOwner = unknownContent;
-
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
-				};
-
-				var created = Activator.CreateInstance(type, builder);
-
-				if (created is FrameworkElement fe && _fileUri is not null)
-				{
-					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-				}
-
-				return created;
-			}
-			else if (type.Is<ResourceDictionary>() && unknownContent != null)
-			{
-				var contentOwner = unknownContent;
-
-				if (Activator.CreateInstance(type) is ResourceDictionary rd)
-				{
-					foreach (var xamlObjectDefinition in contentOwner.Objects)
-					{
-						var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
-
-						var instance = LoadObject(xamlObjectDefinition, rootInstance: rootInstance);
-
-						if (key != null)
-						{
-							rd.Add(key, instance);
-						}
-					}
-
-					if (rootInstance is null)
-					{
-						// This is a top level dictionary, where explicit members need to
-						// be process explicitly (other types are processed below).
-						foreach (var member in control.Members.Where(m => m != unknownContent))
-						{
-							ProcessNamedMember(control, rd, member, rd);
-						}
-					}
-
-					return rd;
+					type = extensionType;
 				}
 				else
 				{
-					throw new InvalidCastException();
+					throw new InvalidOperationException($"Unable to find type {control.Type}. If the linker is enabled, more info at https://aka.platform.uno/linker-configuration");
 				}
+			}
+
+			var unknownContent = control.Members.Where(m => m.Member.Name == XamlConstants.UnknownContent).FirstOrDefault();
+			var initializationMember = control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault();
+
+			if (type.Is<FrameworkTemplate>())
+			{
+				NewFrameworkTemplateBuilder builder = (o, s) =>
+				{
+					var contentOwner = unknownContent;
+
+					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+				};
+
+				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
+				TrySetContextualProperties(created, control);
+
+				return created;
+			}
+			else if (type.Is<MarkupExtension>())
+			{
+				var instance = Activator.CreateInstance(type) as MarkupExtension ??
+					throw new InvalidCastException($"Can not cast from '{type.FullName}' to '{nameof(MarkupExtension)}'.");
+
+				foreach (var member in control.Members)
+				{
+					ProcessNamedMember(control, instance, member, rootInstance ?? instance, settings);
+				}
+
+				var provider = new XamlServiceProviderContext
+				{
+					TargetObject = memberContext?.Target,
+					TargetProperty = memberContext?.Property is { } pi
+						? new ProvideValueTargetProperty
+						{
+							DeclaringType = pi.DeclaringType,
+							Name = pi.Name,
+							Type = pi.PropertyType,
+						}
+						: null,
+					RootObject = rootInstance,
+				};
+
+				var value = ((IMarkupExtensionOverrides)instance).ProvideValue(provider);
+
+				// It seems WinUI will generally throw: "Failed to assign to property '{fullname of dp}'"
+				// like for returning true(bool) to a string dp. So there is no conversion needed here.
+				// We can just let the caller to throw when invalid assignment eventually occurs.
+
+				return value;
+			}
+			else if (type.Is<ResourceDictionary>())
+			{
+				var instance = Activator.CreateInstance(type) as ResourceDictionary ??
+					throw new InvalidCastException($"Can not cast from '{type.FullName}' to '{nameof(ResourceDictionary)}'.");
+
+				foreach (var member in control.Members.Where(m => m != unknownContent))
+				{
+					ProcessNamedMember(control, instance, member, instance, settings: null);
+				}
+				if (unknownContent is { })
+				{
+					ProcessResourceDictionaryContent(instance, unknownContent, rootInstance);
+				}
+
+				return instance;
 			}
 			else if (type.IsPrimitive && initializationMember?.Value is string primitiveValue)
 			{
@@ -180,15 +256,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
-			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			else if (type == typeof(Media.Geometry) && unknownContent?.Value is string geometryStringValue)
 			{
 				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
 
 				return (Media.Geometry)generated;
 			}
-			else if (
-				_genericConvertibles.Contains(type)
-				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
+			else if (_genericConvertibles.Contains(type) && unknownContent?.Value is string otherContentValue)
 			{
 				return XamlBindingHelper.ConvertValue(type, otherContentValue);
 			}
@@ -197,37 +271,30 @@ namespace Windows.UI.Xaml.Markup.Reader
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
 
-				var instanceAsFrameworkElement = instance as FrameworkElement;
-
-				if (instanceAsFrameworkElement is not null)
+				var instanceAsFE = instance as FrameworkElement;
+				if (instanceAsFE is { })
 				{
-					instanceAsFrameworkElement.IsParsing = true;
-
-					if (_fileUri is not null)
-					{
-						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
-					}
+					instanceAsFE.IsParsing = true;
+					TrySetContextualProperties(instanceAsFE, control);
 				}
 
 				IDisposable? TryProcessStyle()
 				{
 					if (instance is Style style)
 					{
-						if (control.Members.FirstOrDefault(m => m.Member.Name == "TargetType") is XamlMemberDefinition targetTypeDefinition)
+						if (control.Members.FirstOrDefault(m => m.Member.Name == "TargetType") is { } targetTypeDefinition)
 						{
 							if (BuildLiteralValue(targetTypeDefinition) is Type targetType)
 							{
 								_styleTargetTypeStack.Push(targetType);
 
-								return Uno.Disposables.Disposable.Create(
-									() =>
+								return Uno.Disposables.Disposable.Create(() =>
+								{
+									if (_styleTargetTypeStack.Pop() != targetType)
 									{
-										if (_styleTargetTypeStack.Pop() != targetType)
-										{
-											throw new InvalidOperationException("StyleTargetType is out of synchronization");
-										}
+										throw new InvalidOperationException("StyleTargetType is out of synchronization");
 									}
-								);
+								});
 							}
 							else
 							{
@@ -238,16 +305,15 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					return null;
 				}
-
 				using (TryProcessStyle())
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member, rootInstance);
+						ProcessNamedMember(control, instance, member, rootInstance, settings);
 					}
 				}
 
-				instanceAsFrameworkElement?.CreationComplete();
+				instanceAsFE?.CreationComplete();
 
 				return instance;
 			}
@@ -257,7 +323,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			value ??= "";
 
-			if (value.Contains("("))
+			if (value.Contains('('))
 			{
 				foreach (var ns in _fileDefinition.Namespaces)
 				{
@@ -269,18 +335,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
-				var match = _attachedPropertMatch.Match(value);
+				var match = AttachedPropertyMatching().Match(value);
 
 				if (match.Success)
 				{
 					do
 					{
-						if (!match.Value.Contains(":"))
+						if (!match.Value.Contains(':'))
 						{
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
+							var parts = match.Value.Trim(_parenthesesArray).Split('.');
 
 							if (parts.Length == 2)
 							{
@@ -306,28 +372,32 @@ namespace Windows.UI.Xaml.Markup.Reader
 			XamlObjectDefinition control,
 			object instance,
 			XamlMemberDefinition member,
-			object rootInstance)
+			object rootInstance,
+			TemplateMaterializationSettings? settings)
 		{
+			var isAttached = TypeResolver.IsAttachedProperty(member);
+			var isNestedChildNode = IsNestedChildNode(member);
+
 			// Exclude attached properties, must be set in the extended apply section.
 			// If there is no type attached, this can be a binding.
 			if (TypeResolver.IsType(control.Type, member.Member.DeclaringType)
-				&& !TypeResolver.IsAttachedProperty(member)
-				|| member.Member.Name == "_UnknownContent"
+				&& !isAttached
+				|| isNestedChildNode
 			// && FindEventType(member.Member) == null
 			)
 			{
 				if (instance is TextBlock textBlock)
 				{
-					ProcessTextBlock(control, textBlock, member, rootInstance);
+					ProcessTextBlock(control, textBlock, member, rootInstance, settings);
 				}
-				else if (instance is Documents.Span span && member.Member.Name == "_UnknownContent")
+				else if (instance is Documents.Span span && isNestedChildNode)
 				{
 					ProcessSpan(control, span, member, rootInstance);
 				}
 				// WinUI assigned ContentProperty syntax
 				else if (
 					instance is ColumnDefinition columnDefinition &&
-					member.Member.Name == "_UnknownContent" &&
+					isNestedChildNode &&
 					member.Value is string columnDefinitionContent &&
 					!string.IsNullOrWhiteSpace(columnDefinitionContent))
 				{
@@ -335,17 +405,17 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else if (
 					instance is RowDefinition rowDefinition &&
-					member.Member.Name == "_UnknownContent" &&
+					isNestedChildNode &&
 					member.Value is string rowDefinitionContent &&
 					!string.IsNullOrWhiteSpace(rowDefinitionContent))
 				{
 					rowDefinition.Height = GridLength.ParseGridLength(rowDefinitionContent.Trim()).FirstOrDefault();
 				}
-				else if (member.Member.Name == "_UnknownContent"
+				else if (isNestedChildNode
 					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
 					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
 				{
-					AddCollectionItems(instance, member.Objects, rootInstance);
+					AddCollectionItems(instance, member.Objects, rootInstance, settings, null);
 				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
@@ -358,31 +428,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 						{
 							// WinUI Grid succinct syntax
 							if (instance is Grid grid &&
-								(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&
 								member.Member.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
+								member.Member.Name is "ColumnDefinitions" or "RowDefinitions" &&
+								(member.Member.Name is "ColumnDefinitions") is var isColumnDefinition &&
 								member.Value is string definitions)
 							{
-								var values = definitions
-									.Split(',')
-									.Select(static definition => definition.Trim())
-									.ToArray();
-
-								foreach (var value in values)
+								var lengths = GridLength.ParseGridLength(definitions);
+								foreach (var length in lengths)
 								{
-									var gridLength = GridLength.ParseGridLength(value).FirstOrDefault();
-									if (member.Member.Name == "ColumnDefinitions")
+									if (isColumnDefinition)
 									{
-										grid.ColumnDefinitions.Add(new ColumnDefinition
-										{
-											Width = gridLength,
-										});
+										grid.ColumnDefinitions.Add(new ColumnDefinition { Width = length });
 									}
 									else
 									{
-										grid.RowDefinitions.Add(new RowDefinition
-										{
-											Height = gridLength,
-										});
+										grid.RowDefinitions.Add(new RowDefinition { Height = length });
 									}
 								}
 							}
@@ -411,7 +471,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							ProcessMemberElements(instance, member, propertyInfo, rootInstance);
+							ProcessMemberElements(instance, member, propertyInfo, rootInstance, settings);
 						}
 					}
 				}
@@ -434,7 +494,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					// throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
 				}
 			}
-			else if (TypeResolver.IsAttachedProperty(member))
+			else if (isAttached)
 			{
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
@@ -452,7 +512,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
-							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance);
+							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, settings);
 						}
 						else
 						{
@@ -547,7 +607,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = targetPath.IndexOf(".", StringComparison.Ordinal);
+				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -562,32 +622,93 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member, object rootInstance)
+		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member, object rootInstance, TemplateMaterializationSettings? settings)
 		{
-			if (member.Objects.Any())
+			if (IsBlankBaseMember(member))
 			{
-				if (IsMarkupExtension(member))
+			}
+			else if (IsNestedChildNode(member) || member.Member.Name == nameof(TextBlock.Inlines))
+			{
+				foreach (var node in member.Objects)
 				{
-					ProcessMemberMarkupExtension(instance, rootInstance, member, null);
-				}
-				else
-				{
-					foreach (var node in member.Objects)
+					var value = LoadObject(node, rootInstance);
+
+					if ((TypeResolver.FindType(node.Type) ?? TypeResolver.FindType(node.Type.PreferredXamlNamespace, node.Type.Name + "Extension"))?.Is<MarkupExtension>() == true)
 					{
-						if (LoadObject(node, rootInstance) is Inline inline)
-						{
-							instance.Inlines.Add(inline);
-						}
+						// WinUI will actually throw an exception for markup that returns `string` or `Run` here:
+						// > XamlParseException: The text associated with this error code could not be found.
+						// > Run -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines' because the type 'Microsoft.UI.Xaml.Documents.Run' cannot be assigned to the type 'Microsoft.UI.Xaml.Documents.InlineCollection'. [Line: 22 Position: 8]'
+						// > string -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines'. [Line: 20 Position: 7]'
+						throw new XamlParseException(value is Inline
+							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
+							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."
+						);
+					}
+					if (value is Inline inline)
+					{
+						instance.Inlines.Add(inline);
 					}
 				}
 			}
 			else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+				if (member.Objects.Count == 0)
+				{
+					GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+				}
+				else
+				{
+					if (IsMarkupExtension(member))
+					{
+						ProcessMemberMarkupExtension(instance, rootInstance, member, propertyInfo);
+					}
+					else
+					{
+						ProcessMemberElements(instance, member, propertyInfo, rootInstance, settings);
+					}
+				}
 			}
 		}
 
-		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property, object rootInstance)
+		private void ProcessResourceDictionaryContent(ResourceDictionary rd, XamlMemberDefinition unknownContent, object? rootInstance)
+		{
+			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
+			// - MergedDictionaries should be processed before this method call.
+			// - Member resources should be all processed prior the resolution can began.
+			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+
+			foreach (var child in unknownContent.Objects)
+			{
+				var childInstance = LoadObject(child, rootInstance);
+				var resourceKey = GetResourceKey(child);
+				var styleTargetType = childInstance is Style
+					? GetResourceTargetType(child) ?? throw new InvalidOperationException($"No target type was specified (Line {child.LineNumber}:{child.LinePosition}")
+					: default;
+
+				if ((resourceKey ?? styleTargetType) is { } key)
+				{
+					rd.Add(key, childInstance);
+				}
+
+				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				{
+					delayedResolutionList.Add(provider);
+				}
+			}
+
+			// Delay resolve static resources
+			foreach (var provider in delayedResolutionList)
+			{
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+			}
+		}
+
+		private void ProcessMemberElements(
+			DependencyObject instance,
+			XamlMemberDefinition member,
+			DependencyProperty property,
+			object rootInstance,
+			TemplateMaterializationSettings? settings)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
 			{
@@ -605,110 +726,96 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				var collection = BuildInstance();
 
-				AddCollectionItems(collection, member.Objects, rootInstance);
+				AddCollectionItems(collection, member.Objects, rootInstance, settings, null);
 
 				instance.SetValue(property, collection);
 			}
 			else
 			{
-				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance));
+				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance, settings: settings));
 			}
 		}
 
-		private void ProcessMemberElements(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo, object rootInstance)
+		private void ProcessMemberElements(
+			object instance,
+			XamlMemberDefinition member,
+			PropertyInfo propertyInfo,
+			object rootInstance,
+			TemplateMaterializationSettings? settings)
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary)
-					|| (
-						propertyInfo.DeclaringType == typeof(ResourceDictionary)
-						&& (
-							propertyInfo.Name == nameof(ResourceDictionary.ThemeDictionaries)
-							|| propertyInfo.Name == nameof(ResourceDictionary.MergedDictionaries)
-						)
-					)
-				)
+				if (propertyInfo.PropertyType.IsAssignableTo(typeof(ResourceDictionary)))
 				{
-					var methods = propertyInfo.PropertyType.GetMethods();
-					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
-						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
+					// A resource-dictionary property (typically FE.Resources) can only have two types of nested contents:
+					// 1. a single res-dict
+					// 2. zero-to-many non-res-dict resources
+					// Nesting multiple res-dict or a mix of (res-dict(s) + resource(s)) will throw:
+					// > Xaml Internal Error error WMC9999: This Member 'Resources' has more than one item, use the Items property
+					// It is also illegal to nested Page.Resources\ResourceDictionary.MergedDictionary without a ResourceDictionary node in between.
+					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.'
 
-					if (propertyInfo.GetMethod == null)
+					// Case 1: a single res-dict
+					if (member.Objects is [var singleChild] &&
+						TypeResolver.FindType(singleChild.Type)?.IsAssignableTo(typeof(ResourceDictionary)) == true)
 					{
-						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
-					}
-
-					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
-
-					var dictionaryObjects = member.Objects;
-
-					if (member.Objects.Count == 1
-						&& member.Objects.First() is { } innerDictionary
-						&& TypeResolver.FindType(innerDictionary.Type) == typeof(ResourceDictionary))
-					{
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries") is { } themeDictionaries)
+						if (propertyInfo.SetMethod == null)
 						{
-							foreach (var themeDictionary in themeDictionaries.Objects)
-							{
-								targetDictionary.ThemeDictionaries.Add(
-									GetResourceKey(themeDictionary),
-									LoadObject(themeDictionary, rootInstance));
-							}
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a setter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries") is { } mergedDictionaries)
+						var rd = (ResourceDictionary)LoadObject(singleChild, rootInstance)!;
+						if (IsFrameworkElementResources(propertyInfo))
 						{
-							foreach (var mergedDictionary in mergedDictionaries.Objects)
-							{
-								var newInstance = LoadObject(mergedDictionary, rootInstance);
-								if (newInstance is ResourceDictionary instanceAsDictionary)
-								{
-									targetDictionary.MergedDictionaries.Add(instanceAsDictionary);
-								}
-								else
-								{
-									throw new InvalidOperationException($"An object of type {newInstance?.GetType()} is not supported on MergedDictionaries");
-								}
-							}
+							((FrameworkElement)instance).Resources = rd;
 						}
-
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent") is { } unknownContent)
+						else
 						{
-							dictionaryObjects = unknownContent.Objects;
+							propertyInfo.SetMethod.Invoke(instance, new[] { rd });
 						}
 					}
-
-					List<IDependencyObjectStoreProvider> delayResolutionList = new();
-					foreach (var child in dictionaryObjects)
+					// Case 2: zero-to-many non-res-dict resources
+					else if (member.Objects.All(x => TypeResolver.FindType(x.Type)?.IsAssignableTo(typeof(ResourceDictionary)) != true))
 					{
-						var item = LoadObject(child, rootInstance: rootInstance);
-
-						var resourceKey = GetResourceKey(child);
-						var resourceTargetType = GetResourceTargetType(child);
-
-						if (
-							item?.GetType() == typeof(Style)
-							&& resourceTargetType == null
-						)
+						if (propertyInfo.GetMethod == null)
 						{
-							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if ((resourceKey ?? resourceTargetType) is { } key)
+						if (propertyInfo.GetMethod.Invoke(instance, null) is ResourceDictionary rd)
 						{
-							targetDictionary.Add(key, item);
+							ProcessResourceDictionaryContent(rd, member, rootInstance);
 						}
-
-						if (HasAnyResourceMarkup(child) && item is IDependencyObjectStoreProvider provider)
+						else
 						{
-							delayResolutionList.Add(provider);
+							throw new ArgumentNullException(
+								$"The property {propertyInfo} is not initialized (Line {member.LineNumber}:{member.LinePosition}). " +
+								$"Make sure the property is instanced from the constructor, or nest the resources under '{propertyInfo.PropertyType}'.");
 						}
 					}
-
-					// Delay resolve static resources
-					foreach (var delayedItem in delayResolutionList)
+					else
 					{
-						delayedItem.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, targetDictionary);
+						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
+					}
+
+					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
+						propertyInfo.DeclaringType == typeof(FrameworkElement) &&
+						propertyInfo.Name == nameof(FrameworkElement.Resources);
+				}
+				else if (propertyInfo.DeclaringType?.IsAssignableTo(typeof(ResourceDictionary)) == true &&
+					propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries) or nameof(ResourceDictionary.MergedDictionaries))
+				{
+					foreach (var child in member.Objects)
+					{
+						var rd = (ResourceDictionary)LoadObject(child, rootInstance)!;
+						if (propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries))
+						{
+							((ResourceDictionary)instance).ThemeDictionaries.Add(GetResourceKey(child), rd);
+						}
+						else
+						{
+							((ResourceDictionary)instance).MergedDictionaries.Add(rd);
+						}
 					}
 				}
 				else if (propertyInfo.SetMethod?.IsPublic == true &&
@@ -726,7 +833,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					&& TypeResolver.IsNewableType(propertyInfo.PropertyType))
 				{
 					var collection = Activator.CreateInstance(propertyInfo.PropertyType);
-					AddCollectionItems(collection!, member.Objects, rootInstance);
+					AddCollectionItems(collection!, member.Objects, rootInstance, settings, new(instance, propertyInfo));
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
@@ -747,7 +854,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							AddCollectionItems(propertyInstance, member.Objects, rootInstance);
+							AddCollectionItems(propertyInstance, member.Objects, rootInstance, settings, new(instance, propertyInfo));
 						}
 					}
 					else
@@ -762,7 +869,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[] { LoadObject(member.Objects.First(), rootInstance: rootInstance) });
+				GetPropertySetter(propertyInfo).Invoke(instance, [LoadObject(
+					member.Objects.First(),
+					rootInstance: rootInstance,
+					settings: settings,
+					memberContext: new(instance, propertyInfo))
+				]);
 			}
 		}
 
@@ -942,7 +1054,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					case "_PositionalParameters":
 					case nameof(Binding.Path):
-						binding.Path = RewriteAttachedPropertyPath(bindingProperty.Value?.ToString());
+						var path = bindingProperty.Value?.ToString();
+						if (templateBindingNode is not null && TypeResolver.IsAttachedProperty(member))
+						{
+							path = $"({path})";
+						}
+
+						binding.Path = RewriteAttachedPropertyPath(path);
 						break;
 
 					case nameof(Binding.ElementName):
@@ -1124,55 +1242,43 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
+		private void AddCollectionItems(
+			object collectionInstance,
+			IEnumerable<XamlObjectDefinition> nonBindingObjects,
+			object rootInstance,
+			TemplateMaterializationSettings? settings,
+			MemberInitializationContext? memberContext)
 		{
-			MethodInfo? addMethodInfo = null;
+			var collectionType = collectionInstance.GetType();
 
 			foreach (var child in nonBindingObjects)
 			{
-				var item = LoadObject(child, rootInstance: rootInstance);
+				var item = LoadObject(child, rootInstance: rootInstance, settings: settings, memberContext: memberContext);
+				var itemType = item?.GetType() ?? typeof(object);
 
-				if (addMethodInfo == null)
-				{
-					addMethodInfo = collectionInstance
-						.GetType()
-						.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-						.Where(m => m.Name == "Add")
-						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
-							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
-						?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({item?.GetType()}) method");
-				}
+				var addMethodInfo =
+					TypeResolver.FindCollectionAddItemMethod(collectionType, itemType) ??
+					throw new InvalidOperationException($"The type {collectionType} does not contains an Add({itemType}) method");
 
 				addMethodInfo.Invoke(collectionInstance, new[] { item });
 			}
 		}
 
-		private MethodInfo? FindAddMethod(object collectionInstance, Type? itemType)
-		{
-			return collectionInstance.GetType()
-				.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-				.Where(m => m.Name == "Add")
-				.FirstOrDefault(m =>
-					m.GetParameters() is { Length: 1 } p &&
-					(itemType ?? typeof(object)).Is(p[0].ParameterType)
-				);
-		}
-
 		private object? GetResourceKey(XamlObjectDefinition child) =>
 			child.Members.FirstOrDefault(m =>
-				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
+				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
 			)
 			?.Value
 			?.ToString();
 
-		private Type? GetResourceTargetType(XamlObjectDefinition child) =>
-				TypeResolver.FindType(child.Members.FirstOrDefault(m =>
-					string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase)
-				)
+		private Type? GetResourceTargetType(XamlObjectDefinition child) => TypeResolver.FindType(
+			child.Members
+				.FirstOrDefault(m => string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase))
 				?.Value
-				?.ToString() ?? ""
-			);
+				?.ToString() ??
+			""
+		);
 
 		private PropertyInfo? GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
 		{
@@ -1213,15 +1319,40 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 					else if (propertyType == typeof(DependencyProperty) && member.Owner.Type.Name == "Setter")
 					{
-						var propertyOwner = _styleTargetTypeStack.Peek();
-
-						if (TypeResolver.FindDependencyProperty(propertyOwner, memberValue) is DependencyProperty property)
+						if (memberValue is { Length: > 0 } &&
+							PropertyPathPattern().Match(memberValue) is { Success: true, Groups: var g })
 						{
-							return property;
+							Type? declaringType;
+							if (g["type"].Success)
+							{
+								if (g["xmlns"].Success && g["xmlns"].Value is { } xmlns && xmlns.Length > 0)
+								{
+									declaringType = TypeResolver.FindType($"{xmlns}:{g["type"].Value}");
+								}
+								else
+								{
+									declaringType = TypeResolver.FindType(g["type"].Value);
+								}
+							}
+							else
+							{
+								declaringType = _styleTargetTypeStack.Peek();
+							}
+
+							var propertyName = g["property"].Value;
+
+							if (TypeResolver.FindDependencyProperty(declaringType, propertyName) is DependencyProperty property)
+							{
+								return property;
+							}
+							else
+							{
+								throw new Exception($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
+							}
 						}
 						else
 						{
-							throw new Exception($"The property {propertyOwner}.{memberValue} does not exist");
+							throw new Exception($"Invalid property path: {memberValue}");
 						}
 					}
 					else
@@ -1248,9 +1379,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var sourceType = propertyType;
 				var methodName = createFromString.MethodName;
-				if (createFromString.MethodName.Contains("."))
+				if (createFromString.MethodName.Contains('.'))
 				{
-					var splitIndex = createFromString.MethodName.LastIndexOf(".", StringComparison.Ordinal);
+					var splitIndex = createFromString.MethodName.LastIndexOf('.');
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
 					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);
@@ -1273,7 +1404,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 			}
 
-			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(() => propertyType, memberValue);
+			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
 		private void ApplyPostActions(object? instance)
@@ -1300,6 +1431,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
+		private static bool IsBlankBaseMember(XamlMemberDefinition member) =>
+			member.Member.Name == "base" &&
+			member.Objects.Count == 0 &&
+			member.Value as string == string.Empty;
+
+		/// <summary>
+		/// Check if the member is a nested child node (implicit [ContentProperty] value(s)).
+		/// </summary>
+		/// <remarks>
+		/// This will return false for member child node (member property).
+		/// </remarks>
+		private static bool IsNestedChildNode(XamlMemberDefinition member) => member.Member.Name == XamlConstants.UnknownContent;
+
 		private class EventHandlerWrapper
 		{
 			private readonly object _instance;
@@ -1321,5 +1465,23 @@ namespace Windows.UI.Xaml.Markup.Reader
 				_method.Invoke(_instance, Array.Empty<object>());
 			}
 		}
+
+		private record MemberInitializationContext(object Target, PropertyInfo Property);
+
+		[GeneratedRegex(@"(\(.*?\))")]
+		private static partial Regex AttachedPropertyMatching();
+
+		/// <summary>
+		/// Matches non-nested path like string: (xmlns:type.property)
+		/// where 'xmlns', 'type' and the parentheses are optional.
+		/// </summary>
+		/// <remarks>
+		/// The presence of both 'type' and 'property', doesnt automatically imply an attached property:
+		/// "The XAML parser also accepts dependency property names that include a qualifying class.
+		/// For example the parser interprets either "Button.Background" or "Control.Background"
+		/// as being a reference to the Background property in a style for a Button."
+		/// </remarks>
+		[GeneratedRegex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture)]
+		private static partial Regex PropertyPathPattern();
 	}
 }

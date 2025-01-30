@@ -12,11 +12,7 @@ public class SystemThemeObserver : NSObject
 	internal void ObserveSystemThemeChanges()
 	{
 		NSDistributedNotificationCenter
-#if NET6_0_OR_GREATER
 			.DefaultCenter
-#else
-			.GetDefaultCenter()
-#endif
 			.AddObserver(
 				this,
 				_modeSelector,

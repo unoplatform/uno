@@ -13,11 +13,11 @@ using Uno.UI.Xaml;
 #endif
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-using Colors = Windows.UI.Colors;
+using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -250,16 +250,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
 
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
-			try
-			{
-				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
-				var retrieved2 = rd["Blu"];
-				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
-			}
-			finally
-			{
-				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
-			}
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			var retrieved2 = rd["Blu"];
+			Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 #endif
 		}
 
@@ -493,7 +486,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Enumerated_With_StaticResource_Alias()
 		{
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			var light = xcr.ThemeDictionaries["Light"] as ResourceDictionary;
 			Assert.IsNotNull(light);
 			KeyValuePair<object, object> fromEnumeration = default;
@@ -504,7 +497,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					fromEnumeration = kvp;
 				}
 			}
-			Assert.IsNotNull(fromEnumeration);
+
 			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
 		}
 
@@ -770,7 +763,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_XamlControlsResources()
 		{
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			Assert.IsTrue(xcr.ContainsKey(typeof(Button)));
 			Assert.IsInstanceOfType(xcr[typeof(Button)], typeof(Style));
 		}
@@ -944,6 +937,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var resources = page.Resources;
 			AssertEx.AssertContainsColorBrushResource(resources, "LarcenousColorBrush", Colors.PaleVioletRed);
 			Assert.AreEqual(initialCreationCount, SomeNotImplType.CreationAttempts);
+		}
+
+		[TestMethod]
+		public void ThemeResource_Named_ResourceDictionary_Override()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var SUT = new ThemeResource_Named_ResourceDictionary_Override();
+			SUT.ForceLoaded();
+
+			Assert.IsInstanceOfType(SUT.border01.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border02.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border03.Background, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)SUT.border01.Background).Color);
+			Assert.AreEqual(Colors.Blue, ((SolidColorBrush)SUT.border02.Background).Color);
+			Assert.AreEqual(Colors.Green, ((SolidColorBrush)SUT.border03.Background).Color);
 		}
 	}
 }

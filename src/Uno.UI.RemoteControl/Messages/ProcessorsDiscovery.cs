@@ -1,22 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using static Uno.UI.RemoteControl.Messages.ProcessorsDiscoveryResponse;
 
-namespace Uno.UI.RemoteControl.Messages
+namespace Uno.UI.RemoteControl.Messages;
+
+public class ProcessorsDiscovery : IMessage
 {
-	public class ProcessorsDiscovery : IMessage
+	public const string Name = nameof(ProcessorsDiscovery);
+
+	public ProcessorsDiscovery(string basePath, string appInstanceId = "")
 	{
-		public const string Name = nameof(ProcessorsDiscovery);
-
-		public ProcessorsDiscovery(string basePath)
-		{
-			BasePath = basePath;
-		}
-
-		public string Scope => "RemoteControlServer";
-
-		string IMessage.Name => Name;
-
-		public string BasePath { get; }
+		BasePath = basePath;
+		AppInstanceId = appInstanceId;
 	}
+
+	public string Scope => WellKnownScopes.DevServerChannel;
+
+	string IMessage.Name => Name;
+
+	public string BasePath { get; }
+
+	public string AppInstanceId { get; }
 }

@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls"
 	xmlns:sys="using:System"
-	xmlns:xc="using:Windows.UI.Xaml.Controls"
+	xmlns:xc="using:Microsoft.UI.Xaml.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -25,5 +25,17 @@
 		<TextBlock x:Name="tb4"
 				   x:FieldModifier="public"
 				   Tag="{x:Bind sys:String.Format('Formatted {0}', tb2.(local:CustomDO.Tag))}" />
+
+		<Grid x:Name="RootPanel"
+          local:AttachedProps.MyString="Hello World!!!">
+
+			<StackPanel x:Name="TheStackPanel"
+                    local:AttachedProps.MyElement="{Binding ElementName=RootPanel}">
+
+				<TextBlock x:Name="tb5"
+						   x:FieldModifier="public"
+						   Text="{x:Bind TheStackPanel.(local:AttachedProps.MyElement).(local:AttachedProps.MyString), Mode=OneWay}"/>
+			</StackPanel>
+		</Grid>
 	</Grid>
 </UserControl>

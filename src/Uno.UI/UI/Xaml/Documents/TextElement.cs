@@ -1,4 +1,4 @@
-﻿#if NET461
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -10,51 +10,49 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
 #elif __MACOS__
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+
 #endif
 
 #if __WASM__
-using BaseClass = Windows.UI.Xaml.UIElement;
+using BaseClass = Microsoft.UI.Xaml.UIElement;
 #else
-using BaseClass = Windows.UI.Xaml.DependencyObject;
+using BaseClass = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{
-#if !__WASM__
 		public TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
+#if !__WASM__
 			InitializeBinder();
-		}
 #endif
+		}
 
 		#region FontFamily Dependency Property
 		public FontFamily FontFamily
@@ -74,6 +72,10 @@ namespace Windows.UI.Xaml.Documents
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontFamilyChanged()
 				)
 			);
+
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correctly on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
 
 		protected virtual void OnFontFamilyChanged()
 		{
@@ -97,7 +99,7 @@ namespace Windows.UI.Xaml.Documents
 				typeof(FontStyle),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: Windows.UI.Text.FontStyle.Normal,
+					defaultValue: FontStyle.Normal,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStyleChanged()
 				)
@@ -109,6 +111,26 @@ namespace Windows.UI.Xaml.Documents
 		}
 
 		partial void OnFontStyleChangedPartial();
+
+		#endregion
+
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+
+		protected virtual void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
 
 		#endregion
 
@@ -145,7 +167,7 @@ namespace Windows.UI.Xaml.Documents
 
 		public Brush Foreground
 		{
-			get { return (Brush)this.GetValue(ForegroundProperty); }
+			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
 				if (value != null && !(value is SolidColorBrush))
@@ -153,24 +175,23 @@ namespace Windows.UI.Xaml.Documents
 					throw new InvalidOperationException("Specified brush is not a SolidColorBrush");
 				}
 
-				this.SetValue(ForegroundProperty, value);
+				SetValue(ForegroundProperty, value);
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get; } =
-			DependencyProperty.Register(
-				"Foreground",
-				typeof(Brush),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: SolidColorBrushHelper.Black,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnForegroundChanged()
-				)
-			);
+		public static DependencyProperty ForegroundProperty { get; } = DependencyProperty.Register(
+			nameof(Foreground),
+			typeof(Brush),
+			typeof(TextElement),
+			new FrameworkPropertyMetadata(
+				defaultValue: SolidColorBrushHelper.Black,
+				options: FrameworkPropertyMetadataOptions.Inherits,
+				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
+		));
 
 		protected virtual void OnForegroundChanged()
 		{
+			// TODO: This is missing listening for brush changes?
 			OnForegroundChangedPartial();
 		}
 
@@ -240,21 +261,12 @@ namespace Windows.UI.Xaml.Documents
 
 		public TextDecorations TextDecorations
 		{
-			get { return (TextDecorations)GetValue(TextDecorationsProperty); }
-			set { SetValue(TextDecorationsProperty, value); }
+			get => GetTextDecorationsValue();
+			set => SetTextDecorationsValue(value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty { get; } =
-			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnTextDecorationsChanged()
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = TextDecorations.None, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnTextDecorationsChanged))]
+		public static DependencyProperty TextDecorationsProperty { get; } = CreateTextDecorationsProperty();
 
 		protected virtual void OnTextDecorationsChanged()
 		{
@@ -273,7 +285,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(BaseLineAlignmentProperty, value);
 		}
 
-		public static DependencyProperty BaseLineAlignmentProperty =
+		public static DependencyProperty BaseLineAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"BaseLineAlignment",
 				typeof(BaseLineAlignment),
@@ -313,11 +325,40 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-#if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
-		public string Name { get; set; }
+		private string _name;
+
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnNameChangedPartial(value);
+				}
+			}
+		}
+
+		// WASM specific as on WASM BaseClass is UIElement
+
+#if !__WASM__
+		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
+		{
+			return null;
+		}
+
+		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			return null;
+		}
 #endif
 
-		/// <summary>	
+		partial void OnNameChangedPartial(string newValue);
+
+		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
 		/// </summary>
 		/// <returns>FrameworkElement or <see langword="null"/>.</returns>
@@ -338,12 +379,22 @@ namespace Windows.UI.Xaml.Documents
 
 		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
 
-#if !__WASM__
 		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			if (this is Hyperlink hl)
+			{
+				// Hyperlink doesn't appear to inherit foreground from the parent.
+				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
+				hl.SetCurrentForeground();
+			}
+
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
-#endif
+
+		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		{
+			//return S_OK;
+			return null;
+		}
 	}
 }

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
 	/// Defines an interface for <see cref="ImageSource"/> to enable image downloads.

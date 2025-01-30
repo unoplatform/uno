@@ -8,7 +8,7 @@ internal static partial class SystemThemeHelper
 {
 	private static ISystemThemeHelperExtension? _systemThemeHelperExtension;
 
-	private static SystemTheme GetSystemTheme() => GetExtension() is { } extension ?
+	internal static SystemTheme GetSystemTheme() => GetExtension() is { } extension ?
 		extension.GetSystemTheme() : SystemTheme.Light;
 
 	static partial void ObserveThemeChangesPlatform()

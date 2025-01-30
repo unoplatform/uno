@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,6 +80,21 @@ namespace Uno.Extensions
 		public static TResult[] SelectToArray<TSource, TResult>(this TSource[] source, Func<TSource, TResult> selector)
 		{
 			var output = new TResult[source.Length];
+
+			for (int i = 0; i < output.Length; i++)
+			{
+				output[i] = selector(source[i]);
+			}
+
+			return output;
+		}
+
+		/// <summary>
+		/// Projects the specified readonly collection to another array.
+		/// </summary>
+		public static TResult[] SelectToArray<TSource, TResult>(this IReadOnlyList<TSource> source, Func<TSource, TResult> selector)
+		{
+			var output = new TResult[source.Count];
 
 			for (int i = 0; i < output.Length; i++)
 			{

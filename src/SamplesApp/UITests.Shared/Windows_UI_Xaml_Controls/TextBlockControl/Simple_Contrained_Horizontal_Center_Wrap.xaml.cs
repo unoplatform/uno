@@ -1,9 +1,9 @@
-using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+﻿using Uno.UI.Samples.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[Sample]
+	[Sample("TextBlock")]
 	public sealed partial class Simple_Contrained_Horizontal_Center_Wrap : Page
 	{
 		public Simple_Contrained_Horizontal_Center_Wrap()

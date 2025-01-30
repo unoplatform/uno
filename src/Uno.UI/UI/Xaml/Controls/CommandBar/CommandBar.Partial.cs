@@ -19,26 +19,28 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
+using Uno.UI.Dispatching;
+
 #if __ANDROID__
 using Android.Views;
 #endif
 
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CommandBar : IMenu
 	{
@@ -362,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
-			IsOpen = false;
+			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
 #if __IOS__ || __ANDROID__
@@ -670,8 +672,7 @@ namespace Windows.UI.Xaml.Controls
 			var wasHandled = false;
 
 			// If the ALT key is not pressed, don't shift focus.
-			var modifierKeys = VirtualKeyModifiers.None;
-			GetKeyboardModifiers(out modifierKeys);
+			var modifierKeys = GetKeyboardModifiers();
 			if ((modifierKeys & VirtualKeyModifiers.Menu) != 0)
 			{
 				return false;
@@ -705,8 +706,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// If the ALT key is not pressed, don't shift focus.
-			var modifierKeys = VirtualKeyModifiers.None;
-			GetKeyboardModifiers(out modifierKeys);
+			var modifierKeys = GetKeyboardModifiers();
 			if ((modifierKeys & VirtualKeyModifiers.Menu) != 0)
 			{
 				return false;
@@ -1411,6 +1411,8 @@ namespace Windows.UI.Xaml.Controls
 				var element = m_tpDynamicPrimaryCommands?[(int)changeIndex];
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					element.IsCompact = shouldBeCompact;
 					PropagateDefaultLabelPositionToElement(element);
 				}
@@ -1425,6 +1427,8 @@ namespace Windows.UI.Xaml.Controls
 					var element = m_tpDynamicPrimaryCommands?[i];
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						PropagateDefaultLabelPositionToElement(element);
 					}
 				}
@@ -1453,6 +1457,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1468,6 +1474,8 @@ namespace Windows.UI.Xaml.Controls
 
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}
@@ -1573,7 +1581,7 @@ namespace Windows.UI.Xaml.Controls
 					wasHandledLocally = true;
 					break;
 				case VirtualKey.Tab:
-					GetKeyboardModifiers(out var modifierKeys);
+					var modifierKeys = GetKeyboardModifiers();
 					HandleTabKeyPressedInOverflow((modifierKeys & VirtualKeyModifiers.Shift) != 0, out wasHandledLocally);
 					break;
 			}
@@ -1696,12 +1704,7 @@ namespace Windows.UI.Xaml.Controls
 				var visibleBounds = new Rect();
 				var availableBounds = new Rect();
 
-				visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
-
-				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-				{
-					visibleBounds = XamlRoot?.Bounds ?? default;
-				}
+				visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 				bool windowed = false;
 				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
@@ -1898,12 +1901,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
-			var visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
-			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-			{
-				visibleBounds = XamlRoot?.Bounds ?? default;
-			}
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 
 			return visibleBounds.Width <= m_overflowContentMaxWidth;
@@ -2100,35 +2099,21 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 		public static void FindParentCommandBarForElement(ICommandBarElement element, out CommandBar? parentCmdBar)
 		{
-			parentCmdBar = null;
-			var elementDO = element as DependencyObject;
-
-			CommandBar? parentCommandBar = null;
-			var itemsControl = ItemsControl.ItemsControlFromItemContainer(elementDO);
-			if (itemsControl is { })
+			if (element is DependencyObject elementAsDO &&
+				ItemsControl.ItemsControlFromItemContainer(elementAsDO) is { } ic &&
+				ic.GetTemplatedParent() is CommandBar tp)
 			{
-				var templatedParent = itemsControl.TemplatedParent;
-				parentCommandBar = templatedParent as CommandBar;
+				parentCmdBar = tp;
 			}
-
-			// If an element is collapsed initially, it isn't placed in the visual tree of its ItemsControl,
-			// meaning that its parent will instead be its logical parent.  To account for that circumstance,
-			// we'll explicitly walk the tree to find the parent command bar if we haven't found it yet.
-			if (parentCommandBar == null)
+			else
 			{
-				var currentElement = elementDO as DependencyObject;
-				while (currentElement is { })
-				{
-					if (currentElement is CommandBar cmdBar)
-					{
-						parentCommandBar = cmdBar;
-					}
-
-					currentElement = currentElement.GetParent() as DependencyObject;
-				}
+				// If an element is collapsed initially, it isn't placed in the visual tree of its ItemsControl,
+				// meaning that its parent will instead be its logical parent. To account for that circumstance,
+				// we'll explicitly walk the tree to find the parent command bar if we haven't found it yet.
+				parentCmdBar = (element as DependencyObject).GetParents()
+					.OfType<CommandBar>()
+					.FirstOrDefault();
 			}
-
-			parentCmdBar = parentCommandBar;
 		}
 
 		private void FindMovablePrimaryCommands(double availablePrimaryCommandsWidth, double primaryItemsControlDesiredWidth, out int primaryCommandsCountInTransition)

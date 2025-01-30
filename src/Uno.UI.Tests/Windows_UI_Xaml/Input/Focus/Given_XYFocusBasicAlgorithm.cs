@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using static Uno.UI.Tests.Helpers.MuxVerify;
 using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;
 
@@ -24,7 +24,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			Rect candidate = new Rect(new Point(0, 0), new Point(100, 100));
 
 			double distance = CalculatePrimaryAxisDistance(FocusNavigationDirection.Left, current, candidate);
-			Assert.IsTrue(distance == -1);
+			Assert.AreEqual(-1, distance);
 		}
 
 		/*

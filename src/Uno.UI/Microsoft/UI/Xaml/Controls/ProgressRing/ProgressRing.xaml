@@ -7,7 +7,7 @@
 
 	<Style TargetType="local:ProgressRing">
 		<Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
-		<!--<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />-->
+		<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />
 		<Setter Property="IsHitTestVisible" Value="False" />
 		<Setter Property="HorizontalAlignment" Value="Center" />
 		<Setter Property="VerticalAlignment" Value="Center" />
@@ -51,8 +51,8 @@
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						 <!--AnimatedVisualPlayer for Lottie--> 
-						<AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill"/>
+						 <!--AnimatedVisualPlayer for Lottie-->
+						<local:AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

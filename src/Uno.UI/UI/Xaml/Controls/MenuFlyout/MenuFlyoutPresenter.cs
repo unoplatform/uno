@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,14 +7,14 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -23,7 +23,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 	{
@@ -221,18 +221,6 @@ namespace Windows.UI.Xaml.Controls
 			var spMenuFlyoutItemBase = pElement as MenuFlyoutItemBase;
 
 			spMenuFlyoutItemBase.SetParentMenuFlyoutPresenter(this);
-
-			SynchronizeTemplatedParent(spMenuFlyoutItemBase);
-		}
-
-		private void SynchronizeTemplatedParent(MenuFlyoutItemBase spMenuFlyoutItemBase)
-		{
-			// Manual propagation of the templated parent to the content properly
-			// until we get the propagation running properly
-			if (spMenuFlyoutItemBase is FrameworkElement content)
-			{
-				content.TemplatedParent = TemplatedParent;
-			}
 		}
 
 		protected override void ClearContainerForItemOverride(
@@ -618,7 +606,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override string GetPlainText()
+		internal override string GetPlainText()
 		{
 			string automationName = null;
 

@@ -1,22 +1,27 @@
-﻿// MUX Reference: InfoBadgeTests.cs, commit 76bd573a73595ac66e8ff5ce755537d19f50a96d
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference APITests/InfoBadgeTests.cs, tag winui3/release/1.4.2
 
 using System;
 using Common;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Symbol = Windows.UI.Xaml.Controls.Symbol;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
+using Windows.Foundation;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class InfoBadgeTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void InfoBadgeDisplayKindTest()
+		public async Task InfoBadgeDisplayKindTest()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -30,7 +35,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -70,7 +75,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeSupportsAllIconTypes()
+		public async Task InfoBadgeSupportsAllIconTypes()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -101,7 +106,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 				pathIconSource = new PathIconSource();
 				var geometry = new RectangleGeometry();
-				geometry.Rect = new Windows.Foundation.Rect { Width = 5, Height = 2, X = 0, Y = 0 };
+				geometry.Rect = new Rect { Width = 5, Height = 2, X = 0, Y = 0 };
 				pathIconSource.Data = geometry;
 
 				animatedIconSource = new AnimatedIconSource();
@@ -111,7 +116,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -142,7 +147,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeValueLessThanNegativeOneCrashes()
+		public async Task InfoBadgeValueLessThanNegativeOneCrashes()
 		{
 			InfoBadge infoBadge = null;
 			RunOnUIThread.Execute(() =>
@@ -152,13 +157,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.Throws<ArgumentOutOfRangeException>(() => { infoBadge.Value = -10; });
 			});
 		}
-
 	}
 }

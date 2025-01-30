@@ -27,8 +27,11 @@
 
 		public static startMessageListener(managedId: string) {
 			if (!MidiInPort.dispatchMessage) {
-				MidiInPort.dispatchMessage = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			const instance = MidiInPort.instanceMap[managedId];

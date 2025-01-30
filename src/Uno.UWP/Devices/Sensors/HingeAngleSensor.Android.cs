@@ -6,23 +6,38 @@ using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Devices.Sensors.Helpers;
+using Uno.Helpers;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents the hinge angle sensor in a dual-screen device.
+	/// </summary>
 	public partial class HingeAngleSensor
 	{
-		private static readonly object _syncLock = new object();
+		private static readonly object _syncLock = new();
 
 		private static bool _initializationAttempted;
 		private static HingeAngleSensor _instance;
 		private static INativeHingeAngleSensor _hingeAngleSensor;
 
-		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
+		private readonly StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChangedWrapper;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
 		private HingeAngleSensor()
 		{
+			_readingChangedWrapper = new StartStopTypedEventWrapper<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
 		}
 
+		/// <summary>
+		/// Asynchronously retrieves the default hinge angle sensor.
+		/// </summary>
+		/// <returns>When this method completes, it returns a reference to the default HingeAngleSensor.</returns>
 		public static IAsyncOperation<HingeAngleSensor> GetDefaultAsync()
 		{
 			// avoid locking if possible
@@ -46,31 +61,13 @@ namespace Windows.Devices.Sensors
 			return Task.FromResult(_instance).AsAsyncOperation();
 		}
 
+		/// <summary>
+		/// Occurs when the hinge angle sensor in a dual-screen device reports a change in opening angle.
+		/// </summary>
 		public event TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> ReadingChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartReading();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReading();
-					}
-				}
-			}
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
 
 		private static void TryInitializeHingeAngleSensor(HingeAngleSensor owner)
@@ -95,6 +92,6 @@ namespace Windows.Devices.Sensors
 			_hingeAngleSensor.ReadingChanged -= OnNativeReadingChanged;
 
 		private void OnNativeReadingChanged(object sender, NativeHingeAngleReading e) =>
-			_readingChanged?.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
+			_readingChangedWrapper.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
 	}
 }

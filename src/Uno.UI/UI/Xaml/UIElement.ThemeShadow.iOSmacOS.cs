@@ -1,6 +1,6 @@
 ﻿using Uno.Disposables;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public partial class UIElement
 {
@@ -41,12 +41,12 @@ public partial class UIElement
 
 		view.Layer.ShadowRadius = blur * translation.Z;
 		view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * translation.Z / 4, y * translation.Z / 4);
-		if (view is Windows.UI.Xaml.Controls.Border border)
+		if (view is Microsoft.UI.Xaml.Controls.Border border)
 		{
 			_boundsPathSubscription.Disposable = null;
-			border.BoundsPathUpdated += Border_BoundsPathUpdated;
-			_boundsPathSubscription.Disposable = Disposable.Create(() => border.BoundsPathUpdated -= Border_BoundsPathUpdated);
-			view.Layer.ShadowPath = border.BoundsPath;
+			border.BorderRenderer.BoundsPathUpdated += Border_BoundsPathUpdated;
+			_boundsPathSubscription.Disposable = Disposable.Create(() => border.BorderRenderer.BoundsPathUpdated -= Border_BoundsPathUpdated);
+			view.Layer.ShadowPath = border.BorderRenderer.BoundsPath;
 		}
 	}
 

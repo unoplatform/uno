@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,13 +10,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {
@@ -43,7 +43,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			}
 		}
 
-		private void TabViewTabCloseRequested(object sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
+		private void TabViewTabCloseRequested(object sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs e)
 		{
 			Tabs.TabItems.Remove(e.Tab);
 

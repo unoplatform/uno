@@ -8,13 +8,13 @@ namespace Windows.ApplicationModel
 	{
 		private StorageFolder _installedLocation;
 
-		internal Package()
-		{
-		}
+		internal Package() => InitializePlatform();
+
+		partial void InitializePlatform();
 
 		public bool IsDevelopmentMode => GetInnerIsDevelopmentMode();
 
-		public PackageId Id => new PackageId();
+		public PackageId Id { get; } = new();
 
 		public DateTimeOffset InstallDate => GetInstallDate();
 
@@ -44,8 +44,10 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsFramework => false;
 
+#if !__SKIA__
 		[Uno.NotImplemented]
 		public string Description => "";
+#endif
 
 		[Uno.NotImplemented]
 		public bool IsBundle => false;
@@ -53,14 +55,15 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsResourcePackage => false;
 
-
 #if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
-		public global::System.Uri Logo => new Uri("http://example.com");
+		public global::System.Uri Logo => default;
 #endif
 
+#if !__SKIA__
 		[Uno.NotImplemented]
 		public string PublisherDisplayName => "";
+#endif
 
 		[Uno.NotImplemented]
 		public PackageStatus Status => new PackageStatus();

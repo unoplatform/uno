@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ResourcesExtractor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "ResourcesExtractor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

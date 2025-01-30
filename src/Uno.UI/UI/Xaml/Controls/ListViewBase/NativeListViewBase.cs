@@ -1,4 +1,4 @@
-﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,9 +7,9 @@ using System.Windows.Input;
 using Uno;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : IFrameworkElement, DependencyObject, IScrollSnapPointsInfo
 	{

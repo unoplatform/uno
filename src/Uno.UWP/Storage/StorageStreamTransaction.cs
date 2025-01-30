@@ -70,7 +70,8 @@ namespace Windows.Storage
 			src.CopyTo(dst);
 			dst.Seek(0, SeekOrigin.Begin);
 
-			Stream = new TransactionRandomStream(_tempFile);
+			// We don not close the underlying stream as it's acts as a lock
+			Stream = new RandomAccessStreamOverStream(_tempFile, disallowDispose: true);
 		}
 
 		private void CloseFiles()
@@ -111,20 +112,6 @@ namespace Windows.Storage
 		~StorageStreamTransaction()
 		{
 			Dispose(false);
-		}
-
-		private class TransactionRandomStream : RandomAccessStreamOverStream
-		{
-			public TransactionRandomStream(Stream stream)
-				: base(stream)
-			{
-			}
-
-			/// <inheritdoc />
-			public override void Dispose()
-			{
-				// We don not close the underlying stream as it's acts as a lock
-			}
 		}
 
 		private class AutoCommitStream : Stream

@@ -13,8 +13,10 @@ namespace Uno.UI.Samples.Tests;
 
 internal record UnitTestMethodInfo
 {
-	private readonly List<object[]> _casesParameters;
+	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
+
+	private readonly bool _ignoredBecauseOfConditionalTestAttribute;
 
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
 	{
@@ -25,10 +27,18 @@ internal record UnitTestMethodInfo
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
+		PassFiltersAsFirstParameter =
+			HasCustomAttribute<FiltersAttribute>(method) ||
+			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
 		ExpectedException = method
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
 			?.ExceptionType;
+
+		_ignoredBecauseOfConditionalTestAttribute = method
+			.GetCustomAttributes<ConditionalTestAttribute>()
+			.SingleOrDefault()
+			?.ShouldRun() == false;
 
 		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()
@@ -60,6 +70,8 @@ internal record UnitTestMethodInfo
 
 	public bool RunsOnUIThread { get; }
 
+	public bool PassFiltersAsFirstParameter { get; }
+
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
 		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
 
@@ -74,6 +86,12 @@ internal record UnitTestMethodInfo
 		if (ignoreAttribute != null)
 		{
 			ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
+			return true;
+		}
+
+		if (_ignoredBecauseOfConditionalTestAttribute)
+		{
+			ignoreMessage = "The test is ignored on the current platform";
 			return true;
 		}
 

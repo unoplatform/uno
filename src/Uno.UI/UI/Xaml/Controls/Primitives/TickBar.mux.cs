@@ -9,10 +9,11 @@ using DirectUI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Shapes;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Shapes;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public sealed partial class TickBar
 {
@@ -52,12 +53,8 @@ public sealed partial class TickBar
 		Trace(L"BEGIN TickBar::ArrangeOverride()");
 #endif // TICKBAR_DBG
 
-		if (TemplatedParent == null)
-		{
-			throw new InvalidOperationException("Templated parent must be set");
-		}
-		var spParentSlider = TemplatedParent as Slider;
-		if (spParentSlider != null)
+		var spTemplatedParent = GetTemplatedParent() ?? throw new InvalidOperationException("Templated parent must be set");
+		if (spTemplatedParent is Slider spParentSlider)
 		{
 			// If tickFrequency <= 0, do nothing.
 			var tickFrequency = spParentSlider.TickFrequency;

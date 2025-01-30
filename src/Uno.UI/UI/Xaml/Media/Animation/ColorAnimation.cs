@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class ColorAnimation : Timeline, ITimeline, IAnimation<ColorOffset>
 	{
@@ -116,7 +112,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -137,6 +133,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (value is string s)
 			{
 				return (ColorOffset)Colors.Parse(s);
+			}
+			else if (value is Color c)
+			{
+				return (ColorOffset)c;
 			}
 
 			// TODO: handle int?

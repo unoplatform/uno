@@ -7,8 +7,15 @@ using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlayer
+	public sealed partial class MediaPlayer
 	{
+		internal const bool ImplementedByExtensions =
+#if __ANDROID__ || __IOS__ || __MACOS__
+			false;
+#else
+			true;
+#endif
+
 		#region Properties
 
 		private IMediaPlaybackSource _source;
@@ -78,7 +85,7 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, object> SeekCompleted;
 
-		public event TypedEventHandler<MediaPlayer, double> VideoRatioChanged;
+		public event TypedEventHandler<MediaPlayer, object> NaturalVideoDimensionChanged;
 
 		#endregion
 

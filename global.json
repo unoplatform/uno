@@ -1,13 +1,9 @@
 {
-  "sdk": {
-    "version": "7.0.102",
-    "allowPrerelease": true,
-    "rollForward": "latestFeature"
-  },
-  "tools": {
-    "dotnet": "7.0.102"
-  },
-  "msbuild-sdks": {
-    "MSBuild.Sdk.Extras": "3.0.44"
-  }
+	"sdk": {
+		"allowPrerelease": false
+	},
+	"msbuild-sdks": {
+		"MSBuild.Sdk.Extras": "3.0.44",
+		"Microsoft.Build.NoTargets": "3.7.56"
+	}
 }

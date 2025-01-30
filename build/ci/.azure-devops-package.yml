@@ -1,7 +1,6 @@
 parameters:
   poolName: ''
   artifactsToDownload:
-    - "NugetPackages-Artifacts-generic"
     - "NugetPackages-Artifacts-netcoremobile"
     - "NugetPackages-Artifacts-reference"
     - "NugetPackages-Artifacts-skia"
@@ -10,13 +9,6 @@ parameters:
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
-
-  dependsOn:
-  - generic_win_build
-  - netcoremobile_win_build
-  - skia_package_build
-  - wasm_package_build
-  - reference_package_build
 
   pool: ${{ parameters.poolName }}
 
@@ -34,12 +26,8 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
-
-    # This is required to be able to use hard links as much as possible
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
   steps:
   - checkout: self
@@ -76,7 +64,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:GeneratePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(XAML_FLAVOR_BUILD)-$(GitVersion.FullSemVer)-generate-packages.binlog
+      msbuildArguments: /r /m /v:m /t:BuildNuGetPackage "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(XAML_FLAVOR_BUILD)-$(GitVersion.FullSemVer)-generate-packages.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -124,25 +112,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages
-      ArtifactType: Container
-
-  - task: CopyFiles@2
-    displayName: Copy private templates package
-    condition: eq(variables['UNO_UWP_BUILD'], 'true')
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/
-      Contents: |
-        NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
-      TargetFolder: $(build.sourcesdirectory)/Build/private-templates
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: true
-
-  - task: PublishBuildArtifacts@1
-    condition: eq(variables['UNO_UWP_BUILD'], 'true')
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.sourcesdirectory)/Build/private-templates
-      ArtifactName: private-templates
+      ArtifactName: 'Nuget_Packages'
       ArtifactType: Container

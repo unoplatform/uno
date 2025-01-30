@@ -1,42 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
-public partial class FontFamilyHelper
+internal static partial class FontFamilyHelper
 {
-#if NETFX_CORE
-	public static Windows.UI.Xaml.Media.FontFamily Create(string familyName)
+#if __IOS__ || __MACOS__
+	internal static string RemoveUri(string familyName)
 	{
-		return new Windows.UI.Xaml.Media.FontFamily(familyName);
-	}
-#elif XAMARIN
-	public static string Create(string familyName)
-	{
-		return familyName;
-	}
-#endif
-
-#if XAMARIN_IOS
-	/// <summary>
-	/// This methods removes the font files extensions, typically .otf or .ttf because in iOS
-	/// you need to refer to a FontFamily via its name without extension and in Android you need the extension.
-	/// </summary>
-	/// <param name="familyName"></param>
-	/// <returns></returns>
-	public static string RemoveExtension(string familyName)
-	{
-		return familyName
-			.Replace(".otf", string.Empty)
-			.Replace(".ttf", string.Empty);
-	}
-#endif
-
-	public static string RemoveUri(string familyName)
-	{
-		var slashIndex = familyName.LastIndexOf("/", StringComparison.Ordinal);
+		var slashIndex = familyName.LastIndexOf('/');
 
 		if (slashIndex != -1)
 		{
@@ -44,10 +18,12 @@ public partial class FontFamilyHelper
 		}
 		return familyName;
 	}
+#endif
 
-	public static string RemoveHashFamilyName(string familyName)
+#if __ANDROID__
+	internal static string RemoveHashFamilyName(string familyName)
 	{
-		var hashIndex = familyName.IndexOf("#", StringComparison.Ordinal);
+		var hashIndex = familyName.IndexOf('#');
 
 		if (hashIndex != -1)
 		{
@@ -55,4 +31,5 @@ public partial class FontFamilyHelper
 		}
 		return familyName;
 	}
+#endif
 }

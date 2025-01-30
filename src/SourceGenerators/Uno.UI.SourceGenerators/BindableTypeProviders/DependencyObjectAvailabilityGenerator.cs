@@ -12,15 +12,8 @@ using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.BindableTypeProviders
 {
-#if NETFRAMEWORK
-	[GenerateAfter("Uno.ImmutableGenerator")]
-#endif
 	[Generator]
 	public class DependencyObjectAvailabilityGenerator : ISourceGenerator
 	{
@@ -76,7 +69,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							_intermediateOutputPath
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
-						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
+						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.DependencyObject");
 						_additionalLinkerHintAttributeSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Diagnostics.CodeAnalysis.AdditionalLinkerHintAttribute");
 
 						var additionalLinkerHintSymbols = FindAdditionalLinkerHints(context);
@@ -115,16 +108,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-#if NETSTANDARD
 					var diagnostic = Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 						null,
 						$"Failed to generate linker hints. ({e.Message})");
 
 					context.ReportDiagnostic(diagnostic);
-#else
-					Console.WriteLine("Failed to generate linker hints", new Exception("Failed to generate linker hints" + message, e));
-#endif
 				}
 			}
 

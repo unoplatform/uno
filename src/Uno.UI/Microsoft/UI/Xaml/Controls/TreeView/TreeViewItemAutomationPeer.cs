@@ -1,317 +1,315 @@
-﻿// MUX Reference TreeViewItemAutomationPeer.cpp, commit 46f9da3
-
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TreeViewItemAutomationPeer.cpp, tag winui3/release/1.4.2
 
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
-using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
-using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
-using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+
+/// <summary>
+/// Exposes TreeViewItem types to Microsoft UI Automation.
+/// </summary>
+public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider
 {
 	/// <summary>
-	/// Exposes TreeViewItem types to Microsoft UI Automation.
+	/// Initializes a new instance of the TreeViewItemAutomationPeer class.
 	/// </summary>
-	public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider
+	/// <param name="owner">The TreeViewItem control instance to create the peer for.</param>
+	public TreeViewItemAutomationPeer(TreeViewItem owner) : base(owner)
 	{
-		/// <summary>
-		/// Initializes a new instance of the TreeViewItemAutomationPeer class.
-		/// </summary>
-		/// <param name="owner">The TreeViewItem control instance to create the peer for.</param>
-		public TreeViewItemAutomationPeer(TreeViewItem owner) : base(owner)
-		{
-		}
+	}
 
-		// IExpandCollapseProvider
+	// IExpandCollapseProvider
 
-		/// <summary>
-		/// Gets a value indicating the expanded or collapsed state of the associated TreeViewItem.
-		/// </summary>
-		public ExpandCollapseState ExpandCollapseState
+	/// <summary>
+	/// Gets a value indicating the expanded or collapsed state of the associated TreeViewItem.
+	/// </summary>
+	public ExpandCollapseState ExpandCollapseState
+	{
+		get
 		{
-			get
+			var targetNode = GetTreeViewNode();
+			if (targetNode != null && targetNode.HasChildren)
 			{
-				var targetNode = GetTreeViewNode();
-				if (targetNode != null && targetNode.HasChildren)
+				if (targetNode.IsExpanded)
 				{
-					if (targetNode.IsExpanded)
-					{
-						return ExpandCollapseState.Expanded;
-					}
-					return ExpandCollapseState.Collapsed;
+					return ExpandCollapseState.Expanded;
 				}
-				return ExpandCollapseState.LeafNode;
+				return ExpandCollapseState.Collapsed;
+			}
+			return ExpandCollapseState.LeafNode;
+		}
+	}
+
+	/// <summary>
+	/// Collapses the associated TreeViewItem.
+	/// </summary>
+	public void Collapse()
+	{
+		var ancestorTreeView = GetParentTreeView();
+		if (ancestorTreeView != null)
+		{
+			var targetNode = GetTreeViewNode();
+			if (targetNode != null)
+			{
+				ancestorTreeView.Collapse(targetNode);
+				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
 			}
 		}
+	}
 
-		/// <summary>
-		/// Collapses the associated TreeViewItem.
-		/// </summary>
-		public void Collapse()
+	/// <summary>
+	/// Expands the associated TreeViewItem.
+	/// </summary>
+	public void Expand()
+	{
+		var ancestorTreeView = GetParentTreeView();
+		if (ancestorTreeView != null)
 		{
-			var ancestorTreeView = GetParentTreeView();
-			if (ancestorTreeView != null)
+			var targetNode = GetTreeViewNode();
+			if (targetNode != null)
 			{
-				var targetNode = GetTreeViewNode();
-				if (targetNode != null)
-				{
-					ancestorTreeView.Collapse(targetNode);
-					RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
-				}
+				ancestorTreeView.Expand(targetNode);
+				RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Expanded);
 			}
 		}
+	}
 
-		/// <summary>
-		/// Expands the associated TreeViewItem.
-		/// </summary>
-		public void Expand()
+	// IAutomationPeerOverrides
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.ExpandCollapse)
 		{
-			var ancestorTreeView = GetParentTreeView();
-			if (ancestorTreeView != null)
-			{
-				var targetNode = GetTreeViewNode();
-				if (targetNode != null)
-				{
-					ancestorTreeView.Expand(targetNode);
-					RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Expanded);
-				}
-			}
+			return this;
 		}
 
-		// IAutomationPeerOverrides
-		protected override object GetPatternCore(PatternInterface patternInterface)
+		var treeView = GetParentTreeView();
+
+		if (treeView != null)
 		{
-			if (patternInterface == PatternInterface.ExpandCollapse)
+			if (patternInterface == PatternInterface.SelectionItem && treeView.SelectionMode != TreeViewSelectionMode.None)
 			{
 				return this;
 			}
+		}
 
-			var treeView = GetParentTreeView();
+		return base.GetPatternCore(patternInterface);
+	}
 
-			if (treeView != null)
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+	{
+		return AutomationControlType.TreeItem;
+	}
+
+	protected override string GetNameCore()
+	{
+		//Check to see if the item has a defined Automation Name
+		string nameHString = base.GetNameCore();
+
+		if (string.IsNullOrEmpty(nameHString))
+		{
+			var treeViewNode = GetTreeViewNode();
+			if (treeViewNode != null)
 			{
-				if (patternInterface == PatternInterface.SelectionItem && treeView.SelectionMode != TreeViewSelectionMode.None)
-				{
-					return this;
-				}
+				nameHString = SharedHelpers.TryGetStringRepresentationFromObject(treeViewNode.Content);
 			}
-
-			return base.GetPatternCore(patternInterface);
-		}
-
-
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.TreeItem;
-		}
-
-		protected override string GetNameCore()
-		{
-			//Check to see if the item has a defined Automation Name
-			string nameHString = base.GetNameCore();
 
 			if (string.IsNullOrEmpty(nameHString))
 			{
-				var treeViewNode = GetTreeViewNode();
-				if (treeViewNode != null)
-				{
-					nameHString = SharedHelpers.TryGetStringRepresentationFromObject(treeViewNode.Content);
-				}
-
-				if (string.IsNullOrEmpty(nameHString))
-				{
-					nameHString = "TreeViewNode";
-				}
+				nameHString = "TreeViewNode";
 			}
-
-			return nameHString;
 		}
 
-		protected override string GetClassNameCore()
-		{
-			return nameof(TreeViewItem);
-		}
+		return nameHString;
+	}
 
-		// IAutomationPeerOverrides3
-		protected override int GetPositionInSetCore()
-		{
-			ListView ancestorListView = GetParentListView();
-			var targetNode = GetTreeViewNode();
-			int positionInSet = 0;
+	protected override string GetClassNameCore()
+	{
+		return nameof(TreeViewItem);
+	}
 
-			if (ancestorListView != null && targetNode != null)
+	// IAutomationPeerOverrides3
+	protected override int GetPositionInSetCore()
+	{
+		ListView ancestorListView = GetParentListView();
+		var targetNode = GetTreeViewNode();
+		int positionInSet = 0;
+
+		if (ancestorListView != null && targetNode != null)
+		{
+			var targetParentNode = targetNode.Parent;
+			if (targetParentNode != null)
 			{
-				var targetParentNode = targetNode.Parent;
-				if (targetParentNode != null)
+				var position = targetParentNode.Children.IndexOf(targetNode);
+				if (position != -1)
 				{
-					var position = targetParentNode.Children.IndexOf(targetNode);
-					if (position != -1)
-					{
-						positionInSet = position + 1;
-					}
+					positionInSet = position + 1;
 				}
 			}
-
-			return positionInSet;
 		}
 
-		protected override int GetSizeOfSetCore()
+		return positionInSet;
+	}
+
+	protected override int GetSizeOfSetCore()
+	{
+		var ancestorListView = GetParentListView();
+		var targetNode = GetTreeViewNode();
+		int setSize = 0;
+
+		if (ancestorListView != null && targetNode != null)
 		{
-			var ancestorListView = GetParentListView();
-			var targetNode = GetTreeViewNode();
-			int setSize = 0;
-
-			if (ancestorListView != null && targetNode != null)
+			var targetParentNode = targetNode.Parent;
+			if (targetParentNode != null)
 			{
-				var targetParentNode = targetNode.Parent;
-				if (targetParentNode != null)
-				{
-					var size = targetParentNode.Children.Count;
-					setSize = size;
-				}
-			}
-
-			return setSize;
-		}
-
-		protected override int GetLevelCore()
-		{
-			ListView ancestorListView = GetParentListView();
-			var targetNode = GetTreeViewNode();
-			int level = -1;
-
-			if (ancestorListView != null && targetNode != null)
-			{
-				level = targetNode.Depth;
-				level++;
-			}
-
-			return level;
-		}
-
-		internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
-		{
-			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
-			{
-				ExpandCollapseState oldState;
-				var expandCollapseStateProperty = ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty;
-
-				if (newState == ExpandCollapseState.Expanded)
-				{
-					oldState = ExpandCollapseState.Collapsed;
-				}
-				else
-				{
-					oldState = ExpandCollapseState.Expanded;
-				}
-
-				// box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
-				RaisePropertyChangedEvent(expandCollapseStateProperty, oldState, newState);
+				var size = targetParentNode.Children.Count;
+				setSize = size;
 			}
 		}
 
-		// ISelectionItemProvider
-		private bool IsSelected
+		return setSize;
+	}
+
+	protected override int GetLevelCore()
+	{
+		ListView ancestorListView = GetParentListView();
+		var targetNode = GetTreeViewNode();
+		int level = -1;
+
+		if (ancestorListView != null && targetNode != null)
 		{
-			get
+			level = targetNode.Depth;
+			level++;
+		}
+
+		return level;
+	}
+
+	internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
+	{
+		if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+		{
+			ExpandCollapseState oldState;
+			var expandCollapseStateProperty = ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty;
+
+			if (newState == ExpandCollapseState.Expanded)
 			{
-				var treeViewItem = (TreeViewItem)Owner;
-				return treeViewItem.IsSelectedInternal;
+				oldState = ExpandCollapseState.Collapsed;
+			}
+			else
+			{
+				oldState = ExpandCollapseState.Expanded;
+			}
+
+			// box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
+			RaisePropertyChangedEvent(expandCollapseStateProperty, oldState, newState);
+		}
+	}
+
+	// ISelectionItemProvider
+	private bool IsSelected
+	{
+		get
+		{
+			var treeViewItem = (TreeViewItem)Owner;
+			return treeViewItem.IsSelectedInternal;
+		}
+	}
+
+	private IRawElementProviderSimple SelectionContainer()
+	{
+		IRawElementProviderSimple provider = null;
+		var listView = GetParentListView();
+		if (listView != null)
+		{
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			if (peer != null)
+			{
+				provider = ProviderFromPeer(peer);
 			}
 		}
 
-		private IRawElementProviderSimple SelectionContainer()
+		return provider;
+	}
+
+	private void AddToSelection()
+	{
+		UpdateSelection(true);
+	}
+
+	private void RemoveFromSelection()
+	{
+		UpdateSelection(false);
+	}
+
+	private void Select()
+	{
+		UpdateSelection(true);
+	}
+
+	private ListView GetParentListView()
+	{
+		var treeViewItemAncestor = (DependencyObject)Owner;
+		ListView ancestorListView = null;
+
+		while (treeViewItemAncestor != null && ancestorListView == null)
 		{
-			IRawElementProviderSimple provider = null;
-			var listView = GetParentListView();
-			if (listView != null)
+			treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
+			if (treeViewItemAncestor != null)
 			{
-				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
-				if (peer != null)
-				{
-					provider = ProviderFromPeer(peer);
-				}
+				ancestorListView = treeViewItemAncestor as ListView;
 			}
-
-			return provider;
 		}
 
-		private void AddToSelection()
-		{
-			UpdateSelection(true);
-		}
+		return ancestorListView;
+	}
 
-		private void RemoveFromSelection()
-		{
-			UpdateSelection(false);
-		}
+	private TreeView GetParentTreeView()
+	{
+		var treeViewItemAncestor = (DependencyObject)Owner;
+		TreeView ancestorTreeView = null;
 
-		private void Select()
+		while (treeViewItemAncestor != null && ancestorTreeView == null)
 		{
-			UpdateSelection(true);
-		}
-
-		private ListView GetParentListView()
-		{
-			var treeViewItemAncestor = (DependencyObject)Owner;
-			ListView ancestorListView = null;
-
-			while (treeViewItemAncestor != null && ancestorListView == null)
+			treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
+			if (treeViewItemAncestor != null)
 			{
-				treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
-				if (treeViewItemAncestor != null)
-				{
-					ancestorListView = treeViewItemAncestor as ListView;
-				}
+				ancestorTreeView = treeViewItemAncestor as TreeView;
 			}
-
-			return ancestorListView;
 		}
 
-		private TreeView GetParentTreeView()
+		return ancestorTreeView;
+	}
+
+	private TreeViewNode GetTreeViewNode()
+	{
+		TreeViewNode targetNode = null;
+		var treeview = GetParentTreeView();
+		if (treeview != null)
 		{
-			var treeViewItemAncestor = (DependencyObject)Owner;
-			TreeView ancestorTreeView = null;
-
-			while (treeViewItemAncestor != null && ancestorTreeView == null)
-			{
-				treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
-				if (treeViewItemAncestor != null)
-				{
-					ancestorTreeView = treeViewItemAncestor as TreeView;
-				}
-			}
-
-			return ancestorTreeView;
+			targetNode = treeview.NodeFromContainer(Owner);
 		}
+		return targetNode;
+	}
 
-		private TreeViewNode GetTreeViewNode()
+	private void UpdateSelection(bool select)
+	{
+		var treeItem = Owner as TreeViewItem;
+		if (treeItem != null)
 		{
-			TreeViewNode targetNode = null;
-			var treeview = GetParentTreeView();
-			if (treeview != null)
-			{
-				targetNode = treeview.NodeFromContainer(Owner);
-			}
-			return targetNode;
-		}
-
-		private void UpdateSelection(bool select)
-		{
-			var treeItem = Owner as TreeViewItem;
-			if (treeItem != null)
-			{
-				var impl = treeItem;
-				impl.UpdateSelection(select);
-			}
+			var impl = treeItem;
+			impl.UpdateSelection(select);
 		}
 	}
 }

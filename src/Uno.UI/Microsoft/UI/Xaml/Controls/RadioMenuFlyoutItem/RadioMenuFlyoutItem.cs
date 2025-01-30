@@ -3,10 +3,10 @@
 // MUX Reference RadioMenuFlyoutItem.cpp, commit d6634d1bb82697c9b700fff5adf4e9484e0952c5
 using System;
 using System.Collections.Concurrent;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	// UNO Docs:
 	// In WinUI 2.6. RadioMenuFlyoutItem derives publically from MenuFlyoutItem, but secretly from ToggleMenuFlyoutItem.

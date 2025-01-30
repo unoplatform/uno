@@ -1,7 +1,4 @@
 ﻿#nullable enable
-#if !__IOS__ && !__ANDROID__ && !__SKIA__ && !__MACOS__
-#define NOT_IMPLEMENTED
-#endif
 
 using System;
 using System.Collections.Generic;
@@ -14,29 +11,50 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
-#if NOT_IMPLEMENTED
-	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap : ImageSource, IDisposable
+	public partial class RenderTargetBitmap : ImageSource
 	{
-#if NOT_IMPLEMENTED
+#if !HAS_RENDER_TARGET_BITMAP
 		internal const bool IsImplemented = false;
 #else
 		internal const bool IsImplemented = true;
 #endif
 
+		/// <summary>
+		/// Initializes a new instance of the RenderTargetBitmap class.
+		/// </summary>
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
+		public RenderTargetBitmap()
+		{
+		}
+
+#if !HAS_RENDER_TARGET_BITMAP
+		// The partial API that has to be implemented in each platform
+
+		private static ImageData Open(UnmanagedArrayOfBytes buffer, int bufferLength, int width, int height)
+			=> default;
+
+		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
+			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
+#endif
+
 		#region PixelWidth
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelWidthProperty { get; } = DependencyProperty.Register(
 			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public int PixelWidth
 		{
@@ -47,14 +65,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#region PixelHeight
 
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelHeightProperty { get; } = DependencyProperty.Register(
 			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public int PixelHeight
 		{
@@ -63,7 +81,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 		#endregion
 
+#if __ANDROID__
 		private byte[]? _buffer;
+#else
+		private UnmanagedArrayOfBytes? _buffer;
+#endif
 		private int _bufferSize;
 
 		/// <inheritdoc />
@@ -72,31 +94,33 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var width = PixelWidth;
 			var height = PixelHeight;
 
-			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
+			if (_buffer is not { } buffer || _bufferSize <= 0 || width <= 0 || height <= 0)
 			{
 				image = default;
 				return false;
 			}
 
-			image = Open(_buffer, _bufferSize, width, height);
+			image = Open(buffer, _bufferSize, width, height);
+			InvalidateImageSource();
 			return image.HasData;
 		}
 
-#if NOT_IMPLEMENTED
-		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
-			=> default;
-#endif
-
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
 			=> AsyncAction.FromTask(ct =>
 			{
 				try
 				{
-					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
+					element ??= WinUICoreServices.Instance.MainVisualTree?.PublicRootVisual;
+
+					if (element is null)
+					{
+						throw new InvalidOperationException("No visual tree is available and no UIElement was provided for render");
+					}
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -109,16 +133,22 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return Task.CompletedTask;
 			});
 
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element)
 			=> AsyncAction.FromTask(ct =>
 			{
 				try
 				{
-					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
+					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
+
+					if (element is null)
+					{
+						throw new InvalidOperationException("No window or element to render");
+					}
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -131,61 +161,45 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return Task.CompletedTask;
 			});
 
-#if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
 			=> AsyncOperation.FromTask(ct =>
 			{
 				if (_buffer is null)
 				{
-					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
+					return Task.FromResult<IBuffer>(new Buffer([]));
 				}
+
+#if __ANDROID__
 				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
+#else
+				unsafe
+				{
+					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Pointer.ToPointer(), _bufferSize);
+					return Task.FromResult<IBuffer>(new Buffer(mem.Memory.Slice(0, _bufferSize)));
+				}
+#endif
 			});
 
-#if NOT_IMPLEMENTED
-		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
-			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
-#endif
-
-		void IDisposable.Dispose()
-		{
-			if (_buffer is { })
-			{
-				ArrayPool<byte>.Shared.Return(_buffer);
-			}
-		}
-
 		#region Misc static helpers
-#if !NOT_IMPLEMENTED
+#if HAS_RENDER_TARGET_BITMAP
+#if __ANDROID__
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
-			if (buffer is null)
+			if (buffer is null || buffer.Length < length)
 			{
-				buffer = ArrayPool<byte>.Shared.Rent(length);
-			}
-			else if (buffer.Length < length)
-			{
-				ArrayPool<byte>.Shared.Return(buffer);
-				buffer = ArrayPool<byte>.Shared.Rent(length);
+				buffer = new byte[length];
 			}
 		}
-
-#if !__IOS__ && !__MACOS__
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		private static void SwapRB(ref byte[] buffer, int byteCount)
+#else
+		private static void EnsureBuffer(ref UnmanagedArrayOfBytes? buffer, int length)
 		{
-			for (var i = 0; i < byteCount; i += 4)
+			if (buffer is null || buffer.Length < length)
 			{
-				//Swap R and B chanal
-				Swap(ref buffer![i], ref buffer![i + 2]);
+				buffer = new UnmanagedArrayOfBytes(length);
 			}
-		}
-
-		private static void Swap(ref byte a, ref byte b)
-		{
-			(a, b) = (b, a);
 		}
 #endif
 #endif

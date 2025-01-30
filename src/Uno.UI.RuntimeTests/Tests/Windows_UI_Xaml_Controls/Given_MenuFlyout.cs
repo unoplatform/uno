@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -15,21 +15,24 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
-#if NETFX_CORE
-// Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
-using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
-using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+
+#if HAS_UNO && !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
+
+using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+using RuntimeTests.Windows_UI_Xaml_Controls.Flyout;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -40,6 +43,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public class Given_MenuFlyout
 	{
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Toggle_IsEnabled_Via_Binding()
+		{
+			var page = new Flyout_ToggleMenu_IsEnabled();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			var content = page.Content as StackPanel;
+			var button = content.Children.First() as Button;
+			var buttonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer;
+
+			var flyout = button.Flyout as MenuFlyout;
+
+			async Task AssertIsEnabled(bool expected)
+			{
+				buttonPeer.Invoke();
+				await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).First();
+				foreach (var item in flyout.Items)
+				{
+					// The toggleItem should be disabled by default
+					Assert.AreEqual(expected, item.IsEnabled);
+				}
+
+				popup.IsOpen = false;
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			await AssertIsEnabled(false);
+
+			// Enable the toggleItem
+			page.ViewModel.AreItemsEnabled = true;
+
+			await AssertIsEnabled(true);
+
+			// Disable the toggleItem
+			page.ViewModel.AreItemsEnabled = false;
+
+			await AssertIsEnabled(false);
+		}
+
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Native_AppBarButton_And_Managed_Popups()
@@ -55,8 +103,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				try
 				{
 					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !NETFX_CORE
-					Assert.AreEqual(false, flyout.UseNativePopup);
+#if !WINAPPSDK
+					Assert.IsFalse(flyout.UseNativePopup);
 #endif
 					var flyoutItem = page.FirstFlyoutItem;
 
@@ -77,73 +125,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var menuBarItem = new MenuBarItem
 			{
-				var menuBarItem = new MenuBarItem
-				{
-					Title = "File",
-				};
+				Title = "File",
+			};
 
-				var flyoutItem1 = new MenuFlyoutItem { Text = "Open..." };
-				var flyoutItem2 = new MenuFlyoutItem { Text = "Save..." };
-				var flyoutSeparator = new MenuFlyoutSeparator();
+			var flyoutItem1 = new MenuFlyoutItem { Text = "Open..." };
+			var flyoutItem2 = new MenuFlyoutItem { Text = "Save..." };
+			var flyoutSeparator = new MenuFlyoutSeparator();
 
-				var menuBar = new MenuBar
-				{
-					Items =
+			var menuBar = new MenuBar
+			{
+				Items =
 				{
 					menuBarItem
 				}
-				};
+			};
 
-				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
-				Grid.SetRow(contentSpacer, 1);
+			var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+			Grid.SetRow(contentSpacer, 1);
 
-				var hostPanel = new Grid
-				{
-					Children =
+			var hostPanel = new Grid
+			{
+				Children =
 				{
 					menuBar,
 					contentSpacer
 				},
-					RowDefinitions =
+				RowDefinitions =
 				{
 					new RowDefinition {Height = GridLength.Auto},
 					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
 				}
-				};
+			};
 
-				WindowHelper.WindowContent = hostPanel;
-				await WindowHelper.WaitForLoaded(hostPanel);
+			WindowHelper.WindowContent = hostPanel;
+			await WindowHelper.WaitForLoaded(hostPanel);
 
-				menuBarItem.Items.Add(flyoutItem1);
-				menuBarItem.Items.Add(flyoutSeparator);
-				menuBarItem.Items.Add(flyoutItem2);
+			menuBarItem.Items.Add(flyoutItem1);
+			menuBarItem.Items.Add(flyoutSeparator);
+			menuBarItem.Items.Add(flyoutItem2);
 
-				var peer = new MenuBarItemAutomationPeer(menuBarItem);
-				try
-				{
-					peer.Invoke();
+			var peer = new MenuBarItemAutomationPeer(menuBarItem);
+			try
+			{
+				peer.Invoke();
 
-					await WindowHelper.WaitForLoaded(flyoutItem1);
-					await WindowHelper.WaitForLoaded(flyoutSeparator);
-					await WindowHelper.WaitForLoaded(flyoutItem2);
+				await WindowHelper.WaitForLoaded(flyoutItem1);
+				await WindowHelper.WaitForLoaded(flyoutSeparator);
+				await WindowHelper.WaitForLoaded(flyoutItem2);
 
-					var flyoutItem1Bounds = flyoutItem1.GetRelativeBounds(menuBarItem);
-					var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
-					var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
+				var flyoutItem1Bounds = flyoutItem1.GetRelativeBounds(menuBarItem);
+				var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
+				var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
 
-					Assert.IsTrue(flyoutItem1Bounds.Height > 0);
-					Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
-					Assert.IsTrue(flyoutItem2Bounds.Height > 0);
+				Assert.IsTrue(flyoutItem1Bounds.Height > 0);
+				Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
+				Assert.IsTrue(flyoutItem2Bounds.Height > 0);
 
-					Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
-					Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
-				}
-				finally
-				{
-					peer.Collapse();
-				}
+				Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
+				Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
+			}
+			finally
+			{
+				peer.Collapse();
 			}
 		}
 
@@ -151,84 +196,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
+			var menuBarItem = new MenuBarItem
 			{
-				var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
-				var menuBarItem = new MenuBarItem
-				{
-					Title = "File",
-					Items =
+				Title = "File",
+				Items =
 				{
 					flyoutItem,
 					new MenuFlyoutItem { Text = "Don't open..."}
 				}
-				};
+			};
 
-				var menuBar = new MenuBar
-				{
-					Items =
+			var menuBar = new MenuBar
+			{
+				Items =
 				{
 					menuBarItem
 				}
-				};
+			};
 
-				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
-				Grid.SetRow(contentSpacer, 1);
+			var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+			Grid.SetRow(contentSpacer, 1);
 
-				var hostPanel = new Grid
-				{
-					Children =
+			var hostPanel = new Grid
+			{
+				Children =
 				{
 					menuBar,
 					contentSpacer
 				},
-					RowDefinitions =
+				RowDefinitions =
 				{
 					new RowDefinition {Height = GridLength.Auto},
 					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
 				}
-				};
+			};
 
-				WindowHelper.WindowContent = hostPanel;
-				await WindowHelper.WaitForLoaded(hostPanel);
+			WindowHelper.WindowContent = hostPanel;
+			await WindowHelper.WaitForLoaded(hostPanel);
 
-				var peer = new MenuBarItemAutomationPeer(menuBarItem);
-				try
-				{
-					peer.Invoke();
+			var peer = new MenuBarItemAutomationPeer(menuBarItem);
+			try
+			{
+				peer.Invoke();
 
-					await WindowHelper.WaitForLoaded(flyoutItem);
+				await WindowHelper.WaitForLoaded(flyoutItem);
 
-					var menuBarItemBounds = menuBarItem.GetOnScreenBounds();
+				var menuBarItemBounds = menuBarItem.GetOnScreenBounds();
 
-					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
+				var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
 
-					var menuBarBounds = menuBar.GetOnScreenBounds();
+				var menuBarBounds = menuBar.GetOnScreenBounds();
 
-					Assert.AreEqual(32, menuBarItemBounds.Height, 1);
+				Assert.AreEqual(32, menuBarItemBounds.Height, 1);
 
-					var expectedY = 39.0;
+				var expectedY = 39.0;
 #if __ANDROID__
-					if (!FeatureConfiguration.Popup.UseNativePopup)
-					{
-						// If using managed popup, the expected offset must be adjusted for the status bar
-						expectedY += menuBarBounds.Y;
-					}
+				if (!FeatureConfiguration.Popup.UseNativePopup)
+				{
+					// If using managed popup, the expected offset must be adjusted for the status bar
+					expectedY += menuBarBounds.Y;
+				}
 #endif
 
-					Assert.AreEqual(5, flyoutItemBounds.X, 3);
-					Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
-				}
-				finally
-				{
-					peer.Collapse();
-				}
+				Assert.AreEqual(5, flyoutItemBounds.X, 3);
+				Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
+			}
+			finally
+			{
+				peer.Collapse();
 			}
 		}
 
 #if __ANDROID__
 		[TestMethod]
 		[RequiresFullWindow]
+		[Ignore("Flaky #9080")]
 		public async Task Verify_MenuBarItem_Bounds_Native_Popups()
 		{
 			using (FeatureConfigurationHelper.UseNativePopups())
@@ -324,6 +367,140 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					flyout.Hide();
 				}
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __IOS__
+		[Ignore("https://github.com/unoplatform/uno/issues/13314")]
+#endif
+		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
+		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+
+			var button = new Button()
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Content = "Open flyout",
+				Flyout = new MenuFlyout()
+				{
+					Items =
+					{
+						new MenuFlyoutSubItem()
+						{
+							Text = "Open submenu",
+							Items =
+							{
+								new MenuFlyoutSubItem() { Text = "First item" },
+							},
+						},
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = button;
+			await WindowHelper.WaitForLoaded(button);
+			button.AutomationPeerClick();
+
+			var flyout = (MenuFlyout)button.Flyout;
+			var subItem = (MenuFlyoutSubItem)flyout.Items.Single();
+			try
+			{
+				subItem.Open();
+
+				// The "Open submenu" opens at the very right of the screen.
+				// So, the "First item" sub item should open on its left.
+				// We assert that the left of "Open sub menu" is almost the same as the right of "First item"
+
+				await WindowHelper.WaitForIdle();
+
+				var subItemBounds = subItem.GetAbsoluteBounds();
+				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
+
+				var difference = subItemBounds.X - subSubItemBounds.Right;
+				Assert.IsTrue(Math.Abs(difference) <= 3);
+
+			}
+			finally
+			{
+				subItem.Close();
+				flyout.Close();
+			}
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_MenuFlyout_DataContext_Changes_In_Opening()
+		{
+			var SUT = new When_MenuFlyout_DataContext_Changes_In_Opening();
+
+
+			MenuFlyout flyout = null;
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+
+				var button = SUT.FindFirstChild<Button>();
+				flyout = (MenuFlyout)button.Flyout;
+
+				flyout.ShowAt(button);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("1", (flyout.Items[0] as MenuFlyoutItem)!.Text);
+			}
+			finally
+			{
+				if (flyout?.IsOpen == true)
+				{
+					flyout.Hide();
+				}
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Toggle_Item_HasToggle()
+		{
+			var toggleItem = new ToggleMenuFlyoutItem();
+			Assert.IsTrue(toggleItem.HasToggle());
+		}
+
+		[TestMethod]
+		public async Task When_Menu_Contains_Toggle()
+		{
+			var menu = new MenuFlyout();
+			menu.Items.Add(new MenuFlyoutItem() { Text = "Text" });
+
+			var trigger = new Button();
+			TestServices.WindowHelper.WindowContent = trigger;
+			await TestServices.WindowHelper.WaitForLoaded(trigger);
+
+			await ValidateToggleAsync(false);
+
+			var toggleItem = new ToggleMenuFlyoutItem() { Text = "Toggle!" };
+			menu.Items.Add(toggleItem);
+			await ValidateToggleAsync(true);
+
+			menu.Items.Remove(toggleItem);
+			await ValidateToggleAsync(false);
+
+			async Task ValidateToggleAsync(bool expected)
+			{
+				menu.ShowAt(trigger);
+				await TestServices.WindowHelper.WaitForIdle();
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+				var popup = popups[0];
+				Assert.IsInstanceOfType(popup.Child, typeof(MenuFlyoutPresenter));
+				var presenter = (MenuFlyoutPresenter)popup.Child;
+				Assert.AreEqual(expected, presenter.GetContainsToggleItems());
+				popup.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 		}
 #endif

@@ -1,0 +1,41 @@
+parameters:
+  poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: skia_package_macos_native_build
+  displayName: 'Skia macOS Native Binaries'
+  pool:
+    vmImage: ${{ parameters.macOSImageName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # We're building packages on linux, so we need to enable WPF support
+    EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+  - template: templates/gitversion.yml
+  
+  - bash: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
+      chmod +x build.sh
+      ./build.sh
+    displayName: Build Skia macOS native
+
+  - task: PublishPipelineArtifact@1
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+      artifactName: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)

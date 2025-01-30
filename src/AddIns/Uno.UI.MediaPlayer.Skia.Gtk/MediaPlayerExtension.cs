@@ -15,14 +15,14 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
+using Microsoft.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Atk;
 using System.Runtime.CompilerServices;
 
@@ -44,6 +44,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
 	private bool _isLoopingEnabled;
+	private bool _isLoopingAllEnabled;
 	private double _playbackRate;
 
 	public MediaPlayerExtension(object owner)
@@ -101,6 +102,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceLoaded += OnPrepared;
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
+		_player.OnNaturalVideoDimensionChanged += OnNaturalVideoDimensionChanged;
 
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
@@ -143,7 +145,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Pause()
 	{
-		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
+				&& _player != null
+				&& _player.CurrentState == MediaPlayerState.Playing)
+		{
+			_player?.Pause();
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused
+				&& _player != null
+				&& _player.CurrentState != MediaPlayerState.Paused)
 		{
 			_player?.Pause();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
@@ -167,9 +178,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		switch (_owner.Source)
 		{
-			case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+			case MediaPlaybackList playlist when playlist.Items.Count > 0:
 				SetPlaylistItems(playlist);
-				_uri = _playlistItems[0];
+				if (_playlistItems is not null)
+				{
+					_uri = _playlistItems[0];
+				}
+				else
+				{
+					throw new InvalidOperationException("Playlist Items could not be set");
+				}
 				break;
 
 			case MediaPlaybackItem item:
@@ -180,13 +198,42 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				_uri = source.Uri;
 				break;
 
+
 			default:
 				throw new InvalidOperationException("Unsupported media source type");
 		}
 		ApplyVideoSource();
-		Events?.RaiseMediaOpened();
 		Events?.RaiseSourceChanged();
 
+		// Set the player back to the paused state, so that the
+		// transport controls can be shown properly.
+		// This may need to be changed when the initialization of libVLC
+		// can be taken into account, as well as the media status.
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+	}
+
+	public void ReInitializeSource()
+	{
+		NaturalDuration = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
+
+		if (_owner.Source == null)
+		{
+			return;
+		}
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+		InitializePlayer();
+		ApplyVideoSource();
+		Events?.RaiseSourceChanged();
+
+		// Set the player back to the paused state, so that the
+		// transport controls can be shown properly.
+		// This may need to be changed when the initialization of libVLC
+		// can be taken into account, as well as the media status.
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)
@@ -267,10 +314,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		set
 		{
 			_isLoopingEnabled = value;
-			if (_player is not null)
-			{
-				_player.SetIsLoopingEnabled(value);
-			}
+		}
+	}
+
+	public bool IsLoopingAllEnabled
+	{
+		get => _isLoopingAllEnabled;
+		set
+		{
+			_isLoopingAllEnabled = value;
 		}
 	}
 
@@ -322,6 +374,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public bool RealTimePlayback { get; set; }
 
 	public double AudioBalance { get; set; }
+
+	public bool? IsVideo { get; set; }
 
 	public void SetTransportControlsBounds(Rect bounds)
 	{
@@ -375,6 +429,28 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			_isPlayRequested = false;
 			_isPlayerPrepared = false;
+		}
+	}
+
+	public void PreviousTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex > 0)
+		{
+			_uri = _playlistItems[--_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
+	}
+
+	public void NextTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		{
+			_uri = _playlistItems[++_playlistIndex];
+			ReInitializeSource();
+			Play();
 		}
 	}
 }

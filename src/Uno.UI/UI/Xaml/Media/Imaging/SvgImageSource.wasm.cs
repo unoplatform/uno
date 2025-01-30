@@ -8,12 +8,12 @@ using Windows.Graphics.Display;
 using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
+using static Microsoft.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
 using Uno.UI.Xaml.Media;
 using Uno.Helpers;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{
@@ -91,20 +91,5 @@ namespace Windows.UI.Xaml.Media.Imaging
 		internal override void ReportImageLoaded() => RaiseImageOpened();
 
 		internal override void ReportImageFailed(string errorMessage) => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
-
-		public override string ToString()
-		{
-			if (AbsoluteUri is { } uri)
-			{
-				return $"{GetType().Name}/{uri}";
-			}
-
-			if (_stream is { } stream)
-			{
-				return $"{GetType().Name}/{stream.GetType()}";
-			}
-
-			return $"{GetType().Name}/-empty-";
-		}
 	}
 }

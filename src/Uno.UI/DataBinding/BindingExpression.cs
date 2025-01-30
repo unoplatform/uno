@@ -1,26 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
-using System.ComponentModel;
-using Uno.Disposables;
-using System.Windows.Input;
-using Uno;
-using Uno.UI.DataBinding;
-using Uno.Presentation;
-using Uno.Foundation.Logging;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
-using Uno.UI;
-using Uno.UI.Converters;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
-	public partial class BindingExpression : IDisposable, IValueChangedListener
+	public partial class BindingExpression : IDisposable
 	{
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
@@ -58,10 +51,25 @@ namespace Windows.UI.Xaml.Data
 
 		public object DataContext
 		{
-			get => _isElementNameSource || ExplicitSource != null ? ExplicitSource : _dataContext?.Target;
+			get
+			{
+				if (ParentBinding.IsTemplateBinding)
+				{
+					return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+				}
+				if (_isElementNameSource || ExplicitSource != null)
+				{
+					return ExplicitSource;
+				}
+
+				return _dataContext?.Target;
+			}
 			set
 			{
-				if (ExplicitSource == null && !_disposed && DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+				if (!_disposed &&
+					!ParentBinding.IsTemplateBinding &&
+					ExplicitSource == null &&
+					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 
@@ -104,8 +112,8 @@ namespace Windows.UI.Xaml.Data
 			_bindingPath = new BindingPath(
 				path: ParentBinding.Path,
 				fallbackValue: ParentBinding.FallbackValue,
-				precedence: null,
-				allowPrivateMembers: ParentBinding.CompiledSource != null
+				forAnimations: false,
+				allowPrivateMembers: ParentBinding.IsXBind
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
 
@@ -121,7 +129,7 @@ namespace Windows.UI.Xaml.Data
 			{
 				_updateSources = ParentBinding
 					.XBindPropertyPaths
-					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					.Select(p => new BindingPath(path: p, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
 					{
 					})
 					.ToArray();
@@ -137,12 +145,29 @@ namespace Windows.UI.Xaml.Data
 				ApplyFallbackValue();
 			}
 
+			ApplyTemplateBindingParent();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
+		private ManagedWeakReference GetWeakTemplatedParent()
+		{
+			return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
+		}
+
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
+		{
+			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
+			{
+				return _explicitSourceStore;
+			}
+			if (ParentBinding.IsTemplateBinding)
+			{
+				return GetWeakTemplatedParent();
+			}
+
+			return _dataContext;
+		}
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -176,9 +201,7 @@ namespace Windows.UI.Xaml.Data
 				return;
 			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_IsCurrentlyPushingTwoWay = true;
 
@@ -202,9 +225,7 @@ namespace Windows.UI.Xaml.Data
 					_bindingPath.Value = value;
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_IsCurrentlyPushingTwoWay = false;
 			}
@@ -220,6 +241,11 @@ namespace Windows.UI.Xaml.Data
 		{
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				ParentBinding.XBindBack(DataContext, value);
 			}
 			catch (Exception exception)
@@ -244,6 +270,11 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				if (ParentBinding.Mode == BindingMode.TwoWay
 					&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
 				{
@@ -281,16 +312,39 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		/// <summary>
-		/// Turns UpdateSourceTrigger.Default to DependencyProperty's FrameworkPropertyMetadata.DefaultUpdateSourceTrigger
+		/// Refreshes the value to the target, as the bound source may not be observable
 		/// </summary>
-		/// <returns></returns>
+		internal void RefreshTarget()
+		{
+			ApplyElementName();
+
+			if (
+				// If a listener is set, ApplyBindings has been invoked
+				_bindingPath.Expression is not null
+
+				// If this is not an x:Bind
+				&& _updateSources is null
+
+				// If there's a valid DataContext
+				&& GetWeakDataContext() is { IsAlive: true } weakDataContext)
+			{
+				// Apply the source on the target again (e.g. to reevaluate converters)
+				_bindingPath.SetWeakDataContext(weakDataContext);
+			}
+		}
+
+		/// <summary>
+		/// Turns UpdateSourceTrigger.Default to PropertyChanged, except for TextBox.TextProperty it's Explicit
+		/// </summary>
+		/// <remarks>
+		/// For TextBox.TextProperty, it should be LostFocus, but for now, it's Explicit and we are getting the
+		/// same behavior by explicitly updating the binding on losing focus in TextBox code.
+		/// </remarks>
 		private UpdateSourceTrigger ResolveUpdateSourceTrigger()
 		{
 			if (ParentBinding.UpdateSourceTrigger == UpdateSourceTrigger.Default)
 			{
-				var metadata = TargetPropertyDetails.Property?.GetMetadata(_targetOwnerType) as FrameworkPropertyMetadata;
-				return metadata?.DefaultUpdateSourceTrigger
-					?? UpdateSourceTrigger.PropertyChanged;
+				return TargetPropertyDetails.Property == TextBox.TextProperty ? UpdateSourceTrigger.Explicit : UpdateSourceTrigger.PropertyChanged;
 			}
 			else
 			{
@@ -335,6 +389,12 @@ namespace Windows.UI.Xaml.Data
 
 		private void ApplyFallbackValue(bool useTypeDefaultValue = true)
 		{
+			if (ParentBinding.IsXBind && DataContext is null)
+			{
+				// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+				// It doesn't even set the fallback value.
+				return;
+			}
 			if (ParentBinding.FallbackValue != null
 				|| (ParentBinding.CompiledSource != null && ParentBinding.IsFallbackValueSet))
 			{
@@ -342,7 +402,8 @@ namespace Windows.UI.Xaml.Data
 			}
 			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
-				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
+				var viewTarget = _view.Target;
+				SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as DependencyObject, viewTarget?.GetType()));
 			}
 		}
 
@@ -366,6 +427,19 @@ namespace Windows.UI.Xaml.Data
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
+				}
+
+				ApplyBinding();
+			}
+		}
+
+		internal void ApplyTemplateBindingParent()
+		{
+			if (ParentBinding.IsTemplateBinding)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("Applying template binding parent {0} on {1}", GetWeakTemplatedParent()?.Target?.GetType(), _view.Target?.GetType());
 				}
 
 				ApplyBinding();
@@ -424,7 +498,28 @@ namespace Windows.UI.Xaml.Data
 
 			if (viewTarget != null)
 			{
-				GetValueSetter()(viewTarget, value);
+				if (ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent)
+				{
+					// Very hacky workaround. In WinUI, setting a local value *after* animation value will
+					// cause the local value to take precedence, and we aligned this behavior in Uno.
+					// However, when TemplateBinding is involved, things go wrong in Uno.
+					// This is due to lifecycle differences where we are setting Animations value first, then Local value from TemplateBinding
+					// while the order should be the opposite.
+					// It may be related to https://github.com/unoplatform/uno/issues/190
+					try
+					{
+						ModifiedValue.SuppressLocalCanDefeatAnimations();
+						GetValueSetter()(viewTarget, value);
+					}
+					finally
+					{
+						ModifiedValue.ContinueLocalCanDefeatAnimations();
+					}
+				}
+				else
+				{
+					GetValueSetter()(viewTarget, value);
+				}
 			}
 			else
 			{
@@ -465,7 +560,7 @@ namespace Windows.UI.Xaml.Data
 				{
 					foreach (var bindingPath in _updateSources)
 					{
-						bindingPath.ValueChangedListener = this;
+						bindingPath.Expression = this;
 
 						if (ParentBinding.CompiledSource != null)
 						{
@@ -477,20 +572,20 @@ namespace Windows.UI.Xaml.Data
 						}
 					}
 
-					_subscription.Disposable = Actions.ToDisposable(() =>
+					_subscription.Disposable = new DisposableAction(() =>
 					{
 						foreach (var bindingPath in _updateSources)
 						{
-							bindingPath.ValueChangedListener = null;
+							bindingPath.Expression = null;
 						}
 					});
 
 				}
 				else
 				{
-					_bindingPath.ValueChangedListener = this;
+					_bindingPath.Expression = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = new DisposableAction(() => _bindingPath.Expression = null);
 				}
 			}
 			else
@@ -520,7 +615,7 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object o)
 		{
 			if (ParentBinding.XBindSelector != null)
 			{
@@ -542,6 +637,13 @@ namespace Windows.UI.Xaml.Data
 		{
 			void SetTargetValue()
 			{
+				if (DataContext is null)
+				{
+					// On WinUI, the generated code for x:Bind doesn't do anything if the DC is null.
+					// It doesn't even set the fallback value.
+					return;
+				}
+
 				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
 				if (canSetTarget)
 				{
@@ -640,34 +742,39 @@ namespace Windows.UI.Xaml.Data
 
 			if (FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions)
 			{
-				SetTargetValueSafeWithTry(v, useTargetNullValue);
-
-				/// <remarks>
-				/// This method contains or is called by a try/catch containing method and
-				/// can be significantly slower than other methods as a result on WebAssembly.
-				/// See https://github.com/dotnet/runtime/issues/56309
-				/// </remarks>
-				void SetTargetValueSafeWithTry(object v, bool useTargetNullValue)
+				try
 				{
+					InnerSetTargetValueSafe(v, useTargetNullValue);
+
+					// Avoid using the finally clause, which on wasm
+					// causes a transition to the interpreter. Exceptions here
+					// are caught entirely, and not forwarded to the caller, which
+					// allows for resetting the value in both the normal and exceptional flow.
+					_IsCurrentlyPushing = false;
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+
 					try
 					{
-						InnerSetTargetValueSafe(v, useTargetNullValue);
-					}
-					catch (Exception e)
-					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-						{
-							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
-						}
-
 						ApplyFallbackValue();
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
-					finally
-#endif
+					catch (Exception e2)
 					{
-						_IsCurrentlyPushing = false;
+						// We ensure that _IsCurrentlyPushing can properly be reset, even
+						// if `ApplyFallbackValue` fails to execute.
+
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							this.Log().Error("Failed to apply fallback value to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e2.Message), e2);
+						}
 					}
+
+					_IsCurrentlyPushing = false;
 				}
 			}
 			else
@@ -685,7 +792,7 @@ namespace Windows.UI.Xaml.Data
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InnerSetTargetValueSafe(object v, bool useTargetNullValue)
 		{
-			if (v is UnsetValue)
+			if (v == DependencyProperty.UnsetValue)
 			{
 				ApplyFallbackValue();
 			}
@@ -693,7 +800,13 @@ namespace Windows.UI.Xaml.Data
 			{
 				_IsCurrentlyPushing = true;
 				// Get the source value and place it in the target property
-				var convertedValue = ConvertValue(v);
+
+				// Only call the converted with null if the final segment (i.e. the tail of the chain) is null
+				// In other words, if Path == "Outer.Inner" and Outer is null, don't call the converter.
+				// Only call the converter with null if Outer is not null and Inner is null.
+				// If the Binding path is empty and DataContext is null, the converter is still NOT called
+				// https://github.com/unoplatform/uno/issues/16016
+				var convertedValue = DataContext is { } && (v is { } || _bindingPath.OnlyLeafNodeNull()) ? ConvertValue(v) : DependencyProperty.UnsetValue;
 
 				if (convertedValue == DependencyProperty.UnsetValue)
 				{
@@ -701,6 +814,10 @@ namespace Windows.UI.Xaml.Data
 				}
 				else if (useTargetNullValue && convertedValue == null && ParentBinding.TargetNullValue != null)
 				{
+					// The TargetNullValue is only used when the "leaf node" is null. Meaning
+					// 1. binding to anything with a null DataContext does NOT use TargetNullValue
+					// 2. binding to OuterNode.LeafNode with DC != null && DC.OuterNode == null does NOT use TargetNullValue
+					// 3. binding to OuterNode.LeafNode with DC.OuterNode != null && DC.OuterNode.LeafNode == null will use TargetNullValue
 					SetTargetValue(ConvertValue(ParentBinding.TargetNullValue));
 				}
 				else
@@ -711,7 +828,6 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
-
 
 		private object ConvertValue(object value)
 		{
@@ -725,6 +841,7 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "Types manipulated here have been marked earlier")]
 		private object ConvertToBoundPropertyType(object value)
 		{
 			// _boundPropertyType can be null for properties not bound for the actual instance (no matching properties found)
@@ -734,7 +851,7 @@ namespace Windows.UI.Xaml.Data
 				&& _boundPropertyType != typeof(object) // Always can assign to object
 				&& !value.GetType().Is(_boundPropertyType))
 			{
-				value = BindingPropertyHelper.Convert(() => _boundPropertyType, value);
+				value = BindingPropertyHelper.Convert(_boundPropertyType, value);
 			}
 
 			return value;

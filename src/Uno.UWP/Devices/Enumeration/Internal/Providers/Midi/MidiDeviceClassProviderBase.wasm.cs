@@ -1,21 +1,20 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
-using static Uno.Foundation.WebAssemblyRuntime;
+
+
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
-	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
+	internal abstract partial class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
-		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
-
 		private readonly bool _isInput;
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
@@ -104,13 +103,12 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
-			var command = $"{JsType}.findDevices({_isInput.ToString().ToLowerInvariant()})";
-			var result = InvokeJS(command);
+			var result = NativeMethods.FindDevices(_isInput);
 
-			var devices = result.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+			var devices = result.Split('&', StringSplitOptions.RemoveEmptyEntries);
 			foreach (var device in devices)
 			{
-				var deviceMetadata = device.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+				var deviceMetadata = device.Split('#', StringSplitOptions.RemoveEmptyEntries);
 				var id = Uri.UnescapeDataString(deviceMetadata[0]);
 				var name = Uri.UnescapeDataString(deviceMetadata[1]);
 				yield return CreateDeviceInformation(id, name);
@@ -135,6 +133,11 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
 			return new DeviceInformationUpdate(deviceIdentifier);
 		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport($"globalThis.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider.findDevices")]
+			internal static partial string FindDevices(bool isInput);
+		}
 	}
 }
-#endif

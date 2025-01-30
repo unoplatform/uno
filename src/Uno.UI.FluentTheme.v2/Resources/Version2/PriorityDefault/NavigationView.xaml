@@ -1,4 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX reference NavigationBackButton_v1.xaml, commit 02c3ee3 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -294,8 +295,6 @@
                                                 <Flyout.FlyoutPresenterStyle>
                                                     <Style TargetType="FlyoutPresenter">
                                                         <Setter Property="Padding" Value="{ThemeResource TopNavigationViewOverflowMenuPadding}" />
-                                                        <!-- Set negative top margin to make the flyout align exactly with the button -->
-                                                        <Setter Property="Margin" Value="0,-4,0,0" />
                                                         <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
                                                         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
                                                         <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
@@ -401,7 +400,7 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}"
                                 IsTabStop="False"
-                                OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}"
+                                OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}"
                                 PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}"
                                 Grid.Row="1"
                                 contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
@@ -615,7 +614,7 @@
                             <Grid
                                 x:Name="ShadowCaster"
                                 Grid.RowSpan="2"
-                                Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}"
+                                Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}"
                                 HorizontalAlignment="Left">
                                 <Grid.RenderTransform>
                                     <CompositeTransform x:Name="ShadowCasterTransform" />
@@ -767,6 +766,7 @@
                             Control.IsTemplateFocusTarget="True">
                         </primitives:NavigationViewItemPresenter>
                         <local:ItemsRepeater
+                                x:Load="False"
                                 Grid.Row="1"
                                 Visibility="Collapsed"
                                 x:Name="NavigationViewItemMenuItemsHost">

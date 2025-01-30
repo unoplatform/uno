@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using AVFoundation;
 
 namespace Windows.Devices.Lights
@@ -109,4 +108,3 @@ namespace Windows.Devices.Lights
 		}
 	}
 }
-#endif

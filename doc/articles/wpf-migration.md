@@ -25,19 +25,19 @@ The Uno Platform not only allows you to maximize reuse of C#, XAML, and .NET inv
 
 The vast majority of your codebase will simply "move across". Existing XAML structure, business logic, and view models can simply be reused. You'll need to recompile old code, and won't have access to framework-only APIs. You may encounter APIs that aren't implemented or controls where a subset of the functionality is presently unsupported. Additionally, the following contain substantial enough differences from WPF to require extra research upfront:
 
-* [Navigation](https://docs.microsoft.com/windows/apps/design/basics/navigate-between-two-pages)
-* [Advanced binding functionality with x:Bind](https://docs.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension)
-* [Modern APIs are often async only](https://docs.microsoft.com/windows/uwp/threading-async/call-asynchronous-apis-in-csharp-or-visual-basic)
-* [Uno has a streamlined set of XAML capabilities for performance reasons](https://docs.microsoft.com/windows/uwp/xaml-platform/xaml-overview)
+* [Navigation](https://learn.microsoft.com/windows/apps/design/basics/navigate-between-two-pages)
+* [Advanced binding functionality with x:Bind](https://learn.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension)
+* [Modern APIs are often async only](https://learn.microsoft.com/windows/uwp/threading-async/call-asynchronous-apis-in-csharp-or-visual-basic)
+* [Uno has a streamlined set of XAML capabilities for performance reasons](https://learn.microsoft.com/windows/uwp/xaml-platform/xaml-overview)
 * [Specific framework capabilities](https://github.com/robloo/PublicDocs/blob/master/UWPvsWPF.md)
 
 ## Understanding beforehand
 
 Along the journey to bring your WPF app to the Web, you should become familiar with the Uno Platform documentation. Your team should thoroughly understand what is supported (and where) before you build a feature around it. Learn about:
 
-* [Get started](https://platform.uno/docs/articles/get-started.html)
-* [How-tos and tutorials](https://platform.uno/docs/articles/tutorials-intro.html)
-* [Development deep-dives](https://platform.uno/docs/articles/using-uno-ui.html)
+* [Get started](xref:Uno.GetStarted)
+* [How-tos and tutorials](xref:Uno.Tutorials.Intro)
+* [Development deep-dives](xref:Uno.Development.Overview)
 * [Reference](https://platform.uno/docs/articles/implemented-views.html)
 
 ## Architecture Considerations

@@ -2,23 +2,16 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
-
 namespace Uno.Storage.Streams.Internal
 {
 	internal partial class NativeWriteStreamAdapter : Stream
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Uno.Storage.Streams.NativeFileWriteStream";
-#endif
-
 		private readonly Guid _streamId;
 
 		private long _length;
@@ -29,12 +22,7 @@ namespace Uno.Storage.Streams.Internal
 		public static async Task<NativeWriteStreamAdapter> CreateAsync(Guid fileId)
 		{
 			var streamId = Guid.NewGuid();
-			var result = await
-#if NET7_0_OR_GREATER
-				NativeMethods.OpenAsync(streamId.ToString(), fileId.ToString());
-#else
-				WebAssemblyRuntime.InvokeAsync($"{JsType}.openAsync('{streamId}', '{fileId}')");
-#endif
+			var result = await NativeMethods.OpenAsync(streamId.ToString(), fileId.ToString());
 
 			if (result == null || !long.TryParse(result, out var length))
 			{
@@ -116,12 +104,7 @@ namespace Uno.Storage.Streams.Internal
 			{
 				var pinnedData = handle.AddrOfPinnedObject();
 
-				await
-#if NET7_0_OR_GREATER
-					NativeMethods.WriteAsync(_streamId.ToString(), pinnedData, offset, count, Position);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.writeAsync('{_streamId}', {pinnedData}, {offset}, {count}, {Position})");
-#endif
+				await NativeMethods.WriteAsync(_streamId.ToString(), pinnedData, offset, count, Position);
 
 				_length += Math.Max(Position + count, Length);
 				Position += count;
@@ -141,12 +124,7 @@ namespace Uno.Storage.Streams.Internal
 				await ProcessPendingAsync();
 
 				// Close and dispose.
-				await
-#if NET7_0_OR_GREATER
-					NativeMethods.CloseAsync(_streamId.ToString());
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
-#endif
+				await NativeMethods.CloseAsync(_streamId.ToString());
 			}
 			catch (Exception e)
 			{
@@ -158,12 +136,7 @@ namespace Uno.Storage.Streams.Internal
 		{
 			await ProcessPendingAsync();
 
-			await
-#if NET7_0_OR_GREATER
-				NativeMethods.TruncateAsync(_streamId.ToString(), length);
-#else
-				WebAssemblyRuntime.InvokeAsync($"{JsType}.truncateAsync('{_streamId}',{length})");
-#endif
+			await NativeMethods.TruncateAsync(_streamId.ToString(), length);
 		}
 
 		private async Task ProcessPendingAsync()
@@ -179,15 +152,9 @@ namespace Uno.Storage.Streams.Internal
 		{
 			await ProcessPendingAsync();
 
-			await
-#if NET7_0_OR_GREATER
-				NativeMethods.CloseAsync(_streamId.ToString());
-#else
-				WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
-#endif
+			await NativeMethods.CloseAsync(_streamId.ToString());
 		}
 
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			private const string JsType = "globalThis.Uno.Storage.Streams.NativeFileWriteStream";
@@ -204,6 +171,5 @@ namespace Uno.Storage.Streams.Internal
 			[JSImport($"{JsType}.writeAsync")]
 			internal static partial Task WriteAsync(string streamId, nint pData, int offset, int count, double position);
 		}
-#endif
 	}
 }

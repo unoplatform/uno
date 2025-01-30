@@ -2,16 +2,16 @@
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		internal override string ToCssString(Size size)
+		internal string ToCssString(Size size)
 		{
 			var center = Center;
 			var radiusX = RadiusX;
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Media
 			return $"radial-gradient(ellipse farthest-side at {radiusX * 100d}% {radiusY * 100d}%, {stops})";
 		}
 
-		internal override UIElement ToSvgElement()
+		internal UIElement ToSvgElement()
 		{
 			var center = Center;
 

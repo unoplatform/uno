@@ -1,4 +1,4 @@
-﻿#if !NET461
+﻿#if !IS_UNIT_TESTS
 
 using System;
 

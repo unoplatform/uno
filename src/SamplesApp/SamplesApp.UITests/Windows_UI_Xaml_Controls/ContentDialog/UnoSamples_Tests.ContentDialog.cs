@@ -399,6 +399,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			// tapping outside of dialog
 			var dialogRect = _app.GetLogicalRect(dialogSpace);
+			var dialogRectangle = dialogRect.ToRectangle(); // we need this later after the dialog is closed
 			_app.TapCoordinates(dialogRect.CenterX, dialogRect.Bottom + 50);
 			var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
 
@@ -407,11 +408,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			_app.Wait(seconds: 1);
 			var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
 
+			// Test only to the left of the TextBox, which can have a blinking cursor and might fail the screenshot tests
+			// Note: We also make sure to exclude the opening buttons below the overlay as the focus might have changed
+			var testRect = new Rectangle(dialogRectangle.X, dialogRectangle.Y, 10, dialogRectangle.Height);
+
 			// compare
 			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot);
-			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot);
+			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot, testRect);
 			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot);
-
 		}
 
 		[Test]

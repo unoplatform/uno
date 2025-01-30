@@ -1,30 +1,70 @@
-using System;
+﻿using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{
-		private double _currentRatio = 1;
+		private WeakReference<MediaPlayerElement> wrOwner;
+
+		internal void SetOwner(MediaPlayerElement owner)
+		{
+			wrOwner = new WeakReference<MediaPlayerElement>(owner);
+		}
+
+		private float GetScaledOtherDimension(
+			float scaledOneDimension,
+			uint naturalOneDimension,
+			uint naturalOtherDimension)
+		{
+			//
+			// naturalOneDimension is mapped to scaledOneDimension. Map naturalOtherDimension to scaledOtherDimension using the
+			// same scale factor.
+			//
+			// scaledOther / naturalOther = scaledOne / naturalOne
+			//                scaledOther = naturalOther * scaledOne / naturalOne
+			//
+
+			if (naturalOneDimension == 0)
+			{
+				return 0.0f;
+			}
+			else
+			{
+#if __IOS__
+				// There are situations where between measurements scaledDimension and naturalDimension
+				// have a small difference in value (a few pixels) causing the measurement to go into an infinite loop.
+				// Related to: https://github.com/unoplatform/uno/issues/15254
+				var ratio = (float)Math.Round(scaledOneDimension / naturalOneDimension, 1);
+#else
+				var ratio = scaledOneDimension / naturalOneDimension;
+#endif
+				return naturalOtherDimension * ratio;
+			}
+		}
+
 
 		#region MediaPlayer Property
 
-		public Windows.Media.Playback.MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(Windows.Media.Playback.MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(
+					default(global::Windows.Media.Playback.MediaPlayer),
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -34,16 +74,16 @@ namespace Windows.UI.Xaml.Controls
 				{
 					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
 				}
-				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
-					oldPlayer.VideoRatioChanged -= presenter.OnVideoRatioChanged;
+					oldPlayer.NaturalVideoDimensionChanged -= presenter.OnNaturalVideoDimensionChanged;
 					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
 					oldPlayer.SourceChanged -= presenter.OnSourceChanged;
 				}
 
-				if (args.NewValue is Windows.Media.Playback.MediaPlayer newPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newPlayer)
 				{
-					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
+					newPlayer.NaturalVideoDimensionChanged += presenter.OnNaturalVideoDimensionChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
 					newPlayer.SourceChanged += presenter.OnSourceChanged;
 
@@ -58,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		partial void OnMediaPlayerChangedPartial(Windows.Media.Playback.MediaPlayer mediaPlayer);
+		partial void OnMediaPlayerChangedPartial(global::Windows.Media.Playback.MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
@@ -73,7 +113,10 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
+				new FrameworkPropertyMetadata(
+					Stretch.Uniform,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		#endregion
 
@@ -90,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -118,29 +161,24 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
-		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
-			if (args > 0) // The VideoRect may initially be empty, ignore because a 0 ratio will lead to infinite dims being returned on measure, resulting in an exception
-			{
-				_currentRatio = args;
-			}
-
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Visible;
 			});
 
-			InvalidateArrange();
+			InvalidateMeasure();
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Collapsed;
 			});
 		}
-		private void OnSourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnSourceChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -148,30 +186,90 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
+		private FrameworkElement GetLayoutOwner()
+		{
+			if (wrOwner?.TryGetTarget(out var owner) == true && owner is not null && !IsFullWindow)
+			{
+				return owner;
+			}
+
+			return this;
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			if (double.IsNaN(Width) && double.IsNaN(Height))
+			var layoutOwner = GetLayoutOwner();
+			var explicitWidth = layoutOwner.Width;
+			var explicitHeight = layoutOwner.Height;
+			if (!double.IsNaN(explicitWidth) && !double.IsNaN(explicitHeight))
 			{
-				availableSize.Width = availableSize.Width;
-				if (_currentRatio != 0)
+				return new Size(explicitWidth, explicitHeight);
+			}
+
+			//
+			// When determining the layout size:
+			//
+			//   1. If the explicit size is provided, then use that.
+			//
+			//   2. If the explicit size is only provided in one dimension, then use the explicit size in that dimension
+			//      and infer the other from the natural size of the media.
+			//
+			//      Note that if the media is not ready yet, then we use 0x0.
+			//
+			//   3. If neither dimension is provided and the stretch is None, then use the natural size of the media.
+			//
+			//   4. If neither dimension is provided, the stretch isn't None, and the available size is finite, then use
+			//      the available size.
+			//
+			//   5. If neither dimension is provided, the stretch isn't None, and the available size is infinite in one
+			//      dimension, then fill the available area in one dimension and infer the other from the natural size
+			//      of the media.
+			//
+			//   6. If neither dimension is provided, the stretch isn't None, and the available size is infinite in both
+			//      dimensions, use the natural size of the media.
+			//
+			if (!double.IsNaN(explicitWidth))
+			{
+				return new Size(
+					explicitWidth,
+					GetScaledOtherDimension((float)explicitWidth, NaturalVideoWidth, NaturalVideoHeight));
+			}
+			else if (!double.IsNaN(explicitHeight))
+			{
+				return new Size(
+					GetScaledOtherDimension((float)explicitHeight, NaturalVideoHeight, NaturalVideoWidth),
+					explicitHeight);
+			}
+			else if (Stretch == Stretch.None)
+			{
+				return new Size(NaturalVideoWidth, NaturalVideoHeight);
+			}
+			else
+			{
+				bool isFiniteWidth = !double.IsInfinity(availableSize.Width);
+				bool isFiniteHeight = !double.IsInfinity(availableSize.Height);
+
+				if (isFiniteWidth && isFiniteHeight)
 				{
-					availableSize.Height = availableSize.Width / _currentRatio;
+					return availableSize;
+				}
+				else if (isFiniteWidth)
+				{
+					return new Size(
+						availableSize.Width,
+						GetScaledOtherDimension((float)availableSize.Width, NaturalVideoWidth, NaturalVideoHeight));
+				}
+				else if (isFiniteHeight)
+				{
+					return new Size(
+						GetScaledOtherDimension((float)availableSize.Height, NaturalVideoHeight, NaturalVideoWidth),
+						availableSize.Height);
+				}
+				else
+				{
+					return new Size(NaturalVideoWidth, NaturalVideoHeight);
 				}
 			}
-			else if (double.IsNaN(Width))
-			{
-				availableSize.Width = Height * _currentRatio;
-				availableSize.Height = Height;
-			}
-			else if (double.IsNaN(Height))
-			{
-				availableSize.Width = Width;
-				availableSize.Height = Width / _currentRatio;
-			}
-
-			base.MeasureOverride(availableSize);
-
-			return availableSize;
 		}
 	}
 }

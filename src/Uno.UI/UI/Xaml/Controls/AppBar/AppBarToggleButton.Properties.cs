@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class AppBarToggleButton
 	{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Label
 		{
-			get => (string)GetValue(LabelProperty);
+			get => (string)GetValue(LabelProperty) ?? string.Empty;
 			set => SetValue(LabelProperty, value);
 		}
 

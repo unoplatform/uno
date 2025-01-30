@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
@@ -11,12 +13,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		private readonly int _xBindCounter;
 		private readonly string _contextType;
 		private readonly string _contextName;
+		private readonly bool _isRValue;
+		private readonly string? _targetPropertyType;
 
-		public XBindExpressionInfo(int xBindCounter, string contextType, string contextName)
+		public XBindExpressionInfo(int xBindCounter, string contextType, string contextName, bool isRValue, string? targetPropertyType)
 		{
+			// targetPropertyType is only used for LValue generation.
+			Debug.Assert((isRValue && targetPropertyType is null) || (!isRValue && targetPropertyType is not null));
+
 			_xBindCounter = xBindCounter;
 			_contextType = contextType;
 			_contextName = contextName;
+			_isRValue = isRValue;
+			_targetPropertyType = targetPropertyType;
 		}
 
 		/// <summary>
@@ -46,11 +55,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// </summary>
 		public List<XBindExpressionInfo>? Arguments { get; set; }
 
-		public override string ToString()
+		public override string ToString() => _isRValue ? ToStringRValue() : ToStringLValue();
+
+		private string ToStringRValue()
 		{
-			// Consider using pool when https://github.com/unoplatform/uno/pull/11531 is merged.
-			var builder = new StringBuilder();
-			builder.AppendLine($"private bool TryGetInstance_xBind_{_xBindCounter}({_contextType} {_contextName}, out object o)");
+			var pool = PooledStringBuilder.GetInstance();
+			var builder = pool.Builder;
+			builder.AppendLine($"private static bool TryGetInstance_xBind_{_xBindCounter}({_contextType} {_contextName}, out object o)");
 			builder.AppendLine("{");
 			builder.AppendLine("	o = null;");
 
@@ -125,7 +136,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			}
 
 			builder.AppendLine("}");
-			return builder.ToString();
+			return pool.ToStringAndFree();
+		}
+
+		private string ToStringLValue()
+		{
+			var pool = PooledStringBuilder.GetInstance();
+			var builder = pool.Builder;
+			builder.AppendLine($"private static bool TrySetInstance_xBind_{_xBindCounter}({_contextType} {_contextName}, object __value)");
+			builder.AppendLine("{");
+
+			if (ExpressionAfterLastNullAccess is not null)
+			{
+				builder.AppendLine($"	var sub1 = {ExpressionBeforeLastNullAccess};");
+				builder.AppendLine("	if (sub1 == null) return false;");
+			}
+
+			Debug.Assert(Arguments is null);
+			Debug.Assert(_targetPropertyType is not null);
+			var rhs = $"({_targetPropertyType})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({_targetPropertyType}), __value)";
+			if (ExpressionAfterLastNullAccess is null)
+			{
+				builder.AppendLine($"	{ExpressionBeforeLastNullAccess} = {rhs};");
+			}
+			else
+			{
+				builder.AppendLine($"	sub1.{ExpressionAfterLastNullAccess} = {rhs};");
+			}
+
+			builder.AppendLine("	return true;");
+
+			builder.AppendLine("}");
+			return pool.ToStringAndFree();
 		}
 	}
 }

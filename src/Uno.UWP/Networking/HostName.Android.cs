@@ -1,6 +1,4 @@
-﻿#if __ANDROID__
-
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Windows.Networking.Connectivity;
 
 namespace Windows.Networking
@@ -40,5 +38,3 @@ namespace Windows.Networking
 		public HostNameType Type { get; internal set; }
 	}
 }
-
-#endif

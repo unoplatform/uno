@@ -2,19 +2,21 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RollForward>Major</RollForward>
 
-		<SyncGeneratorCodeAnalysisVersion>4.4.0</SyncGeneratorCodeAnalysisVersion>
+		<!-- NOTE: Updating to 4.9 will break the BinaryLogger usage we have -->
+		<!-- It will silently stop producing binlogs -->
+		<SyncGeneratorCodeAnalysisVersion>4.8.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ManagedEsent" Version="1.9.4" />
-		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.5.0" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.5.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(SyncGeneratorCodeAnalysisVersion)" />
@@ -22,15 +24,20 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
-		<PackageReference Include="System.Memory" Version="4.5.5" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
-		<PackageReference Include="Microsoft.Tpl.Dataflow" Version="4.5.24" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+
+		<!-- BEGIN WORKAROUND: These are included transitively, but the transitive versions have vulnerabilities -->
+		<!-- Note that this is actually a false positive from NuGet side -->
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+		<!-- END WORKAROUND -->
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

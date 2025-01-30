@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Xaml
@@ -20,9 +19,9 @@ namespace Uno.UI.Xaml
 		PointerWheelChanged = 1UL << 7,
 
 		// Keyboard
-		// PreviewKeyDown = 1UL << 12 => Reserved for future usage
+		PreviewKeyDown = 1UL << 12,
 		KeyDown = 1UL << 13,
-		// PreviewKeyUp = 1 >> 14, => Reserved for future usage
+		PreviewKeyUp = 1UL << 14,
 		KeyUp = 1UL << 15,
 		// CharacterReceived = 1UL << 16,
 		// ProcessKeyboardAccelerators = 1UL << 17, => Reserved for future use (even if it is not an actual standard RoutedEvent)
@@ -77,8 +76,14 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.PointerWheelChanged;
 
 		private const RoutedEventFlag _isKey = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0001_1111___1111_0000_0000_0000
-			  RoutedEventFlag.KeyDown
+			  RoutedEventFlag.PreviewKeyDown
+			| RoutedEventFlag.PreviewKeyUp
+			| RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
+
+		private const RoutedEventFlag _isTunneling =
+			  RoutedEventFlag.PreviewKeyDown
+			| RoutedEventFlag.PreviewKeyUp;
 
 		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0111_1111_0000_0000___0000_0000_0000_0000
 			  RoutedEventFlag.GotFocus
@@ -113,31 +118,27 @@ namespace Uno.UI.Xaml
 		//   RoutedEventFlag.ContextRequested
 		// | RoutedEventFlag.ContextCanceled;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsPointerEvent(this RoutedEventFlag flag) => (flag & _isPointer) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsKeyEvent(this RoutedEventFlag flag) => (flag & _isKey) != 0;
 
-		[Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static bool IsTunnelingEvent(this RoutedEventFlag flag) => (flag & _isTunneling) != 0;
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsFocusEvent(this RoutedEventFlag flag) => (flag & _isFocus) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsDragAndDropEvent(this RoutedEventFlag flag) => (flag & _isDragAndDrop) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsManipulationEvent(this RoutedEventFlag flag) => (flag & _isManipulation) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsGestureEvent(this RoutedEventFlag flag) => (flag & _isGesture) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsContextEvent(this RoutedEventFlag flag) => (flag & _isContextMenu) != 0;
 	}

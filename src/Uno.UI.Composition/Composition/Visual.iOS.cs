@@ -1,19 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
-#if __IOS__
 using CoreAnimation;
 using System.Numerics;
 using UIKit;
 using System;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class Visual : global::Windows.UI.Composition.CompositionObject
+	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		internal UIView? NativeOwner { get; set; }
 
@@ -74,7 +70,7 @@ namespace Windows.UI.Composition
 			Update();
 		}
 
-		partial void OnRotationAngleInDegreesChanged(float value)
+		partial void OnRotationAngleChanged(float value)
 		{
 			UpdateTransform();
 		}
@@ -90,4 +86,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

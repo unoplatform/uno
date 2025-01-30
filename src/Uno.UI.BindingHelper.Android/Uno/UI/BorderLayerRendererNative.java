@@ -21,6 +21,7 @@ public final class BorderLayerRendererNative
 		drawable.setShape(new PathShape(borderPath, width, height));
 
 		Paint paint = drawable.getPaint();
+		paint.setAntiAlias(true);
 		paint.setAlpha(strokePaint.getAlpha());
 		paint.setColor(strokePaint.getColor());
 		paint.setShader(strokePaint.getShader());

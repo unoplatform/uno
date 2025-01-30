@@ -10,7 +10,7 @@ using AppKit;
 using CoreGraphics;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsControl : Control
 	{
@@ -22,11 +22,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void RequestLayoutPartial()
 		{
 			InvalidateMeasure();
-		}
-
-		partial void RemoveViewPartial(NSView current)
-		{
-			current.RemoveFromSuperview();
 		}
 	}
 }

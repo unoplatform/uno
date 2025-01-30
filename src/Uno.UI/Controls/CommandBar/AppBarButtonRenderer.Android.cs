@@ -1,12 +1,11 @@
-﻿#if __ANDROID__
-using AndroidX.Core.Graphics.Drawable;
+﻿using AndroidX.Core.Graphics.Drawable;
 using Android.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.Disposables;
 using Android.Graphics.Drawables;
@@ -86,30 +85,19 @@ namespace Uno.UI.Controls
 				native.SetIcon(null);
 				native.SetTitle(element.Label);
 			}
-			else if (element.Icon != null)
+			else
 			{
-				switch (element.Icon)
+				var iconOrContent = element.Icon ?? element.Content;
+
+				switch (iconOrContent)
 				{
 					case BitmapIcon bitmap:
 						var drawable = DrawableHelper.FromUri(bitmap.UriSource);
 						native.SetIcon(drawable);
+						native.SetActionView(null);
+						native.SetTitle(null);
 						break;
 
-					case FontIcon font: // not supported
-					case PathIcon path: // not supported
-					case SymbolIcon symbol: // not supported
-					default:
-						this.Log().Warn($"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
-						native.SetIcon(null);
-						break;
-				}
-				native.SetActionView(null);
-				native.SetTitle(null);
-			}
-			else
-			{
-				switch (element.Content)
-				{
 					case string text:
 						native.SetIcon(null);
 						native.SetActionView(null);
@@ -208,4 +196,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif

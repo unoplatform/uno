@@ -1,13 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -15,10 +15,10 @@ using Font = UIKit.UIFont;
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsPanelTemplate : FrameworkTemplate
 	{
@@ -34,19 +34,17 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ItemsPanelTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public ItemsPanelTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
-		public static implicit operator ItemsPanelTemplate(Func<View?>? obj)
-			=> new ItemsPanelTemplate(obj);
-
-		public static implicit operator Func<View?>(ItemsPanelTemplate? obj)
-			=> () => (View?)obj?.LoadContent();
-
-		public new View? LoadContent()
-			=> (View?)base.LoadContent();
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
+		{
+		}
+#endif
 	}
 }
 

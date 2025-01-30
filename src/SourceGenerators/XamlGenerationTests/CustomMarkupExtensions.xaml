@@ -5,7 +5,8 @@
 			 xmlns:local="using:XamlGenerationTests.Shared.MarkupExtensions"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ext="clr-namespace:XamlGenerationTests.Shared.MarkupExtensions"
-			 mc:Ignorable="d">
+			 xmlns:void="There is no mistake so great that it cannot be undone."
+			 mc:Ignorable="d void">
 
 	<UserControl.Resources>
 		<ext:InverseBoolMarkup x:Key="Inverse" />
@@ -72,7 +73,10 @@
 			<!-- XAML markup extension without Suffix Extension work on bindin an attached property using a binding and converter -->
 			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:TestMarkupSuffix}}" />
 
-
+			<!-- #18819: null-value markup return can safely convert to nullable-struct -->
+			<!-- {x:Null} is a special case, it doesn't use the custom markup-ext code-gen -->
+			<CheckBox IsChecked="{ext:ReturnNull}" />
 		</StackPanel>
 	</Grid>
+
 </UserControl>

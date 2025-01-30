@@ -11,11 +11,11 @@
 
 	<Grid Padding="20">
 		<StackPanel Spacing="8" Width="200">
-			<Image Source="ms-appx:///Assets/Formats/couch.svg" Stretch="UniformToFill" Width="40" Height="40" />
+			<Image x:Name="image1" Source="ms-appx:///Assets/Formats/couch.svg" Stretch="UniformToFill" Width="40" Height="40" />
 			<Button HorizontalAlignment="Center" Click="OnClick" x:Name="MenuButton">Click me</Button>
 			<Button HorizontalAlignment="Center" Click="OnDelayedClick" x:Name="MenuDelayedButton">Click me (delayed)</Button>
-			<mux:ImageIcon Source="ms-appx:///Assets/Formats/heliocentric.svg" />
-			<BitmapIcon UriSource="ms-appx:///Assets/Formats/bookstack.svg" />
+			<mux:ImageIcon x:Name="imageIcon1" Source="ms-appx:///Assets/Formats/heliocentric.svg" />
+			<BitmapIcon x:Name="bitmapIcon1" UriSource="ms-appx:///Assets/Formats/bookstack.svg" />
 		</StackPanel>
 	</Grid>
 </Page>

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.Web;
+using Windows.Web;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the WebView.NavigationCompleted and FrameNavigationCompleted events.

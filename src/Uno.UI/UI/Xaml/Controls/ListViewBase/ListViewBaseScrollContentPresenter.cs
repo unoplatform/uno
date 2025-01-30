@@ -1,14 +1,14 @@
-﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 
 using Uno.Foundation.Logging;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -20,7 +20,7 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// An Uno-only class which allows the <see cref="ScrollViewer"/> within a <see cref="ListViewBase"/> template

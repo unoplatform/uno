@@ -4,20 +4,20 @@
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.cpp, commit de78834
 
 using System;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Interactions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
-using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 
 #pragma warning disable CS0105 // Ignore duplicate namespace for WinUI build
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #pragma warning restore CS0105
 
 #if HAS_UNO_WINUI
@@ -190,9 +190,7 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 						try
 						{
 							//PTR_TRACE_INFO(null, TRACE_MSG_METH_METH, "ScrollViewer.PointerPressedHandler", this, "TryRedirectForManipulation");
-#if !HAS_UNO_WINUI // TODO Uno: Currently under WinUI compilation this method uses a "ExpPointerPoint" type - experimental
 							m_visualInteractionSource.TryRedirectForManipulation(pp);
-#endif
 						}
 						catch (Exception)
 						{
@@ -222,8 +220,8 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 		m_scrollViewer.AddHandler(UIElement.PointerPressedEvent, m_boxedPointerPressedEventHandler, true /* handledEventsToo */);
 		m_scrollViewer.DirectManipulationCompleted += OnScrollViewerDirectManipulationCompleted;
 		m_scrollViewer_DirectManipulationCompletedToken.Disposable = Disposable.Create(() => m_scrollViewer.DirectManipulationCompleted -= OnScrollViewerDirectManipulationCompleted);
-		m_scrollViewer.ViewChanging += OnScrollViewerViewChanging;
-		m_scrollViewer_ViewChangingToken.Disposable = Disposable.Create(() => m_scrollViewer.ViewChanging -= OnScrollViewerViewChanging);
+		m_scrollViewer.ViewChanged += OnScrollViewerViewChanging; // Uno specific: Using ViewChanged as ViewChanging isn't implemented
+		m_scrollViewer_ViewChangingToken.Disposable = Disposable.Create(() => m_scrollViewer.ViewChanged -= OnScrollViewerViewChanging);
 
 		return m_infoProvider;
 	}
@@ -245,7 +243,8 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 		var content = GetScrollContent();
 		if (content is not null)
 		{
-			content.CancelDirectManipulations();
+			// UNO TODO:
+			//content.CancelDirectManipulations();
 		}
 
 		double executionRatio = FALLBACK_EXECUTION_RATIO;
@@ -298,7 +297,7 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 		}
 	}
 
-	private void OnScrollViewerViewChanging(object sender, Windows.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs args)
+	private void OnScrollViewerViewChanging(object sender, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs/*ScrollViewerViewChangingEventArgs*/ args)
 	{
 		if (m_infoProvider is not null && m_infoProvider.IsInteractingForRefresh)
 		{

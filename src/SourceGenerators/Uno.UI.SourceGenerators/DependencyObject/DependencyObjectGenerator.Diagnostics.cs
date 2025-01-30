@@ -4,10 +4,6 @@ using System;
 using System.Globalization;
 using Microsoft.CodeAnalysis;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.DependencyObject;
 public partial class DependencyObjectGenerator
 {
@@ -25,10 +21,6 @@ public partial class DependencyObjectGenerator
 
 	private static void ReportDiagnostic(GeneratorExecutionContext context, Diagnostic diagnostic)
 	{
-#if NETFRAMEWORK
-		throw new InvalidOperationException(diagnostic.GetMessage(CultureInfo.InvariantCulture));
-#else
 		context.ReportDiagnostic(diagnostic);
-#endif
 	}
 }

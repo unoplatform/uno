@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class VirtualizingPanelLayout
 	{
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		/// A row or column.
 		/// </summary>
 		[DebuggerDisplay("{DebugDisplay,nq}")]
-		protected class Line
+		private protected class Line
 		{
 			public int NumberOfViews { get; set; }
 			/// <summary>
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			public RelativeHeaderPlacement RelativeHeaderPlacement { get; set; }
 
 			/// <summary>
-			/// The extent of the header, in physical units. 
+			/// The extent of the header, in physical units.
 			/// </summary>
 			public int HeaderExtent { get; set; }
 

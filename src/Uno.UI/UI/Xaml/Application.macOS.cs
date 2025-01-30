@@ -3,7 +3,7 @@ using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
-using Uno.UI.Services;
+using Windows.Globalization;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
@@ -13,19 +13,16 @@ using Selector = ObjCRuntime.Selector;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Runtime.MacOS;
+using Uno.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#else
 using NativeHandle = ObjCRuntime.NativeHandle;
-#endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
@@ -34,15 +31,12 @@ namespace Windows.UI.Xaml
 
 		static partial void InitializePartialStatic()
 		{
-			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Windows.UI.Xaml.Window)host).NativeWindow));
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow));
 		}
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
 		}
@@ -53,8 +47,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
-
-		internal bool Suspended { get; private set; }
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
@@ -90,12 +82,6 @@ namespace Windows.UI.Xaml
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
-
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
-			{
-				Suspended = true;
-			});
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -154,7 +140,7 @@ namespace Windows.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(null);
 		}
@@ -162,17 +148,17 @@ namespace Windows.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
+			RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

@@ -1,157 +1,124 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Numerics;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
+using Uno.Disposables;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
+using Uno.UI.__Resources;
+using Windows.UI.Core;
+using Windows.System;
 
-#if NET7_0_OR_GREATER
-using NativeMethods = __Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.NativeMethods;
-#endif
+namespace Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Media.Animation
+internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T> where T : struct
 {
-	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
+	private bool _isEnabled;
+	private IDisposable _frameEvent;
+	private DispatcherQueueTimer _delayRequest;
+
+	protected RenderingLoopAnimator(T from, T to)
+		: base(from, to)
 	{
-		protected RenderingLoopAnimator(T from, T to)
-			: base(from, to)
+	}
+
+	protected override void EnableFrameReporting()
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			Handle = JSObjectHandle.Create(this, Metadata.Instance);
+			this.Log().Trace("EnableFrameReporting");
 		}
 
-		public JSObjectHandle Handle { get; }
-
-		protected override void EnableFrameReporting()
+		if (_isEnabled)
 		{
-			if (Handle.IsAlive)
-			{
-#if NET7_0_OR_GREATER
-				NativeMethods.EnableFrameReporting(Handle.JSHandle);
-#else
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.EnableFrameReporting();");
-#endif
-			}
-			else if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug("Cannot EnableFrameReporting as Handle is no longer alive.");
-			}
+			return;
 		}
 
-		protected override void DisableFrameReporting()
+		_isEnabled = true;
+
+		RegisterFrameEvent();
+	}
+
+	protected override void DisableFrameReporting()
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			if (Handle.IsAlive)
-			{
-#if NET7_0_OR_GREATER
-				NativeMethods.DisableFrameReporting(Handle.JSHandle);
-#else
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.DisableFrameReporting();");
-#endif
-			}
-			else if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug("Cannot DisableFrameReporting as Handle is no longer alive.");
-			}
+			this.Log().Trace("DisableFrameReporting");
 		}
 
-		protected override void SetStartFrameDelay(long delayMs)
+
+		_isEnabled = false;
+		UnscheduleFrame();
+	}
+
+	protected override void SetStartFrameDelay(long delayMs)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			if (Handle.IsAlive)
-			{
-#if NET7_0_OR_GREATER
-				NativeMethods.SetStartFrameDelay(Handle.JSHandle, delayMs);
-#else
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetStartFrameDelay({delayMs});");
-#endif
-			}
-			else if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug("Cannot SetStartFrameDelay as Handle is no longer alive.");
-			}
+			this.Log().Trace($"SetStartFrameDelay: {delayMs}");
 		}
 
-		protected override void SetAnimationFramesInterval()
+		UnscheduleFrame();
+
+		if (_isEnabled)
 		{
-			if (Handle.IsAlive)
+			_delayRequest = new DispatcherQueueTimer()
 			{
-#if NET7_0_OR_GREATER
-				NativeMethods.SetAnimationFramesInterval(Handle.JSHandle);
-#else
-				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetAnimationFramesInterval();");
-#endif
-			}
-			else if (this.Log().IsEnabled(LogLevel.Debug))
+				Interval = TimeSpan.FromMilliseconds(delayMs),
+				IsRepeating = false
+			};
+
+			_delayRequest.Tick += (s, e) =>
 			{
-				this.Log().Debug("Cannot SetAnimationFramesInterval as Handle is no longer alive.");
-			}
-		}
+				_delayRequest = null;
 
-		private void OnFrame() => OnFrame(null, null);
+				OnFrame();
 
-		/// <inheritdoc />
-		public override void Dispose()
-		{
-			// WARNING: If the Dispose is invoked by the GC, it has most probably already disposed the Handle,
-			//			which means that we have already lost ability to dispose/stop the native object!
+				// Restore the render loop now that we have completed the delay
+				RegisterFrameEvent();
+			};
 
-			base.Dispose();
-			Handle.Dispose();
-
-			GC.SuppressFinalize(this);
-		}
-
-		~RenderingLoopAnimator()
-		{
-			Dispose();
-		}
-
-		private class Metadata : IJSObjectMetadata
-		{
-			public static Metadata Instance { get; } = new Metadata();
-
-			private Metadata() { }
-
-			/// <inheritdoc />
-			public long CreateNativeInstance(IntPtr managedHandle)
-			{
-				var id = RenderingLoopAnimatorMetadataIdProvider.Next();
-
-#if NET7_0_OR_GREATER
-				NativeMethods.CreateInstance(managedHandle, id);
-#else
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance({managedHandle}, {id})");
-#endif
-
-				return id;
-			}
-
-			/// <inheritdoc />
-			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> $"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
-
-			/// <inheritdoc />
-			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
-				=>
-#if NET7_0_OR_GREATER
-					NativeMethods.DestroyInstance(jsHandle);
-#else
-					WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance({jsHandle})");
-#endif
-
-			/// <inheritdoc />
-			public object InvokeManaged(object instance, string method, string parameters)
-			{
-				switch (method)
-				{
-					case "OnFrame":
-						((RenderingLoopAnimator<T>)instance).OnFrame();
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(method));
-				}
-
-				return null;
-			}
+			_delayRequest.Start();
 		}
 	}
+
+	protected override void SetAnimationFramesInterval()
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace("SetAnimationFramesInterval");
+		}
+
+		UnscheduleFrame();
+
+		if (_isEnabled)
+		{
+			OnFrame();
+		}
+	}
+
+	private void UnscheduleFrame()
+	{
+		if (_delayRequest != null)
+		{
+			_delayRequest.Stop();
+			_delayRequest = null;
+		}
+
+		_frameEvent?.Dispose();
+		_frameEvent = null;
+	}
+
+	private void RegisterFrameEvent()
+	{
+		_frameEvent?.Dispose();
+		_frameEvent = RenderingLoopAnimator.RegisterFrameEvent(OnFrame);
+	}
+
+	private void OnFrame()
+		=> OnFrame(null, null);
 }

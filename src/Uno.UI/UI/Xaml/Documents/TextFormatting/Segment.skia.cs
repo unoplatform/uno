@@ -5,7 +5,7 @@ using SkiaSharp;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Documents.TextFormatting
+namespace Microsoft.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
 	/// Represents a stand-alone line break or a segment of a Run that can end in a word-break opportunity and/or a line break. All glyphs in a segment go in
@@ -14,9 +14,14 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 	[DebuggerDisplay("{DebugText}")]
 	internal sealed class Segment
 	{
-		private readonly IReadOnlyList<GlyphInfo>? _glyphs;
-		private SkiaSharp.SKPaint? _paint;
+		// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
+		private const float TabStopWidth = 48;
+
+		private readonly List<GlyphInfo>? _glyphs;
 		private readonly FontDetails? _fallbackFont;
+		// we cache the text as soon as we create the Segment in case a Run's text Updates
+		// before this (now outdated) Segment is discarded.
+		private readonly string _text;
 
 		/// <summary>
 		/// Gets either the LineBreak element or Run element that this segment was created from.
@@ -63,15 +68,12 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public int LineBreakLength { get; }
 
-		/// <summary>
-		/// Returns a value indicating whether the end of this segment is a word break opportunity.
-		/// </summary>
-		public bool WordBreakAfter { get; }
+		public bool IsTab => Text.Length == 1 && Text[0] == '\t';
 
 		/// <summary>
 		/// Gets the section of text of the Run element this segment represents. Throws if this segment represents a LineBreak element.
 		/// </summary>
-		public ReadOnlySpan<char> Text => Inline is Run run ? run.Text.AsSpan().Slice(Start, Length) : throw new InvalidOperationException("Text can only be retrieved for segments representing part of a Run.");
+		public ReadOnlySpan<char> Text => Inline is Run run ? _text.AsSpan().Slice(Start, Length) : throw new InvalidOperationException("Text can only be retrieved for segments representing part of a Run.");
 
 		/// <summary>
 		/// Gets the glyphs for the Run element text this segment represents. RTL segments return the glyphs in the order the clusters appear in the text
@@ -81,7 +83,7 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 		private string DebugText => Inline is Run ? Text.ToString() : "{LineBreak}";
 
-		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, IReadOnlyList<GlyphInfo> glyphs, FontDetails? fallbackFont)
+		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
 		{
 			Inline = run;
 			Direction = direction;
@@ -91,37 +93,28 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 			TrailingSpaces = trailingSpaceCount;
 			LineBreakLength = lineBreakLength;
 			LineBreakAfter = lineBreakLength > 0;
-			WordBreakAfter = wordBreakAfter;
 			_glyphs = glyphs;
 			_fallbackFont = fallbackFont;
+			_text = run.Text;
 		}
 
 		public Segment(LineBreak lineBreak)
 		{
 			Inline = lineBreak;
 			LineBreakAfter = true;
+			_text = String.Empty;
 		}
 
 		public FontDetails? FallbackFont => _fallbackFont;
 
-		internal SKPaint? Paint
+		/// <remarks>
+		/// This is the only form of impurity in this class. Unfortunately, we can't
+		/// calculate the width of the tab ahead of time.
+		/// </remarks>
+		public void AdjustTabWidth(float xOffset)
 		{
-			get
-			{
-				if (_fallbackFont is not null)
-				{
-					var paint = _paint ??= new SKPaint(_fallbackFont.SKFont)
-					{
-						TextEncoding = SkiaSharp.SKTextEncoding.Utf16,
-						IsStroke = false,
-						IsAntialias = true,
-					};
-
-					return paint;
-
-				}
-				return default;
-			}
+			Debug.Assert(IsTab);
+			_glyphs![0] = _glyphs[0] with { AdvanceX = TabStopWidth - xOffset % TabStopWidth };
 		}
 	}
 }

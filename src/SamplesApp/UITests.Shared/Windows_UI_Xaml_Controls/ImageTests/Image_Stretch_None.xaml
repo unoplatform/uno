@@ -27,7 +27,7 @@
 			<ScrollViewer Height="150"
 						  Width="150">
 				<Image x:Name="image01"
-					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   Source="https://uno-assets.platform.uno/tests/images/uno-overalls.png"
 					   Stretch="None"
 					   AutomationProperties.AutomationId="image01" />
 			</ScrollViewer>
@@ -39,7 +39,7 @@
 			<ScrollViewer Height="150"
 						  Width="150">
 				<Image x:Name="image02"
-					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   Source="https://uno-assets.platform.uno/tests/images/uno-overalls.png"
 					   Stretch="None" />
 			</ScrollViewer>
 		</StackPanel>
@@ -56,7 +56,7 @@
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center" />
 				<Image x:Name="image03"
-					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   Source="https://uno-assets.platform.uno/tests/images/uno-overalls.png"
 					   Stretch="None"
 					   Opacity="0.5"
 					   VerticalAlignment="Center"

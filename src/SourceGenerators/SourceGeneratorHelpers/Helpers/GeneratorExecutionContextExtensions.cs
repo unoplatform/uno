@@ -7,18 +7,12 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
-
 namespace Uno.Roslyn
 {
 	internal static class GeneratorExecutionContextExtensions
 	{
 		private const string SourceItemGroupMetadata = "build_metadata.AdditionalFiles.SourceItemGroup";
 
-#if NETSTANDARD || NET5_0
 		public static string GetMSBuildPropertyValue(
 			this GeneratorExecutionContext context,
 			string name,
@@ -32,7 +26,7 @@ namespace Uno.Roslyn
 		{
 			return context.AnalyzerConfigOptions.GetOptions(textFile).TryGetValue(key, out value);
 		}
-#endif
+
 		public static IEnumerable<Uno.Roslyn.MSBuildItem> GetMSBuildItemsWithAdditionalFiles(this GeneratorExecutionContext context, string name)
 		=> context
 			.AdditionalFiles
@@ -48,6 +42,7 @@ namespace Uno.Roslyn
 	public class MSBuildItem
 	{
 		private readonly GeneratorExecutionContext Context;
+		private static MSBuildItemIdentityComparer? _identityComparer;
 
 		internal MSBuildItem(AdditionalText file, GeneratorExecutionContext context)
 		{
@@ -72,6 +67,18 @@ namespace Uno.Roslyn
 			Context.TryGetOptionValue(File, "build_metadata.AdditionalFiles." + name, out var metadataValue);
 
 			return string.IsNullOrEmpty(metadataValue) ? "" : metadataValue!;
+		}
+
+		public static IEqualityComparer<MSBuildItem> IdentityComparer
+			=> _identityComparer ??= new MSBuildItemIdentityComparer();
+
+		private class MSBuildItemIdentityComparer : IEqualityComparer<MSBuildItem>
+		{
+			public bool Equals(MSBuildItem x, MSBuildItem y)
+				=> string.Equals(x.Identity, y.Identity, System.StringComparison.OrdinalIgnoreCase);
+
+			public int GetHashCode(MSBuildItem obj)
+				=> obj.Identity.GetHashCode();
 		}
 	}
 }

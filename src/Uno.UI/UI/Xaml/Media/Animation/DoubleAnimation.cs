@@ -9,7 +9,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class DoubleAnimation : Timeline, ITimeline, IAnimation<float>
 	{
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{

@@ -36,11 +36,11 @@ Consuming a WebAssembly module is generally composed of a `.wasm` file and a JS 
 
 ## Why WebAssembly ?
 
-WebAssembly is mainly trying to solve the issues that makes it difficult to optimize performance for large applications, provide access to binary-producing languages and improve the security of running the resulting code.
+WebAssembly is mainly trying to solve the issues that make it difficult to optimize performance for large applications, provide access to binary-producing languages, and improve the security of running the resulting code.
 
-WebAssembly modules are defined as self-contained units of byte code. It's possible to use [streaming compilation](https://webassembly.github.io/spec/web-api/index.html#streaming-modules) to concurrently process the byte code as it is being downloaded, unlike Javascript where the source file needs to be fully parsed to make sense.
+WebAssembly modules are defined as self-contained units of byte code. It's possible to use [streaming compilation](https://webassembly.github.io/spec/web-api/index.html#streaming-modules) to concurrently process the byte code as it is being downloaded, unlike JavaScript where the source file needs to be fully parsed to make sense.
 
-It also provides a way for any language to have a compilation back-end (such as LLVM and [Emscripten](http://emscripten.org/)) to target the Web. That opens a path for C, C++, Rust, [.NET based languages via Mono](https://github.com/mono/mono/tree/master/sdks/wasm), Java, Go, and many other languages to finally reach the web. It provides choices for developers targeting the Web, whether they need full type safety or not, to reuse that complex C++ library that is proving very difficult to port to Javascript. Such portability also enables runtimes and frameworks to follow, such as [QT-Wasm](https://wiki.qt.io/Qt_for_WebAssembly), and Mono and a very large part of the .NET ecosystem.
+It also provides a way for any language to have a compilation back-end (such as LLVM and [Emscripten](http://emscripten.org/)) to target the Web. That opens a path for C, C++, Rust, [.NET based languages via Mono](https://github.com/dotnet/runtime/tree/main/src/mono/wasm), Java, Go, and many other languages to finally reach the web. It provides choices for developers targeting the Web, whether they need full type safety or not, to reuse that complex C++ library that is proving very difficult to port to Javascript. Such portability also enables runtimes and frameworks to follow, such as [QT-Wasm](https://wiki.qt.io/Qt_for_WebAssembly), and Mono and a very large part of the .NET ecosystem.
 
 Security-wise, WebAssembly is very different from previous attempts to run arbitrary binary code in the browser, such as Flash, Java applets, VBA, Silverlight, ActiveX, ... which all had (and continue to have) security and portability issues. For instance, security features include the inability to execute arbitrary memory locations. While this makes optionally JIT'ed languages (such as .NET based languages) a difficult target, it promises a [higher security](https://i.blackhat.com/us-18/Thu-August-9/us-18-Lukasiewicz-WebAssembly-A-New-World-of-Native_Exploits-On-The-Web-wp.pdf) execution environment than its similar add-in based predecessors.
 
@@ -60,7 +60,7 @@ While this makes for a good kick start solution, such an implementation contains
 
 This situation is fortunately only temporary. When Mono's AOT will be available, the code will instantly be a lot faster, even though by how much remains to be seen. The size aspect of the generated WASM binary is also an unknown variable, and it can also be difficult to extrapolate from other similar looking AOT target CPU architectures.
 
-The interpreter mode will stay in Mono as a mixed execution mode. This will allow for [scenarios of dynamic code generation using Roslyn](https://github.com/jeromelaban/Wasm.Samples/blob/master/RoslynTests/RoslynTests/Program.cs) to be viable in a non-JIT friendly environment, and enable pieces of the BCL such as [Expression compilation](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1.compile?redirectedfrom=MSDN&view=netframework-4.7.2#System_Linq_Expressions_Expression_1_Compile) to be functional. 
+The interpreter mode will stay in Mono as a mixed execution mode. This will allow for [scenarios of dynamic code generation using Roslyn](https://github.com/jeromelaban/Wasm.Samples/blob/master/RoslynTests/RoslynTests/Program.cs) to be viable in a non-JIT friendly environment, and enable pieces of the BCL such as [Expression compilation](https://learn.microsoft.com/dotnet/api/system.linq.expressions.expression-1.compile?redirectedfrom=MSDN&view=netframework-4.7.2#System_Linq_Expressions_Expression_1_Compile) to be functional.
 
 ## Bootstrapping the mono-wasm SDK
 
@@ -72,6 +72,6 @@ We expect this package to change significantly in the near future. This includes
 
 Head over to the [Uno.Wasm.Bootstrap readme](https://github.com/unoplatform/uno.Wasm.Bootstrap#how-to-use-the-package) to create your own app and experiment with C# in the browser in minutes. See those two [examples for additional scenarios](https://github.com/jeromelaban/Wasm.Samples) using Json.NET and Roslyn.
 
-## Up next...  
+## Up next  
 
 In the second part of this article, we'll touch on more advanced topics about the integration of Mono in WebAssembly and upcoming features.

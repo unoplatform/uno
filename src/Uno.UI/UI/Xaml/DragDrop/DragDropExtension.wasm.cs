@@ -14,10 +14,10 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -30,24 +30,23 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using System.Diagnostics.CodeAnalysis;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.NativeMethods;
-#endif
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Runtime;
+using _HtmlPointerButtonsState = Uno.UI.Runtime.BrowserPointerInputSource.HtmlPointerButtonsState;
+using System.Text.Json.Serialization;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	internal class DragDropExtension : IDragDropExtension
+	internal partial class DragDropExtension : IDragDropExtension
 	{
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 
-#if !NET7_0_OR_GREATER
-		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
-#endif
-
 		private static readonly Logger _log = typeof(DragDropExtension).Log();
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		private static DragDropExtension? _current;
 
@@ -108,11 +107,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static void EnableExternalWarning()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.RegisterNoOp();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.registerNoOp();");
-#endif
 		}
 
 		/// <inheritdoc />
@@ -124,6 +119,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[JSExport]
 		public static string OnNativeDropEvent()
 		{
 			try
@@ -190,7 +186,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 								+ "Only one native drop operation is supported on wasm currently."
 								+ "Aborting previous operation and beginning a new one.");
 
-							_manager.ProcessAborted(_pendingNativeDrop);
+							_manager.ProcessAborted(_pendingNativeDrop.Id);
 						}
 					}
 
@@ -227,7 +223,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 				case "dragleave" when _pendingNativeDrop != null:
 					_pendingNativeDrop.Update(args);
-					acceptedOperation = _manager.ProcessAborted(_pendingNativeDrop);
+					acceptedOperation = _manager.ProcessAborted(_pendingNativeDrop.Id);
 					_pendingNativeDrop = null;
 					break;
 
@@ -270,7 +266,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			//		We however support to propagate any "string" that does not have a standard MIME type so we don't restrict too much applications.
 
 			var package = new DataPackage();
-			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems);
+			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default);
 
 			var files = entries.Where(entry => entry.kind.Equals("file", StringComparison.OrdinalIgnoreCase)).ToList();
 			var texts = entries.Where(entry => entry.kind.Equals("string", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -313,8 +309,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
+						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+						.Where(line => !line.StartsWith('#'))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
 				"text/html" => (StandardDataFormats.Html, async ct => await RetrieveText(ct, id)),
@@ -324,13 +320,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
 		{
-#if NET7_0_OR_GREATER
 			var infosRaw = await NativeMethods.RetrieveFilesAsync(itemsIds);
-#else
-			var rawItemsIds = string.Join(", ", itemsIds.Select(id => id.ToStringInvariant()));
-			var infosRaw = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveFiles({rawItemsIds})", ct);
-#endif
-			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw);
+			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw, DragDropSerializationContext.Default);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
 			return items;
@@ -338,14 +329,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<string> RetrieveText(CancellationToken ct, int itemId)
 		{
-#if NET7_0_OR_GREATER
 			return await NativeMethods.RetrieveTextAsync(itemId);
-#else
-			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, new CancellationTokenSource(TimeSpan.FromTicks(_textReadTimeoutTicks)).Token);
-			var text = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveText({itemId.ToStringInvariant()})", cts.Token);
-
-			return text;
-#endif
 		}
 
 		private static DataPackageOperation ToDataPackageOperation(string allowedOperations)
@@ -400,7 +384,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public long Id => _args.id;
 
 			/// <inheritdoc />
-			public uint FrameId => PointerRoutedEventArgs.ToFrameId(_args.timestamp);
+			public uint FrameId => BrowserPointerInputSource.ToFrameId(_args.timestamp);
 
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
@@ -408,16 +392,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				var position = new Point(_args.x, _args.y);
 				var modifier = DragDropModifiers.None;
 
-				var buttons = (WindowManagerInterop.HtmlPointerButtonsState)_args.buttons;
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Left))
+				var buttons = (_HtmlPointerButtonsState)_args.buttons;
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Left))
 				{
 					modifier |= DragDropModifiers.LeftButton;
 				}
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Middle))
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Middle))
 				{
 					modifier |= DragDropModifiers.MiddleButton;
 				}
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Right))
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Right))
 				{
 					modifier |= DragDropModifiers.RightButton;
 				}
@@ -484,11 +468,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public override string ToString()
 			{
 				return $"[{eventName}] {timestamp:F0} @({x:F2},{y:F2})"
-					+ $" | buttons: {(WindowManagerInterop.HtmlPointerButtonsState)buttons}"
+					+ $" | buttons: {(_HtmlPointerButtonsState)buttons}"
 					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
 					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
 					+ $" | accepted: {acceptedOperation}"
-					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
+					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default)) : "")})";
 
 				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
 				{
@@ -529,6 +513,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// <inheritdoc />
 			public override string ToString()
 				=> $"[#{id}: {kind} {type}]";
+		}
+
+		[JsonSerializable(typeof(DataEntry[]))]
+		[JsonSerializable(typeof(DataEntry))]
+#if __WASM__
+		[JsonSerializable(typeof(NativeStorageItemInfo[]))]
+		[JsonSerializable(typeof(NativeStorageItemInfo))]
+#endif
+		private partial class DragDropSerializationContext : JsonSerializerContext
+		{
 		}
 	}
 }

@@ -16,9 +16,12 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWebViewWrapper : INativeWebView
 {
+	private readonly Uri AndroidAssetBaseUri = new Uri("file:///android_asset/");
+
 	private readonly WebView _webView;
 	private readonly CoreWebView2 _coreWebView;
 
+	private string _documentTitle;
 	internal bool _wasLoadedFromString;
 
 	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
@@ -61,6 +64,19 @@ internal class NativeWebViewWrapper : INativeWebView
 			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
 			_webView.SetLayerType(LayerType.Software, null);
+		}
+	}
+
+	public string DocumentTitle
+	{
+		get => _documentTitle;
+		internal set
+		{
+			if (_documentTitle != value)
+			{
+				_documentTitle = value;
+				_coreWebView?.OnDocumentTitleChanged();
+			}
 		}
 	}
 
@@ -124,19 +140,37 @@ internal class NativeWebViewWrapper : INativeWebView
 		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 		{
 			var path = $"file:///android_asset/{uri.PathAndQuery}";
-			_webView.LoadUrl(path);
+			ScheduleNavigationStarting(path, () => _webView.LoadUrl(path));
 			return;
 		}
 
 		if (uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
 		{
-			CreateAndLaunchMailtoIntent(_webView.Context, uri.AbsoluteUri);
+			ScheduleNavigationStarting(uri.AbsoluteUri, () => CreateAndLaunchMailtoIntent(_webView.Context, uri.AbsoluteUri));
 			return;
 		}
 
-		//The replace is present because the uri cuts off any slashes that are more than two when it creates the uri.
-		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashles.
-		_webView.LoadUrl(uri.AbsoluteUri.Replace("file://", "file:///"));
+		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			// Load Url with folder
+			var folderUri = new Uri(AndroidAssetBaseUri, folderName + '/');
+
+			var relativePath = uri.PathAndQuery;
+
+			if (relativePath.StartsWith('/'))
+			{
+				relativePath = relativePath.Substring(1);
+			}
+
+			var assetUri = new Uri(folderUri, relativePath);
+
+			uri = assetUri;
+		}
+
+		//The replace is present because the URI cuts off any slashes that are more than two when it creates the URI.
+		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashes.
+		var actualUri = uri.AbsoluteUri.Replace("file://", "file:///");
+		ScheduleNavigationStarting(actualUri, () => _webView.LoadUrl(actualUri));
 	}
 
 	public void ProcessNavigation(HttpRequestMessage requestMessage)
@@ -150,14 +184,30 @@ internal class NativeWebViewWrapper : INativeWebView
 			);
 
 		_wasLoadedFromString = false;
-		_webView.LoadUrl(uri.AbsoluteUri, headers);
+		ScheduleNavigationStarting(uri.AbsoluteUri, () => _webView.LoadUrl(uri.AbsoluteUri, headers));
 	}
 
 	public void ProcessNavigation(string html)
 	{
 		_wasLoadedFromString = true;
 		//Note : _webView.LoadData does not work properly on Android 10 even when we encode to base64.
-		_webView.LoadDataWithBaseURL(null, html, "text/html; charset=utf-8", "utf-8", null);
+		ScheduleNavigationStarting(null, () => _webView.LoadDataWithBaseURL(null, html, "text/html; charset=utf-8", "utf-8", null));
+	}
+
+	private void ScheduleNavigationStarting(string url, Action loadAction)
+	{
+		// For programmatically-triggered navigations the ShouldOverrideUrlLoading method is not called,
+		// to workaround this, we raise the NavigationStarting event here, asynchronously to be in line with
+		// the WinUI behavior.
+		_ = _coreWebView.Owner.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+		{
+			_coreWebView.RaiseNavigationStarting(url, out var cancel);
+
+			if (!cancel)
+			{
+				loadAction?.Invoke();
+			}
+		});
 	}
 
 	async Task<string> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
@@ -175,7 +225,7 @@ internal class NativeWebViewWrapper : INativeWebView
 
 	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
 	{
-		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 
 		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 		ct.Register(() => tcs.TrySetCanceled());
@@ -191,7 +241,7 @@ internal class NativeWebViewWrapper : INativeWebView
 	// Because Android doesn't let you modify the navigation history, 
 	// we need CanGoBack, CanGoForward, GoBack and GoForward to take the above condition into consideration.
 
-	internal void OnNavigationHistoryChanged()
+	internal void RefreshHistoryProperties()
 	{
 		// A non-zero number of steps to the nearest valid history entry means that navigation in the given direction is allowed
 		var canGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;

@@ -1,15 +1,9 @@
 using System;
 using Windows.System;
 using Uno.UI;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-#else
 using Windows.UI.Xaml.Controls.Primitives;
-#endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

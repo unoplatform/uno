@@ -1,12 +1,9 @@
-﻿using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿using Android.Graphics;
+using Uno.Disposables;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-#if __ANDROID__
-using Android.Graphics;
-#endif
-
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public partial class UIElement
 {

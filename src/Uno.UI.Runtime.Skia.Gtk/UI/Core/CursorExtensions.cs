@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Gdk;
 using Windows.UI.Core;
-using Uno.UI.Runtime.Skia.GTK.UI.Core;
+using Uno.UI.Runtime.Skia.Gtk.UI.Core;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions
 {
 	internal static class CursorExtensions
 	{

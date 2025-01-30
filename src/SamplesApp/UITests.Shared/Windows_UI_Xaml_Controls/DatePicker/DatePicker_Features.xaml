@@ -5,9 +5,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d ios android xamarin"
+	mc:Ignorable="d ios android not_win"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Spacing="10" Margin="20">
@@ -70,7 +70,7 @@
 				DayVisible="{Binding IsChecked, ElementName=dayVisible}"
 				MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
 				YearVisible="{Binding IsChecked, ElementName=yearVisible}"
-				xamarin:UseNativeStyle="False" />
+				not_win:UseNativeStyle="False" />
 			<Button x:Name="pickerYear" Click="AddYear" Tag="{Binding ElementName=picker}">Y++</Button>
 			<Button x:Name="pickerMonth" Click="AddMonth" Tag="{Binding ElementName=picker}">M++</Button>
 			<Button x:Name="pickerDay" Click="AddDay" Tag="{Binding ElementName=picker}">D++</Button>
@@ -165,8 +165,8 @@
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" Spacing="7">
 			<DatePicker
-				xamarin:UseNativeStyle="True"
-				xamarin:UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
+				not_win:UseNativeStyle="True"
+				not_win:UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
 				x:Name="nativeDatePicker"
 				Date="{x:Bind PickedDate, Mode=TwoWay}"
 				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"

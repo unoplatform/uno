@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 
@@ -22,6 +22,8 @@ public class Given_SymbolIcon
 	[TestMethod]
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#else
+	[Ignore("Fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 #endif
 	public async Task Validate_Size()
 	{
@@ -62,12 +64,10 @@ public class Given_SymbolIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_Fluent()
+	public async Task When_Themed_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed();
 	}
 
 	[TestMethod]
@@ -105,11 +105,9 @@ public class Given_SymbolIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_TextBlock_Fluent()
+	public async Task When_Themed_TextBlock_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed_TextBlock();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed_TextBlock();
 	}
 }

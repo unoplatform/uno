@@ -1,59 +1,43 @@
-﻿using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Wasm;
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using System;
 using Uno.UI;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Rectangle
 	{
-		private readonly SvgElement _rectangle = new SvgElement("rect");
-
-		public Rectangle()
+		public Rectangle() : base("rect")
 		{
-			SvgChildren.Add(_rectangle);
-
-			InitCommonShapeProperties();
-			OnRadiusXChangedPartial();
-			OnRadiusYChangedPartial();
-		}
-
-		protected override SvgElement GetMainSvgElement()
-		{
-			return _rectangle;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var strokeThickness = ActualStrokeThickness;
+			UpdateRender();
+			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 
-			var childRect = new Rect(
-					strokeThickness / 2,
-					strokeThickness / 2,
-					finalSize.Width - strokeThickness,
-					finalSize.Height - strokeThickness
-				)
-				.AtLeast(new Size(0, 0));
+			WindowManagerInterop.SetSvgRectangleAttributes(
+				_mainSvgElement.HtmlId,
+				renderingArea.X, renderingArea.Y, renderingArea.Width, renderingArea.Height,
+				RadiusX, RadiusY
+			);
 
-			_rectangle.Arrange(childRect);
-
-			Uno.UI.Xaml.WindowManagerInterop.SetSvgElementRect(_rectangle.HtmlId, childRect);
-
-			_rectangle.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
+			_mainSvgElement.Clip = new RectangleGeometry()
+			{
+				Rect = new Rect(0, 0, finalSize.Width, finalSize.Height)
+			};
 
 			return finalSize;
 		}
 
-		partial void OnRadiusXChangedPartial()
-		{
-			_rectangle.SetAttribute("rx", RadiusX.ToStringInvariant());
-		}
-
-		partial void OnRadiusYChangedPartial()
-		{
-			_rectangle.SetAttribute("ry", RadiusY.ToStringInvariant());
-		}
+		private protected override string GetBBoxCacheKeyImpl() =>
+#if DEBUG
+			throw new InvalidOperationException("Rectangle doesnt use GetBBox. Should the impl change in the future, add key-gen and invalidation mechanism");
+#else
+			null;
+#endif
 	}
 }

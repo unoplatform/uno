@@ -1,32 +1,37 @@
 ﻿using System;
+using System.Threading;
 using Android.App;
-using Android.Content.PM;
+using Android.OS;
 using Android.Views;
 using Java.Interop;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.Identity.Client;
 using Uno.UI;
-using System.Threading;
-using Android.OS;
+using Uno.UI.Composition;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
+	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
+	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] {
+			Android.Content.Intent.CategoryLauncher,
+			Android.Content.Intent.CategoryLeanbackLauncher
+		})]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
+			Android.Content.Intent.CategoryBrowsable,
 		},
 		DataScheme = "uno-samples-test")]
-	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
+	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
 
@@ -45,7 +50,7 @@ namespace SamplesApp.Droid
 		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
-			var rootView = Windows.UI.Xaml.Window.Current.MainContent as View;
+			var rootView = ((ICompositionRoot)this).Content;
 
 			var bitmap = Android.Graphics.Bitmap.CreateBitmap(rootView.Width, rootView.Height, Android.Graphics.Bitmap.Config.Argb8888);
 			var locationOfViewInWindow = new int[2];
@@ -100,9 +105,6 @@ namespace SamplesApp.Droid
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
-#if !NET6_0_OR_GREATER
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
-#endif
 		}
 
 
@@ -121,22 +123,5 @@ namespace SamplesApp.Droid
 			}
 		}
 	}
-
-#if !NET6_0_OR_GREATER
-	[Activity]
-	[IntentFilter(
-		new[] {
-			Android.Content.Intent.ActionView
-		},
-		Categories = new[] {
-			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
-		},
-		DataScheme = "msauth")]
-	public class MsalActivity : BrowserTabActivity
-	{
-	}
-#endif
-
 }
 

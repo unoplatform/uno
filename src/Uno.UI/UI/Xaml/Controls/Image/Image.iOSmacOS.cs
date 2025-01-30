@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreGraphics;
@@ -12,12 +12,12 @@ using Uno.Diagnostics.Eventing;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Xaml.Media;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Image
 	{
@@ -35,10 +35,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_sourceImageSize = value;
 
-				if (Source is BitmapSource bitmapSource)
+				if (Source is BitmapImage bitmapImage)
 				{
-					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+					bitmapImage.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapImage.PixelHeight = (int)_sourceImageSize.Height;
 				}
 			}
 		}

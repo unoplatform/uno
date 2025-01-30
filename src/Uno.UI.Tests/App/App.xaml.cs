@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI;
 using Uno.UI.Tests.App.Views;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Resources;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -30,6 +32,8 @@ namespace UnitTestsApp
 	/// </summary>
 	sealed partial class App : Application
 	{
+		private Window _mainWindow;
+
 		public Grid HostView { get; private set; }
 
 		public App()
@@ -48,13 +52,16 @@ namespace UnitTestsApp
 			{
 				HostView = new Grid() { Name = "HostView" };
 
-				Window.Current.Content = HostView;
+				EnsureMainWindow();
 
-				Window.Current.Activate();
+				_mainWindow.Content = HostView;
+				_mainWindow.Activate();
 			}
 
 			OnLaunchedPartial();
 		}
+
+		internal Window MainWindow => _mainWindow;
 
 		partial void OnLaunchedPartial();
 
@@ -86,6 +93,22 @@ namespace UnitTestsApp
 #endif
 
 			return app;
+		}
+
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			if (CoreApplication.IsFullFledgedApp)
+			{
+				_mainWindow ??=
+#if HAS_UNO_WINUI
+					new Microsoft.UI.Xaml.Window();
+#elif HAS_UNO
+				Microsoft.UI.Xaml.Window.CurrentSafe!;
+#else
+				Window.Current;
+#endif
+			}
 		}
 	}
 }

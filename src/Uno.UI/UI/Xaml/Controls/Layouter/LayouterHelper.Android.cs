@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +14,7 @@ using Android.Graphics;
 using System.Linq.Expressions;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Provides access to internal methods for native View measuring.
@@ -48,4 +47,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

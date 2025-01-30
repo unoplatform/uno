@@ -21,19 +21,6 @@ using Windows.System;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Core;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using WindowsWindow = Microsoft.UI.Xaml.Window;
-#else
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -43,7 +30,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using WindowsWindow = Windows.UI.Xaml.Window;
-#endif
+using Uno.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -935,10 +922,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !HAS_UNO
 		Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
 		Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
 		Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
 		Vector2 c_frame2point2 = new Vector2(0.2f, 1.0f);
+#endif
 
 		void AnimateSelectionChangedToItem(object selectedItem)
 		{
@@ -1570,7 +1559,7 @@ namespace Windows.UI.Xaml.Controls
 					handled = BumperNavigation(1);
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())
@@ -1652,8 +1641,7 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
-#if false
-		object MenuItemFromContainer(DependencyObject container)
+		public object MenuItemFromContainer(DependencyObject container)
 		{
 			var nvi = container;
 			if (nvi != null)
@@ -1693,7 +1681,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		DependencyObject ContainerFromMenuItem(object item)
+		public DependencyObject ContainerFromMenuItem(object item)
 		{
 			var data = item;
 			if (data != null)
@@ -1703,7 +1691,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return null;
 		}
-#endif
 
 		void OnTopNavDataSourceChanged(NotifyCollectionChangedEventArgs args)
 		{
@@ -3288,12 +3275,14 @@ namespace Windows.UI.Xaml.Controls
 
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = WindowsWindow.Current.Content;
-					GeneralTransform gt = TransformToVisual(root);
-					Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
-					if (pos.Y != 0.0f)
+					if (XamlRoot?.HostWindow?.Content is { } root)
 					{
-						topPadding = 0.0;
+						GeneralTransform gt = TransformToVisual(root);
+						Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
+						if (pos.Y != 0.0f)
+						{
+							topPadding = 0.0;
+						}
 					}
 
 					var backButtonVisibility = IsBackButtonVisible;
@@ -3398,7 +3387,7 @@ namespace Windows.UI.Xaml.Controls
 			// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 			if (m_applicationView == null)
 			{
-				m_applicationView = ApplicationView.GetForCurrentView();
+				m_applicationView = ApplicationView.GetForCurrentViewSafe();
 			}
 
 			// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings
@@ -3407,7 +3396,7 @@ namespace Windows.UI.Xaml.Controls
 				m_uiViewSettings = UIViewSettings.GetForCurrentView();
 			}
 
-			bool isFullScreenMode = m_applicationView.IsFullScreenMode;
+			bool isFullScreenMode = m_applicationView?.IsFullScreenMode ?? false;
 			bool isTabletMode = m_uiViewSettings.UserInteractionMode == UserInteractionMode.Touch;
 
 			return isFullScreenMode || isTabletMode;

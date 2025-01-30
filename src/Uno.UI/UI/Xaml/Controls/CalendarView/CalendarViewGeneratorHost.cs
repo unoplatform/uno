@@ -1,17 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Globalization;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
-using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.Controls.FocusEngagedEventArgs>;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs>;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	//struct VisibleIndicesUpdatedTraits
 	//{
@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 			m_pHeaderText = null;
 			m_lastVisibleIndicesPair[0] = -1;
 			m_lastVisibleIndicesPair[1] = -1;
-			m_lastVisitedDateAndIndex.first = default; // .ToUniversalTime() = 0; TODO UNO
+			m_lastVisitedDateAndIndex.first.UniversalTime = 0;
 			m_lastVisitedDateAndIndex.second = -1;
 
 		}
@@ -281,12 +281,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			int index = 0;
 
-			m_lastVisitedDateAndIndex.first = Owner.MinDate;
+			m_lastVisitedDateAndIndex.first = Owner.GetMinDate();
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
 
-			index = CalculateOffsetFromMinDate(Owner.MaxDate);
+			index = CalculateOffsetFromMinDate(Owner.GetMaxDate());
 
 			m_size = (uint)(index) + 1;
 
@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 			date = pCalendar.GetDateTime();
 			m_lastVisitedDateAndIndex.first = date;
 			m_lastVisitedDateAndIndex.second = (int)(index);
-			var pDate = date; // .ToUniversalTime() - UNO
+			var pDate = date;
 
 			return pDate;
 		}
@@ -350,7 +350,8 @@ namespace Windows.UI.Xaml.Controls
 		internal int CalculateOffsetFromMinDate(DateTime date)
 		{
 			var pIndex = 0;
-			DateTime estimatedDate = m_lastVisitedDateAndIndex.first; //.ToUniversalTime(); - UNO
+			DateTime estimatedDate = m_lastVisitedDateAndIndex.first;
+
 			var pCalendar = GetCalendar();
 			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 
@@ -372,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			while (true)
 			{
-				diffInUTC = date.ToUniversalTime().Ticks - estimatedDate.ToUniversalTime().Ticks;
+				diffInUTC = date.UniversalTime - estimatedDate.UniversalTime;
 
 				// round to the nearest integer
 				diffInUnit = (int)(diffInUTC / averageTicksPerUnit);
@@ -496,8 +497,8 @@ namespace Windows.UI.Xaml.Controls
 			firstDateOfNextScope = GetCalendar().GetDateTime();
 
 			// when the navigation button is enabled, we should always be able to navigate to the desired scope.
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.MinDate));
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, firstDateOfNextScope));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
 
 			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
@@ -592,8 +593,8 @@ namespace Windows.UI.Xaml.Controls
 			Owner.CoerceDate(ref minDateOfCurrentScope);
 			Owner.CoerceDate(ref maxDateOfCurrentScope);
 
-			if (minDateOfCurrentScope.ToUniversalTime() != m_minDateOfCurrentScope.ToUniversalTime() ||
-				maxDateOfCurrentScope.ToUniversalTime() != m_maxDateOfCurrentScope.ToUniversalTime())
+			if (minDateOfCurrentScope.UniversalTime != m_minDateOfCurrentScope.UniversalTime ||
+				maxDateOfCurrentScope.UniversalTime != m_maxDateOfCurrentScope.UniversalTime)
 			{
 				m_minDateOfCurrentScope = minDateOfCurrentScope;
 				m_maxDateOfCurrentScope = maxDateOfCurrentScope;

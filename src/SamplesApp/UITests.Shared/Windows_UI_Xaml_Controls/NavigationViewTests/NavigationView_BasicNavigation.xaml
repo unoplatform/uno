@@ -5,8 +5,8 @@
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.NavigationViewTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xamarin="http://uno.ui/xamarin"
-    mc:Ignorable="d xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
@@ -18,7 +18,7 @@
 						IsTabStop="False"
 						IsBackButtonVisible="Visible"
 						IsBackEnabled="True"
-						xamarin:BackRequested="BasicNavigation_BackRequested"
+						not_win:BackRequested="BasicNavigation_BackRequested"
 						Header="This is header text.">
 			<NavigationView.MenuItems>
 				<NavigationViewItem x:Name="FirstItem" Content="First item" Tag="First"/>

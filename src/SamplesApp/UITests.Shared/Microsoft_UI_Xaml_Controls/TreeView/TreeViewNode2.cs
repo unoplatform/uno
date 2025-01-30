@@ -3,9 +3,9 @@
 
 // MUX commit reference 6a8ac7c
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {

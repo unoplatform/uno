@@ -1,8 +1,8 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -10,7 +10,7 @@ using Uno.UI;
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control
 	{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ILottieVisualSourceProvider? _lottieProvider;
 
 
-		private Windows.UI.Xaml.Controls.AnimatedVisualPlayer? _player;
+		private AnimatedVisualPlayer? _player;
 		private bool _isTemplateApplied = false;
 		private Panel? _layoutRoot;
 		private double _oldValue = 0d;
@@ -84,24 +84,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 
-		public Windows.UI.Xaml.Controls.IAnimatedVisualSource DeterminateSource
+		public IAnimatedVisualSource DeterminateSource
 		{
-			get { return (Windows.UI.Xaml.Controls.IAnimatedVisualSource)GetValue(DeterminateSourceProperty); }
+			get { return (IAnimatedVisualSource)GetValue(DeterminateSourceProperty); }
 			set { SetValue(DeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty DeterminateSourceProperty =
-			DependencyProperty.Register("DeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
+		public static DependencyProperty DeterminateSourceProperty { get; } =
+			DependencyProperty.Register("DeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
 
 
-		public Windows.UI.Xaml.Controls.IAnimatedVisualSource IndeterminateSource
+		public IAnimatedVisualSource IndeterminateSource
 		{
-			get { return (Windows.UI.Xaml.Controls.IAnimatedVisualSource)GetValue(IndeterminateSourceProperty); }
+			get { return (IAnimatedVisualSource)GetValue(IndeterminateSourceProperty); }
 			set { SetValue(IndeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty IndeterminateSourceProperty =
-			DependencyProperty.Register("IndeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
+		public static DependencyProperty IndeterminateSourceProperty { get; } =
+			DependencyProperty.Register("IndeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
 
 		public ProgressRing()
 		{
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_lottieProvider == null)
 			{
-				this.Log().Error($"{nameof(ProgressRing)} control needs the Uno.UI.Lottie package to run properly.");
+				this.Log().Error($"UNOX0001: The {nameof(ProgressRing)} control needs an additional package to be enabled. https://aka.platform.uno/UNOX0001");
 			}
 
 			RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			_isTemplateApplied = true;
-			_player = GetTemplateChild(LottiePlayerName) as Windows.UI.Xaml.Controls.AnimatedVisualPlayer;
+			_player = GetTemplateChild(LottiePlayerName) as AnimatedVisualPlayer;
 			_layoutRoot = GetTemplateChild(LayoutRootName) as Panel;
 
 			ChangeVisualState();
@@ -134,7 +134,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnIsIndeterminatePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as ProgressRing)?.ChangeVisualState();
+			if (dependencyObject is ProgressRing pr)
+			{
+				pr._player?.Stop();
+				pr.ChangeVisualState();
+			}
 		}
 
 		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieForegroundColor();
@@ -232,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (indeterminateSource == null)
 						{
-							var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+							var animatedVisualSource = _lottieProvider.CreateThemableFromLottieAsset(_currentSourceUri);
 							_player.Source = animatedVisualSource;
 						}
 						else
@@ -268,7 +272,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							_currentSourceUri = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset;
 
-							var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+							var animatedVisualSource = _lottieProvider.CreateThemableFromLottieAsset(_currentSourceUri);
 							_player.Source = animatedVisualSource;
 						}
 						else
@@ -300,8 +304,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var txt = new TextBlock
 				{
-					Text = "⚠️ Uno.UI.Lottie missing ⚠️",
-					Foreground = SolidColorBrushHelper.Red
+					Text = "⚠️ UNOX0001: https://aka.platform.uno/UNOX0001 ⚠️",
+					Foreground = SolidColorBrushHelper.Red,
+					FontSize = 8
 				};
 
 				_layoutRoot.Children.Add(txt);

@@ -12,12 +12,12 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Imaging;
+using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ListViewBase
 	{
@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string ReorderItemFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__item__";
 		private const string ReorderContainerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__container__";
 		private const string DragItemsFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__items__";
+		internal bool IsCustomReorder;
 
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
@@ -95,11 +96,9 @@ namespace Windows.UI.Xaml.Controls
 			// Known issue: the ContainerClearedForItem might not be invoked properly for all items on some platforms.
 			// This patch is acceptable as event handlers are static (so they won't leak).
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
-			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
 
 			itemContainer.CanDrag = true;
 			itemContainer.DragStarting += OnItemContainerDragStarting;
-			itemContainer.DropCompleted += OnItemContainerDragCompleted;
 		}
 
 		private static void ClearContainerForDragDrop(UIElement itemContainer)
@@ -111,7 +110,6 @@ namespace Windows.UI.Xaml.Controls
 
 			itemContainer.CanDrag = false;
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
-			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
 
 			itemContainer.DragEnter -= OnReorderDragUpdated;
 			itemContainer.DragOver -= OnReorderDragUpdated;
@@ -123,6 +121,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
+				// only raise DragItemsCompleted if DragItemsStarting was raised
+				sender.DropCompleted -= OnItemContainerDragCompleted;
+				sender.DropCompleted += OnItemContainerDragCompleted;
 				// The items contains all selected items ONLY if the draggedItem is selected.
 				var draggedItem = that.ItemFromContainer(sender);
 				var items =
@@ -153,16 +154,19 @@ namespace Windows.UI.Xaml.Controls
 					that.DragLeave -= OnReorderDragLeave;
 					that.Drop -= OnReorderCompleted;
 
-					that.DragEnter += OnReorderDragUpdated;
-					that.DragOver += OnReorderDragUpdated;
-					that.DragLeave += OnReorderDragLeave;
-					that.Drop += OnReorderCompleted;
-
+					if (!that.IsCustomReorder)
+					{
+						that.DragEnter += OnReorderDragUpdated;
+						that.DragOver += OnReorderDragUpdated;
+						that.DragLeave += OnReorderDragLeave;
+						that.Drop += OnReorderCompleted;
+					}
 					that.m_tpPrimaryDraggedContainer = sender as SelectorItem;
 
 					that.ChangeSelectorItemsVisualState(true);
 				}
 			}
+
 		}
 
 		private static void OnItemContainerDragCompleted(UIElement sender, DropCompletedEventArgs innerArgs)
@@ -188,6 +192,7 @@ namespace Windows.UI.Xaml.Controls
 				// (eg if drag was released outside bounds of list)
 				that.CleanupReordering();
 			}
+			sender.DropCompleted -= OnItemContainerDragCompleted;
 		}
 
 		private static void OnReorderDragUpdated(object sender, _DragEventArgs dragEventArgs)
@@ -257,7 +262,14 @@ namespace Windows.UI.Xaml.Controls
 
 			that.m_tpPrimaryDraggedContainer = null;
 
-			that.ChangeSelectorItemsVisualState(true);
+			// CompleteReordering will remove the children and add them back on next measure.
+			// We defer ChangeSelectorItemsVisualState to the next measure so that the children are there and updated.
+			// An alternative could be to retrieve the children before CompleteReordering and then update the visual state here.
+#if HAS_UNO_WINUI
+			that.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => that.ChangeSelectorItemsVisualState(true));
+#else
+			_ = that.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => that.ChangeSelectorItemsVisualState(true));
+#endif
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
@@ -391,8 +403,19 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)
-			=> src.GetType() is { IsGenericType: true } srcType
-				&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>);
+		{
+			var type = src.GetType();
+
+			while (type != null && type != typeof(object))
+			{
+				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ObservableCollection<>))
+				{
+					return true;
+				}
+				type = type.BaseType;
+			}
+			return false;
+		}
 
 		private static void DoMove(ItemCollection items, int oldIndex, int newIndex)
 		{

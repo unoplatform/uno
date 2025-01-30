@@ -10,9 +10,8 @@ using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 using SystemPath = global::System.IO.Path;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Storage.StorageFolder.NativeMethods;
-#endif
+using Windows.Storage.Pickers;
 
 namespace Windows.Storage
 {
@@ -25,10 +24,6 @@ namespace Windows.Storage
 
 		internal sealed class NativeStorageFolder : ImplementationBase
 		{
-#if !NET7_0_OR_GREATER
-			private const string JsType = "Uno.Storage.NativeStorageFolder";
-#endif
-
 			// Used to keep track of the Folder handle on the Typescript side.
 			private Guid _id;
 			private string _name;
@@ -51,19 +46,14 @@ namespace Windows.Storage
 
 			public static async Task<StorageFolder?> GetPrivateRootAsync()
 			{
-				var itemInfoJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.GetPrivateRootAsync();
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.getPrivateRootAsync()");
-#endif
+				var itemInfoJson = await NativeMethods.GetPrivateRootAsync();
 
 				if (itemInfoJson == null)
 				{
 					return null;
 				}
 
-				var item = JsonHelper.Deserialize<NativeStorageItemInfo>(itemInfoJson);
+				var item = JsonHelper.Deserialize<NativeStorageItemInfo>(itemInfoJson, StorageSerializationContext.Default);
 				return GetFromNativeInfo(item, null);
 			}
 
@@ -114,39 +104,24 @@ namespace Windows.Storage
 						throw new ArgumentOutOfRangeException(nameof(option));
 				}
 
-				var newFolderNativeInfo = await
-#if NET7_0_OR_GREATER
-					NativeMethods.CreateFolderAsync(_id.ToString(), folderName);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.createFolderAsync(\"{_id}\", \"{folderName}\")");
-#endif
+				var newFolderNativeInfo = await NativeMethods.CreateFolderAsync(_id.ToString(), folderName);
 
 				if (newFolderNativeInfo == null)
 				{
 					throw new UnauthorizedAccessException("Could not create file.");
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo, StorageSerializationContext.Default);
 				return GetFromNativeInfo(info, Owner);
 			}
 
 			public override async Task<StorageFolder> GetFolderAsync(string name, CancellationToken ct)
 			{
-				var folderInfoJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.TryGetFolderAsync(_id.ToString(), name);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+				var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
 
 				if (folderInfoJson == null)
 				{
-					var fileInfoJson = await
-#if NET7_0_OR_GREATER
-						NativeMethods.TryGetFileAsync(_id.ToString(), name);
-#else
-						WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+					var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
 
 					if (fileInfoJson != null)
 					{
@@ -159,7 +134,7 @@ namespace Windows.Storage
 					}
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson, StorageSerializationContext.Default);
 				var storageFolder = GetFromNativeInfo(info, Owner);
 
 				return storageFolder;
@@ -167,14 +142,9 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<IStorageItem>> GetItemsAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.GetItemsAsync(_id.ToString());
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.getItemsAsync(\"{_id}\")");
-#endif
+				var itemInfosJson = await NativeMethods.GetItemsAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<IStorageItem>();
 				foreach (var info in itemInfos)
 				{
@@ -192,14 +162,9 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<StorageFile>> GetFilesAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.GetFilesAsync(_id.ToString());
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.getFilesAsync(\"{_id}\")");
-#endif
+				var itemInfosJson = await NativeMethods.GetFilesAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<StorageFile>();
 				foreach (var info in itemInfos)
 				{
@@ -210,14 +175,9 @@ namespace Windows.Storage
 
 			public override async Task<IReadOnlyList<StorageFolder>> GetFoldersAsync(CancellationToken ct)
 			{
-				var itemInfosJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.GetFoldersAsync(_id.ToString());
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.getFoldersAsync(\"{_id}\")");
-#endif
+				var itemInfosJson = await NativeMethods.GetFoldersAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<StorageFolder>();
 				foreach (var info in itemInfos)
 				{
@@ -273,39 +233,24 @@ namespace Windows.Storage
 						throw new ArgumentOutOfRangeException(nameof(option));
 				}
 
-				var newFolderNativeInfo = await
-#if NET7_0_OR_GREATER
-					NativeMethods.CreateFileAsync(_id.ToString(), actualName);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.createFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(actualName)}\")");
-#endif
+				var newFolderNativeInfo = await NativeMethods.CreateFileAsync(_id.ToString(), actualName);
 
 				if (newFolderNativeInfo == null)
 				{
 					throw new UnauthorizedAccessException("Could not create file.");
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo, StorageSerializationContext.Default);
 				return StorageFile.GetFromNativeInfo(info, Owner);
 			}
 
 			public override async Task<StorageFile> GetFileAsync(string name, CancellationToken token)
 			{
-				var fileInfoJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.TryGetFileAsync(_id.ToString(), name);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+				var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
 
 				if (fileInfoJson == null)
 				{
-					var folderInfoJson = await
-#if NET7_0_OR_GREATER
-						NativeMethods.TryGetFolderAsync(_id.ToString(), name);
-#else
-						WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+					var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
 
 					if (folderInfoJson != null)
 					{
@@ -319,7 +264,7 @@ namespace Windows.Storage
 				}
 
 				// File exists
-				var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson);
+				var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson, StorageSerializationContext.Default);
 				return StorageFile.GetFromNativeInfo(fileInfo, Owner);
 			}
 
@@ -339,31 +284,21 @@ namespace Windows.Storage
 
 			public override async Task<IStorageItem?> TryGetItemAsync(string name, CancellationToken token)
 			{
-				var fileInfoJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.TryGetFileAsync(_id.ToString(), name);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFileAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+				var fileInfoJson = await NativeMethods.TryGetFileAsync(_id.ToString(), name);
 
 				if (fileInfoJson != null)
 				{
 					// File exists
-					var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson);
+					var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson, StorageSerializationContext.Default);
 					return StorageFile.GetFromNativeInfo(fileInfo, Owner);
 				}
 
-				var folderInfoJson = await
-#if NET7_0_OR_GREATER
-					NativeMethods.TryGetFolderAsync(_id.ToString(), name);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.tryGetFolderAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(name)}\")");
-#endif
+				var folderInfoJson = await NativeMethods.TryGetFolderAsync(_id.ToString(), name);
 
 				if (folderInfoJson != null)
 				{
 					// Folder exists
-					var folderInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson);
+					var folderInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson, StorageSerializationContext.Default);
 					return GetFromNativeInfo(folderInfo, Owner);
 				}
 
@@ -383,12 +318,7 @@ namespace Windows.Storage
 
 			internal async Task DeleteItemAsync(string itemName)
 			{
-				var result = await
-#if NET7_0_OR_GREATER
-					NativeMethods.DeleteItemAsync(_id.ToString(), itemName);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.deleteItemAsync(\"{_id}\", \"{WebAssemblyRuntime.EscapeJs(itemName)}\")");
-#endif
+				var result = await NativeMethods.DeleteItemAsync(_id.ToString(), itemName);
 
 				if (result == null)
 				{

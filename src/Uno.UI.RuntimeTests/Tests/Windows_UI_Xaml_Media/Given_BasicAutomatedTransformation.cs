@@ -2,21 +2,21 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
+	//Web Assembly does not have a helper that take screenshots yet
+	//MacOs interprets colors differently
+#if __WASM__ || __MACOS__
+	[Ignore]
+#endif
 	[TestClass]
 	[RunsOnUIThread]
 	public class Basics_AutomatedTransformation
 	{
-
-		//Web Assembly does not have a helper that take screenshots yet
-		//MacOs interprets colors differently
-#if !__WASM__ && !__MACOS__
-
 		private const string White = "#FFFFFF";
 		private const float PixelIncertitude = 2;
 
@@ -191,12 +191,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		private async Task<RawBitmap> Arrange(FrameworkElement SUT)
 		{
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
+#if __ANDROID__
+			if (SUT is Android.Views.View view && view.Parent is Controls.BindableView bindableView)
+			{
+				bindableView.RemoveView(view);
+			}
+#endif
+			await UITestHelper.Load(SUT);
+			var result = await UITestHelper.ScreenShot(SUT);
 			await WindowHelper.WaitForIdle();
 			return result;
 		}
@@ -217,7 +219,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			ImageAssert.HasColorAt(result, x, y, color, tolerance: 25);
 		}
-#endif
 	}
 }
 

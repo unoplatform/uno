@@ -2,10 +2,8 @@
 using System.Globalization;
 using Android.Graphics;
 using Android.Runtime;
-using Android.Views;
 using Android.Webkit;
 using Microsoft.Web.WebView2.Core;
-using Windows.UI.Xaml.Controls;
 using Windows.Web;
 
 namespace Uno.UI.Xaml.Controls;
@@ -25,6 +23,17 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		_coreWebView = coreWebView;
 		_nativeWebViewWrapper = webViewWrapper;
 	}
+
+	public override void DoUpdateVisitedHistory(Android.Webkit.WebView view, string url, bool isReload)
+	{
+		base.DoUpdateVisitedHistory(view, url, isReload);
+
+		_nativeWebViewWrapper.DocumentTitle = view.Title;
+
+		_nativeWebViewWrapper.RefreshHistoryProperties();
+		_coreWebView.RaiseHistoryChanged();
+	}
+
 
 #pragma warning disable CS0672 // Member overrides obsolete member
 	public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView view, string url)
@@ -60,9 +69,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{
-		_coreWebView.DocumentTitle = view.Title;
-
-		_coreWebView.RaiseHistoryChanged();
+		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
 		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
 

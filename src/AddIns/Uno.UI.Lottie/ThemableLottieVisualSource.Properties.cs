@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using Windows.UI;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class ThemableLottieVisualSource
 	{

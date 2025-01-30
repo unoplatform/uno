@@ -1,14 +1,15 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using System.Collections.Specialized;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Pivot : ItemsControl
 	{
@@ -71,6 +72,13 @@ namespace Windows.UI.Xaml.Controls
 #endif
 
 			SynchronizeItems();
+		}
+
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+		{
+			base.UpdateItems(args);
+
+			SynchronizeSelectedItem();
 		}
 
 		private void UnregisterHeaderEvents()
@@ -167,20 +175,13 @@ namespace Windows.UI.Xaml.Controls
 					{
 						pivotItem.PivotHeaderItem = headerItem;
 						headerItem.Content = pivotItem.Header;
+						pivotItem.KeyTipTarget = headerItem;
+						pivotItem.KeyboardAcceleratorPlacementTarget = headerItem;
 					}
 					else
 					{
 						headerItem.Content = item;
 					}
-
-					headerItem.SetBinding(
-						ContentControl.ContentTemplateProperty,
-						new Binding
-						{
-							Path = "HeaderTemplate",
-							RelativeSource = RelativeSource.TemplatedParent
-						}
-					);
 
 					// Materialize template to ensure visual states are set correctly.
 					headerItem.EnsureTemplate();

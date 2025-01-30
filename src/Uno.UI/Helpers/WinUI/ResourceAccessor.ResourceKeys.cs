@@ -94,15 +94,9 @@
 		public const string SR_PlaceAfterString = "PlaceAfterString";
 		public const string SR_PlaceBeforeString = "PlaceBeforeString";
 		public const string SR_PlaceBetweenString = "PlaceBetweenString";
-		public const string SR_ProgressRingName = "ProgressRingName";
-		public const string SR_ProgressRingIndeterminateStatus = "ProgressRingIndeterminateStatus";
-		public const string SR_ProgressBarIndeterminateStatus = "ProgressBarIndeterminateStatus";
-		public const string SR_ProgressBarPausedStatus = "ProgressBarPausedStatus";
-		public const string SR_ProgressBarErrorStatus = "ProgressBarErrorStatus";
 		public const string SR_RatingLocalizedControlType = "RatingLocalizedControlType";
 		public const string SR_BreadcrumbBarItemLocalizedControlType = "BreadcrumbBarItemLocalizedControlType";
 		public const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
-		public const string SR_ProofingMenuItemLabel = "ProofingMenuItemLabel";
 		public const string SR_TextCommandLabelCut = "TextCommandLabelCut";
 		public const string SR_TextCommandLabelCopy = "TextCommandLabelCopy";
 		public const string SR_TextCommandLabelPaste = "TextCommandLabelPaste";
@@ -146,6 +140,10 @@
 		public const string SR_NumberBoxDownSpinButtonName = "NumberBoxDownSpinButtonName";
 		public const string SR_NumberBoxMaximumValueStatus = "NumberBoxMaximumValueStatus";
 		public const string SR_NumberBoxMinimumValueStatus = "NumberBoxMinimumValueStatus";
+		public const string SR_ItemContainerDefaultControlName = "ItemContainerDefaultControlName";
+
+		public const string SR_SelectorBarItemDefaultControlName = "SelectorBarItemDefaultControlName";
+
 		public const string SR_InfoBarCloseButtonName = "InfoBarCloseButtonName";
 		public const string SR_InfoBarOpenedNotification = "InfoBarOpenedNotification";
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";

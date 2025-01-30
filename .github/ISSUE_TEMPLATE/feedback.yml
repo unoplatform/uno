@@ -1,0 +1,25 @@
+name: Feedback
+description: Share your feedback the Uno Platform team
+labels: [kind/feedback, triage/untriaged]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for stopping by to share your feedback! 💖 
+
+  - type: textarea
+    id: feedback-description
+    attributes:
+      label: Your feedback
+      placeholder: | 
+        Need some inspiration? Folks typically submit feedback on the following topics:
+
+        - what version of Uno and what platforms you are using it with
+        - what do you like
+        - what is lacking
+        - what do you long for going forward
+        - where and how you have used Uno in production
+        - any friction that hinders adoption of Uno at your company
+        - any friction that is preventing you from contributing to Uno
+    validations:
+      required: true

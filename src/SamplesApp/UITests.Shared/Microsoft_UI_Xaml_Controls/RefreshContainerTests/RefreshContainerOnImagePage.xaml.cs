@@ -8,22 +8,22 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 using MUXControlsTestApp;
 
-using RefreshVisualizer = Microsoft.UI.Xaml.Controls.RefreshVisualizer;
-using RefreshVisualizerState = Microsoft.UI.Xaml.Controls.RefreshVisualizerState;
-using RefreshRequestedEventArgs = Microsoft.UI.Xaml.Controls.RefreshRequestedEventArgs;
-using RefreshInteractionRatioChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
-using RefreshStateChangedEventArgs = Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs;
-using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+using RefreshVisualizer = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshVisualizer;
+using RefreshVisualizerState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshVisualizerState;
+using RefreshRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshRequestedEventArgs;
+using RefreshInteractionRatioChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs;
+using RefreshStateChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshStateChangedEventArgs;
+using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 using Uno.UI.Samples.Controls;
 #if HAS_UNO
 using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainerPrivate;
@@ -40,7 +40,7 @@ namespace MUXControlsTestApp
 		{
 			this.InitializeComponent();
 			this.Loaded += OnMainPageLoaded;
-
+			this.Unloaded += OnMainPageUnloaded;
 			timer.Interval = new TimeSpan(0, 0, 0, 0, 800);
 			timer.Tick += Timer_Tick;
 		}
@@ -50,13 +50,10 @@ namespace MUXControlsTestApp
 		private bool delayRefresh = true;
 		private int refreshCount = 0;
 
-		protected
-#if HAS_UNO
-			internal
-#endif
-			 override void OnNavigatedFrom(NavigationEventArgs e)
+		// Uno specific: Unlike WinUI, we unsubscribe on Unloaded because we don't get OnNavigatedFrom.
+		// See point #2 in https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
+		private void OnMainPageUnloaded(object sender, RoutedEventArgs e)
 		{
-			base.OnNavigatedFrom(e);
 			timer.Stop();
 		}
 

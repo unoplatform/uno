@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class ObjectKeyFrame : DependencyObject, IKeyFrame<object>
 	{
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty KeyTimeProperty { get; } =
-			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(default(KeyTime)));
 		#endregion
 
 		#region Value Dependency Property

@@ -10,8 +10,8 @@
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:legacy="using:Uno.UI.Controls.Legacy"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d ios android xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d ios android not_win"
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
@@ -19,7 +19,7 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<win:TextBlock Text="No Legacy ListView on Windows, sample is Uno-specific."/>
-				<xamarin:Border>
+				<not_win:Border>
 					<legacy:ListView ItemsSource="{Binding [GroupedTownsAsSource]}"
 						  Width="200"
 						  Height="450">
@@ -42,7 +42,7 @@
 							</DataTemplate>
 						</legacy:ListView.ItemTemplate>
 					</legacy:ListView>
-				</xamarin:Border>
+				</not_win:Border>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>

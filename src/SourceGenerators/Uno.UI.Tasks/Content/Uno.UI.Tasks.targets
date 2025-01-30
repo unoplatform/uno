@@ -8,17 +8,23 @@
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
-	</ItemGroup>
-
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
-	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
+	
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
+
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -48,7 +54,7 @@
 	<Target Name="UnoResourcesGeneration"
 				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
-				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+				Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
 
@@ -84,10 +90,15 @@
 			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
 		</AssignTargetPath>
 
+		<PropertyGroup>
+			<_ResourceOutputPath>$(IntermediateOutputPath)g\ResourcesGenerator</_ResourceOutputPath>
+			<_ResourceStampFile>$(IntermediateOutputPath)g\uno.stamp</_ResourceStampFile>
+		</PropertyGroup>
+
 		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
-									 IntermediateOutputPath="$(IntermediateOutputPath)"
+									 OutputPath="$(_ResourceOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
 									 IsUnoHead="$(_IsUnoHead)"
 									 ProjectName="$(AssemblyName)"
@@ -97,11 +108,17 @@
 		</ResourcesGenerationTask_v0>
 		<ItemGroup>
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
-			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<LibraryResourceDirectories Condition="'@(_UnoAndroidResources->Count ())' != '0' " Include="$(_ResourceOutputPath)\r">
+                <StampFile>$(_ResourceStampFile)</StampFile>
+            </LibraryResourceDirectories>
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 
 			<!-- Clear temporary group -->
 			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Include="@(GeneratedFiles)" />
 		</ItemGroup>
 	</Target>
 
@@ -115,12 +132,16 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- 
+		The UnoAssetsGeneration must be run at design time as well, as it 
+		interacts with the `.R` generation on android. If not run, temporary
+		resource files may be deleted incorrectly by design time builds.
+	-->
 	<Target Name="UnoAssetsGeneration"
 				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
 				Condition="
-				'$(DesignTimeBuild)' != 'true'
-				and '$(BuildingInsideUnoSourceGenerator)' == ''
+				'$(BuildingInsideUnoSourceGenerator)' == ''
 				and ('$(IsUnoHead)'=='true'
 					or '$(AndroidApplication)'=='true'
 					or '$(ProjectTypeGuids)'!='')">
@@ -138,7 +159,7 @@
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
 							IntermediateOutputPath="$(IntermediateOutputPath)"
-							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
+							ContentItems="@(ContentWithTargetPath);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							IosAppManifest="$(_UnoIosAppManifest)"
 							Condition="'$(XamarinProjectType)'!=''">
@@ -155,24 +176,71 @@
 		<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
+
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 		<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
 			<AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
 			<AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 	</Target>
 
 	<!--
-	  XAML Resources Trimming
+	  Upri Resources Trimming
+	-->
+
+	<Target Name="_UnoLinkerUpriSubstitutions"
+		Condition="'$(DesignTimeBuild)' != 'true'"
+		AfterTargets="UnoResourcesGeneration">
+
+		<ItemGroup>
+			<_UnoUpriResource Condition="'%(GeneratedFiles.UnoResourceTarget)' == 'Uno'" Include="@(GeneratedFiles->'%(LogicalName)')">
+				<Language>%(GeneratedFiles.Language)</Language>
+			</_UnoUpriResource>
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_UnoUpriSubstitutionsFile>$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml</_UnoUpriSubstitutionsFile>
+		</PropertyGroup>
+
+		<UpriSubstitutionsGeneratorTask_v0
+			AssemblyName="$(AssemblyName)"
+			Resources="@(_UnoUpriResource)"
+			EnableXamlTrimmingIntegration="$(UnoXamlResourcesUpriTrimming)"
+			OutputFile="$(_UnoUpriSubstitutionsFile)" />
+
+		<ItemGroup>
+			<FileWrites Include="$(_UnoUpriSubstitutionsFile)" Condition="Exists('$(_UnoUpriSubstitutionsFile)')" />
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="_UnoLinkerUpriFeatures"
+		Condition="'$(IsUnoHead)'=='true'"
+		BeforeTargets="BuildDist;PrepareForILLink">
+
+		<UpriFeaturesGeneratorTask_v0
+			Languages="@(UnoSupportedLanguage)">
+			<Output TaskParameter="OutputFeatures" ItemName="_UpriOutputFeatures" />
+		</UpriFeaturesGeneratorTask_v0>
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="@(_UpriOutputFeatures)" Trim="true" />
+		</ItemGroup>
+
+	</Target>
+
+	<!--
+	  Linker Substitutions Merge
 	  -->
 
-	<Target Name="_UnoLinkerHintsSubstitutionsMerge"
-		Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'
-		and $(_IsXamlTrimmingAvailable)"
+	<Target Name="_UnoLinkerCollectSubstitutions"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
@@ -180,44 +248,55 @@
 			<_SubstitutionFiles Include="$(IntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
 		</ItemGroup>
 
+	</Target>
+
+	<Target Name="_UnoLinkerSubstitutionsMerge"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true' and @(_SubstitutionFiles->Count()) > 0 and '$(Configuration)' == 'Release'"
+		BeforeTargets="_UnoEmbeddedResourcesInjection">
+
 		<LinkerDefinitionMergerTask_v0
 			DefinitionFiles="@(_SubstitutionFiles)"
-			TargetDefinitionFile="$(IntermediateOutputPath)ILLink.Substitutions.xml"
-		/>
+			TargetDefinitionFile="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 
 		<ItemGroup>
-			<EmbeddedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+			<_UnoInjectedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+
+			<FileWrites Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 		</ItemGroup>
 
 	</Target>
 
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CoreCompile" />
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="_UnoLinkerHintsSubstitutionsMerge" />
-	</ItemGroup>
+	<PropertyGroup>
+		<TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);_UnoSetupEmbeddedResourcesInjection</TargetsTriggeredByCompilation>
+	</PropertyGroup>
+
+	<Target Name="_UnoSetupEmbeddedResourcesInjection">
+
+		<PropertyGroup Condition="'$(DesignTimeBuild)' != 'true' and '$(SkipCompilerExecution)' == ''">
+			<_UnoRequiresEmbeddedResourcesInjection>true</_UnoRequiresEmbeddedResourcesInjection>
+		</PropertyGroup>
+
+	</Target>
 
 	<Target Name="_UnoEmbeddedResourcesInjection"
-	  Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')
-		and $(_IsXamlTrimmingAvailable)"
-		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
+		AfterTargets="Compile;CompileTypeScriptWithTSConfig">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
-			<_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths
-					Include="@(ReferencePath)"
-				  Condition="'%(Extension)' == '.dll'" />
+			<_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
 
 		<EmbeddedResourceInjectorTask_v0
-			EmbeddedResources="@(EmbeddedResource)"
+			EmbeddedResources="@(_UnoInjectedResource)"
 			TargetAssembly="$(IntermediateOutputPath)$(TargetFileName)"
-			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)"
-			  />
+			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)" />
+
 	</Target>
+
+	<!--
+	  XAML Resources Trimming
+	  -->
 
 	<Target Name="_UnoLinkerHintsPass1"
 		  Condition="
@@ -225,6 +304,8 @@
 			and '$(UnoXamlResourcesTrimming)'=='true'
 			and $(_IsXamlTrimmingAvailable)"
 		  BeforeTargets="BuildDist;PrepareForILLink">
+
+		<Error Condition="'$(ILLinkTasksAssembly)'==''" Text="The property 'ILLinkTasksAssembly' wasn't set. You need to set _RequiresILLinkPack MSBuild property to true, or reference Microsoft.NET.ILLink.Tasks NuGet package with version same as your TargetFramework version." />
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
@@ -234,21 +315,13 @@
 		</ItemGroup>
 
 		<PropertyGroup>
-			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
-
-			
-			<_UnoLinkerHintGeneratorILLinkerPath
-				Condition="
-				'$(TargetFrameworkIdentifier)'=='.NETCoreApp'
-				and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0'))
-				and '$(ILLinkTasksAssembly)'!=''"
-			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(BundledNETCoreAppTargetFrameworkVersion)</_UnoLinkerHintGeneratorILLinkerPath>
-
 			<_UnoUIPackageBasePath
 				Condition="
 					'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI'
 					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 		</PropertyGroup>
 
 		<LinkerHintGeneratorTask_v0
@@ -257,6 +330,7 @@
 			OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
+			TrimmerRootDescriptor="@(TrimmerRootDescriptor)"
 			TargetFramework="$(TargetFramework)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))"
 			UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
@@ -268,6 +342,20 @@
 		<ItemGroup>
 			<RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" Trim="true" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoLinkerAndroidUITestSupport"
+			Condition="'$(IsUnoHead)'=='true' and '$(TargetPlatformIdentifier)'=='android' and '$(IsUiAutomationMappingEnabled)'!='true'"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="AndroidUITestSupport" Value="false" Trim="true" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_ExtraTrimmerArgs>--link-attributes "$(MSBuildThisFileDirectory)Descriptors/Uno.UI.LinkAttributes.Android.xml" $(_ExtraTrimmerArgs)</_ExtraTrimmerArgs>
+		</PropertyGroup>
+
 	</Target>
 
 	<Target Name="_ValidateBootstraperVersion"

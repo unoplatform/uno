@@ -1,4 +1,3 @@
-#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using Android.App;
@@ -43,4 +42,3 @@ namespace Windows.ApplicationModel
 		}
 	}
 }
-#endif

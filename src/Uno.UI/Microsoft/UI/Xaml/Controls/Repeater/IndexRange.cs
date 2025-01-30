@@ -1,8 +1,8 @@
 ﻿//MUX reference IndexRange.cpp, commit de78834
 
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	// Struct in WinUI
 	internal partial class IndexRange

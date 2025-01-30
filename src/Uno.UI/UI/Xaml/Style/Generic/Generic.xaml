@@ -5,7 +5,7 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://uno.ui/ios"
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
@@ -16,15 +16,15 @@
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
-					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
-					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
+					mc:Ignorable="d not_win ios android not_wasm wasm netstdref not_netstdref macos skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
-	<xamarin:Style TargetType="ItemsControl">
+	<not_win:Style TargetType="ItemsControl">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ItemsControl">
@@ -32,9 +32,9 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
 		<Setter Property="HorizontalContentAlignment"
 				Value="Left" />
@@ -86,7 +86,7 @@
 		<Setter Property="TextLineBounds"
 				Value="Full" />
 	</Style>
-	<xamarin:Style x:Key="HeaderTextBlockStyle"
+	<not_win:Style x:Key="HeaderTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
@@ -95,8 +95,8 @@
 				Value="Light" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="SubheaderTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="SubheaderTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
@@ -105,8 +105,8 @@
 				Value="Light" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="TitleTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="TitleTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
@@ -115,8 +115,8 @@
 				Value="24" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="SubtitleTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="SubtitleTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
@@ -125,26 +125,26 @@
 				Value="20" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="BodyTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="BodyTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
 				Value="Normal" />
 		<Setter Property="FontSize"
 				Value="14" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="CaptionTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="CaptionTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
 				Value="12" />
 		<Setter Property="FontWeight"
 				Value="Normal" />
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
-	<xamarin:Style TargetType="HyperlinkButton">
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
+	<not_win:Style TargetType="HyperlinkButton">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHyperlinkTextBrush}" />
 		<Setter Property="BorderThickness"
@@ -214,17 +214,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!--  Default style for Windows.UI.Xaml.Controls.TextBox  -->
+	<!--  Default style for Microsoft.UI.Xaml.Controls.TextBox  -->
 	<Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
 
 	<Style x:Key="XamlDefaultTextBox"
 		   TargetType="TextBox">
-		<Setter Property="MinWidth"
-				Value="{ThemeResource TextControlThemeMinWidth}" />
-		<Setter Property="MinHeight"
-				Value="{ThemeResource TextControlThemeMinHeight}" />
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 		<Setter Property="Background"
@@ -440,7 +436,7 @@
 	</Style>
 
 	<!--Style for the textbox's delete button-->
-	<xamarin:Style x:Key="DeleteButtonStyle"
+	<not_win:Style x:Key="DeleteButtonStyle"
 				   TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -498,10 +494,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
-	<xamarin:Style x:Key="DefaultComboBoxStyle"
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBox -->
+	<not_win:Style x:Key="DefaultComboBoxStyle"
 				   TargetType="ComboBox">
 		<Setter Property="Padding"
 				Value="12,5,0,7" />
@@ -807,7 +803,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<Style TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
@@ -815,8 +811,8 @@
 	<Style x:Key="XamlDefaultComboBox"  TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBoxItem -->
-	<xamarin:Style x:Key="DefaultComboBoxItemStyle"
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBoxItem -->
+	<not_win:Style x:Key="DefaultComboBoxItemStyle"
 				   TargetType="ComboBoxItem">
 		<Setter Property="Background"
 				Value="Transparent" />
@@ -983,13 +979,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="ComboBoxItem"
+	<not_win:Style TargetType="ComboBoxItem"
 				   BasedOn="{StaticResource DefaultComboBoxItemStyle}" />
 
-	<!-- Style for Windows.UI.Xaml.Controls.ListViewItem -->
-	<xamarin:Style TargetType="ListViewItem"
+	<!-- Style for Microsoft.UI.Xaml.Controls.ListViewItem -->
+	<not_win:Style TargetType="ListViewItem"
 				   x:Key="ListViewItemExpanded">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -1348,7 +1344,6 @@
 							<ContentPresenter x:Name="ContentPresenter"
 											  ContentTransitions="{TemplateBinding ContentTransitions}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
-											  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 											  Content="{TemplateBinding Content}"
 											  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -1393,8 +1388,7 @@
 							</Border.RenderTransform>
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-									  win:Glyph="&#xE73E;"
-									  xamarin:Glyph="&#xE081;"
+									  Glyph="&#xE73E;"
 									  FontSize="16"
 									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
 									  Visibility="Collapsed"
@@ -1416,13 +1410,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="ListViewItem"
+	<not_win:Style TargetType="ListViewItem"
 				   BasedOn="{StaticResource ListViewItemExpanded}" />
 
-	<!-- Style for Windows.UI.Xaml.Controls.GridViewItem -->
-	<xamarin:Style TargetType="GridViewItem"
+	<!-- Style for Microsoft.UI.Xaml.Controls.GridViewItem -->
+	<not_win:Style TargetType="GridViewItem"
 				   x:Key="GridViewItemExpanded">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -1655,6 +1649,11 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="Visible" />
 										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectCheck"
+																	   Storyboard.TargetProperty="Visibility">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="Visible" />
+										</ObjectAnimationUsingKeyFrames>
 										<win:FadeInThemeAnimation TargetName="MultiSelectSquare" />
 									</Storyboard>
 								</VisualState>
@@ -1796,7 +1795,8 @@
 								   StrokeThickness="2"
 								   Opacity="0" />
 						<Border x:Name="MultiSelectSquare"
-								Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+								BorderBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+								BorderThickness="2"
 								Width="20"
 								Height="20"
 								Margin="0,2,2,0"
@@ -1805,12 +1805,13 @@
 								Visibility="Collapsed">
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-									  win:Glyph="&#xE73E;"
-									  xamarin:Glyph="&#xE081;"
+									  Glyph="&#xE73E;"
 									  FontSize="16"
-									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+									  Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
+									  Visibility="Collapsed"
 									  Opacity="0" />
 						</Border>
+
 						<Rectangle x:Name="FocusVisualWhite"
 								   IsHitTestVisible="False"
 								   Stroke="{ThemeResource SystemControlForegroundAltHighBrush}"
@@ -1843,39 +1844,112 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="GridViewItem"
+	<not_win:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
-	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
-	<xamarin:Style TargetType="TimePicker">
-		<Setter Property="IsTabStop"
-                Value="False" />
-		<Setter Property="MinWidth"
-				Value="242" />
-		<Setter Property="MaxWidth"
-				Value="456" />
-		<Setter Property="FontFamily"
-				Value="{ThemeResource ContentControlThemeFontFamily}" />
-		<Setter Property="FontSize"
-				Value="{ThemeResource ControlContentThemeFontSize}" />
-		<Setter Property="Foreground"
-				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-		<Setter Property="HorizontalAlignment"
-				Value="Left" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
-		<ios:Setter Property="FlyoutPlacement"
-				Value="Full" />
+	<Style TargetType="TimePickerFlyoutPresenter">
+		<Setter Property="Width" Value="242" />
+		<Setter Property="MinWidth" Value="242" />
+		<Setter Property="MaxHeight" Value="398" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontWeight" Value="Normal" />
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
+		<Setter Property="AutomationProperties.AutomationId" Value="TimePickerFlyoutPresenter" />
+		<Setter Property="BorderBrush" Value="{ThemeResource TimePickerFlyoutPresenterBorderBrush}" />
+		<Setter Property="BorderThickness" Value="{ThemeResource DateTimeFlyoutBorderThickness}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TimePickerFlyoutPresenter">
+					<Border x:Name="Background"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Padding="{ThemeResource DateTimeFlyoutBorderPadding}"
+						MaxHeight="398">
+						<Grid x:Name="ContentPanel">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" x:Name="FirstPickerHostColumn" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" x:Name="SecondPickerHostColumn" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" x:Name="ThirdPickerHostColumn" />
+								</Grid.ColumnDefinitions>
+								<Rectangle x:Name="HighlightRect"
+									Fill="{ThemeResource TimePickerFlyoutPresenterHighlightFill}"
+									Grid.Column="0"
+									Grid.ColumnSpan="5"
+									VerticalAlignment="Center"
+									Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" />
+								<Border x:Name="FirstPickerHost" Grid.Column="0" />
+								<Rectangle x:Name="FirstPickerSpacing"
+									Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+									HorizontalAlignment="Center"
+									Width="2"
+									Grid.Column="1" />
+								<Border x:Name="SecondPickerHost" Grid.Column="2" />
+								<Rectangle x:Name="SecondPickerSpacing"
+									Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+									HorizontalAlignment="Center"
+									Width="2"
+									Grid.Column="3" />
+								<Border x:Name="ThirdPickerHost" Grid.Column="4" />
+							</Grid>
+							<Grid Grid.Row="1" Height="{ThemeResource TimePickerFlyoutPresenterAcceptDismissHostGridHeight}" x:Name="AcceptDismissHostGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+								<Rectangle Height="2"
+									VerticalAlignment="Top"
+									Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+									Grid.ColumnSpan="2" />
+								<Button x:Name="AcceptButton"
+									Grid.Column="0"
+									Content="&#xE8FB;"
+									FontFamily="{ThemeResource SymbolThemeFontFamily}"
+									FontSize="16"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									Style="{StaticResource DateTimePickerFlyoutButtonStyle}"/>
+								<Button x:Name="DismissButton"
+									Grid.Column="1"
+									Content="&#xE711;"
+									FontFamily="{ThemeResource SymbolThemeFontFamily}"
+									FontSize="16"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									Style="{StaticResource DateTimePickerFlyoutButtonStyle}"/>
+							</Grid>
+						</Grid>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="TimePicker">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+		<Setter Property="Foreground" Value="{ThemeResource TimePickerButtonForeground}" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePicker">
-					<StackPanel x:Name="LayoutRoot"
-								Margin="{TemplateBinding Padding}">
-						<StackPanel.Resources>
+					<Grid x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+
+						<Grid.Resources>
 							<Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
 								<Setter Property="UseSystemFocusVisuals" Value="False" />
 								<Setter Property="ElementSoundMode" Value="FocusOnly" />
@@ -1883,9 +1957,11 @@
 									<Setter.Value>
 										<ControlTemplate TargetType="Button">
 											<Grid Background="{TemplateBinding Background}">
+
 												<VisualStateManager.VisualStateGroups>
 													<VisualStateGroup x:Name="CommonStates">
 														<VisualState x:Name="Normal" />
+
 														<VisualState x:Name="PointerOver">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
@@ -1899,6 +1975,7 @@
 																</ObjectAnimationUsingKeyFrames>
 															</Storyboard>
 														</VisualState>
+
 														<VisualState x:Name="Pressed">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
@@ -1912,6 +1989,7 @@
 																</ObjectAnimationUsingKeyFrames>
 															</Storyboard>
 														</VisualState>
+
 														<VisualState x:Name="Disabled">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
@@ -1942,129 +2020,144 @@
 													</VisualStateGroup>
 												</VisualStateManager.VisualStateGroups>
 												<ContentPresenter x:Name="ContentPresenter"
-																  BorderBrush="{ThemeResource TimePickerButtonBorderBrush}"
-																  Background="{ThemeResource TimePickerButtonBackground}"
-																  BorderThickness="2"
-																  Content="{TemplateBinding Content}"
-																  Foreground="{TemplateBinding Foreground}"
-																  HorizontalContentAlignment="Stretch"
-																  VerticalContentAlignment="Stretch"
-																  AutomationProperties.AccessibilityView="Raw" />
+							BorderBrush="{ThemeResource TimePickerButtonBorderBrush}"
+							Background="{ThemeResource TimePickerButtonBackground}"
+							BorderThickness="2"
+							Content="{TemplateBinding Content}"
+							Foreground="{TemplateBinding Foreground}"
+							HorizontalContentAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							AutomationProperties.AccessibilityView="Raw" />
 											</Grid>
 										</ControlTemplate>
 									</Setter.Value>
 								</Setter>
 							</Style>
-						</StackPanel.Resources>
+						</Grid.Resources>
 
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
+
 								<VisualState x:Name="Disabled">
+
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerHeaderForegroundDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider"
-																	   Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider"
-																	   Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
+
 							</VisualStateGroup>
+							<VisualStateGroup x:Name="HasTimeStates">
+								<VisualState x:Name="HasTime" />
+								<VisualState x:Name="HasNoTime">
+									<VisualState.Setters>
+										<Setter Target="HourTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="MinuteTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="PeriodTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+									</VisualState.Setters>
+								</VisualState>
+
+							</VisualStateGroup>
+
 						</VisualStateManager.VisualStateGroups>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
 						<ContentPresenter x:Name="HeaderContentPresenter"
-										  x:DeferLoadStrategy="Lazy"
-										  Visibility="Collapsed"
-										  Content="{TemplateBinding Header}"
-										  ContentTemplate="{TemplateBinding HeaderTemplate}"
-										  Margin="0,0,0,8"
-										  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-										  AutomationProperties.AccessibilityView="Raw" />
+				Grid.Row="0"
+				Content="{TemplateBinding Header}"
+				ContentTemplate="{TemplateBinding HeaderTemplate}"
+				Margin="{ThemeResource TimePickerTopHeaderMargin}"
+				MaxWidth="{ThemeResource TimePickerThemeMaxWidth}"
+				Foreground="{ThemeResource TimePickerHeaderForeground}"
+				TextWrapping="Wrap"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Top"
+				Visibility="Collapsed"
+				AutomationProperties.AccessibilityView="Raw" />
 						<Button x:Name="FlyoutButton"
-								Style="{StaticResource TimePickerFlyoutButtonStyle}"
-								Foreground="{TemplateBinding Foreground}"
-								Background="{TemplateBinding Background}"
-								IsEnabled="{TemplateBinding IsEnabled}"
-								HorizontalAlignment="Stretch"
-								HorizontalContentAlignment="Stretch">
+				Grid.Row="1"
+				Style="{StaticResource TimePickerFlyoutButtonStyle}"
+				Foreground="{TemplateBinding Foreground}"
+				Background="{TemplateBinding Background}"
+				IsEnabled="{TemplateBinding IsEnabled}"
+				MinWidth="{StaticResource TimePickerThemeMinWidth}"
+				MaxWidth="{StaticResource TimePickerThemeMaxWidth}"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch"
+				VerticalAlignment="Top"
+				UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}">
 							<Grid x:Name="FlyoutButtonContentGrid">
+
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"
-													  x:Name="FirstTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="FirstTextBlockColumn" />
 									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*"
-													  x:Name="SecondTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="SecondTextBlockColumn" />
 									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*"
-													  x:Name="ThirdTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="ThirdTextBlockColumn" />
 								</Grid.ColumnDefinitions>
-
-								<Border x:Name="FirstPickerHost"
-										Grid.Column="0">
+								<Border x:Name="FirstPickerHost" Grid.Column="0">
 									<TextBlock x:Name="HourTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
-
 								<Rectangle x:Name="FirstColumnDivider"
-										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-										   HorizontalAlignment="Center"
-										   Width="2"
-										   Grid.Column="1" />
-
-								<Border x:Name="SecondPickerHost"
-										Grid.Column="2">
+					Fill="{ThemeResource TimePickerSpacerFill}"
+					HorizontalAlignment="Center"
+					Width="2"
+					Grid.Column="1" />
+								<Border x:Name="SecondPickerHost" Grid.Column="2">
 									<TextBlock x:Name="MinuteTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
-
 								<Rectangle x:Name="SecondColumnDivider"
-										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-										   HorizontalAlignment="Center"
-										   Width="2"
-										   Grid.Column="3" />
-
-								<Border x:Name="ThirdPickerHost"
-										Grid.Column="4">
+					Fill="{ThemeResource TimePickerSpacerFill}"
+					HorizontalAlignment="Center"
+					Width="2"
+					Grid.Column="3" />
+								<Border x:Name="ThirdPickerHost" Grid.Column="4">
 									<TextBlock x:Name="PeriodTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
 							</Grid>
 						</Button>
-					</StackPanel>
+
+					</Grid>
+
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
 
 	<SolidColorBrush x:Key="SplitViewDismissBackgroundColor"
 					 Color="Black"
 					 Opacity="0.5" />
 
-	<xamarin:Style x:Key="DefaultSplitViewStyle"
+	<not_win:Style x:Key="DefaultSplitViewStyle"
 				   TargetType="SplitView">
 		<Setter Property="HorizontalContentAlignment"
 				Value="Stretch" />
@@ -2097,7 +2190,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="{Binding TemplateSettings.NegativeOpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 To="0"
@@ -2148,7 +2241,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="{Binding TemplateSettings.OpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 To="0"
@@ -2285,7 +2378,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="0"
 																	 To="{Binding TemplateSettings.NegativeOpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
@@ -2327,7 +2420,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 To="{Binding TemplateSettings.OpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 Duration="0:0:0.12" />
@@ -2386,11 +2479,11 @@
 									<VisualTransition From="OpenCompactOverlayRight"
 													  To="ClosedCompactRight">
 										<Storyboard>
-											<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+											<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																				   Storyboard.TargetName="PaneRoot">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="{Binding TemplateSettings.RightClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-											</xamarin:ObjectAnimationUsingKeyFrames>
+											</not_win:ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																		   Storyboard.TargetProperty="Width">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2457,11 +2550,11 @@
 										<Setter Target="PaneTransform.TranslateX" Value="0" />
 									</VisualState.Setters>
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{Binding TemplateSettings.LeftClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																	   Storyboard.TargetProperty="Width">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2490,11 +2583,11 @@
 								</VisualState>
 								<VisualState x:Name="ClosedCompactRight">
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{Binding TemplateSettings.RightClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																	   Storyboard.TargetProperty="Width">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2584,11 +2677,11 @@
 										<Setter Target="PaneTransform.TranslateX" Value="0" />
 									</VisualState.Setters>
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{x:Null}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
 																	   Storyboard.TargetProperty="(Grid.Column)">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2755,7 +2848,7 @@
 							<win:Rectangle x:Name="LightDismissLayer"
 										   Fill="{StaticResource SplitViewDismissBackgroundColor}"
 										   Visibility="Collapsed" />
-							<xamarin:Button x:Name="LightDismissLayer"
+							<not_win:Button x:Name="LightDismissLayer"
 											Visibility="Collapsed"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Stretch">
@@ -2764,7 +2857,7 @@
 										<Border Background="{StaticResource SplitViewDismissBackgroundColor}" />
 									</ControlTemplate>
 								</Button.Template>
-							</xamarin:Button>
+							</not_win:Button>
 						</Grid>
 
 						<!--Pane Content Area-->
@@ -2796,12 +2889,12 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="SplitView"
+	<not_win:Style TargetType="SplitView"
 				   BasedOn="{StaticResource DefaultSplitViewStyle}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Button -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Button -->
 	<Style x:Key="XamlDefaultButton"
 				   TargetType="Button">
 		<Setter Property="Background"
@@ -2916,7 +3009,7 @@
 	<Style TargetType="Button"
 		   BasedOn="{StaticResource XamlDefaultButton}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.ToggleButton -->
 	<Style x:Key="XamlDefaultToggleButton"
 				   TargetType="ToggleButton">
 		<Setter Property="Background"
@@ -3183,7 +3276,7 @@
 	<Style TargetType="PasswordBox"
 				BasedOn="{StaticResource XamlDefaultPasswordBox}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.CheckBox -->
 	<Style x:Key="XamlDefaultCheckBox" TargetType="CheckBox">
 		<Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
 		<Setter Property="Foreground" Value="{ThemeResource CheckBoxForegroundUnchecked}" />
@@ -3590,7 +3683,7 @@
 	<Style TargetType="CheckBox"
 		   BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.RadioButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.RadioButton -->
 	<Style x:Key="XamlDefaultRadioButton"
 				   TargetType="RadioButton">
 		<Setter Property="Background"
@@ -3768,8 +3861,8 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
-	<xamarin:Style TargetType="Thumb"
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Slider -->
+	<not_win:Style TargetType="Thumb"
 				   x:Key="SliderThumbStyle">
 		<Setter Property="ManipulationMode"
 				Value="None" />
@@ -3787,7 +3880,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<Style x:Key="XamlDefaultSlider"
 				   TargetType="Slider">
@@ -4047,7 +4140,7 @@
 
 	<!--This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
 	while delegating to a native implementation for performance.-->
-	<xamarin:Style TargetType="ScrollViewer"
+	<not_win:Style TargetType="ScrollViewer"
 				   x:Key="ListViewBaseScrollViewerStyle">
 		<ios:Setter Property="Template">
 			<Setter.Value>
@@ -4071,10 +4164,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</android:Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
-	<xamarin:Style TargetType="ListView">
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ListView -->
+	<not_win:Style TargetType="ListView">
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="TabNavigation"
@@ -4151,10 +4244,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.GridView -->
-	<xamarin:Style TargetType="GridView">
+	<!-- Default style for Microsoft.UI.Xaml.Controls.GridView -->
+	<not_win:Style TargetType="GridView">
 		<Setter Property="Padding"
 				Value="0,0,0,10" />
 		<Setter Property="IsTabStop"
@@ -4233,7 +4326,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<ControlTemplate TargetType="ScrollViewer"
 					 x:Name="ScrollViewerScrollBarlessTemplate">
@@ -4244,7 +4337,7 @@
 		</Grid>
 	</ControlTemplate>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.PasswordBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.PasswordBox -->
 	<Style x:Key="XamlDefaultPasswordBox"
 				   TargetType="PasswordBox">
 		<Setter Property="MinWidth"
@@ -4335,7 +4428,7 @@
 														   FontStyle="Normal"
 														   FontSize="16"
 														   win:Text="&#xE052;"
-														   xamarin:Text="&#xE18B;"
+														   not_win:Text="&#xE18B;"
 														   FontFamily="{ThemeResource SymbolThemeFontFamily}"
 														   AutomationProperties.AccessibilityView="Raw" />
 											</Grid>
@@ -4512,7 +4605,7 @@
 	</Style>
 
 	<!--This is used by PasswordBox but must be declared outside of the control because of a limitation in the way the Uno xaml code generation handles styles.-->
-	<xamarin:Style x:Key="RevealButtonStyle"
+	<not_win:Style x:Key="RevealButtonStyle"
 				   TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -4564,16 +4657,16 @@
 								   FontStyle="Normal"
 								   FontSize="16"
 								   win:Text="&#xE052;"
-								   xamarin:Text="&#xE18B;"
+								   not_win:Text="&#xE18B;"
 								   FontFamily="{ThemeResource SymbolThemeFontFamily}"
 								   AutomationProperties.AccessibilityView="Raw" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<!-- Default UWP style for Windows.UI.Xaml.Controls.Frame -->
+	<!-- Default UWP style for Microsoft.UI.Xaml.Controls.Frame -->
 	<Style x:Key="XamlDefaultFrame"
 				   TargetType="Frame">
 		<Setter Property="HorizontalContentAlignment"
@@ -4604,7 +4697,7 @@
 	<Style TargetType="Frame"
 		   BasedOn="{StaticResource XamlDefaultFrame}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ProgressBar -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ProgressBar -->
 	<uwpOnly:Style x:Key="XamlDefaultProgressBar"
 				   TargetType="uwpOnly:ProgressBar">
 		<Setter Property="Foreground"
@@ -4645,7 +4738,7 @@
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ListViewHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ListViewHeaderItem -->
 	<Style TargetType="ListViewHeaderItem">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -4692,7 +4785,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.GridViewHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.GridViewHeaderItem -->
 	<Style TargetType="GridViewHeaderItem">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -4739,7 +4832,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.FlipViewItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.FlipViewItem -->
 	<Style TargetType="FlipViewItem">
 		<Setter Property="Background"
 				Value="Transparent" />
@@ -4768,7 +4861,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ToggleSwitch -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ToggleSwitch -->
 	<Style x:Key="XamlDefaultToggleSwitch"
 		   TargetType="ToggleSwitch">
 		<Setter Property="Foreground"
@@ -5151,7 +5244,7 @@
 	<Style TargetType="ToggleSwitch"
 		   BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
-	<!-- Default style for Windows.UI.Xaml.Pivot  -->
+	<!-- Default style for Microsoft.UI.Xaml.Pivot  -->
 	<Style x:Key="BaseContentControlStyle"
 		   TargetType="ContentControl">
 		<Setter Property="FontFamily"
@@ -5567,7 +5660,7 @@
 	<Style TargetType="Pivot"
 		   BasedOn="{StaticResource XamlDefaultPivot}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.PivotItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.PivotItem -->
 	<Style TargetType="PivotItem">
 		<Setter Property="Background"
 				Value="{ThemeResource PivotItemBackground}" />
@@ -5609,7 +5702,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
 	<Style TargetType="PivotHeaderItem">
 		<Setter Property="FontSize"
 				Value="{ThemeResource PivotHeaderItemFontSize}" />
@@ -7131,17 +7224,36 @@
 													Visibility='Collapsed'>
 												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3D;" />
 											</Button>
-											<Button x:Name='RepeatVideoButton'
-													Style='{StaticResource MTC_ButtonStyle}'
-													Visibility='Collapsed'>
-												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8EE;" />
-											</Button>
 											<Button x:Name='PlaybackRateButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" /><Button.Flyout>
+													<Flyout x:Name='PlaybackRateFlyout'
+															Placement="RightEdgeAlignedBottom"
+															FlyoutPresenterStyle="{StaticResource MTC_FlyoutStyle}">
+														<StackPanel Orientation="Vertical">
+															<ListView x:Name='PlaybackRateListView'
+																	VerticalAlignment='Top'
+																	HorizontalAlignment='Center'
+																	Margin='0' >
+																	<ListView.Items>
+																		<ListViewItem>0.25</ListViewItem>
+																		<ListViewItem>0.5</ListViewItem>
+																		<ListViewItem>1</ListViewItem>
+																		<ListViewItem>1.5</ListViewItem>
+																		<ListViewItem>2</ListViewItem>
+																</ListView.Items>
+															</ListView>
+														</StackPanel>
+													</Flyout>
+												</Button.Flyout>
 												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" />
 											</Button>
-
+											<Button x:Name='RepeatButton'
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
+												<SymbolIcon x:Name="RepeatSymbol" Symbol="RepeatAll" />
+											</Button>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal"
@@ -7267,7 +7379,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
 	<Style x:Name="XamlDefaultRepeatButton" TargetType="RepeatButton">
 		<Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
 		<Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
@@ -7595,14 +7707,14 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<NativeFlipView />
+					<NativeFlipView Background="{TemplateBinding Background}" />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<ItemsPresenter />
+					<ItemsPresenter Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -7628,6 +7740,46 @@
 		</Setter>
 	</not_netstdref:Style>
 
+	<wasm:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<wasm:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<skia:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
+	<skia:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
@@ -7640,7 +7792,6 @@
 					<Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
 						<ContentPresenter x:Name="Text"
                             Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 
@@ -7705,7 +7856,7 @@
 	</Style>
 	<Thickness x:Key="FlipViewButtonBorderThemeThickness">0</Thickness>
 
-	<!-- Resources for Windows.UI.Xaml.Controls.FlipView -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.FlipView -->
 	<StaticResource x:Key="FlipViewBackground" ResourceKey="SystemControlPageBackgroundListLowBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBackground" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
@@ -7716,7 +7867,7 @@
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPointerOver" ResourceKey="SystemControlForegroundTransparentBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPressed" ResourceKey="SystemControlForegroundTransparentBrush" />
-	<!-- Resources for Windows.UI.Xaml.Controls.FlipViewItem -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.FlipViewItem -->
 
 	<StaticResource x:Key="FlipViewItemBackground" ResourceKey="SystemControlTransparentBrush" />
 
@@ -7731,7 +7882,7 @@
 	<SolidColorBrush x:Key="FlipViewButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
 
 
-	<!-- Default style for Windows.UI.Xaml.Controls.FlipView -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.FlipView -->
 	<netstdref:Style TargetType="FlipView">
 		<Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
 		<Setter Property="BorderThickness" Value="0" />
@@ -8011,7 +8162,7 @@
 		</Setter>
 	</netstdref:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.Thumb -->
     <Style TargetType="Thumb">
         <Setter Property="Background" Value="{ThemeResource ThumbBackground}" />
         <Setter Property="BorderThickness" Value="1" />

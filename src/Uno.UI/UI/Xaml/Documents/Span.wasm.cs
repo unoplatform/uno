@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Documents
+﻿namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Span
 	{
@@ -7,7 +7,7 @@
 
 		}
 
-		public Span(string htmlTag) : base(htmlTag)
+		internal Span(string htmlTag) : base(htmlTag)
 		{
 			Inlines = new InlineCollection(this);
 		}

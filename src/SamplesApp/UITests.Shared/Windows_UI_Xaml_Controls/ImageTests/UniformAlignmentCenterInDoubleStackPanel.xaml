@@ -14,28 +14,22 @@
 			 d:DesignHeight="500"
 			 d:DesignWidth="400">
 
-    <controls:SampleControl SampleDescription="UniformAlignmentCenterInDoubleStackPanel">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <StackPanel
-                    Orientation="Horizontal"
-                    Background="Blue">
-                    <TextBlock>
-                        <Run Text="Outer"/><LineBreak/><Run Text="StackPanel"/>
-                    </TextBlock>
-                    <StackPanel Background="Red"
-                            Orientation="Vertical">
-                        <TextBlock Text="Inner StackPanel"/>
-                        <TextBlock Text="This image has Stretch set to Uniform and HorizontalAlignment + VerticalAlignment set to Center" />
+	<StackPanel
+    Orientation="Horizontal"
+    Background="Blue">
+		<TextBlock>
+        <Run Text="Outer"/><LineBreak/><Run Text="StackPanel"/>
+		</TextBlock>
+		<StackPanel Background="Red"
+            Orientation="Vertical">
+			<TextBlock Text="Inner StackPanel"/>
+			<TextBlock Text="This image has Stretch set to Uniform and HorizontalAlignment + VerticalAlignment set to Center" />
 
-                        <Image Source="/Assets/Diagnostics/avatar.png"
-						   Stretch="Uniform"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+			<Image Source="/Assets/Diagnostics/avatar.png"
+					   Stretch="Uniform"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
 
-                    </StackPanel>
-                </StackPanel>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+		</StackPanel>
+	</StackPanel>
 </UserControl>

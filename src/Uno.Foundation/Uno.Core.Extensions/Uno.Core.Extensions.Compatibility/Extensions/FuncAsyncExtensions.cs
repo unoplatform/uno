@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,43 +30,6 @@ namespace Uno.Extensions
 	/// </summary>
 	internal static class FuncAsyncExtensions
 	{
-		/// <summary>
-		/// Invoke the <paramref name="func"/> if not null.
-		/// </summary>
-		/// <param name="func">Func to invoke</param>
-		/// <param name="ct">A CanellationToken</param>
-		/// <returns>The result of func, or default(TResult) if the func was null.</returns>
-		public static async Task<TResult> SafeInvoke<TResult>(this FuncAsync<TResult> func, CancellationToken ct)
-		{
-			if (func == null)
-			{
-				return default(TResult);
-			}
-			else
-			{
-				return await func(ct);
-			}
-		}
-
-		/// <summary>
-		/// Invoke the <paramref name="func"/> if not null.
-		/// </summary>
-		/// <param name="func">Func to invoke</param>
-		/// <param name="ct">A CanellationToken</param>
-		/// <param name="param">Parameter of func</param>
-		/// <returns>The result of func, or default(TResult) if the func was null.</returns>
-		public static async Task<TResult> SafeInvoke<TParam, TResult>(this FuncAsync<TParam, TResult> func, CancellationToken ct, TParam param)
-		{
-			if (func == null)
-			{
-				return default(TResult);
-			}
-			else
-			{
-				return await func(ct, param);
-			}
-		}
-
 		/// <summary>
 		/// Prevents parallel execution of the FuncAsync
 		/// </summary>
@@ -183,8 +146,4 @@ namespace Uno.Extensions
 			}
 		}
 	}
-}
-
-namespace Uno.Extensions
-{
 }

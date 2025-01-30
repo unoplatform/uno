@@ -4,11 +4,11 @@ parameters:
 steps:
 
   - powershell: |
-      md -p "${{ parameters.nugetPackages }}"
+      New-Item -ItemType Directory -Force "${{ parameters.nugetPackages }}"
     displayName: Create nuget packages cache folder
 
   - script: |
-      compact /c "/s:${{ parameters.nugetPackages }}"
+      compact /c "${{ parameters.nugetPackages }}"
 
     condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
     displayName: Compress nuget package cache folder

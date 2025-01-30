@@ -9,8 +9,8 @@ using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Markup;
 using Windows.ApplicationModel.Resources;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers
 {
@@ -66,28 +66,35 @@ namespace Uno.UI.Helpers
 		/// Sets a builder for markup-lazy properties in <see cref="VisualState"/>
 		/// </summary>
 		public static void SetVisualStateLazy(VisualState target, Action builder)
-			=> target.LazyBuilder = builder;
+		{
+			target.LazyBuilder = builder;
+			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+		}
 
 		/// <summary>
 		/// Sets a builder for markup-lazy properties in <see cref="VisualTransition"/>
 		/// </summary>
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
-			=> target.LazyBuilder = builder;
+		{
+			target.LazyBuilder = builder;
+			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+		}
 
-		public static IXamlServiceProvider CreateParserContext(object? target, ProvideValueTargetProperty? property)
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+			=> CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);
+
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType, object? rootObject)
 			=> new XamlServiceProviderContext
 			{
 				TargetObject = target,
-				TargetProperty = property,
+				TargetProperty = new ProvideValueTargetProperty
+				{
+					DeclaringType = propertyDeclaringType,
+					Name = propertyName,
+					Type = propertyType,
+				},
+				RootObject = rootObject,
 			};
-
-		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
-			=> CreateParserContext(target, new ProvideValueTargetProperty
-			{
-				DeclaringType = propertyDeclaringType,
-				Name = propertyName,
-				Type = propertyType,
-			});
 
 		/// <summary>
 		/// Attaches a property to an object, using a weak reference.
@@ -104,5 +111,19 @@ namespace Uno.UI.Helpers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
+
+		/// <summary>
+		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ResourceDictionary AddMergedDictionaries(this ResourceDictionary dictionary, params ResourceDictionary[] mergedDictionaries)
+		{
+			foreach (var mergedDictionary in mergedDictionaries)
+			{
+				dictionary.MergedDictionaries.Add(mergedDictionary);
+			}
+
+			return dictionary;
+		}
 	}
 }

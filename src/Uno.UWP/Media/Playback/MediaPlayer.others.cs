@@ -28,7 +28,7 @@ namespace Windows.Media.Playback
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Unable to create an instance of IMediaPlayerExtension. MediaPlayer will not work.");
+					this.Log().Error("The MediaPlayer extension is not installed. For more information aka.platform.uno/mediaplayerelement");
 				}
 
 				return;
@@ -70,6 +70,17 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		public bool IsLoopingAllEnabled
+		{
+			get => _extension?.IsLoopingAllEnabled ?? false;
+			set
+			{
+				if (_extension is not null)
+				{
+					_extension.IsLoopingAllEnabled = value;
+				}
+			}
+		}
 		public MediaPlayerState CurrentState
 			=> _extension?.CurrentState ?? MediaPlayerState.Closed;
 
@@ -160,6 +171,8 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		public bool IsVideo => _extension?.IsVideo ?? false;
+
 		public void SetUriSource(global::System.Uri value)
 			=> _extension?.SetUriSource(value);
 
@@ -198,6 +211,11 @@ namespace Windows.Media.Playback
 
 		public void OnVolumeChanged()
 			=> _extension?.OnVolumeChanged();
+
+		public void PreviousTrack()
+			=> _extension?.PreviousTrack();
+		public void NextTrack()
+			=> _extension?.NextTrack();
 
 		public event TypedEventHandler<MediaPlayer, object> BufferingEnded;
 		public event TypedEventHandler<MediaPlayer, object> BufferingStarted;

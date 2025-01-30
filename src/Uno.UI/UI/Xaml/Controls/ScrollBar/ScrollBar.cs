@@ -1,12 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using DirectUI;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -15,7 +17,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ScrollBar
 	{
@@ -131,7 +133,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DefaultStyleKey = typeof(ScrollBar);
 
 			SizeChanged += OnSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			LayoutUpdated += OnLayoutUpdated;
+#endif
 			Loaded += ReAttachEvents;
 			Unloaded += DetachEvents;
 		}
@@ -196,7 +200,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
 					}
 				}
@@ -208,7 +212,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
 
 					}
@@ -221,7 +225,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
 
 					}
@@ -234,7 +238,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
 
 					}
@@ -247,7 +251,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
 						AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
 
 					}
@@ -267,7 +271,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
 
 					}
@@ -281,7 +285,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
 
 					}
@@ -294,7 +298,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
 
 					}
@@ -307,7 +311,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
 
 					}
@@ -320,7 +324,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
 						AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);
 
 					}
@@ -839,6 +843,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			m_dragValue = Value;
 		}
 
+		// NOTE: Currently only used internally for Automation
+		internal UIElement ElementHorizontalTemplate => m_tpElementHorizontalTemplate;
+
+		internal UIElement ElementVerticalTemplate => m_tpElementVerticalTemplate;
+
 		// Whenever the thumb gets dragged, we handle the event through this function to
 		// update the current value depending upon the thumb drag delta.
 		private void OnThumbDragDelta(
@@ -907,12 +916,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static void OnLayoutUpdated(
 			object pSender,
 			object pArgs)
 		{
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
+#endif
 
 		// Called whenever the SmallDecrement button is clicked.
 		void SmallDecrement(

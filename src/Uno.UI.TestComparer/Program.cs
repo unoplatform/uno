@@ -164,15 +164,15 @@ namespace Umbrella.UI.TestComparer
 
 			if (!int.TryParse(githubPRid, out _))
 			{
-				Console.WriteLine($"No valid GitHub PR Id found, no PR comment will be posted.");
-				Console.WriteLine(comment);
+				Helpers.WriteLineWithTime($"No valid GitHub PR Id found, no PR comment will be posted.");
+				Helpers.WriteLineWithTime(comment);
 				return;
 			}
 
 			if (string.IsNullOrEmpty(githubPAT.Trim()) || githubPAT.StartsWith("$("))
 			{
-				Console.WriteLine($"No GitHub PAT, no PR comment will be posted.");
-				Console.WriteLine(comment);
+				Helpers.WriteLineWithTime($"No GitHub PAT, no PR comment will be posted.");
+				Helpers.WriteLineWithTime(comment);
 				return;
 			}
 
@@ -480,11 +480,11 @@ namespace Umbrella.UI.TestComparer
 
 			File.WriteAllText(resultsFilePath, sb.ToString());
 
-			Console.WriteLine($"{platform}: {result.UnchangedTests} samples unchanged, {result.TotalTests} files total. Changed files:");
+			Helpers.WriteLineWithTime($"{platform}: {result.UnchangedTests} samples unchanged, {result.TotalTests} files total. Changed files:");
 
 			foreach (var changedFile in changedList)
 			{
-				Console.WriteLine($"\t- {changedFile}");
+				Helpers.WriteLineWithTime($"\t- {changedFile}");
 			}
 		}
 	}

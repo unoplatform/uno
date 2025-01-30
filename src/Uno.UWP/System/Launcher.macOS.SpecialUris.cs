@@ -11,6 +11,7 @@ namespace Windows.System
 	public static partial class Launcher
 	{
 		private const string MicrosoftSettingsUri = "ms-settings";
+		private static readonly string[] _systemPreferencesArray = new string[] { "/System/Applications/System Preferences.app" };
 
 		private static readonly Lazy<Dictionary<string, string>> _settingsHandlers = new Lazy<Dictionary<string, string>>(() =>
 		{
@@ -89,7 +90,7 @@ namespace Windows.System
 			NSUrl url;
 			if (string.IsNullOrEmpty(launchAction))
 			{
-				url = NSUrl.CreateFileUrl(new string[] { "/System/Applications/System Preferences.app" });
+				url = NSUrl.CreateFileUrl(_systemPreferencesArray);
 			}
 			else
 			{

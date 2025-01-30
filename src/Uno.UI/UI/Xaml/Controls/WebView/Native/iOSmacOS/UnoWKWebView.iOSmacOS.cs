@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.Web;
 using System.IO;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
@@ -14,15 +13,14 @@ using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Extensions;
-using Windows.Foundation;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using System.Net;
 using Windows.UI.Core;
 
 #if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
+using Uno.UI;
+
 #endif
 
 #if __IOS__
@@ -32,13 +30,14 @@ using AppKit;
 using Uno.UI;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 #if __MACOS__
 	, IHasSizeThatFits
 #endif
 {
+	private string _previousTitle;
 	private CoreWebView2 _coreWebView;
 	private bool _isCancelling;
 
@@ -48,6 +47,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	private readonly string OkString;
 	private readonly string CancelString;
+
+	private bool _isHistoryChangeQueued;
 
 	public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 	{
@@ -66,6 +67,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 				cancel = "Cancel";
 			}
 		}
+
+#if __IOS__
+		if (UIDevice.CurrentDevice.CheckSystemVersion(16, 4))
+		{
+			Inspectable = Uno.UI.FeatureConfiguration.WebView2.IsInspectable;
+		}
+#endif
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
 
@@ -90,6 +98,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 #endif
 
+	public string DocumentTitle => Title;
 
 	public void Stop() => StopLoading();
 
@@ -133,6 +142,23 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			var path = $"{NSBundle.MainBundle.BundlePath}/{uri.PathAndQuery}";
 
 			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(path, false)));
+			return;
+		}
+
+		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			// Load Url with folder
+			var relativePath = uri.PathAndQuery;
+
+			if (relativePath.StartsWith('/'))
+			{
+				relativePath = relativePath.Substring(1);
+			}
+
+			var fullPath = Path.Combine(NSBundle.MainBundle.ResourcePath, folderName, relativePath);
+
+			var nsUrl = new NSUrl("file://" + fullPath);
+			ProcessNSUrlRequest(new NSUrlRequest(nsUrl));
 		}
 		else
 		{
@@ -183,7 +209,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().DebugFormat("OnNavigationFinished: {0}", destinationUrl);
 		}
 
-		_coreWebView.DocumentTitle = Title;
+		CheckForTitleChange();
 		RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		_lastNavigationData = destinationUrl;
 	}
@@ -241,7 +267,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		var nsUrl = new NSUrl(url);
 		//Opens the specified URL, launching the app that's registered to handle the scheme.
 #if __IOS__
-		UIApplication.SharedApplication.OpenUrl(nsUrl);
+		Task.Run(() => UIApplication.SharedApplication.OpenUrlAsync(nsUrl, new UIApplicationOpenUrlOptions()));
 #else
 		NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
 #endif
@@ -423,33 +449,51 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
 		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+		QueueHistoryChange();
 		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
 	}
 
+	private void QueueHistoryChange()
+	{
+		if (!_isHistoryChangeQueued)
+		{
+			_isHistoryChangeQueued = true;
+			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseQueuedHistoryChange);
+		}
+	}
+
+	private void RaiseQueuedHistoryChange()
+	{
+		_coreWebView.RaiseHistoryChanged();
+		_isHistoryChangeQueued = false;
+	}
+
 #if __IOS__
+
+	private static readonly string[] _emptyStringArray = new[] { "" };
+
 	private void ParseUriAndLauchMailto(Uri mailtoUri)
 	{
-		_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-			Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+		_ = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
 			async (ct) =>
 			{
 				try
 				{
 					var subject = "";
 					var body = "";
-					var cc = new[] { "" };
-					var bcc = new[] { "" };
+					var cc = _emptyStringArray;
+					var bcc = _emptyStringArray;
 
-					var recipients = mailtoUri.AbsoluteUri.Split(new[] { ':' })[1].Split(new[] { '?' })[0].Split(new[] { ',' });
-					var parameters = mailtoUri.Query.Split(new[] { '?' });
+					var recipients = mailtoUri.AbsoluteUri.Split(':')[1].Split('?')[0].Split(',');
+					var parameters = mailtoUri.Query.Split('?');
 
 					parameters = parameters.Length > 1 ?
-									parameters[1].Split(new[] { '&' }) :
+									parameters[1].Split('&') :
 									Array.Empty<string>();
 
 					foreach (string param in parameters)
 					{
-						var keyValue = param.Split(new[] { '=' });
+						var keyValue = param.Split('=');
 						var key = keyValue[0];
 						var value = keyValue[1];
 
@@ -571,6 +615,24 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_isCancelling = false;
 	}
 
+	public override void DidChangeValue(string forKey)
+	{
+		base.DidChangeValue(forKey);
+
+		if (forKey.Equals(nameof(Title), StringComparison.OrdinalIgnoreCase))
+		{
+			CheckForTitleChange();
+		}
+		else if (
+			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) ||
+			forKey.Equals(nameof(CanGoBack), StringComparison.OrdinalIgnoreCase) ||
+			forKey.Equals(nameof(CanGoForward), StringComparison.OrdinalIgnoreCase))
+		{
+			_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+			QueueHistoryChange();
+		}
+	}
+
 	public override bool CanGoBack => base.CanGoBack && GetNearestValidHistoryItem(direction: -1) != null;
 
 	public override bool CanGoForward => base.CanGoForward && GetNearestValidHistoryItem(direction: 1) != null;
@@ -616,7 +678,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 			else
 			{
-				if (NSJsonSerialization.IsValidJSONObject(result))
+				if (result is not null && NSJsonSerialization.IsValidJSONObject(result))
 				{
 					var serializedData = NSJsonSerialization.Serialize(result, default, out var serializationError);
 					if (serializationError != null)
@@ -646,7 +708,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
 	{
-		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 		var javascript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString);
 
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -768,7 +830,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (directFileParentPath.StartsWith(appRootPath, StringComparison.Ordinal))
 		{
 			var relativePath = directFileParentPath.Substring(appRootPath.Length, directFileParentPath.Length - appRootPath.Length);
-			var topFolder = relativePath.Split(separator: new char[] { '/' }, options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			var topFolder = relativePath.Split(separator: '/', options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
 			if (topFolder != null)
 			{
@@ -791,6 +853,16 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (message.Name == WebMessageHandlerName)
 		{
 			_coreWebView.RaiseWebMessageReceived((message.Body as NSString)?.ToString());
+		}
+	}
+
+	private void CheckForTitleChange()
+	{
+		var currentTitle = Title;
+		if (_previousTitle != currentTitle)
+		{
+			_previousTitle = currentTitle;
+			_coreWebView.OnDocumentTitleChanged();
 		}
 	}
 }

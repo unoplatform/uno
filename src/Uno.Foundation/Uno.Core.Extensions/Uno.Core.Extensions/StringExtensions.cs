@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Extensions
 {
+	public delegate void SpanAction<T, in TArg>(Span<T> span, TArg arg);
+
 	internal static partial class StringExtensions
 	{
 		// https://www.meziantou.net/split-a-string-into-lines-without-allocation.htm
@@ -152,6 +154,19 @@ namespace Uno.Extensions
 			{
 				return source;
 			}
+		}
+
+		public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
+		{
+			scoped Span<char> buffer;
+
+			if (length <= 128)
+				buffer = stackalloc char[128];
+			else
+				buffer = new char[length];
+
+			action(buffer.Slice(0, length), state);
+			return buffer.Slice(0, length).ToString();
 		}
 	}
 }

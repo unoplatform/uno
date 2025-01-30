@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Provides an instance pool for <see cref="Page"/>s. Pooling is enabled when <see cref="Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled"/> is set to true.
 	/// </summary>
 	/// <remarks>Enabling page pooling improves performance when using <see cref="Frame"/> navigation.</remarks>
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 	public class PagePool
 	{
 		private readonly Stopwatch _watch = new Stopwatch();
@@ -34,7 +37,7 @@ namespace Windows.UI.Xaml
 		{
 			_watch.Start();
 
-#if !NET461
+#if !IS_UNIT_TESTS
 			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}
@@ -66,14 +69,14 @@ namespace Windows.UI.Xaml
 		{
 			if (!FeatureConfiguration.Page.IsPoolingEnabled)
 			{
-				return Frame.CreatePageInstance(pageType);
+				return Frame.CreatePageInstance(pageType) as Page;
 			}
 
 			var list = _pooledInstances.UnoGetValueOrDefault(pageType);
 
 			if (list == null || list.Count == 0)
 			{
-				return Frame.CreatePageInstance(pageType);
+				return Frame.CreatePageInstance(pageType) as Page;
 			}
 			else
 			{

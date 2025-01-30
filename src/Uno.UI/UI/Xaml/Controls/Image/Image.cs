@@ -1,4 +1,4 @@
-﻿#if !NET461 && !UNO_REFERENCE_API
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
 using System;
 using System.Numerics;
 using System.Threading;
@@ -10,14 +10,14 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Image : FrameworkElement
 	{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnImageOpened(ImageSource imageSource)
+		private void OnImageOpened(ImageSource imageSource)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 				wb.Invalidated += OnInvalidated;
 				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
 
-				void OnInvalidated(object sdn, EventArgs args)
+				void OnInvalidated()
 				{
 					_openedSource = null;
 					TryOpenImage();
@@ -485,7 +485,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			return base.ArrangeOverride(finalSize);
+			return ArrangeFirstChild(finalSize);
 		}
 	}
 }

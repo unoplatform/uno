@@ -1,5 +1,5 @@
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Uno.Core.Equality;
 
 namespace Uno.Equality
 {
@@ -32,16 +31,13 @@ namespace Uno.Equality
 	/// </remarks>
 	internal class KeyEqualityComparer : IEqualityComparer
 	{
-		private readonly IEqualityComparer _fallbackComparer;
-
 		/// <summary>
 		/// Gets the default instance of the <see cref="KeyEqualityComparer"/>.
 		/// </summary>
 		public static IEqualityComparer Default { get; } = new KeyEqualityComparer();
 
-		public KeyEqualityComparer(IEqualityComparer fallbackComparer = null)
+		private KeyEqualityComparer()
 		{
-			_fallbackComparer = fallbackComparer ?? EqualityComparer<object>.Default;
 		}
 
 		bool IEqualityComparer.Equals(object x, object y)
@@ -72,7 +68,7 @@ namespace Uno.Equality
 			}
 
 			// Fallback to default equality
-			return _fallbackComparer.Equals(x, y);
+			return EqualityComparer<object>.Default.Equals(x, y);
 		}
 
 		public int GetHashCode(object obj)
@@ -90,68 +86,6 @@ namespace Uno.Equality
 			// TODO: check for generic version here
 
 			return null;
-		}
-	}
-
-	/// <summary>
-	/// An <see cref="IEqualityComparer{T}"/> which compares the key of the objects.
-	/// </summary>
-	/// <typeparam name="T">Type of the object to compare</typeparam>
-	internal class KeyEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer
-		where T : IKeyEquatable<T>
-	{
-		/// <summary>
-		/// Gets the default instance of the <see cref="KeyEqualityComparer{T}"/>.
-		/// </summary>
-		public static IEqualityComparer<T> Default { get; } = new KeyEqualityComparer<T>();
-
-		private readonly IEqualityComparer<T> _fallbackComparer;
-		private IEqualityComparer _innerNonGeneric;
-
-		public KeyEqualityComparer(IEqualityComparer<T> fallbackComparer = null)
-		{
-			_fallbackComparer = fallbackComparer ?? EqualityComparer<T>.Default;
-		}
-
-		/// <inheritdoc />
-		public bool Equals(T left, T right)
-		{
-			if (ReferenceEquals(left, right))
-			{
-				return true;
-			}
-			if (left == null || right == null)
-			{
-				return false;
-			}
-
-			if (left.KeyEquals(right))
-			{
-				return true;
-			}
-			if (left is IKeyEquatable lke)
-			{
-				return lke.KeyEquals(right);
-			}
-			if (right is IKeyEquatable rke)
-			{
-				return rke.KeyEquals(left);
-			}
-
-			return _fallbackComparer.Equals(left, right);
-		}
-
-		/// <inheritdoc />
-		public int GetHashCode(T obj) => obj?.GetKeyHashCode() ?? 0;
-
-		bool IEqualityComparer.Equals(object x, object y) => EnsureNonGenericComparer().Equals(x, y);
-
-		int IEqualityComparer.GetHashCode(object obj) => EnsureNonGenericComparer().GetHashCode(obj);
-
-		private IEqualityComparer EnsureNonGenericComparer()
-		{
-			return _innerNonGeneric = _innerNonGeneric
-				?? (_innerNonGeneric = new KeyEqualityComparer(_fallbackComparer.ToEqualityComparer()));
 		}
 	}
 }

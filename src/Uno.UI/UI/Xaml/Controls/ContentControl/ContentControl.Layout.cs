@@ -5,10 +5,10 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -20,9 +20,12 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ContentControl : ICustomClippingElement
+	public partial class ContentControl
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		: ICustomClippingElement
+#endif
 	{
 #if XAMARIN
 		protected override Size MeasureOverride(Size availableSize)
@@ -79,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot
 		{
 			get
@@ -102,5 +106,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

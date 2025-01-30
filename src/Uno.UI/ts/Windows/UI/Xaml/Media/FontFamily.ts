@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Media {
+﻿namespace Microsoft.UI.Xaml.Media {
 
 	export class FontFamily {
 
@@ -49,8 +49,11 @@
 		private static notifyFontLoaded(fontFamilyName: string): void {
 
 			if (!FontFamily.managedNotifyFontLoaded) {
-				FontFamily.managedNotifyFontLoaded =
-					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					FontFamily.managedNotifyFontLoaded = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoaded;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			FontFamily.managedNotifyFontLoaded(fontFamilyName);
@@ -59,8 +62,11 @@
 		private static notifyFontLoadFailed(fontFamilyName: string): void {
 
 			if (!FontFamily.managedNotifyFontLoadFailed) {
-				FontFamily.managedNotifyFontLoadFailed =
-					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					FontFamily.managedNotifyFontLoadFailed = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoadFailed;
+				} else {
+					throw `Unable to find dotnet exports`;
+				}
 			}
 
 			FontFamily.managedNotifyFontLoadFailed(fontFamilyName);

@@ -1,5 +1,9 @@
-﻿namespace Uno.UI.Web;
+﻿namespace Windows.Web;
 
+/// <summary>
+/// Defines errors encountered during operations involving web services, 
+/// such as authentication, proxy configuration, and destination URIs.
+/// </summary>
 public enum WebErrorStatus
 {
 	Unknown = 0,

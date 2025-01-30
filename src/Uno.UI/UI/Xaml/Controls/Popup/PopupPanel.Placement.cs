@@ -1,3 +1,5 @@
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -7,15 +9,20 @@ using Uno.Foundation.Logging;
 using System.Linq;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+#if __IOS__
+using View = UIKit.UIView;
+#elif __ANDROID__
+using Android.Views;
+#endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-using XamlWindow = Microsoft.UI.Xaml.Window;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
+using XamlWindow = Microsoft/* UWP don't rename */.UI.Xaml.Window;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel
 {
@@ -68,7 +75,7 @@ partial class PopupPanel
 	/// </summary>
 	protected virtual int PopupPlacementTargetMargin => 0;
 
-	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		=> InvalidateMeasure();
 
 	// TODO: Use this whenever popup placement is Auto
@@ -76,7 +83,7 @@ partial class PopupPanel
 
 	protected virtual bool FullPlacementRequested { get; }
 
-	internal virtual FlyoutBase Flyout => null;
+	internal virtual FlyoutBase? Flyout => null;
 
 	private Size PlacementArrangeOverride(Popup popup, Size finalSize)
 	{
@@ -100,6 +107,14 @@ partial class PopupPanel
 
 		return finalSize;
 	}
+
+#if __ANDROID__ || __IOS__
+	/// <summary>
+	/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
+	/// included in the visual tree.
+	/// </summary>
+	protected virtual View? NativeAnchor => null;
+#endif
 
 	private Rect GetAnchorRect(Popup popup)
 	{
@@ -170,19 +185,16 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
-#if __IOS__ || __ANDROID__
-					// The status bar should remain visible. On droid, this panel is placed beneath the status bar.
-					desiredSize = new Size(
-						ActualWidth,
-						ActualHeight
-#if __IOS__
-						// On iOS, this panel will cover the status bar, so we have to substract it out.
-						- visibleBounds.Y
-#endif
-					).AtMost(maxSize);
+#if !__IOS__
+					desiredSize = visibleBounds.Size
 #else
-					desiredSize = visibleBounds.Size.AtMost(maxSize);
+					// The mobile status bar should always remain visible.
+					// On droid, this panel is placed beneath the status bar.
+					// On iOS, this panel will cover the status bar, so we have to substract it out.
+					desiredSize = new Size(ActualWidth, ActualHeight)
+						.Subtract(0, visibleBounds.Y)
 #endif
+						.AtMost(maxSize);
 					finalPosition = new Point(
 						x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
 						y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight));
@@ -378,7 +390,5 @@ partial class PopupPanel
 		return fits;
 	}
 
-	private Rect GetVisibleBounds() =>
-		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
-			XamlRoot.Bounds : ApplicationView.GetForCurrentView().VisibleBounds;
+	private Rect GetVisibleBounds() => XamlRoot?.VisualTree.VisibleBounds ?? default;
 }

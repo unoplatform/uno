@@ -3,19 +3,19 @@ using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Graphics;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class BindableButtonEx : BindableButton, DependencyObject
 	{
@@ -49,11 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public
-#if __ANDROID_23__
-		new
-#endif
-		Brush Foreground
+		public new Brush Foreground
 		{
 			get
 			{

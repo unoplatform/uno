@@ -1,6 +1,6 @@
 ﻿using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// DependencyObject wrapped for POCO to enable x:Bind support

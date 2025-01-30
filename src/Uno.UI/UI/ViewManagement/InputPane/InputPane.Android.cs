@@ -1,14 +1,13 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.App;
 using Android.Content;
 using Android.Util;
 using Android.Views.InputMethods;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Windows.UI.ViewManagement
 {
@@ -48,7 +47,7 @@ namespace Windows.UI.ViewManagement
 				{
 					// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
 					// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
-					while (double.IsPositiveInfinity(scp.LastAvailableSize.Height)
+					while (double.IsPositiveInfinity(scp.m_previousAvailableSize.Height)
 						&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
 					{
 						scp = outerScv;
@@ -61,4 +60,3 @@ namespace Windows.UI.ViewManagement
 		}
 	}
 }
-#endif

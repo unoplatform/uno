@@ -7,6 +7,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
 [assembly: InternalsVisibleTo("Uno.Foundation")]
 [assembly: InternalsVisibleTo("Uno.Foundation.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
@@ -24,6 +25,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Maps")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
@@ -39,17 +41,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("XamlGenerationTests.Core")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
-
-#if NET6_0_OR_GREATER
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
-#elif __IOS__
-#pragma warning disable CS0618 // Type or member is obsolete
-[assembly: Foundation.LinkerSafe]
-#pragma warning restore CS0618 // Type or member is obsolete
-[assembly: AssemblyMetadata("IsTrimmable", "True")]
-#elif __ANDROID__
-[assembly: Android.LinkerSafe]
-#endif
