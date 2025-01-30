@@ -53,7 +53,7 @@ partial class AppBarButton
 	private bool m_ownsToolTip;
 
 	// Helper to which to delegate cascading menu functionality.
-	private CascadingMenuHelper? m_menuHelper;
+	internal CascadingMenuHelper? m_menuHelper;
 
 	// Helpers to track the current opened state of the flyout.
 	private bool m_isFlyoutClosing;
