@@ -216,6 +216,7 @@ internal static class AppBarButtonHelpers<TButton>
 
 				string toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
+				// format is %s (%s)
 				WCHAR buffer[1024];
 				IFCEXPECT_RETURN(swprintf_s(
 					buffer, ARRAYSIZE(buffer),
