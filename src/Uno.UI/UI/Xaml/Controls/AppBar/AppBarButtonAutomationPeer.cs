@@ -15,7 +15,6 @@ public partial class AppBarButtonAutomationPeer : ButtonAutomationPeer, IExpandC
 {
 	public AppBarButtonAutomationPeer(AppBarButton owner) : base(owner)
 	{
-
 	}
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
