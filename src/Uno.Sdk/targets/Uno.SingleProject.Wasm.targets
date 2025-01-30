@@ -30,7 +30,19 @@
 		<WasmAotFileName Condition="$(WasmAotFileName) == ''">aot.profile</WasmAotFileName>
 		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmProjectFolder)$(WasmAotFileName)') ">$(WasmProjectFolder)$(WasmAotFileName)</WasmAotProfilePath>
 		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmAotFileName)') ">$(WasmAotFileName)</WasmAotProfilePath>
+
+		<UnoEnableDefaultCompressedItems Condition=" '$(UnoEnableDefaultCompressedItems)' == '' ">true</UnoEnableDefaultCompressedItems>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- based on https://github.com/dotnet/sdk/blob/be30c95a22d25aaedaed184ee4d188c5e31218c8/src/StaticWebAssetsSdk/Targets/Microsoft.NET.Sdk.StaticWebAssets.Compression.targets#L25 -->
+		<CompressionIncludePatterns Condition="'$(UnoEnableDefaultCompressedItems)' == 'true'">
+			$(CompressionIncludePatterns);
+			**/*.ttf;
+			**/*.woff;
+			**/*.woff2;
+		</CompressionIncludePatterns>
+	</ItemGroup>
 
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
 		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
