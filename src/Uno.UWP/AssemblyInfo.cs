@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.UI.GooglePlay")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
-[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
@@ -32,7 +31,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]

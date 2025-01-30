@@ -12,7 +12,6 @@
 		"Uno.WinUI.Svg",
 		"Uno.WinUI.Lottie",
 		"Uno.WinUI.DevServer",
-		"Uno.WinUI.Runtime.Skia.Gtk",
 		"Uno.WinUI.Runtime.Skia.Linux.FrameBuffer",
 		"Uno.WinUI.Runtime.Skia.MacOS",
 		"Uno.WinUI.Runtime.Skia.Win32",
