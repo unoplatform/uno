@@ -22,6 +22,7 @@ using AppBarToggleButtonAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AppB
 using AppBarToggleButtonTemplateSettings = Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
 using System.Globalization;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -91,20 +92,20 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
-		AppBarButtonHelpers.OnPropertyChanged<AppBarToggleButton>(this, args);
+		AppBarButtonHelpers<AppBarToggleButton>.OnPropertyChanged(this, args);
 	}
 
 	protected override void OnApplyTemplate()
 	{
-		AppBarButtonHelpers.OnBeforeApplyTemplate<AppBarToggleButton>(this);
+		AppBarButtonHelpers<AppBarToggleButton>.OnBeforeApplyTemplate(this);
 		base.OnApplyTemplate();
-		AppBarButtonHelpers.OnApplyTemplate<AppBarToggleButton>(this);
+		AppBarButtonHelpers<AppBarToggleButton>.OnApplyTemplate(this);
 	}
 
 	protected override void OnPointerEntered(PointerRoutedEventArgs args)
 	{
 		base.OnPointerEntered(args);
-		AppBarButtonHelpers.CloseSubMenusOnPointerEntered<AppBarToggleButton>(this, null);
+		AppBarButtonHelpers<AppBarToggleButton>.CloseSubMenusOnPointerEntered(this, null);
 	}
 
 	// Sets the visual state to "Compact" or "FullSize" based on the value
@@ -169,7 +170,7 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 			}
 		}
 
-		AppBarButtonHelpers.ChangeCommonVisualStates<AppBarToggleButton>(this, useTransitions);
+		AppBarButtonHelpers<AppBarToggleButton>.ChangeCommonVisualStates(this, useTransitions);
 	}
 
 
@@ -177,7 +178,7 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 	protected override AutomationPeer OnCreateAutomationPeer() =>
 		new AppBarToggleButtonAutomationPeer(this);
 
-	private void OnClick()
+	private protected override void OnClick()
 	{
 		CommandBar.OnCommandExecutionStatic(this);
 		base.OnClick();
@@ -192,7 +193,7 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 	private protected override void OnCommandChanged(object oldValue, object newValue)
 	{
 		base.OnCommandChanged(oldValue, newValue);
-		AppBarButtonHelpers.OnCommandChanged<AppBarToggleButton>(this, oldValue, newValue);
+		AppBarButtonHelpers<AppBarToggleButton>.OnCommandChanged(this, oldValue, newValue);
 	}
 
 	private bool GetHasLabelAtPosition(CommandBarDefaultLabelPosition labelPosition)
@@ -248,8 +249,10 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 			StopAnimationForWidthAdjustments();
 		}
 
-		AppBarButtonHelpers.UpdateToolTip<AppBarToggleButton>(this);
+		AppBarButtonHelpers<AppBarToggleButton>.UpdateToolTip(this);
 	}
+
+	void IAppBarButtonHelpersProvider.UpdateInternalStyles() => UpdateInternalStyles();
 
 	private Storyboard CreateStoryboardForWidthAdjustmentsForLabelOnRightStyle()
 	{
