@@ -38,7 +38,6 @@ using Microsoft.UI.Content;
 using Windows.Graphics;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(TabItems))]
@@ -52,8 +51,6 @@ public partial class TabView : Control
 
 	// TODO (WinUI): what is the right number and should this be customizable?
 	private const double c_scrollAmount = 50.0;
-
-	private DispatcherHelper m_dispatcherHelper;
 
 	public partial class TabViewTabTearOutWindowRequestedEventArgs : EventArgs
 	{
@@ -111,11 +108,7 @@ public partial class TabView : Control
 
 	public TabView()
 	{
-		// Uno specific: Needs to be initialized here, as field can't use "this"
-		m_dispatcherHelper = new DispatcherHelper(this);
-
-		//var items = new ObservableVector<object>();
-		var items = new ObservableCollection<object>();
+		var items = new ObservableVector<object>();
 		SetValue(TabItemsProperty, items);
 
 		SetDefaultStyleKey(this);
@@ -149,10 +142,10 @@ public partial class TabView : Control
 
 	~TabView()
 	{
-		if (m_inputNonClientPointerSource != null)
+		if (m_inputNonClientPointerSource is { })
 		{
 			m_inputNonClientPointerSource.EnteringMoveSize -= OnEnteringMoveSize;
-			////////////////////////////////////////////////////////m_inputNonClientPointerSource.EnteredMoveSize -= EnteredMove;
+			m_inputNonClientPointerSource.EnteredMoveSize -= OnEnteredMoveSize;
 			m_inputNonClientPointerSource.WindowRectChanging -= OnWindowRectChanging;
 			m_inputNonClientPointerSource.ExitedMoveSize -= OnExitedMoveSize;
 		}
@@ -170,13 +163,13 @@ public partial class TabView : Control
 
 		//IControlProtected controlProtected{ *this };
 
-		m_tabContentPresenter = (ContentPresenter)GetTemplateChild("TabContentPresenter");
-		m_rightContentPresenter = (ContentPresenter)GetTemplateChild("RightContentPresenter");
+		m_tabContentPresenter = GetTemplateChild<ContentPresenter>("TabContentPresenter");
+		m_rightContentPresenter = GetTemplateChild<ContentPresenter>("RightContentPresenter");
 
-		m_leftContentColumn = (ColumnDefinition)GetTemplateChild("LeftContentColumn");
-		m_tabColumn = (ColumnDefinition)GetTemplateChild("TabColumn");
-		m_addButtonColumn = (ColumnDefinition)GetTemplateChild("AddButtonColumn");
-		m_rightContentColumn = (ColumnDefinition)GetTemplateChild("RightContentColumn");
+		m_leftContentColumn = GetTemplateChild<ColumnDefinition>("LeftContentColumn");
+		m_tabColumn = GetTemplateChild<ColumnDefinition>("TabColumn");
+		m_addButtonColumn = GetTemplateChild<ColumnDefinition>("AddButtonColumn");
+		m_rightContentColumn = GetTemplateChild<ColumnDefinition>("RightContentColumn");
 
 		if (GetTemplateChild<Grid>("TabContainerGrid") is Grid containerGrid)
 		{
@@ -195,7 +188,7 @@ public partial class TabView : Control
 
 		ListView GetListView()
 		{
-			var listView = GetTemplateChild("TabListView") as ListView;
+			var listView = GetTemplateChild<ListView>("TabListView");
 			if (listView != null)
 			{
 				listView.Loaded += OnListViewLoaded;
@@ -270,7 +263,7 @@ public partial class TabView : Control
 
 		Button GetAddButton()
 		{
-			var addButton = GetTemplateChild("AddButton") as Button;
+			var addButton = GetTemplateChild<Button>("AddButton");
 			if (addButton != null)
 			{
 				// Do localization for the add button
@@ -651,7 +644,7 @@ public partial class TabView : Control
 				if (listView.ItemsSource == null)
 				{
 					// copy the list, because clearing lvItems may also clear TabItems
-					var itemList = new List<object>();
+					var itemList = new ObservableVector<object>();
 
 					foreach (var item in TabItems)
 					{
@@ -1417,6 +1410,7 @@ public partial class TabView : Control
 							// If we're dragging over the TabView, we need to set the width to a specific value,
 							// since we want it to be larger than the items actually in it in order to accommodate
 							// the item being dragged into the TabView.  Otherwise, we can just set its width to Auto.
+
 							//tabColumn.Width(
 							//	m_isItemDraggedOver ?
 							//	winrt::GridLengthHelper::FromPixels(requiredWidth) :
@@ -1827,31 +1821,46 @@ public partial class TabView : Control
 
 	private void AttachMoveSizeLoopEvents()
 	{
-		/*if (CanTearOutTabs)
+#pragma warning disable CS0162
+		//UNO TODO: Implement Microsoft.UI.GetWindowFromWindowId, GetWindowPlacement and SetWindowPos, GetWindowRect 
+		//if (CanTearOutTabs)
+		if (false)
 		{
-			if (IsLoaded && m_enteringMoveSizeToken == 0)
+			if (IsLoaded && m_enteringMoveSizeToken.Disposable == null)
 			{
 				var nonClientPointerSource = GetInputNonClientPointerSource();
 
-				m_enteringMoveSizeToken = nonClientPointerSource.EnteringMoveSize((sender, e) => OnEnteringMoveSize(sender, e));
-				m_enteredMoveSizeToken = nonClientPointerSource.EnteredMoveSize((sender, e) => OnEnteredMoveSize(sender, e));
-				m_windowRectChangingToken = nonClientPointerSource.WindowRectChanging((sender, e) => OnWindowRectChanging(sender, e));
-				m_exitedMoveSizeToken = nonClientPointerSource.ExitedMoveSize((sender, e) => OnExitedMoveSize(sender, e));
+				nonClientPointerSource.EnteringMoveSize += OnEnteringMoveSize;
+				m_enteringMoveSizeToken.Disposable = Disposable.Create(() =>
+				{
+					nonClientPointerSource.EnteringMoveSize -= OnEnteringMoveSize;
+				});
+				nonClientPointerSource.EnteredMoveSize += OnEnteredMoveSize;
+				m_enteredMoveSizeToken.Disposable = Disposable.Create(() =>
+				{
+					nonClientPointerSource.EnteredMoveSize -= OnEnteredMoveSize;
+				});
+				nonClientPointerSource.WindowRectChanging += OnWindowRectChanging;
+				m_windowRectChangingToken.Disposable = Disposable.Create(() =>
+				{
+					nonClientPointerSource.WindowRectChanging -= OnWindowRectChanging;
+				});
+				nonClientPointerSource.ExitedMoveSize += OnExitedMoveSize;
+				m_exitedMoveSizeToken.Disposable = Disposable.Create(() =>
+				{
+					nonClientPointerSource.ExitedMoveSize -= OnExitedMoveSize;
+				});
 			}
 		}
 		else
-		if (m_inputNonClientPointerSource)
+		if (m_inputNonClientPointerSource != null)
 		{
-			m_inputNonClientPointerSource.EnteringMoveSize += m_enteringMoveSizeToken;
-			m_inputNonClientPointerSource.EnteredMoveSize(m_enteredMoveSizeToken);
-			m_inputNonClientPointerSource.WindowRectChanging(m_windowRectChangingToken);
-			m_inputNonClientPointerSource.ExitedMoveSize(m_exitedMoveSizeToken);
-
-			m_enteringMoveSizeToken = 0;
-			m_enteredMoveSizeToken = 0;
-			m_windowRectChangingToken = 0;
-			m_exitedMoveSizeToken = 0;
-		}*/
+			m_enteringMoveSizeToken.Disposable = null;
+			m_enteredMoveSizeToken.Disposable = null;
+			m_windowRectChangingToken.Disposable = null;
+			m_exitedMoveSizeToken.Disposable = null;
+		}
+#pragma warning restore CS0162
 	}
 
 	//
@@ -1891,12 +1900,63 @@ public partial class TabView : Control
 		m_tabViewContainingTabBeingDragged = this;
 		m_originalTabBeingDraggedPoint = m_tabBeingDragged.TransformToVisual(null).TransformPoint(new Point(0, 0));
 
+		SelectedItem = m_dataItemBeingDragged;
 
 		// We don't want to create a new window for tearing out if every tab is being torn out -
 		// in that case, we just want to drag the window.
-		if (GetItemCount() > 0)
+		if (GetItemCount() > 1)
 		{
+			var windowRequestedArgs = new TabViewTabTearOutWindowRequestedEventArgs(dataItem, tab);
+			TabTearOutWindowRequested?.Invoke(this, windowRequestedArgs);
 
+			//UNO TODO: Implement Microsoft.UI.GetWindowFromWindowId, GetWindowPlacement, ContentIslandEnvironment and SetWindowPos, GetWindowRect
+			/*			
+			args.MoveSizeWindowId = windowRequestedArgs.NewWindowId;
+
+			var newWindow = GetWindowFromWindowId;
+			m_tabTearOutNewAppWindow = AppWindow.GetFromWindowId(windowRequestedArgs.NewWindowId);
+			var currentWindow = Microsoft.UI.GetWindowFromWindowId(XamlRoot.ContentIslandEnvironment.AppWindowId);
+
+			WINDOWPLACEMENT wp{ };
+			wp.length = sizeof(wp);
+			GetWindowPlacement(currentWindow, &wp);
+
+			// We'll position the new window to be hidden at the same position as the current window and with the restored size of the current window.
+			Rect windowRect;
+
+			GetWindowRect(currentWindow, &windowRect);
+			SetWindowPos(
+				newWindow,
+				currentWindow,
+				windowRect.left,
+				windowRect.top,
+				wp.rcNormalPosition.right - wp.rcNormalPosition.left,
+				wp.rcNormalPosition.bottom - wp.rcNormalPosition.top,
+				SWP_SHOWWINDOW);
+			*/
+		}
+		else
+		{
+			//m_tabTearOutNewAppWindow = AppWindow.GetFromWindowId(XamlRoot.ContentIslandEnvironment.AppWindowId);
+		}
+	}
+
+	private void OnEnteredMoveSize(InputNonClientPointerSource sender, EnteredMoveSizeEventArgs args)
+	{
+		if (!m_isInTabTearOutLoop)
+		{
+			return;
+		}
+
+		MUX_ASSERT(CanTearOutTabs && m_tabTearOutDraggingState == TabTearOutDraggingState.Idle);
+		m_tabTearOutDraggingState = GetItemCount() > 1 ? TabTearOutDraggingState.DraggingTabWithinTabView : TabTearOutDraggingState.DraggingTornOutTab;
+		m_tabTearOutInitialPosition = args.PointerScreenPoint;
+		m_dragPositionOffset = default;
+
+		// If we're starting in the state of dragging a torn out tab, let's populate the list of tab views and their bounds now.
+		if (m_tabTearOutDraggingState == TabTearOutDraggingState.DraggingTornOutTab)
+		{
+			PopulateTabViewList();
 		}
 	}
 
@@ -2055,7 +2115,10 @@ public partial class TabView : Control
 		// We'll iterate through the list of tab views and their bounds and check each of their screen positions against the screen position of the pointer.
 		foreach (var (otherTabViewScreenBounds, otherTabView) in m_tabViewBoundsTuples)
 		{
-			if (SharedHelpers.DoesRectContainPoint(otherTabViewScreenBounds, args.PointerScreenPoint))
+			var otherTabViewScreenBoundsRect = new Rect(otherTabViewScreenBounds.X, otherTabViewScreenBounds.Y, otherTabViewScreenBounds.Width, otherTabViewScreenBounds.Height);
+			var pointerScreenPoint = new Point(args.NewWindowRect.X, args.NewWindowRect.Y);
+
+			if (SharedHelpers.DoesRectContainPoint(otherTabViewScreenBoundsRect, pointerScreenPoint))
 			{
 				// We'll check which index we need to insert the tab at.
 				int insertionIndex = GetTabInsertionIndex(otherTabView, args.PointerScreenPoint);
@@ -2183,10 +2246,18 @@ public partial class TabView : Control
 			if (m_tabViewInNewAppWindow is { })
 			{
 				var tabViewWithTearOutList = GetTabViewWithTearOutList();
-				tabViewWithTearOutList.RemoveAll(wr => wr.TryGetTarget(out var target) && target == m_tabViewInNewAppWindow.Target);
+				var windowTabViewAsWeak = new WeakReference<TabView>(m_tabViewInNewAppWindow);
+				var existingIterator = tabViewWithTearOutList.Find(tv => tv == windowTabViewAsWeak);
+
+				if (existingIterator != null)
+				{
+					tabViewWithTearOutList.Remove(existingIterator);
+				}
 			}
+
+			//PostMessageW(winrt::Microsoft::UI::GetWindowFromWindowId(m_tabTearOutNewAppWindow.Id()), WM_CLOSE, 0, 0);
 		}
-		else if (m_tabViewContainingTabBeingDragged is { })
+		else if (m_tabViewContainingTabBeingDragged != null)
 		{
 			// Otherwise, if the window is still open, let's update its tab view's non-client region.
 			m_tabViewContainingTabBeingDragged.UpdateNonClientRegion();
@@ -2394,10 +2465,12 @@ public partial class TabView : Control
 
 		if (XamlRoot is { } xamlRoot)
 		{
-			if (xamlRoot.ContentIslandEnvironment is { } contentIslandEnvironment)
-			{
-				appWindowId = contentIslandEnvironment.AppWindowId;
-			}
+			//UNO TODO: Implement ContentIslandEnvironment https://github.com/unoplatform/uno/issues/19392
+
+			//if (xamlRoot.ContentIslandEnvironment is { } contentIslandEnvironment)
+			//{
+			//	appWindowId = contentIslandEnvironment.AppWindowId;
+			//}
 		}
 
 		if (appWindowId.Value != m_lastAppWindowId.Value)
