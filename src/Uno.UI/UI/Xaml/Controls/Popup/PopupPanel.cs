@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Input;
+using Uno.Helpers;
 using Uno.UI.Xaml.Core;
 
 #if __IOS__
@@ -169,7 +170,7 @@ internal partial class PopupPanel : Panel
 #if __ANDROID__ || __IOS__
 				 || NativeAnchor is not null
 #endif
-				 || !finalFrame.IntersectWith(GetVisibleBounds()).Equals(finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
+				 || !MathHelpers.DoesRectContainRect(GetVisibleBounds(), finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
 				) && Popup.PlacementTarget is not null
 			   )
 			{
