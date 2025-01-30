@@ -1595,8 +1595,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandExecutionStatic(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1606,8 +1605,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandBarElementVisibilityChanged(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1890,11 +1888,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						elementAsAppBarButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarButton>.UpdateTemplateSettings<AppBarButtonTemplateSettings>(elementAsAppBarButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						elementAsAppBarToggleButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarToggleButton>.UpdateTemplateSettings<AppBarToggleButtonTemplateSettings>(elementAsAppBarToggleButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 				}
 			}
@@ -2612,7 +2610,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 		internal static bool IsCommandBarElementInOverflow(ICommandBarElement element)
 		{
-			FindParentCommandBarForElement(element, out var parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 			bool isInOverflow = false;
 
 			if (parentCmdBar is { })
@@ -2647,7 +2645,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int positionInSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
@@ -2747,7 +2745,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int sizeOfSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
