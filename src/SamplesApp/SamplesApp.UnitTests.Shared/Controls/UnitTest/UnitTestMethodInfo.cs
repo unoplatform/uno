@@ -42,10 +42,17 @@ internal record UnitTestMethodInfo
 			.SingleOrDefault()
 			?.ExceptionType;
 
-		_ignoredBecauseOfConditionalTestAttribute = method
+		var ignoredBecauseOfConditionalTestClassAttribute = method.DeclaringType?
+			.GetCustomAttributes<ConditionalTestClassAttribute>()
+			.SingleOrDefault()
+			?.ShouldRun() == false;
+
+		var ignoredBecauseOfConditionalTestAttribute = method
 			.GetCustomAttributes<ConditionalTestAttribute>()
 			.SingleOrDefault()
 			?.ShouldRun() == false;
+
+		_ignoredBecauseOfConditionalTestAttribute = ignoredBecauseOfConditionalTestClassAttribute | ignoredBecauseOfConditionalTestAttribute;
 
 		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()

@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
+﻿using System;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-public sealed partial class ConditionalTestAttribute : TestMethodAttribute
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed partial class ConditionalTestClassAttribute : TestClassAttribute
 {
 	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 
