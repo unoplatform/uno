@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 #pragma warning disable CS0618 // Type or member is obsolete
 	public class PivotAdapter : FragmentPagerAdapter
@@ -37,7 +37,6 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var fragment in _fragments)
 			{
 				fragment.DataContext = _pivot.DataContext;
-				fragment.TemplatedParent = (IFrameworkElement)_pivot.TemplatedParent;
 			}
 		}
 
@@ -84,7 +83,6 @@ namespace Windows.UI.Xaml.Controls
 					var fragment = new PivotItemFragment(pivotItem)
 					{
 						DataContext = _pivot.DataContext,
-						TemplatedParent = (IFrameworkElement)_pivot.TemplatedParent
 					};
 					return fragment;
 				})

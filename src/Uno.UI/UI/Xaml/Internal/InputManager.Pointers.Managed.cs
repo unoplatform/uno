@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -14,28 +16,31 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Windows.UI.Xaml.UIElement;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft.UI.Xaml.UIElement;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	internal PointerManager Pointers { get; private set; } = default!;
-
-	partial void ConstructPointerManager()
+	partial void ConstructPointerManager_Managed()
 	{
-		Pointers = new PointerManager(this);
-
 		// Injector supports only pointers for now, so configure only in by managed pointer
 		// (should be moved to the InputManager ctor once the injector supports other input types)
 		InputInjector.SetTargetForCurrentThread(this);
 	}
 
-	partial void InitializeManagedPointers(object host)
+	partial void InitializePointers_Managed(object host)
 		=> Pointers.Init(host);
 
 	partial void InjectPointerAdded(PointerEventArgs args)
@@ -47,23 +52,17 @@ internal partial class InputManager
 	partial void InjectPointerRemoved(PointerEventArgs args)
 		=> Pointers.InjectPointerRemoved(args);
 
-	internal class PointerManager
+	internal partial class PointerManager
 	{
-		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
-		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
-
 		// TODO: Use pointer ID for the predicates
 		private static readonly StalePredicate _isOver = new(e => e.IsPointerOver, "IsPointerOver");
 
 		private readonly Dictionary<Pointer, UIElement> _pressedElements = new();
 
-		private readonly InputManager _inputManager;
 		private IUnoCorePointerInputSource? _source;
 
-		public PointerManager(InputManager inputManager)
-		{
-			_inputManager = inputManager;
-		}
+		// ONLY USE THIS FOR TESTING PURPOSES
+		internal IUnoCorePointerInputSource? PointerInputSourceForTestingOnly => _source;
 
 		/// <summary>
 		/// Initialize the InputManager.
@@ -73,12 +72,16 @@ internal partial class InputManager
 		{
 			if (!ApiExtensibility.CreateInstance(host, out _source))
 			{
-				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				}
+				return;
 			}
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
 			{
-				CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
+				CoreWindow.GetForCurrentThreadSafe()?.SetPointerInputSource(_source);
 			}
 
 			_source.PointerMoved += (c, e) => OnPointerMoved(e);
@@ -90,19 +93,111 @@ internal partial class InputManager
 			_source.PointerCancelled += (c, e) => OnPointerCancelled(e);
 		}
 
-		private void UpdateLastInputType(PointerEventArgs e)
-		{
-			_inputManager.LastInputDeviceType = e.CurrentPoint?.PointerDeviceType switch
-			{
-				PointerDeviceType.Touch => InputDeviceType.Touch,
-				PointerDeviceType.Pen => InputDeviceType.Pen,
-				PointerDeviceType.Mouse => InputDeviceType.Mouse,
-				_ => _inputManager.LastInputDeviceType
-			};
-		}
+		#region Current event dispatching transaction
+		private PointerDispatching? _current;
 
-		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
+		/// <summary>
+		/// Gets the currently dispatched event.
+		/// </summary>
+		/// <remarks>This is set only while a pointer event is currently being dispatched.</remarks>
+		internal PointerRoutedEventArgs? Current => _current?.Args;
+
+		private PointerDispatching StartDispatch(in PointerEvent evt, in PointerRoutedEventArgs args)
+			=> new(this, evt, args);
+
+		private readonly record struct PointerDispatching : IDisposable
 		{
+			private readonly PointerManager _manager;
+			public PointerEvent Event { get; }
+			public PointerRoutedEventArgs Args { get; }
+
+			public PointerDispatching(PointerManager manager, PointerEvent @event, PointerRoutedEventArgs args)
+			{
+				_manager = manager;
+				Args = args;
+				Event = @event;
+
+				// Before any dispatch, we make sure to reset the event to it's original state
+				Debug.Assert(args.CanBubbleNatively == PointerRoutedEventArgs.PlatformSupportsNativeBubbling);
+				args.Reset();
+
+				// Set us as the current dispatching
+				if (_manager._current is not null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"A pointer is already being processed {_manager._current} while trying to raise {this}");
+					}
+					Debug.Fail($"A pointer is already being processed {_manager._current} while trying to raise {this}.");
+				}
+				_manager._current = this;
+
+				// Then notify all external components that the dispatching is starting
+				_manager._inputManager.LastInputDeviceType = args.CoreArgs.CurrentPoint.PointerDeviceType switch
+				{
+					PointerDeviceType.Touch => InputDeviceType.Touch,
+					PointerDeviceType.Pen => InputDeviceType.Pen,
+					PointerDeviceType.Mouse => InputDeviceType.Mouse,
+					_ => _manager._inputManager.LastInputDeviceType
+				};
+				UIElement.BeginPointerEventDispatch();
+			}
+
+			public PointerEventDispatchResult End()
+			{
+				Dispose();
+				var result = UIElement.EndPointerEventDispatch();
+
+				// Once this dispatching has been removed from the _current dispatch (i.e. dispatch is effectively completed),
+				// we re-dispatch the event to the requested target (if any)
+				// Note: We create a new PointerRoutedEventArgs with a new OriginalSource == reRouted.To
+				if (_manager._reRouted is { } reRouted)
+				{
+					_manager._reRouted = null;
+
+					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
+					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
+					// When the PopupRoot performs the HitTest, the visual tree is already updated.
+					if (Event == Pressed)
+					{
+						// Make sure to have a logical state regarding current over check use to determine if events are relevant or not
+						// Note: That check should be removed for managed only events, but too massive in the context of current PR.
+						result += _manager.Raise(
+							Enter,
+							new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
+							new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
+					}
+
+					result += _manager.Raise(
+						Event,
+						new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
+						new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
+				}
+
+				return result;
+			}
+
+			/// <inheritdoc />
+			public override string ToString()
+				=> $"[{Event.Name}] {Args.Pointer.UniqueId}";
+
+			public void Dispose()
+			{
+				if (_manager._current == this)
+				{
+					_manager._current = null;
+				}
+			}
+		}
+		#endregion
+
+		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
+		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
@@ -125,12 +220,28 @@ internal partial class InputManager
 				Trace($"PointerWheelChanged [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
+#if __SKIA__ // Currently, only Skia supports interaction tracker.
+			Visual? currentVisual = originalSource.Visual;
+			while (currentVisual is not null)
+			{
+				if (currentVisual.VisualInteractionSource is { RedirectsPointerWheel: true } vis)
+				{
+					foreach (var tracker in vis.Trackers)
+					{
+						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+					}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+					return;
+				}
+
+				currentVisual = currentVisual.Parent;
+			}
+#endif
+
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+			RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
@@ -149,16 +260,24 @@ internal partial class InputManager
 			// Third (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
 			Raise(Enter, originalSource!, routedArgs);
+
+			if (!PointerCapture.TryGet(routedArgs.Pointer, out var capture) || capture.IsImplicitOnly)
+			{
+				// If pointer is explicitly captured, then we set it in the RaiseUsingCaptures call above.
+				// If not, we make sure to update the cursor based on the new originalSource.
+				SetSourceCursor(originalSource);
+			}
 		}
 
-		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
-			if (originalSource is ImplicitTextBlock)
-			{
-				global::System.Diagnostics.Debug.WriteLine("Entered");
-			}
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
@@ -179,15 +298,18 @@ internal partial class InputManager
 				Trace($"PointerEntered [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			Raise(Enter, originalSource, routedArgs);
 		}
 
-		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
 			var originalSource = _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null)
@@ -216,9 +338,7 @@ internal partial class InputManager
 				Trace($"PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			Raise(Leave, overBranchLeaf, routedArgs);
 			if (!args.CurrentPoint.IsInContact && (PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
@@ -229,8 +349,28 @@ internal partial class InputManager
 			}
 		}
 
-		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// If 2+ mouse buttons are pressed, we only respond to the first.
+			var buttonsPressed = 0;
+			var properties = args.CurrentPoint.Properties;
+			if (properties.IsLeftButtonPressed) { buttonsPressed++; }
+			if (properties.IsRightButtonPressed) { buttonsPressed++; }
+			if (properties.IsMiddleButtonPressed) { buttonsPressed++; }
+			if (properties.IsXButton1Pressed) { buttonsPressed++; }
+			if (properties.IsXButton2Pressed) { buttonsPressed++; }
+			if (properties.IsBarrelButtonPressed) { buttonsPressed++; }
+
+			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && buttonsPressed > 1)
+			{
+				return;
+			}
+
+			if (TryRedirectPointerPress(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
@@ -253,16 +393,26 @@ internal partial class InputManager
 				Trace($"PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
 			Raise(Pressed, originalSource, routedArgs);
 		}
 
-		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
+			// (i.e when no more buttons are still pressed).
+			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
+			{
+				return;
+			}
+
+			if (TryRedirectPointerRelease(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			var isOutOfWindow = originalSource is null;
@@ -287,22 +437,29 @@ internal partial class InputManager
 				Trace($"PointerReleased [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
-
-			RaiseUsingCaptures(Released, originalSource, routedArgs);
+			RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
 				// We release the captures on up but only after the released event and processed the gesture
 				// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 				ReleaseCaptures(routedArgs);
+
+				// We only set the cursor after releasing the capture, or else the cursor will be set according to
+				// the element that just lost the capture
+				SetSourceCursor(originalSource);
 			}
 			ClearPressedState(routedArgs);
 		}
 
-		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			if (TryRedirectPointerMove(args))
+			{
+				return;
+			}
+
 			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -324,9 +481,7 @@ internal partial class InputManager
 				Trace($"PointerMoved [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			// First raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
@@ -347,11 +502,16 @@ internal partial class InputManager
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Move, originalSource, routedArgs);
+			RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
 		}
 
-		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
 		{
+			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -373,12 +533,11 @@ internal partial class InputManager
 				Trace($"PointerCancelled [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
-
-			RaiseUsingCaptures(Cancelled, originalSource, routedArgs);
+			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
+			SetSourceCursor(originalSource);
 			ClearPressedState(routedArgs);
 		}
 
@@ -391,17 +550,6 @@ internal partial class InputManager
 		internal void ReleasePointerCapture(PointerIdentifier uniqueId)
 		{
 			_source?.ReleasePointerCapture(uniqueId);
-		}
-
-		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
-		{
-			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-			{
-				foreach (var target in capture.Targets.ToList())
-				{
-					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
-				}
-			}
 		}
 		#endregion
 
@@ -418,23 +566,23 @@ internal partial class InputManager
 
 			if (args.CurrentPoint.Properties.IsCanceled)
 			{
-				OnPointerCancelled(args);
+				OnPointerCancelled(args, isInjected: true);
 			}
 			else if (args.CurrentPoint.Properties.MouseWheelDelta is not 0)
 			{
-				OnPointerWheelChanged(args);
+				OnPointerWheelChanged(args, isInjected: true);
 			}
 			else if (kind is PointerUpdateKind.Other)
 			{
-				OnPointerMoved(args);
+				OnPointerMoved(args, isInjected: true);
 			}
 			else if (((int)kind & 1) == 1)
 			{
-				OnPointerPressed(args);
+				OnPointerPressed(args, isInjected: true);
 			}
 			else
 			{
-				OnPointerReleased(args);
+				OnPointerReleased(args, isInjected: true);
 			}
 		}
 		#endregion
@@ -450,7 +598,7 @@ internal partial class InputManager
 				_pressedElements.Remove(routedArgs.Pointer);
 
 				// Note: The event is propagated silently (public events won't be raised) as it's only to clear internal state
-				var ctx = new BubblingContext { IsInternal = true };
+				var ctx = new BubblingContext { IsInternal = true, IsCleanup = true };
 				pressedLeaf.OnPointerUp(routedArgs, ctx);
 			}
 		}
@@ -479,38 +627,35 @@ internal partial class InputManager
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
 		{
+			using var dispatch = StartDispatch(evt, routedArgs);
+
 			if (_trace)
 			{
 				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to original source [{originalSource.GetDebugName()}]");
 			}
 
-			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
-
 			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 
-			return EndPointerEventDispatch();
+			return dispatch.End();
 		}
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
 		{
+			using var dispatch = StartDispatch(evt, routedArgs);
+
 			if (_trace)
 			{
 				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to branch [{branch}]");
 			}
 
-			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
-
 			evt.Invoke(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
 
-			return UIElement.EndPointerEventDispatch();
+			return dispatch.End();
 		}
 
-		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs, bool setCursor)
 		{
-			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
+			using var dispatch = StartDispatch(evt, routedArgs);
 
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
@@ -531,8 +676,12 @@ internal partial class InputManager
 							Trace($"[Implicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{originalSource.GetDebugName()}] (-- no bubbling--)");
 						}
 
-						routedArgs.Handled = false;
-						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
+					}
+
+					if (setCursor)
+					{
+						SetSourceCursor(originalSource);
 					}
 				}
 				else
@@ -558,8 +707,12 @@ internal partial class InputManager
 							Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to alternative (implicit) target [{explicitTarget.Element.GetDebugName()}] (-- no bubbling--)");
 						}
 
-						routedArgs.Handled = false;
-						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
+					}
+
+					if (setCursor)
+					{
+						SetSourceCursor(explicitTarget.Element);
 					}
 				}
 			}
@@ -571,9 +724,34 @@ internal partial class InputManager
 				}
 
 				evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
+
+				if (setCursor)
+				{
+					SetSourceCursor(originalSource);
+				}
 			}
 
-			return UIElement.EndPointerEventDispatch();
+			return dispatch.End();
+		}
+
+		private void SetSourceCursor(UIElement element)
+		{
+#if HAS_UNO_WINUI
+			if (_source is { })
+			{
+				if (element.CalculatedFinalCursor is { } shape)
+				{
+					if (_source.PointerCursor is not { } c || c.Type != shape.ToCoreCursorType())
+					{
+						_source.PointerCursor = InputCursor.CreateCoreCursorFromInputSystemCursorShape(shape);
+					}
+				}
+				else
+				{
+					_source.PointerCursor = null;
+				}
+			}
+#endif
 		}
 
 		private static void Trace(string text)

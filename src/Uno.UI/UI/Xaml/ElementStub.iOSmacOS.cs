@@ -10,7 +10,7 @@ using AppKit;
 using UIView = AppKit.NSView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class ElementStub : FrameworkElement
 	{

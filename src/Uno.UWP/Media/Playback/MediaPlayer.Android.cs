@@ -50,6 +50,9 @@ namespace Windows.Media.Playback
 
 		const string MsAppXScheme = "ms-appx";
 
+		internal uint NaturalVideoHeight { get; private set; }
+		internal uint NaturalVideoWidth { get; private set; }
+
 		public IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
 		private void Initialize()
@@ -271,8 +274,9 @@ namespace Windows.Media.Playback
 			if (mp is not null)
 			{
 				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
-
-				VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+				NaturalVideoWidth = (uint)mp.VideoWidth;
+				NaturalVideoHeight = (uint)mp.VideoHeight;
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 
 				IsVideo = mp.GetTrackInfo()?.Any(x => x.TrackType == MediaTrackType.Video) == true;
 

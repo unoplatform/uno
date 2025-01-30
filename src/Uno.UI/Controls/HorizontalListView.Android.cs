@@ -1,4 +1,4 @@
-/*
+﻿/*
  * HorizontalListView.cs a derivation of Paul Soucy's HorizontalListView.java,
  * with additional features, including Snap mode and C# event handlers.
  *  
@@ -318,7 +318,7 @@ namespace Uno.UI.Controls
 				top = top + (_height - childHeight) / 2;
 			}
 
-			if (child is Windows.UI.Xaml.UIElement elt)
+			if (child is Microsoft.UI.Xaml.UIElement elt)
 			{
 				elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, top + childHeight).PhysicalToLogicalPixels();
 			}
@@ -470,7 +470,7 @@ namespace Uno.UI.Controls
 				var right = left + child.MeasuredWidth;
 				var bottom = top + child.MeasuredHeight;
 
-				if (child is Windows.UI.Xaml.UIElement elt)
+				if (child is Microsoft.UI.Xaml.UIElement elt)
 				{
 					elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, bottom).PhysicalToLogicalPixels();
 				}

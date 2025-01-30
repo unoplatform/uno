@@ -31,9 +31,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[DataTestMethod]
+#pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
 		[DataRow(new string[] { "en-US", "abcd" })]
+#pragma warning restore MSTEST0014 // DataRow should be valid
 		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
 		{
 			try
@@ -150,7 +152,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ca-FR", "Latn", "ca-FR")]
 		[DataRow("ca-IT", "Latn", "ca-IT")]
 		[DataRow("ca-ES", "Latn", "ca")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ceb", "ArabExt", "fa")]
 		[DataRow("ceb-Latn", "ArabExt", "fa")]
 		[DataRow("ceb-Latn-PH", "ArabExt", "fa")]
@@ -160,7 +162,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ku", "Arab", "ku")]
 		[DataRow("ku-Arab", "Arab", "ku-Arab")]
 		[DataRow("ku-Arab-IQ", "Arab", "ku-Arab")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ccp", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm", "ArabExt", "fa")]
 		[DataRow("ccp-Cakm-BD", "ArabExt", "fa")]
@@ -181,7 +183,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("zh-MO", "Latn", "zh-Hant-MO")]
 		[DataRow("zh-TW", "Latn", "zh-Hant-TW")]
 		[DataRow("cu-RU", "Latn", "cu-Cyrl-RU")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("swc", "ArabExt", "fa")]
 #endif
 		[DataRow("swc-CD", "Latn", "swc-CD")]
@@ -312,7 +314,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("en-TC", "Latn", "en-TC")]
 		[DataRow("en-TV", "Latn", "en-TV")]
 		[DataRow("en-UG", "Latn", "en-UG")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("en-AE", "Latn", "en")]
 #endif
 		[DataRow("en-GB", "Latn", "en-GB")]
@@ -454,7 +456,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("id", "Latn", "id")]
 		[DataRow("id-ID", "Latn", "id")]
 		[DataRow("ia", "Latn", "ia")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ia-FR", "ArabExt", "fa")]
 #endif
 		[DataRow("ia-001", "Latn", "ia-001")]
@@ -634,7 +636,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("os-RU", "Latn", "os-Cyrl-RU")]
 		[DataRow("ps", "ArabExt", "ps")]
 		[DataRow("ps-AF", "ArabExt", "ps")]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[DataRow("ps-PK", "ArabExt", "ps")]
 #endif
 		[DataRow("fa", "ArabExt", "fa")]
@@ -1576,7 +1578,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Vaii");
 		}
 
-		public void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
+		private void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
 			sut.NumeralSystem = numeralSystem;

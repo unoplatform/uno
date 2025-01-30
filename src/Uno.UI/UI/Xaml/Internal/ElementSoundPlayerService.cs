@@ -5,8 +5,8 @@
 #nullable enable
 
 using System;
-using Windows.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -98,7 +98,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject? dependencyObject)
+		internal ElementSoundMode GetEffectiveSoundMode(DependencyObject? dependencyObject)
 		{
 			//TODO Uno: Implement
 			return ElementSoundMode.Off;

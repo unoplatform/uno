@@ -8,20 +8,27 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 {
 
-	[SampleControlInfo("CommandBar", "Native_AppBarButton_Binding", typeof(CommandBarViewModel), isManualTest: true)]
+	[SampleControlInfo(
+		"CommandBar",
+		"Native_AppBarButton_Binding",
+		typeof(CommandBarViewModel),
+		description: "Shows a Native CommandBar with an AppBarButton. \n" +
+		"The AppBarButton will show a FilterIcon and when Clicked it will show a CloseIcon. \n" +
+		"This tests that the AppBarButton bindings are working.",
+		isManualTest: true)]
 	public sealed partial class CommandBar_Native_With_AppBarButton_Binding : Page
 	{
 		public CommandBar_Native_With_AppBarButton_Binding()

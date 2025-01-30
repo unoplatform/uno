@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -22,24 +22,15 @@ namespace Uno.UI.Xaml.Core
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 		}
 
-		public IReadOnlyList<ContentRoot> ContentRoots => _contentRoots;
+		// The type is not IReadOnlyList or any kind of base class or interface intentionally.
+		// We want enumerating ContentRoots to not box enumerators.
+		public List<ContentRoot> ContentRoots => _contentRoots;
 
 		public ContentRoot? CoreWindowContentRoot
 		{
 			get => _coreWindowContentRoot;
-			set
-			{
-				_coreWindowContentRoot = value;
-				if (value is not null)
-				{
-					CoreWindowContentRootSet?.Invoke(this, EventArgs.Empty);
-				}
-			}
+			set => _coreWindowContentRoot = value;
 		}
-
-		// TODO: Notifies Skia hosts that the content root was assigned.
-		// Not part of MUX code. https://github.com/unoplatform/uno/issues/8978
-		public event EventHandler? CoreWindowContentRootSet;
 
 		public ContentRoot CreateContentRoot(ContentRootType type, Color backgroundColor, UIElement? rootElement)
 		{

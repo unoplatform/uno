@@ -4,7 +4,7 @@
 namespace Windows.Data.Pdf
 {
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 	public partial class PdfDocument
 	{
@@ -34,7 +34,7 @@ namespace Windows.Data.Pdf
 		}
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented( "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Data.Pdf.PdfPage GetPage(uint pageIndex)
 		{
 			throw new global::System.NotImplementedException("The member PdfPage PdfDocument.GetPage(uint pageIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PdfPage%20PdfDocument.GetPage%28uint%20pageIndex%29");

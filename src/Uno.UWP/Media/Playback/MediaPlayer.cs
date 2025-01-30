@@ -85,7 +85,7 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, object> SeekCompleted;
 
-		public event TypedEventHandler<MediaPlayer, double> VideoRatioChanged;
+		public event TypedEventHandler<MediaPlayer, object> NaturalVideoDimensionChanged;
 
 		#endregion
 

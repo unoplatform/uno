@@ -1,14 +1,14 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a bitmap as its content.
 /// </summary>
-public partial class BitmapIcon : IconElement
+public partial class BitmapIcon : IconElement, IThemeChangeAware
 {
 	private readonly Image _image;
 
@@ -78,4 +78,8 @@ public partial class BitmapIcon : IconElement
 		}
 #endif
 	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged() => UpdateImageMonochromeColor();
 }

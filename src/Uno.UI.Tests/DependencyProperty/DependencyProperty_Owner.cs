@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests
 {
@@ -23,7 +23,8 @@ namespace Uno.UI.Tests
 			("Control", "XYFocusLeft"),
 			("Control", "XYFocusRight"),
 			("Control", "UseSystemFocusVisuals"),
-			("PasswordBox", "SelectionHighlightColor")
+			("PasswordBox", "SelectionHighlightColor"),
+			("ItemsView", "ItemsViewItemContainerRevokers")
 		};
 
 		[TestMethod]

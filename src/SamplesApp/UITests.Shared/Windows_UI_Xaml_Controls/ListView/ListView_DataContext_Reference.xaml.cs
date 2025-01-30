@@ -6,13 +6,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.ComponentModel;
@@ -20,7 +20,14 @@ using System.ComponentModel;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_DataContext_Reference", viewModelType: typeof(DataContextReferenceViewModel), isManualTest: true)]
+	[SampleControlInfo(
+		"ListView",
+		"ListView_DataContext_Reference",
+		viewModelType: typeof(DataContextReferenceViewModel),
+		description: "Display a ListView of items. Each row has a TextBox and a Click Button. \n" +
+		"When Cliking on a row's button the item description will change into `Selected Item [Number]` where `Number` \n" +
+		"is the row number of the item in question. This whole process should not fail.",
+		isManualTest: true)]
 	public sealed partial class ListView_DataContext_Reference : UserControl
 	{
 		public ListView_DataContext_Reference()

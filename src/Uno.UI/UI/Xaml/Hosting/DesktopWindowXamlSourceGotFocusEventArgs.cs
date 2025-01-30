@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Hosting;
+﻿namespace Microsoft.UI.Xaml.Hosting;
 
 /// <summary>
 /// Provides event data for the GotFocus event.

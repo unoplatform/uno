@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,7 +18,7 @@ using Uno.UI.Xaml.Media;
 using ExifInterface = Android.Media.ExifInterface;
 using Orientation = Android.Media.Orientation;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
@@ -153,40 +153,6 @@ namespace Windows.UI.Xaml.Media
 		/// Indicates that this ImageSource has enough information to be opened
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
-
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open synchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="image">Returned image data.</param>
-		/// <returns>True if opening synchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-		{
-			image = default;
-			return false;
-		}
-
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open asynchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="asyncImage">Async task for image data retrieval.</param>
-		/// <returns>True if opening asynchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
-		{
-			asyncImage = default;
-			return false;
-		}
 
 		internal bool TryOpenSync(out Bitmap? image, int? targetWidth = null, int? targetHeight = null)
 		{

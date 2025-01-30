@@ -9,6 +9,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Uno.UI.Hosting;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -18,9 +19,9 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
-	public GtkKeyboardInputSource()
+	public GtkKeyboardInputSource(IXamlRootHost xamlRootHost)
 	{
-		global::Gtk.Key.SnooperInstall(OnKeySnoop);
+		global::Gtk.Key.SnooperInstall(OnKeySnoop); // TODO:MZ: Install snooper only once, make host-specific
 	}
 
 	private int OnKeySnoop(Widget grab_widget, EventKey e)
@@ -41,12 +42,14 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(evt.Key);
+			var virtualKey = ConvertKey(evt);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"OnKeyPressEvent: {evt.Key} -> {virtualKey}");
 			}
+
+			var scanCode = EventHelper.GetScancode(evt);
 
 			KeyDown?.Invoke(this, new(
 					"keyboard",
@@ -54,14 +57,14 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					GetKeyModifiers(evt.State),
 					new CorePhysicalKeyStatus
 					{
-						ScanCode = evt.HardwareKeycode,
+						ScanCode = (uint)scanCode,
 						RepeatCount = 1,
 					},
 					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
@@ -69,12 +72,14 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(evt.Key);
+			var virtualKey = ConvertKey(evt);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"OnKeyReleaseEvent: {evt.Key} -> {virtualKey}");
 			}
+
+			var scanCode = EventHelper.GetScancode(evt);
 
 			KeyUp?.Invoke(this, new(
 					"keyboard",
@@ -82,20 +87,20 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					GetKeyModifiers(evt.State),
 					new CorePhysicalKeyStatus
 					{
-						ScanCode = evt.HardwareKeycode,
+						ScanCode = (uint)scanCode,
 						RepeatCount = 1,
 					},
 					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
 	private static char? KeyCodeToUnicode(uint keyCode, uint keyVal)
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
 			return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
@@ -106,12 +111,18 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		return gdkChar == 0 ? null : gdkChar;
 	}
 
-	private static VirtualKey ConvertKey(Gdk.Key key)
+	private static VirtualKey ConvertKey(EventKey e)
 	{
+		if (OperatingSystem.IsWindows())
+		{
+			// This doesn't work correctly on non-Windows.
+			return (VirtualKey)e.HardwareKeycode;
+		}
+
 		// In this function, commented out lines correspond to VirtualKeys not yet
 		// mapped to their native counterparts. Uncomment and fix as needed.
 
-		return key switch
+		return e.Key switch
 		{
 			Gdk.Key.VoidSymbol => VirtualKey.None,
 

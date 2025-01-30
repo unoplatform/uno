@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Világoskék</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Jégkék</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>dokumentum</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>osztott gomb</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>ablak</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>ablaktábla</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>fejléc</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>fejlécelem</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>táblázat</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>címsáv</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>elválasztójel</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>szemantikus nagyítás</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>kétállású kapcsoló</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>elem</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 elem</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1 húzásának megszakítása</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Következő</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Előző</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Lejátszás</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Szünet</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Eltelt idő</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Hátralévő idő</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Pufferelés állapota</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Pozicionálás</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Elnémítás</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Hangerő</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Nap </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Hónap </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Év </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Óra </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Perc </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 perc</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 perc</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 másodperc</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 másodperc</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Függőleges, nagymérvű csökkentés</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Függőleges, kismérvű csökkentés</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Kivágás</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>ÍRÁSJEGYBEVIVŐ KIKAPCSOLVA</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>Fehér</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Világosszürke</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Szürke</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Sötétszürke</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Fekete</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korall</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rózsa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Világosnarancs</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sárgásbarna</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Világossárga</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Világoszöld</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Sárgászöld</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Tengerkék</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Égkék</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Világostürkiz</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Halványkék</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Világoskék</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Jégkék</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Csiga</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Levendula</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rózsaszín</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Piros</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Narancssárga</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Barna</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Arany</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Sárga</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olívzöld</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zöld</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Élénkzöld</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Kékeszöld</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Türkizkék</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Kék</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Kékesszürke</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigókék</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Mélybíbor</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Sötétvörös</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Sötétsárga</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Sötétzöld</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Sötét pávakék</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Sötétkék</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Sötétlila</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Szilvakék</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Bezárás</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

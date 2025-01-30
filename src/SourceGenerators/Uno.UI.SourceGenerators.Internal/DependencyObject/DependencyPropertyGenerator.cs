@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -22,15 +23,22 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private record AttachedPropertyData
 		{
+			private enum AttachedPropertyDataFlags : byte
+			{
+				HasGetMethodSymbol = 1 << 0,
+				HasSetMethodSymbol = 1 << 1,
+			}
+
 			public string? AttachedBackingFieldOwnerFullyQualifiedName { get; }
 			public string? AttachedBackingFieldOwnerNamespace { get; }
 			public string? AttachedBackingFieldOwnerName { get; }
 
+			private readonly AttachedPropertyDataFlags _flags;
 
 			[MemberNotNullWhen(true, nameof(PropertyTypeFullyQualifiedName), nameof(PropertyTargetFullyQualifiedName))]
-			public bool HasGetMethodSymbol { get; }
+			public bool HasGetMethodSymbol => (_flags & AttachedPropertyDataFlags.HasGetMethodSymbol) != 0;
 
-			public bool HasSetMethodSymbol { get; }
+			public bool HasSetMethodSymbol => (_flags & AttachedPropertyDataFlags.HasSetMethodSymbol) != 0;
 			public string? PropertyTypeFullyQualifiedName { get; }
 			public string? PropertyTargetFullyQualifiedName { get; }
 
@@ -49,8 +57,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				GetMethodSymbolNodeContent = SymbolToNodeString(getMethodSymbol);
 				SetMethodSymbolNodeContent = SymbolToNodeString(setMethodSymbol);
 
-				HasGetMethodSymbol = getMethodSymbol is not null;
-				HasSetMethodSymbol = setMethodSymbol is not null;
+				if (getMethodSymbol is not null)
+				{
+					_flags |= AttachedPropertyDataFlags.HasGetMethodSymbol;
+				}
+
+				if (setMethodSymbol is not null)
+				{
+					_flags |= AttachedPropertyDataFlags.HasSetMethodSymbol;
+				}
+
 				PropertyTypeFullyQualifiedName = getMethodSymbol?.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				PropertyTargetFullyQualifiedName = getMethodSymbol?.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			}
@@ -58,41 +74,78 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private record PropertyData
 		{
+			private enum PropertyDataFlags : byte
+			{
+				HasProperty = 1 << 0,
+				PropertyHasGetter = 1 << 1,
+				PropertyHasSetter = 1 << 2,
+			}
+
+			private readonly PropertyDataFlags _flags;
+
 			public string? PropertySymbolNodeContent { get; }
 
 
 			public string? PropertyTypeFullyQualifiedName { get; }
 
 			[MemberNotNullWhen(true, nameof(PropertyTypeFullyQualifiedName))]
-			public bool HasProperty { get; }
+			public bool HasProperty => (_flags & PropertyDataFlags.HasProperty) != 0;
 
-			public bool PropertyHasGetter { get; }
-			public bool PropertyHasSetter { get; }
+			public bool PropertyHasGetter => (_flags & PropertyDataFlags.PropertyHasGetter) != 0;
+			public bool PropertyHasSetter => (_flags & PropertyDataFlags.PropertyHasSetter) != 0;
 
 			public PropertyData(ISymbol dpSymbol, string propertyName)
 			{
 				var propertySymbol = dpSymbol.ContainingType.GetPropertiesWithName(propertyName).FirstOrDefault();
 				PropertySymbolNodeContent = SymbolToNodeString(propertySymbol);
 
-				HasProperty = propertySymbol is not null;
+				if (propertySymbol is not null)
+				{
+					_flags |= PropertyDataFlags.HasProperty;
+				}
+
 				PropertyTypeFullyQualifiedName = propertySymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-				PropertyHasGetter = propertySymbol?.GetMethod is not null;
-				PropertyHasSetter = propertySymbol?.SetMethod is not null;
+				if (propertySymbol?.GetMethod is not null)
+				{
+					_flags |= PropertyDataFlags.PropertyHasGetter;
+				}
+
+				if (propertySymbol?.SetMethod is not null)
+				{
+					_flags |= PropertyDataFlags.PropertyHasSetter;
+				}
 			}
 		}
 
 		private record GenerationCandidateData
 		{
+			private enum GenerationCandidateDataFlags : short
+			{
+				CoerceCallback = 1 << 0,
+				LocalCache = 1 << 1,
+				IsAttached = 1 << 2,
+				ContainingTypeIsCandidate = 1 << 3,
+				ContainingTypeHasGetDefaultValueMethod = 1 << 4,
+				HasPropertySuffix = 1 << 5,
+				IsCallbackWithDPChangedArgs = 1 << 6,
+				IsCallbackWithDPChangedArgsOnly = 1 << 7,
+				CallBackWithOldAndNew = 1 << 8,
+				IsParameterlessCallback = 1 << 9,
+				IsInvalidChangedCallbackName = 1 << 10,
+			}
+
+			private readonly GenerationCandidateDataFlags _flags;
+
 			#region Attribute arguments
 			public string MetadataOptions { get; }
 			public KeyValuePair<string, TypedConstant>? DefaultValue { get; }
-			public bool CoerceCallback { get; }
-			public bool LocalCache { get; }
+			public bool CoerceCallback => (_flags & GenerationCandidateDataFlags.CoerceCallback) != 0;
+			public bool LocalCache => (_flags & GenerationCandidateDataFlags.LocalCache) != 0;
 
 			[MemberNotNullWhen(true, nameof(AttachedPropertyData))]
 			[MemberNotNullWhen(false, nameof(PropertyData))]
-			public bool IsAttached { get; }
+			public bool IsAttached => (_flags & GenerationCandidateDataFlags.IsAttached) != 0;
 
 			public string ChangedCallbackName { get; }
 			#endregion
@@ -101,34 +154,51 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string ContainingTypeName { get; }
 			public string ContainingTypeFullyQualifiedName { get; }
 			public string ContainingTypeHintName { get; }
-			public bool ContainingTypeIsCandidate { get; }
+			public bool ContainingTypeIsCandidate => (_flags & GenerationCandidateDataFlags.ContainingTypeIsCandidate) != 0;
 
 			public PropertyData? PropertyData { get; }
 			public AttachedPropertyData? AttachedPropertyData { get; }
 
-			public bool ContainingTypeHasGetDefaultValueMethod { get; }
+			public bool ContainingTypeHasGetDefaultValueMethod => (_flags & GenerationCandidateDataFlags.ContainingTypeHasGetDefaultValueMethod) != 0;
 			public string PropertyName { get; }
-			public bool HasPropertySuffix { get; }
+			public bool HasPropertySuffix => (_flags & GenerationCandidateDataFlags.HasPropertySuffix) != 0;
 
 			public int? CoerceCallbackMethodParameterLength { get; }
 
-			public bool IsCallbackWithDPChangedArgs { get; }
-			public bool IsCallbackWithDPChangedArgsOnly { get; }
-			public bool CallBackWithOldAndNew { get; }
-			public bool IsInvalidChangedCallbackName { get; }
+			public bool IsCallbackWithDPChangedArgs => (_flags & GenerationCandidateDataFlags.IsCallbackWithDPChangedArgs) != 0;
+			public bool IsCallbackWithDPChangedArgsOnly => (_flags & GenerationCandidateDataFlags.IsCallbackWithDPChangedArgsOnly) != 0;
+			public bool CallBackWithOldAndNew => (_flags & GenerationCandidateDataFlags.CallBackWithOldAndNew) != 0;
+			public bool IsParameterlessCallback => (_flags & GenerationCandidateDataFlags.IsParameterlessCallback) != 0;
+			public bool IsInvalidChangedCallbackName => (_flags & GenerationCandidateDataFlags.IsInvalidChangedCallbackName) != 0;
 
 			public string? MemberSymbolNodeContent { get; }
 
 			public GenerationCandidateData(ISymbol dpSymbol, AttributeData attribute)
 			{
 				PropertyName = dpSymbol.Name.TrimEnd("Property");
-				HasPropertySuffix = dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal);
+				if (dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal))
+				{
+					_flags |= GenerationCandidateDataFlags.HasPropertySuffix;
+				}
 
 				MetadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";
 				DefaultValue = GetAttributeValue(attribute, "DefaultValue");
-				CoerceCallback = GetBooleanAttributeValue(attribute, "CoerceCallback", false);
-				LocalCache = GetBooleanAttributeValue(attribute, "LocalCache", true);
-				IsAttached = GetBooleanAttributeValue(attribute, "Attached", false);
+
+				if (GetBooleanAttributeValue(attribute, "CoerceCallback", false))
+				{
+					_flags |= GenerationCandidateDataFlags.CoerceCallback;
+				}
+
+				if (GetBooleanAttributeValue(attribute, "LocalCache", true))
+				{
+					_flags |= GenerationCandidateDataFlags.LocalCache;
+				}
+
+				if (GetBooleanAttributeValue(attribute, "Attached", false))
+				{
+					_flags |= GenerationCandidateDataFlags.IsAttached;
+				}
+
 				ChangedCallbackName = GetAttributeValue(attribute, "ChangedCallbackName")?.Value.Value?.ToString() ?? $"On{PropertyName}Changed";
 
 				ContainingNamespace = dpSymbol.ContainingNamespace.ToString();
@@ -137,12 +207,20 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var isDependencyObject = dpSymbol.ContainingType.AllInterfaces
 					.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject);
 
-				ContainingTypeIsCandidate = dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
-					(dpSymbol.ContainingType.IsStatic || isDependencyObject);
+				if (dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
+					(dpSymbol.ContainingType.IsStatic || isDependencyObject))
+				{
+					_flags |= GenerationCandidateDataFlags.ContainingTypeIsCandidate;
+				}
 
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
-				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
+				ContainingTypeHintName = dpSymbol.ContainingType.GetFullMetadataNameForFileName();
+
+				if (dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null)
+				{
+					_flags |= GenerationCandidateDataFlags.ContainingTypeHasGetDefaultValueMethod;
+				}
+
 				CoerceCallbackMethodParameterLength = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName)?.Parameters.Length;
 
 				MemberSymbolNodeContent = SymbolToNodeString(dpSymbol);
@@ -153,19 +231,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					if (propertyChangedMethods.Any(m => IsCallbackWithDPChangedArgs(m)))
 					{
-						IsCallbackWithDPChangedArgs = true;
+						_flags |= GenerationCandidateDataFlags.IsCallbackWithDPChangedArgs;
 					}
 					else if (propertyChangedMethods.Any(m => IsCallbackWithDPChangedArgsOnly(m)))
 					{
-						IsCallbackWithDPChangedArgsOnly = true;
+						_flags |= GenerationCandidateDataFlags.IsCallbackWithDPChangedArgsOnly;
 					}
 					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 2))
 					{
-						CallBackWithOldAndNew = true;
+						_flags |= GenerationCandidateDataFlags.CallBackWithOldAndNew;
+					}
+					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 0))
+					{
+						_flags |= GenerationCandidateDataFlags.IsParameterlessCallback;
 					}
 					else
 					{
-						IsInvalidChangedCallbackName = true;
+						_flags |= GenerationCandidateDataFlags.IsInvalidChangedCallbackName;
 					}
 				}
 
@@ -206,6 +288,22 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				return;
 			}
 
+			var boolPropertiesCount = 0;
+			foreach (var candidate in dpCandidatesData)
+			{
+				if (candidate.LocalCache && candidate.PropertyData is { } propertyData)
+				{
+					// For the "backing field set" flag.
+					boolPropertiesCount++;
+
+					if (propertyData.PropertyTypeFullyQualifiedName == "bool")
+					{
+						// For the cached property value.
+						boolPropertiesCount++;
+					}
+				}
+			}
+
 			var builder = new IndentedStringBuilder();
 			builder.AppendLineIndented("// <auto-generated>");
 			builder.AppendLineIndented("// ******************************************************************");
@@ -223,9 +321,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented("using System.Runtime.CompilerServices;");
 			builder.AppendLineIndented("using Uno.UI;");
 			builder.AppendLineIndented("using Uno.UI.DataBinding;");
-			builder.AppendLineIndented("using Windows.UI.Xaml;");
-			builder.AppendLineIndented("using Windows.UI.Xaml.Controls;");
-			builder.AppendLineIndented("using Windows.UI.Xaml.Data;");
+			builder.AppendLineIndented("using Microsoft.UI.Xaml;");
+			builder.AppendLineIndented("using Microsoft.UI.Xaml.Controls;");
+			builder.AppendLineIndented("using Microsoft.UI.Xaml.Data;");
 			builder.AppendLineIndented("using Uno.Diagnostics.Eventing;");
 
 			var attachedPropertiesBackingFieldStatements = new Dictionary<(string ContainingNamespace, string Name), List<string>>();
@@ -234,6 +332,34 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				using (builder.BlockInvariant($"partial class {dpCandidatesData[0].ContainingTypeName}"))
 				{
+					var completeEnumsCount = boolPropertiesCount / 32;
+					for (int i = 0; i < completeEnumsCount; i++)
+					{
+						builder.AppendLineIndented($"private GeneratedDependencyPropertyFlags{i} _generatedDependencyPropertyFlags{i};");
+						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{i} : uint"))
+						{
+							for (int j = 0; j < 32; j++)
+							{
+								builder.AppendLineIndented($"DPFlag{j} = 1 << {j},");
+							}
+						}
+					}
+
+					var lastEnumMemberCount = boolPropertiesCount % 32;
+					if (lastEnumMemberCount > 0)
+					{
+						builder.AppendLineIndented($"private GeneratedDependencyPropertyFlags{completeEnumsCount} _generatedDependencyPropertyFlags{completeEnumsCount};");
+						using (builder.BlockInvariant($"private enum GeneratedDependencyPropertyFlags{completeEnumsCount} : uint"))
+						{
+							for (int i = 0; i < lastEnumMemberCount; i++)
+							{
+								builder.AppendLineIndented($"DPFlag{i} = 1 << {i},");
+							}
+						}
+					}
+
+					var boolCounter = 0;
+
 					foreach (var dpCandidateData in dpCandidatesData)
 					{
 						if (!dpCandidateData.HasPropertySuffix)
@@ -242,12 +368,17 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 						else if (dpCandidateData.IsAttached)
 						{
-							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements);
+							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements, ref boolCounter);
 						}
 						else
 						{
-							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData);
+							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData, ref boolCounter);
 						}
+					}
+
+					if (boolCounter != boolPropertiesCount)
+					{
+						throw new Exception("Unexpected DP generator state.");
 					}
 				}
 			}
@@ -269,7 +400,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			context.AddSource(dpCandidatesData[0].ContainingTypeHintName, builder.ToString());
 		}
 
-		private static void GenerateAttachedProperty(IndentedStringBuilder builder, GenerationCandidateData data, AttachedPropertyData attachedPropertyData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements)
+		private static void GenerateAttachedProperty(IndentedStringBuilder builder, GenerationCandidateData data, AttachedPropertyData attachedPropertyData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements, ref int boolCounter)
 		{
 			var propertyName = data.PropertyName;
 
@@ -387,6 +518,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
 			}
+			else if (data.IsParameterlessCallback)
+			{
+				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}()");
+			}
 			else if (data.IsInvalidChangedCallbackName)
 			{
 				builder.AppendLineIndented($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
@@ -397,7 +532,29 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"#endregion");
 		}
 
-		private static void GenerateProperty(IndentedStringBuilder builder, GenerationCandidateData data, PropertyData propertyData)
+		private static (string GetAccessor, string SetAccessor) GetFlagPropertyAccessors(int boolCounter)
+		{
+			var flagsFieldName = boolCounter / 32;
+			var flagsFieldValue = boolCounter % 32;
+			var enumMemberName = $"GeneratedDependencyPropertyFlags{flagsFieldName}.DPFlag{flagsFieldValue}";
+			var getAccessor = $"get => (_generatedDependencyPropertyFlags{flagsFieldName} & {enumMemberName}) != 0;";
+			var setAccessor = $"set {{ if (value) _generatedDependencyPropertyFlags{flagsFieldName} |= {enumMemberName}; else _generatedDependencyPropertyFlags{flagsFieldName} &= ~{enumMemberName}; }}";
+			return (getAccessor, setAccessor);
+		}
+
+		private static void GeneratePrivateFlagProperty(IndentedStringBuilder builder, string propertyName, ref int boolCounter)
+		{
+			var accessors = GetFlagPropertyAccessors(boolCounter);
+			using (builder.BlockInvariant($"private bool {propertyName}"))
+			{
+				builder.AppendLineIndented(accessors.GetAccessor);
+				builder.AppendLineIndented(accessors.SetAccessor);
+			}
+
+			boolCounter++;
+		}
+
+		private static void GenerateProperty(IndentedStringBuilder builder, GenerationCandidateData data, PropertyData propertyData, ref int boolCounter)
 		{
 			var propertyName = data.PropertyName;
 			if (!propertyData.HasProperty)
@@ -445,8 +602,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			if (localCache)
 			{
-				builder.AppendLineIndented($"private bool _{propertyName}PropertyBackingFieldSet = false;");
-				builder.AppendLineIndented($"private {propertyTypeName} _{propertyName}PropertyBackingField;");
+				GeneratePrivateFlagProperty(builder, $"_{propertyName}PropertyBackingFieldSet", ref boolCounter);
+
+				if (propertyTypeName == "bool")
+				{
+					GeneratePrivateFlagProperty(builder, $"_{propertyName}PropertyBackingField", ref boolCounter);
+				}
+				else
+				{
+					builder.AppendLineIndented($"private {propertyTypeName} _{propertyName}PropertyBackingField;");
+				}
 			}
 
 			GeneratePropertyStorage(builder, propertyName);
@@ -485,6 +650,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			else if (data.CallBackWithOldAndNew)
 			{
 				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+			}
+			else if (data.IsParameterlessCallback)
+			{
+				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}()");
 			}
 			else if (data.IsInvalidChangedCallbackName)
 			{
@@ -537,7 +706,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"/// <summary>");
 			builder.AppendLineIndented($"/// Generated method used to create the <see cref=\"{propertyName}Property\" /> member value");
 			builder.AppendLineIndented($"/// </summary>");
-			builder.AppendLineIndented($"private static global::Windows.UI.Xaml.DependencyProperty Create{propertyName}Property() => ");
+			builder.AppendLineIndented($"private static global::Microsoft.UI.Xaml.DependencyProperty Create{propertyName}Property() => ");
 		}
 
 		private static void BuildPropertyParameters(
@@ -551,7 +720,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"\tname: \"{propertyName}\",");
 			builder.AppendLineIndented($"\tpropertyType: typeof({propertyTypeName}),");
 			builder.AppendLineIndented($"\townerType: typeof({data.ContainingTypeFullyQualifiedName}),");
-			builder.AppendLineIndented($"\ttypeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(");
+			builder.AppendLineIndented($"\ttypeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(");
 
 			if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 			{
@@ -585,15 +754,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			if (metadataOptions != "0")
 			{
-				builder.AppendLineIndented($"\t\t, options: (global::Windows.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
+				builder.AppendLineIndented($"\t\t, options: (global::Microsoft.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
 			}
 		}
 
 		private static bool IsCallbackWithDPChangedArgsOnly(IMethodSymbol m)
-			=> m.Parameters.Length > 0 && m.Parameters[0].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Windows.UI.Xaml.DependencyPropertyChangedEventArgs";
+			=> m.Parameters.Length > 0 && m.Parameters[0].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs";
 
 		private static bool IsCallbackWithDPChangedArgs(IMethodSymbol m)
-			=> m.Parameters.Length == 2 && m.Parameters[1].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Windows.UI.Xaml.DependencyPropertyChangedEventArgs";
+			=> m.Parameters.Length == 2 && m.Parameters[1].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs";
 
 		private static KeyValuePair<string, TypedConstant>? GetAttributeValue(AttributeData attribute, string parameterName)
 			=> attribute.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);

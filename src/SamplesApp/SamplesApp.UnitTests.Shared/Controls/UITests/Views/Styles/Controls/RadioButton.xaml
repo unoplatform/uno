@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="using:Uno.UI.Samples.Styles.Controls">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="../Application/Colors.xaml" />
@@ -64,7 +63,7 @@
 								<VisualState x:Name="Checked">
 									<VisualState.Setters>
 										<Setter Target="ContentElement.Foreground"
-												Value="{StaticResource Color06Brush}" />
+												Value="{ThemeResource AccentFillColorDefaultBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Unchecked" />

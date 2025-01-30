@@ -7,7 +7,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Services
 {
@@ -50,7 +50,7 @@ namespace Uno.UI.Services
 				{
 					typeof(LayoutManager).Log().LogDebug($"Measuring {view} with {GetAncestorCount(view)} ancestors in visual tree.");
 				}
-				IFrameworkElementHelper.Measure(view, view.AssignedActualSize.Add(view.Margin));
+				IFrameworkElementHelper.Measure(view, view.RenderSize.Add(view.Margin));
 			}
 			foreach (var view in queue)
 			{

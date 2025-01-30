@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.Enterprise
+namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	public abstract class BaseDxamlTestClass
 	{
@@ -18,6 +18,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		protected static Task RunOnUIThread(Action action)
+		{
+			return TestServices.RunOnUIThread(action);
+		}
+
+		protected static Task RunOnUIThread(Func<Task> action)
 		{
 			return TestServices.RunOnUIThread(action);
 		}

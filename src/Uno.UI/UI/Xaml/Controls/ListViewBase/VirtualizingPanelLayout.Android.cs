@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
@@ -10,14 +10,16 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
 using Windows.Networking.NetworkOperators;
 using Android.Views.Animations;
 
-namespace Windows.UI.Xaml.Controls
+using Point = Windows.Foundation.Point;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public abstract partial class VirtualizingPanelLayout : RecyclerView.LayoutManager, DependencyObject
 #if !MONOANDROID6_0 && !MONOANDROID7_0
@@ -207,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 
@@ -223,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return 0;
 			}
 		}
@@ -240,7 +242,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return 0;
 			}
 		}
@@ -253,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return false;
 			}
 		}
@@ -266,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return false;
 			}
 		}
@@ -279,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 
@@ -300,25 +302,36 @@ namespace Windows.UI.Xaml.Controls
 			bool shouldSnapToStart = false; //Initial values: if the item is fully visible, it shouldn't snap (alignment = default)
 			bool shouldSnapToEnd = false;
 
-			// 1. Incrementally scroll until target position lies within range of visible positions
+			// 1. Incrementally scroll until target position lies within range of visible(materialized) positions
 			//While target position is after last visible position, scroll forward
-			int appliedOffset = 0;
+			int cumulativeOffset = 0;
 			while (targetPosition > GetLastVisibleDisplayPosition() && GetNextUnmaterializedItem(GeneratorDirection.Forward) != null)
 			{
 				shouldSnapToEnd = true; //If the item is below the viewport, it should be snapped to the bottom of the viewport (alignment = default)
-				appliedOffset += GetScrollConsumptionIncrement(GeneratorDirection.Forward);
-				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
+				cumulativeOffset += GetScrollConsumptionIncrement(GeneratorDirection.Forward);
+				offsetToApply = ScrollByInner(cumulativeOffset, recycler, state);
 			}
+
 			//While target position is before first visible position, scroll backward
 			while (targetPosition < GetFirstVisibleDisplayPosition() && GetNextUnmaterializedItem(GeneratorDirection.Backward) != null)
 			{
 				shouldSnapToStart = true; //If the item is above the viewport, it should be snapped to the bottom of the viewport (alignment = default)
-				appliedOffset -= GetScrollConsumptionIncrement(GeneratorDirection.Backward);
-				offsetToApply += ScrollByInner(appliedOffset, recycler, state);
+				cumulativeOffset -= GetScrollConsumptionIncrement(GeneratorDirection.Backward);
+				offsetToApply = ScrollByInner(cumulativeOffset, recycler, state);
 			}
 
-			var offsetMethod = ScrollOrientation == Orientation.Vertical ? (Action<int>)OffsetChildrenVertical : OffsetChildrenHorizontal;
-			offsetMethod(offsetToApply);
+			// note: Contrary to expectation, the parameter dx/dy should be negative, to scroll to the end or the right.
+			var offsetChildrenImpl = ScrollOrientation == Orientation.Vertical ? (Action<int>)OffsetChildrenVertical : OffsetChildrenHorizontal;
+			void OffsetChildren(int delta)
+			{
+				if (delta != 0)
+				{
+					offsetChildrenImpl(delta);
+				}
+			}
+			OffsetChildren(-offsetToApply);
+
+			var target = FindViewByAdapterPosition(targetPosition);
 
 			if (alignment == ScrollIntoViewAlignment.Leading)
 			{
@@ -326,10 +339,40 @@ namespace Windows.UI.Xaml.Controls
 				shouldSnapToStart = true;
 				shouldSnapToEnd = false;
 			}
+			else if (!shouldSnapToEnd && !shouldSnapToStart &&
+				FirstVisibleIndex == 0 && LastVisibleIndex + 1 == ItemCount)
+			{
+				// The item may be within materialized range (having not scrolled at all in step-1) or
+				// the entire list is materialized (non-virtualized). In such case, we need to set either
+				// of the snapping flags, and this depends on where the item sits relative to the viewport:
+				// + exception: item is taller/bigger than viewport -> shouldSnapToStart
+				// - fully/partially above/before viewport -> shouldSnapToStart
+				// - perfectly within viewport -> neither
+				// - fully/partially below/after viewport -> shouldSnapToEnd
 
-			//2. If view for position lies partially outside visible bounds, bring it into view
-			var target = FindViewByAdapterPosition(targetPosition);
+				var start = GetChildStartWithMargin(target);
+				var end = GetChildEndWithMargin(target);
+				var extent = GetChildExtentWithMargins(target);
 
+				if (start < ContentOffset || // is above viewport, or
+					extent > Extent) // taller than viewport
+				{
+					shouldSnapToStart = true;
+					shouldSnapToEnd = false;
+				}
+				else if (end > (ContentOffset + Extent)) // is below/after viewport
+				{
+					shouldSnapToStart = false;
+					shouldSnapToEnd = true;
+				}
+				else
+				{
+					shouldSnapToStart = false;
+					shouldSnapToEnd = false;
+				}
+			}
+
+			// 2. If view for position lies partially outside visible bounds, bring it into view
 			var gapToStart = 0 - GetChildStartWithMargin(target)
 				// Ensure sticky group header doesn't cover item
 				+ GetStickyGroupHeaderExtent();
@@ -337,21 +380,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				gapToStart = Math.Max(0, gapToStart);
 			}
-			offsetMethod(gapToStart);
+			OffsetChildren(gapToStart);
 
 			var gapToEnd = Extent - GetChildEndWithMargin(target);
 			if (!shouldSnapToEnd)
 			{
 				gapToEnd = Math.Min(0, gapToEnd);
 			}
-			offsetMethod(gapToEnd);
+			OffsetChildren(gapToEnd);
 
 			var snapPosition = GetSnapTo(0, ContentOffset);
-
 			if (snapPosition.HasValue)
 			{
 				var offset = -GetSnapToAsRemainingDistance(snapPosition.Value);
-				offsetMethod(offset);
+				OffsetChildren(offset);
 			}
 
 			//Remove any excess views
@@ -474,7 +516,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 
@@ -773,10 +815,11 @@ namespace Windows.UI.Xaml.Controls
 				ContentOffset = 0;
 			}
 
-			var firstVisible = GetFirstVisibleIndexPath();
-			if (firstVisible.Row == 0 && firstVisible.Section == 0)
+			if (FirstVisibleIndex == 0 &&
+				LastVisibleIndex + 1 != ItemCount)
 			{
-				// If first item is in view, we can set ContentOffset exactly
+				// If first item is in view, we can set ContentOffset exactly,
+				// unless the entire list is visible (non-virtualized).
 				ContentOffset = -GetContentStart();
 			}
 		}
@@ -995,7 +1038,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (child is FrameworkElement fe)
 			{
-				return fe.AssignedActualSize.Add(fe.Margin);
+				return fe.RenderSize.Add(fe.Margin);
 			}
 			else
 			{
@@ -1050,7 +1093,7 @@ namespace Windows.UI.Xaml.Controls
 				left = direction == GeneratorDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Width - eps;
 				top = logicalBreadthOffset;
 			}
-			var frame = new Windows.Foundation.Rect(new Windows.Foundation.Point(left, top), size);
+			var frame = new global::Windows.Foundation.Rect(new global::Windows.Foundation.Point(left, top), size);
 			_layouter.ArrangeChild(child, frame);
 
 			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
@@ -1210,10 +1253,10 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				// This value may be positive in certain cases where the layouting properties change, eg Padding goes from non-zero to zero. Restrict to be negative.
-				maxPossibleDelta = Math.Min(0, GetContentStart() - 0);
+				maxPossibleDelta = Math.Min(0, GetContentStart());
 			}
 			maxPossibleDelta = Math.Abs(maxPossibleDelta);
-			var actualOffset = MathEx.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
+			var actualOffset = Math.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
 
 			//Remove all views that will be hidden after the actual scroll amount
 			UnfillLayout(fillDirection, actualOffset, Extent, recycler, state);
@@ -2196,7 +2239,7 @@ namespace Windows.UI.Xaml.Controls
 			return offsetStart <= availableExtent && offsetEnd >= 0;
 		}
 
-		internal void UpdateReorderingItem(Windows.Foundation.Point location, FrameworkElement element, object item)
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{
 			// Note: unlike managed list, we do *not* include the total offset
 			_pendingReorder = ScrollOrientation == Orientation.Horizontal

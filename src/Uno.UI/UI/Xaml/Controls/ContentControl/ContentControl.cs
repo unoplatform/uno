@@ -7,11 +7,11 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections;
 using System.Linq;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
 
 #if __ANDROID__
@@ -32,10 +32,10 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
 	public partial class ContentControl : Control, IEnumerable
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
-				"Content",
+				nameof(Content),
 				typeof(object),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 					// (ie if created in code by new SomeControl())
 					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
 					// the DataContext won't get propagated and any bindings won't get updated.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
@@ -120,12 +120,12 @@ namespace Windows.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ContentTemplateProperty { get; } =
 			DependencyProperty.Register(
-				"ContentTemplate",
+				nameof(ContentTemplate),
 				typeof(DataTemplate),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
-				SetUpdateControlTemplate();
+				ApplyTemplate();
 			}
 		}
 
@@ -350,7 +350,13 @@ namespace Windows.UI.Xaml.Controls
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
 					_dataTemplateUsedLastUpdate = dataTemplate;
-					ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+
+					ContentTemplateRoot =
+						// Typically the ContentTemplate subtree should all have the ContentPresenter as templated-parent,
+						// but because we are doing without it, let's be explicit here.
+						// Generally, this is fine since we don't usually template-bind from a DataTemplate.
+						dataTemplate?.LoadContentCached(templatedParent: null) ??
+						Content as View;
 				}
 
 				if (Content != null
@@ -515,5 +521,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #nullable enable
+
+		internal void ClearContentPresenterBypass()
+		{
+			if (Content is UIElement contentAsUIE && ContentTemplateRoot == contentAsUIE)
+			{
+
+				RemoveChild(contentAsUIE);
+				ContentTemplateRoot = null;
+			}
+		}
 	}
 }

@@ -1,9 +1,7 @@
 parameters:
   vmImage: ''
   xCodeRootTest: ''
-  XamarinSDKVersionTest: ''
   xCodeRootBuild: ''
-  XamarinSDKVersionBuild: ''
 
   # Align with SnapShotTestGenerator.GroupCount
   SNAPSHOT_GROUPS:
@@ -19,7 +17,7 @@ parameters:
     value: '05'
 
   # Runtime Test Groups
-  UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+  UITEST_RUNTIME_TEST_GROUP_COUNT: 8
   RUNTIME_TESTS_GROUPS:
   - key: '0'
     value: '01'
@@ -31,8 +29,14 @@ parameters:
     value: '04'
   - key: '4'
     value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
-  # Autmated Test Groups
+  # Automated Test Groups
   AUTOMATED_TESTS_GROUPS:
   - key: '1'
     value: '01'
@@ -55,10 +59,6 @@ jobs:
     SourceLinkEnabled: falses
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - checkout: self
     clean: true
@@ -67,12 +67,11 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
 
   - template: templates/gitversion.yml
 
@@ -87,7 +86,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/iossimulator-x64/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
       CleanTargetFolder: false
@@ -118,12 +117,6 @@ jobs:
     - name: NUGET_PACKAGES
       value: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for NetPrevious
-    - name: UnoDisableNetCurrentMobile
-      value: true
-    - name: UnoDisableNetCurrent
-      value: true
-
   steps:
   - checkout: self
     clean: true
@@ -145,35 +138,33 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
 
   - template: templates/gitversion.yml
 
   - bash: |
       cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish \
-        -f net7.0-ios \
+        -f net9.0-ios \
         -c Release \
-        -r:ios-arm64 \
         -p:BuildForTestFlight=true \
-        -p:UnoTargetFrameworkOverride=net7.0-ios \
-        -p:UnoUIDisableNet8Build=true \
+        -p:UnoTargetFrameworkOverride=net9.0-ios \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
     displayName: Build iOS App for TestFlight
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      AGENT_TEMPDIRECTORY: "$(Agent.TempDirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/ios-arm64/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-ios/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false
@@ -204,7 +195,6 @@ jobs:
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'true'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
 ##
 ## Runtime tests
@@ -218,13 +208,12 @@ jobs:
       JobTimeoutInMinutes: 120
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
-      UITEST_TEST_TIMEOUT: '70m'
+      UITEST_TEST_TIMEOUT: '90m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
 # Disabled for benchmkarks timeout
 # - template: .azure-devops-ios-tests-run.yml
@@ -237,7 +226,6 @@ jobs:
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
-#     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
 - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
   - template: .azure-devops-ios-tests-run.yml
@@ -252,4 +240,3 @@ jobs:
       UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}

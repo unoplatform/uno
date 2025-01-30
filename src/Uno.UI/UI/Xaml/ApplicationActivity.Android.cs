@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
@@ -19,12 +20,15 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core;
+using DirectUI;
+using Uno.UI.Xaml.Input;
 
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
@@ -91,7 +95,8 @@ namespace Windows.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (Xaml.Window.Current.MainContent is View content)
+			var initialWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
+			if (initialWindow?.RootElement is View content)
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
@@ -121,6 +126,16 @@ namespace Windows.UI.Xaml
 				{
 					CanBubbleNatively = false,
 				};
+
+				var inputManager = VisualTree.GetContentRootForElement(element)?.InputManager;
+				if (inputManager is not null && XboxUtility.IsGamepadNavigationInput(virtualKey))
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+				}
+				else
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+				}
 
 				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
 					UIElement.KeyDownEvent :
@@ -159,7 +174,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception ex)
 			{
-				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
+				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 
 			if (Gamepad.TryHandleKeyEvent(e))
@@ -215,7 +230,7 @@ namespace Windows.UI.Xaml
 
 		private void OnKeyboardChanged(Rect keyboard)
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
@@ -227,7 +242,7 @@ namespace Windows.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			Windows.UI.Xaml.Window.Current.OnActivityCreated();
+			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -238,7 +253,7 @@ namespace Windows.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View view)
@@ -279,8 +294,11 @@ namespace Windows.UI.Xaml
 		{
 			base.OnPause();
 
-			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
-			VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot);
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13827.
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				VisualTreeHelper.CloseLightDismissPopups(contentRoot.XamlRoot);
+			}
 
 			DismissKeyboard();
 		}
@@ -292,6 +310,8 @@ namespace Windows.UI.Xaml
 			LayoutProvider.Stop();
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
+
+			NativeWindowWrapper.Instance.OnNativeClosed();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -301,9 +321,9 @@ namespace Windows.UI.Xaml
 			RaiseConfigurationChanges();
 		}
 
-		private static void RaiseConfigurationChanges()
+		private void RaiseConfigurationChanges()
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
@@ -313,7 +333,7 @@ namespace Windows.UI.Xaml
 #pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
-			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+			var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
 			if (!handled)
 			{
 				base.OnBackPressed();
@@ -377,7 +397,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-		[Java.Interop.Export]
+		[Java.Interop.Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 	}

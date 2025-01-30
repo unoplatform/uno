@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 using System.Collections;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -22,6 +23,8 @@ namespace Windows.UI.Xaml
 		private protected virtual void OnPostLoading() { }
 
 		partial void OnLoadingPartial();
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		public T AddChild<T>(T child) where T : View
 		{
@@ -72,20 +75,9 @@ namespace Windows.UI.Xaml
 			return _children;
 		}
 
-		internal bool HasParent()
-		{
-			return Parent != null;
-		}
-
 		protected internal override void OnInvalidateMeasure()
 		{
-			InvalidateMeasureCallCount++;
 			base.OnInvalidateMeasure();
-		}
-
-		internal void InternalArrange(Rect frame)
-		{
-			_layouter.Arrange(frame);
 		}
 
 		public bool IsLoaded { get; private set; }
@@ -98,6 +90,11 @@ namespace Windows.UI.Xaml
 
 		private void EnterTree()
 		{
+			if (XamlRoot is null)
+			{
+				XamlRoot = Window.InitialWindow?.RootElement?.XamlRoot;
+			}
+
 			if (IsLoaded)
 			{
 				OnLoading();
@@ -111,8 +108,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-
-		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
 

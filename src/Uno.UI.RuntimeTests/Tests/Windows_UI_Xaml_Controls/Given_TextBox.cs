@@ -1,18 +1,37 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml;
-using Windows.UI;
-using FluentAssertions;
-using MUXControlsTestApp.Utilities;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using MUXControlsTestApp.Utilities;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.UI;
 
-#if NETFX_CORE
+using Color = Windows.UI.Color;
+
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
+
+using static Private.Infrastructure.TestServices;
+using SamplesApp.UITests;
+using Windows.UI.Input.Preview.Injection;
+using Windows.Foundation;
+using System.Collections.Generic;
+using Uno.Extensions;
+
+
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -27,6 +46,110 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+		[TestMethod]
+		[DataRow(UpdateSourceTrigger.Default, false)]
+		[DataRow(UpdateSourceTrigger.PropertyChanged, false)]
+		[DataRow(UpdateSourceTrigger.Explicit, false)]
+		[DataRow(UpdateSourceTrigger.LostFocus, false)]
+		[DataRow(UpdateSourceTrigger.Default, true)]
+		[DataRow(UpdateSourceTrigger.LostFocus, true)]
+		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger, bool xBind)
+		{
+			var SUT = new When_TwoWay_Text_Binding();
+			var tb = (trigger, xBind) switch
+			{
+				(UpdateSourceTrigger.Default, false) => SUT.tbTwoWay_triggerDefault,
+				(UpdateSourceTrigger.PropertyChanged, false) => SUT.tbTwoWay_triggerPropertyChanged,
+				(UpdateSourceTrigger.Explicit, false) => SUT.tbTwoWay_triggerExplicit,
+				(UpdateSourceTrigger.LostFocus, false) => SUT.tbTwoWay_triggerLostFocus,
+				(UpdateSourceTrigger.Default, true) => SUT.tbTwoWay_triggerDefault_xBind,
+				(UpdateSourceTrigger.LostFocus, true) => SUT.tbTwoWay_triggerLostFocus_xBind,
+				_ => throw new Exception("Should not happen."),
+			};
+			var expectedSetCount = 0;
+
+			await UITestHelper.Load(SUT);
+
+			var vm = xBind ? SUT.VMForXBind : (When_TwoWay_Text_Binding.VM)tb.DataContext;
+
+			Assert.AreNotEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("", tb.Text);
+
+			// Change text while not focused
+			tb.Text = "Hello";
+			if (trigger is UpdateSourceTrigger.PropertyChanged || (trigger is not UpdateSourceTrigger.Explicit && !xBind))
+			{
+				expectedSetCount++;
+			}
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello", tb.Text);
+
+			tb.Focus(FocusState.Programmatic);
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			// Change text while focused
+			tb.Text = "Hello2";
+			if (trigger is UpdateSourceTrigger.PropertyChanged)
+			{
+				expectedSetCount++;
+			}
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+
+			// To unfocus TextBox.
+			SUT.dummyButton.Focus(FocusState.Programmatic);
+			Assert.AreEqual(SUT.dummyButton, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			if (trigger is UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus)
+			{
+				expectedSetCount++;
+			}
+
+			// In WinUI, a WaitForIdle is required.
+			// In Uno, it's not at the time of writing the test.
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+		}
+
+		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_BorderThickness_Zero()
+		{
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				Width = 100,
+				Height = 100
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(grid);
+
+			textBox.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(grid);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		public void When_InputScope_Null_And_ImeOptions()
@@ -67,33 +190,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_TB_Fluent_And_Theme_Changed()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var textBox = new TextBox
 			{
-				var textBox = new TextBox
-				{
-					PlaceholderText = "Enter..."
-				};
+				PlaceholderText = "Enter..."
+			};
 
-				WindowHelper.WindowContent = textBox;
-				await WindowHelper.WaitForLoaded(textBox);
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
 
-				var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
-				Assert.IsNotNull(placeholderTextContentPresenter);
+			var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+			Assert.IsNotNull(placeholderTextContentPresenter);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 
-				using (ThemeHelper.UseDarkTheme())
-				{
-					Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
-				}
-
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 			}
+
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
@@ -509,16 +629,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(textBox);
 
 			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
-				Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
-			}
-			else
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(Grid));
-				Assert.AreEqual(initialText, contentControl.FindFirstChild<TextBlock>().Text);
-			}
+			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
 		}
 #endif
 
@@ -527,8 +639,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			int update = 0;
 			var initialText = "Text";
-			string GetCurrentText() => initialText + update;
-			string GetNewText() => initialText + ++update;
 
 			var textBox = new TextBox
 			{
@@ -538,13 +648,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
+			// make sure the initial (''->'Waiting') TextChanged event had time to be dispatched
+			await WindowHelper.WaitForIdle();
+
 			int textChangedInvokeCount = 0;
 			int textChangingInvokeCount = 0;
 
 			bool failedCheck = false;
 			bool finished = false;
 
-			void OnTextChanged(object sender, TextChangedEventArgs e)
+			string GetCurrentText() => initialText + update;
+			string GetNewText() => initialText + ++update;
+			async void OnTextChanged(object sender, TextChangedEventArgs e)
 			{
 				textChangedInvokeCount++;
 				if (GetCurrentText() != textBox.Text)
@@ -779,6 +894,305 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(height1, height3);
 			height2.Should().BeGreaterThan(height1);
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Paste is not implemented on MacOS")]
+#endif
+		public async Task When_Paste()
+		{
+			var SUT = new TextBox();
+
+			var pasteCount = 0;
+			SUT.Paste += (_, _) => pasteCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("a");
+			Clipboard.SetContent(dataPackage);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, pasteCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
+#endif
+		public async Task When_GotFocus_BringIntoView()
+		{
+			var tb = new TextBox();
+			var ts = new ToggleSwitch();
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Spacing = 1200,
+					Children =
+					{
+						tb,
+						ts
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+
+			ts.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+			SUT.ScrollToVerticalOffset(99999);
+
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			tb.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_VerticalContentAlignment_Is_Changed()
+		{
+			// This test ensures that setting VerticalContentAlignment on the TextBox doesn't flow to:
+			// 1) PlaceholderTextContentPresenter.VerticalContentAlignment
+			// 2) ContentElement.VerticalContentAlignment
+			// 3) PlaceholderTextContentPresenter.VerticalAlignment
+			// 4) ContentElement.VerticalAlignment
+			// This matches the behavior observed on Windows
+			var xaml = """
+				    <Grid>
+				        <Grid.Resources>
+				            <Style x:Key="TextBoxAlignmentTestStyle" TargetType="TextBox">
+				                <Setter Property="Template">
+				                    <Setter.Value>
+				                        <ControlTemplate TargetType="TextBox">
+				                            <Grid x:Name="RootGrid">
+				                                <Grid VerticalAlignment="Stretch">
+				                                    <ContentControl x:Name="PlaceholderTextContentPresenter" />
+				                                    <ContentControl x:Name="ContentElement" />
+				                                </Grid>
+				                            </Grid>
+				                        </ControlTemplate>
+				                    </Setter.Value>
+				                </Setter>
+				            </Style>
+				        </Grid.Resources>
+
+				        <TextBox Style="{StaticResource TextBoxAlignmentTestStyle}" />
+				    </Grid>
+				""";
+			var grid = XamlHelper.LoadXaml<Grid>(xaml);
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			var textBox = (TextBox)grid.Children.Single();
+
+			Assert.AreEqual(VerticalAlignment.Center, textBox.VerticalContentAlignment);
+			textBox.VerticalContentAlignment = VerticalAlignment.Bottom;
+
+#if WINAPPSDK
+			var getTemplateChild = typeof(Control).GetMethod("GetTemplateChild", BindingFlags.Instance | BindingFlags.NonPublic);
+			var placeHolder = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "PlaceholderTextContentPresenter" });
+			var contentElement = (ContentControl)getTemplateChild.Invoke(textBox, new object[] { "ContentElement" });
+#else
+			var placeHolder = (ContentControl)textBox.GetTemplateChild("PlaceholderTextContentPresenter");
+			var contentElement = (ContentControl)textBox.GetTemplateChild("ContentElement");
+#endif
+			Assert.AreEqual(VerticalAlignment.Top, placeHolder.VerticalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Top, contentElement.VerticalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Stretch, placeHolder.VerticalAlignment);
+			Assert.AreEqual(VerticalAlignment.Stretch, contentElement.VerticalAlignment);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Fluent_Default()
+		{
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
+
+			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
+			textBox.ActualHeight.Should().BeApproximately(textBox.MinHeight, 0.1);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Default()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
+
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Fluent_ComboBoxTextBoxStyle()
+		{
+			var style = Application.Current.Resources["ComboBoxTextBoxStyle"] as Style;
+
+			var textBox = await LoadZeroSizeTextBoxAsync(style);
+
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Clicking_Outside_ContentElement_Should_Focus()
+		{
+			var tb1 = new TextBox() { Tag = "First" };
+			var tb2 = new TextBox() { Tag = "Second" };
+			var stackPanel = new StackPanel
+			{
+				Children = { tb1, tb2 },
+			};
+
+			await UITestHelper.Load(stackPanel);
+
+			var list = new List<string>();
+
+			FocusManager.GotFocus += FocusManager_GotFocus;
+
+			var scp1 = GetSCP(tb1);
+			var scp2 = GetSCP(tb2);
+
+			var tb1Bounds = tb1.GetAbsoluteBounds();
+			var tb2Bounds = tb2.GetAbsoluteBounds();
+			var scp1Bounds = scp1.GetAbsoluteBounds();
+			var scp2Bounds = scp2.GetAbsoluteBounds();
+
+			Assert.IsTrue(tb1Bounds.X < scp1Bounds.X);
+			Assert.IsTrue(tb2Bounds.X < scp2Bounds.X);
+
+			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
+			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(clickPosition2);
+			Assert.AreEqual(0, list.Count);
+			mouse.Press(clickPosition2);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, list.Count);
+			Assert.AreEqual("Second", list[0]);
+
+			mouse.MoveTo(clickPosition1);
+			Assert.AreEqual(1, list.Count);
+			mouse.Press(clickPosition1);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, list.Count);
+			Assert.AreEqual("First", list[1]);
+
+			FocusManager.GotFocus -= FocusManager_GotFocus;
+
+			void FocusManager_GotFocus(object sender, FocusManagerGotFocusEventArgs e)
+				=> list.Add((e.NewFocusedElement as TextBox)?.Tag?.ToString() ?? e.NewFocusedElement?.ToString() ?? "null");
+
+			static FrameworkElement GetSCP(TextBox tb)
+			{
+				var grid = (Grid)VisualTreeHelper.GetChild(tb, 0);
+				foreach (var child in grid.Children)
+				{
+					if (child is ScrollViewer { Name: "ContentElement" } sv)
+					{
+						return sv.Content as FrameworkElement;
+					}
+				}
+
+				Assert.Fail("Cannot find SCP inside TextBox");
+				return null;
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18790")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Clicked_In_Popup()
+		{
+			TextBox tb;
+			var btn = new Button
+			{
+				Flyout = new Flyout
+				{
+					Content = tb = new TextBox()
+				}
+			};
+
+			await UITestHelper.Load(btn);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(btn.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(btn.Flyout.IsOpen);
+
+			mouse.Press(tb.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+#endif
+
+		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
+		{
+			var loaded = false;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var textBox = new TextBox
+			{
+				Text = "",
+				Width = 0,
+				Height = 0
+			};
+			if (style is not null)
+			{
+				textBox.Style = style;
+			}
+
+			grid.Children.Add(textBox);
+			textBox.Loaded += (s, e) => loaded = true;
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitFor(() => loaded);
+			await WindowHelper.WaitForIdle(); // Needed to account for lifecycle differences on mobile
+			return textBox;
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 using System;
 using Windows.Foundation;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -19,7 +19,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 //      it is gorwing on Column direction
 //      Both classes are nested inside the VariableSizedWrapGrid class
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class VariableSizedWrapGrid
 {

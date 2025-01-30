@@ -9,7 +9,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 {
 	internal class ChatBoxViewModel : ViewModelBase
 	{
-		public ChatBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ChatBoxViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_clickCount = 0;
 		}

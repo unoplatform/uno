@@ -7,13 +7,14 @@ using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel.Calls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
@@ -39,7 +40,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 
 		private async void UpdateCallState()
 		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				IsCallActiveCheckBox.IsChecked = PhoneCallManager.IsCallActive;
 				IsCallIncomingCheckBox.IsChecked = PhoneCallManager.IsCallIncoming;

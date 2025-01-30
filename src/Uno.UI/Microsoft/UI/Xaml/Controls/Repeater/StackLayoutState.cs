@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class StackLayoutState
 	{
@@ -23,6 +24,13 @@ namespace Microsoft.UI.Xaml.Controls
 		internal double TotalElementSize => m_totalElementSize;
 		internal double MaxArrangeBounds => m_maxArrangeBounds;
 		internal int TotalElementsMeasured => m_totalElementsMeasured;
+
+		// Uno workaround [BEGIN]: Backing field for uno workarounds
+		internal double Uno_LastKnownAverageElementSize;
+		internal int Uno_LastKnownRealizedElementsCount;
+		internal int Uno_LastKnownItemsCount;
+		internal Size Uno_LastKnownDesiredSize;
+		// Uno workaround [END]
 
 		public StackLayoutState()
 		{

@@ -44,8 +44,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			ImageAssert.HasColorAt(screenshot, uniformToFill.Right - 6, uniformToFill.CenterY, Yellowish, tolerance: 5);
 
 			// Top and bottom are same as backround. Left and right are red-ish
-			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Y + 6, Color.White, tolerance: 5);
-			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Bottom - 6, Color.White, tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Y + 6, Color.FromArgb(255, 243, 243, 243), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, uniform.CenterX, uniform.Bottom - 6, Color.FromArgb(255, 243, 243, 243), tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, uniform.X + 6, uniform.CenterY, Redish, tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, uniform.Right - 6, uniform.CenterY, Redish, tolerance: 5);
 

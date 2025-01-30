@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -14,15 +14,21 @@ using Uno.Collections;
 using Uno.UI.Helpers;
 using System.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{
-		private class DependencyPropertyRegistry
+		internal class DependencyPropertyRegistry
 		{
+			public static DependencyPropertyRegistry Instance { get; } = new DependencyPropertyRegistry();
+
 			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
 			// So we don't use pooling to not cause pool exhaustion by renting without returning.
 			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
+
+			private DependencyPropertyRegistry()
+			{
+			}
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
@@ -39,8 +45,6 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			internal void Clear() => _entries.Clear();
-
 			internal void Add(Type type, string name, DependencyProperty property)
 			{
 				if (!TryGetTypeTable(type, out var typeTable))
@@ -52,18 +56,22 @@ namespace Windows.UI.Xaml
 				typeTable!.Add(name, property);
 			}
 
-			internal void AppendPropertiesForType(Type type, List<DependencyProperty> properties)
+			internal void AppendInheritedPropertiesForType(Type type, List<DependencyProperty> properties)
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
 					foreach (var value in typeTable!.Values)
 					{
-						properties.Add((DependencyProperty)value);
+						var dp = (DependencyProperty)value;
+						if (dp.IsInherited)
+						{
+							properties.Add(dp);
+						}
 					}
 				}
 			}
 
-			private bool TryGetTypeTable(Type type, out HashtableEx? table)
+			internal bool TryGetTypeTable(Type type, out HashtableEx? table)
 			{
 				if (_entries.TryGetValue(type, out var dictionaryObject))
 				{

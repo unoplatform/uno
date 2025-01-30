@@ -8,15 +8,15 @@ In the previous article, a simple _syntax highlighter_ was used to enhance the d
 
 Let's create an application illustrating how to use this feature.
 
-# Integration of Flatpickr - Callback to app from JavaScript
+## Integration of Flatpickr - Callback to app from JavaScript
 
 📝 [Flatpickr](https://flatpickr.js.org/) is a lightweight, self-contained date and time picker. It is an easy way to explore how JavaScript-side code can call back to the managed application using a `CustomEvent`. In this case, this will be used to report when the picker is opened and a date and time was picked.
 
-## 0. Before starting
+### 0. Before starting
 
-📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
+📝 To reproduce the code in this article, you must [prepare a development environment using Uno's _Getting Started_ article](xref:Uno.GetStarted).
 
-## 1. Create the solution in Visual Studio
+### 1. Create the solution in Visual Studio
 
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
@@ -25,7 +25,7 @@ Let's create an application illustrating how to use this feature.
 3. Update to latest _stable_ version of `Uno.*` dependencies.
 4. Compile & Run to make sure everything works.
 
-## 2. Inject Flatpickr from CDN
+### 2. Inject Flatpickr from CDN
 
 🎯 This section is using a CDN to get Flatpickr instead of hosting the JavaScript directly in the application. It is not always the best solution as it creates a dependency on the Internet availability. Any change made server-side could break the application.
 
@@ -33,7 +33,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 1. Create a new _JavaScript_ file `flatpickrloader.js` in the `WasmScripts` folder of the `.Wasm` project:
 
-   ``` javascript
+   ```javascript
    (function () {
        const head = document.getElementsByTagName("head")[0];
 
@@ -49,7 +49,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 2. Set the file as `Embedded Resource`:
 
-   ``` xml
+   ```xml
    <ItemGroup>
      <EmbeddedResource Include="WasmCSS\Fonts.css" />
      <EmbeddedResource Include="WasmScripts\AppManifest.js" />
@@ -57,13 +57,13 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    </ItemGroup>
    ```
 
-## 3. Uno controls and XAML
+### 3. Uno controls and XAML
 
 🎯 This section is creating a control used in the XAML. It will activate `Flatpickr` on the control's `<input>` element.
 
 1. Create a `FlatpickrView.cs` class in the `[MyApp]` project like this:
 
-   ``` csharp
+   ```csharp
    using System;
    using System.Globalization;
    using Windows.UI;
@@ -132,10 +132,9 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    }
    ```
 
-
 2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
-   ``` xml
+   ```xml
    <Page
        x:Class="FlatpickrDemo.MainPage"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -148,7 +147,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
        <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
-   		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
+        Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
          </TextBlock>
          <TextBlock FontSize="20">Flatpickr control:</TextBlock>
@@ -164,13 +163,13 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 📝 Almost there, still need to _call back_ to the managed code portion of the application.
 
-## 4. Add a way to call managed code from JavaScript
+### 4. Add a way to call managed code from JavaScript
 
 🎯 This section will use `CustomEvent` to route Flatpickr's events to managed code.
 
 1. Register event handlers for 2 custom events: `DateChanged` and `OpenedStateChanged`. To achieve this, put this code at the end of the `FlatpickrView` constructor:
 
-   ``` csharp
+   ```csharp
    // Register event handler for custom events from the DOM
    this.RegisterHtmlCustomEventHandler("DateChanged", OnDateChanged, isDetailJson: false);
    this.RegisterHtmlCustomEventHandler("OpenedStateChanged", OnOpenedStateChanged, isDetailJson: false);
@@ -178,7 +177,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 2. Add the implementation for the two handlers in the class:
 
-   ``` csharp
+   ```csharp
    private void OnDateChanged(object sender, HtmlCustomEventArgs e)
    {
        if(DateTimeOffset.TryParse(e.Detail, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeLocal, out var dto))
@@ -203,7 +202,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 3. Change the initialization of `Flatpickr` in injected JavaScript to raise events. Change the implementation of the `OnLoaded` method to this instead:
 
-   ``` csharp
+   ```csharp
    private void LoadJavaScript()
    {
        // For demo purposes, Flatpickr is loaded directly from CDN.
@@ -230,21 +229,26 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
    ![Final result](assets/flatpickr-final.gif)
 
-## Troubleshooting
+### Troubleshooting
+
 If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
 
-### My JavaScript control does not accept pointer input
+#### My JavaScript control does not accept pointer input
+
 In the constructor of your wrapper control, add the following:
-```
+
+```csharp
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
 // Not doing this will lead to a `pointer-events: none` CSS style on the control.
 Background = new SolidColorBrush(Colors.Transparent);
 ```
 
-### `TextBlock` content is not visible in browsers with the dark theme
+#### `TextBlock` content is not visible in browsers with the dark theme
+
 `TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
-```
+
+```xml
 <Page 
     ...
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

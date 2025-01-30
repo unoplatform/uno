@@ -1,45 +1,50 @@
 ﻿#nullable enable
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Cairo;
-using SkiaSharp;
-using Windows.UI.Xaml.Input;
-using WUX = Windows.UI.Xaml;
-using Uno.Foundation.Logging;
-using System.Diagnostics;
-using Windows.Graphics.Display;
 using Gtk;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Input;
+using SkiaSharp;
+using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Pango;
+using Uno.UI.Helpers;
+using Context = Cairo.Context;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 {
-	private readonly DisplayInformation _displayInformation;
 	private SKSurface? _surface;
 	private SKBitmap? _bitmap;
 	private int _bheight, _bwidth;
 	private ImageSurface? _gtkSurface;
 	private int renderCount;
 
-	private float _dpi = 1;
-
+	private float _scale = 1;
+	private XamlRoot _xamlRoot;
 	private readonly SKColorType _colorType;
-	private readonly IXamlRootHost _host;
+	private readonly IGtkXamlRootHost _host;
 
 	public SKColor BackgroundColor { get; set; }
 		= SKColors.White;
 
-	public SoftwareRenderSurface(IXamlRootHost host)
+	public SoftwareRenderSurface(IGtkXamlRootHost host)
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
-		_displayInformation.DpiChanged += OnDpiChanged;
+		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		_xamlRoot.Changed += OnXamlRootChanged;
 		UpdateDpi();
 
 		_colorType = SKImageInfo.PlatformColorType;
 		// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		if (OperatingSystem.IsMacOS())
 		{
 			if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
 			{
@@ -53,8 +58,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 	public void InvalidateRender() => QueueDrawArea(0, 0, 10000, 10000);
 
-	private void OnDpiChanged(DisplayInformation sender, object args) => UpdateDpi();
-
 	protected override bool OnDrawn(Context cr)
 	{
 		Stopwatch? sw = null;
@@ -65,8 +68,8 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			this.Log().Trace($"Render {renderCount++}");
 		}
 
-		var scaledWidth = (int)(AllocatedWidth * _dpi);
-		var scaledHeight = (int)(AllocatedHeight * _dpi);
+		var scaledWidth = (int)(AllocatedWidth * _scale);
+		var scaledHeight = (int)(AllocatedHeight * _scale);
 
 		// reset the surfaces (skia/cairo) and bitmap if the size has changed
 		if (_surface == null || scaledWidth != _bwidth || scaledHeight != _bheight)
@@ -89,15 +92,16 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(BackgroundColor);
-			canvas.Scale(_dpi);
+			canvas.Scale(_scale);
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+				var compositor = Compositor.GetSharedCompositor();
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(scaledWidth, scaledHeight, rootVisual, _surface);
 
-				if (WUX.Window.Current.Compositor.IsSoftwareRenderer is null)
+				if (compositor.IsSoftwareRenderer is null)
 				{
-					WUX.Window.Current.Compositor.IsSoftwareRenderer = true;
+					compositor.IsSoftwareRenderer = true;
 				}
 			}
 		}
@@ -125,5 +129,15 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 		_bitmap?.Encode(wstream, SKEncodedImageFormat.Png, 100);
 	}
 
-	private float UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) => UpdateDpi();
+
+	private void UpdateDpi()
+	{
+		var newScale = (float)_xamlRoot.RasterizationScale;
+		if (_scale != newScale)
+		{
+			_scale = newScale;
+			InvalidateRender();
+		}
+	}
 }

@@ -2,12 +2,13 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Windows.UI;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the base class for an icon UI element.
@@ -21,7 +22,7 @@ public partial class IconElement : FrameworkElement
 
 	public IconElement()
 	{
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	/// <summary>
@@ -70,6 +71,7 @@ public partial class IconElement : FrameworkElement
 		{
 			// Measure the child
 			_rootGrid.Measure(availableSize);
+			_rootGrid.EnsureLayoutStorage();
 			return _rootGrid.DesiredSize;
 		}
 
@@ -93,7 +95,7 @@ public partial class IconElement : FrameworkElement
 	{
 		base.UpdateThemeBindings(updateReason);
 
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	[MemberNotNull(nameof(_rootGrid))]
@@ -106,7 +108,7 @@ public partial class IconElement : FrameworkElement
 
 		var backgroundBrush = new SolidColorBrush()
 		{
-			Color = Windows.UI.Color.FromArgb(0, 0, 0, 0)
+			Color = Color.FromArgb(0, 0, 0, 0)
 		};
 
 		_rootGrid = new Grid()

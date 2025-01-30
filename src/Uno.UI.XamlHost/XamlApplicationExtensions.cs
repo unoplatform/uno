@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlHost/XamlApplicationExtensions.cs
@@ -6,8 +6,9 @@
 using System;
 using System.Linq;
 using Uno.UI.Xaml.Core;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.ApplicationModel.Core;
 
 namespace Uno.UI.XamlHost;
 
@@ -45,6 +46,7 @@ public static partial class XamlApplicationExtensions
 	public static IXamlMetadataContainer GetOrCreateXamlMetadataContainer()
 	{
 		WinUICoreServices.Instance.InitializationType = InitializationType.IslandsOnly;
+		CoreApplication.IsFullFledgedApp = false;
 
 		// Instantiation of the application object must occur before creating the DesktopWindowXamlSource instance.
 		// DesktopWindowXamlSource will create a generic Application object unable to load custom UWP XAML metadata.

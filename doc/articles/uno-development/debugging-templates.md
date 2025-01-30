@@ -5,6 +5,7 @@ uid: Uno.Contributing.DebuggingTemplates
 # Debugging Uno Platform Solution templates
 
 The uno platform project contains multiple types of templates:
+
 - `dotnet new` templates
 - Visual Studio (2022) Extensions templates (vsix)
 
@@ -15,6 +16,7 @@ Some of the templates are reusing the same sources. For example the full solutio
 `dotnet new` new templates use the dotnet/templating engine, and are located in the `src/SolutionTemplate/Uno.ProjectTemplates.Dotnet` folder.
 
 To make modifications to those templates and test the result:
+
 - In Visual Studio, open the solution using the [Uno.UI-SolutionTemplates.slnf](building-uno-ui.md) filter
 - Right click on the `Uno.ProjectTemplates.Dotnet` project, select `Pack`
 - This will create a `Uno.ProjectTemplates.Dotnet.255.255.255.255.nupkg` file
@@ -25,6 +27,6 @@ Ensure that the application runs properly by building it in Visual Studio and ru
 
 Once you're done with debugging the templates, you can go back to the official templates with:
 
-```
+```dotnetcli
 dotnet new -i Uno.ProjectTemplates.Dotnet
 ```

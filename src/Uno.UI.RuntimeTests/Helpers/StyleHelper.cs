@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 
@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeFrameNavigation()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
 			return new CompositeDisposable
@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeStyle<T>() where T : Control
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
 			IDisposable disposable;
@@ -69,45 +69,46 @@ namespace Uno.UI.RuntimeTests.Helpers
 			return Disposable.Create(() => appResources.MergedDictionaries.Remove(resources));
 		}
 
-
-
 		/// <summary>
 		/// Ensure Fluent styles are available for the course of a single test.
 		/// </summary>
-		public static IDisposable UseFluentStyles()
+		public static IDisposable UseUwpStyles()
 		{
-#if NETFX_CORE // Disabled on UWP for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
-			return null;
+#if WINAPPSDK // Disabled on WinUI as removing the resource dictionary causes a crash.
+			return Disposable.Empty;
 #else
 
 			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
-			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
+			var xamlResources = resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().FirstOrDefault();
+			if (xamlResources is null)
 			{
-				return null;
+				return Disposable.Empty;
 			}
 
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
-			resources.MergedDictionaries.Insert(0, xcr);
-
-			// Force default brushes to be reloaded
-			DefaultBrushes.ResetDefaultThemeBrushes();
-			ResetIslandRootForeground();
+			resources.MergedDictionaries.Remove(xamlResources);
+			ForceReload();
 
 			return new DisposableAction(() =>
 			{
-				resources.MergedDictionaries.Remove(xcr);
+				resources.MergedDictionaries.Insert(0, xamlResources);
+				ForceReload();
+			});
+
+			static void ForceReload()
+			{
 				DefaultBrushes.ResetDefaultThemeBrushes();
 				ResetIslandRootForeground();
-			});
+			}
 #endif
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		private static void ResetIslandRootForeground()
 		{
-			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly &&
+				VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement) is { } control)
 			{
 				// Ensure the root element's Foreground is set correctly
 				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);

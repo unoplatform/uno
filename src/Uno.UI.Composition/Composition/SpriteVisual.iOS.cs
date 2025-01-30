@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
@@ -24,7 +24,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal override void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		internal override bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 		{
 			base.StartAnimationCore(propertyName, animation);
 
@@ -32,8 +32,10 @@ namespace Windows.UI.Composition
 			{
 				case ScalarKeyFrameAnimation kfa:
 					AnimateKeyFrameAnimation(propertyName, kfa);
-					break;
+					return true;
 			}
+
+			return false;
 		}
 
 		private void AnimateKeyFrameAnimation(string propertyName, ScalarKeyFrameAnimation kfa)

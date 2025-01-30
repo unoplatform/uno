@@ -84,10 +84,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", targetFilePath);
-#endif
-
 				var sourceText = file.GetText(cancellationToken)!;
 				if (sourceText is null)
 				{
@@ -171,6 +167,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
+		private static bool IsSkiaNotConditional(string localName, string namespaceUri)
+		{
+			// Not ideal, but we want to avoid breaking changes.
+			// See discussion at https://github.com/unoplatform/uno/issues/17028
+			// For xmlns that are named "skia", there are 3 scenarios:
+			// 1. If project being built is for Skia, we just include that element.
+			// 2. If project being built is not for Skia and namespaceUri is using SkiaSharp, it's not conditional XAML and we should include that element
+			// 3. If project being built is not for Skia and namespaceUri is not using SkiaSharp, this is conditional XAML.
+			// For case 1, IsIncluded will return ForceInclude
+			// For case 2, we'll go through regular rules, as with any xmlns (rely on Ignorable and normal XAML conditional rules).
+			// For case 3, this method will return false and IsIncluded will return ForceExclude.
+			// Above explains the "current" behavior meant by this code.
+			// The ideal behavior is really that we ignore localName completely and just rely on namespaceUris
+			// NOTE: We check StartsWith("using") as well as Contains("SkiaSharp") to avoid breaking scenarios like
+			// xmlns:skia="http://uno.ui/skia#using:SkiaSharp.Views.Windows"
+			return localName == "skia" &&
+				namespaceUri.StartsWith("using:", StringComparison.Ordinal) &&
+				namespaceUri.Contains("SkiaSharp", StringComparison.Ordinal);
+		}
+
 		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
@@ -180,7 +196,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? result
 					: result.WithUpdatedNamespace(XamlConstants.PresentationXamlXmlNamespace);
 			}
-			else if (_excludeXamlNamespaces.Contains(localName))
+			else if (_excludeXamlNamespaces.Contains(localName) && !IsSkiaNotConditional(localName, namespaceUri))
 			{
 				return __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 			}

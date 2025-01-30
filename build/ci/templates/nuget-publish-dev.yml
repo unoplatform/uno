@@ -1,0 +1,10 @@
+steps:
+  - task: NuGetCommand@2
+    displayName: 'Publish to Uno Dev Feed'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Pipeline.Workspace)/Nuget_Packages/**/*.nupkg'
+      nuGetFeedType: 'internal'
+      publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/e7ce08df-613a-41a3-8449-d42784dd45ce'
+      allowPackageConflicts: true
+      verbosityPush: 'Normal'

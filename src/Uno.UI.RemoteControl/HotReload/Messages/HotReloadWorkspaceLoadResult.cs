@@ -12,7 +12,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public bool WorkspaceInitialized { get; set; }
 
 		[JsonIgnore]
-		public string Scope => HotReloadConstants.HotReload;
+		public string Scope => WellKnownScopes.HotReload;
 
 		[JsonIgnore]
 		string IMessage.Name => Name;

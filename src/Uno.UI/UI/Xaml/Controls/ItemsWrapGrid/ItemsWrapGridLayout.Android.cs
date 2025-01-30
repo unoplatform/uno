@@ -7,13 +7,15 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using Windows.Foundation;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Controls
+using Size = Windows.Foundation.Size;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsWrapGrid"/> behaviour.
@@ -76,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				//Add view before we measure it, this ensures that DP inheritances are correctly applied
 				AddView(view, direction);
 
-				var slotSize = new Windows.Foundation.Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
+				var slotSize = new Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
 				var measuredSize = _layouter.MeasureChild(view, slotSize);
 				var physicalMeasuredSize = measuredSize.LogicalToPhysicalPixels();
 				var measuredWidth = (int)physicalMeasuredSize.Width;
@@ -264,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 			return Math.Min(maximumItemsBySetting, maximumItemsBySpace);
 		}
 
-		protected override Windows.Foundation.Size ApplyChildStretch(Windows.Foundation.Size childSize, Windows.Foundation.Size slotSize, ViewType viewType)
+		protected override Size ApplyChildStretch(Size childSize, Size slotSize, ViewType viewType)
 		{
 			//Item views in a grid layout shouldn't be stretched
 			if (viewType == ViewType.Item)

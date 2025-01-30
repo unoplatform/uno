@@ -4,8 +4,9 @@ using System.Text;
 using Uno.Disposables;
 using Uno.UI.Common;
 using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// A <see cref="ConditionalDisposable"/> class that executes the dispose action on the Dispatcher.

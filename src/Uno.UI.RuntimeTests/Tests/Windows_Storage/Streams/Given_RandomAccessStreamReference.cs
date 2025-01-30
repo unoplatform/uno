@@ -42,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			}
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_FromFile()
 		{

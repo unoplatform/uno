@@ -1,15 +1,6 @@
-﻿ <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<ResourceDictionary 
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
-    xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)"
-    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
-    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:not_win="http://uno.ui/not_win"
-    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:ignorable="not_win">
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference controls\dev\CommonStyles\Slider_themeresources.xaml, tag winui3/release/1.5.2 -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:wasm="http://uno.ui/wasm" xmlns:ios="http://uno.ui/ios" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:uc="using:Uno.UI.Controls" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:ignorable="not_win wasm ios uc">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <x:Double x:Key="SliderOutsideTickBarThemeHeight">4</x:Double>
@@ -17,11 +8,9 @@
             <Thickness x:Key="SliderBorderThemeThickness">0</Thickness>
             <Thickness x:Key="SliderHeaderThemeMargin">0,0,0,4</Thickness>
             <FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
-
-            <!-- ColorAnimation requires TargetProperty to be Color thus some resources point to the colour instead of brush-->
-            <StaticResource x:Key="SliderContainerBackground" ResourceKey="ControlFillColorTransparentBrush" />
-            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparent" />
-            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparent" />
+            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush" />
             <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparent" />
             <StaticResource x:Key="SliderThumbBackground" ResourceKey="AccentFillColorDefaultBrush" />
             <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
@@ -38,12 +27,10 @@
             <StaticResource x:Key="SliderTrackValueFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
             <StaticResource x:Key="SliderTrackValueFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
             <StaticResource x:Key="SliderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabled" />
+            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
             <StaticResource x:Key="SliderTickBarFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
-            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabled" />
+            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabledBrush" />
             <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="ControlFillColorInputActiveBrush" />
-
-            <!-- Legacy Brushes -->
             <SolidColorBrush x:Key="SliderBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SliderDisabledBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SliderThumbBackgroundThemeBrush" Color="#FFFFFFFF" />
@@ -73,8 +60,8 @@
             <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="SliderThumbBackground" ResourceKey="SystemControlForegroundAccentBrush" />
-            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="SystemAccentColorLight1" />
-            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="SystemAccentColorDark1" />
+            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="SystemColorHotlightColorBrush" />
             <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="SystemControlDisabledChromeDisabledHighBrush" />
             <StaticResource x:Key="SliderThumbBorderBrush" ResourceKey="SystemControlForegroundAccentBrush" />
             <StaticResource x:Key="SliderOuterThumbBackground" ResourceKey="SystemControlForegroundAccentBrush" />
@@ -89,9 +76,8 @@
             <StaticResource x:Key="SliderHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
             <StaticResource x:Key="SliderTickBarFill" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
-            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+            <SolidColorBrush x:Key="SliderTickBarFillDisabled" Color="{ThemeResource SystemColorGrayTextColor}" />
             <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
-
             <x:Double x:Key="SliderOutsideTickBarThemeHeight">4</x:Double>
             <x:Double x:Key="SliderTrackThemeHeight">2</x:Double>
             <Thickness x:Key="SliderBorderThemeThickness">1</Thickness>
@@ -126,16 +112,14 @@
             <Thickness x:Key="SliderBorderThemeThickness">0</Thickness>
             <Thickness x:Key="SliderHeaderThemeMargin">0,0,0,4</Thickness>
             <FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
-
-            <!-- ColorAnimation requires TargetProperty to be Color thus some resources point to the colour instead of brush-->
             <StaticResource x:Key="SliderContainerBackground" ResourceKey="ControlFillColorTransparentBrush" />
-            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparent"/>
-            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparent"/>
-            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparent"/>
+            <StaticResource x:Key="SliderContainerBackgroundPointerOver" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundPressed" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="SliderContainerBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush" />
             <StaticResource x:Key="SliderThumbBackground" ResourceKey="AccentFillColorDefaultBrush" />
-            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush"/>
-            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="AccentFillColorTertiaryBrush"/>
-            <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="AccentFillColorDisabledBrush"/>
+            <StaticResource x:Key="SliderThumbBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundPressed" ResourceKey="AccentFillColorTertiaryBrush" />
+            <StaticResource x:Key="SliderThumbBackgroundDisabled" ResourceKey="AccentFillColorDisabledBrush" />
             <StaticResource x:Key="SliderThumbBorderBrush" ResourceKey="ControlElevationBorderBrush" />
             <StaticResource x:Key="SliderOuterThumbBackground" ResourceKey="ControlSolidFillColorDefaultBrush" />
             <StaticResource x:Key="SliderTrackFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
@@ -147,12 +131,10 @@
             <StaticResource x:Key="SliderTrackValueFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
             <StaticResource x:Key="SliderTrackValueFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
             <StaticResource x:Key="SliderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabled" />
+            <StaticResource x:Key="SliderHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
             <StaticResource x:Key="SliderTickBarFill" ResourceKey="ControlStrongFillColorDefaultBrush" />
-            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabled" />
+            <StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="ControlStrongFillColorDisabledBrush" />
             <StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="ControlFillColorInputActiveBrush" />
-
-            <!-- Legacy Brushes -->
             <SolidColorBrush x:Key="SliderBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SliderDisabledBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SliderThumbBackgroundThemeBrush" Color="#FFFFFFFF" />
@@ -177,7 +159,6 @@
             <SolidColorBrush x:Key="SliderHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-
     <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
     <CornerRadius x:Key="SliderTrackCornerRadius">2</CornerRadius>
     <CornerRadius x:Key="SliderThumbCornerRadius">10</CornerRadius>
@@ -185,24 +166,17 @@
     <x:Double x:Key="SliderPostContentMargin">14</x:Double>
     <x:Double x:Key="SliderInnerThumbHeight">12</x:Double>
     <x:Double x:Key="SliderHorizontalHeight">32</x:Double>
-    <x:Double x:Key="SliderVerticalWidth">32</x:Double>   
+    <x:Double x:Key="SliderVerticalWidth">32</x:Double>
     <x:Double x:Key="SliderHorizontalThumbWidth">18</x:Double>
     <x:Double x:Key="SliderHorizontalThumbHeight">18</x:Double>
     <x:Double x:Key="SliderVerticalThumbWidth">18</x:Double>
     <x:Double x:Key="SliderVerticalThumbHeight">18</x:Double>
     <x:Double x:Key="SliderInnerThumbWidth">12</x:Double>
-    <x:Double x:Key="SliderInnerThumbHeight">12</x:Double>
-
     <Style TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}" />
-    
     <Style x:Key="DefaultSliderStyle" TargetType="Slider">
         <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
         <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
-        
-        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-        <win:Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}"/>
-        <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-       
+        <Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}"/>
         <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -210,7 +184,7 @@
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="FocusVisualMargin" Value="-7,0,-7,0" />
         <Setter Property="IsFocusEngagementEnabled" Value="True" />
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource SliderTrackCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource SliderTrackCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
@@ -222,30 +196,15 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Thumb">
-                                            <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed -->
-                                            <Grid>                                        
-                                                <!-- TODO Uno: WinUI uses Margin -1, which causes clipping for us. -->
-                                                <!-- Uno specific (LinearGradientBrush borders): Use solid color brush for border -->
-                                                <Border
-                                                    Margin="0"
-                                                    Background="{ThemeResource SliderOuterThumbBackground}"
-                                                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                                    CornerRadius="{ThemeResource SliderThumbCornerRadius}">
-                                                    <Ellipse
-                                                        x:Name="SliderInnerThumb"
-                                                        RenderTransformOrigin="0.5, 0.5"
-                                                        Fill="{TemplateBinding Background}"                                                  
-                                                        Width="{ThemeResource SliderInnerThumbWidth}"
-                                                        Height="{ThemeResource SliderInnerThumbHeight}">
+                                            <!-- Uno specific (LinearGradientBrush borders): We need additional Grid here #6457 -->
+                                            <Grid>
+                                                <Border x:Name="ThumbBorder" Margin="-2" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                                                    <Ellipse x:Name="SliderInnerThumb" RenderTransformOrigin="0.5, 0.5" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderInnerThumbWidth}" Height="{ThemeResource SliderInnerThumbHeight}">
                                                         <Ellipse.RenderTransform>
                                                             <CompositeTransform />
                                                         </Ellipse.RenderTransform>
                                                     </Ellipse>
-                                                    
-                                                </Border>
-
-                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateManager.VisualStateGroups>
                                                         <VisualStateGroup x:Name="CommonStates">
                                                             <VisualState x:Name="Normal">
                                                                 <Storyboard>
@@ -296,14 +255,16 @@
                                                                 </Storyboard>
                                                             </VisualState>
                                                         </VisualStateGroup>
-                                                </VisualStateManager.VisualStateGroups>                                                    
+                                                    </VisualStateManager.VisualStateGroups>
+                                                </Border>
+                                                <!-- Uno specific (LinearGradientBrush borders): #6457 -->
+                                                <uc:FauxGradientBorderPresenter RequestedBorderBrush="{Binding ElementName=ThumbBorder, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ThumbBorder, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ThumbBorder, Path=CornerRadius}" />
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
                             </Style>
                         </Grid.Resources>
-
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal">
@@ -319,7 +280,7 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
-                                 <VisualState x:Name="PointerOver">
+                                <VisualState x:Name="PointerOver">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
@@ -333,9 +294,9 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
-                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -343,7 +304,7 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                </VisualState>                           
+                                </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
@@ -358,9 +319,9 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundPressed}" />
-                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -371,9 +332,9 @@
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="(Panel.Foreground).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderHeaderForegroundDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderHeaderForegroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -392,21 +353,21 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="TopTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="BottomTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="LeftTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="RightTickBar" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame KeyTime="0:0:0.083" Value="{ThemeResource SliderContainerBackgroundDisabled}" />
-                                        </ColorAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTickBar" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomTickBar" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="LeftTickBar" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RightTickBar" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -434,162 +395,54 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-
-                        <ContentPresenter x:Name="HeaderContentPresenter"
-                            Grid.Row="0"
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}"
-                            FontWeight="{ThemeResource SliderHeaderThemeFontWeight}"
-                            Foreground="{ThemeResource SliderHeaderForeground}"
-                            Margin="{ThemeResource SliderTopHeaderMargin}"
-                            TextWrapping="Wrap"
-                            Visibility="Collapsed"
-                            x:DeferLoadStrategy="Lazy"/>
-
+                        <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="{ThemeResource SliderHeaderThemeFontWeight}" Foreground="{ThemeResource SliderHeaderForeground}" Margin="{ThemeResource SliderTopHeaderMargin}" TextWrapping="Wrap" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
                         <!-- This border exists only to draw the correct focus rect with rounded corners when element is focused.-->
                         <Border x:Name="FocusBorder" Grid.Row="1" CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" />
-
-                        <Grid x:Name="SliderContainer"
-                            Grid.Row="1"
-                            Background="{ThemeResource SliderContainerBackground}">
+                        <Grid x:Name="SliderContainer" Grid.Row="1" Background="{ThemeResource SliderContainerBackground}">
                             <Grid x:Name="HorizontalTemplate" MinHeight="{ThemeResource SliderHorizontalHeight}">
-
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="{ThemeResource SliderPreContentMargin}" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="{ThemeResource SliderPostContentMargin}" />
                                 </Grid.RowDefinitions>
-
-                                <Rectangle x:Name="HorizontalTrackRect"
-                                    Fill="{TemplateBinding Background}"
-                                    Height="{ThemeResource SliderTrackThemeHeight}"
-                                    Grid.Row="1"
-                                    Grid.ColumnSpan="3"
-                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
-                                <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1"
-                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
-                                <TickBar x:Name="TopTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderTickBarFill}"
-                                    Height="{ThemeResource SliderOutsideTickBarThemeHeight}"
-                                    VerticalAlignment="Bottom"
-                                    Margin="0,0,0,4"
-                                    Grid.ColumnSpan="3" />
-                                <TickBar x:Name="HorizontalInlineTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderInlineTickBarFill}"
-                                    Height="{ThemeResource SliderTrackThemeHeight}"
-                                    Grid.Row="1"
-                                    Grid.ColumnSpan="3" />
-                                <TickBar x:Name="BottomTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderTickBarFill}"
-                                    Height="{ThemeResource SliderOutsideTickBarThemeHeight}"
-                                    VerticalAlignment="Top"
-                                    Margin="0,4,0,0"
-                                    Grid.Row="2"
-                                    Grid.ColumnSpan="3" />
-                                <Thumb x:Name="HorizontalThumb"
-                                    Style="{StaticResource SliderThumbStyle}"
-                                    DataContext="{TemplateBinding Value}"
-                                    Height="{ThemeResource SliderHorizontalThumbHeight}"
-                                    Width="{ThemeResource SliderHorizontalThumbWidth}"
-                                    contract7Present:CornerRadius="{StaticResource ControlCornerRadius}"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="3"
-                                    Grid.Column="1"
-                                    FocusVisualMargin="-14,-6,-14,-6"
-                                    AutomationProperties.AccessibilityView="Raw" />
+                                <Rectangle x:Name="HorizontalTrackRect" Fill="{TemplateBinding Background}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <TickBar x:Name="TopTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Bottom" Margin="0,0,0,4" Grid.ColumnSpan="3" />
+                                <TickBar x:Name="HorizontalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" />
+                                <TickBar x:Name="BottomTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Row="2" Grid.ColumnSpan="3" />
+                                <Thumb x:Name="HorizontalThumb" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Height="{ThemeResource SliderHorizontalThumbHeight}" Width="{ThemeResource SliderHorizontalThumbWidth}" CornerRadius="{StaticResource ControlCornerRadius}" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" AutomationProperties.AccessibilityView="Raw" />
                             </Grid>
                             <Grid x:Name="VerticalTemplate" MinWidth="{ThemeResource SliderVerticalWidth}" Visibility="Collapsed">
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{ThemeResource SliderPreContentMargin}" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="{ThemeResource SliderPostContentMargin}" />
                                 </Grid.ColumnDefinitions>
-
-                                <Rectangle x:Name="VerticalTrackRect"
-                                    Fill="{TemplateBinding Background}"
-                                    Width="{ThemeResource SliderTrackThemeHeight}"
-                                    Grid.Column="1"
-                                    Grid.RowSpan="3"
-                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
-                                <Rectangle x:Name="VerticalDecreaseRect"
-                                    Fill="{TemplateBinding Foreground}"
-                                    Grid.Column="1"
-                                    Grid.Row="2"
-                                    contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                    contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
-                                <TickBar x:Name="LeftTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderTickBarFill}"
-                                    Width="{ThemeResource SliderOutsideTickBarThemeHeight}"
-                                    HorizontalAlignment="Right"
-                                    Margin="0,0,4,0"
-                                    Grid.RowSpan="3" />
-                                <TickBar x:Name="VerticalInlineTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderInlineTickBarFill}"
-                                    Width="{ThemeResource SliderTrackThemeHeight}"
-                                    Grid.Column="1"
-                                    Grid.RowSpan="3" />
-                                <TickBar x:Name="RightTickBar"
-                                    Visibility="Collapsed"
-                                    Fill="{ThemeResource SliderTickBarFill}"
-                                    Width="{ThemeResource SliderOutsideTickBarThemeHeight}"
-                                    HorizontalAlignment="Left"
-                                    Margin="4,0,0,0"
-                                    Grid.Column="2"
-                                    Grid.RowSpan="3" />
-                                <Thumb x:Name="VerticalThumb"
-                                    Style="{StaticResource SliderThumbStyle}"
-                                    DataContext="{TemplateBinding Value}"
-                                    Width="{ThemeResource SliderVerticalThumbWidth}"
-                                    Height="{ThemeResource SliderVerticalThumbHeight}"
-                                    contract7Present:CornerRadius="{StaticResource ControlCornerRadius}"
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    FocusVisualMargin="-6,-14,-6,-14"
-                                    AutomationProperties.AccessibilityView="Raw" />
+                                <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <Rectangle x:Name="VerticalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Column="1" Grid.Row="2" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" />
+                                <TickBar x:Name="LeftTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" />
+                                <TickBar x:Name="VerticalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
+                                <TickBar x:Name="RightTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Column="2" Grid.RowSpan="3" />
+                                <Thumb x:Name="VerticalThumb" Style="{StaticResource SliderThumbStyle}" DataContext="{TemplateBinding Value}" Width="{ThemeResource SliderVerticalThumbWidth}" Height="{ThemeResource SliderVerticalThumbHeight}" CornerRadius="{StaticResource ControlCornerRadius}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FocusVisualMargin="-6,-14,-6,-14" AutomationProperties.AccessibilityView="Raw" />
                             </Grid>
-
                         </Grid>
-
                     </Grid>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ListViewBase
 {
@@ -42,7 +42,7 @@ public partial class ListViewBase
 	{
 		foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
 		{
-			ApplyMultiSelectState(item);
+			item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
 		}
 	}
 }

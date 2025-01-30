@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>ສີຟ້າຈາງ</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>ສີຟ້າອອ່ນນ້ຳແຂງ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>ເອກະສານ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>ປຸ່ມແຍກ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>ໜ້າຕ່າງ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>ຊ່ອງ</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>ຫົວເຈ້ຍ</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>ລາຍການຫົວເຈ້ຍ</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>ຕາຕະລາງ</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>ແຖບຫົວເລື່ອງ</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>ຕົວແຍກ</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>ການຫຍໍ້ພາບເຊີງຄວາມໝາຍ</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>ສະວິດສະຫຼັບ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>ລາຍການ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 ລາຍການ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>ຍົກເລີກການລາກ %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>ຕໍ່ໄປ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>ກັບຫຼັງ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>ຫຼິ້ນ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>ຢຸດຊົ່ວຄາວ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>ເວລາທີ່ຜ່ານໄປ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>ເວລາທີ່ຍັງເຫຼືອ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>ຄວາມຄືບໜ້າການບັບເຟີ້</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>ຄົ້ນຫາ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>ປິດສຽງ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>ຄວາມດັງສຽງ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>ຂໍ້ຜິດພາດ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>ວັນ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>ເດືອນ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>ປີ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ຊົ່ວໂມງ </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>ນາທີ</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 ນາທີ</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 ນາທີ</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 ວິນາທີ</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 ວິນາທີ</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>ການຫຼຸດລົງຂະໜາດໃຫຍ່ລວງຕັ້ງ</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>ການຫຼຸດລົງຂະໜາດນ້ອຍລວງຕັ້ງ</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ຕັດ</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>ປິດ IME</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>ສີຂາວ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າອ່ອນ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າເຂັ້ມ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ສີດຳ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ສີເສດເຂັ້ມ</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ກຸຫຼາບ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ສີສົ້ມອອ່ນ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ສີແທນ</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ສີເຫຼືອງອ່ອນ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ສີຂຽວໝາກນາວ</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ສີຟ້າອົມຂຽວ“</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ສີຟ້າທ້ອງຟ້າ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ສີຟ້າແກມສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ສີຟ້າອ່ອນ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ສີຟ້າຈາງ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ສີຟ້າອອ່ນນ້ຳແຂງ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ສີຟ້າ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ດອກລາເວນເດີ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ສີບົວ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ແດງ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ສີສົ້ມ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ສີນໍ້າຕານ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ສີຄຳ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ສີເຫຼືອງ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ຂຽວ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ສີນໍ້າເງິນອົມຂຽວ</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ສີຟ້າແກມຂຽວອ່ອນ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ສີຟ້າ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ສີຟ້າແກມສີເທົາ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ສີຄາມ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ສີມ່ວງ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ສີແດງຊ້ຳ</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ສີເຫຼືອງແກ່</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ສີຂຽວແກ່</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ສີນ້ຳເງິນອົມຂຽວແກ່</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ສີຟ້າແກ່</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ສີມ່ວງແກ່</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ສີມ່ວງເຂັ້ມ</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ປິດ</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

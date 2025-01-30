@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Windows.UI;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = "GradientStops")]
 	public abstract partial class GradientBrush : Brush
@@ -118,5 +118,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
+
+		internal virtual bool CanApplyToBorder(CornerRadius cornerRadius) => true;
 	}
 }

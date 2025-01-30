@@ -1,23 +1,57 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
-using Windows.Devices.Input;
+using System.Collections.Concurrent;
 using Windows.Foundation;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	public partial class CoreDragDropManager
 	{
-		[ThreadStatic] private static CoreDragDropManager? _current;
+		private static readonly ConcurrentDictionary<WindowId, CoreDragDropManager> _windowIdMap = new();
+		private readonly WindowId _windowId;
 
-		public static CoreDragDropManager? GetForCurrentView()
-			=> _current;
+		private CoreDragDropManager(WindowId windowId)
+		{
+			_windowId = windowId;
+		}
 
-		internal static CoreDragDropManager CreateForCurrentView()
-			=> _current = new CoreDragDropManager();
+		public static CoreDragDropManager GetForCurrentView()
+		{
+			// This is needed to ensure for "current view" there is always a corresponding CoreDragDropManager instance.
+			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
+			// on Uno.WinUI codebase.
+			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+		}
+
+#pragma warning disable RS0030 // Do not use banned APIs
+		public static CoreDragDropManager GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
+
+		internal static CoreDragDropManager GetForWindowId(WindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var coreDragDropManager))
+			{
+				throw new InvalidOperationException(
+					$"CoreDragDropManager corresponding with this window does not exist yet, which usually means " +
+					$"the API was called too early in the windowing lifecycle. Try to use CoreDragDropManager later.");
+			}
+
+			return coreDragDropManager;
+		}
+
+		internal static CoreDragDropManager GetOrCreateForWindowId(WindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var coreDragDropManager))
+			{
+				coreDragDropManager = new(windowId);
+				_windowIdMap[windowId] = coreDragDropManager;
+			}
+
+			return coreDragDropManager;
+		}
 
 		public event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs>? TargetRequested;
 
@@ -37,12 +71,15 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			}
 		}
 
-		private CoreDragDropManager()
-		{
-		}
-
 		internal void SetUIManager(IDragDropManager manager)
-			=> _manager ??= manager ?? throw new ArgumentNullException(nameof(manager));
+		{
+			if (_manager is { })
+			{
+				throw new InvalidOperationException($"{nameof(IDragDropManager)} is set twice on {nameof(CoreDragDropManager)}.");
+			}
+
+			_manager = manager ?? throw new ArgumentNullException(nameof(manager));
+		}
 
 		internal void DragStarted(CoreDragInfo info)
 		{
@@ -90,7 +127,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 		/// </returns>
 		internal DataPackageOperation ProcessDropped(IDragEventSource src)
-			=> _manager?.ProcessDropped(src) ?? DataPackageOperation.None;
+			=> _manager?.ProcessReleased(src) ?? DataPackageOperation.None;
 
 		/// <summary>
 		/// This method is expected to be invoked when pointer involved in a drag operation
@@ -101,8 +138,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		/// The last accepted operation.
 		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 		/// </returns>
-		internal DataPackageOperation ProcessAborted(IDragEventSource src)
-			=> _manager?.ProcessAborted(src) ?? DataPackageOperation.None;
+		internal DataPackageOperation ProcessAborted(long pointerId)
+			=> _manager?.ProcessAborted(pointerId) ?? DataPackageOperation.None;
 
 		internal interface IDragDropManager
 		{
@@ -132,7 +169,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// The last accepted operation.
 			/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 			/// </returns>
-			DataPackageOperation ProcessDropped(IDragEventSource src);
+			DataPackageOperation ProcessReleased(IDragEventSource src);
 
 			/// <summary>
 			/// This method is expected to be invoked when pointer involved in a drag operation
@@ -143,7 +180,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// The last accepted operation.
 			/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 			/// </returns>
-			DataPackageOperation ProcessAborted(IDragEventSource src);
+			DataPackageOperation ProcessAborted(long pointerId);
 		}
 	}
 }

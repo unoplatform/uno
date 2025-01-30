@@ -1,11 +1,11 @@
 ﻿// MUX Reference: TabViewAutomationPeer.cpp, commit 542e6f9
 
 using System;
-using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
 	/// <summary>
 	/// Exposes TabView types to Microsoft UI Automation.

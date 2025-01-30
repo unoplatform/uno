@@ -14,7 +14,7 @@ namespace Uno.UI.Xaml
 		public const string AppXScheme = "ms-appx";
 		public const string MSResourceIdentifier = "ms-resource:///";
 		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
-		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
+		public const string WinUICompactURL = "Microsoft" + /* UWP don't rename */ ".UI.Xaml/DensityStyles/Compact.xaml";
 
 		/// <summary>
 		/// Convert relative source path to absolute path.
@@ -56,8 +56,8 @@ namespace Uno.UI.Xaml
 		{
 			return version switch
 			{
-				1 => "Microsoft.UI.Xaml/Themes/themeresources_v1.xaml",
-				2 => "Microsoft.UI.Xaml/Themes/themeresources_v2.xaml",
+				1 => "Microsoft" + /* UWP Don't rename */ ".UI.Xaml/Themes/themeresources_v1.xaml",
+				2 => "Microsoft" + /* UWP Don't rename */ ".UI.Xaml/Themes/themeresources_v2.xaml",
 				_ => throw new ArgumentOutOfRangeException(nameof(version), $"'version' must be between 1 and 2. Found {version}."),
 			};
 		}

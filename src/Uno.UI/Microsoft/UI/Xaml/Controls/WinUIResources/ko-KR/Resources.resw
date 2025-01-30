@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>연한 파랑</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>담청색</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>문서</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>분할 단추</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>창</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>창</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>머리글</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>머리글 항목</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>표</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>제목 표시줄</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>구분 기호</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>시맨틱 줌</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>토글 스위치</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>항목</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1개 항목</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1 끌기 취소</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>다음</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>이전</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>재생</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>일시 중지</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>경과된 시간</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>남은 시간</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>버퍼링 진행률</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>이동</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>음소거</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>볼륨</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>일 </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>월 </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>연도 </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>시간 </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>분 </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1분</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1분</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1초</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1초</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>세로 큰 감소</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>세로 작은 감소</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>잘라내기</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME 끔</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>흰색</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>연한 회색</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>회색</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>어두운 회색</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>검정</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>산호색</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>다홍</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>연한 주황</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>황갈색</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>연한 노랑</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>연한 녹색</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>라임</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>바다색</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>하늘색</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>연한 옥색</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>흐린 파랑</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>연한 파랑</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>담청색</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>빙카색</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>연한 보라</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>분홍</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>빨강</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>주황</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>밤색</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>황금색</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>노랑</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>황록색</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>녹색</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>밝은 녹색</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>청록</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>옥색</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>파랑</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>청회색</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>남색</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>자주</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>진한 빨강</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>진한 노랑</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>진한 녹색</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>진한 청록</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>진한 파랑</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>진한 자주</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>진한 보라</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>닫기</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

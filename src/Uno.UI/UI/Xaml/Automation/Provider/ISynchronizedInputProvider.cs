@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Provider;
+﻿namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Enables Microsoft UI Automation client applications to direct the mouse or keyboard input to a specific UI element.

@@ -1,12 +1,14 @@
-﻿using Windows.Foundation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Threading;
+using Uno;
+using Uno.UI.Core;
+using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Uno;
-using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -17,7 +19,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs, CoreWindow.IPointerEventArgs, IDragEventSource
 	{
@@ -27,17 +29,22 @@ namespace Windows.UI.Xaml.Input
 		internal const bool PlatformSupportsNativeBubbling = true;
 #endif
 
-		public PointerRoutedEventArgs()
+		internal PointerRoutedEventArgs()
 		{
-			// This is acceptable as all ctors of this class are internal
-			CoreWindow.GetForCurrentThread().LastPointerEvent = this;
+			LastPointerEvent = this;
+			if (CoreWindow.GetForCurrentThreadSafe() is { } coreWindow)
+			{
+				coreWindow.LastPointerEvent = this;
+			}
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
 
+		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
+
 		/// <inheritdoc />
-		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
+		global::Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> (global::Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };
@@ -45,6 +52,8 @@ namespace Windows.UI.Xaml.Input
 		internal uint FrameId { get; }
 
 		internal bool CanceledByDirectManipulation { get; set; }
+
+		internal bool IsInjected { get; set; }
 
 		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
@@ -75,13 +84,13 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		internal bool IsPointCoordinatesOver(UIElement element)
-			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+			=> new Rect(default, element.ActualSize.ToSize()).Contains(GetCurrentPoint(element).Position);
 
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 
-		Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+		global::Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
 
 		long IDragEventSource.Id => Pointer.UniqueId;
 		uint IDragEventSource.FrameId => FrameId;
@@ -117,16 +126,15 @@ namespace Windows.UI.Xaml.Input
 				mods |= DragDropModifiers.RightButton;
 			}
 
-			var window = Window.Current.CoreWindow;
-			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Shift;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Control;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Alt;
 			}

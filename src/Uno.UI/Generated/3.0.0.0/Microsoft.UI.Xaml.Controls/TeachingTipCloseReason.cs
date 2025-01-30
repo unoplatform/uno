@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum TeachingTipCloseReason
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CloseButton = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LightDismiss = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Programmatic = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.CloseButton
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.LightDismiss
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipCloseReason.Programmatic
 	}
 #endif
 }

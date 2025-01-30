@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.ResourceLoader.Controls;
+using Windows.Globalization;
 using _ResourceLoader = Windows.ApplicationModel.Resources.ResourceLoader;
 
 namespace Uno.UI.Tests.ResourceLoaderTests
@@ -14,21 +15,25 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 	[TestClass]
 	public class Given_ResourceLoader
 	{
+		private const string DefaultLanguage = "en-US";
 		private const string UITestResources = "Uno.UI.Tests/Resources";
 
 		[TestInitialize]
 		public void Init()
 		{
-			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
-			_ResourceLoader.DefaultLanguage = "en-US";
+			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
+			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
+			_ResourceLoader.DefaultLanguage = DefaultLanguage;
+
 			_ResourceLoader.AddLookupAssembly(GetType().Assembly);
 		}
 
 		[TestCleanup]
 		public void Cleanup()
 		{
-			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
-			_ResourceLoader.DefaultLanguage = "en-US";
+			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
+			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
+			_ResourceLoader.DefaultLanguage = DefaultLanguage;
 		}
 
 		[TestMethod]
@@ -52,7 +57,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		{
 			void setResources(string language)
 			{
-				CultureInfo.CurrentUICulture = new CultureInfo(language);
+				ApplicationLanguages.PrimaryLanguageOverride = language;
 				_ResourceLoader.DefaultLanguage = language;
 			}
 
@@ -71,7 +76,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		{
 			var SUT = _ResourceLoader.GetForCurrentView(UITestResources);
 
-			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
+			ApplicationLanguages.PrimaryLanguageOverride = "fr-FR";
 			Assert.AreEqual(@"Text in 'fr'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
@@ -80,7 +85,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		{
 			var SUT = _ResourceLoader.GetForCurrentView(UITestResources);
 
-			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
+			ApplicationLanguages.PrimaryLanguageOverride = "de-DE";
 			Assert.AreEqual(@"Text in 'en'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 

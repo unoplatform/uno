@@ -6,7 +6,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 {
 	internal class DateTimePickerViewModel : ViewModelBase
 	{
-		public DateTimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public DateTimePickerViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_date = DateTimeOffset.Now.Date;
 			_time = DateTimeOffset.Now.TimeOfDay;

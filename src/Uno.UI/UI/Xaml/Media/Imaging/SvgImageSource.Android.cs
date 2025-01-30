@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.IO;
 using System.Net.Http;
@@ -11,16 +11,17 @@ using Android.OS;
 using Android.Provider;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using static Android.Provider.DocumentsContract;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
@@ -35,13 +36,13 @@ partial class SvgImageSource
 		{
 			if (Stream is not null)
 			{
-				return await ReadFromStreamAsync(Stream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(Stream, ct);
 			}
 
 			if (!FilePath.IsNullOrEmpty())
 			{
 				using var fileStream = File.OpenRead(FilePath);
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 			}
 
 			if (AbsoluteUri is not null)
@@ -54,7 +55,7 @@ partial class SvgImageSource
 						return ImageData.Empty;
 					}
 
-					return await ReadFromStreamAsync(stream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(stream, ct);
 				}
 
 				if (AbsoluteUri.IsLocalResource())
@@ -63,7 +64,7 @@ partial class SvgImageSource
 
 					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
 					using var ioStream = fileStream.AsStream();
-					return await ReadFromStreamAsync(ioStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
@@ -76,12 +77,12 @@ partial class SvgImageSource
 					}
 
 					using var fileStream = File.OpenRead(filePath.LocalPath);
-					return await ReadFromStreamAsync(fileStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 				}
 				else
 				{
-					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
-					return await ReadFromStreamAsync(imageStream, ct);
+					using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(imageStream, ct);
 				}
 			}
 

@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
+using Microsoft.UI.Xaml;
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -126,7 +126,7 @@ public class Given_DispatcherTimer
 			await TestServices.WindowHelper.WaitFor(() => tickCounter > 0);
 			await Task.Delay(200);
 			// Second tick never happens
-			Assert.AreEqual(tickCounter, 1);
+			Assert.AreEqual(1, tickCounter);
 			// Even then, the timer still appears enabled
 			Assert.IsTrue(dispatcherTimer.IsEnabled);
 		}

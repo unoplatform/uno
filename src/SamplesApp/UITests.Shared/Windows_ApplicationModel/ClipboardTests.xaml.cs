@@ -11,13 +11,15 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage.Streams;
 
 namespace UITests.Windows_ApplicationModel
 {
@@ -43,8 +45,9 @@ namespace UITests.Windows_ApplicationModel
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
+		private BitmapSource _bmp;
 
-		public ClipboardTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ClipboardTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			Disposables.Add(Disposable.Create(() =>
 			{
@@ -85,11 +88,25 @@ namespace UITests.Windows_ApplicationModel
 			}
 		}
 
+		public BitmapSource Bitmap
+		{
+			get => _bmp;
+			private set
+			{
+				_bmp = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ICommand ClearCommand => GetOrCreateCommand(Clear);
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
-		public ICommand PasteCommand => GetOrCreateCommand(Paste);
+		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
+
+		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
+
+		public ICommand PasteStorageItemsCommand => GetOrCreateCommand(PasteStorageItems);
 
 		public ICommand FlushCommand => GetOrCreateCommand(Flush);
 
@@ -104,7 +121,7 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
-		private async void Paste()
+		private async void PasteText()
 		{
 			var content = Clipboard.GetContent();
 			Text = await content.GetTextAsync();
@@ -128,6 +145,59 @@ namespace UITests.Windows_ApplicationModel
 		private void Clipboard_ContentChanged(object sender, object e)
 		{
 			LastContentChangedDate = DateTime.UtcNow.ToLongTimeString();
+		}
+
+		private async void PasteImage()
+		{
+			var dataPackageView = Clipboard.GetContent();
+
+			if (dataPackageView is null)
+			{
+				return;
+			}
+
+			var formats = new[]
+			{
+				"image/png",
+				"image/jpeg"
+			};
+
+			foreach (var format in formats)
+			{
+				if (dataPackageView.Contains(format))
+				{
+					if (await dataPackageView.GetDataAsync("image/png") is byte[] bytes)
+					{
+						var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
+						await File.WriteAllBytesAsync(fileName, bytes);
+						var bitmapImage = new BitmapImage(new Uri(fileName));
+						Bitmap = bitmapImage;
+					}
+				}
+			}
+
+			if (Bitmap is null && dataPackageView.Contains(StandardDataFormats.Bitmap))
+			{
+				var bitmapReference = await dataPackageView.GetBitmapAsync();
+				var bitmapImage = new BitmapImage();
+				bitmapImage.SetSource(await bitmapReference.OpenReadAsync());
+				Bitmap = bitmapImage;
+			}
+		}
+
+		private async void PasteStorageItems()
+		{
+			var dataPackageView = Clipboard.GetContent();
+
+			if (dataPackageView is null)
+			{
+				return;
+			}
+
+			if (dataPackageView.Contains(StandardDataFormats.StorageItems))
+			{
+				Text = string.Join("\n", (await dataPackageView.GetStorageItemsAsync()).Select(si => si.Path));
+			}
 		}
 	}
 }

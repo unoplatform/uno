@@ -3,13 +3,18 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+
+#if HAS_UNO
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+#endif
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -50,12 +55,12 @@ namespace Private.Infrastructure
 
 			public static void Tap(UIElement element, uint waitBetweenPressRelease = 0)
 			{
-#if NETFX_CORE || __SKIA__
+#if WINAPPSDK || HAS_INPUT_INJECTOR
 				Finger finger = null;
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					finger.Press(center);
 				});
@@ -70,23 +75,46 @@ namespace Private.Infrastructure
 				});
 
 #else
-				// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
-				// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
-				var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
-				element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+					if (inputManager is not null)
+					{
+						inputManager.LastInputDeviceType = InputDeviceType.Touch;
+					}
+					// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
+					// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
+					var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
+					element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+				});
 #endif
 			}
 			public static void Tap(Point point)
 			{
+#if WINAPPSDK || __SKIA__
+				Finger finger = null;
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+					finger.Press(point);
+				});
+
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					finger.Release();
+				});
+#else
 				throw new System.NotImplementedException();
+#endif
 			}
 
-			public static void ScrollMouseWheel(CalendarView cv, int i)
+			public static void ScrollMouseWheel(UIElement cv, int i)
 			{
 				throw new System.NotImplementedException();
 			}
 
 			public static void LeftMouseClick(UIElement element) => Tap(element);
+			public static void LeftMouseClick(Point point) => Tap(point);
 
 			public static void PenBarrelTap(FrameworkElement pElement)
 			{

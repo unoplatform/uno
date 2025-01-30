@@ -69,6 +69,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // ImageAssert.AreEqual @ line 98 https://github.com/unoplatform/uno/issues/9080
 		public void TestProgressRing_InitialState()
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRing_Features");

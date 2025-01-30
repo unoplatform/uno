@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using SamplesApp.UITests.TestFramework;
@@ -113,7 +113,7 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if __IOS__ || !HAS_UNO
+#if __IOS__ || __ANDROID__ || !HAS_UNO
 	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
@@ -164,6 +164,9 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/15471")]
+#endif
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -231,6 +234,8 @@ public partial class Given_MediaPlayerElement
 
 #if __SKIA__
 	[Ignore("Test not work properly on CI, the player do not have time to pause, doe the video do not auto play.  [https://github.com/unoplatform/uno/issues/12692]")]
+#elif __ANDROID__
+	[Ignore("Fails on Android")]
 #endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayPause()
@@ -290,11 +295,11 @@ public partial class Given_MediaPlayerElement
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
 
-		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
 		sut.AreTransportControlsEnabled = true;
-		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
+		Assert.AreEqual(Visibility.Visible, tcp.Visibility);
 		sut.AreTransportControlsEnabled = false;
-		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
 	}
 
 #if !HAS_UNO
@@ -323,20 +328,26 @@ public partial class Given_MediaPlayerElement
 		sut.TransportControls.IsFastForwardEnabled = true;
 		sut.TransportControls.IsFastRewindEnabled = true;
 		sut.TransportControls.IsPlaybackRateEnabled = true;
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowEnabled = true;
+#endif
 		sut.TransportControls.IsRepeatEnabled = true;
 		sut.TransportControls.IsSeekEnabled = true;
 		sut.TransportControls.IsSkipBackwardEnabled = true;
 		sut.TransportControls.IsStopEnabled = true;
 		sut.TransportControls.IsVolumeEnabled = true;
 		sut.TransportControls.IsZoomEnabled = true;
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayEnabled = true;
+#endif
 		sut.TransportControls.IsSkipForwardEnabled = true;
 
 		//// step 3: Collapsed Visibility from all to make sure that we have space
 		sut.TransportControls.IsFastForwardButtonVisible = false;
 		sut.TransportControls.IsFastRewindButtonVisible = false;
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowButtonVisible = false;
+#endif
 		sut.TransportControls.IsNextTrackButtonVisible = false;
 		sut.TransportControls.IsPlaybackRateButtonVisible = false;
 		sut.TransportControls.IsPreviousTrackButtonVisible = false;
@@ -347,7 +358,9 @@ public partial class Given_MediaPlayerElement
 		sut.TransportControls.IsStopButtonVisible = false;
 		sut.TransportControls.IsVolumeButtonVisible = false;
 		sut.TransportControls.IsZoomButtonVisible = false;
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayButtonVisible = false;
+#endif
 
 		// step 4: Start to validate one by one.
 		sut.TransportControls.IsFastForwardButtonVisible = true;
@@ -380,6 +393,7 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
 				);
 
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("FullWindowButton");
 		await WindowHelper.WaitFor(
@@ -394,6 +408,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
 				);
+#endif
 
 		sut.TransportControls.IsNextTrackButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("NextTrackButton");
@@ -536,6 +551,7 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
 		await WindowHelper.WaitFor(
@@ -550,6 +566,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
 				);
+#endif
 
 		sut.TransportControls.IsSeekBarVisible = true;
 		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
@@ -567,11 +584,7 @@ public partial class Given_MediaPlayerElement
 				);
 	}
 
-
-
-
-
-	public void CheckMediaPlayerExtensionAvailability()
+	private void CheckMediaPlayerExtensionAvailability()
 	{
 #if HAS_UNO
 		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())

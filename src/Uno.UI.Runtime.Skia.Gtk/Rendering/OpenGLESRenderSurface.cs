@@ -5,10 +5,10 @@ using System.IO;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Input;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using WUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
@@ -21,6 +21,7 @@ using Silk.NET.OpenGLES;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -31,7 +32,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
 
-		public OpenGLESRenderSurface(IXamlRootHost host) : base(host)
+		public OpenGLESRenderSurface(IGtkXamlRootHost host) : base(host)
 		{
 			_glES = new GL(NativeContext);
 			_isGLES = true;
@@ -42,10 +43,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			get
 			{
 				// OpenGL support on macOS is currently broken
-				var isMacOS = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+				var isMacOS = OperatingSystem.IsMacOS();
 
 				// WSL2 is not supported because of a low version for GLSL (https://github.com/unoplatform/uno/issues/8643#issuecomment-1114392827)
-				var isWSL2 = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+				var isWSL2 = OperatingSystem.IsLinux()
 					// https://github.com/microsoft/WSL/issues/423#issuecomment-844418910
 					&& File.Exists("/proc/sys/kernel/osrelease")
 					&& File.ReadAllText("/proc/sys/kernel/osrelease").Trim().EndsWith("WSL2", StringComparison.Ordinal);

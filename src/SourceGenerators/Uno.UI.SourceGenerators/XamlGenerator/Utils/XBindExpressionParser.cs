@@ -157,7 +157,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				throw new Exception("Unexpected XBindRoot");
 			}
 
-			public void BuildPath(XBindPath path, StringBuilder? propertyBuilder)
+			public void BuildPath(XBindPath path, StringBuilder? propertyBuilder, bool isType = false)
 			{
 				if (path is XBindMemberAccess memberAccess)
 				{
@@ -176,26 +176,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (path is XBindIdentifier identifier)
 				{
-					if (!identifier.IdentifierText.StartsWith("global::", StringComparison.Ordinal) &&
+					if (!isType &&
+						!identifier.IdentifierText.StartsWith("global::", StringComparison.Ordinal) &&
 						identifier.IdentifierText is not ("null" or "true" or "false"))
 					{
 						_builder.Append(_contextName);
 						_builder.Append('.');
 					}
 
-					_builder.Append(identifier.IdentifierText);
+					if (isType)
+					{
+						_builder.Append(GetGlobalizedTypeName(identifier.IdentifierText));
+					}
+					else
+					{
+						_builder.Append(identifier.IdentifierText);
+					}
+
 					propertyBuilder?.Append(identifier.IdentifierText);
 				}
 				else if (path is XBindAttachedPropertyAccess attachedPropertyAccess)
 				{
-					if (attachedPropertyAccess.PropertyClass is XBindIdentifier attachedClassIdentifier)
-					{
-						_builder.Append(GetGlobalizedTypeName(attachedClassIdentifier.IdentifierText));
-					}
-					else
-					{
-						BuildPath(attachedPropertyAccess.PropertyClass, propertyBuilder: null);
-					}
+					BuildPath(attachedPropertyAccess.PropertyClass, propertyBuilder: null, isType: true);
 
 					_builder.Append(".Get");
 					_builder.Append(attachedPropertyAccess.PropertyName.IdentifierText);
@@ -217,7 +219,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				else if (path is XBindCast xBindCast)
 				{
 					_builder.Append('(');
-					BuildPath(xBindCast.Type, propertyBuilder: null);
+					BuildPath(xBindCast.Type, propertyBuilder: null, isType: true);
+
 					_builder.Append(')');
 					BuildPath(xBindCast.Expression, propertyBuilder);
 				}
@@ -331,7 +334,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var expectedIndexerParameterType = index is LiteralExpressionSyntax indexLiteral && indexLiteral.IsKind(SyntaxKind.StringLiteralExpression)
 					? SpecialType.System_String
 					: SpecialType.System_Int32;
-				var indexer = lastType.GetMemberInlcudingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
+				var indexer = lastType.GetMemberIncludingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
 				if (indexer is not null)
 				{
 					_lastAccessed = (indexer, IsTopLevelContext: false);
@@ -421,7 +424,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					_ => throw new Exception($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
 				};
 
-				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);
+				var member = previousType.GetMemberIncludingBaseTypes(node.Identifier.ValueText);
 				if (member is null)
 				{
 					Failed = true;

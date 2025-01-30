@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
+	private IDisposable _renderTransformChangedRegistration;
 	private PopupPlacementMode _actualPlacement;
 
 	internal bool IsSubMenu { get; set; }
@@ -59,6 +61,28 @@ public partial class Popup
 	{
 		Initialize();
 		KeyDown += OnKeyDown;
+		this.RegisterDisposablePropertyChangedCallback(RenderTransformProperty, (dO, _) => ((Popup)dO).OnRenderTransformChanged());
+	}
+
+	private void OnRenderTransformChanged()
+	{
+		_renderTransformChangedRegistration?.Dispose();
+		// since the Child is not a visual child, any visual properties set on the Popup won't apply, so
+		// we have to apply them manually. To avoid interference with a RenderTransform on the child,
+		// we set it on the uno-internal PopupPanel
+		var renderTransform = RenderTransform;
+		PopupPanel.RenderTransform = renderTransform;
+		// RenderTransform could get its value by a binding with a relative source (e.g. a TemplateBinding).
+		// In that case, directly setting `PopupPanel.RenderTransform = RenderTransform` wouldn't propagate
+		// the value correctly to the PopupPanel.
+		var matrixTransform = new MatrixTransform { Matrix = new Matrix(renderTransform.MatrixCore) };
+		PopupPanel.RenderTransform = matrixTransform;
+		PopupPanel.InvalidateArrange();
+		// we set the anchor point of the child in PopupPanel.ArrangeOverride, so even though RenderTransform normally doesn't
+		// AffectArrange, in this situation, it does.
+		var callback = new EventHandler((_, _) => PopupPanel.InvalidateArrange());
+		renderTransform.Changed += callback;
+		_renderTransformChangedRegistration = Disposable.Create(() => renderTransform.Changed -= callback);
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs args)
@@ -66,6 +90,15 @@ public partial class Popup
 		if (args.Key == VirtualKey.Escape)
 		{
 			args.Handled = true;
+
+			// Give the popup an opportunity to cancel closing
+			var cancel = false;
+			OnClosing(ref cancel);
+			if (cancel)
+			{
+				return;
+			}
+
 			IsOpen = false;
 		}
 	}
@@ -74,7 +107,7 @@ public partial class Popup
 	{
 		if (property == IsLightDismissEnabledProperty)
 		{
-			defaultValue = FeatureConfiguration.Popup.EnableLightDismissByDefault;
+			defaultValue = Uno.UI.Helpers.Boxes.Box(FeatureConfiguration.Popup.EnableLightDismissByDefault);
 			return true;
 		}
 		return base.GetDefaultValue2(property, out defaultValue);
@@ -185,6 +218,15 @@ public partial class Popup
 			typeof(Popup),
 			new FrameworkPropertyMetadata(PopupPlacementMode.Auto, FrameworkPropertyMetadataOptions.AffectsArrange));
 
+	internal DependencyObject OverlayInputPassThroughElement
+	{
+		get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
+		set => SetValue(OverlayInputPassThroughElementProperty, value);
+	}
+
+	internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+		DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(Popup), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
 	/// <summary>
 	/// Gets the actual placement of the popup, in relation to its placement target.
 	/// </summary>
@@ -286,17 +328,15 @@ public partial class Popup
 	/// </summary>
 	private Brush GetPanelBackground()
 	{
+		// In all cases, we need the background to not be null so that it can receive pointer events, or else it
+		// will fail hit-testing.
 		if (ShouldShowLightDismissOverlay)
 		{
-			return LightDismissOverlayBackground;
-		}
-		else if (IsLightDismissEnabled)
-		{
-			return SolidColorBrushHelper.Transparent;
+			return LightDismissOverlayBackground ?? SolidColorBrushHelper.Transparent;
 		}
 		else
 		{
-			return null;
+			return SolidColorBrushHelper.Transparent;
 		}
 	}
 

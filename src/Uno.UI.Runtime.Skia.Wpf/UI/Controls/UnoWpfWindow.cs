@@ -1,106 +1,99 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
-using Uno.Foundation.Logging;
+using System.Windows;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.UI.Core.Preview;
+using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
-using WinUI = Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Xaml.Controls;
+using WindowChrome = System.Windows.Shell.WindowChrome;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
 internal class UnoWpfWindow : WpfWindow
 {
+	private readonly ApplicationView _applicationView;
 	private readonly WinUI.Window _winUIWindow;
-	private readonly UnoWpfWindowHost _host;
-	private bool _isVisible;
 
-	public UnoWpfWindow(WinUI.Window winUIWindow)
+	private bool _shown;
+
+	private static readonly ConcurrentDictionary<WinUI.Window, WpfWindow> _windowToWpfWindow = new();
+
+	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Showing += OnShowing;
-		_winUIWindow.NativeWindow = this;
+		_winUIWindow = winUIWindow;
+		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
-		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Windows.Foundation.Size.Empty)
+		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize.IsEmpty)
 		{
-			Width = (int)preferredWindowSize.Width;
-			Height = (int)preferredWindowSize.Height;
+			preferredWindowSize = new Windows.Foundation.Size(NativeWindowWrapperBase.InitialWidth, NativeWindowWrapperBase.InitialHeight);
 		}
+		Width = (int)preferredWindowSize.Width;
+		Height = (int)preferredWindowSize.Height;
 
-		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
+		var windowHost = new UnoWpfWindowHost(this, winUIWindow);
+		Host = windowHost;
+		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
-		Closing += OnClosing;
-		Activated += OnActivated;
-		Deactivated += OnDeactivated;
-		StateChanged += OnStateChanged;
+		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		Closed += UnoWpfWindow_Closed;
+		Activated += UnoWpfWindow_Activated;
 
-		winUIWindow.OnNativeWindowCreated();
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
+
+		this.SourceInitialized += (s, e) => windowHost.InitializeRenderer();
 	}
 
-	private void OnShowing(object? sender, EventArgs e) => Show();
+	public static WpfWindow? GetFromWinUIWindow(WinUI.Window window)
+		=> _windowToWpfWindow.TryGetValue(window, out var wpfWindow) ? wpfWindow : null;
 
-	private void OnClosing(object? sender, CancelEventArgs e)
+	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{
-		// TODO: Support multi-window approach properly #8341
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
+		Host.Focus();
+		if (!_shown)
 		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-	}
-
-	private void OnDeactivated(object? sender, EventArgs e) =>
-		_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-
-	private void OnActivated(object? sender, EventArgs e)
-	{
-		_winUIWindow.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
-		_host.Focus();
-	}
-
-	private void OnStateChanged(object? sender, EventArgs e)
-	{
-		var application = WinUIApplication.Current;
-		var wasVisible = _isVisible;
-
-		_isVisible = WindowState != System.Windows.WindowState.Minimized;
-
-		if (wasVisible && !_isVisible)
-		{
-			_winUIWindow.OnNativeVisibilityChanged(false);
-			application?.RaiseEnteredBackground(null);
-		}
-		else if (!wasVisible && _isVisible)
-		{
-			application?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
+			_shown = true;
+			NativeWindowShown?.Invoke(this, this);
 		}
 	}
+
+	internal static event EventHandler<UnoWpfWindow>? NativeWindowShown;
+
+	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+	}
+
+	internal WpfControl Host { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.GetForCurrentView();
-		Title = appView.Title;
-		MinWidth = appView.PreferredMinSize.Width;
-		MinHeight = appView.PreferredMinSize.Height;
+		MinWidth = _applicationView.PreferredMinSize.Width;
+		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -116,7 +109,7 @@ internal class UnoWpfWindow : WpfWindow
 
 				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
 			}
-			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
@@ -134,9 +127,38 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	private void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
+	}
+
+	internal void ExtendContentIntoTitleBar(bool extend)
+	{
+		if (extend)
+		{
+			WindowStyle = WindowStyle.None;
+			WindowChrome.SetWindowChrome(this, new WindowChrome
+			{
+				UseAeroCaptionButtons = false,
+				// this removes the thin white bar at the top, but this causes the window to grow a little.
+				// No work around has been found for this yet.
+				CaptionHeight = 0
+			});
+
+			// for some reason touchpad physical presses work without this, but not "taps"
+			WindowChrome.SetIsHitTestVisibleInChrome((IInputElement)Content, true);
+		}
+		else
+		{
+			WindowStyle = WindowStyle.SingleBorderWindow;
+			ClearValue(WindowChrome.WindowChromeProperty);
 		}
 	}
 }

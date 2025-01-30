@@ -11,21 +11,17 @@ stages:
     parameters:
       vmImage: '$(linuxVMImage)'
 
+  - template: .azure-devops-markdown-lint.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
   - template: .azure-devops-pipeline-validations.yml
     parameters:
       vmImage: '$(linuxVMImage)'
 
-- stage: convert_tree
-  displayName: WinUI Tree Conversion
-  dependsOn: Setup
-  jobs:
-  - template: .azure-devops-winui-convert.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
-
 - stage: docs_generation
   displayName: Docs Generation
-  dependsOn: convert_tree
+  dependsOn: Setup
   jobs:
   - template: .azure-devops-docs.yml
     parameters:

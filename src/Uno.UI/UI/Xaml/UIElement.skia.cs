@@ -3,38 +3,40 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
+using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ShapeVisual _visual;
-		private Rect _currentFinalRect;
-		private Rect? _currentClippedFrame;
+		private protected ContainerVisual _visual;
+		private Rect _lastFinalRect;
+		private Rect? _lastClippedFrame;
+		private Vector3 _lastTranslation;
 
 		public UIElement()
 		{
@@ -57,11 +59,12 @@ namespace Windows.UI.Xaml
 				nameof(UseLayoutRounding),
 				typeof(bool),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
+			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
@@ -74,14 +77,16 @@ namespace Windows.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		internal ShapeVisual Visual
+		internal ContainerVisual Visual
 		{
 			get
 			{
 
 				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateShapeVisual();
+					_visual = CreateElementVisual();
+					Debug.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
+						"Border info providers are expected to override CreateElementVisual and return BorderVisual, and types returning BorderVisual should be IBorderInfoProviders");
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
@@ -91,17 +96,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
-		partial void OnLoading()
-		{
-			if (_visual is not null)
-			{
-				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
-			}
-		}
-#endif
+		private protected virtual ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateContainerVisual();
 
-		internal bool ClippingIsSetByCornerRadius { get; set; }
+		/// <param name="point">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
+		/// <remarks>This does NOT take the clipping into account.</remarks>
+		internal virtual bool HitTest(Point point) => Visual.HitTest(point);
 
 		internal void AddChild(UIElement child, int? index = null)
 		{
@@ -129,7 +128,6 @@ namespace Windows.UI.Xaml
 			}
 
 			child.SetParent(this);
-			OnAddingChild(child);
 
 			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
@@ -142,6 +140,9 @@ namespace Windows.UI.Xaml
 				_children.Add(child);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 
@@ -174,7 +175,19 @@ namespace Windows.UI.Xaml
 
 		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
-			ApiInformation.TryRaiseNotImplemented("UIElement", "MoveChildTo");
+			var view = _children[oldIndex];
+
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
+			{
+				_children.Add(view);
+			}
+			else
+			{
+				_children.Insert(newIndex, view);
+			}
+
+			InvalidateMeasure();
 		}
 
 		internal bool RemoveChild(UIElement child)
@@ -207,6 +220,11 @@ namespace Windows.UI.Xaml
 
 		internal void ClearChildren()
 		{
+			if (_children.Count == 0)
+			{
+				return;
+			}
+
 			foreach (var child in _children.ToArray())
 			{
 				InnerRemoveChild(child);
@@ -228,8 +246,6 @@ namespace Windows.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		internal bool IsPointerCaptured { get; set; }
-
 		internal MaterializableList<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; }
@@ -241,8 +257,8 @@ namespace Windows.UI.Xaml
 
 			if (newValue == Visibility.Collapsed)
 			{
-				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
-				_size = new Size(0, 0);
+				m_desiredSize = new Size(0, 0);
+				m_size = new Size(0, 0);
 			}
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
@@ -261,10 +277,12 @@ namespace Windows.UI.Xaml
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
-			var oldFinalRect = _currentFinalRect;
-			var oldClippedFrame = _currentClippedFrame;
-			_currentFinalRect = finalRect;
-			_currentClippedFrame = clippedFrame;
+			var oldFinalRect = _lastFinalRect;
+			var oldClippedFrame = _lastClippedFrame;
+			var oldTranslation = _lastTranslation;
+			_lastFinalRect = finalRect;
+			_lastClippedFrame = clippedFrame;
+			_lastTranslation = _translation;
 
 			var oldRect = oldFinalRect;
 			var newRect = finalRect;
@@ -272,7 +290,10 @@ namespace Windows.UI.Xaml
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
 
-			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
+			if (oldRect != newRect ||
+				oldClip != newClip ||
+				oldTranslation != _translation ||
+				(_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -286,35 +307,24 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? clip;
-				if (this is Controls.ScrollViewer)
-				{
-					clip = (Rect?)null;
-				}
-				else
-				{
-					clip = clippedFrame;
-				}
-
-				OnArrangeVisual(newRect, clip);
-				OnViewportUpdated(clippedFrame ?? Rect.Empty);
+				OnArrangeVisual(newRect, clippedFrame);
+				OnViewportUpdated();
 			}
 			else
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+					this.Log().Debug($"{this}: ArrangeVisual({_lastFinalRect}) -- SKIPPED (no change)");
 				}
 			}
 		}
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			var roundedRect = LayoutRound(rect);
-
+			// Note: rect has already been rounded, if needed, during arrange.
 			var visual = Visual;
-			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
-			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
 			{
@@ -323,43 +333,45 @@ namespace Windows.UI.Xaml
 
 			_renderTransform?.UpdateFlowDirectionTransform();
 
-			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
-			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
+			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
 			if (clip is null)
 			{
-				visual.ViewBox = null;
+				visual.LayoutClip = null;
 			}
 			else
 			{
-				var viewBox = visual.Compositor.CreateViewBox();
-				viewBox.Offset = clip.Value.Location.ToVector2();
-				viewBox.Size = clip.Value.Size.ToVector2();
-
-				visual.ViewBox = viewBox;
+				visual.LayoutClip = (clip.Value, ShouldApplyLayoutClipAsAncestorClip());
 			}
 		}
 
-		partial void ApplyNativeClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect, Transform transform)
 		{
-			if (ClippingIsSetByCornerRadius)
-			{
-				return; // already applied
-			}
-
 			if (rect.IsEmpty)
 			{
 				Visual.Clip = null;
 			}
 			else
 			{
-				var roundedRectClip = LayoutRound(rect);
+				var roundedRectClip = rect;
+				if (GetUseLayoutRounding())
+				{
+					roundedRectClip = LayoutRound(roundedRectClip);
+				}
 
-				Visual.Clip = Visual.Compositor.CreateInsetClip(
-					topInset: (float)roundedRectClip.Top,
-					leftInset: (float)roundedRectClip.Left,
-					bottomInset: (float)roundedRectClip.Bottom,
-					rightInset: (float)roundedRectClip.Right
+				var compositionClip = Visual.Compositor.CreateRectangleClip(
+					top: (float)roundedRectClip.Top,
+					left: (float)roundedRectClip.Left,
+					bottom: (float)roundedRectClip.Bottom,
+					right: (float)roundedRectClip.Right
 				);
+
+				if (transform is { } clipTransform)
+				{
+					compositionClip.TransformMatrix = clipTransform.MatrixCore;
+				}
+
+				Visual.Clip = compositionClip;
 			}
 		}
 
@@ -368,6 +380,36 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+		public void StartAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				if (expressionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
+					expressionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
+				{
+					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+				}
+
+				Visual.StartAnimation(expressionAnimation.Target, expressionAnimation);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
+
+		public void StopAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				Visual.StopAnimation(expressionAnimation.Target);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
 
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 

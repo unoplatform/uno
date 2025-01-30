@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public abstract partial class SetterBase
 	{
@@ -14,6 +14,9 @@ namespace Windows.UI.Xaml
 		}
 
 		internal abstract void ApplyTo(DependencyObject o);
+
+		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
+		internal abstract bool TryGetSetterValue(out object? value, DependencyObject @do);
 
 		/// <summary>
 		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.

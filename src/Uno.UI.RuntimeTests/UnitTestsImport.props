@@ -1,5 +1,5 @@
 ﻿<Project>
-  <ItemGroup Condition="'$(TargetFramework)'!='uap10.0.19041'">
+  <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
 	<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
 	  <Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 	</Compile>

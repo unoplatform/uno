@@ -1,14 +1,15 @@
 ﻿using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Dispatching;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {
@@ -43,6 +44,11 @@ public partial class Popup
 		{
 			PopupPanel.Children.Add(newChild);
 		}
+
+#if __SKIA__
+		oldChild?.Visual?.SetAsPopupVisual(false);
+		newChild?.Visual?.SetAsPopupVisual(true);
+#endif
 	}
 
 	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
@@ -109,11 +115,20 @@ public partial class Popup
 
 		if (newIsOpen)
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// TODO: Add EventManager.RaiseEvent method and use it here.
+			NativeDispatcher.Main.Enqueue(() => Opened?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
+#else
 			Opened?.Invoke(this, newIsOpen);
+#endif
 		}
 		else
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			NativeDispatcher.Main.Enqueue(() => Closed?.Invoke(this, newIsOpen), NativeDispatcherPriority.Normal);
+#else
 			Closed?.Invoke(this, newIsOpen);
+#endif
 		}
 	}
 

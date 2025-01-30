@@ -9,8 +9,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -20,17 +20,17 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(TabItems))]
 	public partial class TabView : Control
@@ -551,7 +551,9 @@ namespace Microsoft.UI.Xaml.Controls
 					TabItems = lvItems;
 				}
 
-				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
+				// ReadLocalValue() is not returning UnsetValue even though SelectedItem is not yet set
+				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue
+					&& SelectedItem is not null)
 				{
 					UpdateSelectedItem();
 				}
@@ -882,12 +884,12 @@ namespace Microsoft.UI.Xaml.Controls
 			TabDragStarting?.Invoke(this, myArgs);
 		}
 
-		private void OnListViewDragOver(object sender, Windows.UI.Xaml.DragEventArgs args)
+		private void OnListViewDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDragOver?.Invoke(this, args);
 		}
 
-		void OnListViewDrop(object sender, Windows.UI.Xaml.DragEventArgs args)
+		void OnListViewDrop(object sender, Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDrop?.Invoke(this, args);
 		}
@@ -956,11 +958,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// It is not ideal to call UpdateLayout here, but it is necessary to ensure that the ContentPresenter has expanded its content
 						// into the live visual tree.
-#if IS_UNO
-						// TODO: Uno specific - issue #4925 - Calling UpdateLayout here causes another Measure of TabListView, which is already in progress
-						// if this tab was added by data binding. As a result, two copies of each tab would be constructed.
-						//tabContentPresenter.UpdateLayout();
-#endif
+						tabContentPresenter.UpdateLayout();
 
 						if (shouldMoveFocusToNewTab)
 						{
@@ -1089,7 +1087,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								// Calculate the proportional width of each tab given the width of the ScrollViewer.
 								var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right)) / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
 							}
 							else
 							{
@@ -1114,7 +1112,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 								// Use current size to update items to fill the currently occupied space
 								var tabWidthUnclamped = availableTabViewSpace / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
 							}
 
 
@@ -1272,27 +1270,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int GetItemCount()
 		{
-			var itemsSource = TabItemsSource;
-			if (itemsSource != null)
+			if (TabItemsSource is { } itemsSource)
 			{
-				var iterable = itemsSource as IEnumerable;
-				if (iterable != null)
+				if (itemsSource is IEnumerable iterable)
 				{
-					//int i = 1;
-					//var iter = iterable.First();
-					//while (iter.MoveNext())
-					//{
-					//	i++;
-					//}
-					//return i;
 					return iterable.Count();
 				}
 				return 0;
 			}
-
 			else
 			{
-				return (int)TabItems.Count;
+				return TabItems.Count;
 			}
 		}
 
@@ -1329,7 +1317,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			var coreWindow = CoreWindow.GetForCurrentThread();
+			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
 			if (coreWindow != null)
 			{
 				if (args.Key == VirtualKey.F4)

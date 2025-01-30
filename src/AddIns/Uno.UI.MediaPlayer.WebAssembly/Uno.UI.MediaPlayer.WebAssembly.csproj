@@ -6,13 +6,14 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.WebAssembly</AssemblyName>
 		<RootNamespace>Uno.UI.Media</RootNamespace>
-		<IsPackable>false</IsPackable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MediaPlayer.WebAssembly</PackageId>
+		<Description>This package provides support for MediaPlayerElement for WebAssembly</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,21 +22,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\MediaElement.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="tsconfig.json" />
+		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -54,15 +48,11 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="WasmScripts\" />
-	</ItemGroup>
-
 	<Target Name="_UnoUIMSALOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

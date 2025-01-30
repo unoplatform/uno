@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Private.Infrastructure
 {
@@ -37,7 +37,7 @@ namespace Private.Infrastructure
 
 			}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
 			{
 				return null;
@@ -45,18 +45,37 @@ namespace Private.Infrastructure
 #endif
 		}
 
-		internal static
-#if !__WASM__
-			async
-#endif
-			Task RunOnUIThread(Action action)
+		internal static async Task RunOnUIThread(Action action)
 		{
-#if __WASM__
-			action();
-			return Task.CompletedTask;
-#else
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
-#endif
+			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+		}
+
+		internal static async Task RunOnUIThread(Func<Task> asyncAction)
+		{
+			var tsc = new TaskCompletionSource<bool>();
+
+			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					await asyncAction();
+					tsc.TrySetResult(true);
+				}
+				catch (Exception e)
+				{
+					tsc.TrySetException(e);
+				}
+			});
+
+			await tsc.Task;
+		}
+
+		internal static bool HasDispatcherAccess
+		{
+			get
+			{
+				return WindowHelper.RootElementDispatcher.HasThreadAccess;
+			}
 		}
 
 		internal static void EnsureInitialized() { }
@@ -66,9 +85,19 @@ namespace Private.Infrastructure
 			Assert.IsNotNull(value);
 		}
 
+		public static void VERIFY_IS_NOT_NULL(object value, string msg)
+		{
+			Assert.IsNotNull(value, msg);
+		}
+
 		public static void VERIFY_IS_NULL(object value)
 		{
 			Assert.IsNull(value);
+		}
+
+		public static void THROW_IF_NULL(object value)
+		{
+			Assert.IsNotNull(value);
 		}
 
 		public static void THROW_IF_NULL_WITH_MSG(object value, string msg)

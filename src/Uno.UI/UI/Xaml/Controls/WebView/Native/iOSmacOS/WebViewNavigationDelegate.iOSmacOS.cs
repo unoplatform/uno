@@ -25,7 +25,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal class WebViewNavigationDelegate : WKNavigationDelegate
 {

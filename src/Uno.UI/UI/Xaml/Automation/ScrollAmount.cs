@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains values that are used by the IScrollProvider pattern to indicate the direction and distance to scroll.

@@ -7,7 +7,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage.Pickers
 {
@@ -21,7 +21,7 @@ namespace UITests.Windows_Storage.Pickers
 			this.DataContextChanged += FolderPickerTests_DataContextChanged;
 		}
 
-		private void FolderPickerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void FolderPickerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as FolderPickerTestsViewModel;
 		}
@@ -37,11 +37,11 @@ namespace UITests.Windows_Storage.Pickers
 
 		private StorageFolder _pickedFolder = null;
 
-		public FolderPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FolderPickerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
-		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
+		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues<PickerLocationId>();
 
 		public PickerLocationId SuggestedStartLocation { get; set; } = PickerLocationId.ComputerFolder;
 
@@ -49,7 +49,7 @@ namespace UITests.Windows_Storage.Pickers
 
 		public string CommitButtonText { get; set; } = string.Empty;
 
-		public PickerViewMode[] ViewModes { get; } = Enum.GetValues(typeof(PickerViewMode)).OfType<PickerViewMode>().ToArray();
+		public PickerViewMode[] ViewModes { get; } = Enum.GetValues<PickerViewMode>();
 
 		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
 

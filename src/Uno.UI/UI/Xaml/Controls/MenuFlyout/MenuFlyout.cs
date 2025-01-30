@@ -1,4 +1,4 @@
-#pragma warning disable 649
+﻿#pragma warning disable 649
 #pragma warning disable 414 // assigned but its value is never used
 
 using System;
@@ -13,13 +13,13 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Sockets;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyout : FlyoutBase, IMenu
@@ -343,8 +343,9 @@ namespace Windows.UI.Xaml.Controls
 
 			pCoreMenuFlyout.ShowAtImpl(target as FrameworkElement, point);
 		}
+#endif
 
-		void OnProcessKeyboardAcceleratorsImpl(ProcessKeyboardAcceleratorEventArgs pArgs)
+		protected override void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
 		{
 			if (m_tpItems != null)
 			{
@@ -352,11 +353,10 @@ namespace Windows.UI.Xaml.Controls
 				for (int i = 0; i < itemCount; i++)
 				{
 					MenuFlyoutItemBase spItem = m_tpItems[i];
-					(spItem as MenuFlyoutItemBase).TryInvokeKeyboardAccelerator(pArgs);
+					(spItem as MenuFlyoutItemBase).TryInvokeKeyboardAccelerator(args);
 				}
 			}
 		}
-#endif
 
 		IMenu IMenu.ParentMenu
 		{

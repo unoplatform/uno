@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
@@ -365,6 +365,11 @@ namespace Windows.UI.Xaml.Controls
 			float staticZoomFactor)
 		{
 			global::System.Diagnostics.Debug.Assert(staticZoomFactor == 1f || staticZoomFactor == zoomFactor);
+
+			if (snapPoints is null)
+			{
+				return null;
+			}
 
 			var result = new List<float>(snapPoints.Count);
 

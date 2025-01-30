@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -14,13 +15,12 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
-using System.Globalization;
 using Microsoft.UI.Input;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -326,23 +326,21 @@ namespace Windows.UI.Xaml
 
 		internal static UIElement GetElementFromHandle(IntPtr handle)
 		{
-			var gcHandle = GCHandle.FromIntPtr(handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (handle != IntPtr.Zero)
 			{
-				return element;
+				var gcHandle = GCHandle.FromIntPtr(handle);
+
+				if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+				{
+					return element;
+				}
 			}
-
-			return null;
-		}
-
-		internal static UIElement GetElementFromHandle(int handle)
-		{
-			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			else
 			{
-				return element;
+				if (typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(UIElement).Log().Debug($"Unable to get element handle for uninitialized handle");
+				}
 			}
 
 			return null;
@@ -448,8 +446,6 @@ namespace Windows.UI.Xaml
 
 			child.SetParent(this);
 
-			OnAddingChild(child);
-
 			if (index is { } i)
 			{
 				_children.Insert(i, child);
@@ -460,6 +456,9 @@ namespace Windows.UI.Xaml
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 
@@ -629,15 +628,46 @@ namespace Windows.UI.Xaml
 			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
 		}
 
+		/// <remarks>
+		/// This doesn't consider renderingBounds and defaults to true, where currently only Shapes override it to provide proper hit testing.
+		/// Caller is responsible for checking rendering bounds
+		/// </remarks>
+		internal virtual bool HitTest(Point relativePosition) => true;
+
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			// TODO: include modifier info
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload), VirtualKeyModifiers.None) { CanBubbleNatively = true };
+			var key = VirtualKey.None;
+			var modifiers = VirtualKeyModifiers.None;
+			if (payload.Length > 4)
+			{
+				// Modifiers are in this order Ctrl, Alt, Windows, Shift
+				if (payload[0] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Control;
+				}
+				if (payload[1] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Menu;
+				}
+				if (payload[2] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Windows;
+				}
+				if (payload[3] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Shift;
+				}
+
+				// Remaining characters are the pressed key
+				key = VirtualKeyHelper.FromKey(payload[4..]);
+
+			}
+			return new KeyRoutedEventArgs(src, key, modifiers) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if (int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, CultureInfo.InvariantCulture, out int xamlHandle))
 			{
 				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{
@@ -669,40 +699,6 @@ namespace Windows.UI.Xaml
 					yield return type.Name.ToLowerInvariant();
 					type = type.BaseType;
 				}
-			}
-		}
-
-
-		private Microsoft.UI.Input.InputCursor _protectedCursor;
-
-#if HAS_UNO_WINUI
-		protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#else
-		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#endif
-		{
-			get => _protectedCursor;
-			set
-			{
-				if (_protectedCursor != value)
-				{
-					_protectedCursor = value;
-					SetProtectedCursorNative();
-				}
-			}
-
-		}
-
-		private void SetProtectedCursorNative()
-		{
-			if (_protectedCursor is Microsoft.UI.Input.InputSystemCursor inputSystemCursor)
-			{
-				var cursorShape = inputSystemCursor.CursorShape.ToCssProtectedCursor();
-				this.SetStyle("cursor", cursorShape);
-			}
-			else
-			{
-				this.ResetStyle("cursor");
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE
+﻿#if WINAPPSDK
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,17 +15,19 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices;
 
-#if NETFX_CORE
-using Windows.UI.Xaml;
+
+#if WINAPPSDK
+using Microsoft.UI.Xaml;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
-using FrameworkElement = Windows.UI.Xaml.IFrameworkElement;
+using FrameworkElement = Microsoft.UI.Xaml.IFrameworkElement;
 #endif
 
 namespace SampleControl.Presentation
@@ -69,8 +71,11 @@ namespace SampleControl.Presentation
 			return folder;
 		}
 
-		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
-			=> (400, 400, 1200, 800);
+		[DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		private static extern int GetDpiForWindow(IntPtr hwnd);
+
+		private static int GetDpi()
+			=> GetDpiForWindow(WinRT.Interop.WindowNative.GetWindowHandle(SamplesApp.App.MainWindow));
 	}
 }
 #endif

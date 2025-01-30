@@ -1,4 +1,4 @@
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
@@ -9,7 +9,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TimePickerSelector
 	{
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
-			DatePickerSelector.OverrideUIDatePickerTheme();
+			DatePickerSelector.OverrideUIDatePickerTheme(this);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();
@@ -53,7 +53,6 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
-
 		}
 
 		private void OnEditingDidBegin(object sender, EventArgs e)
@@ -70,7 +69,6 @@ namespace Windows.UI.Xaml.Controls
 		public void Initialize()
 		{
 			UpdatePickerStyle();
-			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 		}

@@ -8,7 +8,7 @@ using UIKit;
 using Uno.Disposables;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MenuFlyout
 	{

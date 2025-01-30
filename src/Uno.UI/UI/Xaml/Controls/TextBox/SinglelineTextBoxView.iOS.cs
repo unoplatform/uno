@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using CoreGraphics;
 using Foundation;
@@ -7,20 +7,22 @@ using UIKit;
 using Uno.Extensions;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using static Uno.UI.FeatureConfiguration;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxView : UITextField, ITextBoxView, DependencyObject, IFontScalable
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -168,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (textBox != null)
 			{
-				var newFont = UIFontHelper.TryGetFont((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontFamily);
+				var newFont = FontHelper.TryGetFont(new((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontStretch), textBox.FontFamily);
 
 				if (newFont != null)
 				{
@@ -203,7 +205,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (newValue is SolidColorBrush scb)
 				{
-					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+					_foregroundBrushChangedSubscription?.Dispose();
+					_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{

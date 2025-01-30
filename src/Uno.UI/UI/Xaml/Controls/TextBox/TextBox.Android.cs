@@ -22,13 +22,13 @@ using Uno.UI.Extensions;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Android.Widget.TextView;
 using Math = System.Math;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox : View.IOnFocusChangeListener, IOnEditorActionListener
 	{
@@ -70,10 +70,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(false));
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
@@ -389,10 +387,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Parent != null && _textBoxView != null)
 			{
-				var style = TypefaceStyleHelper.GetTypefaceStyle(FontStyle, FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
-
-				_textBoxView.SetTypeface(typeface, style);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight, FontStyle, FontStretch);
+				_textBoxView.Typeface = typeface;
 				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}

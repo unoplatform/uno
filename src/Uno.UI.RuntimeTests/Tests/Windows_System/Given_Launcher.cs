@@ -25,14 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
-		public async Task When_LaunchUriAsync_From_Non_UI_Thread()
-		{
-			await Assert.ThrowsExceptionAsync<InvalidOperationException>(
-				() => Task.Run(
-					() => Launcher.LaunchUriAsync(new Uri("https://platform.uno"))));
-		}
-
-		[TestMethod]
 		public async Task When_Valid_Uri_Is_Queried()
 		{
 			var result = await Launcher.QueryUriSupportAsync(

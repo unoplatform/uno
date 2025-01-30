@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum CoreWebView2HostResourceAccessKind
 	{
-#if false
-		Deny = 0,
-#endif
-#if false
-		Allow = 1,
-#endif
-#if false
-		DenyCors = 2,
-#endif
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Deny
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.DenyCors
 	}
 #endif
 }

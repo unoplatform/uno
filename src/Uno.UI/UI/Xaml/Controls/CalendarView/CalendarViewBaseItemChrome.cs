@@ -1,4 +1,4 @@
-// CopyRight (c) Microsoft Corporation. All Rights reserved.
+﻿// CopyRight (c) Microsoft Corporation. All Rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
@@ -12,15 +12,16 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
-using DateTime = System.DateTimeOffset;
+using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
@@ -86,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			m_hasLabel = false;
 		}
 
-		private bool HasTemplateChild()
+		private protected override bool HasTemplateChild()
 		{
 			return GetFirstChildNoAddRef() != null;
 		}
@@ -111,9 +112,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		private UIElement GetFirstChildNoAddRef() => GetFirstChild();
-
-		private UIElement GetFirstChild()
+		internal override UIElement GetFirstChild()
 		{
 			UIElement spFirstChild;
 			// added in UIElement.GetFirstChild()
@@ -279,8 +278,7 @@ namespace Windows.UI.Xaml.Controls
 			if (pChildNoRef is { })
 			{
 				pChildNoRef.Measure(availableSize);
-				// TODO UNO
-				//pChildNoRef.EnsureLayoutStorage();
+				pChildNoRef.EnsureLayoutStorage();
 
 				desiredSize.Width = Math.Max(pChildNoRef.DesiredSize.Width, desiredSize.Width);
 				desiredSize.Height = Math.Max(pChildNoRef.DesiredSize.Height, desiredSize.Height);

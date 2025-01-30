@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
@@ -14,7 +14,7 @@ using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Rect = Android.Graphics.Rect;
 
 namespace Uno.UI

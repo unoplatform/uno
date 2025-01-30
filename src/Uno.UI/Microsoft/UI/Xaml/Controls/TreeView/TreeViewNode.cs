@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 [Bindable]
 public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, IStringable

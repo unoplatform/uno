@@ -107,7 +107,7 @@ partial class ApplicationData
 			return path;
 		}
 
-		string? localCacheRootFolder = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
+		string? localCacheRootFolder = OperatingSystem.IsLinux() ?
 			Environment.GetEnvironmentVariable("XDG_CACHE_HOME") :
 			Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 

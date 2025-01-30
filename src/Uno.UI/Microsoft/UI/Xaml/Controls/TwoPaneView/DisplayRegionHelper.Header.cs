@@ -6,7 +6,7 @@
 
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal partial class DisplayRegionHelper
 {

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using Uno;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -15,7 +15,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var device = Windows.Devices.Input.PointerDevice.For(PointerDeviceType.Mouse);
+			var device = global::Windows.Devices.Input.PointerDevice.For(PointerDeviceType.Mouse);
 			var translation = relativeTo.TransformToVisual(null) as TranslateTransform;
 			var offset = new Point(_point.X - translation.X, _point.Y - translation.Y);
 			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };

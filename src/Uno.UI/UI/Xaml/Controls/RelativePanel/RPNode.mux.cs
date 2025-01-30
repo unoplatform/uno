@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -9,7 +9,7 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
@@ -24,9 +24,7 @@ internal partial class RPNode
 	{
 		if (m_element is UIElement element)
 		{
-			//TODO Uno: Layout storage not supported internally yet
-			//return element.GetLayoutStorage().m_desiredSize.width;
-			return element.DesiredSize.Width;
+			return element.m_desiredSize.Width;
 		}
 		else
 		{
@@ -44,9 +42,7 @@ internal partial class RPNode
 	{
 		if (m_element is UIElement element)
 		{
-			//TODO Uno: Layout storage not supported internally yet
-			//return element.GetLayoutStorage().m_desiredSize.height;
-			return element.DesiredSize.Height;
+			return element.m_desiredSize.Height;
 		}
 #if HAS_UNO // Handling native controls
 		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
@@ -63,8 +59,7 @@ internal partial class RPNode
 		if (m_element is UIElement element)
 		{
 			element.Measure(availableSize);
-			//TODO Uno: Layout storage not supported internally yet
-			//element.EnsureLayoutStorage();
+			element.EnsureLayoutStorage();
 		}
 #if HAS_UNO // Handling native controls
 		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)

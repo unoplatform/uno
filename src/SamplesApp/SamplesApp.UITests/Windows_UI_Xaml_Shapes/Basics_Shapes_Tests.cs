@@ -18,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.Android)] // Flaky on iOS #9080
 		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");

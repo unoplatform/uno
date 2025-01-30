@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private int commandCount = 0;
 
-		public TouchViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TouchViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			GenericCommand = new DelegateCommand<string>(p => Output = $"{commandCount++} - {p}");
 		}

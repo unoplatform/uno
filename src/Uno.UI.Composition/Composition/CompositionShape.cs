@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape : CompositionObject, I2DTransformableObject
 {

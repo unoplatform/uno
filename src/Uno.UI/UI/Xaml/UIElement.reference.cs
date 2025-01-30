@@ -1,11 +1,11 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml
 
 		internal bool IsArrangeDirtyPath => throw new NotSupportedException("Reference assembly");
 
-		internal bool IsPointerCaptured { get; set; }
-
 		internal bool ShouldInterceptInvalidate { get; set; }
 
 		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
@@ -37,9 +35,5 @@ namespace Windows.UI.Xaml
 		internal void ClearChildren() => throw new NotSupportedException("Reference assembly");
 
 		internal void UpdateHitTest() => throw new NotSupportedException("Reference assembly");
-
-		internal void SetHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
-
-		internal void ClearHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
 	}
 }

@@ -1,5 +1,5 @@
 ﻿#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal interface ICustomClippingElement
 {

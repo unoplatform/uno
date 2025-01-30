@@ -1,11 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using Windows.Foundation;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// UNO ONLY
 	// Note: This class is public as sub-class CalendarViewDayItem is public
@@ -24,15 +24,16 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
+#if !__NETSTD_REFERENCE__
 			this.Loaded += (_, _) =>
 			{
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-				_borderRenderer ??= new();
+#if !UNO_HAS_BORDER_VISUAL
+				_borderRenderer ??= new(this);
 #endif
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				EnterImpl();
+#endif
 			};
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-			this.Unloaded += (_, _) => _borderRenderer.Clear();
 #endif
 		}
 

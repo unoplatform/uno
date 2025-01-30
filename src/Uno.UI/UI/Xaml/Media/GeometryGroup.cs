@@ -1,8 +1,10 @@
-using Uno.UI;
+﻿using Uno.UI;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Media
+using Rect = Windows.Foundation.Rect;
+
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
 	public partial class GeometryGroup : Geometry

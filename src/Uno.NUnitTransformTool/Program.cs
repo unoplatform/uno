@@ -14,7 +14,7 @@ using Mono.Collections.Generic;
 
 namespace Uno.ReferenceImplComparer
 {
-	class Program
+	partial class Program
 	{
 		static int Main(string[] args)
 		{
@@ -22,9 +22,32 @@ namespace Uno.ReferenceImplComparer
 			{
 				case "list-failed":
 					return ListFailedTests(args[1], args[2]);
+				case "fail-empty":
+					return FailOnEmptyResults(args[1]);
 			}
 
 			return 0;
+		}
+
+		private static int FailOnEmptyResults(string inputFile)
+		{
+			var doc = new XmlDocument();
+			doc.LoadXml(File.ReadAllText(inputFile));
+
+			var allNodes = doc.SelectNodes("//test-case");
+
+			var isEmpty = allNodes?.Count == 0;
+
+			if (isEmpty)
+			{
+				Console.WriteLine($"The test results file {inputFile} does not contain any results");
+			}
+			else
+			{
+				Console.WriteLine($"The test results file {inputFile} contains {allNodes?.Count} results");
+			}
+
+			return isEmpty ? 1 : 0;
 		}
 
 		private static int ListFailedTests(string inputFile, string outputFile)
@@ -40,7 +63,7 @@ namespace Uno.ReferenceImplComparer
 				var name = failedNode.GetAttribute("fullname");
 
 				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
-				var simpleName = Regex.Replace(name, @"\(([^)]*)\)", "");
+				var simpleName = SimpleNameRegex().Replace(name, "");
 
 				failedTests.Add(simpleName);
 			}
@@ -55,5 +78,8 @@ namespace Uno.ReferenceImplComparer
 
 			return 0;
 		}
+
+		[GeneratedRegex(@"\(([^)]*)\)")]
+		private static partial Regex SimpleNameRegex();
 	}
 }

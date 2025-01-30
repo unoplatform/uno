@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum TeachingTipHeroContentPlacementMode
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Auto = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Top = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Bottom = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Top
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode.Bottom
 	}
 #endif
 }

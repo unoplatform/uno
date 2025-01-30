@@ -1,6 +1,6 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class QuadraticBezierSegment : PathSegment
 	{

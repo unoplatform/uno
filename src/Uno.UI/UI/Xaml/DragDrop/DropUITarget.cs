@@ -1,25 +1,18 @@
-#nullable enable
+﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
-	internal class DropUITarget : ICoreDropOperationTarget
+	internal class DropUITarget(XamlRoot xamlRoot) : ICoreDropOperationTarget
 	{
 		private static GetHitTestability? _getDropHitTestability;
 		private static GetHitTestability GetDropHitTestability => _getDropHitTestability ??= (elt =>
@@ -40,10 +33,6 @@ namespace Windows.UI.Xaml
 		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised, no matter the number of drop target under pointer.
 		private readonly Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
 			= new Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
-
-		public DropUITarget()
-		{
-		}
 
 		/// <inheritdoc />
 		public IAsyncOperation<DataPackageOperation> EnterAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
@@ -119,14 +108,14 @@ namespace Windows.UI.Xaml
 				return args.AcceptedOperation;
 			});
 
-		private async Task<(UIElement dropTarget, global::Windows.UI.Xaml.DragEventArgs args)?> UpdateTarget(
+		private async Task<(UIElement dropTarget, DragEventArgs args)?> UpdateTarget(
 			CoreDragInfo dragInfo,
 			CoreDragUIOverride? dragUIOverride,
 			CancellationToken ct)
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
-				Window.Current.RootElement.XamlRoot, //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
+				xamlRoot,
 				getTestability: GetDropHitTestability,
 				isStale: new StalePredicate(elt => elt.IsDragOver(dragInfo.SourceId), "IsDragOver"));
 

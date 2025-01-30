@@ -11,12 +11,15 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Input.Preview.Injection;
+using Uno.Extensions;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -58,46 +61,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Given_Infinite_Width()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					new FlipView()
+					{
+						Height = 100,
+						Items =
+						{
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Red),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Green),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Blue),
+							},
+						}
+					}
+				},
+			};
+
+			await UITestHelper.Load(stackPanel);
+			var bitmap = await UITestHelper.ScreenShot(stackPanel);
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
+			Assert.AreEqual(redBounds.Width, bitmap.Width - 1);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Green);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Blue);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS, will be handled on #12780")]
 #endif
 		public async Task When_Background_Color()
 		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.
 			}
+
 			var parent = new Border()
 			{
 				Width = 300,
 				Height = 300,
 				Background = new SolidColorBrush(Colors.Green)
 			};
-
 			var SUT = new FlipView
 			{
 				Background = new SolidColorBrush(Colors.Red),
 				Width = 200,
 				Height = 200
 			};
-
 			parent.Child = SUT;
 
 			WindowHelper.WindowContent = parent;
-
 			await WindowHelper.WaitForLoaded(parent);
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = parent.GetRelativeCoords(SUT);
-			var centerX = sample.X + sample.Width / 2;
-			var centerY = sample.Y + sample.Height / 2;
+			var coords = parent.GetRelativeCoords(SUT); // logical
+			var center = new Point(coords.CenterX, coords.CenterY); // logical
+#if __ANDROID__
+			// droid-specific: the snapshot size is in physical size, NOT logical
+			// so the coords needs to be converted into physical to be against the snapshot.
+			center = ViewHelper.LogicalToPhysicalPixels(center); // physical
+#endif
 
-			ImageAssert.HasPixels(
-				snapshot,
-				ExpectedPixels.At(centerX, centerY).Named("center with color").Pixel(Colors.Red));
+			ImageAssert.HasPixels(snapshot, ExpectedPixels
+				.At((int)center.X, (int)center.Y)
+				.Named("center with color")
+				.Pixel(Colors.Red)
+			);
 		}
 
 		[TestMethod]
@@ -175,6 +223,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
 
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_NativeChild_Clipped()
+		{
+			var flipView = new FlipView
+			{
+				Items =
+				{
+					new FlipViewItem {Content = "Inline item 1"},
+					new FlipViewItem {Content = "Inline item 2"},
+				}
+			};
+
+			WindowHelper.WindowContent = flipView;
+
+			await WindowHelper.WaitForLoaded(flipView);
+
+			var nativeChild = flipView.FindFirstChild<NativePagedView>();
+
+			Assert.IsNotNull(nativeChild);
+			Assert.IsTrue(flipView.ClipChildren);
+		}
+#endif
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
@@ -281,6 +353,213 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var classesArray = classes.Split(' ');
 			Assert.IsTrue(classesArray.Contains("scroll-x-hidden"), $"Classes found: {classes}");
 			Assert.IsTrue(classesArray.Contains("scroll-y-disabled"), $"Classes found: {classes}");
+		}
+#endif
+
+		private sealed class FlipViewVM : INotifyPropertyChanged
+		{
+			private int _index = 0;
+
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public int Index
+			{
+				get => _index;
+				set
+				{
+					if (_index != value)
+					{
+						_index = value;
+						OnPropertyChanged(nameof(Index));
+					}
+				}
+			}
+			private void OnPropertyChanged(string propertyName)
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
+
+		}
+
+		[TestMethod]
+		public async Task When_Navigate_Skips_An_Item()
+		{
+			var flipView = new FlipView
+			{
+				Width = 500,
+				Height = 500,
+				Items =
+				{
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Azure),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Blue),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Yellow),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Fuchsia),
+					},
+				}
+			};
+
+			var horizontalPanel = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				Children =
+				{
+					new RadioButton()
+					{
+						Content = "Page 1",
+						Tag = 0,
+					},
+					new RadioButton()
+					{
+						Content = "Page 2",
+						Tag = 1,
+					},
+					new RadioButton()
+					{
+						Content = "Page 3",
+						Tag = 2,
+					},
+					new RadioButton()
+					{
+						Content = "Page 4",
+						Tag = 3,
+					},
+				}
+			};
+
+			flipView.SelectionChanged += FlipView_SelectionChanged;
+			flipView.DataContext = new FlipViewVM();
+			flipView.SetBinding(FlipView.SelectedIndexProperty, new Binding() { Path = new("Index"), Mode = BindingMode.TwoWay });
+
+			foreach (RadioButton b in horizontalPanel.Children)
+			{
+				b.Checked += RadioButton_Checked;
+			}
+
+			var panel = new StackPanel
+			{
+				Children =
+				{
+					flipView,
+					horizontalPanel,
+				},
+			};
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+			Assert.IsTrue(((RadioButton)horizontalPanel.Children[0]).IsChecked);
+
+			((RadioButton)horizontalPanel.Children[2]).IsChecked = true;
+
+			// Using WaitForIdle wouldn't make the test fail when the bug occurs.
+			// The bug being tested is related to native scrolling event that breaks things.
+			// So, we have to wait long enough to ensure FlipView is working correctly.
+			await Task.Delay(1000);
+
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			Assert.IsTrue(((RadioButton)horizontalPanel.Children[2]).IsChecked);
+
+			void RadioButton_Checked(object sender, RoutedEventArgs e)
+			{
+				if (sender is RadioButton rb)
+				{
+					if (int.TryParse(rb!.Tag.ToString(), out var result))
+					{
+						flipView.SelectedIndex = result;
+					}
+				}
+			}
+
+			void FlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				UpdateRadioButtonSelection(flipView.SelectedIndex);
+			}
+
+			void UpdateRadioButtonSelection(int selectedIndex)
+			{
+				if (selectedIndex < 0)
+				{
+					return;
+				}
+
+				var radioButton = (RadioButton)horizontalPanel.Children[selectedIndex];
+				radioButton.IsChecked = true;
+			}
+
+		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ScrollWheel()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+			mouse.MoveTo(rect.GetCenter().X, rect.GetCenter().Y);
+			const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200 + 50; // 50ms margin to reduce flakiness
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
 		}
 #endif
 	}

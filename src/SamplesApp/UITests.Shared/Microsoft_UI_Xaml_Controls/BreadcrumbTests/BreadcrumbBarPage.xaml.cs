@@ -2,15 +2,15 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-using BreadcrumbBar = Microsoft.UI.Xaml.Controls.BreadcrumbBar;
+using BreadcrumbBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar;
 using Breadcrumb_TestUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using System.Linq;
 using Uno.UI.Samples.Controls;
 
@@ -190,7 +190,7 @@ namespace MUXControlsTestApp
 			ReplaceList(currentNodeChildrenList, node.Children);
 		}
 
-		private void BreadcrumbControl_ItemClicked(BreadcrumbBar sender, Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs args)
+		private void BreadcrumbControl_ItemClicked(BreadcrumbBar sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs args)
 		{
 			LastClickedItem.Text = args.Item.ToString();
 			LastClickedItemIndex.Text = args.Index.ToString();

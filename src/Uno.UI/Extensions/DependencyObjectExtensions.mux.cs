@@ -5,9 +5,10 @@
 #nullable enable
 
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Input;
 
 namespace Uno.UI.Extensions
 {
@@ -76,14 +77,16 @@ namespace Uno.UI.Extensions
 			FocusState focusState,
 			bool animateIfBringIntoView,
 			FocusNavigationDirection focusNavigationDirection,
-			bool forceBringIntoView)
+			bool forceBringIntoView = false,
+			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 			return FocusManager.SetFocusedElementWithDirection(
 				pFocusedElement,
 				focusState,
 				animateIfBringIntoView,
 				forceBringIntoView,
-				focusNavigationDirection);
+				focusNavigationDirection,
+				(inputActivationBehavior == InputActivationBehavior.RequestActivation));
 		}
 
 		/// <summary>

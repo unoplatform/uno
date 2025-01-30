@@ -1,9 +1,11 @@
 ﻿using System.Drawing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
+
+using Rect = Windows.Foundation.Rect;
 
 #if __IOS__
 using Foundation;
@@ -20,7 +22,7 @@ using Path = AppKit.NSBezierPath;
 using Android.Graphics;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(GeometryConverter))]
 	public partial class Geometry : DependencyObject, IDisposable
@@ -29,6 +31,11 @@ namespace Windows.UI.Xaml.Media
 		{
 			InitializeBinder();
 		}
+
+		internal event Action GeometryChanged;
+
+		private protected void RaiseGeometryChanged()
+			=> GeometryChanged?.Invoke();
 
 		public static implicit operator Geometry(string data)
 		{
@@ -39,9 +46,9 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		public Windows.Foundation.Rect Bounds => ComputeBounds();
+		public Rect Bounds => ComputeBounds();
 
-		private protected virtual Windows.Foundation.Rect ComputeBounds()
+		private protected virtual Rect ComputeBounds()
 		{
 			throw new NotImplementedException($"Bounds property is not implemented on {GetType().Name}.");
 		}
@@ -59,8 +66,26 @@ namespace Windows.UI.Xaml.Media
 				"Transform",
 				typeof(Transform),
 				typeof(Geometry),
-				new FrameworkPropertyMetadata(default(Transform))
+				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: (s, args) => ((Geometry)s).OnTransformChanged(args))
 			);
+
+		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
+		{
+			RaiseGeometryChanged();
+
+			if (args.OldValue is Transform oldValue)
+			{
+				oldValue.Changed -= OnTransformSubChanged;
+			}
+
+			if (args.NewValue is Transform newValue)
+			{
+				newValue.Changed += OnTransformSubChanged;
+			}
+		}
+
+		private void OnTransformSubChanged(object sender, EventArgs e)
+			=> RaiseGeometryChanged();
 
 		#endregion
 

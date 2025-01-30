@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +14,12 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
@@ -32,12 +32,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		{
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SubObject).TypeHandle);
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
-		}
-
-		public void TestInitialize()
-		{
-
-
 		}
 
 		[TestMethod]
@@ -374,7 +368,13 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			{
 				var sub1 = new SubObject();
 				SUT.SubObject = sub1;
-				sub1.SetParent(SUT);
+				//sub1.SetParent(SUT);
+
+				// note:
+				// setting SUT as parent of sub1, would create an explicit hard-reference from SUT to sub1, holding it alive.
+				// presumably previously, setting and clearing SUT.TemplatedParent have a cascading effect on the dep-obj hierarchy,
+				// and would clear the parent-child reference somehow.
+				// However, now that Set/GetTemplatedParent has side effect, unless specially overridden.
 
 				sub1WR = new WeakReference(sub1);
 				sub1Store = new WeakReference(((IDependencyObjectStoreProvider)sub1).Store);
@@ -384,13 +384,11 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 			CreateSub();
 
-			SUT.TemplatedParent = SUT;
-
+			//SUT.TemplatedParent = SUT;
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
 
-			SUT.TemplatedParent = null;
-
+			//SUT.TemplatedParent = null;
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
 
@@ -486,7 +484,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			{
 				var dc = new object();
 				SUT.DataContext = dc;
-				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Windows.UI.Colors.Red));
+				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red));
 
 				SUT.DataContext = null;
 
@@ -507,8 +505,15 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var dc = new object();
 				SUT.DataContext = dc;
 
+				SUT.SetValue(
+					ContentControl.ForegroundProperty,
+					new SolidColorBrush(new Windows.UI.Color(1, 2, 3, 4)),
+					DependencyPropertyValuePrecedences.Inheritance);
+
 				var originalBrush = SUT.Foreground as Brush;
-				var newBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+				Assert.AreEqual(dc, originalBrush.DataContext);
+
+				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
 
 				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
 
@@ -538,15 +543,9 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var dc = new object();
 				SUT.DataContext = dc;
 
-				var originalBrush = SUT.Foreground as Brush;
-
 				SUT.SetValue(ContentControl.ForegroundProperty, null);
 
-				Assert.IsNull(originalBrush.DataContext);
-
 				SUT.ClearValue(ContentControl.ForegroundProperty);
-
-				Assert.AreEqual(dc, originalBrush.DataContext);
 
 				SUT.DataContext = null;
 

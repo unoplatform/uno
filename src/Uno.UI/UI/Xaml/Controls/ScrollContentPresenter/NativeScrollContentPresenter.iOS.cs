@@ -1,8 +1,8 @@
 ﻿using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -14,7 +14,7 @@ using UIKit;
 using CoreGraphics;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 using Uno.UI.Xaml.Input;
@@ -28,7 +28,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ISetLayoutSlots
 	{
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			scroller.Presenter.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
-		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : this.GetTemplatedParent() as ScrollViewer;
 
 		// Called when user starts dragging
 		private void OnDraggingStarted(object sender, EventArgs e)
@@ -296,8 +296,8 @@ namespace Windows.UI.Xaml.Controls
 						_content.Frame = new CGRect(
 							GetAdjustedArrangeX(iFwElt, adjustedMeasure, (nfloat)contentMargin.Horizontal()),
 							GetAdjustedArrangeY(iFwElt, adjustedMeasure, (nfloat)contentMargin.Vertical()),
-							adjustedMeasure.Width,
-							adjustedMeasure.Height
+							Math.Max(0, adjustedMeasure.Width),
+							Math.Max(0, adjustedMeasure.Height)
 						);
 					}
 				}

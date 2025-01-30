@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml.Media;
+﻿using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal static class SolidColorBrushHelper
 	{

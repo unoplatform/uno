@@ -4,15 +4,10 @@
 namespace Windows.Devices.Sensors
 {
 #if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented("__SKIA__")]
+	[global::Uno.NotImplemented]
 #endif
 	public partial class Barometer
 	{
-#if false || false || false || false || false || false || false
-		internal Barometer()
-		{
-		}
-#endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval
@@ -112,13 +107,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string Barometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Barometer.GetDeviceSelector%28%29");
 		}
 #endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Devices.Sensors.Barometer GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Barometer Barometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Barometer%20Barometer.GetDefault%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.Devices.Sensors.Barometer.GetDefault()
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Barometer, global::Windows.Devices.Sensors.BarometerReadingChangedEventArgs> ReadingChanged

@@ -10,7 +10,7 @@ uid: Uno.Features.ProtocolActivation
 
 Declare your custom URL scheme in `info.plist` in the platform head:
 
-```
+```xml
 <key>CFBundleURLTypes</key>
 <array>
     <dict>
@@ -28,7 +28,7 @@ Declare your custom URL scheme in `info.plist` in the platform head:
 
 Register your protocol on the `MainActivity` with the `[IntentFilter]` attribute:
 
-```
+```csharp
 [IntentFilter(
     new [] {
         Android.Content.Intent.ActionView
@@ -52,39 +52,39 @@ WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://d
 - The custom scheme's name must include at least 1 letter after the `web+` prefix
 - The custom scheme must have only lowercase ASCII letters in its name.
 
-To register the custom theme, call the WASM specific `Uno.Helpers.ProtocolActivation` API when appropriate to let the user confirm URI handler association:
+To register the custom theme, call the WASM-specific `Uno.Helpers.ProtocolActivation` API when appropriate to let the user confirm URI handler association:
 
-```
+```csharp
 #if __WASM__
    Uno.Helpers.ProtocolActivation.RegisterCustomScheme(
       "web+myscheme", 
       new System.Uri("http://localhost:55838/"), 
       "Can we handle web+myscheme links?");
+#endif
 ```
 
 The first argument is the scheme name, the second is the base URL of your application (it must match the current domain to be registered successfully), and the third is a text prompt, which will be displayed to the user to ask for permission.
 
 When a link with the custom scheme gets executed, the browser will navigate to a your URL with additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
 
-
 ### UWP
 
-Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation)
+Works according to Windows docs. For more information, see [Handle URI activation | Microsoft Docs](https://learn.microsoft.com/windows/uwp/launch-resume/handle-uri-activation).
 
 ## Handling protocol activation
 
 Custom URI activation can be handled by overriding the `OnActivated` method in `App.cs` or `App.xaml.cs`:
 
-```
+```csharp
 protected override void OnActivated(IActivatedEventArgs e)
 {
     // Note: Ensure the root frame is created
     
     if (e.Kind == ActivationKind.Protocol)
     {
-    	var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-    	var uri = protocolActivatedEventArgs.Uri;
-    	// do something
+        var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+        var uri = protocolActivatedEventArgs.Uri;
+        // do something
     }
 }
 ```

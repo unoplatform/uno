@@ -13,15 +13,16 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.UI.Xaml.Core.Scaling;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 // TODO MZ: HasXamlTemplate parts may need to be integrated.
 
@@ -532,7 +533,7 @@ public partial class Slider
 	//		in the absence of an explicitly defined one
 	//
 	//---------------------------------------------------------------------------
-	private protected override string GetPlainText()
+	internal override string GetPlainText()
 	{
 		var header = Header;
 
@@ -1511,16 +1512,16 @@ public partial class Slider
 						szFormat = "{0:0}";
 						break;
 					case 1:
-						szFormat = "{0:0.0}f";
+						szFormat = "{0:0.0}";
 						break;
 					case 2:
-						szFormat = "{0:0.00}f";
+						szFormat = "{0:0.00}";
 						break;
 					case 3:
-						szFormat = "{0:0.000}f";
+						szFormat = "{0:0.000}";
 						break;
 					default:
-						szFormat = "{0:0.0000}f";
+						szFormat = "{0:0.0000}";
 						break;
 				}
 			}

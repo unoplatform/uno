@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Threading;
 using System.Linq;
 using System.Collections.Immutable;
@@ -17,7 +17,7 @@ using Windows.Media.Playback;
 using Uno.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Media;
 
@@ -31,8 +31,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private bool _isEnding;
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
-	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
-	private double _videoRatio;
+	private Microsoft.UI.Xaml.Media.Stretch _stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform;
 	private readonly MediaPlayerPresenter _owner;
 	private (double playerHeight, double playerWidth, uint videoHeight, uint videoWidth) _lastSetDimensions;
 
@@ -54,12 +53,19 @@ public partial class GtkMediaPlayer : FrameworkElement
 			this.Log().Debug("Collecting GtkMediaPlayer");
 		}
 
-		_videoView?.Dispose();
+		GLib.Idle.Add(() =>
+		{
+			_videoView?.Dispose();
+			return false;
+		});
 
 		// Freeing those resources currently crash the app with an access violation exception.
 		//_mediaPlayer?.Dispose();
 		//_libvlc?.Dispose();
 	}
+
+	internal uint NaturalVideoHeight => _lastSetDimensions.videoHeight;
+	internal uint NaturalVideoWidth => _lastSetDimensions.videoWidth;
 
 	public string Source
 	{
@@ -73,19 +79,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public double Duration { get; set; }
 
-	public double VideoRatio
-	{
-		get => _videoRatio;
-		set
-		{
-			if (_videoRatio != value)
-			{
-				_videoRatio = value;
-
-				OnVideoRatioChanged?.Invoke(this, EventArgs.Empty);
-			}
-		}
-	}
+	public double VideoRatio { get; set; }
 
 	public bool IsVideo
 		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
@@ -206,13 +200,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug("Stop");
 			}
 
-			_ = Task.Run(() =>
-			{
-				// Required to be on a background thread
-				// to avoid deadlocks
-				_mediaPlayer.Stop();
-			});
-
+			_mediaPlayer.Stop();
 			_videoView.SetVisible(false);
 		}
 		else
@@ -233,13 +221,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug("Pause");
 			}
 
-			_ = Task.Run(() =>
-			{
-				// Required to be on a background thread
-				// to avoid deadlocks
-				_mediaPlayer.Pause();
-			});
-
+			_mediaPlayer.Pause();
 			_videoView.SetVisible(true);
 		}
 		else
@@ -357,6 +339,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 					}
 
 					VideoRatio = (double)videoHeight / (double)videoWidth;
+					if (videoHeight != _lastSetDimensions.videoHeight || videoWidth != _lastSetDimensions.videoWidth)
+					{
+						OnNaturalVideoDimensionChanged?.Invoke();
+					}
 
 					var currentSize = new Size(ActualWidth, ActualHeight);
 
@@ -441,10 +427,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 			switch (_stretch)
 			{
-				case Windows.UI.Xaml.Media.Stretch.None:
+				case Microsoft.UI.Xaml.Media.Stretch.None:
 					break;
 
-				case Windows.UI.Xaml.Media.Stretch.Uniform:
+				case Microsoft.UI.Xaml.Media.Stretch.Uniform:
 					var topInsetUniform = (playerHeight - newHeight) / 2;
 					var leftInsetUniform = (playerWidth - newWidth) / 2;
 
@@ -463,14 +449,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 					}
 					break;
 
-				case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+				case Microsoft.UI.Xaml.Media.Stretch.UniformToFill:
 
 					var topInsetFill = (playerHeight - newHeight) / 2;
 					var leftInsetFill = 0;
-
-					var newHeightFill = (int)(videoHeight * playerRatio);
-					var newWidthFill = (int)(videoWidth * playerRatio);
-					double correctVideoRate = (VideoRatio / playerRatio);
 
 					if (_videoView is not null)
 					{
@@ -522,7 +504,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 		}
 	}
 
-	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)
+	internal void UpdateVideoStretch(Microsoft.UI.Xaml.Media.Stretch stretch)
 	{
 		if (_videoView != null)
 		{

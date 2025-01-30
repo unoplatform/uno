@@ -11,23 +11,23 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.UI;
 using Uno.UI.Samples.Controls;
 
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
-using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
-using SwipeBehaviorOnInvoked = Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked;
-using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
+using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
+using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
+using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using SwipeBehaviorOnInvoked = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeBehaviorOnInvoked;
+using SwipeItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
 //using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 
 namespace MUXControlsTestApp

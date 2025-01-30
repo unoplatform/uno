@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace Microsoft.UI.Xaml.Controls
+// MUX Reference SplitButton.properties.cpp, tag winui3/release/1.4.2
+
+using System.Windows.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class SplitButton
 	{

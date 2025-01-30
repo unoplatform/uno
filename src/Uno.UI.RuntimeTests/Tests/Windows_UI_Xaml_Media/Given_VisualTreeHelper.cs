@@ -10,12 +10,13 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -27,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[TestMethod]
 		public void OpenPopups_Flyouts_Unique()
 		{
-			var button = new Windows.UI.Xaml.Controls.Button();
+			var button = new Microsoft.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;
@@ -60,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			popup.IsOpen = false;
 		}
 
-#if !NETFX_CORE // Testing internal Uno methods
+#if !WINAPPSDK // Testing internal Uno methods
 		[TestMethod]
 		[RequiresFullWindow]
 #if __MACOS__
@@ -91,7 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			foreach (var point in GetPointsOutside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.XamlRoot);
 				Assert.IsNotNull(hitTest.element);
 				Assert.AreNotEqual(sut, hitTest.element);
 			}
@@ -142,6 +143,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			AssertName(VisualTreeHelper.HitTest(position.Offset(256), root.XamlRoot).element!, "Root");
 			AssertName(VisualTreeHelper.HitTest(position.Offset(256 + 65), root.XamlRoot).element!, "Transformed");
 			AssertName(VisualTreeHelper.HitTest(position.Offset(256 + 128), root.XamlRoot).element!, "Nested");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_ElementStub_Not_Counted()
+		{
+			var SUT = new xLoad_Visibility();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, VisualTreeHelper.GetChildrenCount(SUT));
+			Assert.IsNull(VisualTreeHelper.GetChild(SUT, 0));
 		}
 
 		[TestMethod]

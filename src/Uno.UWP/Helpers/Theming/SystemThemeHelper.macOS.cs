@@ -13,7 +13,7 @@ internal static partial class SystemThemeHelper
 	/// Based on <see href="https://forums.developer.apple.com/thread/118974" />
 	/// </summary>
 	/// <returns>System theme</returns>
-	private static SystemTheme GetSystemTheme()
+	internal static SystemTheme GetSystemTheme()
 	{
 		var version = DeviceHelper.OperatingSystemVersion;
 		if (version >= new Version(10, 14))

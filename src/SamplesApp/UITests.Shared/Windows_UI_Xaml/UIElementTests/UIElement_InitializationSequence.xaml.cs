@@ -1,10 +1,11 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using System.Linq;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
@@ -61,7 +62,7 @@ inner.Loaded";
 		{
 			var spacer = string.Concat(Enumerable.Repeat("-\t>", recursivityLevel++));
 
-			var t = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { log.Text += "\n" + spacer + s; });
+			var t = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => { log.Text += "\n" + spacer + s; });
 
 			return Disposable.Create(() => recursivityLevel--);
 		}

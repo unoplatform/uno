@@ -1,20 +1,20 @@
-using Uno.UI.Controls;
+﻿using Uno.UI.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotImplementedException();
 		}
@@ -122,12 +122,6 @@ namespace Windows.UI.Xaml
 		/// <inheritdoc />
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
-
-
-		internal static void LoadingRootElement(UIElement visualTreeRoot) { }
-
-		internal static void RootElementLoaded(UIElement visualTreeRoot) =>
-			visualTreeRoot.SetHitTestVisibilityForRoot();
 
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
@@ -148,7 +142,7 @@ namespace Windows.UI.Xaml
 			var newFlags = evt.ModifierFlags;
 			var modifiers = VirtualKeyHelper.FromFlagsToVirtualModifiers(newFlags);
 
-			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			var flags = Enum.GetValues<NSEventModifierMask>();
 			foreach (var flag in flags)
 			{
 				var key = VirtualKeyHelper.FromFlagsToKey(flag);

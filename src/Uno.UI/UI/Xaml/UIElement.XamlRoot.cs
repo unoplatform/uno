@@ -5,9 +5,9 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
-public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+public partial class UIElement : DependencyObject, IXUidProvider
 {
 	private ManagedWeakReference? _visualTreeCacheWeakReference;
 

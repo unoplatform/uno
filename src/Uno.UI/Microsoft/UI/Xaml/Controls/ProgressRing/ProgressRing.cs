@@ -1,8 +1,8 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -10,7 +10,7 @@ using Uno.UI;
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control
 	{
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_lottieProvider == null)
 			{
-				this.Log().Error($"{nameof(ProgressRing)} control needs the Uno.UI.Lottie package to run properly.");
+				this.Log().Error($"UNOX0001: The {nameof(ProgressRing)} control needs an additional package to be enabled. https://aka.platform.uno/UNOX0001");
 			}
 
 			RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
@@ -304,8 +304,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var txt = new TextBlock
 				{
-					Text = "⚠️ Uno.UI.Lottie missing ⚠️",
-					Foreground = SolidColorBrushHelper.Red
+					Text = "⚠️ UNOX0001: https://aka.platform.uno/UNOX0001 ⚠️",
+					Foreground = SolidColorBrushHelper.Red,
+					FontSize = 8
 				};
 
 				_layoutRoot.Children.Add(txt);

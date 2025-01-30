@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FrameworkPoolEditorRecycling;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using static Private.Infrastructure.TestServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -28,14 +28,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-internal class Given_FrameworkTemplatePool
+public class Given_FrameworkTemplatePool
 {
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if __ANDROID__
-	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
-#endif
+	//#if __ANDROID__
+	//[Ignore("https://github.com/unoplatform/uno/issues/13969")]
+	//#endif
+	[Ignore("#18317 With TemplatedParent rework, the recycling part was not re-introduced/updated.")]
 	public async Task When_Recycle()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
@@ -200,7 +201,7 @@ internal class Given_FrameworkTemplatePool
 			Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
 			Assert.IsTrue(vm.Editors.All(e => e.IsChecked));
 			Assert.IsTrue(vm.Editors.All(e => e.IsOn));
-			Assert.IsTrue(!string.IsNullOrEmpty(textBox.Text));
+			Assert.IsFalse(string.IsNullOrEmpty(textBox.Text));
 			Assert.IsTrue(checkBox.IsChecked);
 			Assert.IsTrue(toggleSwitch.IsOn);
 			Assert.AreEqual(vm.CurrentEditor.IsChecked, checkBox.IsChecked);
@@ -225,7 +226,7 @@ internal class Given_FrameworkTemplatePool
 			if (i > vm.Editors.Length - 1)
 			{
 				textBox.Focus(FocusState.Programmatic);
-				await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
+				await WindowHelper.WaitFor(() => Equals(FocusManager.GetFocusedElement(WindowHelper.XamlRoot), textBox));
 			}
 
 			AssertEditorContents();

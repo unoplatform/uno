@@ -1,6 +1,6 @@
-using Color = Windows.UI.Color;
+﻿using Color = Windows.UI.Color;
 
-namespace Windows.UI.Xaml.Automation.Provider;
+namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Provides access to the visual styles associated with the content of a document.

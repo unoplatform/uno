@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual : ContainerVisual
 {
@@ -18,7 +18,7 @@ public partial class ShapeVisual : ContainerVisual
 		set => SetProperty(ref _viewBox, value);
 	}
 
-	// This is lazy as we are using the `ShapeVisual` for UIElement, but lot of them are not creating shapes, reduce memory pressure.
+	// This is lazy as we are using the `ShapeVisual` for some UIElements, but lot of them are not creating shapes, reduce memory pressure.
 	public CompositionShapeCollection Shapes
 	{
 		get

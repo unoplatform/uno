@@ -12,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Uno;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
@@ -71,24 +72,33 @@ internal sealed class HotReloadAgent : IDisposable
 		var handlerActions = new UpdateHandlerActions();
 		foreach (var assembly in sortedAssemblies)
 		{
-			foreach (var attr in assembly.GetCustomAttributesData())
+			try
 			{
-				// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
-				// define their own copy without having to cross-compile.
-				if (attr.AttributeType.FullName != "System.Reflection.Metadata.MetadataUpdateHandlerAttribute")
+				foreach (var attr in assembly.GetCustomAttributesData())
 				{
-					continue;
-				}
+					// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
+					// define their own copy without having to cross-compile.
+					if (attr is not { AttributeType.FullName: "System.Reflection.Metadata.MetadataUpdateHandlerAttribute" })
+					{
+						continue;
+					}
 
-				IList<CustomAttributeTypedArgument> ctorArgs = attr.ConstructorArguments;
-				if (ctorArgs.Count != 1 ||
-					ctorArgs[0].Value is not Type handlerType)
-				{
-					_log($"'{attr}' found with invalid arguments.");
-					continue;
+					if (attr is { ConstructorArguments: [{ Value: Type handlerType }] })
+					{
+						GetHandlerActions(handlerActions, handlerType);
+					}
+					else
+					{
+						_log($"'{attr}' found with invalid arguments.");
+					}
 				}
-
-				GetHandlerActions(handlerActions, handlerType);
+			}
+			catch (Exception e)
+			{
+				// The handlers enumeration may fail for WPF assemblies that are part of the modified assemblies
+				// when building under linux, but which are loaded in that context. We can ignore those assemblies
+				// and continue the processing.
+				_log($"Unable to process assembly {assembly}, ({e.Message})");
 			}
 		}
 
@@ -140,9 +150,7 @@ internal sealed class HotReloadAgent : IDisposable
 			};
 		}
 
-		MethodInfo? GetUpdateMethod(
-		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-		Type handlerType, string name)
+		MethodInfo? GetUpdateMethod([DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)] Type handlerType, string name)
 		{
 			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(Type[]) }, null) is MethodInfo updateMethod &&
 				updateMethod.ReturnType == typeof(void))

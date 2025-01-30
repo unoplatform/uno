@@ -5,13 +5,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using MUXControlsTestApp.Utilities;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
@@ -36,11 +36,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			SelectedItemName.Text = ((UnrealizedTreeViewSelection.SelectedItem as TreeViewNode).Content as CustomContent).ToString();
 		}
 
-		private void UnrealizedTreeViewSelection_Expanding(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewExpandingEventArgs args)
+		private void UnrealizedTreeViewSelection_Expanding(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewExpandingEventArgs args)
 		{
 			VirtualizingDataSource.FillTreeNode(args.Node);
 		}
-		private void UnrealizedTreeViewSelection_Collapsed(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs args)
+		private void UnrealizedTreeViewSelection_Collapsed(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewCollapsedEventArgs args)
 		{
 			VirtualizingDataSource.EmptyTreeNode(args.Node);
 		}

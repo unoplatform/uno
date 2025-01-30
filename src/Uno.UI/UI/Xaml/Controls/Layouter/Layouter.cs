@@ -1,15 +1,14 @@
-// #define LOG_LAYOUT
+﻿// #define LOG_LAYOUT
 
 #if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -35,10 +34,10 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
 #elif IS_UNIT_TESTS || __WASM__
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal abstract partial class Layouter : ILayouter
 	{
@@ -134,6 +133,11 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
+				}
+
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
@@ -167,14 +171,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		[Pure]
 		private static bool IsCloseReal(double a, double b)
 		{
 			var x = Math.Abs((a - b) / (b == 0d ? 1d : b));
 			return x < 1.85e-3d;
 		}
 
-		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
 			return (a < b) && !IsCloseReal(a, b);
@@ -203,6 +205,11 @@ namespace Windows.UI.Xaml.Controls
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
+				}
+
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
 				}
 
 				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty
@@ -252,6 +259,23 @@ namespace Windows.UI.Xaml.Controls
 						// We are reverting those changes as they require more changes, but keeping them
 						// commented for future reference.
 						//arrangeSize.Height = _unclippedDesiredSize.Height;
+					}
+				}
+
+				// Alignment==Stretch --> arrange at the slot size minus margins
+				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
+				if (Panel is not Microsoft.UI.Xaml.Shapes.Shape and not ContentControl)
+				{
+					// Uno specific: Shapes arrange is relying on "wrong" layouter logic to be arranged properly
+					// The "Panel is not Shape" check should be removed when we're removing the legacy shape measure/arrange
+					// Also, it seems ContentControl is causing issues (probably related to content presenter bypass?)
+					if (Panel.HorizontalAlignment != HorizontalAlignment.Stretch)
+					{
+						arrangeSize.Width = _unclippedDesiredSize.Width;
+					}
+					if (Panel.VerticalAlignment != VerticalAlignment.Stretch)
+					{
+						arrangeSize.Height = _unclippedDesiredSize.Height;
 					}
 				}
 

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class VisualCollection : CompositionObject, IEnumerable<Visual>
 	{
@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 
 		public int Count => _visuals.Count;
 
-		internal IList<Visual> InnerList => _visuals;
+		internal List<Visual> InnerList => _visuals;
 
 		public void InsertAbove(Visual newChild, Visual sibling)
 		{

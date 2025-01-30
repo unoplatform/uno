@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>آبی روشن</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>آبی یخی</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>سند</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>دکمه جدا</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>پنجره</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>کادر</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>عنوان</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>مورد عنوان</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>جدول</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>نوار عنوان</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>جداساز</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>بزرگنمایی مفهومی</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>کلید تغییر</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>مورد</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 مورد</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>کشیدن %1 لغو شود</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>بعدی</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>قبلی</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>پخش</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>مکث</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>زمان سپری شده</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>زمان باقیمانده</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>پیشرفت ذخیره موقت</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>پیمایش</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>بیصدا</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>میزان صدا</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>خطا</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>روز </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>ماه </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>سال </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ساعت </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>دقیقه </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 دقیقه</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 دقیقه</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 ثانیه</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 ثانیه</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>کاهش بزرگسازی عمودی</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>کاهش کوچکسازی عمودی</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>برش</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME خاموش</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>سفید</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>خاکستری کم رنگ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>خاکستری</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>خاکستری تیره</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>مشکی</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مرجانی</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>رز</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>نارنجی کمرنگ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>قهوه‌ای مایل به زرد</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>زرد کم رنگ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>سبز کمرنگ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>لیمویی</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>آبی دریایی</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>آبی آسمانی</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>آبی مایل به خاکستری کم رنگ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>آبی کمرنگ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>آبی روشن</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>آبی یخی</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>آبی ارغوانی</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>بنفش کم رنگ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>صورتی</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>قرمز</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>نارنجی</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>قهوه ای</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>طلایی</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>زرد</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>سبز زیتونی</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>سبز</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>سبز روشن</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>آبی سیر</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>آبی مایل به خاکستری</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>آبی</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>خاکستری مایل به آبی</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>نیلی</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>بنفش</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>قرمز تیره</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>زرد تیره</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>سبز تیره</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>فیروزه‌ای تیره</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>آبی تیره</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>بنفش تیره</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>گوجه‌ای</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>بستن</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

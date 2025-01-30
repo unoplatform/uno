@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Android.Text;
 using Android.Text.Style;
 using System.Collections.Generic;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
 	{
@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml.Documents
 			return Uno.UI.Controls.TextPaintPool.GetPaint(
 				inline.FontWeight,
 				inline.FontStyle,
+				inline.FontStretch,
 				inline.FontFamily,
 				inline.FontSize,
 				inline.CharacterSpacing,

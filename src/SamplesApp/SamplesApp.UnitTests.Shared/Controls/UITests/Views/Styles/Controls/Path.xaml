@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="using:Uno.UI.Samples.Styles.Controls"
 					xmlns:u="using:Uno.UI.Samples.Controls">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -25,7 +24,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Width"
 				Value="5" />
 		<Setter Property="Template">
@@ -45,7 +44,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -68,7 +67,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -91,7 +90,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -113,10 +112,7 @@
 	<Style x:Key="Icon_Chevron"
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
-		<Setter Property="Foreground"
-				Value="{StaticResource Color07Brush}" />
-		<Setter Property="Width"
-				Value="5" />
+		<Setter Property="Width" Value="5" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
 		<Setter Property="Template">
@@ -158,7 +154,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Width"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -180,7 +176,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -202,7 +198,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -229,7 +225,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="16" />
 		<Setter Property="VerticalAlignment"

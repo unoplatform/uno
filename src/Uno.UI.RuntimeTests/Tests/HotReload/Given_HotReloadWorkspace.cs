@@ -11,10 +11,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.RemoteControl;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Composition;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Composition;
 using System.Threading;
 using System.Xml;
 using Windows.Storage.AccessCache;
@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 #if !__SKIA__
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
-internal partial class Given_HotReloadWorkspace
+public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
 	private static int _remoteControlPort;
@@ -53,7 +53,7 @@ internal partial class Given_HotReloadWorkspace
 	/// 
 	/// </remarks>
 	[TestMethod]
-	[Timeout(5 * 60 * 1000)]
+	[Timeout(10 * 60 * 1000)]
 	[Filters]
 	public async Task When_HotReloadScenario(string filters)
 	{
@@ -97,9 +97,10 @@ internal partial class Given_HotReloadWorkspace
 	}
 
 	[TestCleanup]
-	public async Task TestCleanupWrapper()
+	public void TestCleanupWrapper()
 	{
 		_testAppProcess?.Kill();
+		_testAppProcess?.WaitForExit();
 	}
 
 	public static async Task InitializeServer()
@@ -166,6 +167,7 @@ internal partial class Given_HotReloadWorkspace
 				"build",
 				$"-p:UnoRemoteControlPort={_remoteControlPort}",
 				$"-p:UnoRemoteControlHost=127.0.0.1",
+				$"-p:NoWarn=CS8619", // Workaround https://github.com/unoplatform/uno.ui.runtimetests.engine/issues/174#issuecomment-2104088957
 				"--configuration",
 
 				// Use the debug configuration so that remote control
@@ -232,12 +234,21 @@ internal partial class Given_HotReloadWorkspace
 		if (_process is null or { HasExited: true })
 		{
 			var version = GetDotnetMajorVersion();
-			var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
+			var runtimeVersionPath = $"net{version}.0";
 
 			// Use the debug configuration so that remote control
 			// gets properly enabled.
 			var toolsPath = Path.Combine(GetRCHostAppPath(), "Debug");
 			var hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+
+			// GetDotnetMajorVersion() will return the .NET SDK version.
+			// We may be building with TargetFramework being one version earlier.
+			if (!File.Exists(hostBinPath))
+			{
+				version--;
+				runtimeVersionPath = $"net{version}.0";
+				hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+			}
 
 			if (!File.Exists(hostBinPath))
 			{

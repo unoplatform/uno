@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public partial class BitmapSource : ImageSource
 	{
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 		protected IRandomAccessStream _stream;
 #endif
 
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			_stream = clonedStreamSource;
 			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return $"{GetType().Name}/{uri}";
 			}
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";

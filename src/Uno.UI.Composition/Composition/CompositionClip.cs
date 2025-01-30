@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionClip : CompositionObject, I2DTransformableObject
 {

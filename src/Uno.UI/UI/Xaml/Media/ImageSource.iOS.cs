@@ -13,7 +13,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
@@ -54,6 +54,11 @@ namespace Windows.UI.Xaml.Media
 		internal string? BundlePath { get; private set; }
 
 		static public implicit operator ImageSource(UIImage image) => new ImageSource(image);
+
+		/// <summary>
+		/// Indicates that this source has already been opened (So TryOpenSync will return true!)
+		/// </summary>
+		internal bool IsOpened => _imageData.HasData;
 
 		private static UIImage? OpenBundleFromString(string? bundle)
 		{

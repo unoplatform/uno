@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>أزرق فاتح</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>أزرق ثلجي</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>مستند</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>زر الانقسام</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>نافذة</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>جزء</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>رأس</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>عنصر الرأس</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>جدول</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>شريط العناوين</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>الفاصل</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>تكبير دلالي</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>مفتاح تبديل</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>عنصر</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 عناصر</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>إلغاء سحب %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>التالي</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>السابق</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>إيقاف مؤقت</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>الوقت المنقضي</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>الوقت المتبقي</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>تقدم التخزين المؤقت</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>كتم الصوت</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>مستوى الصوت</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>يوم </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>شهر </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>سنة </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ساعة</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>دقيقة </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 دقيقة</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 دقيقة</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 ثانية</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 ثانية</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Vertical Large Decrease</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Vertical Small Decrease</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>قص</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>أسلوب الإدخال قيد الإيقاف</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>أبيض</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>رمادي فاتح</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>رمادي</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>رمادي داكن</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>أسود</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مرجاني</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>وردي</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>برتقالي فاتح</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>خمري</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>أصفر فاتح</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>أخضر فاتح</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ليموني</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>أزرق مائي</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>أزرق سماوي</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>تركوازي فاتح</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>أزرق شاحب</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>أزرق فاتح</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>أزرق ثلجي</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>صدفي</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>أرجواني شاحب</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>قرنفلي</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>أحمر</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>برتقالي</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>بني</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ذهبي</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>أصفر</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>أخضر زيتي</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>أخضر</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>أخضر ساطع</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>أزرق مخضر</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>فيروزي</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>أزرق</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>أزرق-رمادي</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>نيلي</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>أرجواني</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>أحمر داكن</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>أصفر داكن</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>أخضر داكن</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>أزرق مخضر داكن</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>أزرق داكن</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>أرجواني داكن</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>أرجواني مائل للزرقة</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>إغلاق</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

@@ -2,12 +2,12 @@
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests
 {
 	[TestClass]
-	public class Global
+	public static class Global
 	{
 		[AssemblyInitialize]
 		public static void GlobalTestInitialize(TestContext _)

@@ -6,9 +6,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -16,6 +16,10 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices.JavaScript;
+using System.Diagnostics.CodeAnalysis;
+
+
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -29,24 +33,22 @@ using AppKit;
 using _View = AppKit.NSView;
 using _ViewGroup = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class ItemsControl : Control, IItemsControl
 	{
 		protected IVectorChangedEventArgs _inProgressVectorChange;
 
-		private ItemsPresenter _itemsPresenter;
-
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
-		private bool _isReady; // Template applied
+		private bool _isTemplateApplied;
 		private ItemCollection _items = new ItemCollection();
 		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
@@ -57,6 +59,8 @@ namespace Windows.UI.Xaml.Controls
 		private int[] _groupCounts;
 
 		internal ScrollViewer ScrollViewer { get; private set; }
+
+		internal ItemsPresenter ItemsPresenter { get; private set; }
 
 		/// <summary>
 		/// This template is stored here in order to allow for
@@ -165,14 +169,14 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ItemsControl),
 				new FrameworkPropertyMetadata(
 					(ItemsPanelTemplate)null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ItemsControl)s)?.OnItemsPanelChanged((ItemsPanelTemplate)e.OldValue, (ItemsPanelTemplate)e.NewValue)
 				)
 			);
 
 		private void OnItemsPanelChanged(ItemsPanelTemplate oldItemsPanel, ItemsPanelTemplate newItemsPanel)
 		{
-			if (_isReady && !Equals(oldItemsPanel, newItemsPanel)) // Panel is created on ApplyTemplate, so do not create it twice (first on set PanelTemplate, second on ApplyTemplate)
+			if (_isTemplateApplied && !Equals(oldItemsPanel, newItemsPanel))
 			{
 				UpdateItemsPanelRoot();
 			}
@@ -291,6 +295,8 @@ namespace Windows.UI.Xaml.Controls
 				return items?.Count() ?? 0;
 			}
 		}
+
+		private protected int GetItemCount() => NumberOfItems;
 
 		internal bool HasItems
 		{
@@ -647,6 +653,7 @@ namespace Windows.UI.Xaml.Controls
 			TryObserveCollectionViewSource(e.NewValue);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void TrySnapshotNonObservableSource(object source)
 		{
 			// For normal enumerables, that are not notifying (INCC) or observable (ObsCollection),
@@ -951,9 +958,7 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
-			_isReady = true;
-
-			UpdateItemsPanelRoot();
+			_isTemplateApplied = true;
 		}
 
 		private protected override void OnUnloaded()
@@ -963,6 +968,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateItemsPanelRoot()
 		{
+			// ItemsPanel materialization requires ItemsPresenter as templated-parent,
+			// and this cannot be re-injected late.
+			if (ItemsPresenter is null)
+			{
+				return;
+			}
+
 			// Remove items from the previous ItemsPanelRoot to ensure they can be safely added to the new one
 			if (ShouldItemsControlManageChildren)
 			{
@@ -974,14 +986,30 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() as _ViewGroup ?? new StackPanel();
+			var itemsPanel =
+				(ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(ItemsPresenter) as _ViewGroup ??
+				CreateDefaultItemsPanel(ItemsPresenter);
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
 			ItemsPanelRoot?.SetItemsOwner(this);
-			_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
+			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
+
+			OnItemsPanelRootPrepared();
 
 			UpdateItems(null);
+		}
+
+		private protected virtual void OnItemsPanelRootPrepared()
+		{
+		}
+
+		private _ViewGroup CreateDefaultItemsPanel(DependencyObject templatedParent)
+		{
+			var panel = new StackPanel();
+			panel.SetTemplatedParent(templatedParent);
+
+			return panel;
 		}
 
 		/// <summary>
@@ -995,7 +1023,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
+			if (ItemsPanelRoot == null
+				|| !ShouldItemsControlManageChildren
+#if __ANDROID__
+				// workaround for INCC callback on disposed object
+				// see: Given_xBind.When_XBind_TargetDisposed_Test()
+				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
+#endif
+				)
 			{
 				return;
 			}
@@ -1122,7 +1157,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Unset content of container. This should be called when the container is no longer going to be used.
 		/// </summary>
-		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
+		internal void CleanUpContainer(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			// Determine the item characteristics manually, as the item
 			// does not exist anymore in the Items or ItemsSource.
@@ -1180,12 +1215,10 @@ namespace Windows.UI.Xaml.Controls
 						}
 					}
 
-					if (!contentControl.IsContainerFromTemplateRoot)
-					{
-						// Clears value set in PrepareContainerForItemOverride
-						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
-					}
-
+					// Make sure to clean up the template/selector first before cleaning up the ContentProperty.
+					// This way, if the contentControl contains a ContentPresenter with a template/selector, changing
+					// the content doesn't cause the selector to reevaluate (or the template to respond to changes).
+					// When_TemplateSelector_And_List_Reloaded asserts against this.
 					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
@@ -1193,6 +1226,12 @@ namespace Windows.UI.Xaml.Controls
 					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
 					{
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateSelectorProperty);
+					}
+
+					if (!contentControl.IsContainerFromTemplateRoot)
+					{
+						// Clears value set in PrepareContainerForItemOverride
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
 					}
 				}
 
@@ -1673,15 +1712,14 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Sets the ItemsPresenter that should be used by ItemsControl.
 		/// </summary>
-		/// <remarks>
-		/// This is usually called from ItemsPresenter when its TemplatedParent (an ItemsControl) gets set.
-		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
-			if (_itemsPresenter != itemsPresenter)
+			if (ItemsPresenter != itemsPresenter)
 			{
-				_itemsPresenter = itemsPresenter;
-				_itemsPresenter?.LoadChildren(InternalItemsPanelRoot);
+				ItemsPresenter = itemsPresenter;
+				ItemsPresenter?.CreateHeaderAndFooter();
+
+				UpdateItemsPanelRoot();
 			}
 		}
 
@@ -1732,8 +1770,56 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
 		internal void SetNeedsUpdateItems()
 			=> UpdateItems(null);
+
+		private protected virtual bool IsHostForItemContainer(DependencyObject pContainer)
+		{
+			bool hasParent = false;
+
+			var pIsHost = false;
+
+			// If ItemsControlFromItemContainer can determine who owns the element,
+			// use its decision.
+			var spItemsControl = ItemsControlFromItemContainer(pContainer);
+
+			if (spItemsControl is not null)
+			{
+				pIsHost = (spItemsControl == this);
+				return pIsHost;
+			}
+
+			// If the element is in my items view, and if it can be its own ItemContainer,
+			// it's mine.  Contains may be expensive, so we avoid calling it in cases
+			// where we already know the answer - namely when the element has a
+			// logical parent (ItemsControlFromItemContainer handles this case).  This
+			// leaves only those cases where the element belongs to my items
+			// without having a logical parent (e.g. via ItemsSource) and without
+			// having been generated yet. HasItem indicates if anything has been generated.
+
+			if (pContainer is FrameworkElement fe)
+			{
+				hasParent = fe.Parent != null;
+			}
+
+			if (!hasParent)
+			{
+				pIsHost = IsItemItsOwnContainer(pContainer);
+				if (pIsHost)
+				{
+					int nCount = Items?.Count ?? 0;
+					pIsHost = nCount > 0;
+					if (pIsHost)
+					{
+						pIsHost = Items.IndexOf(pContainer) >= 0;
+					}
+				}
+			}
+
+			return pIsHost;
+		}
+
+		// TODO Uno: Implement from WinUI
+		private protected bool IsItemsHostInvalid => false;
 	}
 }

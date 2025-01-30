@@ -1,7 +1,7 @@
-using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Samples.Content.UITests.Popup
 {

@@ -9,10 +9,9 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public const string Name = nameof(ConfigureServer);
 		private Dictionary<string, string>? _msbuildPropertiesCache;
 
-		public ConfigureServer(string projectPath, string[] xamlPaths, string[] metadataUpdateCapabilities, bool enableMetadataUpdates, string[] msbuildPropertiesRaw)
+		public ConfigureServer(string projectPath, string[] metadataUpdateCapabilities, bool enableMetadataUpdates, string[] msbuildPropertiesRaw)
 		{
 			ProjectPath = projectPath;
-			XamlPaths = xamlPaths;
 			MetadataUpdateCapabilities = metadataUpdateCapabilities;
 			MSBuildPropertiesRaw = msbuildPropertiesRaw;
 			EnableMetadataUpdates = enableMetadataUpdates;
@@ -22,13 +21,11 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public string[] MSBuildPropertiesRaw { get; set; }
 
-		public string[] XamlPaths { get; set; }
-
 		public string[] MetadataUpdateCapabilities { get; set; }
 
 		public bool EnableMetadataUpdates { get; set; }
 
-		public string Scope => HotReloadConstants.HotReload;
+		public string Scope => WellKnownScopes.HotReload;
 
 		string IMessage.Name => Name;
 

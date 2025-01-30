@@ -2,7 +2,7 @@
 using Uno.Disposables;
 using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
@@ -53,5 +53,15 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>Value indicating whether backdrop filter is supported.</returns>
 		private static bool IsBackdropFilterSupported() =>
 			_isBackdropFilterSupported ??= WindowManagerInterop.IsCssFeatureSupported(CssSupportCondition);
+
+		protected override void OnConnected()
+		{
+			base.OnConnected();
+		}
+
+		protected override void OnDisconnected()
+		{
+			base.OnDisconnected();
+		}
 	}
 }

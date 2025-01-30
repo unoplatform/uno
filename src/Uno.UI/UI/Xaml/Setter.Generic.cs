@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a property assignation in a style or story board.
@@ -38,6 +38,13 @@ namespace Windows.UI.Xaml
 			{
 				Action?.Invoke((T)o);
 			}
+		}
+
+		internal override bool TryGetSetterValue(out object value, DependencyObject @do)
+		{
+			Action?.Invoke((T)@do);
+			value = null;
+			return false;
 		}
 
 		/// <summary>

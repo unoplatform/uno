@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -37,7 +37,7 @@ namespace Uno.UI.Controls
 
 			if (_commandBar == null)
 			{
-				commandBar = TemplatedParent as CommandBar;
+				commandBar = GetTemplatedParent() as CommandBar;
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
 			}
 

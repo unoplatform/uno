@@ -10,13 +10,13 @@ using Uno;
 using Uno.UI;
 using System.Linq;
 using Android.OS;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
 
 using Uno.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal partial class FontHelper
 	{
@@ -28,17 +28,19 @@ namespace Windows.UI.Xaml
 			{
 				private readonly int _hashCode;
 
-				public Entry(string? fontFamily, FontWeight fontWeight, TypefaceStyle style)
+				public Entry(string? fontFamily, FontWeight fontWeight, bool italic, FontStretch fontStretch)
 				{
 					FontFamily = fontFamily;
 					FontWeight = fontWeight;
-					Style = style;
-					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Style.GetHashCode();
+					Italic = italic;
+					FontStretch = fontStretch;
+					_hashCode = (FontFamily?.GetHashCode() ?? 0) ^ FontWeight.GetHashCode() ^ Italic.GetHashCode() ^ FontStretch.GetHashCode();
 				}
 
 				public string? FontFamily { get; }
 				public FontWeight FontWeight { get; }
-				public TypefaceStyle Style { get; }
+				public bool Italic { get; }
+				public FontStretch FontStretch { get; }
 
 				public override bool Equals(object? other)
 				{
@@ -46,7 +48,8 @@ namespace Windows.UI.Xaml
 					{
 						return FontFamily == otherEntry.FontFamily
 							&& FontWeight == otherEntry.FontWeight
-							&& Style == otherEntry.Style;
+							&& Italic == otherEntry.Italic
+							&& FontStretch == otherEntry.FontStretch;
 					}
 
 					return false;

@@ -1,14 +1,15 @@
+﻿using Uno.UI.Xaml.Input;
+using Windows.Devices.Input;
 using Windows.Foundation;
-using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class ManipulationStartedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
@@ -33,7 +34,7 @@ namespace Windows.UI.Xaml.Input
 		/// Gets identifiers of all pointer that has been involved in that manipulation.
 		/// </summary>
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
-		internal Windows.Devices.Input.PointerIdentifier[] Pointers { get; }
+		internal PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }
 

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
 using Windows.Globalization;
 using Windows.Graphics.Display;
@@ -21,18 +21,19 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
-
+using Uno.UI.Runtime;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
+using NativeMethods = __Microsoft.UI.Xaml.Application.NativeMethods;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Application
 	{
@@ -42,9 +43,12 @@ namespace Windows.UI.Xaml
 		{
 			if (!_startInvoked)
 			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
+			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(IUnoCorePointerInputSource),
+				o => new BrowserPointerInputSource());
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
@@ -57,20 +61,19 @@ namespace Windows.UI.Xaml
 		[JSExport]
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
-			var application = Windows.UI.Xaml.Application.Current;
-			var window = Windows.UI.Xaml.Window.Current;
+			var application = Microsoft.UI.Xaml.Application.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnNativeVisibilityChanged(true);
-					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+					NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true);
+					NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				window?.OnNativeVisibilityChanged(false);
+				NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
@@ -87,11 +90,9 @@ namespace Windows.UI.Xaml
 					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 				);
 
-				var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
+				await WindowManagerInterop.InitAsync();
 
-				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
-
-				Windows.Storage.ApplicationData.Init();
+				global::Windows.Storage.ApplicationData.Init();
 
 				callback(new ApplicationInitializationCallbackParams());
 			}
@@ -108,15 +109,13 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
-
 				var arguments = WindowManagerInterop.BeforeLaunch();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
+
 				InitializationCompleted();
 
 				if (!string.IsNullOrEmpty(arguments))

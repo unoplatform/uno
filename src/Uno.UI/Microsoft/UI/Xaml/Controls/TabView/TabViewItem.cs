@@ -3,26 +3,28 @@
 // MUX Reference: TabViewItem.cpp, commit 27052f7
 
 using System.Numerics;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Represents a single tab within a TabView.
@@ -44,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Loaded += OnLoaded;
 
-			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedPropertyChanged);
 			RegisterPropertyChangedCallback(Control.ForegroundProperty, OnForegroundPropertyChanged);
 		}
 
@@ -131,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
+		protected internal override void OnIsSelectedChanged()
 		{
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
 			if (peer != null)
@@ -139,15 +140,17 @@ namespace Microsoft.UI.Xaml.Controls
 				peer.RaiseAutomationEvent(AutomationEvents.SelectionItemPatternOnElementSelected);
 			}
 
+			SetValue(Canvas.ZIndexProperty, IsSelected ? 20 : 0);
+#if __ANDROID__ || __IOS__
 			if (IsSelected)
 			{
-				SetValue(Canvas.ZIndexProperty, 20);
+				// ios/droid: For some reason, ScrollToItem/ScrollToPosition from Selector::OnSelectedItemChanged would fail to scroll to the index
+				// when the ListView in question is a TabViewListView.
+				// On Android, this is due to the TabScrollViewerStyle uses ScrollContentPresenter instead of ListViewBaseScrollContentPresenter, prevent virtualization.
+				// For iOS, it is unclear why. Using ListViewBaseScrollContentPresenter breaks StartBringIntoView, while enabling ScrollIntoView. However, ScrollIntoView doesn't work properly.
 				StartBringIntoView();
 			}
-			else
-			{
-				SetValue(Canvas.ZIndexProperty, 0);
-			}
+#endif
 
 			UpdateShadow();
 			UpdateWidthModeVisualState();
@@ -178,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (SharedHelpers.IsThemeShadowAvailable())
 			// TODO Uno: Can't access XamlControlsResources from Uno.UI
-			//&& !Microsoft.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
+			//&& !Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
 			{
 				if (IsSelected && !m_isDragging)
 				{
@@ -366,7 +369,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)
 				{
-					var isCtrlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+					var isCtrlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 					if (isCtrlDown)
 					{
 						// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.

@@ -3,7 +3,7 @@ using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,15 +14,15 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject, ILayouterElement
 	{
 		private static readonly List<View> _emptyList = new List<View>(0);
 
-		private ScrollViewer ScrollOwner => _scrollViewer.TryGetTarget(out var s) ? s : (Parent as FrameworkElement)?.TemplatedParent as ScrollViewer;
+		private ScrollViewer ScrollOwner => _scrollViewer.TryGetTarget(out var s) ? s : (Parent as FrameworkElement)?.GetTemplatedParent() as ScrollViewer;
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility

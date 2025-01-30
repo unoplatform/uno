@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal enum NavigationViewSplitVectorID
 {

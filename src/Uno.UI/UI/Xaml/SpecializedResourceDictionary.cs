@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Uno.Foundation;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Specialized Dictionary for ResourceDictionary values backing, using <see cref="ResourceKey"/> for the dictionary key.
@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml
 			public readonly string Key;
 			public readonly Type TypeKey;
 			public readonly uint HashCode;
+
+			public bool ShouldFilter { get; init; } = true;
 
 			public static ResourceKey Empty { get; } = new ResourceKey(false);
 
@@ -110,6 +112,20 @@ namespace Windows.UI.Xaml
 				=> new ResourceKey(key);
 		}
 
+		internal class ResourceKeyComparer : IEqualityComparer<ResourceKey>
+		{
+			public bool Equals(ResourceKey x, ResourceKey y)
+			{
+				return x.Equals(y);
+			}
+			public int GetHashCode(ResourceKey obj)
+			{
+				return (int)obj.HashCode;
+			}
+
+			public static ResourceKeyComparer Default { get; } = new();
+		}
+
 		private int[] _buckets;
 		private Entry[] _entries;
 #if TARGET_64BIT
@@ -174,15 +190,20 @@ namespace Windows.UI.Xaml
 			}
 			set
 			{
-				bool modified = TryInsert(key, value, InsertionBehavior.OverwriteExisting);
+				bool modified = TryInsert(key, value, InsertionBehavior.OverwriteExisting, out _);
 				Debug.Assert(modified);
 			}
 		}
 
 		public void Add(in ResourceKey key, object value)
 		{
-			bool modified = TryInsert(key, value, InsertionBehavior.ThrowOnExisting);
+			bool modified = TryInsert(key, value, InsertionBehavior.ThrowOnExisting, out _);
 			Debug.Assert(modified); // If there was an existing key and the Add failed, an exception will already have been thrown.
+		}
+
+		public void AddOrUpdate(in ResourceKey key, object value, out object previousValue)
+		{
+			TryInsert(key, value, InsertionBehavior.OverwriteExisting, out previousValue);
 		}
 
 		public void Clear()
@@ -193,7 +214,7 @@ namespace Windows.UI.Xaml
 				Debug.Assert(_buckets != null, "_buckets should be non-null");
 				Debug.Assert(_entries != null, "_entries should be non-null");
 
-				Array.Clear(_buckets, 0, _buckets.Length);
+				Array.Clear(_buckets);
 
 				_count = 0;
 				_freeList = -1;
@@ -248,7 +269,7 @@ namespace Windows.UI.Xaml
 
 		public Enumerator GetEnumerator() => new Enumerator(this, Enumerator.KeyValuePair);
 
-		private ref object FindValue(in ResourceKey key)
+		internal ref object FindValue(in ResourceKey key)
 		{
 			ref Entry entry = ref Unsafe.NullRef<Entry>();
 
@@ -320,7 +341,7 @@ namespace Windows.UI.Xaml
 			return size;
 		}
 
-		private bool TryInsert(in ResourceKey key, object value, InsertionBehavior behavior)
+		private bool TryInsert(in ResourceKey key, object value, InsertionBehavior behavior, out object previousValue)
 		{
 			if (_buckets == null)
 			{
@@ -351,6 +372,7 @@ namespace Windows.UI.Xaml
 				{
 					if (behavior == InsertionBehavior.OverwriteExisting)
 					{
+						previousValue = entries[i].value;
 						entries[i].value = value;
 						return true;
 					}
@@ -360,6 +382,7 @@ namespace Windows.UI.Xaml
 						throw new InvalidOperationException("AddingDuplicateWithKeyArgumentException(key)");
 					}
 
+					previousValue = null;
 					return false;
 				}
 
@@ -403,6 +426,7 @@ namespace Windows.UI.Xaml
 			bucket = index + 1; // Value in _buckets is 1-based
 			_version++;
 
+			previousValue = null;
 			return true;
 		}
 
@@ -585,7 +609,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public bool TryAdd(in ResourceKey key, object value) =>
-			TryInsert(key, value, InsertionBehavior.None);
+			TryInsert(key, value, InsertionBehavior.None, out _);
 
 		/// <summary>
 		/// Ensures that the dictionary can hold up to 'capacity' entries without any further expansion of its backing storage

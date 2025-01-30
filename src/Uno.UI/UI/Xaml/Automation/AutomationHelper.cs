@@ -1,9 +1,9 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Automation
+namespace Microsoft.UI.Xaml.Automation
 {
 	internal class AutomationHelper
 	{
@@ -107,5 +107,11 @@ namespace Windows.UI.Xaml.Automation
 
 			return null;
 		}
+
+		public static void SetElementAutomationName(DependencyObject pDO, string name) =>
+			AutomationProperties.SetName(pDO, name);
+
+		public static void SetElementAutomationId(DependencyObject pDO, string id) =>
+			AutomationProperties.SetAutomationId(pDO, id);
 	}
 }

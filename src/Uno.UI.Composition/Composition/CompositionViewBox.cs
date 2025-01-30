@@ -1,8 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
+using Windows.Foundation;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionViewBox : CompositionObject
 {
@@ -45,4 +46,11 @@ public partial class CompositionViewBox : CompositionObject
 		get => _horizontalAlignmentRatio;
 		set => SetProperty(ref _horizontalAlignmentRatio, value);
 	}
+
+	internal Rect GetRect()
+		=> new(
+			x: Offset.X,
+			y: Offset.Y,
+			width: Size.X,
+			height: Size.Y);
 }

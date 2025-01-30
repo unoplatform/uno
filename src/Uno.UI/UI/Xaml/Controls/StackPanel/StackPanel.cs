@@ -8,7 +8,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 #if __ANDROID__
 using Android.Views;
 #elif __IOS__
@@ -16,10 +16,10 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Orientation DependencyProperty
 
-		internal override Orientation? InternalOrientation => Orientation;
+		internal override Orientation? PhysicalOrientation => Orientation;
 
 		public Orientation Orientation
 		{
@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 				"Orientation",
 				typeof(Orientation),
 				typeof(StackPanel),
-				new FrameworkPropertyMetadata(Orientation.Vertical, (s, e) => ((StackPanel)s)?.OnOrientationChanged(e))
+				new FrameworkPropertyMetadata(Orientation.Vertical, FrameworkPropertyMetadataOptions.AffectsMeasure, (s, e) => ((StackPanel)s)?.OnOrientationChanged(e))
 			);
 
 

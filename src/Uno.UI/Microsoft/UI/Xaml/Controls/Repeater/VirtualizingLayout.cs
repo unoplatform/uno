@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using Windows.Foundation;
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class VirtualizingLayout : Layout
 	{
@@ -42,10 +42,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// However a too high threshold would cause longer passes (as more items would been added / removed at once).
 		/// Note: this is used only for viewport, if the size of the ItemsRepeater changes it will still be re-layouted.
 		/// </summary>
+		/// <param name="state">The layout state</param>
 		/// <param name="oldViewport">Previous viewport</param>
 		/// <param name="newViewport">Updated viewport</param>
 		[UnoOnly]
-		protected internal virtual bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		protected internal virtual bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
 		{
 			const double delta = 50;
 			return Math.Abs(oldViewport.Width - newViewport.Width) > delta

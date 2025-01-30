@@ -9,22 +9,24 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Graphics.Display;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
 [TestClass]
 public class Given_XamlCompositionBrushBase
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_CompositionBrush_Changes()
 	{
-		var dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
 
 		var compositor = Window.Current.Compositor;
 		var expected = new Grid
@@ -64,7 +66,7 @@ public class Given_XamlCompositionBrushBase
 		}
 	}
 
-	private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase
+	private class TestBrush : Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 		private CompositionBrush Brush;
 
@@ -83,5 +85,4 @@ public class Given_XamlCompositionBrushBase
 
 		return (ss1, ss2);
 	}
-#endif
 }

@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI.Extensions;
 
@@ -126,8 +126,9 @@ namespace Uno.UI.Controls
 		internal static CommandBar? FindTopCommandBar(UIView? view)
 		{
 			return view.FindFirstDescendant<CommandBar>(
-				x => x is not Frame, // prevent looking into the nested page
-				_ => true
+				hierarchyPredicate: x => x is not Frame // prevent looking into the nested page
+				&& x is not MediaPlayerElement, // prevent looking into the MPE visual tree
+				predicate: _ => true
 			);
 		}
 	}

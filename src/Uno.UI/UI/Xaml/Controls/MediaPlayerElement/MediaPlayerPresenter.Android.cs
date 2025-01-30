@@ -1,13 +1,16 @@
-using System;
+﻿using System;
 using Android.Views;
 using Uno.Media.Playback;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter
 	{
+		internal uint NaturalVideoWidth => MediaPlayer?.NaturalVideoWidth ?? 0;
+		internal uint NaturalVideoHeight => MediaPlayer?.NaturalVideoHeight ?? 0;
+
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
 			this.Child = VisualTreeHelper.AdaptNative(videoSurface as SurfaceView);
@@ -28,19 +31,19 @@ namespace Windows.UI.Xaml.Controls
 			switch (Stretch)
 			{
 				case Stretch.Uniform:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.Uniform);
+					MediaPlayer.UpdateVideoStretch(global::Windows.Media.Playback.MediaPlayer.VideoStretch.Uniform);
 					break;
 
 				case Stretch.Fill:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.Fill);
+					MediaPlayer.UpdateVideoStretch(global::Windows.Media.Playback.MediaPlayer.VideoStretch.Fill);
 					break;
 
 				case Stretch.None:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.None);
+					MediaPlayer.UpdateVideoStretch(global::Windows.Media.Playback.MediaPlayer.VideoStretch.None);
 					break;
 
 				case Stretch.UniformToFill:
-					MediaPlayer.UpdateVideoStretch(Windows.Media.Playback.MediaPlayer.VideoStretch.UniformToFill);
+					MediaPlayer.UpdateVideoStretch(global::Windows.Media.Playback.MediaPlayer.VideoStretch.UniformToFill);
 					break;
 
 				default:

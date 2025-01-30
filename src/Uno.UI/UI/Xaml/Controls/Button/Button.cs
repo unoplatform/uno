@@ -1,23 +1,10 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{
-		static Button()
-		{
-			HorizontalContentAlignmentProperty.OverrideMetadata(
-				typeof(Button),
-				new FrameworkPropertyMetadata(HorizontalAlignment.Center)
-			);
-
-			VerticalContentAlignmentProperty.OverrideMetadata(
-				typeof(Button),
-				new FrameworkPropertyMetadata(VerticalAlignment.Center)
-			);
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the Button class.
 		/// </summary>

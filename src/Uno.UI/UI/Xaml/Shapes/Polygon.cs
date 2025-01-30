@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Polygon
 	{
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Polygon),
 			new FrameworkPropertyMetadata(
 				defaultValue: default(PointCollection),
-				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) =>
 				{
 					(e.OldValue as PointCollection)?.UnRegisterChangedListener(s.InvalidateMeasure);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -8,7 +8,7 @@ using Java.Nio;
 using Uno.Extensions;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class WriteableBitmap
 	{

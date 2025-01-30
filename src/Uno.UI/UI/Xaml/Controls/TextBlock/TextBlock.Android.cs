@@ -2,8 +2,8 @@
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,27 +12,28 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Linq;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Android.Text;
 using Android.Text.Style;
 using Android.Widget;
 using Android.Views;
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Android.Graphics.Drawables;
 using static Uno.UI.ViewHelper;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Collections;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{
@@ -144,6 +145,7 @@ namespace Windows.UI.Xaml.Controls
 		// Invalidate _paint
 		partial void OnFontWeightChangedPartial() => _paint = null;
 		partial void OnFontStyleChangedPartial() => _paint = null;
+		partial void OnFontStretchChangedPartial() => _paint = null;
 		partial void OnFontFamilyChangedPartial() => _paint = null;
 		partial void OnFontSizeChangedPartial() => _paint = null;
 		partial void OnCharacterSpacingChangedPartial() => _paint = null;
@@ -235,14 +237,15 @@ namespace Windows.UI.Xaml.Controls
 			// The size is incorrect at this point, we update it later in `UpdateLayout`.
 			var shader = Foreground switch
 			{
-				GradientBrush gb => gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
-				RadialGradientBrush rgb => rgb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				GradientBrush gb => gb.GetShader(LayoutInformation.GetLayoutSlot(this).Size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(LayoutInformation.GetLayoutSlot(this).Size.LogicalToPhysicalPixels()),
 				_ => null,
 			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
+				FontStretch,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,
@@ -271,7 +274,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (UseInlinesFastPath)
 			{
-				return JavaStringCache.GetNativeString(Text);
+				if (FeatureConfiguration.TextBlock.IsJavaStringCachedEnabled)
+				{
+					return JavaStringCache.GetNativeString(Text);
+				}
+				else
+				{
+					return new Java.Lang.String(Text);
+				}
 			}
 			else
 			{
@@ -388,6 +398,8 @@ namespace Windows.UI.Xaml.Controls
 					UpdateNativeTextBlockLayout();
 				}
 
+				UpdateIsTextTrimmed();
+
 				return finalSize;
 			}
 		}
@@ -458,6 +470,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return layout.MeasuredSize;
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
+				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
+			);
 		}
 
 		/// <summary>
@@ -547,7 +567,15 @@ namespace Windows.UI.Xaml.Controls
 
 			public void Build()
 			{
-				MeasuredSize = UpdateLayout(AvailableSize, _exactWidth);
+				if (AvailableSize.Width < 0 || AvailableSize.Height < 0)
+				{
+					// The layout is invalid, we can't build it.
+					MeasuredSize = new Size(0, 0);
+				}
+				else
+				{
+					MeasuredSize = UpdateLayout(AvailableSize, _exactWidth);
+				}
 			}
 
 			/// <summary>

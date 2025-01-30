@@ -16,7 +16,7 @@ using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml
 
 		private bool _isRunning;
 
-		public delegate Windows.UI.Xaml.Application AppBuilder();
+		public delegate Microsoft.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -37,10 +37,10 @@ namespace Windows.UI.Xaml
 			// Register assemblies earlier than Application itself, otherwise
 			// ApiInformation may return APIs as not implemented incorrectly.
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(global::Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
-			// Delay create the Windows.UI.Xaml.Application in order to get the
+			// Delay create the Microsoft.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 			_app = appBuilder();
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-		[Export]
+		[Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 

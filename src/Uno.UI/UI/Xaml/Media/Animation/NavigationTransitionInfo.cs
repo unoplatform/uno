@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class NavigationTransitionInfo : DependencyObject
 	{
@@ -13,14 +13,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			InitializeBinder();
 		}
 
-		protected virtual string GetNavigationStateCore()
-		{
-			return _navigationState;
-		}
+		protected virtual string GetNavigationStateCore() => _navigationState;
 
-		protected virtual void SetNavigationStateCore(string navigationState)
-		{
-			_navigationState = navigationState;
-		}
+		internal string GetNavigationStateCoreInternal() => GetNavigationStateCore();
+
+		protected virtual void SetNavigationStateCore(string navigationState) => _navigationState = navigationState;
+
+		internal void SetNavigationStateCoreInternal(string navigationState) => SetNavigationStateCore(navigationState);
 	}
 }

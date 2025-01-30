@@ -10,7 +10,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 using _ViewGroup = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnApplyTemplatePartial()
+		private protected override void OnItemsPanelRootPrepared()
 		{
 			// NativePanel may not exist if we're using a non-virtualizing ItemsPanel.
 			if (NativePanel != null)

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +14,10 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using Uno.UI.Xaml;
 
@@ -87,35 +87,25 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Coerce_Default()
 		{
 			var SUT = new BinderLocalCache_Data_IsEnabled();
-			Assert.AreEqual(true, SUT.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			SUT.SetValue(BinderLocalCache_Data_IsEnabled.IsEnabledProperty, false);
-			Assert.AreEqual(false, SUT.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 		}
 
 		[TestMethod]
 		public void When_Coerce_And_Coerce_False()
 		{
 			var SUT = new BinderLocalCache_Data_IsEnabled();
-			Assert.AreEqual(true, SUT.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			SUT.SuppressIsEnabled(true);
 
-			Assert.AreEqual(false, SUT.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			SUT.SuppressIsEnabled(false);
 
-			Assert.AreEqual(true, SUT.IsEnabled);
-		}
-
-		[TestMethod]
-		public void When_Coerce_And_MetadataOverride()
-		{
-			var SUT = new BinderLocalCache_Data_IsEnabled_Inherited();
-			Assert.AreEqual(false, SUT.IsEnabled);
-
-			SUT.SetValue(BinderLocalCache_Data_IsEnabled.IsEnabledProperty, true);
-			Assert.AreEqual(true, SUT.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 		}
 	}
 
@@ -156,14 +146,6 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			_suppressIsEnabled = suppress;
 			this.CoerceValue(IsEnabledProperty);
-		}
-	}
-
-	public partial class BinderLocalCache_Data_IsEnabled_Inherited : BinderLocalCache_Data_IsEnabled
-	{
-		static BinderLocalCache_Data_IsEnabled_Inherited()
-		{
-			IsEnabledProperty.OverrideMetadata(typeof(BinderLocalCache_Data_IsEnabled_Inherited), new FrameworkPropertyMetadata(defaultValue: false));
 		}
 	}
 }

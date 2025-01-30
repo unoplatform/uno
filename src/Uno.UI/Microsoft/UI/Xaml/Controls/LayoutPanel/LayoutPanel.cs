@@ -1,26 +1,19 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 
 	partial class LayoutPanel
 	{
-
-		public LayoutPanel()
-		{
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
-		}
-
-
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var dependencyProperty = args.Property;
 

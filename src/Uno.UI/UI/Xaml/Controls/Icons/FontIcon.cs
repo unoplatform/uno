@@ -3,16 +3,16 @@
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a glyph from the specified font.
 /// </summary>
-public partial class FontIcon : IconElement
+public partial class FontIcon : IconElement, IThemeChangeAware
 {
 	private readonly TextBlock _textBlock;
 
@@ -183,7 +183,7 @@ public partial class FontIcon : IconElement
 		_textBlock.Style = null;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
-		_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
+		_textBlock.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center;
 		_textBlock.SetValue(AutomationProperties.AccessibilityViewProperty, AccessibilityView.Raw);
 
 		_textBlock.Text = Glyph;
@@ -218,6 +218,16 @@ public partial class FontIcon : IconElement
 		if (_textBlock is not null)
 		{
 			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = Foreground;
 		}
 	}
 }

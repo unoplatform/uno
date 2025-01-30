@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
-#if !NETFX_CORE
+#if !WINAPPSDK
 using _UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode;
 #endif
 
@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			this.InitializeComponent();
 
-#if NETFX_CORE
+#if WINAPPSDK
 		}
 #else
 			_modes.ItemsSource = Enum.GetNames(typeof(_UpdatesMode));

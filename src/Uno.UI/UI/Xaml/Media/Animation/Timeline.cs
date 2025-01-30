@@ -1,16 +1,18 @@
-﻿using Uno.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Uno.UI.DataBinding;
-using Uno.Foundation.Logging;
-using System.Linq;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{
@@ -208,7 +210,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					_propertyInfo = new BindingPath(
 						path: targetPropertyPath,
 						fallbackValue: null,
-						precedence: DependencyPropertyValuePrecedences.Animations,
+						forAnimations: true,
 						allowPrivateMembers: false
 					)
 					{
@@ -297,11 +299,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			PropertyInfo.Value = value;
 		}
 
-		internal void SetAnimationFillingValue(object value)
-		{
-			PropertyInfo.SetAnimationFillingValue(value);
-		}
-
 		/// <summary>
 		/// Clears the animated value of the dependency property value precedence system
 		/// </summary>
@@ -315,61 +312,53 @@ namespace Windows.UI.Xaml.Media.Animation
 			PropertyInfo.ClearValue();
 		}
 
-		internal void ClearAnimationFillingValue()
-		{
-			PropertyInfo.ClearAnimationFillingValue();
-		}
-
 		void ITimeline.Begin()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Begin()");
 		}
 
 		void ITimeline.Stop()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Stop()");
 		}
 
 		void ITimeline.Resume()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Resume()");
 		}
 
 		void ITimeline.Pause()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Pause()");
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Seek(TimeSpan offset)");
 		}
 
 		void ITimeline.SeekAlignedToLastTick(TimeSpan offset)
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SeekAlignedToLastTick(TimeSpan offset)");
 		}
 
 		void ITimeline.SkipToFill()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void SkipToFill()");
 		}
 
 		void ITimeline.Deactivate()
 		{
 			// Timeline should not be used directly.  Please use derived class.
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
+			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
-
-		private protected IValueAnimator InitializeAnimator() => throw new NotSupportedException(); // Should be implemented by classes which use AnimationImplementation
-
 
 		/// <summary>
 		/// Checks if the Timeline will repeat.
@@ -399,14 +388,20 @@ namespace Windows.UI.Xaml.Media.Animation
 				if (boundProperty != null)
 				{
 					//https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
-					//TODO Projection, Clip, Canvas.Left or Canvas.Top
+					//TODO Projection, Clip
 
 					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
-						|| (boundProperty.DataContext is Transform transform && transform.View != null)
+						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
+						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
+						|| (boundProperty.DataContext is Transform transform)
 					)
 					{
 						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
+						// NOTE that the Transform check isn't necessarily a RenderTransform and is not accurate.
+						// It's there to handle some cases, e.g, a UIElement having RectangleGeometry Clip that has a Transform
+						// Ideally, we want to be specifically checking if the animation is targeting Clip, but no good way to do it so far.
+						// The current approach may consider some dependent animations as independent in niche scenario, but that's not an issue for now.
 						return false;
 					}
 				}

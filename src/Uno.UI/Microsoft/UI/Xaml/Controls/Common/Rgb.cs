@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	// Uno Doc: Originally defined in ColorConversion.h in WinUI but moved here to a separate file.
 	internal struct Rgb

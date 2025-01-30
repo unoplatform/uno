@@ -2,11 +2,11 @@
 using Windows.Foundation;
 using Uno.UI.Helpers.WinUI;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ScrollContentPresenter
 {
@@ -237,8 +237,8 @@ public partial class ScrollContentPresenter
 		scrollableHeight += _occludedRectPadding.Bottom;
 #endif
 
-		targetZoomedHorizontalOffsetTmp = targetZoomedHorizontalOffsetTmp.Clamp(0.0, scrollableWidth);
-		targetZoomedVerticalOffsetTmp = targetZoomedVerticalOffsetTmp.Clamp(0.0, scrollableHeight);
+		targetZoomedHorizontalOffsetTmp = Math.Clamp(targetZoomedHorizontalOffsetTmp, 0.0, scrollableWidth);
+		targetZoomedVerticalOffsetTmp = Math.Clamp(targetZoomedVerticalOffsetTmp, 0.0, scrollableHeight);
 
 		double offsetX = requestEventArgs.HorizontalOffset;
 		double offsetY = requestEventArgs.VerticalOffset;

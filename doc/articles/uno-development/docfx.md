@@ -2,9 +2,11 @@
 uid: Uno.Contributing.DocFx
 ---
 
+<!-- markdownlint-disable MD001 -->
+
 # The Uno docs website and DocFX
 
-Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [html files](https://platform.uno/docs/articles/intro.html).
+Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [html files](xref:Uno.Documentation.Intro).
 
 ## Adding to the table of contents
 
@@ -67,7 +69,7 @@ Markdown:
 
 `Windows.UI.Xaml.FrameworkElement`
 
-***
+---
 ```
 
 Html output:
@@ -80,7 +82,7 @@ Html output:
 
 `Windows.UI.Xaml.FrameworkElement`
 
-***
+---
 
 ### TOC checker script
 
@@ -118,7 +120,8 @@ You can use `dotnet-serve` as a simple command-line HTTP server for example.
 If needed, you can also run a script that will give you a performance summary for the documentation generation.
 
 To run the script on Windows:
+
 1. Make sure `crosstargeting_override.props` is not defining UnoTargetFrameworkOverride
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
-3. Go the the uno\build folder (not the uno\src\build folder)
+3. Go to the uno\build folder (not the uno\src\build folder)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions

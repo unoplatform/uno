@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia.Gtk;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Uno.UI.Helpers;
 
 namespace Uno.Extensions.Storage.Pickers
 {
@@ -29,7 +30,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 			using FileChooserDialog dialog = new FileChooserDialog(
 				"Select Folder",
-				GtkHost.Current!.MainWindow,
+				GtkHost.Current!.InitialWindow,
 				FileChooserAction.SelectFolder,
 				"Cancel", ResponseType.Cancel,
 				commitText, ResponseType.Accept);

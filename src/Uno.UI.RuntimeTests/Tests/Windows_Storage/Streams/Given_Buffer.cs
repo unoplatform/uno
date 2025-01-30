@@ -220,7 +220,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 
 	internal static class BufferExtensions
 	{
-#if NETFX_CORE
+#if WINAPPSDK
 		public static void Write(this IBuffer buffer, uint index, byte[] source, int sourceIndex, int count)
 			=> source.CopyTo(sourceIndex, buffer, index, count);
 #endif

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -7,16 +7,16 @@ using System.Text;
 using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 	{
@@ -481,8 +481,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (flyout is { })
 			{
-				var rootVisual = Windows.UI.Xaml.Window.Current.Content;
-				flyout.OverlayInputPassThroughElement = rootVisual;
+				// TODO: Uno specific - avoid using RootVisual on WinUI branch
+				if (XamlRoot is not null)
+				{
+					var rootElement = XamlRoot.VisualTree.RootElement;
+					flyout.OverlayInputPassThroughElement = rootElement;
+				}
 
 				if (flyout is IMenu flyoutAsMenu)
 				{

@@ -14,18 +14,34 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
-	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
-	internal partial class BindingPath : IDisposable, IValueChangedListener
+	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
+	internal partial class BindingPath : IDisposable
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
+
+		// A BindingPath is a path to a property starting from the DataContext.
+		// This is represented internally as a linked list (BindingItem) where the tail of the path is the target value.
+		// _chain is the "head" of the list. _value is the tail i.e. the target.
+		// Each node in the linked list will have a different DataContext to reflect its nesting level.
+		// E.g. BindingPath("Level1.Level2.Level3") will be represented as
+		//  BindingItem("Level1")   DataContext = the actual DC set on the BindingPath (i.e. BindingPath.DataContext)    <---- _chain
+		//        |
+		//        |
+		//        v
+		//  BindingItem("Level2")   DataContext = BindingPath.DataContext.Level1
+		//        |
+		//        |
+		//        v
+		//  BindingItem("Level3")   DataContext = BindingPath.DataContext.Level1.Level2                                  <---- _value
 
 		private BindingItem? _chain;
 		private BindingItem? _value;
@@ -68,13 +84,7 @@ namespace Uno.UI.DataBinding
 			void NewValue();
 		}
 
-		/// <summary>
-		/// Provides the new values for the current binding.
-		/// </summary>
-		/// <remarks>
-		/// This event is not a generic type for performance constraints on Mono's Full-AOT
-		/// </remarks>
-		public IValueChangedListener? ValueChangedListener { get; set; }
+		public BindingExpression? Expression { get; set; }
 
 		static BindingPath()
 		{
@@ -87,7 +97,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="path"></param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
 		public BindingPath(string path, object? fallbackValue) :
-			this(path, fallbackValue, null, false)
+			this(path, fallbackValue, forAnimations: false, false)
 		{
 		}
 
@@ -96,17 +106,16 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <param name="path">The path to the property</param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
-		/// <param name="precedence">The precedence value to manipulate if the path matches to a DependencyProperty.</param>
 		/// <param name="allowPrivateMembers">Allows for the binding engine to include private properties in the lookup</param>
-		internal BindingPath(string path, object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+		internal BindingPath(string path, object? fallbackValue, bool forAnimations, bool allowPrivateMembers)
 		{
 			_path = path ?? "";
 
-			Parse(_path, fallbackValue, precedence, allowPrivateMembers, ref _chain, ref _value);
+			Parse(_path, fallbackValue, forAnimations, allowPrivateMembers, ref _chain, ref _value);
 
 			if (_value != null)
 			{
-				_value.ValueChangedListener = this;
+				_value.Path = this;
 			}
 		}
 
@@ -201,7 +210,7 @@ namespace Uno.UI.DataBinding
 						// Don't get the source value if we're not accessing a dependency property.
 						// WinUI does not read the property value before setting the value for a
 						// non-dependency property source.
-						|| DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
+						|| DependencyObjectStore.AreDifferent(value, _value.GetSourceValue())
 					))
 				{
 					_value.Value = value;
@@ -233,26 +242,6 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Sets the value of the <see cref="DependencyPropertyValuePrecedences.Local"/>
-		/// </summary>
-		/// <param name="value">The value to set</param>
-		internal void SetLocalValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetLocalValue(value);
-			}
-		}
-
-		internal void SetAnimationFillingValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetAnimationFillingValue(value);
-			}
-		}
-
-		/// <summary>
 		/// Clears the value of the current precedence.
 		/// </summary>
 		/// <remarks>After this call, the value returned
@@ -263,13 +252,6 @@ namespace Uno.UI.DataBinding
 			if (!_disposed)
 			{
 				_value?.ClearValue();
-			}
-		}
-		public void ClearAnimationFillingValue()
-		{
-			if (!_disposed)
-			{
-				_value?.ClearAnimationFillingValue();
 			}
 		}
 
@@ -308,19 +290,45 @@ namespace Uno.UI.DataBinding
 			else
 			{
 				// This is an empty path binding, raise the current value as changed.
-				ValueChangedListener?.OnValueChanged(Value);
+				Expression?.OnValueChanged(Value);
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object? o)
 		{
-			ValueChangedListener?.OnValueChanged(o);
+			Expression?.OnValueChanged(o);
 		}
 
 		~BindingPath()
 		{
 			Dispose(false);
 		}
+
+		public bool PrefixOfOrEqualTo(BindingPath? that)
+		{
+			if (that == null || DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext))
+			{
+				return false;
+			}
+
+			var currentLeft = this._chain;
+			var currentRight = that._chain;
+			while (currentLeft != null)
+			{
+				if (!currentLeft.Equals(currentRight))
+				{
+					return false;
+				}
+				currentLeft = currentLeft.Next;
+				currentRight = currentRight.Next;
+			}
+
+			return true;
+		}
+
+		// We define Equals to be based on Path, so `RuntimeHelpers.GetHashCode(path)` doesn't work,
+		// since we need the hashes must match if the two BindingPaths are Equal.
+		public override int GetHashCode() => RuntimeHelpers.GetHashCode(Path);
 
 		public void Dispose()
 		{
@@ -354,7 +362,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		private static void Parse(
 			string path,
-			object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			object? fallbackValue, bool forAnimations, bool allowPrivateMembers,
 			ref BindingItem? head, ref BindingItem? tail)
 		{
 			var propertyLength = 0;
@@ -365,32 +373,32 @@ namespace Uno.UI.DataBinding
 				switch (c)
 				{
 					case ')':
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = true;
 						propertyLength = 0;
 						break;
 
 					case '(' when isInAttachedProperty:
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = false;
 						propertyLength = 0;
 						break;
 
 					case ']':
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = true;
 						propertyLength = 1; // We include the brackets for itemIndex properties
 						break;
 
 					case '[' when isInItemIndex:
 						// Note: We use 'start = i' and '++propertyLength' here for 'TryPrependItem' as we include the brackets for itemIndex properties
-						TryPrependItem(path, i, ++propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i, ++propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = false;
 						propertyLength = 0;
 						break;
 
 					case '.' when !isInAttachedProperty:
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						propertyLength = 0;
 						break;
 
@@ -403,7 +411,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			TryPrependItem(path, 0, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+			TryPrependItem(path, 0, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 		}
 
 		/// <summary>
@@ -411,7 +419,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		private static void TryPrependItem(
 			string path, int start, int length,
-			object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			object? fallbackValue, bool forAnimations, bool allowPrivateMembers,
 			ref BindingItem? head, ref BindingItem? tail)
 		{
 			if (length <= 0)
@@ -434,7 +442,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			var itemPath = path.Substring(start, length);
-			var item = new BindingItem(head, itemPath, precedence, allowPrivateMembers);
+			var item = new BindingItem(head, itemPath, forAnimations, allowPrivateMembers);
 
 			head = item;
 			tail ??= item;
@@ -460,7 +468,7 @@ namespace Uno.UI.DataBinding
 				{
 					tail = tail.Next;
 				}
-				tail.ValueChangedListener?.OnValueChanged(bindingItem.Value);
+				tail.Path?.OnValueChanged(bindingItem.Value);
 			};
 
 			notify.CollectionChanged += handler;
@@ -525,8 +533,18 @@ namespace Uno.UI.DataBinding
 
 			return null;
 		}
-		#endregion
 
+		internal bool OnlyLeafNodeNull()
+		{
+			var tail = _chain;
+			while (tail?.Value != null)
+			{
+				tail = tail.Next;
+			}
+
+			return tail?.Value is null && tail?.Next == null;
+		}
+		#endregion
 	}
 }
 #endif

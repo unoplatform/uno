@@ -12,6 +12,7 @@ using Android.OS;
 using Android.Runtime;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.Foundation;
@@ -39,7 +40,7 @@ public sealed partial class Geolocator
 				_location = location;
 
 				BroadcastStatusChanged(PositionStatus.Ready);
-				_owner._positionChangedWrapper.Event?.Invoke(_owner, new PositionChangedEventArgs(location.ToGeoPosition()));
+				_owner._positionChangedWrapper.Invoke(_owner, new PositionChangedEventArgs(location.ToGeoPosition()));
 			}
 		}
 
@@ -127,11 +128,28 @@ public sealed partial class Geolocator
 	/// <returns>A GeolocationAccessStatus that indicates if permission to location data has been granted.</returns>
 	public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
 	{
-		return RequestAccessCore().AsAsyncOperation();
+		return RequestAccessCoreAsync().AsAsyncOperation();
+	}
+
+	private static Task<GeolocationAccessStatus> RequestAccessCoreAsync()
+	{
+		if (CoreDispatcher.Main.HasThreadAccess)
+		{
+			return RequestAccessCore();
+		}
+
+		return CoreDispatcher.Main.RunWithResultAsync(
+						priority: CoreDispatcherPriority.Normal,
+						task: RequestAccessCore);
 	}
 
 	private static async Task<GeolocationAccessStatus> RequestAccessCore()
 	{
+		if (!IsLocationEnabled())
+		{
+			return GeolocationAccessStatus.Denied;
+		}
+
 		var status = GeolocationAccessStatus.Allowed;
 
 		if (!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
@@ -141,16 +159,17 @@ public sealed partial class Geolocator
 				: GeolocationAccessStatus.Denied;
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			if (status == GeolocationAccessStatus.Allowed)
 			{
-				BroadcastStatusChanged(PositionStatus.Ready);
-
 				// If geolocators subscribed to PositionChanged before the location permission was granted,
 				// make sure to initialize these geolocators now so they can start broadcasting.
 				foreach (var subscriber in _positionChangedSubscriptions)
 				{
 					subscriber.Key.TryInitialize();
 				}
+
+				BroadcastStatusChanged(PositionStatus.Ready);
 			}
 			else
 			{
@@ -164,6 +183,13 @@ public sealed partial class Geolocator
 		}
 
 		return status;
+	}
+
+	public static bool IsLocationEnabled()
+	{
+		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+		return locationManager?.IsLocationEnabled ?? false;
 	}
 
 	/// <summary>
@@ -183,14 +209,17 @@ public sealed partial class Geolocator
 		{
 			TryInitialize();
 
-			if (_locationProvider is null || _locationManager is null)
+			if (string.IsNullOrWhiteSpace(_locationProvider) || _locationManager is null)
 			{
 				return Task.FromResult<Geoposition?>(null);
 			}
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			var location = _locationManager.GetLastKnownLocation(_locationProvider);
+
 			BroadcastStatusChanged(PositionStatus.Ready);
+
 			return Task.FromResult(location?.ToGeoPosition());
 		}
 		else
@@ -262,7 +291,7 @@ public sealed partial class Geolocator
 		if (_locationManager == null)
 		{
 			_locationManager = InitializeLocationProvider();
-			if (_locationManager is null || _locationProvider is null)
+			if (_locationManager is null || string.IsNullOrWhiteSpace(_locationProvider))
 			{
 				return;
 			}
@@ -298,6 +327,7 @@ public sealed partial class Geolocator
 
 	private LocationManager? InitializeLocationProvider()
 	{
+		_locationProvider = null;
 		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
 		var criteriaForLocationService = new Criteria
@@ -305,15 +335,9 @@ public sealed partial class Geolocator
 			Accuracy = Accuracy.Coarse
 		};
 
-		var acceptableLocationProviders = locationManager?.GetProviders(criteriaForLocationService, true);
-
-		if (acceptableLocationProviders != null && acceptableLocationProviders.Any())
+		if (locationManager?.GetProviders(criteriaForLocationService, true) is { } acceptableLocationProviders)
 		{
-			_locationProvider = acceptableLocationProviders.First();
-		}
-		else
-		{
-			_locationProvider = string.Empty;
+			_locationProvider = acceptableLocationProviders.FirstOrDefault();
 		}
 
 		return locationManager;
@@ -321,9 +345,16 @@ public sealed partial class Geolocator
 
 	partial void StartPositionChanged()
 	{
-		_positionChangedSubscriptions.TryAdd(this, 0);
-		TryInitialize();
-		RestartUpdates();
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			_positionChangedSubscriptions.TryAdd(this, 0);
+			TryInitialize();
+			RestartUpdates();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(StartPositionChanged, NativeDispatcherPriority.Normal);
+		}
 	}
 
 	partial void StopPositionChanged()

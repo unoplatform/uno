@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Markup.Reader;
+using Microsoft.UI.Xaml.Markup.Reader;
 
-namespace Windows.UI.Xaml.Markup
+namespace Microsoft.UI.Xaml.Markup
 {
 	public partial class XamlReader
 	{

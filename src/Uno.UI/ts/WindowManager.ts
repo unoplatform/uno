@@ -6,15 +6,6 @@ namespace Uno.UI {
 	export class WindowManager {
 
 		public static current: WindowManager;
-		private static _isLoadEventsEnabled: boolean = false;
-
-		/**
-		 * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
-		 * or if they are raised directly by the managed code to reduce interop.
-		 */
-		public static get isLoadEventsEnabled(): boolean {
-			return WindowManager._isLoadEventsEnabled;
-		}
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
@@ -27,13 +18,11 @@ namespace Uno.UI {
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static async init(isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading") {
+		public static async init(containerElementId: string = "uno-body", loadingElementId: string = "uno-loading") {
 
 			HtmlDom.initPolyfills();
 
 			await WindowManager.initMethods();
-
-			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
 			Uno.UI.Dispatching.NativeDispatcher.init(WindowManager.buildReadyPromise());
 
@@ -144,6 +133,7 @@ namespace Uno.UI {
 		private static dispatchSuspendingMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
+		private static keyTrackingMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -190,6 +180,21 @@ namespace Uno.UI {
 			}
 		}
 
+		static setBodyCursor(value: string): void {
+			document.body.style.cursor = value;
+		}
+
+		static setSingleLine(htmlId: number): void {
+			const element = this.current.getView(htmlId);
+			if (element instanceof HTMLTextAreaElement) {
+				element.addEventListener("keydown", e => {
+					if (e.key === "Enter") {
+						e.preventDefault();
+					}
+				})
+			}
+		}
+
 		/**
 			* Reads the window's search parameters
 			* 
@@ -218,29 +223,33 @@ namespace Uno.UI {
 			return Date.now() - performance.now();
 		}
 
+		public containsPoint(htmlId: number, x: number, y: number, considerFill: boolean, considerStroke: boolean): boolean {
+			const view = this.getView(htmlId);
+			if (view instanceof SVGGeometryElement) {
+				try {
+					const point = new DOMPoint(x, y);
+					return (considerFill && view.isPointInFill(point)) ||
+						(considerStroke && view.isPointInStroke(point));
+				}
+				catch (e) {
+					// SVGPoint is deprecated, but only Firefox and Safari supports DOMPoint
+					const svgElement = view.closest("svg");
+					const point = svgElement.createSVGPoint();
+					point.x = x;
+					point.y = y;
+					return (considerFill && view.isPointInFill(point)) ||
+						(considerStroke && view.isPointInStroke(point));
+				}
+			}
+
+			return false;
+		}
+
 		/**
 			* Create a html DOM element representing a Xaml element.
 			*
 			* You need to call addView to connect it to the DOM.
 			*/
-		public createContentNative(pParams: number): boolean {
-
-			const params = WindowManagerCreateContentParams.unmarshal(pParams);
-
-			const def = {
-				id: this.handleToString(params.HtmlId),
-				handle: params.Handle,
-				isFocusable: params.IsFocusable,
-				isSvg: params.IsSvg,
-				tagName: params.TagName,
-				uiElementRegistrationId: params.UIElementRegistrationId,
-			} as IContentDefinition;
-
-			this.createContentInternal(def);
-
-			return true;
-		}
-
 		public createContentNativeFast(
 			htmlId: number,
 			tagName: string,
@@ -310,19 +319,6 @@ namespace Uno.UI {
 			return registrationId;
 		}
 
-		public registerUIElementNative(pParams: number, pReturn: number): boolean {
-			const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
-
-			const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
-
-			const ret = new WindowManagerRegisterUIElementReturn();
-			ret.RegistrationId = registrationId;
-
-			ret.marshal(pReturn);
-
-			return true;
-		}
-
 		public getView(elementHandle: number): HTMLElement | SVGElement {
 			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
 			if (!element) {
@@ -361,12 +357,6 @@ namespace Uno.UI {
 			this.getView(elementId).setAttribute("xuid", name);
 		}
 
-		public setVisibilityNative(pParam: number): boolean {
-			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
-			this.setVisibilityInternal(params.HtmlId, params.Visible);
-			return true;
-		}
-
 		public setVisibilityNativeFast(htmlId: number, visible: boolean) {
 
 			this.setVisibilityInternal(htmlId, visible);
@@ -386,18 +376,6 @@ namespace Uno.UI {
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributesNative(pParams: number): boolean {
-
-			const params = WindowManagerSetAttributesParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				element.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
-			}
-
-			return true;
-		}
-
 		public setAttributesNativeFast(htmlId: number, pairs: string[]) {
 
 			const element = this.getView(htmlId);
@@ -412,13 +390,9 @@ namespace Uno.UI {
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributeNative(pParams: number): boolean {
-
-			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-			element.setAttribute(params.Name, params.Value);
-
-			return true;
+		public setAttribute(htmlId: number, name: string, value: string) {
+			const element = this.getView(htmlId);
+			element.setAttribute(name, value);
 		}
 
 		/**
@@ -444,15 +418,6 @@ namespace Uno.UI {
 		/**
 			* Set a property for an element.
 			*/
-		public setPropertyNative(pParams: number): boolean {
-
-			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-
-			this.setPropertyNativeFast(params.HtmlId, params.Pairs);
-
-			return true;
-		}
-
 		public setPropertyNativeFast(htmlId: number, pairs: string[]) {
 
 			const element = this.getView(htmlId);
@@ -473,15 +438,6 @@ namespace Uno.UI {
 					(element as any)[pairs[i]] = setVal;
 				}
 			}
-		}
-
-		public setSinglePropertyNative(pParams: number): boolean {
-
-			const params = WindowManagerSetSinglePropertyParams.unmarshal(pParams);
-
-			this.setSinglePropertyNativeFast(params.HtmlId, params.Name, params.Value);
-
-			return true;
 		}
 
 		public setSinglePropertyNativeFast(htmlId: number, name: string, value: string) {
@@ -513,24 +469,6 @@ namespace Uno.UI {
 		* To remove a value, set it to empty string.
 		* @param styles A dictionary of styles to apply on html element.
 		*/
-		public setStyleNative(pParams: number): boolean {
-
-			const params = WindowManagerSetStylesParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			const elementStyle = element.style;
-			const pairs = params.Pairs;
-
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				const key = pairs[i];
-				const value = pairs[i + 1];
-
-				elementStyle.setProperty(key, value);
-			}
-
-			return true;
-		}
-
 		public setStyleNativeFast(htmlId: number, styles: string[]) {
 
 			const elementStyle = this.getView(htmlId).style;
@@ -556,15 +494,6 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setStyleStringNative(pParams: number): boolean {
-
-			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
-
-			this.getView(params.HtmlId).style.setProperty(params.Name, params.Value);
-
-			return true;
-		}
-
 		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
 
 			this.getView(htmlId).style.setProperty(name, value);
@@ -573,13 +502,7 @@ namespace Uno.UI {
 		/**
 			* Remove the CSS style of a html element.
 			*/
-		public resetStyleNative(pParams: number): boolean {
-			const params = WindowManagerResetStyleParams.unmarshal(pParams);
-			this.resetStyleInternal(params.HtmlId, params.Styles);
-			return true;
-		}
-
-		private resetStyleInternal(elementId: number, names: string[]): void {
+		public resetStyle(elementId: number, names: string[]): void {
 			const element = this.getView(elementId);
 
 			for (const name of names) {
@@ -590,11 +513,11 @@ namespace Uno.UI {
 		public isCssConditionSupported(supportCondition: string): boolean {
 			return CSS.supports(supportCondition);
 		}
+
 		/**
 		 * Set + Unset CSS classes on an element
 		 */
-
-		public setUnsetClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]) {
+		public setUnsetCssClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]) {
 			const element = this.getView(elementId);
 
 			if (cssClassesToSet) {
@@ -609,16 +532,10 @@ namespace Uno.UI {
 			}
 		}
 
-		public setUnsetClassesNative(pParams: number): boolean {
-			const params = WindowManagerSetUnsetClassesParams.unmarshal(pParams);
-			this.setUnsetClasses(params.HtmlId, params.CssClassesToSet, params.CssClassesToUnset);
-			return true;
-		}
-
 		/**
 		 * Set CSS classes on an element from a specified list
 		 */
-		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+		public setClasses(elementId: number, cssClassesList: string[], classIndex: number) {
 			const element = this.getView(elementId);
 
 			for (let i = 0; i < cssClassesList.length; i++) {
@@ -628,38 +545,12 @@ namespace Uno.UI {
 					element.classList.remove(cssClassesList[i]);
 				}
 			}
-			return "ok";
-		}
-
-		public setClassesNative(pParams: number): boolean {
-			const params = WindowManagerSetClassesParams.unmarshal(pParams);
-			this.setClasses(params.HtmlId, params.CssClasses, params.Index);
-			return true;
 		}
 
 		/**
 		* Arrange and clips a native elements 
 		*
 		*/
-		public arrangeElementNative(pParams: number): boolean {
-
-			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-
-			this.arrangeElementNativeFast(
-				params.HtmlId,
-				params.Top,
-				params.Left,
-				params.Width,
-				params.Height,
-				params.Clip,
-				params.ClipTop,
-				params.ClipLeft,
-				params.ClipBottom,
-				params.ClipRight);
-
-			return true;
-		}
-
 		public arrangeElementNativeFast(
 			htmlId: number,
 			top: number,
@@ -739,21 +630,6 @@ namespace Uno.UI {
 		}
 
 		/**
-		* Sets the fill property of the specified element
-		*/
-		public setElementFillNative(pParam: number): boolean {
-			const params = WindowManagerSetElementFillParams.unmarshal(pParam);
-			this.setElementFillInternal(params.HtmlId, params.Color);
-			return true;
-		}
-
-		private setElementFillInternal(elementId: number, color: number): void {
-			const element = this.getView(elementId);
-
-			element.style.setProperty("fill", this.numberToCssColor(color));
-		}
-
-		/**
 		* Sets the background color property of the specified element
 		*/
 		public setElementBackgroundColor(pParam: number): boolean {
@@ -803,15 +679,6 @@ namespace Uno.UI {
 		* Sets the transform matrix of an element
 		*
 		*/
-		public setElementTransformNative(pParams: number): boolean {
-
-			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-
-			this.setElementTransformNativeFast(params.HtmlId, params.M11, params.M12, params.M21, params.M22, params.M31, params.M32);
-
-			return true;
-		}
-
 		public setElementTransformNativeFast(
 			htmlId: number,
 			m11: number,
@@ -828,19 +695,7 @@ namespace Uno.UI {
 			this.setAsArranged(element);
 		}
 
-		private setPointerEvents(htmlId: number, enabled: boolean) {
-			const element = this.getView(htmlId);
-			element.style.pointerEvents = enabled ? "auto" : "none";
-		}
-
-		public setPointerEventsNative(pParams: number): boolean {
-			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
-			this.setPointerEvents(params.HtmlId, params.Enabled);
-
-			return true;
-		}
-
-		public setPointerEventsNativeFast(htmlId: number, enabled: boolean) {
+		public setPointerEvents(htmlId: number, enabled: boolean) {
 			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
 		}
 
@@ -937,7 +792,7 @@ namespace Uno.UI {
 		 * @param evt
 		 */
 		private keyboardEventExtractor(evt: Event): string {
-			return (evt instanceof KeyboardEvent) ? evt.key : "0";
+			return (evt instanceof KeyboardEvent) ? `${(evt.ctrlKey ? "1" : "0")}${(evt.altKey ? "1" : "0")}${(evt.metaKey ? "1" : "0")}${(evt.shiftKey ? "1" : "0")}${evt.key}` : "0";
 		}
 
 		/**
@@ -994,7 +849,7 @@ namespace Uno.UI {
 
 			if (eventExtractorId) {
 				//
-				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+				// NOTE TO MAINTAINERS: Keep in sync with Microsoft.UI.Xaml.UIElement.HtmlEventExtractor
 				//
 
 				switch (eventExtractorId) {
@@ -1032,9 +887,6 @@ namespace Uno.UI {
 				// Remove existing
 				this.containerElement.removeChild(this.rootElement);
 
-				if (WindowManager.isLoadEventsEnabled) {
-					this.dispatchEvent(this.rootElement, "unloaded");
-				}
 				this.rootElement.classList.remove(WindowManager.unoRootClassName);
 			}
 
@@ -1048,23 +900,13 @@ namespace Uno.UI {
 
 			this.rootElement = newRootElement;
 
-			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootElement, "loading");
-			}
-
 			this.containerElement.appendChild(this.rootElement);
 
-			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootElement, "loaded");
-			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 		}
 
 		/**
 			* Set a view as a child of another one.
-			*
-			* "Loading" & "Loaded" events will be raised if necessary.
-			*
 			* @param pParams Pointer to a WindowManagerAddViewParams native structure.
 			*/
 		public addViewNative(pParams: number): boolean {
@@ -1083,16 +925,6 @@ namespace Uno.UI {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
-			let shouldRaiseLoadEvents = false;
-			if (WindowManager.isLoadEventsEnabled) {
-				const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
-				shouldRaiseLoadEvents = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
-
-				if (shouldRaiseLoadEvents) {
-					this.dispatchEvent(childElement, "loading");
-				}
-			}
-
 			if (index != null && index < parentElement.childElementCount) {
 				const insertBeforeElement = parentElement.children[index];
 				parentElement.insertBefore(childElement, insertBeforeElement);
@@ -1100,16 +932,10 @@ namespace Uno.UI {
 			} else {
 				parentElement.appendChild(childElement);
 			}
-
-			if (shouldRaiseLoadEvents) {
-				this.dispatchEvent(childElement, "loaded");
-			}
 		}
 
 		/**
 			* Remove a child from a parent element.
-			*
-			* "Unloading" & "Unloaded" events will be raised if necessary.
 			*/
 		public removeViewNative(pParams: number): boolean {
 			const params = WindowManagerRemoveViewParams.unmarshal(pParams);
@@ -1121,30 +947,11 @@ namespace Uno.UI {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
-			const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
-				&& this.getIsConnectedToRootElement(childElement);
-
 			parentElement.removeChild(childElement);
 
 			// Mark the element as unarranged, so if it gets measured while being
 			// disconnected from the root element, it won't be visible.
 			this.setAsUnarranged(childElement);
-
-			if (shouldRaiseLoadEvents) {
-				this.dispatchEvent(childElement, "unloaded");
-			}
-		}
-
-		/**
-			* Destroy a html element.
-			*
-			* The element won't be available anymore. Usually indicate the managed
-			* version has been scavenged by the GC.
-			*/
-		public destroyViewNative(pParams: number): boolean {
-			const params = WindowManagerDestroyViewParams.unmarshal(pParams);
-			this.destroyViewInternal(params.HtmlId);
-			return true;
 		}
 
 		public destroyViewNativeFast(htmlId: number) {
@@ -1162,24 +969,7 @@ namespace Uno.UI {
 			delete this.allActiveElementsById[elementId];
 		}
 
-		public getBBoxNative(pParams: number, pReturn: number): boolean {
-
-			const params = WindowManagerGetBBoxParams.unmarshal(pParams);
-
-			const bbox = this.getBBoxInternal(params.HtmlId);
-
-			const ret = new WindowManagerGetBBoxReturn();
-			ret.X = bbox.x;
-			ret.Y = bbox.y;
-			ret.Width = bbox.width;
-			ret.Height = bbox.height;
-
-			ret.marshal(pReturn);
-
-			return true;
-		}
-
-		private getBBoxInternal(elementId: number): any {
+		public getBBox(elementId: number): any {
 
 			const element = this.getView(elementId) as SVGGraphicsElement;
 			let unconnectedRoot: HTMLElement | SVGGraphicsElement = null;
@@ -1206,25 +996,17 @@ namespace Uno.UI {
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				return element.getBBox();
+				let bbox = element.getBBox();
+
+				return [
+					bbox.x,
+					bbox.y,
+					bbox.width,
+					bbox.height];
 			}
 			finally {
 				cleanupUnconnectedRoot(this.containerElement);
 			}
-
-		}
-
-		public setSvgElementRect(pParams: number): boolean {
-			const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
-
-			const element = this.getView(params.HtmlId) as any;
-
-			element.x.baseVal.value = params.X;
-			element.y.baseVal.value = params.Y;
-			element.width.baseVal.value = params.Width;
-			element.height.baseVal.value = params.Height;
-
-			return true;
 		}
 
 		/**
@@ -1233,21 +1015,6 @@ namespace Uno.UI {
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
 			*/
-		public measureViewNative(pParams: number, pReturn: number): boolean {
-
-			const params = WindowManagerMeasureViewParams.unmarshal(pParams);
-
-			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight, params.MeasureContent);
-
-			const ret2 = new WindowManagerMeasureViewReturn();
-			ret2.DesiredWidth = ret[0];
-			ret2.DesiredHeight = ret[1];
-
-			ret2.marshal(pReturn);
-
-			return true;
-		}
-
 		public measureViewNativeFast(htmlId: number, availableWidth: number, availableHeight: number, measureContent: boolean, pReturn: number) {
 
 			const result = this.measureViewInternal(htmlId, availableWidth, availableHeight, measureContent);
@@ -1417,6 +1184,11 @@ namespace Uno.UI {
 				}
 			}
 
+			// This is necessary because in Safari 17 "white-space" is not selected by index (i.e. elementStyle[i])
+			// This is important to implement the Wrap/NoWrap of Controls
+			if (elementStyle.cssText.includes("white-space") && !updatedStyleString.includes("white-space"))
+				updatedStyleString += "white-space: " + elementStyle.whiteSpace + "; ";
+
 			// We use a string to prevent the browser to update the element between
 			// each style assignation. This way, the browser will update the element only once.
 			return updatedStyleString;
@@ -1504,14 +1276,6 @@ namespace Uno.UI {
 			element.style.overflow = "hidden"; // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 		}
 
-		public setPointerCapture(viewId: number, pointerId: number): void {
-			this.getView(viewId).setPointerCapture(pointerId);
-		}
-
-		public releasePointerCapture(viewId: number, pointerId: number): void {
-			this.getView(viewId).releasePointerCapture(pointerId);
-		}
-
 		public focusView(elementId: number): void {
 			const element = this.getView(elementId);
 
@@ -1519,7 +1283,7 @@ namespace Uno.UI {
 				throw `Element id ${elementId} is not focusable.`;
 			}
 
-			element.focus();
+			element.focus({ preventScroll: true });
 		}
 
 		/**
@@ -1592,7 +1356,7 @@ namespace Uno.UI {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
 				} else {
-					WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 
@@ -1630,26 +1394,13 @@ namespace Uno.UI {
 			if ((<any>globalThis).DotnetExports !== undefined) {
 				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
-				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
-				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
-				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.resizeMethod = exports.Microsoft.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.keyTrackingMethod = (<any>globalThis).DotnetExports.Uno.Uno.UI.Core.KeyboardStateTracker.UpdateKeyStateNative;
 			} else {
-				if (!WindowManager.resizeMethod) {
-					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
-				}
-
-				if (!WindowManager.dispatchEventMethod) {
-					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
-				}
-
-				if (!WindowManager.focusInMethod) {
-					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
-				}
-
-				if (!WindowManager.dispatchSuspendingMethod) {
-					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
-				}
+				throw `Unable to find dotnet exports`;
 			}
 		}
 
@@ -1661,6 +1412,13 @@ namespace Uno.UI {
 			}
 			document.body.addEventListener("focusin", this.onfocusin);
 			document.body.appendChild(this.containerElement);
+
+			// On WASM, if no one subscribes to key<Down|Up>, not only will the event not fire on any UIElement,
+			// but the browser won't even notify us that a key was pressed/released, and this breaks KeyboardStateTracker
+			// key tracking, which depends on RaiseEvent being called even if no one is subscribing. Instead, we
+			// subscribe on the body and make sure to call KeyboardStateTracker ourselves here.
+			document.body.addEventListener("keydown", this.onBodyKeyDown);
+			document.body.addEventListener("keyup", this.onBodyKeyUp);
 
 			window.addEventListener("resize", x => WindowManager.resize());
 			window.addEventListener("contextmenu", x => {
@@ -1677,7 +1435,7 @@ namespace Uno.UI {
 			if (element) {
 				element.parentElement.removeChild(element);
 			}
-			
+
 			let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 			if (bootstrapperLoaders.length > 0) {
 				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
@@ -1732,6 +1490,11 @@ namespace Uno.UI {
 			return "#" + color.toString(16).padStart(8, "0");
 		}
 
+		public getElementInCoordinate(x: number, y: number): number {
+			const element = document.elementFromPoint(x, y) as HTMLElement;
+			return Number(element.getAttribute("XamlHandle"));
+		}
+
 		public setCursor(cssCursor: string): string {
 			const unoBody = document.getElementById(this.containerElementId);
 
@@ -1780,6 +1543,159 @@ namespace Uno.UI {
 			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
 		}
 
+		public getIsOverflowing(elementId: number): boolean {
+			const element = this.getView(elementId) as HTMLElement;
+
+			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
+		}
+
+		public setIsFocusable(elementId: number, isFocusable: boolean) {
+			const element = this.getView(elementId) as HTMLElement;
+
+			element.setAttribute("tabindex", isFocusable ? "0" : "-1");
+		}
+
+		public resizeWindow(width: number, height: number) {
+			window.resizeTo(width, height);
+		}
+
+		public moveWindow(x: number, y: number) {
+			window.moveTo(x, y);
+		}
+
+		private onBodyKeyDown(event: KeyboardEvent) {
+			WindowManager.keyTrackingMethod(event.key, true);
+		}
+
+		private onBodyKeyUp(event: KeyboardEvent) {
+			WindowManager.keyTrackingMethod(event.key, false);
+		}
+
+		private getCssColorOrUrlRef(color: number, paintRef: number): string {
+			if (paintRef != null) {
+				return `url(#${paintRef})`;
+			}
+			else if (color != null) {
+				// JSInvoke doesnt allow passing of uint, so we had to deal with int's "sign-ness" here
+				// (-1 >>> 0) is a quick hack to turn signed negative into "unsigned" positive
+				// padded to 8-digits 'RRGGBBAA', so the value doesnt get processed as 'RRGGBB' or 'RGB'.
+				return `#${(color >>> 0).toString(16).padStart(8, '0')}`;
+			}
+			else {
+				return '';
+			}
+		}
+
+		public setShapeFillStyle(elementId: number, color: number, paintRef: number): void {
+			const e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+				e.style.fill = this.getCssColorOrUrlRef(color, paintRef);
+			}
+		}
+
+		public setShapeStrokeStyle(elementId: number, color: number, paintRef: number): void {
+			const  e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+				e.style.stroke = this.getCssColorOrUrlRef(color, paintRef);
+			}
+		}
+
+		public setShapeStrokeWidthStyle(elementId: number, strokeWidth: number): void {
+			const  e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+				e.style.strokeWidth = `${strokeWidth}px`;
+			}
+		}
+
+		public setShapeStrokeDashArrayStyle(elementId: number, strokeDashArray: number[]): void {
+			const  e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+
+				e.style.strokeDasharray = strokeDashArray.join(',');
+			}
+		}
+
+		public setShapeStylesFast1(elementId: number, fillColor: number, fillPaintRef: number, strokeColor: number, strokePaintRef: number): void {
+			const  e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+
+				e.style.fill = this.getCssColorOrUrlRef(fillColor, fillPaintRef);
+				e.style.stroke = this.getCssColorOrUrlRef(strokeColor, strokePaintRef);
+			}
+		}
+
+		public setShapeStylesFast2(elementId: number, fillColor: number, fillPaintRef: number, strokeColor: number, strokePaintRef: number, strokeWidth: number, strokeDashArray: any[]): void {
+			const  e = this.getView(elementId);
+			if (e instanceof SVGElement) {
+
+				e.style.fill = this.getCssColorOrUrlRef(fillColor, fillPaintRef);
+				e.style.stroke = this.getCssColorOrUrlRef(strokeColor, strokePaintRef);
+				e.style.strokeWidth = `${strokeWidth}px`;
+				e.style.strokeDasharray = strokeDashArray.join(',');
+			}
+		}
+
+		public setSvgFillRule(htmlId: number, nonzero: boolean): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGPathElement) {
+				e.setAttribute('fill-rule', nonzero ? 'nonzero' : 'evenodd');
+			}
+		}
+
+		public setSvgEllipseAttributes(htmlId: number, cx: number, cy: number, rx: number, ry: number): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGEllipseElement) {
+				e.cx.baseVal.value = cx;
+				e.cy.baseVal.value = cy;
+				e.rx.baseVal.value = rx;
+				e.ry.baseVal.value = ry;
+			}
+		}
+
+		public setSvgLineAttributes(htmlId: number, x1: number, x2: number, y1: number, y2: number): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGLineElement) {
+				e.x1.baseVal.value = x1;
+				e.x2.baseVal.value = x2;
+				e.y1.baseVal.value = y1;
+				e.y2.baseVal.value = y2;
+			}
+		}
+
+		public setSvgPathAttributes(htmlId: number, nonzero: boolean, data: string): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGPathElement) {
+				e.setAttribute('fill-rule', nonzero ? 'nonzero' : 'evenodd');
+				e.setAttribute('d', data);
+			}
+		}
+
+		public setSvgPolyPoints(htmlId: number, points: number[]): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGPolygonElement || e instanceof SVGPolylineElement) {
+				if (points != null) {
+					const delimiters = [' ', ','];
+					// interwave to produce: x0,y0 x1,y1 ...
+					// i start at 1
+					e.setAttribute('points', points.reduce((acc, x, i) => acc + delimiters[i % delimiters.length] + x, ''));
+				}
+				else {
+					e.removeAttribute('points');
+				}
+			}
+		}
+
+		public setSvgRectangleAttributes(htmlId: number, x: number, y: number, width: number, height: number, rx: number, ry: number): void {
+			const e = this.getView(htmlId);
+			if (e instanceof SVGRectElement) {
+				e.x.baseVal.value = x;
+				e.y.baseVal.value = y;
+				e.width.baseVal.value = width;
+				e.height.baseVal.value = height;
+				e.rx.baseVal.value = rx;
+				e.ry.baseVal.value = ry;
+			}
+		}
 	}
 
 	if (typeof define === "function") {

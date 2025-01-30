@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -7,12 +7,12 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
-using Windows.UI.Xaml.Input;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Microsoft.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -21,7 +21,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class CalendarDatePicker : Control
 	{
@@ -109,8 +109,8 @@ namespace Windows.UI.Xaml.Controls
 				DateTime? spOldDateReference;
 				//CValueBoxer.UnboxValue<DateTime>(args.OldValue, spOldDateReference);
 				//CValueBoxer.UnboxValue<DateTime>(args.NewValue, spNewDateReference);
-				spOldDateReference = (DateTime?)args.OldValue;
-				spNewDateReference = (DateTime?)args.NewValue;
+				spOldDateReference = (DateTimeOffset?)args.OldValue;
+				spNewDateReference = (DateTimeOffset?)args.NewValue;
 				OnDateChanged(spOldDateReference, spNewDateReference);
 			}
 			else if (args.Property == FrameworkElement.LanguageProperty ||
@@ -366,12 +366,10 @@ namespace Windows.UI.Xaml.Controls
 				// coerce dates
 				minDate = MinDate;
 				maxDate = MaxDate;
-				//coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
-				coercedDate = new DateTime(Math.Min(maxDate.UtcTicks, Math.Max(minDate.UtcTicks, date.UtcTicks)), TimeSpan.Zero);
+				coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
 
 				// if Date is not in the range of min/max date, we'll coerce it and trigger DateChanged again.
-				//if (coercedDate.UniversalTime != date.UniversalTime)
-				if (coercedDate.UtcTicks != date.UtcTicks)
+				if (coercedDate.UniversalTime != date.UniversalTime)
 				{
 					DateTime spCoercedDateReference;
 					//PropertyValue.CreateFromDateTime(coercedDate, &spCoercedDateReference));
@@ -421,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetDisplayDate(DateTime date)
+		public void SetDisplayDate(global::System.DateTimeOffset date)
 		{
 			if (m_tpCalendarView is { })
 			{
@@ -674,9 +672,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			VirtualKey key = VirtualKey.None;
-			VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
-
-			GetKeyboardModifiers(out modifiers);
+			VirtualKeyModifiers modifiers = GetKeyboardModifiers();
 
 			key = pArgs.Key;
 
@@ -784,9 +780,7 @@ namespace Windows.UI.Xaml.Controls
 				// IFCPTR_RETURN(spPointerProperties);
 				isLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
 
-				VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
-
-				GetKeyboardModifiers(out modifiers);
+				VirtualKeyModifiers modifiers = GetKeyboardModifiers();
 
 				m_shouldPerformActions = (m_isPressedOnMain && !isLeftButtonPressed
 					&& modifiers == VirtualKeyModifiers.None);
@@ -903,7 +897,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Pointer spPointer;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			//CalendarDatePickerGenerated.OnPointerCaptureLost(pArgs);
@@ -1050,7 +1044,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isCalendarOpen)
 				{
 					DateTime? spDateReference;
-					IList<DateTime> spSelectedDates;
+					IList<DateTimeOffset> spSelectedDates;
 
 					m_isSelectedDatesChangingInternally = true;
 					//var selectedDatesChangingGuard = wil.scope_exit([&] {

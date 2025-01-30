@@ -283,6 +283,7 @@
 	<StackPanel>
 		<ios:ComboBox x:Name="Units1"
 				  Style="{ThemeResource ComboStyle}"
+				  IsPopupFullscreen="true"
 				  ItemsSource="{x:Bind MyItems}">
 		</ios:ComboBox>
 		<ComboBox x:Name="Values2"

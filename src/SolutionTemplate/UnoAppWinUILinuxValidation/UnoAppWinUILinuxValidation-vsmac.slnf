@@ -1,0 +1,15 @@
+{
+  "solution": {
+    "path": "UnoAppWinUILinuxValidation.sln",
+    "projects": [
+		"UnoAppWinUILinuxValidation\\UnoAppWinUILinuxValidation.csproj",
+
+
+		"UnoAppWinUILinuxValidation.Wasm\\UnoAppWinUILinuxValidation.Wasm.csproj",
+
+		"UnoAppWinUILinuxValidation.Skia.Gtk\\UnoAppWinUILinuxValidation.Skia.Gtk.csproj",
+
+		"UnoAppWinUILinuxValidation.Skia.Gtk\\UnoAppWinUILinuxValidation.Skia.Gtk.csproj",
+    ]
+  }
+}

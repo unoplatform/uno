@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Helpers.Xaml
 {
@@ -42,6 +42,14 @@ namespace Uno.UI.Helpers.Xaml
 				setter.ResourceBindingUpdateReason |= ResourceUpdateReason.HotReload;
 			}
 
+			return setter;
+		}
+
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Setter MakeSetterMutable(this Setter setter)
+		{
+			setter.IsMutable = true;
 			return setter;
 		}
 	}

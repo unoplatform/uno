@@ -7,7 +7,7 @@
 
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>
@@ -30,6 +30,21 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
+		<Compile Include="..\Uno.UI\UI\Colors.cs" />
+		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
+		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PRIResource Include="Storage\Pickers\Strings\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Storage\Pickers\Strings\en\" />
 	</ItemGroup>
 
 </Project>

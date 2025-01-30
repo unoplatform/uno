@@ -6,22 +6,14 @@
 	xmlns:local="using:Uno.UI.Samples.UITests"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+	mc:Ignorable="d">
 	<StackPanel>
 		<Border>
-			<controls:SampleControl SampleDescription="Rectangle">
-				<controls:SampleControl.SampleContent>
-					<DataTemplate>
-						<Rectangle Width="200" Height="100" Stroke="SteelBlue">
-							<Rectangle.Fill>
-								<ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
-							</Rectangle.Fill>
-						</Rectangle>
-					</DataTemplate>
-				</controls:SampleControl.SampleContent>
-			</controls:SampleControl>
+			<Rectangle Width="200" Height="100" Stroke="SteelBlue">
+				<Rectangle.Fill>
+					<ImageBrush x:Name="imageBrush1" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+				</Rectangle.Fill>
+			</Rectangle>
 		</Border>
 	</StackPanel>
 

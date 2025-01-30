@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public enum DependencyPropertyValuePrecedences : int
 	{
@@ -10,12 +10,6 @@ namespace Windows.UI.Xaml
 		/// Defined by the value returned by PropertyMetadata.CoerceValueCallback (only if it differs from the input/base value)
 		/// </summary>
 		Coercion = 0,
-
-		/// <summary>
-		/// Defined when filling from a HoldEnd animation
-		/// </summary>
-		/// <remarks>Set the animation or local value will clear this value.</remarks>
-		FillingAnimations,
 
 		/// <summary>
 		/// Defined by animation storyboards

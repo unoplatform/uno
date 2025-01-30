@@ -2,18 +2,19 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using Windows.Graphics.Display;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
-using FluentAssertions;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -21,8 +22,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	[RunsOnUIThread]
 	public class Given_RenderTargetBitmap
 	{
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush Background = new(Windows.UI.Color.FromArgb(255, 0, 0, 255));
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush BorderBrush = new(Windows.UI.Color.FromArgb(125, 125, 0, 0));
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush Background = new(Windows.UI.Color.FromArgb(255, 0, 0, 255));
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush BorderBrush = new(Windows.UI.Color.FromArgb(125, 125, 0, 0));
 		private static readonly System.Numerics.Vector2 BorderSize = new(10, 10);
 
 		[TestMethod]
@@ -37,7 +38,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_Render_Border_GetPixelsAsync()
 		{
-			if (DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel is not 1.0)
+			var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
+			if (dpi is not 1.0)
 			{
 				Assert.Inconclusive("This test is not compatible with non-default display scaling.");
 				return;
@@ -159,5 +161,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			ImageAssert.HasColorAt(result, 5, 5, nonOpaqueColor, tolerance: 1);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("The behaviour is only correct on skia due to the changes in https://github.com/unoplatform/uno/pull/15875")]
+#endif
+		public async Task When_ScrollViewer_Scrolled()
+		{
+			ItemsRepeater ir;
+			var sv = new ScrollViewer
+			{
+				Width = 100,
+				Height = 500,
+				Content = ir = new ItemsRepeater
+				{
+					ItemTemplate = new DataTemplate(() => new Border
+					{
+						Height = 100,
+						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					}),
+					ItemsSource = "0123456789"
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var irBitmap1 = await UITestHelper.ScreenShot(ir);
+			var svBitmap1 = await UITestHelper.ScreenShot(sv);
+
+			sv.ScrollToVerticalOffset(100);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var irBitmap2 = await UITestHelper.ScreenShot(ir);
+			var svBitmap2 = await UITestHelper.ScreenShot(sv);
+
+			var bytesPerPixel = irBitmap1.GetPixels().Length / (irBitmap1.Width * irBitmap1.Height);
+			var bytesToCompare = bytesPerPixel * (int)sv.ViewportHeight * irBitmap1.Width;
+			CollectionAssert.AreEqual(irBitmap1.GetPixels()[..bytesToCompare], irBitmap2.GetPixels()[..bytesToCompare]);
+			CollectionAssert.AreNotEqual(svBitmap1.GetPixels()[..bytesToCompare], svBitmap2.GetPixels()[..bytesToCompare]);
+		}
+#endif
 	}
 }

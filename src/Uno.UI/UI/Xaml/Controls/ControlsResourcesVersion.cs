@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public enum ControlsResourcesVersion
 	{

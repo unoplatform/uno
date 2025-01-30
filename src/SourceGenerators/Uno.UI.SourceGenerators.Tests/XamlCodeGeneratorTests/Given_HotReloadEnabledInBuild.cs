@@ -9,9 +9,6 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_HotReloadEnabledInBuild
 {
-	// Specify this centrally for all tests that rely on Uno5 or above
-	private static readonly ReferenceAssemblies _net7Uno5Refs = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "5.0.64")));
-
 	[TestMethod]
 	public async Task SetBaseUriIncludedInOutputForFrameworkElements()
 	{
@@ -34,15 +31,15 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -57,8 +54,9 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -87,15 +85,15 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -110,8 +108,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -137,15 +135,15 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -160,8 +158,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -196,15 +194,15 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -219,8 +217,32 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationInOutputForTopLevelResourceDictionaries()
+	{
+		var xamlFile = new XamlFile("MyDictionary.xaml", """
+			<ResourceDictionary
+			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      xmlns:local="using:TestRepro"
+				  x:Class="TestNamespace.TestClass">
+			</ResourceDictionary>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile)
+		{
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -281,15 +303,15 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -304,8 +326,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

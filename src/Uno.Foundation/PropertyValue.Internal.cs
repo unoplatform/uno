@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Windows.Foundation;
 
@@ -6,6 +7,11 @@ namespace Windows.Foundation;
 partial class PropertyValue
 {
 	internal static void CreateFromDateTime(DateTimeOffset date, out object value)
+	{
+		value = CreateDateTime(date);
+	}
+
+	internal static void CreateFromDateTime(WindowsFoundationDateTime date, out object value)
 	{
 		value = CreateDateTime(date);
 	}
@@ -85,7 +91,8 @@ partial class PropertyValue
 						//}
 						if (oldValueType.IsEnum)
 						{
-							return oldValue switch
+							var oldValueUnwrapped = Convert.ChangeType(oldValue, oldValueType.GetEnumUnderlyingType(), CultureInfo.InvariantCulture);
+							return oldValueUnwrapped switch
 							{
 								byte oldValueAsByte => oldValueAsByte == (byte)newValue,
 								sbyte oldValueAsSByte => oldValueAsSByte == (sbyte)newValue,

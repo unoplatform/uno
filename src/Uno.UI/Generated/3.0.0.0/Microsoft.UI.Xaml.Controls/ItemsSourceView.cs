@@ -21,6 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged.remove
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged
-		// Processing: System.Collections.Specialized.INotifyCollectionChanged
+		// Processing: Microsoft.UI.Xaml.Interop.INotifyCollectionChanged
 	}
 }

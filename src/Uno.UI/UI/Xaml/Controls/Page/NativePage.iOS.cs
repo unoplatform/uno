@@ -1,11 +1,11 @@
-using Uno.UI.Views.Controls;
+﻿using Uno.UI.Views.Controls;
 using Uno.Disposables;
 using Uno.Extensions;
 using System;
 using Uno.UI;
 using UIKit;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public abstract class NativePage : UIViewController
 	{

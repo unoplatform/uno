@@ -9,7 +9,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Midi;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices.Midi
 {
@@ -38,8 +39,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			deviceAutoDetectToggle.IsOn = true;
 
 			// Set up the MIDI input and output device watchers
-			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, inputDevices, InputDevices);
-			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, outputDevices, OutputDevices);
+			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), inputDevices, InputDevices);
+			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), outputDevices, OutputDevices);
 
 			// Start watching for devices
 			_midiInDeviceWatcher.Start();
@@ -60,7 +61,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 		public ObservableCollection<string> OutputDeviceProperties { get; } = new ObservableCollection<string>();
 
-		private void MidiDeviceEnumerationTests_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		private void MidiDeviceEnumerationTests_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			// Stop the input and output device watchers
 			_midiInDeviceWatcher.Stop();
@@ -98,7 +99,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		/// <param name="sender">Element that fired the event</param>
 		/// <param name="e">Event arguments</param>
-		private async void listInputDevicesButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		private async void listInputDevicesButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			// Enumerate input devices
 			await EnumerateMidiInputDevices();
@@ -143,7 +144,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		/// <param name="sender">Element that fired the event</param>
 		/// <param name="e">Event arguments</param>
-		private async void listOutputDevicesButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		private async void listOutputDevicesButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			// Enumerate output devices
 			await EnumerateMidiOutputDevices();
@@ -190,7 +191,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		/// <param name="sender">Element that fired the event</param>
 		/// <param name="e">Event arguments</param>
-		private void DeviceAutoDetectToggle_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		private void DeviceAutoDetectToggle_Toggled(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			if (deviceAutoDetectToggle.IsOn)
 			{

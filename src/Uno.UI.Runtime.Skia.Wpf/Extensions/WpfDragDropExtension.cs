@@ -1,33 +1,29 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Numerics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Point = Windows.Foundation.Point;
-using UIElement = Windows.UI.Xaml.UIElement;
+using UIElement = Microsoft.UI.Xaml.UIElement;
 using WpfWindow = System.Windows.Window;
 using WpfControl = System.Windows.Controls.Control;
 using WpfApplication = System.Windows.Application;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
@@ -35,31 +31,25 @@ namespace Uno.UI.Runtime.Skia.Wpf
 	{
 		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;
+		private readonly CoreDragDropManager _coreDragDropManager;
 
 		private static WpfControl? _rootControl;
 
-		public WpfDragDropExtension(object owner)
+		public WpfDragDropExtension(DragDropManager owner)
 		{
-			_manager = (DragDropManager)owner;
+			_manager = owner;
 
-			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
-		}
+			var host = WpfManager.XamlRootMap.GetHostForRoot(_manager.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(IWpfXamlRootHost)} host associated with a {nameof(WpfDragDropExtension)}.");
+			_rootControl = host as WpfControl ?? throw new InvalidOperationException($"Couldn't find an {nameof(WpfControl)} host associated with a {nameof(WpfDragDropExtension)}.");
+			_coreDragDropManager = XamlRoot.GetCoreDragDropManager(host.RootElement!.XamlRoot);
 
-		private void XamlRootMap_Registered(object? sender, XamlRoot xamlRoot)
-		{
-			// TODO:MZ: Multi-window support
-			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) as WpfControl;
-			_rootControl = host;
+			_rootControl.AllowDrop = true;
 
-			if (host is not null) // TODO: Add support for multiple XamlRoots
-			{
-				host.AllowDrop = true;
+			_rootControl.DragEnter += OnHostDragEnter;
+			_rootControl.DragOver += OnHostDragOver;
+			_rootControl.DragLeave += OnHostDragLeave;
+			_rootControl.Drop += OnHostDrop;
 
-				host.DragEnter += OnHostDragEnter;
-				host.DragOver += OnHostDragOver;
-				host.DragLeave += OnHostDragLeave;
-				host.Drop += OnHostDrop;
-			}
 		}
 
 		private void OnHostDragEnter(object sender, DragEventArgs e)
@@ -69,7 +59,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			var allowedOperations = ToDataPackageOperation(e.AllowedEffects);
 			var info = new CoreDragInfo(src, data.GetView(), allowedOperations);
 
-			CoreDragDropManager.GetForCurrentView()?.DragStarted(info);
+			_coreDragDropManager.DragStarted(info);
 
 			// Note: No needs to _manager.ProcessMove, the DragStarted will actually have the same effect
 		}
@@ -78,10 +68,10 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			=> e.Effects = ToDropEffects(_manager.ProcessMoved(new DragEventSource(_fakePointerId, e)));
 
 		private void OnHostDragLeave(object sender, DragEventArgs e)
-			=> e.Effects = ToDropEffects(_manager.ProcessAborted(new DragEventSource(_fakePointerId, e)));
+			=> e.Effects = ToDropEffects(_manager.ProcessAborted(_fakePointerId));
 
 		private void OnHostDrop(object sender, DragEventArgs e)
-			=> e.Effects = ToDropEffects(_manager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
+			=> e.Effects = ToDropEffects(_manager.ProcessReleased(new DragEventSource(_fakePointerId, e)));
 
 		public void StartNativeDrag(CoreDragInfo info)
 		{
@@ -101,7 +91,9 @@ namespace Uno.UI.Runtime.Skia.Wpf
 					var data = await ToDataObject(info.Data, CancellationToken.None);
 					var effects = ToDropEffects(info.AllowedOperations);
 
-					DragDrop.DoDragDrop(_rootControl, data, effects);
+					var acceptedEffect = DragDrop.DoDragDrop(_rootControl, data, effects);
+					_manager.ProcessAborted(_fakePointerId);
+					// info.Complete(ToDataPackageOperation(acceptedEffect));
 				}
 				catch (Exception e)
 				{
@@ -252,7 +244,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			return dst;
 		}
 
-		private class DragEventSource : IDragEventSource
+		private readonly struct DragEventSource : IDragEventSource
 		{
 			private readonly DragEventArgs _wpfArgs;
 			private static long _nextFrameId;

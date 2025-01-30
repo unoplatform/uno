@@ -1,18 +1,21 @@
-using System;
+﻿using System;
 using AVFoundation;
 using Uno.Extensions;
 using Uno.Media.Playback;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using _View = UIKit.UIView;
 #else
 using _View = AppKit.NSView;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter
 	{
+		internal uint NaturalVideoWidth => MediaPlayer?.NaturalVideoWidth ?? 0;
+		internal uint NaturalVideoHeight => MediaPlayer?.NaturalVideoHeight ?? 0;
+
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
 			Add(videoSurface as _View);

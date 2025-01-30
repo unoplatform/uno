@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Input.PointersTests
@@ -17,25 +17,25 @@ namespace UITests.Windows_UI_Input.PointersTests
 			{
 				e.Handled = true;
 				LastPressed.Text = Root.Name;
-				LastPressedSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
+				LastPressedSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? $"-unknown/{e.OriginalSource?.GetType()}-";
 			};
 			Root.PointerMoved += (snd, e) =>
 			{
 				e.Handled = true;
 				LastHovered.Text = Root.Name;
-				LastHoveredSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
+				LastHoveredSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? $"-unknown/{e.OriginalSource?.GetType()}-";
 			};
 			TheImage.PointerPressed += (snd, e) =>
 			{
 				e.Handled = true;
 				LastPressed.Text = TheImage.Name;
-				LastPressedSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
+				LastPressedSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? $"-unknown/{e.OriginalSource?.GetType()}-";
 			};
 			TheImage.PointerMoved += (snd, e) =>
 			{
 				e.Handled = true;
 				LastHovered.Text = TheImage.Name;
-				LastHoveredSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? "-unknown-";
+				LastHoveredSrc.Text = (e.OriginalSource as FrameworkElement)?.Name ?? $"-unknown/{e.OriginalSource?.GetType()}-";
 			};
 		}
 	}

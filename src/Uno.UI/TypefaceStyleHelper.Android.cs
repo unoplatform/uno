@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Graphics;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
 	internal static class TypefaceStyleHelper
 	{
-		internal static TypefaceStyle GetTypefaceStyle(FontStyle fontStyle, FontWeight fontWeight)
+		internal static TypefaceStyle GetTypefaceStyle(bool italic, FontWeight fontWeight)
 		{
 			var style = TypefaceStyle.Normal;
 
@@ -18,7 +18,7 @@ namespace Uno.UI
 				style |= TypefaceStyle.Bold;
 			}
 
-			if (fontStyle == FontStyle.Italic)
+			if (italic)
 			{
 				style |= TypefaceStyle.Italic;
 			}

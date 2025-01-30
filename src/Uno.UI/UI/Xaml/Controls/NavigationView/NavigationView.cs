@@ -30,6 +30,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using WindowsWindow = Windows.UI.Xaml.Window;
+using Uno.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -1558,7 +1559,7 @@ namespace Windows.UI.Xaml.Controls
 					handled = BumperNavigation(1);
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())
@@ -3274,12 +3275,14 @@ namespace Windows.UI.Xaml.Controls
 
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = WindowsWindow.Current.Content;
-					GeneralTransform gt = TransformToVisual(root);
-					Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
-					if (pos.Y != 0.0f)
+					if (XamlRoot?.HostWindow?.Content is { } root)
 					{
-						topPadding = 0.0;
+						GeneralTransform gt = TransformToVisual(root);
+						Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
+						if (pos.Y != 0.0f)
+						{
+							topPadding = 0.0;
+						}
 					}
 
 					var backButtonVisibility = IsBackButtonVisible;
@@ -3384,7 +3387,7 @@ namespace Windows.UI.Xaml.Controls
 			// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 			if (m_applicationView == null)
 			{
-				m_applicationView = ApplicationView.GetForCurrentView();
+				m_applicationView = ApplicationView.GetForCurrentViewSafe();
 			}
 
 			// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings
@@ -3393,7 +3396,7 @@ namespace Windows.UI.Xaml.Controls
 				m_uiViewSettings = UIViewSettings.GetForCurrentView();
 			}
 
-			bool isFullScreenMode = m_applicationView.IsFullScreenMode;
+			bool isFullScreenMode = m_applicationView?.IsFullScreenMode ?? false;
 			bool isTabletMode = m_uiViewSettings.UserInteractionMode == UserInteractionMode.Touch;
 
 			return isFullScreenMode || isTabletMode;

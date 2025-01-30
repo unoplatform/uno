@@ -1,27 +1,29 @@
-using System;
+﻿using System;
+using Microsoft.UI.Xaml.Data;
 using Uno;
-using Uno.UI;
 using Uno.Diagnostics.Eventing;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation.Metadata;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel;
-using Windows.Globalization;
-using Uno.Helpers.Theming;
-using Windows.UI.ViewManagement;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Data;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Popups.Internal;
-using Windows.UI.Popups;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI;
 using Uno.UI.WinRT.Extensions.UI.Popups;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.Globalization;
+using Windows.Storage;
+using Windows.UI.Popups;
+using Windows.UI.Popups.Internal;
+using Windows.UI.ViewManagement;
+
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -32,7 +34,7 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -43,11 +45,11 @@ using ViewGroup = AppKit.NSView;
 using AppKit;
 using Windows.UI.Core;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Encapsulates the app and its available services.
@@ -59,12 +61,13 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
+		private ResourceDictionary _resources = new ResourceDictionary();
 
 		static Application()
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
@@ -95,6 +98,8 @@ namespace Windows.UI.Xaml
 
 			InitializePartial();
 		}
+
+		internal bool InitializationComplete => _initializationComplete;
 
 		partial void InitializePartial();
 
@@ -160,7 +165,7 @@ namespace Windows.UI.Xaml
 				// Sync with core application's theme
 				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
 
-				UpdateRootVisualBackground();
+				UpdateRootElementBackground();
 				UpdateRequestedThemesForResources();
 			}
 		}
@@ -204,7 +209,15 @@ namespace Windows.UI.Xaml
 			SetRequestedTheme(theme);
 		}
 
-		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
+		public ResourceDictionary Resources
+		{
+			get => _resources;
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
+		}
 
 #pragma warning disable CS0067 // The event is never used
 		/// <summary>
@@ -252,7 +265,7 @@ namespace Windows.UI.Xaml
 		public void Exit() => CoreApplication.Exit();
 #endif
 
-		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
+		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			StartPartial(callback);
 		}
@@ -265,14 +278,27 @@ namespace Windows.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
+			if (_initializationComplete)
+			{
+				// InitializationCompleted is currently called from NativeApplication.OnActivityStarted
+				// and will be called every time the app is put to background then back to foreground.
+				// Nothing in this method should really execute twice.
+				return;
+			}
+
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI
-			// Delayed raise of OnWindowCreated.
-			Windows.UI.Xaml.Window.Current.RaiseCreated();
+			Microsoft.UI.Xaml.Window.EnsureWindowCurrent();
 #endif
+
+			// Initialize all windows that have been created before the application was initialized.
+			foreach (var window in ApplicationHelper.Windows)
+			{
+				window.Initialize();
+			}
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
@@ -418,40 +444,57 @@ namespace Windows.UI.Xaml
 
 		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 
-		private void UpdateRootVisualBackground()
+		private void UpdateRootElementBackground()
 		{
-			var rootVisual = WinUICoreServices.Instance.MainRootVisual;
-			rootVisual?.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
+				{
+					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				}
+			}
 		}
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			DefaultBrushes.ResetDefaultThemeBrushes();
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			try
 			{
-				if (GetTreeRoot(contentRoot) is { } root)
+				// When we change theme, we may update properties and set them with Local precedence
+				// with the newly evaluated ThemeResource value.
+				// In this case, if we previously had Animation value in effect, we don't want the new Local value to take effect.
+				// So, we avoid setting LocalValueNewerThanAnimationsValue
+				ModifiedValue.SuppressLocalCanDefeatAnimations();
+				DefaultBrushes.ResetDefaultThemeBrushes();
+				foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
-					// Update theme bindings in application resources
-					Resources?.UpdateThemeBindings(updateReason);
-
-					// Update theme bindings in system resources
-					ResourceResolver.UpdateSystemThemeBindings(updateReason);
-
-					PropagateResourcesChanged(root, updateReason);
-				}
-
-				// Start from the real root, which may not be a FrameworkElement on some platforms
-				View GetTreeRoot(ContentRoot contentRoot)
-				{
-					View current = contentRoot.XamlRoot.Content;
-					var parent = current?.GetVisualTreeParent();
-					while (parent != null)
+					if (GetTreeRoot(contentRoot) is { } root)
 					{
-						current = parent;
-						parent = current?.GetVisualTreeParent();
+						// Update theme bindings in application resources
+						Resources?.UpdateThemeBindings(updateReason);
+
+						// Update theme bindings in system resources
+						ResourceResolver.UpdateSystemThemeBindings(updateReason);
+
+						PropagateResourcesChanged(root, updateReason);
 					}
-					return current;
+
+					// Start from the real root, which may not be a FrameworkElement on some platforms
+					View GetTreeRoot(ContentRoot contentRoot)
+					{
+						View current = contentRoot.XamlRoot.Content;
+						var parent = current?.GetVisualTreeParent();
+						while (parent != null)
+						{
+							current = parent;
+							parent = current?.GetVisualTreeParent();
+						}
+						return current;
+					}
 				}
+			}
+			finally
+			{
+				ModifiedValue.ContinueLocalCanDefeatAnimations();
 			}
 		}
 

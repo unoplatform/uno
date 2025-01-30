@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Storage;
 
 namespace SampleControl.Presentation
@@ -36,9 +36,6 @@ namespace SampleControl.Presentation
 				).AsTask(ct);
 			return folder;
 		}
-
-		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
-			=> (400, 400, 1200, 800);
 	}
 }
 #endif

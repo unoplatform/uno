@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using Uno;
 using Windows.Foundation;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 
 namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
 		internal const float BaseDpi = 96.0f;
+
+		private static object _windowIdMapLock = new object();
+		private static readonly Dictionary<WindowId, DisplayInformation> _windowIdMap = new();
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private float _lastKnownDpi;
@@ -26,9 +31,54 @@ namespace Windows.Graphics.Display
 		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
 		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
-		private DisplayInformation()
+		private DisplayInformation(
+#if !ANDROID
+			WindowId windowId
+#endif
+			)
 		{
+#if !ANDROID
+			WindowId = windowId;
+#endif
 			Initialize();
+		}
+
+#if !ANDROID
+		internal WindowId WindowId { get; }
+#endif
+
+		public static DisplayInformation GetForCurrentView()
+		{
+#if ANDROID
+			return GetForCurrentViewAndroid();
+#else
+			// This is needed to ensure for "current view" there is always a corresponding DisplayView instance.
+			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
+			// on Uno.WinUI codebase.
+			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+#endif
+		}
+
+#pragma warning disable RS0030 // Do not use banned APIs
+		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
+
+		internal static DisplayInformation GetOrCreateForWindowId(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				if (!_windowIdMap.TryGetValue(windowId, out var displayInformation))
+				{
+					displayInformation = new(
+#if !ANDROID
+						windowId
+#endif
+					);
+					_windowIdMap[windowId] = displayInformation;
+				}
+
+				return displayInformation;
+			}
 		}
 
 		public static DisplayOrientations AutoRotationPreferences
@@ -42,8 +92,6 @@ namespace Windows.Graphics.Display
 		}
 
 		public bool StereoEnabled { get; private set; }
-
-		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations);
 

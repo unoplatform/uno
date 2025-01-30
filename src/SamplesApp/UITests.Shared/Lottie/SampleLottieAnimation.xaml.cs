@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Lottie
@@ -13,9 +13,7 @@ namespace UITests.Shared.Lottie
 		{
 			this.InitializeComponent();
 
-			stretch.ItemsSource = Enum.GetValues(typeof(Stretch))
-				.Cast<Stretch>()
-				.Select(x => x.ToString());
+			stretch.ItemsSource = Enum.GetNames<Stretch>();
 			stretch.SelectedIndex = 2;
 
 			play1.Tapped += (snd, evt) => _ = player.PlayAsync(from.Value, to.Value, false);

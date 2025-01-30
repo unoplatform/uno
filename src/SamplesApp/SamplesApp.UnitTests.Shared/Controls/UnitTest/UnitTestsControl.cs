@@ -20,15 +20,16 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Immutable;
+using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -58,7 +59,9 @@ namespace Uno.UI.Samples.Tests
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
 
+#if !WINAPPSDK
 		private ApplicationView _applicationView;
+#endif
 
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
@@ -91,15 +94,8 @@ namespace Uno.UI.Samples.Tests
 				}
 			);
 
-			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
-				Windows.UI.Xaml.Window.Current;
-
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
+				Microsoft.UI.Xaml.Window.Current;
 
 			DataContext = null;
 
@@ -107,12 +103,26 @@ namespace Uno.UI.Samples.Tests
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
 
+#if !WINAPPSDK
 			_applicationView = ApplicationView.GetForCurrentView();
+#endif
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+
+			if (Private.Infrastructure.TestServices.WindowHelper.XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot should not be null after Loaded");
+			}
+
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				XamlRoot.HostWindow is null;
+#else
+				false;
+#endif
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -269,10 +279,17 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+#if HAS_UNO_WINUI || WINAPPSDK
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
+				{
+					window.Title = message;
+				}
+#else
 				_applicationView.Title = message;
+#endif
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Setter);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Setter);
 		}
 
 		private void ReportTestsResults()
@@ -285,7 +302,7 @@ namespace Uno.UI.Samples.Tests
 				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
 			}
 
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private async Task GenerateTestResults()
@@ -297,13 +314,12 @@ namespace Uno.UI.Samples.Tests
 				NUnitTestResultsDocument = results;
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private void ReportTestClass(TypeInfo testClass)
 		{
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				() =>
 				{
 					if (!IsRunningOnCI)
@@ -399,8 +415,7 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				Update);
 		}
 
@@ -606,7 +621,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					testResults.Visibility = Visibility.Visible;
@@ -652,7 +667,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					if (!IsRunningOnCI)
@@ -746,19 +761,22 @@ namespace Uno.UI.Samples.Tests
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
-					var cleanupActions = new List<Func<Task>>();
 					var sw = new Stopwatch();
 					var canRetry = true;
 
 					while (canRetry)
 					{
 						canRetry = false;
+						var cleanupActions = new List<Func<Task>>
+						{
+							GeneralCleanupAsync
+						};
 
 						try
 						{
 							if (test.RequiresFullWindow)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 								{
 #if __ANDROID__
 									// Hide the systray!
@@ -770,7 +788,7 @@ namespace Uno.UI.Samples.Tests
 								});
 								cleanupActions.Add(async () =>
 								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 									{
 #if __ANDROID__
 										// Restore the systray!
@@ -781,6 +799,8 @@ namespace Uno.UI.Samples.Tests
 									});
 								});
 							}
+
+							await GeneralInitAsync();
 
 							object returnValue = null;
 							var methodArguments = testCase.Parameters;
@@ -793,7 +813,7 @@ namespace Uno.UI.Samples.Tests
 							{
 								var cts = new TaskCompletionSource<bool>();
 
-								_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+								_ = TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
 								{
 									try
 									{
@@ -866,14 +886,15 @@ namespace Uno.UI.Samples.Tests
 							if (test.Method.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								var timeoutTask = Task.Delay(GetTestTimeout(test));
+								var timeout = GetTestTimeout(test);
+								var timeoutTask = Task.Delay(timeout);
 
 								var resultingTask = await Task.WhenAny(task, timeoutTask);
 
 								if (resultingTask == timeoutTask)
 								{
 									throw new TimeoutException(
-										$"Test execution timed out after {DefaultUnitTestTimeout}");
+										$"Test execution timed out after {timeout}");
 								}
 
 								// Rethrow exception if failed OR task cancelled if task **internally** raised
@@ -919,7 +940,7 @@ namespace Uno.UI.Samples.Tests
 							}
 							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
 							{
-								if (_currentRun.CurrentRepeatCount < config.Attempts - 1 && !Debugger.IsAttached)
+								if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
 								{
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
@@ -957,13 +978,34 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
+			async Task GeneralInitAsync()
+			{
+#if HAS_UNO
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					ResetLastInputDeviceType();
+				});
+#else
+				await Task.CompletedTask;
+#endif
+			}
+
+			async Task GeneralCleanupAsync()
+			{
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					CloseRemainingPopups();
+
+				});
+			}
+
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
 			{
-				void Run()
+				async Task Run()
 				{
 					try
 					{
-						testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>());
+						await WaitResult(testClassInfo.Cleanup?.Invoke(instance, Array.Empty<object>()), "cleanup");
 					}
 					catch (Exception e)
 					{
@@ -974,13 +1016,86 @@ namespace Uno.UI.Samples.Tests
 
 				if (runsOnUIThread)
 				{
-					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, Run);
+					await ExecuteOnDispatcher(Run, CancellationToken.None); // No CT for cleanup!
 				}
 				else
 				{
-					Run();
+					await Run();
 				}
 			}
+
+			async ValueTask WaitResult(object returnValue, string step)
+			{
+				if (returnValue is Task asyncResult)
+				{
+					var timeoutTask = Task.Delay(DefaultUnitTestTimeout, ct);
+					var resultingTask = await Task.WhenAny(asyncResult, timeoutTask);
+
+					if (resultingTask == timeoutTask)
+					{
+						throw new TimeoutException($"Test {step} timed out after {DefaultUnitTestTimeout}");
+					}
+
+					// Rethrow exception if failed OR task cancelled if task **internally** raised
+					// a TaskCancelledException (we don't provide any cancellation token).
+					await resultingTask;
+				}
+			}
+		}
+
+		private static void CloseRemainingPopups()
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			if (popups.Count > 0)
+			{
+				foreach (var popup in popups)
+				{
+					popup.IsOpen = false;
+				}
+			}
+		}
+
+#if HAS_UNO
+		private static void ResetLastInputDeviceType()
+		{
+			// Some tests inject keyboard input, which can then mean that subsequent tests will display
+			// system focus visuals which are unexpected. This resets the last input device type to mouse.
+			// Mouse is to stay in line with WinUI integration tests, as some rely on the fact that on
+			// initial focus of a TextBox the last input device type is not touch (this device type does not
+			// select all text on initial focus, only on second tap of the input).
+			// If this is changed ComboBoxIntegrationTests.ValidateTextSubmittedHandledProperty will probably
+			// start to fail for example.
+			if (TestServices.WindowHelper.XamlRoot?.VisualTree?.ContentRoot?.InputManager is { } inputManager)
+			{
+				inputManager.LastInputDeviceType = Xaml.Input.InputDeviceType.Mouse;
+			}
+		}
+#endif
+
+		private async ValueTask ExecuteOnDispatcher(Func<Task> asyncAction, CancellationToken ct = default)
+		{
+			var tcs = new TaskCompletionSource<object>();
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					if (ct.IsCancellationRequested)
+					{
+						tcs.TrySetCanceled();
+					}
+
+					using var ctReg = ct.Register(() => tcs.TrySetCanceled());
+					await asyncAction();
+
+					tcs.TrySetResult(default);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			await tcs.Task;
 		}
 
 		private static object[] ExpandArgumentsWithDefaultValues(object[] methodArguments, ParameterInfo[] methodParameters)

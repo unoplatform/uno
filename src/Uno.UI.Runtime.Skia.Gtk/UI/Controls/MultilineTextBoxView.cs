@@ -2,9 +2,10 @@
 
 using System;
 using Gtk;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -15,7 +16,7 @@ internal class MultilineTextBoxView : GtkTextBoxView
 	private readonly ScrolledWindow _scrolledWindow = new();
 	private readonly UnoGtkTextView _textView = new();
 
-	public MultilineTextBoxView()
+	public MultilineTextBoxView(XamlRoot? xamlRoot) : base(xamlRoot)
 	{
 		_scrolledWindow.Add(_textView);
 		_scrolledWindow.StyleContext.AddClass(MultilineHostCssClass);
@@ -59,8 +60,8 @@ internal class MultilineTextBoxView : GtkTextBoxView
 		_textView.Editable = !textBox.IsReadOnly && textBox.IsTabStop;
 		_textView.WrapMode = textBox.TextWrapping switch
 		{
-			Windows.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
-			Windows.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
+			Microsoft.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
+			Microsoft.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
 			_ => WrapMode.None,
 		};
 	}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal static class XamlConstants
 	{
@@ -13,9 +13,29 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
-		public const string RootMUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = "Windows.UI.Xaml";
-		public const string UnoXamlNamespace = "Windows.UI.Xaml";
+		public const string RootMUINamespace = "Microsoft.UI";
+		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
+
+		public const string UnknownContent = "_UnknownContent";
+
+		public static class Xmlnses
+		{
+			/// <summary>
+			/// <code>xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"</code>
+			/// </summary>
+			public const string Default = PresentationXamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"</code>
+			/// </summary>
+			public const string X = XamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"</code>
+			/// </summary>
+			public const string MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+		}
 
 		public static class Namespaces
 		{

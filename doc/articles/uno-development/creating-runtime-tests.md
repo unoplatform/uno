@@ -6,7 +6,7 @@ uid: Uno.Contributing.CreateRuntimeTests
 
 Platform-runtime unit tests are relatively cheap (in terms of developer productivity and CI time) whilst still allowing functionality to be verified across all supported platforms and in a realistic environment. Accordingly they're appropriate for many bugfixes and new features.
 
-Tests in Uno.UI.RuntimeTests are easy to write. There are a few special attributes and environmental helpers to know about, which this guide will cover. 
+Tests in Uno.UI.RuntimeTests are easy to write. There are a few special attributes and environmental helpers to know about, which this guide will cover.
 
 For other types of automated tests used internally by Uno.UI, [see here](../contributing/guidelines/creating-tests.md).
 
@@ -24,7 +24,7 @@ Since the Uno.UI.RuntimeTests tests run in the platform environment using the re
 
 To add a new runtime test:
 
-1. Locate the test class corresponding to the control or class you want to create a test for. Tests are located in `Uno.UI.RuntimeTests/Tests`. If you need to add a new test class, create the file as `Tests/Namespace_In_Snake_Case/Given_ControlName.cs`. The class should be marked with the `[TestClass]` attribute. 
+1. Locate the test class corresponding to the control or class you want to create a test for. Tests are located in `Uno.UI.RuntimeTests/Tests`. If you need to add a new test class, create the file as `Tests/Namespace_In_Snake_Case/Given_ControlName.cs`. The class should be marked with the `[TestClass]` attribute.
 2. Create your test as a method, naming it as `When_Your_Scenario` and marking it with the `[TestMethod]` attribute. (For more information about the 'Given-When-Then' naming style, read <https://martinfowler.com/bliki/GivenWhenThen.html> )
 3. The runtime tests run from a background thread by default, but when testing UI-related scenarios this isn't desirable. You can use the `[RunsOnUIThread]` attribute, either on individual test methods or the whole test class, to configure the test (or suite of tests) to be run on the UI thread.
 4. Use the helpers described below to set up the state required to repro your bug, and use standard `Assert` calls and/or [FluentAssertions](https://fluentassertions.com/introduction) to verify expected state.
@@ -38,20 +38,20 @@ A number of helper methods are available to set up a state for testing common UI
 
 The `Private.Infrastructure.TestServices.WindowHelper` class exposes several static methods and properties to easily insert a control into the running visual tree, and to wait for modifications to the UI to have been fully processed, since updates to the UI typically take effect asynchronously.
 
- - `WindowHelper.WindowContent`: assigning a `FrameworkElement` to this static property will cause that element to be loaded into the running visual tree. Subsequently setting it to `null` (or another element) will cause the old element to be unloaded from the visual tree.
- - `Task WindowHelper.WaitForLoaded(FrameworkElement element)`: returns a task that will complete once `element` is fully loaded into the visual tree. You'd typically await it after assigning `WindowContent = element`, to ensure that `element` has been loaded, measured, and arranged, before further manipulations or assertions.
- - `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
- - `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
+- `WindowHelper.WindowContent`: assigning a `FrameworkElement` to this static property will cause that element to be loaded into the running visual tree. Subsequently setting it to `null` (or another element) will cause the old element to be unloaded from the visual tree.
+- `Task WindowHelper.WaitForLoaded(FrameworkElement element)`: returns a task that will complete once `element` is fully loaded into the visual tree. You'd typically await it after assigning `WindowContent = element`, to ensure that `element` has been loaded, measured, and arranged, before further manipulations or assertions.
+- `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
+- `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
 
 #### StyleHelper
 
- - `IDisposable UseNativeStyle<T>() where T : Control`: This allows you to override the style settings to use a native default style for the duration of a test. Eg, `using (UseNativeStyle<Slider>()) { }` will cause all `Slider` elements to use the native style by default.
- - `IDisposable UseNativeFrameNavigation()`: This is a helper which sets native styles as default for the control types implicated in frame navigation (`Frame`, `CommandBar` and `AppBarButton`). This is useful for testing native frame navigation.
+- `IDisposable UseNativeStyle<T>() where T : Control`: This allows you to override the style settings to use a native default style for the duration of a test. Eg, `using (UseNativeStyle<Slider>()) { }` will cause all `Slider` elements to use the native style by default.
+- `IDisposable UseNativeFrameNavigation()`: This is a helper which sets native styles as default for the control types implicated in frame navigation (`Frame`, `CommandBar` and `AppBarButton`). This is useful for testing native frame navigation.
 
 #### Useful methods coming from `Uno.UI` itself
 
- The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met. 
- 
+ The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
+
  Note that for Android/iOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
 
  ```csharp
@@ -68,7 +68,7 @@ using Uno.UI;
 
 ### Other tips
 
- - If you open a popup in some way (including indirectly via a `ComboBox`, `Flyout` etc), ensure to close it at the end of the test, ideally in a `try/finally` block. Otherwise it may interfere with the correct execution of subsequent tests.
+- If you open a popup in some way (including indirectly via a `ComboBox`, `Flyout` etc), ensure to close it at the end of the test, ideally in a `try/finally` block. Otherwise it may interfere with the correct execution of subsequent tests.
 
 ### Example
 
@@ -93,32 +93,32 @@ Finally we assert that the `ActualWidth` of each container is what we expect, an
 #endif
 public async Task When_ListView_Parent_Unstretched()
 {
-	var source = Enumerable.Range(0, 5).ToArray();
-	var SUT = new ListView
-	{
-		HorizontalAlignment = HorizontalAlignment.Stretch,
-		ItemsSource = source
-	};
+ var source = Enumerable.Range(0, 5).ToArray();
+ var SUT = new ListView
+ {
+  HorizontalAlignment = HorizontalAlignment.Stretch,
+  ItemsSource = source
+ };
 
-	const int minWidth = 193;
-	var border = new Border
-	{
-		HorizontalAlignment = HorizontalAlignment.Left,
-		MinWidth = minWidth,
-		Child = SUT
-	};
+ const int minWidth = 193;
+ var border = new Border
+ {
+  HorizontalAlignment = HorizontalAlignment.Left,
+  MinWidth = minWidth,
+  Child = SUT
+ };
 
-	WindowHelper.WindowContent = border;
+ WindowHelper.WindowContent = border;
 
-	await WindowHelper.WaitForIdle();
+ await WindowHelper.WaitForIdle();
 
-	ListViewItem lvi = null;
-	foreach (var item in source)
-	{
-		await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
-		Assert.AreEqual(minWidth, lvi.ActualWidth);
-	}
+ ListViewItem lvi = null;
+ foreach (var item in source)
+ {
+  await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
+  Assert.AreEqual(minWidth, lvi.ActualWidth);
+ }
 
-	Assert.AreEqual(minWidth, SUT.ActualWidth);
+ Assert.AreEqual(minWidth, SUT.ActualWidth);
 }
 ```

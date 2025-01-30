@@ -11,19 +11,19 @@ Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). Th
 ## Migrating an app to WinUI 3.0
 
 - **NuGet updates:**
-    - `Uno.UI` becomes `Uno.WinUI`
-    - `Uno.UI.DevServer` becomes `Uno.WinUI.DevServer`
-    - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
-    - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
+  - `Uno.UI` becomes `Uno.WinUI`
+  - `Uno.UI.DevServer` becomes `Uno.WinUI.DevServer`
+  - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
+  - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
 - **String replacements:**
-    - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
-    - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`
+  - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
+  - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`
 - **Update `App.xaml.cs`:**
-    - If your solution was created with an older version of the Uno app template, you'll need to update `App.xaml.cs` for compatibility with WinUI 3/Project Reunion.
+  - If your solution was created with an older version of the Uno app template, you'll need to update `App.xaml.cs` for compatibility with WinUI 3/Project Reunion.
 
         Fixes to apply:
-        - Ensure `Window` doesn't fall out of scope ([diff](https://github.com/unoplatform/uno/commit/0d5418dada17561f857cf13750762468b77dfbf0))
-        - Fix invalid defines ([diff](https://github.com/unoplatform/uno/commit/a4c3d3f5ec65071041a7b93f64d7175fbde189ac))
+    - Ensure `Window` doesn't fall out of scope ([diff](https://github.com/unoplatform/uno/commit/0d5418dada17561f857cf13750762468b77dfbf0))
+    - Fix invalid defines ([diff](https://github.com/unoplatform/uno/commit/a4c3d3f5ec65071041a7b93f64d7175fbde189ac))
 
 ## API Changes
 

@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.Foundation;
 using System.Numerics;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{
@@ -16,14 +16,14 @@ namespace Windows.UI.Xaml.Shapes
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
 			var path = renderingArea.Width > 0 && renderingArea.Height > 0
 				? GetGeometry(renderingArea)
 				: null;
 
 			Render(path);
 
-			return shapeSize;
+			return finalSize;
 		}
 
 		private SkiaGeometrySource2D GetGeometry(Rect finalRect)

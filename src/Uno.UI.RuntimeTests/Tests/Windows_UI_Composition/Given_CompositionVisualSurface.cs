@@ -6,18 +6,21 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 public class Given_CompositionVisualSurface
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_SourceVisual_Changes()
@@ -28,7 +31,7 @@ public class Given_CompositionVisualSurface
 			Width = 200,
 			Height = 200,
 			Stretch = Stretch.UniformToFill,
-			Source = ImageSource.TryCreateUriFromString("https://uno-assets.platform.uno/logos/uno.png")
+			Source = new BitmapImage(new Uri("https://uno-assets.platform.uno/logos/uno.png"))
 		};
 		var sut = new ContentControl
 		{
@@ -68,5 +71,4 @@ public class Given_CompositionVisualSurface
 
 		return (await UITestHelper.ScreenShot(expected), await UITestHelper.ScreenShot(sut));
 	}
-#endif
 }

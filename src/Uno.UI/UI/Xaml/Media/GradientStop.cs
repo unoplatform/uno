@@ -1,24 +1,8 @@
 ﻿using System;
-using Windows.UI.Xaml.Markup;
-
-#if __ANDROID__
-using Android.Views;
-using Android.Graphics;
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __IOS__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
+using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
-#elif __MACOS__
-using Color = Windows.UI.Color;
-#else
-using Windows.UI;
-#endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Color))]
 	public partial class GradientStop : DependencyObject
@@ -30,15 +14,15 @@ namespace Windows.UI.Xaml.Media
 
 		internal event Action InvalidateRender;
 
-		public Windows.UI.Color Color
+		public Color Color
 		{
-			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
+			get { return (Color)this.GetValue(ColorProperty); }
 			set { this.SetValue(ColorProperty, value); }
 		}
 		public static DependencyProperty ColorProperty { get; } =
 			DependencyProperty.Register(
 				"Color",
-				typeof(Windows.UI.Color),
+				typeof(Color),
 				typeof(GradientStop),
 				new FrameworkPropertyMetadata(Colors.Transparent, propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);

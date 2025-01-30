@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using Uno.Client;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -16,15 +16,15 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Text))]
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
-		// Whether the pointer is currently over the
+		// Whether the pointer is currently over the MenuFlyoutItem
 		bool m_bIsPointerOver = true;
 
-		// Whether the pointer is currently pressed over the
+		// Whether the pointer is currently pressed over the MenuFlyoutItem
 		internal bool m_bIsPressed = true;
 
 		// Whether the pointer's left button is currently down.
@@ -162,8 +162,6 @@ namespace Windows.UI.Xaml.Controls
 		void Initialize()
 		{
 			Loaded += (s, e) => ClearStateFlags();
-
-			this.RegisterDisposablePropertyChangedCallback((s, e, args) => OnPropertyChanged2(args));
 		}
 
 		// Apply a template to the
@@ -480,6 +478,7 @@ namespace Windows.UI.Xaml.Controls
 		// Handle the custom property changed event and call the OnPropertyChanged2 methods.
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
+			base.OnPropertyChanged2(args);
 			if (args.Property == UIElement.VisibilityProperty)
 			{
 				OnVisibilityChanged();
@@ -743,7 +742,7 @@ namespace Windows.UI.Xaml.Controls
 			return new MenuFlyoutItemAutomationPeer(this);
 		}
 
-		private protected override string GetPlainText() => Text;
+		internal override string GetPlainText() => Text;
 
 		internal string KeyboardAcceleratorTextOverrideImpl
 		{

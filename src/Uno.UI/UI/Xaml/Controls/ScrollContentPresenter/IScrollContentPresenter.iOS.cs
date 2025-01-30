@@ -5,7 +5,7 @@ using CoreGraphics;
 
 using _EdgeInsets = UIKit.UIEdgeInsets;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial interface IScrollContentPresenter : IUIScrollView
 	{

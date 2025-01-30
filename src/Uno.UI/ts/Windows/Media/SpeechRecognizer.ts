@@ -69,8 +69,7 @@ namespace Windows.Media {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						SpeechRecognizer.dispatchResult = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchResult;
 					} else {
-						SpeechRecognizer.dispatchResult = (<any>Module).mono_bind_static_method(
-							"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchResult");
+						throw `Unable to find dotnet exports`;
 					}
 				}
 				SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
@@ -79,8 +78,7 @@ namespace Windows.Media {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						SpeechRecognizer.dispatchHypothesis = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchHypothesis;
 					} else {
-						SpeechRecognizer.dispatchHypothesis = (<any>Module).mono_bind_static_method(
-							"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchHypothesis");
+						throw `Unable to find dotnet exports`;
 					}
 				}
 				SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
@@ -92,8 +90,7 @@ namespace Windows.Media {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					SpeechRecognizer.dispatchStatus = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchStatus;
 				} else {
-					SpeechRecognizer.dispatchStatus = (<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchStatus");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 			SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected")
@@ -104,8 +101,7 @@ namespace Windows.Media {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					SpeechRecognizer.dispatchError = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchError;
 				} else {
-					SpeechRecognizer.dispatchError = (<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Media.SpeechRecognition.SpeechRecognizer:DispatchError");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 			SpeechRecognizer.dispatchError(this.managedId, event.error);

@@ -4,7 +4,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -21,7 +21,7 @@ using CoreGraphics;
 #endif
 
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{

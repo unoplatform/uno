@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains values used as automation property identifiers for properties of the ISpreadsheetItemProvider pattern.

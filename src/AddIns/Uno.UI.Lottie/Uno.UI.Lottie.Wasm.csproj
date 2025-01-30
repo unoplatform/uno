@@ -24,11 +24,6 @@
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-		<Content Include="tsconfig.json" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(BuildingInsideUnoSourceGenerator)' != ''">
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 	</PropertyGroup>
@@ -38,9 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -49,7 +44,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -63,7 +58,7 @@
 	</Target>
 
 	<ItemGroup>
-	  <SourceGeneratorInput Remove="AssemblyInfo.cs" />
+		<SourceGeneratorInput Remove="AssemblyInfo.cs" />
 	</ItemGroup>
 
 </Project>

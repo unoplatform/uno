@@ -6,8 +6,12 @@ using System.Threading;
 using Windows.Devices.Input;
 using Uno;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Core;
+
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using Uno.Extensions;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -17,15 +21,17 @@ using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
-		private readonly Windows.UI.Core.PointerEventArgs _pointerEventArgs;
+		private readonly PointerEventArgs _pointerEventArgs;
 		private readonly PointerPoint _currentPoint;
 
+		internal PointerEventArgs CoreArgs => _pointerEventArgs;
+
 		internal PointerRoutedEventArgs(
-			Windows.UI.Core.PointerEventArgs pointerEventArgs,
+			PointerEventArgs pointerEventArgs,
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
@@ -51,13 +57,15 @@ namespace Windows.UI.Xaml.Input
 			else
 			{
 				var absolutePosition = _pointerEventArgs.CurrentPoint.Position;
-				var relativePosition = relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
+				// This is the same as relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
+				// However, TransformToVisual will allocate a MatrixTransform object, while this version is allocation-less
+				var relativePosition = UIElement.GetTransform(from: relativeTo, to: null).Inverse().Transform(absolutePosition);
 
 				return _currentPoint.At(relativePosition);
 			}
 		}
 
-		private Pointer GetPointer(Windows.UI.Core.PointerEventArgs args)
+		private Pointer GetPointer(PointerEventArgs args)
 			=> new Pointer(
 				args.CurrentPoint.PointerId,
 				(PointerDeviceType)args.CurrentPoint.PointerDevice.PointerDeviceType,

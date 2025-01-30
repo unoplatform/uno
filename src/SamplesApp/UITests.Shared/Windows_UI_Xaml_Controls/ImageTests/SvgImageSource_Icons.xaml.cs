@@ -7,21 +7,30 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using UITests.Shared.Helpers;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
 [Sample("Image")]
-public sealed partial class SvgImageSource_Icons : Page
+public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 {
+	private readonly Task _samplePreparedTask;
+
 	public SvgImageSource_Icons()
 	{
 		this.InitializeComponent();
+		_samplePreparedTask = Task.WhenAll(
+			WaitableSampleImageHelpers.WaitAllImages(image1),
+			WaitableSampleImageHelpers.WaitAllImages((SvgImageSource)imageIcon1.Source)
+		);
 	}
+
+	public Task SamplePreparedTask => _samplePreparedTask;
 
 	private async void OnClick(object sender, RoutedEventArgs args)
 	{
@@ -39,7 +48,7 @@ public sealed partial class SvgImageSource_Icons : Page
 		flyout.Items.Add(
 			new MenuFlyoutItem
 			{
-				Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+				Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 				Text = "This menu item should have a HOME icon",
 			});
 
@@ -63,7 +72,7 @@ public sealed partial class SvgImageSource_Icons : Page
 			{
 				(s2 as MenuFlyout).Items.Add(new MenuFlyoutItem
 				{
-					Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+					Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 					Text = "This menu item should have a HOME icon",
 				});
 			};

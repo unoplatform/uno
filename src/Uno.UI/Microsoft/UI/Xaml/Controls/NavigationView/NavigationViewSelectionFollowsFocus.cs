@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationView.idl, commit 34031a0
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify whether item selection changes when keyboard focus changes in a NavigationView.

@@ -2,11 +2,37 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class WrapPanel : Panel
 	{
 		private Orientation _orientation = Orientation.Horizontal;
+
+		internal override Orientation? PhysicalOrientation
+		{
+			get
+			{
+				if (GetTemplatedParent() is ItemsPresenter presenter &&
+					presenter.GetTemplatedParent() is GridView gv &&
+					gv.GetCurrentHighestValuePrecedence(Control.TemplateProperty) == DependencyPropertyValuePrecedences.ImplicitStyle)
+				{
+					// This is a workaround for our GridView using a WrapPanel instead of an ItemsWrapGrid (which we don't implement).
+					// The following is the implementation of ItemsWrapGrid::get_PhysicalOrientation from WinUI.
+					if (_orientation is Orientation.Horizontal)
+					{
+						return Orientation.Vertical;
+					}
+					else
+					{
+						return Orientation.Horizontal;
+					}
+				}
+				else
+				{
+					return _orientation;
+				}
+			}
+		}
 
 		public virtual Orientation Orientation
 		{

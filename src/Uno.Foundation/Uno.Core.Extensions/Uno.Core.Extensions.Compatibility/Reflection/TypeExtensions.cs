@@ -16,6 +16,7 @@
 // ******************************************************************
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -33,14 +34,14 @@ namespace Uno.Extensions
 			return type.IsAssignableFrom(instance);
 		}
 
-#if WINDOWS_UWP || WINPRT || XAMARIN
+#if WINAPPSDK || WINPRT || XAMARIN
 		public static IEnumerable<ConstructorInfo> GetConstructors(this TypeInfo type)
 		{
 			return type.DeclaredConstructors;
 		}
 #endif
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		/// <summary>
 		/// Gets whether null can be assigned to a variable of the given <see cref="type"/>
 		/// </summary>
@@ -60,7 +61,12 @@ namespace Uno.Extensions
 		/// <param name="type"></param>
 		/// <param name="genericTypeDefinition">The generic type without generic type argument(s).</param>
 		/// <returns></returns>
-		public static bool IsGenericDescentOf(this Type type, Type genericTypeDefinition)
+		public static bool IsGenericDescentOf(
+#if NET9_0_OR_GREATER
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+			this Type type,
+			Type genericTypeDefinition)
 		{
 			if (!genericTypeDefinition.IsGenericTypeDefinition)
 			{

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Media.Playback;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -38,7 +38,7 @@ using Uno.UI;
 
 using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls : Control
 	{
@@ -122,10 +122,17 @@ namespace Windows.UI.Xaml.Controls
 
 			DeinitializeTransportControls();
 		}
+
+		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void AfterArrange()
+		{
+			base.AfterArrange();
+#else
 		internal override void OnLayoutUpdated()
 		{
 			base.OnLayoutUpdated();
-
+#endif
 			OnControlsBoundsChanged();
 		}
 
@@ -532,7 +539,6 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
-				this.LayoutUpdated += MediaTransportControls_LayoutUpdated;
 				m_tpCommandBar.SizeChanged += Container_SizeChanged;
 				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
 			}
@@ -544,10 +550,6 @@ namespace Windows.UI.Xaml.Controls
 			HideCastButtonIfNecessary();
 		}
 
-		private void MediaTransportControls_LayoutUpdated(object? sender, object e)
-		{
-			SetMeasureCommandBar();
-		}
 		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
 		{
 			SetMeasureCommandBar();
@@ -773,7 +775,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (listView.SelectedItem is not null)
 				{
-					if (listView.SelectedItem is Windows.UI.Xaml.Controls.ListViewItem item)
+					if (listView.SelectedItem is Microsoft.UI.Xaml.Controls.ListViewItem item)
 					{
 						ResetControlsVisibilityTimer();
 

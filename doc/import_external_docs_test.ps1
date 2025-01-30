@@ -16,6 +16,7 @@ $external_docs = @{
     "uno.uitest"         = "master"
     "uno.extensions"     = "main"
     "workshops"          = "master"
+    "uno.samples"        = "master"
 }
 
 ./import_external_docs $external_docs

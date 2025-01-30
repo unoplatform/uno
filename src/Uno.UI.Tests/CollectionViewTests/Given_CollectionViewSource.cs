@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.CollectionViewTests
@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 			var view = source.View;
 
 			Assert.AreEqual(0, view.Count);
-			Assert.AreEqual(null, view.CurrentItem);
+			Assert.IsNull(view.CurrentItem);
 			Assert.AreEqual(0, view.CurrentPosition); //Not -1
 		}
 
@@ -307,10 +307,9 @@ namespace Uno.UI.Tests.CollectionViewTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_IsSynchronizedWithCurrentItem_Is_True()
 		{
-			new ListView() { IsSynchronizedWithCurrentItem = true };
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
 		}
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Toolkit
 {
@@ -60,6 +60,7 @@ namespace UITests.Toolkit
 			ElevatedElement.CornerRadius = new CornerRadius(Radius);
 		}
 
+		//UNO TODO: After updating to WinUI 1.6+, the Windows.UI.ColorHelper.ConvertColorFromHexString can be used
 		private Color ConvertColorFromHexString(string colorString)
 		{
 			try

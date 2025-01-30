@@ -15,8 +15,11 @@ using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Hosting;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
+using Window = Gdk.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -24,7 +27,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 {
 	private const int _maxKnownDevices = 63;
 	private const int _knownDeviceScavengeCount = 16;
-	private readonly UnoGtkWindow _window;
+	private readonly UnoGtkWindowHost _windowHost;
 	private readonly Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)> _knownDevices = new(_maxKnownDevices + 1);
 	private Gdk.Device? _lastUsedDevice;
 
@@ -55,22 +58,22 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	public GtkCorePointerInputSource()
+	public GtkCorePointerInputSource(IXamlRootHost host)
 	{
 		_log = this.Log();
 		_isTraceEnabled = _log.IsEnabled(LogLevel.Trace);
 
-		if (GtkHost.Current?.MainWindow is not { } window)
+		if (host is not UnoGtkWindowHost windowHost)
 		{
-			throw new InvalidOperationException("Main window is not set");
+			throw new ArgumentException($"{nameof(host)} must be a Uno GTK Window host instance", nameof(host));
 		}
 
-		_window = window;
+		_windowHost = windowHost;
 
 		// even though we are not going to use events directly in the window here maintain the masks
-		window.AddEvents((int)RequestedEvents);
+		_windowHost.GtkWindow.AddEvents((int)RequestedEvents);
 		// add masks for the GtkEventBox
-		window.Host.EventBox.AddEvents((int)RequestedEvents);
+		_windowHost.EventBox.AddEvents((int)RequestedEvents);
 
 		// Use GtkEventBox to fix Wayland titlebar events
 		// Note: On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
@@ -80,15 +83,15 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		//		 * When a device properly send the touch events through the OnTouchEvent,
 		//		   system does not "emulate the mouse" so this method should not be invoked.
 		//		   That's the purpose of the UnoEventBox.
-		window.Host.EventBox.EnterNotifyEvent += OnEnterEvent;
-		window.Host.EventBox.LeaveNotifyEvent += OnLeaveEvent;
-		window.Host.EventBox.ButtonPressEvent += OnButtonPressEvent;
-		window.Host.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
-		window.Host.EventBox.MotionNotifyEvent += OnMotionEvent;
-		window.Host.EventBox.ScrollEvent += OnScrollEvent;
-		window.Host.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
-		window.Host.EventBox.ProximityInEvent += OnProximityInEvent;
-		window.Host.EventBox.ProximityOutEvent += OnProximityOutEvent;
+		_windowHost.EventBox.EnterNotifyEvent += OnEnterEvent;
+		_windowHost.EventBox.LeaveNotifyEvent += OnLeaveEvent;
+		_windowHost.EventBox.ButtonPressEvent += OnButtonPressEvent;
+		_windowHost.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
+		_windowHost.EventBox.MotionNotifyEvent += OnMotionEvent;
+		_windowHost.EventBox.ScrollEvent += OnScrollEvent;
+		_windowHost.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
+		_windowHost.EventBox.ProximityInEvent += OnProximityInEvent;
+		_windowHost.EventBox.ProximityOutEvent += OnProximityOutEvent;
 	}
 
 	/// <inheritdoc />
@@ -102,8 +105,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	/// <inheritdoc />
 	public CoreCursor PointerCursor
 	{
-		get => _window.Window.Cursor.ToCoreCursor();
-		set => _window.Window.Cursor = value.ToCursor();
+		get => _windowHost.GtkWindow.Window.Cursor.ToCoreCursor();
+		set => _windowHost.GtkWindow.Window.Cursor = value.ToCursor();
 	}
 
 	/// <inheritdoc />
@@ -111,7 +114,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -124,7 +127,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			global::Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, entry.dev, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -137,7 +140,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -150,7 +153,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			global::Gtk.Device.GrabRemove(_window, entry.dev);
+			global::Gtk.Device.GrabRemove(_windowHost.GtkWindow, entry.dev);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -163,7 +166,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -182,7 +185,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 			// This may need to be removed when we implement native pointer capture support properly.
 			if (args.Event.Mode != CrossingMode.Ungrab)
 			{
-				if (AsPointerArgs(args.Event) is { } ptArgs)
+				if (AsPointerArgs(o, args.Event) is { } ptArgs)
 				{
 					RaisePointerExited(ptArgs);
 				}
@@ -211,7 +214,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerPressed(ptArgs);
 			}
@@ -226,7 +229,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerReleased(ptArgs);
 			}
@@ -241,7 +244,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerMoved(ptArgs);
 			}
@@ -256,7 +259,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerWheelChanged(ptArgs);
 			}
@@ -271,7 +274,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(evt) is { } ptArgs)
+			if (AsPointerArgs(o!, evt) is { } ptArgs)
 			{
 				switch (evt.Type)
 				{
@@ -305,7 +308,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerExited(ptArgs);
 			}
@@ -320,7 +323,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -355,31 +358,45 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	#region Convert helpers
-	private PointerEventArgs? AsPointerArgs(EventTouch evt)
-		=> AsPointerArgs(
+	private PointerEventArgs? AsPointerArgs(object o, EventTouch evt)
+	{
+		var (windowX, windowY) = GetWindowCoordinates();
+		var x = evt.XRoot - windowX;
+		var y = evt.YRoot - windowY;
+
+		return AsPointerArgs(
 			evt.Device, PointerDeviceType.Touch, (uint?)evt.Sequence?.Handle ?? 1u,
 			evt.Type, evt.Time,
 			evt.XRoot, evt.YRoot,
-			evt.X, evt.Y,
+			x, y,
 			(ModifierType)evt.State,
 			evt: null);
+	}
 
-	private PointerEventArgs? AsPointerArgs(Event evt)
+	private PointerEventArgs? AsPointerArgs(object o, Event evt)
 	{
+		// The coordinates received in the event args are relative to the widget that raised the event.
+		// Usually, that's the native overlay (which embodies the entire window, minus the titlebar). However,
+		// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
+		// top-left of the window. This method makes that adjustment
+		var (windowX, windowY) = GetWindowCoordinates();
+
 		var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 		var type = evt.Type;
 		var time = EventHelper.GetTime(evt);
 		EventHelper.GetRootCoords(evt, out var rootX, out var rootY);
-		EventHelper.GetCoords(evt, out var x, out var y);
 		EventHelper.GetState(evt, out var state);
 
+		var x = rootX - windowX;
+		var y = rootY - windowY;
+
 		return AsPointerArgs(
-			dev, GetDeviceType(dev), 1u,
-			type, time,
-			rootX, rootY,
-			x, y,
-			state,
-			evt);
+		dev, GetDeviceType(dev), 1u,
+		type, time,
+		rootX, rootY,
+		x, y,
+		state,
+		evt);
 	}
 
 	private PointerEventArgs? AsPointerArgs(
@@ -390,8 +407,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		ModifierType state,
 		Event? evt)
 	{
-		var displayInformation = DisplayInformation.GetForCurrentView();
-		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(_windowHost);
+		var positionAdjustment = xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX / positionAdjustment, rootY / positionAdjustment);
@@ -458,6 +475,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 				properties.IsRightButtonPressed = IsPressed(state, ModifierType.Button3Mask, properties.PointerUpdateKind, RightButtonPressed, RightButtonReleased);
 				properties.IsXButton1Pressed = IsPressed(state, ModifierType.Button4Mask, properties.PointerUpdateKind, XButton1Pressed, XButton1Released);
 				properties.IsXButton2Pressed = IsPressed(state, ModifierType.Button5Mask, properties.PointerUpdateKind, XButton1Pressed, XButton2Released);
+				properties.IsTouchPad = dev.Source == InputSource.Touchpad;
 				break;
 
 			case PointerDeviceType.Pen:
@@ -483,10 +501,10 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		properties.IsInRange = true;
-
+		var timeInMicroseconds = time * 1000;
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: time,
-			timestamp: time,
+			timestamp: timeInMicroseconds,
 			device: pointerDevice,
 			pointerId: pointerId,
 			rawPosition: rawPosition,
@@ -595,5 +613,24 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		PointerWheelChanged?.Invoke(this, ptArgs);
+	}
+
+	private (int x, int y) GetWindowCoordinates()
+	{
+		// Calling GetGeometry or GetOrigin on any window reference such as e.Window or (o as Widget).Window will return wrong
+		// values (usually just 0). Only UnoGtkWindow.Window will give us what we need.
+
+		// GetGeometry returns different numbers between Windows and Linux.
+		// FrameExtents (and a bunch of other methods/properties) will include the border and the title bar on Linux
+		((UnoGtkWindow)(_windowHost.RootContainer)).Window.GetOrigin(out var x, out var y);
+
+		// Window.GetOrigin returns shifted numbers on WSL, most likely due to window decoration differences
+		// that might not be present on Linux itself. It might be because of differences between Gnome vs
+		// non-Gnome desktops.
+		var allocation = _windowHost.EventBox.Allocation;
+		x += allocation.X;
+		y += allocation.Y;
+
+		return (x, y);
 	}
 }

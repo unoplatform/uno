@@ -1,9 +1,10 @@
 ﻿// MUX Reference Button_Partial.cpp, tag winui3/release/1.4.2
 
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{
@@ -109,8 +110,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: Keyboard accelerators not supported yet.
-		//private void OnProcessKeyboardAcceleratorsImplLocal()
+		internal void OnProcessKeyboardAcceleratorsImplLocal(ProcessKeyboardAcceleratorEventArgs args)
+		{
+			var spButtonFlyout = Flyout;
+			if (spButtonFlyout is null)
+			{
+				return;
+			}
+
+			spButtonFlyout.TryInvokeKeyboardAccelerator(args);
+		}
 
 		//internal void SuppressFlyoutOpening()
 		//{

@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Views;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
@@ -31,10 +31,10 @@ namespace Windows.UI.Xaml.Media
 
 				if (unoViewGroup != null)
 				{
-					var newContentAsFrameworkElement = newView as IFrameworkElement;
+					var newContentAsFrameworkElement = newView as FrameworkElement;
 					if (newContentAsFrameworkElement != null)
 					{
-						newContentAsFrameworkElement.TemplatedParent = (unoViewGroup as IFrameworkElement)?.TemplatedParent;
+						newContentAsFrameworkElement.SetTemplatedParent((unoViewGroup as FrameworkElement)?.GetTemplatedParent());
 					}
 				}
 

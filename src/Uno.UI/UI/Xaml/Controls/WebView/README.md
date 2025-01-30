@@ -39,4 +39,4 @@ At the end of the navigation, on `WebView` the either `NavigationCompleted` or `
 `WebView2` has only `NavigationCompleted`.
 
 In `WebView`, most the events include `Uri`, but `WebView2` uses a unique `NavigationId` instead.
-For details on `WebView2` event behavior see: https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/navigation-events
+For details on `WebView2` event behavior see: https://learn.microsoft.com/microsoft-edge/webview2/concepts/navigation-events

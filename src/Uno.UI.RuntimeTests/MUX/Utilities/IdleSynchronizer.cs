@@ -8,6 +8,7 @@ namespace MUXControlsTestApp.Utilities
 {
 	internal class IdleSynchronizer
 	{
+		[Obsolete("Don't use IdleSynchronizer.Wait. Use 'await TestServices.WindowHelper.WaitForIdle()' instead.")]
 		public static void Wait()
 		{
 #if __WASM__
@@ -16,7 +17,7 @@ namespace MUXControlsTestApp.Utilities
 				return;
 			}
 #endif
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (!CoreDispatcher.Main.HasThreadAccess)
 #endif
 			{

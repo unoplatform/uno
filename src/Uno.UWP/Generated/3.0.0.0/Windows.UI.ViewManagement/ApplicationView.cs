@@ -8,20 +8,7 @@ namespace Windows.UI.ViewManagement
 #endif
 	public partial class ApplicationView
 	{
-#if false || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ApplicationView.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ApplicationView.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.Title");
-			}
-		}
-#endif
+		// Skipping already declared property Title
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsScreenCaptureEnabled
@@ -57,8 +44,8 @@ namespace Windows.UI.ViewManagement
 		}
 #endif
 		// Skipping already declared property Id
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsFullScreen
 		{
 			get
@@ -207,20 +194,8 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.IsFullScreenMode.get
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public bool TryEnterFullScreenMode()
-		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.TryEnterFullScreenMode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryEnterFullScreenMode%28%29");
-		}
-#endif
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void ExitFullScreenMode()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ExitFullScreenMode()");
-		}
-#endif
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterFullScreenMode()
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.ExitFullScreenMode()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ShowStandardSystemOverlays()

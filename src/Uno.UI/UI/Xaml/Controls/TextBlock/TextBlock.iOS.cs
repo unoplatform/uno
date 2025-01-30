@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -13,8 +13,9 @@ using Uno.UI;
 using Windows.UI;
 using CoreAnimation;
 using ObjCRuntime;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement, IFontScalable
 	{
@@ -68,6 +69,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin, null);
 			}
+
+			if (_attributedString is not null)
+			{
+				UpdateIsTextTrimmed();
+			}
 		}
 
 		/// <summary>
@@ -114,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
-					var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+					var font = FontHelper.TryGetFont(new FontProperties((float)FontSize, FontWeight, FontStyle, FontStretch), FontFamily);
 
 #pragma warning disable BI1234 // error BI1234: 'UIStringDrawing.StringSize(string, UIFont, CGSize)' is obsolete: 'Starting with ios7.0 use NSString.GetBoundingRect (CGSize, NSStringDrawingOptions, UIStringAttributes, NSStringDrawingContext) instead.'
 					result = (Text ?? NSString.Empty).StringSize(font, size);
@@ -189,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var attributes = new UIStringAttributes();
 
-			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+			var font = FontHelper.TryGetFont(new FontProperties((float)FontSize, FontWeight, FontStyle, FontStretch), FontFamily);
 
 			attributes.Font = font;
 
@@ -329,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			if (!_drawRect.Contains(point))
+			if (!_drawRect.Contains(point) || _layoutManager is null)
 			{
 				return -1;
 			}
@@ -343,6 +349,14 @@ namespace Windows.UI.Xaml.Controls
 
 
 			return characterIndex;
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_attributedString.Size.Width > _drawRect.Size.Width ||
+				_attributedString.Size.Height > _drawRect.Size.Height
+			);
 		}
 	}
 }

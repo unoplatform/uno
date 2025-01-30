@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -12,7 +12,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 	[Bindable]
 	internal class CopyToClipboardViewModel : ViewModelBase
 	{
-		public CopyToClipboardViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CopyToClipboardViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

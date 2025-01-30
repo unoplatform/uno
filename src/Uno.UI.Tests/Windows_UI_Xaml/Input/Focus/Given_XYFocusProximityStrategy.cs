@@ -7,7 +7,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 {
@@ -146,7 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double scoreA = ProximityStrategy.GetScore(direction, a, b, maxDistance, true);
 			double scoreB = ProximityStrategy.GetScore(direction, a, c, maxDistance, true);
-			Assert.IsTrue(scoreA == scoreB);
+			Assert.AreEqual(scoreB, scoreA);
 		}
 	}
 }

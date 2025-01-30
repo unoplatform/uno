@@ -6,10 +6,10 @@ uid: Uno.Contributing.SamplesApp
 
 The SamplesApp in Uno.UI is an Uno application containing a large number of UI and non-UI samples. It serves a few purposes:
 
- * Allow for manually testing new features and investigating bugs,
- * Provide UI for [automated UI tests](creating-ui-tests.md),
- * Allow automated comparison of static snapshots between Uno versions,
- * Document the functionality supported by Uno.
+* Allow for manually testing new features and investigating bugs,
+* Provide UI for [automated UI tests](creating-ui-tests.md),
+* Allow automated comparison of static snapshots between Uno versions,
+* Document the functionality supported by Uno.
 
 This article details how to run SamplesApp and how to add a new sample.
 
@@ -52,8 +52,8 @@ In the first example, no parameters are supplied to the `Sample` attribute. The 
 ```csharp
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 {
-	[Sample]
-	public sealed partial class ToolTip_Long_Text : UserControl
+ [Sample]
+ public sealed partial class ToolTip_Long_Text : UserControl
 ```
 
 In the second example, the category and name are manually specified, and a view-model type is specified to use as the `DataContext` of the sample.
@@ -61,8 +61,8 @@ In the second example, the category and name are manually specified, and a view-
 ```csharp
 namespace UITests.Windows_Devices.Haptics
 {
-	[Sample("Windows.Devices", Name = "Haptics.VibrationDevice", ViewModelType = typeof(VibrationDeviceTestsViewModel))]
-	public sealed partial class VibrationDeviceTests : Page
+ [Sample("Windows.Devices", Name = "Haptics.VibrationDevice", ViewModelType = typeof(VibrationDeviceTestsViewModel))]
+ public sealed partial class VibrationDeviceTests : Page
 ```
 
 ## Adding a new sample
@@ -87,16 +87,17 @@ The content of those tests must describe a scenario to follow, what to expect, a
 Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught.
 
 ### Running the snapshot taker locally on WebAssembly
+
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
-- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
-- Build the `SamplesApp.Wasm.UITests.njsproj` project
-- Press `F5`, node will start and run the tests sequentially
-- The screen shots are placed in a folder named `out`
+
+* Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
+* Build the `SamplesApp.Wasm.UITests.njsproj` project
+* Press `F5`, node will start and run the tests sequentially
+* The screen shots are placed in a folder named `out`
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
-
 
 ## Validating the WebAssembly UI Tests results
 
@@ -105,6 +106,7 @@ for screenshots taken for the past builds. Download this artifact and open the h
 have changed.
 
 ### Troubleshooting the tests
+
 It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 ## Creating performance benchmarks with BenchmarkDotNet
@@ -112,6 +114,7 @@ It is possible to enable the chromium head using the configuration parameters in
 Performance is measured using [BenchmarkDotNet](https://benchmarkdotnet.org/), in the suite located in the `SamplesApp.Benchmarks` shared project.
 
 A few points to consider when adding benchmarks:
-- Make a folder using the namespace separated by `_`
-- Avoid putting a large number of benchmarks in a single class. Those tests are run synchronously under
+
+* Make a folder using the namespace separated by `_`
+* Avoid putting a large number of benchmarks in a single class. Those tests are run synchronously under
 WebAssembly, and this will allow for progress reporting to be visible.

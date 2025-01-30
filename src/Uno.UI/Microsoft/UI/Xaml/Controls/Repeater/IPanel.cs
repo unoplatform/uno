@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	/// <summary>
 	/// This interface allows use to replicate the "DeriveFromPanelHelper_base" of WinUI (cf. Remarks)

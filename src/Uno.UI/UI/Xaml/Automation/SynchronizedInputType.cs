@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Provides a of set constants that identify, as used by the ISynchronizedInputProvider Microsoft UI Automation interface.

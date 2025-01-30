@@ -21,8 +21,8 @@ namespace Uno.ReferenceImplComparer
 			Console.WriteLine($"Validating package {args[0]}");
 
 			var referenceTargetFrameworks = new[] {
-				"net7.0",
-				"net8.0"
+				"net8.0",
+				"net9.0"
 			};
 
 			foreach (var targetFramework in referenceTargetFrameworks)
@@ -85,9 +85,9 @@ namespace Uno.ReferenceImplComparer
 
 			foreach (var referenceType in referenceTypes.Where(IsAccessible))
 			{
-				if (referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
+				if (referenceType.FullName == "Microsoft.UI.Xaml.Documents.TextElement")
 				{
-					Console.WriteLine("Skipping Windows.UI.Xaml.Documents.TextElement comparison");
+					Console.WriteLine("Skipping Microsoft.UI.Xaml.Documents.TextElement comparison");
 					continue;
 				}
 

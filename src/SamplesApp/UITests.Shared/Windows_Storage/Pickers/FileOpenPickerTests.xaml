@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:storage="using:Windows.Storage"
 	xmlns:wasm="http://uno.ui/wasm"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -46,11 +47,22 @@
                 HorizontalAlignment="Stretch"
                 Click="{x:Bind ViewModel.PickSingleFile}"
                 Content="Pick single file" />
-            <Button
-                Padding="12"
-                HorizontalAlignment="Stretch"
-                Click="{x:Bind ViewModel.PickMultipleFiles}"
-                Content="Pick multiple files" />
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<controls:NumberBox 
+					Header="Max files"
+					Value="{x:Bind ViewModel.MaxFiles, Mode=TwoWay}" />
+				<Button
+					Padding="12"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					Click="{x:Bind ViewModel.PickMultipleFiles}"
+					Content="Pick multiple files" />					
+			</Grid>
 
             <ListView Height="120" ItemsSource="{x:Bind ViewModel.PickedFiles, Mode=OneWay}">
                 <ListView.ItemTemplate>

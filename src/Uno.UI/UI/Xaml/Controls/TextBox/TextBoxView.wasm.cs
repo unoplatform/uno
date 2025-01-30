@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		private bool _browserContextMenuEnabled = true;
 		private bool _isReadOnly;
@@ -44,12 +45,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				Brush.SetupBrushChanged(e.OldValue as Brush, scb, ref _foregroundChanged, () => SetForeground(scb));
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(scb, ref _foregroundChanged, () => SetForeground(scb));
 			}
 		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
-			: base(isMultiline ? "textarea" : "input")
+			// We need to use textarea regardless of isMultiline
+			// because "input" native HTML element can't have its text top-aligned.
+			// For PasswordBox, it must be input. So, for now we can't match WinUI and it will
+			// remain center-aligned instead of top-aligned.
+			: base(textBox is PasswordBox ? "input" : "textarea")
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
@@ -86,6 +92,11 @@ namespace Windows.UI.Xaml.Controls
 
 			HtmlInput += OnInput;
 			HtmlPaste += OnPaste;
+
+			if (!IsMultiline)
+			{
+				WindowManagerInterop.SetSingleLine(this);
+			}
 
 			SetTextNative(_textBox.Text);
 		}

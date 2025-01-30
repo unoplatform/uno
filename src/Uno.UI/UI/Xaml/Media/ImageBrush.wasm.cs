@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Disposables;
 using System.Threading.Tasks;
 using System.Globalization;
@@ -11,7 +11,7 @@ using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageBrush
 	{
@@ -77,8 +77,8 @@ namespace Windows.UI.Xaml.Media
 				this.RegisterDisposablePropertyChangedCallback(AlignmentYProperty, OnAlignmentChanged);
 
 
-			target.LayoutUpdated += OnTargetLayoutUpdated;
-			var layoutUpdatedSubscription = Disposable.Create(() => target.LayoutUpdated -= OnTargetLayoutUpdated);
+			target.SizeChanged += OnTargetSizeChanged;
+			var layoutUpdatedSubscription = Disposable.Create(() => target.SizeChanged -= OnTargetSizeChanged);
 
 			void OnImageSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
 			{
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Media
 				preserveAspectRatio = SetPreserveAspectRatio();
 			}
 
-			void OnTargetLayoutUpdated(object sender, object e)
+			void OnTargetSizeChanged(object sender, SizeChangedEventArgs e)
 			{
 				preserveAspectRatio = SetPreserveAspectRatio();
 			}

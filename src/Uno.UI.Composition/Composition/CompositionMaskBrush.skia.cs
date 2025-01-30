@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionMaskBrush : CompositionBrush, IOnlineBrush
 	{
 		private SKPaint? _sourcePaint;
 		private SKPaint? _maskPaint;
-		private SKPaint? _resultPaint;
 
 		bool IOnlineBrush.IsOnline
 		{
@@ -34,12 +33,15 @@ namespace Windows.UI.Composition
 			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
 		}
 
-		void IOnlineBrush.Draw(in DrawingSession session, SKRect bounds)
+		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
-			_resultPaint ??= new SKPaint() { IsAntialias = true };
+			using (SkiaHelper.GetTempSKPaint(out var resultPaint))
+			{
+				resultPaint.IsAntialias = true;
 
-			UpdatePaint(_resultPaint, bounds);
-			session.Surface?.Canvas.DrawRect(bounds, _resultPaint);
+				UpdatePaint(resultPaint, bounds);
+				session.Canvas?.DrawRect(bounds, resultPaint);
+			}
 		}
 
 		private protected override void DisposeInternal()
@@ -48,7 +50,6 @@ namespace Windows.UI.Composition
 
 			_sourcePaint?.Dispose();
 			_maskPaint?.Dispose();
-			_resultPaint?.Dispose();
 		}
 	}
 }

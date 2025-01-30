@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -19,7 +19,7 @@ using Uno.Helpers;
 using System.Diagnostics;
 
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI
@@ -32,7 +32,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
+#if HAS_SKOTTIE || __WASM__
 		private static HttpClient? _httpClient;
 #endif
 
@@ -73,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if HAS_UNO_WINUI
 		[NotImplemented]
-		public IAnimatedVisual TryCreateAnimatedVisual(Windows.UI.Composition.Compositor compositor, out object diagnostics)
+		public IAnimatedVisual TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor compositor, out object diagnostics)
 		{
 			throw new NotImplementedException();
 		}
@@ -97,7 +97,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || (__MACOS__ && !NET6_0_OR_GREATER) || HAS_SKOTTIE)
+#if !(__WASM__ || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
 			=> ThrowNotImplementedOnNonTestPlatforms();
 
@@ -196,7 +196,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			});
 		}
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE
+#if HAS_SKOTTIE
 		private void SetIsPlaying(bool isPlaying) => _player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
 #endif
 
@@ -247,7 +247,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		partial void InnerMeasure(Size size);
 
-#if ((__ANDROID__ || __IOS__ || __MACOS__) && !NET6_0_OR_GREATER) || HAS_SKOTTIE || __WASM__
+#if HAS_SKOTTIE || __WASM__
 		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
 		{
 			if (TryLoadEmbeddedJson(uri, ct) is { } json)

@@ -2,10 +2,10 @@
 using System.Globalization;
 using System.Threading;
 using System.Runtime.InteropServices.JavaScript;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Foundation;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Disposables;
@@ -29,6 +29,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private bool _domLoaded;
 
 		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
+
+		~LottieVisualSourceBase()
+		{
+			if (_initializedPlayer is { })
+			{
+				NativeMethods.Kill(_initializedPlayer.HtmlId);
+			}
+		}
 
 		async Task InnerUpdate(CancellationToken ct)
 		{
@@ -278,6 +286,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			[JSImport($"{JsType}.stop")]
 			internal static partial void Stop(nint htmlId);
+
+			[JSImport($"{JsType}.kill")]
+			internal static partial void Kill(nint Handle);
 		}
 	}
 }

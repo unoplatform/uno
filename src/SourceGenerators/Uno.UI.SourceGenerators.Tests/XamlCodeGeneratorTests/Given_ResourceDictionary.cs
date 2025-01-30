@@ -144,8 +144,8 @@ public class Given_ResourceDictionary
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -172,5 +172,17 @@ public class Given_ResourceDictionary
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Nested_With_Sibling_Ref_And_Event()
+	{
+		var test = new TestSetup(
+			xamlFileName: "ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml",
+			subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.Tests", "XamlCodeGeneratorTests", "TestCases"))
+		{
+		};
+
+		await Verify.AssertXamlGenerator(test);
 	}
 }

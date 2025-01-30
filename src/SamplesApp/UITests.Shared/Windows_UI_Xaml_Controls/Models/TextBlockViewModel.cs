@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		private string _alternatingSmallText;
 		private TimeSpan _randomTimeSpan = TimeSpan.FromMinutes(123);
 
-		public TextBlockViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TextBlockViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ObserveAlternatingLongText();
 		}

@@ -47,7 +47,15 @@ namespace Uno.Analyzers
 					return;
 				}
 
-				context.RegisterOperationAction(c => AnalyzeOperation(c, notImplementedSymbol), OperationKind.Invocation, OperationKind.ObjectCreation, OperationKind.FieldReference, OperationKind.PropertyReference);
+				context.RegisterOperationAction(c =>
+					AnalyzeOperation(c, notImplementedSymbol)
+					, OperationKind.Invocation
+					, OperationKind.ObjectCreation
+					, OperationKind.FieldReference
+					, OperationKind.PropertyReference
+					, OperationKind.EventReference
+					, OperationKind.TypeOf
+					, OperationKind.MethodReference);
 			});
 		}
 
@@ -85,6 +93,9 @@ namespace Uno.Analyzers
 				IObjectCreationOperation objectCreation => objectCreation.Type,
 				IFieldReferenceOperation fieldReferenceOperation => fieldReferenceOperation.Field,
 				IPropertyReferenceOperation propertyReferenceOperation => propertyReferenceOperation.Property,
+				IEventReferenceOperation eventReferenceOperation => eventReferenceOperation.Event,
+				ITypeOfOperation typeofOperation => typeofOperation.TypeOperand,
+				IMethodReferenceOperation methodReferenceOperation => methodReferenceOperation.Method,
 				_ => throw new InvalidOperationException("This code path is unreachable.")
 			};
 

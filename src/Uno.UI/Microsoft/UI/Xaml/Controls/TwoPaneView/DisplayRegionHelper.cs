@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference DisplayRegionHelper.cpp, tag winui3/release/1.4.2
 
@@ -6,9 +6,9 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal partial class DisplayRegionHelper
 {
@@ -45,7 +45,7 @@ internal partial class DisplayRegionHelper
 			ApplicationView view = null;
 			try
 			{
-				view = ApplicationView.GetForCurrentView();
+				view = ApplicationView.GetForCurrentViewSafe();
 			}
 			catch { }
 
@@ -90,7 +90,7 @@ internal partial class DisplayRegionHelper
 			// Instead of returning the actual window, find the SimulatedWindow element
 			UIElement window = null;
 
-			if (Window.Current.Content is FrameworkElement fe)
+			if (Window.CurrentSafe.Content is FrameworkElement fe)
 			{
 				window = SharedHelpers.FindInVisualTreeByName(fe, "SimulatedWindow");
 			}
@@ -99,7 +99,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.Current.Content;
+			return Window.CurrentSafe.Content;
 		}
 	}
 
@@ -120,7 +120,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.Current.Bounds;
+			return Window.CurrentSafe.Bounds;
 		}
 	}
 

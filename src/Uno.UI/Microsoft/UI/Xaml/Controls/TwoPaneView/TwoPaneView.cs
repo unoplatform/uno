@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TwoPaneView.properties.cpp, tag winui3/release/1.4.2
 
@@ -6,18 +6,22 @@ using System;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a container with two views that size and position content
 /// in the available space, either side-by-side or top-bottom.
 /// </summary>
-public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
+public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 {
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	private bool _subscribedToXamlRoot;
+#endif
+
 	private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
 	private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
 
@@ -46,13 +50,38 @@ public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
 		};
 	}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	private protected override void OnLoaded()
+	{
+		if (!_subscribedToXamlRoot)
+		{
+			var xamlRoot = XamlRoot;
+			xamlRoot!.Changed += OnXamlRootChanged;
+			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+			_subscribedToXamlRoot = true;
+		}
+
+		base.OnLoaded();
+	}
+#endif
+
 	protected override void OnApplyTemplate()
 	{
 		m_loaded = true;
 
 		var xamlRoot = XamlRoot;
+		// Uno-specific workaround: On some platforms (mainly mobile), we can get here with incorrectly null xamlRoot.
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		_subscribedToXamlRoot = xamlRoot is not null;
+		if (_subscribedToXamlRoot)
+		{
+			xamlRoot!.Changed += OnXamlRootChanged;
+			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+		}
+#else
 		xamlRoot!.Changed += OnXamlRootChanged;
 		m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot!.Changed -= OnXamlRootChanged);
+#endif
 
 		SetScrollViewerProperties(c_pane1ScrollViewerName, m_pane1LoadedRevoker);
 		SetScrollViewerProperties(c_pane2ScrollViewerName, m_pane2LoadedRevoker);

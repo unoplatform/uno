@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class SineEase : EasingFunctionBase
 	{

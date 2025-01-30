@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Světle modrá</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Ledově modrá</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>dokument</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>tlačítko rozdělení</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>okno</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>podokno</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>záhlaví</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>položka záhlaví</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>tabulka</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>záhlaví</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>oddělovač</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>sémantické přiblížení</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>přepínač</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>položka</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>položky (%1)</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>zrušit přetahování položky %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Další</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Předchozí</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Přehrát</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Pozastavit</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Uplynulý čas</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Zbývající čas</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Průběh ukládání do vyrovnávací paměti</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Posunout</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Ztlumit</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Hlasitost</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Den </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Měsíc </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Rok </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Hodina </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Minuta </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 min.</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 min.</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 s</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 s</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Velké zmenšení svisle</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Malé zmenšení svisle</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Vyjmout</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>EDITOR IME VYPNUTÝ</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>Bílá</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Světle šedá</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Šedá</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Šedá</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Černá</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korálová červená</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Růžová</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Světle oranžová</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Šedobéžová</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Bledě žlutá</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Světle zelená</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limetková</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Azurová</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Nebeská modrá</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Světle tyrkysová</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bledě modrá</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Světle modrá</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ledově modrá</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Brčálová</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Levandulová</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Růžová</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Červená</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranžová</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Červenohnědá</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zlatá</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Žlutá</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivově zelená</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zelená</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Jasně zelená</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Šedozelená</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Tyrkysová</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Modrá</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Modrošedá</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigově modrá</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Nachová</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tmavě červená</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tmavě žlutá</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tmavě zelená</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tmavě šedozelená</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tmavě modrá</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tmavě nachová</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Švestková</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zavřít</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

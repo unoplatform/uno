@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class VariableSizedWrapGrid
 {
@@ -104,7 +104,7 @@ partial class VariableSizedWrapGrid
 			typeof(VariableSizedWrapGrid),
 			new FrameworkPropertyMetadata(-1));
 
-	internal override Orientation? InternalOrientation => Orientation;
+	internal override Orientation? PhysicalOrientation => Orientation;
 
 	/// <summary>
 	/// Gets or sets the direction in which child elements are arranged.

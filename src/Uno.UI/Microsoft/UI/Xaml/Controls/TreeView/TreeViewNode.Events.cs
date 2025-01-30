@@ -4,9 +4,9 @@
 
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class TreeViewNode
 {

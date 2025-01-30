@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Hellblo</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Äisblo</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>Dokument</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>gespléckte Knäppchen</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>Fënster</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>Beräich</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>Kappzeil</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>Kappzeilelement</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>Tabell</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>Titelläischt</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>Trennzeechen</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>semantesche Zoom</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>Ëmschalttast</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>Element</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 Elementer</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>Eriwwerzéie vu(n) %1 ofbriechen</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Weider</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Zeréck</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Ofspillen</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Op Paus stellen</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Vergaangen Zäit</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Iwwereg Zäit</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Zwëschespäicherfortschrëtt</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Sichen</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Toun aus</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Lautstäerkt</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Feeler</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Dag </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Mount </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Joer </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Stonn </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Minutt </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 Minutt</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 Minutten</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 Sekonn</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 Sekonnen</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Vertikal grouss Verklengerung</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Vertikal kleng Verklengerung</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Schneiden</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME AUS</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>Wäiss</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Hellgro</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Gro</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Donkelgro</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Schwaarz</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korallrout</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Hellorange</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Hellbrong</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Hellgiel</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Hellgréng</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limette</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Waasserblo</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himmelblo</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Hellturquoise</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Pastellblo</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Hellblo</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Äisblo</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Ëmmergréng</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavendel</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rout</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brong</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gëllen</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Giel</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivgréng</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Gréng</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Knallgréng</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blogréng</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turquoise</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blo</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blogro</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Mof</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Donkelrout</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Donkelgiel</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Donkelgréng</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Donkelblogréng</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Donkelblo</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Donkelmof</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Promm</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zoumaachen</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

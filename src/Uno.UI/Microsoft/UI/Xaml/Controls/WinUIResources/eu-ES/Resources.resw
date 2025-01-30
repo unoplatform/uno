@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Urdin argia</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Izotz-urdina</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>dokumentua</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>zatitze-botoia</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>leihoa</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>panela</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>goiburua</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>goiburuko elementua</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>taula</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>titulu-barra</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>bereizlea</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>zoom semantikoa</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>txandakatze-etengailua</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>elementua</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 elementu</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>utzi %1 arrastatzeko ekintza</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Hurrengoa</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Aurrekoa</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Erreproduzitu</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Pausatu</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Igarotako denbora</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Geratzen den denbora</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Buferreratzearen garapena</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Bilatu</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Isilarazi</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Bolumena</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Errorea</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Eguna </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Hilabetea </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Urtea </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Ordua </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Minutua </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 minutu</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 minutu</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 segundo</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 segundo</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Gutxitze handi bertikala</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Gutxitze txiki bertikala</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Ebaki</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME DESAKTIBATUTA</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>Zuria</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gris argia</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grisa</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Gris iluna</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Beltza</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korala</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Arrosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Laranja argia</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Nabarra</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Hori argia</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Berde argia</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lima</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Berde-urdina</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Zeru-urdina</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turkesa argia</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Urdin hitsa</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Urdin argia</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Izotz-urdina</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Inkonte-belarra</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Izpilikua</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Arrosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Gorria</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Laranja</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Marroia</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Urrea</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Horia</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Oliba-berdea</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Berdea</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Berde bizia</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Urdin berdexka</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkesa</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Urdina</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Urdin-grisa</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigoa</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Morea</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Gorri iluna</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Hori iluna</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Berde iluna</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Urdin berdexka iluna</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Urdin iluna</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>More iluna</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Aran-kolorea</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Itxi</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

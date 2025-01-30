@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using Java.Interop;
 using Uno.UI;
+using Uno.UI.Composition;
 
 namespace SamplesApp.Droid
 {
@@ -30,7 +31,7 @@ namespace SamplesApp.Droid
 			Android.Content.Intent.CategoryBrowsable,
 		},
 		DataScheme = "uno-samples-test")]
-	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
+	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
 
@@ -49,7 +50,7 @@ namespace SamplesApp.Droid
 		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
-			var rootView = Windows.UI.Xaml.Window.Current.MainContent as View;
+			var rootView = ((ICompositionRoot)this).Content;
 
 			var bitmap = Android.Graphics.Bitmap.CreateBitmap(rootView.Width, rootView.Height, Android.Graphics.Bitmap.Config.Argb8888);
 			var locationOfViewInWindow = new int[2];

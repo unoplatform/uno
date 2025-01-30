@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using DirectUI;
 
 
@@ -17,7 +17,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ScrollBar
 	{
@@ -133,7 +133,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DefaultStyleKey = typeof(ScrollBar);
 
 			SizeChanged += OnSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			LayoutUpdated += OnLayoutUpdated;
+#endif
 			Loaded += ReAttachEvents;
 			Unloaded += DetachEvents;
 		}
@@ -841,6 +843,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			m_dragValue = Value;
 		}
 
+		// NOTE: Currently only used internally for Automation
+		internal UIElement ElementHorizontalTemplate => m_tpElementHorizontalTemplate;
+
+		internal UIElement ElementVerticalTemplate => m_tpElementVerticalTemplate;
+
 		// Whenever the thumb gets dragged, we handle the event through this function to
 		// update the current value depending upon the thumb drag delta.
 		private void OnThumbDragDelta(
@@ -909,12 +916,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static void OnLayoutUpdated(
 			object pSender,
 			object pArgs)
 		{
 			(pSender as ScrollBar)?.UpdateTrackLayout();
 		}
+#endif
 
 		// Called whenever the SmallDecrement button is clicked.
 		void SmallDecrement(

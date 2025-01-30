@@ -7,9 +7,9 @@ using CoreGraphics;
 using UIKit;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -178,7 +178,8 @@ namespace Uno.UI.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			// Giving it full available space so that its child can properly be measured and positioned after
-			availableSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			var height = availableSize.Height > 0 ? availableSize.Height : double.PositiveInfinity;
+			availableSize = new Size(double.PositiveInfinity, height);
 
 			// The frame needs to be explicitly set in order to render the CustomView of the UIBarButtonItem.
 			var childSize = base.MeasureOverride(availableSize);

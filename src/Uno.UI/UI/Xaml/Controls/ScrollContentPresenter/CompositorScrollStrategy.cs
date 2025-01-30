@@ -1,9 +1,9 @@
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 #if __SKIA__
 #nullable enable
 using System.Numerics;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class CompositorScrollStrategy : IScrollStrategy
 	{
@@ -13,15 +13,7 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		public void Initialize(ScrollContentPresenter presenter)
-			=> presenter.LayoutUpdated += ScrollContentPresenter_LayoutUpdated;
-
-		private static void ScrollContentPresenter_LayoutUpdated(object? sender, object e)
-		{
-			if (sender is ScrollContentPresenter presenter)
-			{
-				presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, (float)presenter.RenderSize.Width, (float)presenter.RenderSize.Height);
-			}
-		}
+			=> presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
 
 		public void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, bool disableAnimation)
 		{

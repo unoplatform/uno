@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml.Markup;
-#if NETFX_CORE
+using Microsoft.UI.Xaml.Markup;
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -110,7 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
-#if !NETFX_CORE // This is an Uno implementation detail
+#if !WINAPPSDK // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
 
@@ -239,6 +239,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ContentControl cc = null;
 			await WindowHelper.WaitFor(() => (cc = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			// Not required on WinUI.
+			// In Uno, ContainerFromItem is available very early, making the above WaitFor completes synchronously.
+			// In WinUI, ContainerFromItem is available more late, so WaitFor completes asynchronously allowing for a next layout pass to happen.
+			// This should be okay for now.
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(4, CounterGrid.CreationCount);
 			Assert.AreEqual(4, CounterGrid2.CreationCount);

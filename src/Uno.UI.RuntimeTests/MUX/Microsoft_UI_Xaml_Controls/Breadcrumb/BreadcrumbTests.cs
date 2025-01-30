@@ -6,17 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -25,11 +26,10 @@ using WEX.Logging.Interop;
 #else
 #endif
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				// Set a custom ItemTemplate which is already a BreadcrumbBarItem. No wrapping should be performed.
 				var itemTemplate2 = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                            xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                             <controls:BreadcrumbBarItem Foreground='Blue'>
                               <TextBlock Text = '{Binding}'/>
                             </controls:BreadcrumbBarItem>
@@ -204,8 +204,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft.UI.Xaml.Controls'
-                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
+                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>
@@ -261,8 +261,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft.UI.Xaml.Controls'
-                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
+                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
@@ -329,10 +329,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 
@@ -391,7 +393,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
@@ -411,10 +413,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 
@@ -429,8 +433,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft.UI.Xaml.Controls'
-                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
+                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>

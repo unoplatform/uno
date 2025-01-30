@@ -8,9 +8,10 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Resources;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI
 {
@@ -29,7 +30,10 @@ namespace Uno.UI
 			=> _instance ??= new ResourceResolverSingleton();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ResolveResourceStatic(object key, Type type, object context)
+		public object ResolveResourceStatic(
+			object key,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			object context)
 			=> ResourceResolver.ResolveResourceStatic(key, type, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

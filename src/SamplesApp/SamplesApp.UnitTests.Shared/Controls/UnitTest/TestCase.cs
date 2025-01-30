@@ -11,7 +11,7 @@ namespace Uno.UI.Samples.Tests;
 
 internal record TestCase
 {
-	public object[] Parameters { get; init; } = Array.Empty<object>();
+	public object?[] Parameters { get; init; } = Array.Empty<object>();
 
 	public PointerDeviceType? Pointer { get; init; }
 

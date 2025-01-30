@@ -11,7 +11,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	internal class GridView_Vertical_MaxItemWidthViewModel : ViewModelBase
 	{
-		public GridView_Vertical_MaxItemWidthViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridView_Vertical_MaxItemWidthViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

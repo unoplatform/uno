@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 	</ItemGroup>
@@ -39,6 +40,7 @@
 	</ItemGroup>
 
 	<Import Project="UnitTestsImport.props" />
+	<Import Project="UITestsImport.props" />
 
 	<ItemGroup>
 		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
@@ -76,6 +78,14 @@
 	<ItemGroup>
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
+
+	<!-- Multiwindowing is only supported on Uno.WinUI -->
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
+	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

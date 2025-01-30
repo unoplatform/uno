@@ -1,6 +1,6 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Extensibility;
 
 #if HAS_UNO_WINUI

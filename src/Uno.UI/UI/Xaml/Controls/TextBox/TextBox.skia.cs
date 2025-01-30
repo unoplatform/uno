@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Windows.UI;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.UI.Helpers.WinUI;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -17,35 +24,46 @@ using Microsoft.UI.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
+
+using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
 public partial class TextBox
 {
-	private enum ContextMenuItem
-	{
-		Cut,
-		Copy,
-		Paste,
-		Undo,
-		Redo,
-		SelectAll
-	}
+	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	// made up value, but feels close enough.
-	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
-
+	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
+	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
-	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
-	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
-	private int _usedRects;
-	private (int start, int length) _selection;
-	private bool _selectionEndsAtTheStart;
-	private bool _showCaret = true;
+
+	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
+
+
+	private SelectionDetails _selection;
+	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
+	private CaretDisplayMode _caretMode = CaretDisplayMode.ThumblessCaretHidden;
+
+	private bool _inSelectInternal;
+
 	private (int start, int length)? _pendingSelection;
-	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
-	private bool _isPressed;
-	private (int start, int length, bool tripleTap)? _multiTapChunk;
+
+	private bool _clearHistoryOnTextChanged = true;
+
+	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+
+	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
+	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
+	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
+	private bool _currentlyTyping;
+	private bool _suppressCurrentlyTyping;
+	private SelectionDetails _selectionWhenTypingStarted;
+	private string _textWhenTypingStarted;
+
+	private int _historyIndex;
+	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
+
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
 		Interval = TimeSpan.FromSeconds(0.5)
@@ -57,6 +75,85 @@ public partial class TextBox
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	private CaretDisplayMode CaretMode
+	{
+		get => _caretMode;
+		set
+		{
+			if (_caretMode != value)
+			{
+				_caretMode = value;
+				UpdateDisplaySelection();
+				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				if (value is CaretDisplayMode.ThumblessCaretShowing)
+				{
+					_timer.Start(); // restart
+				}
+				else if (value is CaretDisplayMode.CaretWithThumbsBothEndsShowing
+						 or CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
+				{
+					_timer.Stop();
+				}
+			}
+		}
+	}
+
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
+
+	public bool CanUndo
+	{
+		get => GetCanUndoValue();
+		private set => SetCanUndoValue(value);
+	}
+
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
+
+	public bool CanRedo
+	{
+		get => GetCanRedoValue();
+		private set => SetCanRedoValue(value);
+	}
+
+	private void UpdateCanUndoRedo()
+	{
+		CanUndo = _historyIndex > 0;
+		CanRedo = _historyIndex < _history.Count - 1;
+	}
+
+	private void TrySetCurrentlyTyping(bool newValue)
+	{
+		if (newValue == _currentlyTyping || _suppressCurrentlyTyping)
+		{
+			return;
+		}
+
+		if (newValue)
+		{
+			_textWhenTypingStarted = Text;
+			_selectionWhenTypingStarted = (
+				_selection.start,
+				_selection.length,
+				_selection.selectionEndsAtTheStart);
+		}
+		else
+		{
+			_historyIndex++;
+			_history.RemoveAllAt(_historyIndex);
+			_history.Add(new HistoryRecord(
+				new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
+				_selectionWhenTypingStarted.start,
+				_selectionWhenTypingStarted.length,
+				_selectionWhenTypingStarted.selectionEndsAtTheStart));
+			UpdateCanUndoRedo();
+		}
+
+		_currentlyTyping = newValue;
+	}
+
+	partial void OnUnloadedPartial() => _timer.Stop();
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
@@ -97,77 +194,81 @@ public partial class TextBox
 		if (ContentElement != null)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			if (!IsSkiaTextBox)
+			if (ContentElement.Content != displayBlock)
 			{
-				if (ContentElement.Content != displayBlock)
-				{
-					ContentElement.Content = displayBlock;
-				}
-			}
-			else
-			{
-				if (ContentElement.Content is not Grid { Name: "TextBoxViewGrid" })
-				{
-					var canvas = new Canvas();
-					var grid = new Grid
-					{
-						Name = "TextBoxViewGrid",
-						Children =
-						{
-							canvas,
-							displayBlock
-						},
-						RowDefinitions =
-						{
-							new RowDefinition { Height = GridLengthHelper.OneStar },
-							new RowDefinition { Height = GridLengthHelper.OneStar }
-						}
-					};
+				ContentElement.Content = displayBlock;
 
-					Grid.SetRow(canvas, 0);
+				if (_isSkiaTextBox)
+				{
+					_selectionStartThumbfulCaret = new();
+					_selectionEndThumbfulCaret = new();
+
+					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
+					{
+						caret.PointerPressed += CaretOnPointerPressed;
+						caret.PointerReleased += CaretOnPointerReleased;
+						caret.PointerMoved += CaretOnPointerMoved;
+						caret.PointerCanceled += ClearCaretPointerState;
+						caret.PointerCaptureLost += ClearCaretPointerState;
+					}
 
 					var inlines = displayBlock.Inlines;
-					inlines.DrawingStarted += () =>
-					{
-						canvas.Children.Clear();
-						_usedRects = 0;
-					};
+
+					var startThumbCaretVisible = false;
+					var endThumbCaretVisible = false;
 
 					inlines.DrawingFinished += () =>
 					{
-						_cachedRects.RemoveRange(_usedRects, _cachedRects.Count - _usedRects);
-					};
-
-					inlines.SelectionFound += rect =>
-					{
-						if (_cachedRects.Count <= _usedRects)
+						if (!startThumbCaretVisible)
 						{
-							_cachedRects.Add(new Rectangle());
+							_selectionStartThumbfulCaret.Hide();
 						}
-						var rectangle = _cachedRects[_usedRects++];
-
-						rectangle.Fill = SelectionHighlightColor;
-						rectangle.Width = Math.Ceiling(rect.Width);
-						rectangle.Height = Math.Ceiling(rect.Height);
-						rectangle.SetValue(Canvas.LeftProperty, rect.Left);
-						rectangle.SetValue(Canvas.TopProperty, rect.Top);
-
-						canvas.Children.Add(rectangle);
-					};
-
-					inlines.CaretFound += rect =>
-					{
-						if (_showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0)
+						if (!endThumbCaretVisible)
 						{
-							_caretRect.Width = Math.Ceiling(rect.Width);
-							_caretRect.Height = Math.Ceiling(rect.Height);
-							_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
-							_caretRect.SetValue(Canvas.TopProperty, rect.Top);
-							canvas.Children.Add(_caretRect);
+							_selectionEndThumbfulCaret.Hide();
 						}
+						startThumbCaretVisible = false;
+						endThumbCaretVisible = false;
 					};
 
-					ContentElement.Content = grid;
+					inlines.CaretFound += args =>
+					{
+						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
+							CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+						{
+							var caretRect = args.rect;
+							var compositor = _visual.Compositor;
+							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
+							using (SkiaHelper.GetTempSKPaint(out var caretPaint))
+							{
+								brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+								args.canvas.DrawRect(
+									new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
+										(float)caretRect.Bottom), caretPaint);
+							}
+						}
+
+						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
+							CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+						{
+							var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
+							var left = args.rect.GetMidX() - caret.Width / 2;
+							caret.Height = args.rect.Height + 16;
+							var transform = displayBlock.TransformToVisual(null);
+							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
+							{
+								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)));
+								if (args.endCaret)
+								{
+									endThumbCaretVisible = true;
+								}
+								else
+								{
+									startThumbCaretVisible = true;
+								}
+							}
+						}
+					};
 				}
 			}
 
@@ -177,7 +278,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState)
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.OnFocusStateChanged(focusState);
 		}
@@ -185,13 +286,12 @@ public partial class TextBox
 		{
 			if (focusState != FocusState.Unfocused)
 			{
-				_showCaret = true;
-				_timer.Start();
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 			}
 			else
 			{
-				_showCaret = false;
-				_timer.Stop();
+				TrySetCurrentlyTyping(false);
+				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
 			UpdateDisplaySelection();
 		}
@@ -199,19 +299,40 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
-		_selectionEndsAtTheStart = false;
-		_selection = (start, length);
-		if (!IsSkiaTextBox)
+		_pendingSelection = null;
+		TrySetCurrentlyTyping(false);
+
+		if (!_inSelectInternal)
+		{
+			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
+			_selection.selectionEndsAtTheStart = false;
+			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
+		}
+
+		_selection = (start, length, _selection.selectionEndsAtTheStart);
+
+		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.Select(start, length);
 		}
 		else
 		{
-			_timer.Stop();
-			_showCaret = true;
-			_timer.Start();
-			UpdateDisplaySelection();
+			if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+			{
+				// It doesn't make sense to have 2 caret ends when there's no selection.
+				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			}
+			else if (CaretMode is CaretDisplayMode.ThumblessCaretHidden)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
+			{
+				_timer.Start(); // restart
+			}
+
 			UpdateScrolling();
+			UpdateDisplaySelection();
 		}
 	}
 
@@ -219,42 +340,63 @@ public partial class TextBox
 
 	public int SelectionStart
 	{
-		get => IsSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
+		get => _isSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
 		set => Select(start: value, length: SelectionLength);
 	}
 
 	public int SelectionLength
 	{
-		get => IsSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
+		get => _isSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
 		set => Select(SelectionStart, value);
 	}
 
-	internal void UpdateDisplaySelection()
+	private void UpdateDisplaySelection()
 	{
-		if (IsSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
-			var startLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart).GetCenter().Y, true)?.index ?? 0;
-			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
-			inlines.Selection = new InlineCollection.SelectionDetails(startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
-			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
-			TextBoxView?.DisplayBlock.InvalidateInlines(true);
+			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
+			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			inlines.RenderSelection = isFocused;
+			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			inlines.RenderCaret = isFocused && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly;
 		}
 	}
 
-	private void UpdateScrolling()
+	private void UpdateScrolling() => UpdateScrolling(true);
+
+	/// <summary>
+	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
+	/// </summary>
+	/// <remarks>
+	/// By default, only the selection end moves, while the selection start stays fixed. This is not the
+	/// case when dragging the caret thumb, in which case both ends can move. This case requires an
+	/// explicit call to this method with <see cref="putSelectionEndInVisibleViewport"/> = false.
+	/// </remarks>>
+	private void UpdateScrolling(bool putSelectionEndInVisibleViewport)
 	{
-		if (IsSkiaTextBox && _contentElement is ScrollViewer sv)
+		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
-			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
+			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
+			{
+				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
+				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
+				DispatcherQueue.TryEnqueue(UpdateScrolling);
+			}
 
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
-			var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionEnd);
+			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
+			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
 
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(rect.Left - sv.ViewportWidth + rect.Height * InlineCollection.CaretThicknessAsRatioOfLineHeight);
-			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
+			var caretRect = DisplayBlockInlines.GetRectForIndex(index) with { Width = InlineCollection.CaretThickness };
+
+			// Because the caret is only a single-pixel wide, and because screens can't draw in fractions of a pixel,
+			// we need to add Math.Ceiling to ensure that the caret is (fully) included in the visible viewport. This
+			// Math.Ceiling sometimes horizontal overscrolling, but it's more acceptable than sometimes not showing the caret.
+			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
+
+			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
@@ -262,7 +404,7 @@ public partial class TextBox
 
 	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			OnKeyDownInternal(args);
 			return;
@@ -270,22 +412,45 @@ public partial class TextBox
 
 		base.OnKeyDown(args);
 
-		// Note: On windows only keys that are "moving the cursor" are handled
-		//		 AND ** only KeyDown ** is handled (not KeyUp)
+		if (_selection.length != 0 &&
+			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
+		{
+			// On WinUI, pressing anything except arrow keys will immediately make the caret thumbless.
+			// Even shift + arrow keys will make the caret thumbless (because it's a shift _then_ an arrow key).
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		}
+
+		// Note: On windows ** only KeyDown ** is handled (not KeyUp)
 
 		// move to possibly-negative selection length format
-		var (selectionStart, selectionLength) = _selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
 
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
-		var ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				// on macOS start of document is `Command` and `Up`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
 				break;
 			case VirtualKey.Down:
-				KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				// on macOS end of document is `Command` and `Down`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
 				break;
 			case VirtualKey.Left:
 				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
@@ -307,27 +472,52 @@ public partial class TextBox
 				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
-				args.Handled = true;
-				selectionStart = 0;
-				selectionLength = text.Length;
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					TrySetCurrentlyTyping(false);
+					selectionStart = 0;
+					selectionLength = text.Length;
+				}
 				break;
+			case VirtualKey.Z when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Undo();
+				}
+				return;
+			case VirtualKey.Y when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+					Redo();
+				}
+				return;
 			case VirtualKey.X when ctrl:
-				args.Handled = true;
 				CutSelectionToClipboard();
 				selectionLength = 0;
 				text = Text;
 				break;
 			case VirtualKey.V when ctrl:
-				args.Handled = true;
+			case VirtualKey.Insert when shift:
 				PasteFromClipboard(); // async so doesn't actually do anything right now
 				break;
 			case VirtualKey.C when ctrl:
-				args.Handled = true;
+			case VirtualKey.Insert when ctrl:
 				CopySelectionToClipboard();
 				break;
-			default:
-				if (!IsReadOnly && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+			case VirtualKey.Escape:
+				if (HasPointerCapture)
 				{
+					args.Handled = true;
+					ReleasePointerCaptures();
+				}
+				break;
+			default:
+				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				{
+					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
@@ -341,20 +531,44 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
-		if (text == Text)
-		{
-			SelectInternal(selectionStart, selectionLength);
-		}
-		else
+		var caretXOffset = _caretXOffset;
+
+		_suppressCurrentlyTyping = true;
+		_clearHistoryOnTextChanged = false;
+		if (!HasPointerCapture)
 		{
 			_pendingSelection = (selectionStart, selectionLength);
-			Text = text;
+		}
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
+		_suppressCurrentlyTyping = false;
+
+		// don't change the caret offset when moving up and down
+		if (args.Key is VirtualKey.Up or VirtualKey.Down)
+		{
+			// this condition is accurate in the case of hitting Down on the last line
+			// or up on the first line. On WinUI, the caret offset won't change.
+			_caretXOffset = caretXOffset;
 		}
 	}
+
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
+		if (HasPointerCapture)
+		{
+			return;
+		}
 		if (selectionLength != 0)
 		{
+			TrySetCurrentlyTyping(false);
+			TrySetCurrentlyTyping(true);
+
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
 			text = text[..start] + text[end..];
@@ -363,18 +577,45 @@ public partial class TextBox
 		}
 		else if (selectionStart != 0)
 		{
+			if (ctrl)
+			{
+				// ctrl always ends the previous typing run
+				TrySetCurrentlyTyping(false);
+			}
+			else
+			{
+				// idempotent call to make sure we're starting a new typing run if we're not in one already
+				TrySetCurrentlyTyping(true);
+			}
+
+			var oldText = text;
 			var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
 			text = text[..index] + text[selectionStart..];
 			selectionStart = index;
+
+			if (ctrl)
+			{
+				// typing after ctrl starts a new run, and not a part of the ctrl-backspace run
+				CommitAction(new ReplaceAction(oldText, text, selectionStart));
+			}
 		}
 	}
 
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
+
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -391,9 +632,18 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
+
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -409,6 +659,15 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
+
 		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
 		{
 			return;
@@ -446,6 +705,22 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is:
+		// * `option` + `right` that moves to the next word
+		// * `shift` + `option` + `right` that select the next word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
 		if (!moveOutRight)
@@ -492,6 +767,14 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
@@ -509,6 +792,14 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		if (Text.Length != 0)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
@@ -547,18 +838,36 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is `option` + `delete>` that removes the next word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
 
+		if (HasPointerCapture)
+		{
+			return;
+		}
+		TrySetCurrentlyTyping(false);
 		args.Handled = true;
+		var oldText = text;
 		if (selectionLength != 0)
 		{
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
 			text = text[..start] + text[end..];
+			CommitAction(new DeleteAction(oldText, text, selectionStart, selectionLength));
 			selectionLength = 0;
 			selectionStart = start;
 		}
 		else if (selectionStart != text.Length)
 		{
+			if (shift)
+			{
+				// On WinUI, shift-delete doesn't do anything if nothing is selected for some reason
+				// We still end the previous typing run
+				return;
+			}
 			int index;
 			if (ctrl)
 			{
@@ -570,6 +879,8 @@ public partial class TextBox
 				index = selectionStart + 1;
 			}
 			text = text[..selectionStart] + text[index..];
+			// On WinUI, when ctrl-delete is Undone, the deleted text actually gets selected even though initially, nothing was selected
+			CommitAction(new DeleteAction(oldText, text, selectionStart, ctrl ? index - selectionStart : 0));
 		}
 	}
 
@@ -579,169 +890,29 @@ public partial class TextBox
 	/// </summary>
 	private void SelectInternal(int selectionStart, int selectionLength)
 	{
+		_inSelectInternal = true;
+		_selection.selectionEndsAtTheStart = selectionLength < 0;
+		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		{
+			_caretXOffset = selectionLength >= 0 ?
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_selectionEndsAtTheStart = selectionLength < 0; // set here because Select clears it
-		_pendingSelection = null;
-		UpdateScrolling();
+		_inSelectInternal = false;
 	}
 
 	private void TimerOnTick(object sender, object e)
 	{
-		_showCaret = !_showCaret;
+		if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		}
+		else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		}
 		UpdateDisplaySelection();
-	}
-
-	protected override void OnPointerMoved(PointerRoutedEventArgs e)
-	{
-		base.OnPointerMoved(e);
-		e.Handled = true;
-
-		if (IsSkiaTextBox && _isPressed)
-		{
-			var displayBlock = TextBoxView.DisplayBlock;
-			var point = e.GetCurrentPoint(displayBlock);
-			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position, false);
-			if (_multiTapChunk is { } mtc)
-			{
-				(int start, int length) chunk;
-				if (mtc.tripleTap)
-				{
-					chunk = (StartOfLine(index), EndOfLine(index) + 1 - StartOfLine(index));
-				}
-				else
-				{
-					chunk = FindChunkAt(index, true);
-				}
-
-				if (chunk.start < mtc.start)
-				{
-					var start = mtc.start + mtc.length;
-					var end = chunk.start;
-					SelectInternal(start, end - start);
-				}
-				else if (chunk.start + chunk.length >= mtc.start + mtc.length)
-				{
-					var start = mtc.start;
-					var end = chunk.start + chunk.length;
-					SelectInternal(start, end - start);
-				}
-			}
-			else
-			{
-				var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
-				SelectInternal(selectionInternalStart, index - selectionInternalStart);
-			}
-		}
-	}
-
-	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
-	{
-		base.OnRightTapped(e);
-		e.Handled = true;
-
-		if (IsSkiaTextBox)
-		{
-			if (_contextMenu is null)
-			{
-				_contextMenu = new MenuFlyout();
-				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
-
-				// TODO: port localized resources from WinUI
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				// undo/redo
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
-			}
-
-			_contextMenu.Items.Clear();
-
-			if (_selection.length == 0)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				// undo/redo
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-			else
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				// undo/redo
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-
-			_contextMenu.ShowAt(this, e.GetPosition(this));
-		}
-	}
-
-	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
-	{
-		var currentId = down.PointerId;
-		var currentTs = down.Timestamp;
-		var currentPosition = down.Position;
-
-		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
-			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
-	}
-
-	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
-	{
-		if (IsSkiaTextBox
-			&& args.GetCurrentPoint(null) is var currentPoint
-			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
-		{
-			if (currentPoint.Properties.IsLeftButtonPressed
-				&& _lastPointerDown.point is { } p
-				&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
-			{
-				// multiple left presses
-
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, false);
-
-				if (_lastPointerDown.repeatedPresses == 1)
-				{
-					// triple tap
-
-					var startOfLine = StartOfLine(index);
-					Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
-					_multiTapChunk = (SelectionStart, SelectionLength, true);
-					_lastPointerDown = (currentPoint, 2);
-				}
-				else // _lastPointerDown.repeatedPresses == 0
-				{
-					// double tap
-					var chunk = FindChunkAt(index, true);
-					Select(chunk.start, chunk.length);
-					_multiTapChunk = (chunk.start, chunk.length, false);
-					_lastPointerDown = (currentPoint, 1);
-				}
-			}
-			else
-			{
-				// single click
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, true);
-				Select(index, 0);
-				_lastPointerDown = (currentPoint, 0);
-			}
-
-			_isPressed = currentPoint.Properties.IsLeftButtonPressed;
-		}
-	}
-
-	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
-	{
-		_isPressed = false;
-		_multiTapChunk = null;
-	}
-
-	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
-	{
-		base.OnDoubleTapped(args);
-		args.Handled = true;
 	}
 
 	/// <summary>
@@ -755,7 +926,7 @@ public partial class TextBox
 		}
 
 		var lines = DisplayBlockInlines.GetLineIntervals();
-		global::System.Diagnostics.Debug.Assert(lines.Count > 0);
+		global::System.Diagnostics.CI.Assert(lines.Count > 0);
 
 		var end = selectionStart + selectionLength;
 
@@ -774,9 +945,9 @@ public partial class TextBox
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// GetUpResult and GetDownResult care about the second kind of lines.
+	/// This method cares about the second kind of lines.
 	/// </summary>
-	private int GetUpResult(string text, int selectionStart, int selectionLength, bool shift)
+	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
 	{
 		if (text.Length == 0)
 		{
@@ -788,52 +959,27 @@ public partial class TextBox
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
-		if (shift && endLineIndex == 0)
+		if (up && shift && endLineIndex == 0)
 		{
 			return 0; // first line, goes to the beginning
 		}
-
-		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
-
-		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
-		if (text.Length > index - 1
-			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
+		else if (!up && shift && endLineIndex == lines.Count - 1)
 		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
+			return text.Length; // last line, goes to the end
 		}
-
-		return index;
-	}
-
-	private int GetDownResult(string text, int selectionStart, int selectionLength, bool shift)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
-
-		if (!shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		var newLineIndex = up ?
+			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
+			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
-		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
+		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -846,7 +992,7 @@ public partial class TextBox
 		return index;
 	}
 
-	private InlineCollection DisplayBlockInlines => TextBoxView.DisplayBlock.Inlines;
+	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
 
 	/// <param name="right">Where to look for a chunk to the right or left of the caret when the caret is between chunks</param>
 	private (int start, int length) FindChunkAt(int index, bool right)
@@ -956,7 +1102,7 @@ public partial class TextBox
 
 	partial void OnTextChangedPartial()
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			if (_pendingSelection is { } selection)
 			{
@@ -966,53 +1112,324 @@ public partial class TextBox
 			{
 				SelectInternal(0, 0);
 			}
+
+			if (_clearHistoryOnTextChanged)
+			{
+				ClearUndoRedoHistory();
+			}
 		}
 	}
 
-	partial void OnFocusStateChangedPartial2(FocusState focusState)
+	private string RemoveLF(string baseString)
 	{
-		if (IsSkiaTextBox)
+
+		var builder = new StringBuilder();
+		for (int i = 0; i < baseString.Length; i++)
 		{
-			// this is needed so that we UpdateScrolling after the button appears/disappears.
-			UpdateLayout();
-			// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
-			_contentElement?.InvalidateMeasure();
-			UpdateLayout();
-			UpdateScrolling();
+			var c = baseString[i];
+			if (c == '\n')
+			{
+				builder.Append('\r');
+			}
+			else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+			{
+				if (_pendingSelection is { } selection)
+				{
+					var (start, end) = (selection.start, selection.start + selection.length);
+					if (start > i)
+					{
+						start--;
+					}
+					if (end > i)
+					{
+						end--;
+					}
+					_pendingSelection = (start, end - start);
+				}
+
+				builder.Append('\r');
+				i++;
+			}
+			else
+			{
+				builder.Append(c);
+			}
 		}
+
+		baseString = builder.ToString();
+		return baseString;
 	}
 
 	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
+			if (_currentlyTyping)
+			{
+				TrySetCurrentlyTyping(false);
+			}
+			else
+			{
+				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+				// we will already get a new action from the setter, so we don't need to commit another one here.
+				CommitAction(new ReplaceAction(Text, newText, selectionStart));
+			}
+
 			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
 
 	partial void CutSelectionToClipboardPartial()
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
+			if (_currentlyTyping)
+			{
+				TrySetCurrentlyTyping(false);
+			}
+			else
+			{
+				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+				// we will already get a new action from the setter, so we don't need to commit another one here.
+				CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
+			}
 			_pendingSelection = (_selection.start, 0);
 		}
 	}
 
-	private sealed class TextBoxCommand : ICommand
+	private void EnsureHistory()
 	{
-		private readonly Action _action;
-
-		public TextBoxCommand(Action action)
+		if (_history.Count == 0)
 		{
-			_action = action;
+			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
+		}
+		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
+		UpdateCanUndoRedo();
+	}
+
+	public void ClearUndoRedoHistory()
+	{
+		TrySetCurrentlyTyping(false);
+		_history.Clear();
+		EnsureHistory();
+	}
+
+	/// <summary>
+	/// Adds a new Action at the present point in history and deletes the old "future"
+	/// </summary>
+	private void CommitAction(TextBoxAction action)
+	{
+		_historyIndex++;
+		_history.RemoveAllAt(_historyIndex);
+		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
+		UpdateCanUndoRedo();
+	}
+
+	public void Undo()
+	{
+		if (!_isSkiaTextBox)
+		{
+			return;
 		}
 
+		TrySetCurrentlyTyping(false);
+		if (_historyIndex == 0 || HasPointerCapture)
+		{
+			return;
+		}
+
+		var currentAction = _history[_historyIndex];
+		_historyIndex--;
+
+		_clearHistoryOnTextChanged = false;
+		switch (currentAction.Action)
+		{
+			case ReplaceAction r:
+				// remember that we use the possibly-negative format in _pendingSelection
+				_pendingSelection = currentAction.SelectionEndsAtTheStart ?
+					(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
+					(currentAction.SelectionStart, currentAction.SelectionLength);
+				ProcessTextInput(r.OldText);
+				break;
+			case DeleteAction d:
+				_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
+				ProcessTextInput(d.OldText);
+				break;
+			case SentinelAction:
+				break;
+			default:
+				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				break;
+		}
+		_clearHistoryOnTextChanged = true;
+		UpdateCanUndoRedo();
+	}
+
+	public void Redo()
+	{
+		if (!_isSkiaTextBox)
+		{
+			return;
+		}
+
+		if (_historyIndex == _history.Count - 1 || HasPointerCapture)
+		{
+			return;
+		}
+
+		TrySetCurrentlyTyping(false);
+
+		_historyIndex++;
+		var currentAction = _history[_historyIndex];
+
+		_clearHistoryOnTextChanged = false;
+		switch (currentAction.Action)
+		{
+			case ReplaceAction r:
+				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
+				ProcessTextInput(r.NewText);
+				break;
+			case DeleteAction d:
+				_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
+				ProcessTextInput(d.NewText);
+				break;
+			case SentinelAction:
+				break;
+			default:
+				global::System.Diagnostics.CI.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				break;
+		}
+		_clearHistoryOnTextChanged = true;
+		UpdateCanUndoRedo();
+	}
+
+	private enum CaretDisplayMode
+	{
+		ThumblessCaretHidden,
+		ThumblessCaretShowing,
+		CaretWithThumbsOnlyEndShowing,
+		CaretWithThumbsBothEndsShowing
+	}
+
+	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
+
+	private abstract record TextBoxAction;
+
+	/// <summary>
+	/// Instead of remembered what was removed and what was added in place, we just remember the initial and final states
+	/// as well as where the caret will be if we Redo. This is used by typing, paste, etc.
+	/// </summary>
+	private record ReplaceAction(string OldText, string NewText, int caretIndexAfterReplacement) : TextBoxAction;
+
+	/// <summary>
+	/// Unlike other forms of text modification, Delete doesn't follow the simple undo sequence of *unapply modification* -> *select what was selected when the action happened*
+	/// So we need to specifically need to remember what selection to go to when we Undo depending on how we got here (e.g. ctrl vs no ctrl)
+	/// Selection uses the possibly-negative format
+	/// </summary>
+	private record DeleteAction(string OldText, string NewText, int UndoSelectionStart, int UndoSelectionLength) : TextBoxAction;
+
+	/// <summary>
+	/// Probably unnecessary, but we pad the bottom of the history as it makes index manipulation easier (the invariant we
+	/// get is that history is never empty)
+	/// </summary>
+	private record SentinelAction : TextBoxAction
+	{
+		private SentinelAction() { }
+		public static SentinelAction Instance { get; } = new SentinelAction();
+	}
+
+	private sealed class TextBoxCommand(Action action) : ICommand
+	{
 		public bool CanExecute(object parameter) => true;
 
-		public void Execute(object parameter) => _action();
+		public void Execute(object parameter) => action();
 
 #pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 		public event EventHandler CanExecuteChanged;
 #pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
+	}
+
+	private class CaretWithStemAndThumb : Grid
+	{
+		// This is equal to the default system accent color on Windows.
+		// This is, however, a constant color that doesn't depend on the
+		// current system accent color. Changing the accent color does NOT
+		// change the thumb color on WinUI, only the selection color.
+		private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+
+		private readonly Ellipse _thumb;
+		private readonly Ellipse _thumbRing;
+		private readonly Rectangle _stem;
+		private Popup _popup;
+
+		public PointerPoint LastPointerDown { get; set; }
+
+		public CaretWithStemAndThumb()
+		{
+			// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
+
+			Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
+
+			Width = 16;
+
+			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+			RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
+
+			_thumb = new Ellipse
+			{
+				Fill = new SolidColorBrush(Colors.White),
+				Width = 16,
+				Height = 16
+			};
+
+			_thumbRing = new Ellipse
+			{
+				Stroke = new SolidColorBrush(ThumbFillColor),
+				StrokeThickness = 2,
+				Width = 14,
+				Height = 14,
+				Margin = new Thickness(1)
+			};
+
+			_stem = new Rectangle
+			{
+				Visibility = Visibility.Collapsed,
+				IsHitTestVisible = false,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				Stroke = new SolidColorBrush(ThumbFillColor),
+				Width = 2
+			};
+
+			Grid.SetRow(_stem, 0);
+			Grid.SetRow(_thumb, 1);
+			Grid.SetRow(_thumbRing, 1);
+
+			Children.Add(_stem);
+			Children.Add(_thumb);
+			Children.Add(_thumbRing);
+		}
+
+		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+
+		public void ShowAt(Point p)
+		{
+			_popup ??= new Popup
+			{
+				Child = this,
+				IsLightDismissEnabled = false
+			};
+
+			_popup.HorizontalOffset = p.X;
+			_popup.VerticalOffset = p.Y;
+			_popup.IsOpen = true;
+		}
+
+		public void Hide()
+		{
+			if (_popup is not null)
+			{
+				_popup.IsOpen = false;
+			}
+		}
 	}
 }

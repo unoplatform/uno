@@ -5,8 +5,8 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.Contacts;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 
 namespace UITests.Windows_ApplicationModel.Contacts
@@ -40,7 +40,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 		private Contact[] _pickedContacts = Array.Empty<Contact>();
 		private Contact _selectedContact = null;
 
-		public PickContactViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public PickContactViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Graphics;
@@ -6,17 +6,17 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
 using Windows.UI.Input.Spatial;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using System.Runtime.CompilerServices;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	//Android partial for Brush
 	public partial class Brush
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Fill style</returns>
-		internal void ApplyToFillPaint(Windows.Foundation.Rect destinationRect, Paint paint)
+		internal void ApplyToFillPaint(Rect destinationRect, Paint paint)
 		{
 			if (paint is null)
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Stroke style</returns>
-		internal void ApplyToStrokePaint(Windows.Foundation.Rect destinationRect, Paint paint)
+		internal void ApplyToStrokePaint(Rect destinationRect, Paint paint)
 		{
 			if (paint is null)
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media
 
 		private protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
 
-		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
+		internal static Drawable GetBackgroundDrawable(Brush background, Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{
 			if (background is ImageBrush)
 			{

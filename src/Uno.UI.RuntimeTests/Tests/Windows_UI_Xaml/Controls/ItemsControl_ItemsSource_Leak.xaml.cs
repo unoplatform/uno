@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
@@ -24,9 +24,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 		public Task WaitForTestToComplete()
 		{
 			control1.ItemsSource = _staticObservableCollection;
-			control3.ItemsSource = _staticCollectionViewSource;
 
 #if HAS_UNO
+			control3.ItemsSource = _staticCollectionViewSource; // crashes on WinAppSDK
 			control2.ItemsSource = _staticObservableVector;
 #endif
 			return Task.CompletedTask;

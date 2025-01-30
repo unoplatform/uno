@@ -256,8 +256,8 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreUninstallStorePackageResult> StoreContext.UninstallStorePackageByStoreIdAsync(string storeId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoreUninstallStorePackageResult%3E%20StoreContext.UninstallStorePackageByStoreIdAsync%28string%20storeId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreRateAndReviewResult> RequestRateAndReviewAppAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreRateAndReviewResult> StoreContext.RequestRateAndReviewAppAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoreRateAndReviewResult%3E%20StoreContext.RequestRateAndReviewAppAsync%28%29");

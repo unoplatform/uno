@@ -8,10 +8,10 @@ using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal partial class DragView : Control
 	{
@@ -157,11 +157,6 @@ namespace Windows.UI.Xaml
 			ContentVisibility = ToVisibility(viewOverride.IsContentVisible);
 			TooltipVisibility = ToVisibility(viewOverride.IsGlyphVisible || viewOverride.IsCaptionVisible);
 			Visibility = Visibility.Visible;
-		}
-
-		public void Hide()
-		{
-			Visibility = Visibility.Collapsed;
 		}
 
 		private static Visibility ToVisibility(bool isVisible)

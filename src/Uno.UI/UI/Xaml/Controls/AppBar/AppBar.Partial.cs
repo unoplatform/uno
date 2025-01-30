@@ -15,21 +15,21 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -42,7 +42,7 @@ using Windows.Devices.Input;
 using Windows.UI.Core;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
 #if HAS_NATIVE_COMMANDBAR
@@ -131,9 +131,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SizeChanged += OnSizeChanged;
 
-			m_windowSizeChangedEventHandler.Disposable = Windows.UI.Xaml.Window.Current.RegisterSizeChangedEvent(OnWindowSizeChanged);
-
-
 			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
 		}
 
@@ -148,6 +145,13 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				OnIsOpenChanged(true);
+			}
+
+			// TODO: Uno specific - use XamlRoot instead of Window
+			if (XamlRoot is not null)
+			{
+				XamlRoot.Changed += OnXamlRootChanged;
+				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
 
 			//UNO TODO
@@ -239,6 +243,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
+
 			if (GetOwner() is { } pageOwner)
 			{
 				// UNO TODO
@@ -605,7 +611,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			if (m_Mode == AppBarMode.Inline)
 			{
@@ -763,7 +769,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// If the AppBar is not live, then wait until it's loaded before
 			// responding to changes to opened state and firing our Opening/Opened events.
-			if (!IsInLiveTree)
+			// Uno Specific: using IsLoaded instead of IsInLiveTree, which makes more sense because OnOpening (called below) -> SetupOverlayState expects OnApplyTemplate to have already been called
+			if (!IsLoaded)
 			{
 				return;
 			}
@@ -1156,7 +1163,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = Windows.UI.Xaml.Window.Current.Bounds;
+					layoutBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{

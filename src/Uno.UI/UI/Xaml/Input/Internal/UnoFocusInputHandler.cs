@@ -1,9 +1,10 @@
 ﻿#nullable enable
 
+using DirectUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input;
 
@@ -11,42 +12,29 @@ internal class UnoFocusInputHandler
 {
 	private readonly UIElement _rootElement;
 
-	private bool _isShiftDown;
-
 	public UnoFocusInputHandler(UIElement rootElement)
 	{
 		_rootElement = rootElement;
 		_rootElement.KeyDown += OnKeyDown;
-		_rootElement.KeyUp += OnKeyUp;
-	}
 
-	private void OnKeyUp(object sender, KeyRoutedEventArgs e)
-	{
-		if (e.OriginalKey == VirtualKey.Shift ||
-			e.OriginalKey == VirtualKey.LeftShift ||
-			e.OriginalKey == VirtualKey.RightShift)
-		{
-			_isShiftDown = false;
-		}
+#if __WASM__
+		//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
+		rootElement.SetAttribute("tabindex", "0");
+#endif
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs e)
 	{
-		if (e.OriginalKey == VirtualKey.Shift ||
-			e.OriginalKey == VirtualKey.LeftShift ||
-			e.OriginalKey == VirtualKey.RightShift)
-		{
-			_isShiftDown = true;
-		}
-
 		if (e.Handled)
 		{
 			return;
 		}
 
+		bool isShiftDown = e.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
+
 		if (e.OriginalKey == VirtualKey.Tab)
 		{
-			e.Handled = TryHandleTabFocus(_isShiftDown);
+			e.Handled = TryHandleTabFocus(isShiftDown);
 		}
 
 		if (e.OriginalKey is
@@ -61,6 +49,28 @@ internal class UnoFocusInputHandler
 		{
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
 		}
+
+		if (!e.Handled && !e.HandledShouldNotImpedeTextInput)
+		{
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!KeyboardAcceleratorUtility.IsKeyValidForAccelerators(e.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				return;
+			}
+
+			var contentRoot = VisualTree.GetContentRootForElement(_rootElement);
+			if (contentRoot == null)
+			{
+				return;
+			}
+
+			var liveAccelerators = contentRoot.GetAllLiveKeyboardAccelerators();
+			e.Handled = KeyboardAcceleratorUtility.ProcessGlobalAccelerators(
+				e.OriginalKey,
+				modifiers,
+				liveAccelerators
+			);
+		}
 	}
 
 	internal bool TryHandleTabFocus(bool isShiftDown)
@@ -74,12 +84,34 @@ internal class UnoFocusInputHandler
 
 		contentRoot.InputManager.LastInputDeviceType = InputDeviceType.Keyboard;
 
+		bool focusDeparted = false;
+		void OnFocusDeparting(object s, object e)
+		{
+			focusDeparted = true;
+		}
+
 		var focusManager = VisualTree.GetFocusManagerForElement(_rootElement);
-		var focusMovement = new FocusMovement(XYFocusOptions.Default, direction, null);
-		focusMovement.IsShiftPressed = _isShiftDown;
-		focusMovement.IsProcessingTab = true;
-		var result = focusManager?.FindAndSetNextFocus(focusMovement);
-		return result?.WasMoved == true;
+		if (focusManager is null)
+		{
+			return false;
+		}
+
+		try
+		{
+			var focusMovement = new FocusMovement(XYFocusOptions.Default, direction, null);
+			focusMovement.IsShiftPressed = isShiftDown;
+			focusMovement.IsProcessingTab = true;
+			focusMovement.ForceBringIntoView = true;
+
+			focusManager.FocusObserver.FocusController.FocusDeparting += OnFocusDeparting;
+
+			var result = focusManager?.FindAndSetNextFocus(focusMovement);
+			return result?.WasMoved == true && !focusDeparted;
+		}
+		finally
+		{
+			focusManager.FocusObserver.FocusController.FocusDeparting -= OnFocusDeparting;
+		}
 	}
 
 	internal bool TryHandleDirectionalFocus(VirtualKey originalKey)

@@ -1,17 +1,22 @@
-#nullable enable
-using System;
-using System.Linq;
 using SkiaSharp;
+using Windows.Foundation;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 partial class InsetClip
 {
-	internal SKRect SKRect => new()
+	private protected override Rect? GetBoundsCore(Visual visual)
 	{
-		Top = TopInset - 1,
-		Bottom = BottomInset + 1,
-		Left = LeftInset - 1,
-		Right = RightInset + 1
-	};
+		return new Rect(
+			x: LeftInset,
+			y: TopInset,
+			width: visual.Size.X - LeftInset - RightInset,
+			height: visual.Size.Y - TopInset - BottomInset);
+	}
+
+	internal override void Apply(SKCanvas canvas, Visual visual)
+	{
+		var rect = GetBounds(visual).Value.ToSKRect();
+		canvas.ClipRect(rect, SKClipOperation.Intersect, true);
+	}
 }

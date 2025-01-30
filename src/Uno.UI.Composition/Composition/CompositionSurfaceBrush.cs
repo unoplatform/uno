@@ -1,14 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, I2DTransformableObject
 	{
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
+		private Matrix3x2 _relativeTransform = Matrix3x2.Identity;
 		private Vector2 _scale;
 		private float _rotationAngle;
 		private Vector2 _offset;
@@ -64,6 +65,12 @@ namespace Windows.UI.Composition
 		{
 			get => _transformMatrix;
 			set => SetProperty(ref _transformMatrix, value);
+		}
+
+		internal Matrix3x2 RelativeTransform
+		{
+			get => _relativeTransform;
+			set => SetProperty(ref _relativeTransform, value);
 		}
 
 		public Vector2 Scale

@@ -1,9 +1,10 @@
-using Uno;
+﻿using Uno;
 using Uno.UI.Samples.Controls;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Extensions;
+using Private.Infrastructure;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -24,7 +25,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			var sv = MyListView.FindFirstChild<ScrollViewer>();
 			sv.ViewChanged += (o, e2) =>
 			{
-				var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+				var t = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					var panel = MyListView.ItemsPanelRoot as ItemsStackPanel;
 					FirstCacheIndexTextBlock.Text = $"FirstCacheIndex: {panel.FirstCacheIndex}";

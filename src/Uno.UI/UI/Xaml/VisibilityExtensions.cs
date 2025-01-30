@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public static class VisibilityExtensions
 {

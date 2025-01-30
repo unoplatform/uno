@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO_WINUI
 using System.Collections.Generic;
 using Uno;
+using Windows.System;
 
 namespace Microsoft.UI.Input
 {
@@ -19,7 +20,7 @@ namespace Microsoft.UI.Input
 			set;
 		}
 
-		public Windows.System.VirtualKeyModifiers KeyModifiers { get; }
+		public VirtualKeyModifiers KeyModifiers { get; }
 
 		[NotImplemented]
 		public IList<PointerPoint> GetIntermediatePoints()

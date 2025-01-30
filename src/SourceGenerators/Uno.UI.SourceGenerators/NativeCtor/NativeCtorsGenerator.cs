@@ -121,20 +121,20 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
+							typeSymbol.GetFullMetadataNameForFileName(),
 							GetGeneratedCode(typeSymbol));
 					}
 				}
 
 				if (isAndroidView)
 				{
-					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams);
+					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams, SymbolEqualityComparer.Default);
 					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
 
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
 						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
+							typeSymbol.GetFullMetadataNameForFileName(),
 							GetGeneratedCode(typeSymbol));
 					}
 				}

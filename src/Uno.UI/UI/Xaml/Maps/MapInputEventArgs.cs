@@ -1,7 +1,7 @@
-using Windows.Devices.Geolocation;
+﻿using Windows.Devices.Geolocation;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls.Maps;
+namespace Microsoft.UI.Xaml.Controls.Maps;
 
 public partial class MapInputEventArgs : DependencyObject
 {

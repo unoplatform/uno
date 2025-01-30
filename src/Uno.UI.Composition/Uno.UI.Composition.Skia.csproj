@@ -8,7 +8,8 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
-  </PropertyGroup>
+		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
@@ -22,7 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="AssemblyInfo.skia.cs" />
+		<None Remove="AssemblyInfo.skia.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,6 +33,14 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Xaml\CornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\FullCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.skia.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Thickness.cs" />
 	</ItemGroup>
 
 </Project>

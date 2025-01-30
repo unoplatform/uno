@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>পাতল নীলা</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>বৰফ নীলা</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>নথিপত্ৰ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>স্প্লিট বুটাম</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>উইণ্ড'</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>ফলক</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>শিৰোশাৰী</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>শিৰোশাৰী আইটেম</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>তালিকা</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>শীৰ্ষক দণ্ডিকা</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>পৃথককাৰী</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>চিমেণ্টিক ঝুম</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>ট'গল চুইছ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>আইটেম</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 টা আইটেম</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1 টনাটো বাতিল কৰক</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>পৰৱৰ্তী</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>পূৰ্ববৰ্তী</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>প্লে কৰক</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>বিৰাম দিয়ক</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>বিগত সময়</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>বাকী থকা সময়</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>বাফাৰৰ প্ৰগতি</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>বিচাৰক</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>নিমাত কৰক</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>ভলিউম</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>ত্ৰুটি</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>দিন </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>মাহ </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>বছৰ </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ঘণ্টা </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>মিনিট </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 মিনিট</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 মিনিট</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 ছেকেণ্ড</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 ছেকেণ্ড</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>উলম্ব বৃহত্ হ্ৰাস</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>উলম্ব সৰু হ্ৰাস</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ছেদ কৰক</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME অফ</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>বগা</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>পাতল ধূসৰ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ধূসৰ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>গাঢ় ধূসৰ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ক'লা</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>প্ৰবাল</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>গোলাপী</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>পাতল কমলাৰঙী</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>টেন</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>পাতল হালধীয়া</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>পাতল সেউজীয়া</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>নেমু ৰঙী</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>একুৱা</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>স্কাই ব্লু</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>পাতল ফিৰোজা</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>পেল ব্লু</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>পাতল নীলা</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>বৰফ নীলা</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>পেৰিংকল</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>লভেণ্ডাৰ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>গুলপীয়া</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ৰঙা</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>কমলা ৰঙী</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>মুগা</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>সোণালী</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>হালধীয়া</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>জলফাই সেউজীয়া</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>সেউজীয়া</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>উজ্জ্বল সেউজীয়া</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>হৰিত্ নীলা</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ফিৰোজা</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>নীলা</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>নীলা-ধূসৰ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ইণ্ডিগ'</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>জামুৰঙী</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>গাঢ় ৰঙা</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>গাঢ় হালধীয়া</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>গাঢ় সেউজীয়া</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ডাৰ্ক টিল</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>গাঢ় নীলা</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>গাঢ় বেঙুনীয়া</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>প্লাম</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>বন্ধ কৰক</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

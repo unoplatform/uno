@@ -1,16 +1,25 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
+		/// <summary>
+		/// This is specifically added for ScrollViewers inside TextBoxes and specifically for WASM
+		/// On WASM, a click on a TextBox inside a popup shifts focus to the Popup instead of the TextBox
+		/// as a result of ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer.
+		/// This is only a problem on WASM because we don't capture the pointer when pressing inside a TextBox
+		/// <seealso cref="TextBox.IsPointerCaptureRequired"/>.
+		/// </summary>
+		internal bool DisableSetFocusOnPopupByPointer { get; set; }
+
 		internal bool CancelNextNativeScroll { get; private set; }
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
@@ -75,9 +84,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
+		private partial void OnLoadedPartial()
 		{
-			base.OnLoaded();
 			AddHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
 			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
 		}
@@ -90,13 +98,16 @@ namespace Windows.UI.Xaml.Controls
 			CancelNextNativeScroll = false;
 		}
 
-		private protected override void OnUnloaded()
+		private partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
 			RemoveHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown));
-			RemoveHandler(PointerWheelChangedEvent, new KeyEventHandler(OnKeyDown));
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 		}
 
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args) => CancelNextNativeScroll = args.Handled;
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			// event got handled before it reached ScrollViewer, cancel scrolling
+			CancelNextNativeScroll = args.Handled;
+		}
 	}
 }

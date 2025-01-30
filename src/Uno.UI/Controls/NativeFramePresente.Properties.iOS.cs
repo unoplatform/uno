@@ -6,9 +6,9 @@ using System.Text;
 using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Controls
 {

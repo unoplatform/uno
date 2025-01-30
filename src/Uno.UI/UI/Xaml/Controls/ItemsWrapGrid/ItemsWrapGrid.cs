@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsWrapGrid : Panel, IVirtualizingPanel
 	{
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-		internal override Orientation? InternalOrientation => Orientation;
+		internal override Orientation? PhysicalOrientation => Orientation;
 
 #if __ANDROID__
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
@@ -55,6 +55,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			}
 			return _layout;
+		}
+
+		// In WinUI, this is actually for ModernCollectionBasePanel
+		internal override bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation)
+		{
+			return Orientation == orientation;
 		}
 	}
 }

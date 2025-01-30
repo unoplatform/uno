@@ -5,8 +5,6 @@ area/automation:
   - src/SamplesApp/**/*
   - src/Uno.UI.Tests/*
   - src/Uno.UI.Tests/**/*
-  - src/Uno.UI.Tests.Performance/*
-  - src/Uno.UI.Tests.Performance/**/*
   - src/Uno.UI.Wasm.Tests/*
   - src/Uno.UI.Wasm.Tests/**/*
 
@@ -46,7 +44,10 @@ area/solution-templates:
   - src/SolutionTemplate/**/*
   - src/UnoItemTemplate/*
   - src/UnoItemTemplate/**/*
-  
+
+area/sdk:
+  - src/Uno.Sdk/*
+
 platform/android 🤖:
   - src/Uno.UI.BindingHelper.Android/*
   - src/Uno.UI.BindingHelper.Android/**/*

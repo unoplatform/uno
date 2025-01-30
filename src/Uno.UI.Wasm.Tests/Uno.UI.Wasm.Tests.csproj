@@ -6,9 +6,6 @@
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 
-		<!-- Required for TSBinding tests -->
-		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
-
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
@@ -22,18 +19,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="tsconfig.json" />
-		<Content Include="tsconfig.json" />
 		<ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -51,8 +43,17 @@
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
+
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCompileDependsOn Include="$(CompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CompileDependsOn>@(_AdjustedCompileDependsOn)</CompileDependsOn>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
@@ -67,25 +68,13 @@
 
 	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
 			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			DependsOnTargets="CompileTypeScriptWithTSConfig"
 			BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<ItemGroup>
 			<_generatedTSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			<_UnoInjectedResource Include="@(_generatedTSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
 	</Target>
-
-	<Target Name="_AdjustTypeScriptOutputForPublishing"
-			AfterTargets="GetTypeScriptOutputForPublishing">
-		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
-		</ItemGroup>
-	</Target>
-
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

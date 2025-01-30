@@ -3,7 +3,7 @@ using WebKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal class LocalWKUIDelegate : WKUIDelegate
 {

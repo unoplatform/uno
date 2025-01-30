@@ -1,5 +1,5 @@
 ﻿using Uno.UI.Hosting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 

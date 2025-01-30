@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationViewDisplayModeChangedEventArgs.cpp, commit 838a0cc
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the NavigationView.DisplayModeChanged event.

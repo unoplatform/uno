@@ -1,15 +1,15 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Specialized;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class FlowLayout : VirtualizingLayout, IFlowLayoutAlgorithmDelegates
 	{
@@ -429,25 +429,27 @@ namespace Microsoft.UI.Xaml.Controls
 			avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
 			avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
-			return _uno_lastKnownAverageLineSize = avgLineSize;
+			flowState.Uno_LastKnownAverageLineSize = avgLineSize;
+
+			return avgLineSize;
 		}
 
 		#endregion
 
 		#region Uno workaround
-		private double _uno_lastKnownAverageLineSize;
-
 		/// <inheritdoc />
-		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		protected internal override bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
 		{
-			var elementSize = _uno_lastKnownAverageLineSize;
-			if (elementSize <= 0)
+			if (state is FlowLayoutState { Uno_LastKnownAverageLineSize: > 0 } flowState)
 			{
-				return base.IsSignificantViewportChange(oldViewport, newViewport);
+				var elementSize = flowState.Uno_LastKnownAverageLineSize;
+				return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
+					|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
 			}
-
-			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
-				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
+			else
+			{
+				return base.IsSignificantViewportChange(state, oldViewport, newViewport);
+			}
 		}
 		#endregion
 	}

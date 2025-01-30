@@ -7,7 +7,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	internal class ImageListViewViewModel : ViewModelBase
 	{
-		public ImageListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ImageListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SampleItemsLarge = GetSampleItemsLarge();
 		}

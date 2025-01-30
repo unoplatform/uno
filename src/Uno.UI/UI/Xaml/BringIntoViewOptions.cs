@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Represents the options that can be applied when an element is brought into view.
@@ -39,7 +39,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_horizontalAlignmentRatio = value;
 		}
@@ -80,7 +80,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_verticalAlignmentRatio = value;
 		}

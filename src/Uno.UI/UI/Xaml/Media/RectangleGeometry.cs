@@ -1,10 +1,11 @@
 ﻿using System;
 using Windows.Foundation;
+
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
 	{
@@ -28,8 +29,14 @@ namespace Windows.UI.Xaml.Media
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
 				new FrameworkPropertyMetadata(
-					null,
-					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
+					default(Rect),
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: OnRectChanged));
+
+		private static void OnRectChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((RectangleGeometry)dependencyObject).RaiseGeometryChanged();
+		}
 
 		#endregion
 

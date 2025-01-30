@@ -21,7 +21,7 @@ namespace Uno.Docs.InlineTOCGenerator
 			var topLevelItems = deserializer.Deserialize<Item[]>(tocReader);
 			var topLevel = new Item { Items = topLevelItems };
 
-			const string subdirectoryName = "inlineTOCs";
+			const string subdirectoryName = "includes";
 			var articlesPath = Path.GetDirectoryName(tocPath) ?? throw new InvalidOperationException();
 			var subdirectoryPath = Path.Combine(articlesPath, subdirectoryName);
 			Directory.CreateDirectory(subdirectoryPath);

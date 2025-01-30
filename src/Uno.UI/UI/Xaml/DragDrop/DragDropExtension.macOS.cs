@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -9,12 +9,13 @@ using Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
-using UIElement = Windows.UI.Xaml.UIElement;
+using UIElement = Microsoft.UI.Xaml.UIElement;
 using ObjCRuntime;
 using NSDraggingInfo = AppKit.INSDraggingInfo;
+using Uno.UI.Xaml.Controls;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
@@ -27,7 +28,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		public MacOSDragDropExtension(DragDropManager owner)
 		{
 			_manager = owner;
-			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!.NativeWindow;
+			_window = (Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow;
 
 			_window.DraggingEnteredAction = OnDraggingEnteredEvent;
 			_window.DraggingUpdatedAction = OnDraggingUpdated;
@@ -60,13 +61,13 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private void OnDraggingExited(NSDraggingInfo draggingInfo)
 		{
-			_ = _manager.ProcessAborted(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			_ = _manager.ProcessAborted(_fakePointerId);
 			return;
 		}
 
 		private bool OnPerformDragOperation(NSDraggingInfo draggingInfo)
 		{
-			var operation = _manager.ProcessDropped(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			var operation = _manager.ProcessReleased(new DragEventSource(_fakePointerId, draggingInfo, _window));
 			return (operation != DataPackageOperation.None);
 		}
 
@@ -87,7 +88,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 						(NSImage image, CGPoint screenPoint, NSDragOperation operation) =>
 						{
 							// The drop was completed externally
-							_manager.ProcessDropped(new DragEventSource(info.SourceId, _window));
+							_manager.ProcessReleased(new DragEventSource(info.SourceId, _window));
 							return;
 						};
 

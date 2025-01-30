@@ -1,5 +1,5 @@
 ﻿#if __ANDROID__ || __IOS__
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 

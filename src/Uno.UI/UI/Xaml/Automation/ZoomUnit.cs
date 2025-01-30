@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains possible values for the ZoomByUnit method, which zooms the viewport of a control by the specified unit.

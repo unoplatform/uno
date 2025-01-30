@@ -1,7 +1,7 @@
-﻿using Windows.UI.Xaml.Automation.Peers;
+﻿using Microsoft.UI.Xaml.Automation.Peers;
 using Color = Windows.UI.Color;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class Image
 {
@@ -25,5 +25,18 @@ partial class Image
 			// Force loading the image.
 			OnSourceChanged(Source, forceReload: true);
 		}
+	}
+
+	/// <summary>
+	/// Returns an Empty string as the Description for the Image.
+	/// </summary>
+	internal
+#if __MACOS__ || __IOS__
+		new
+#endif
+		string Description
+	{
+		// UNO TODO: Description on Image is not implemented
+		get => string.Empty;
 	}
 }

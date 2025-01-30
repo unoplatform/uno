@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Samples.Controls;
 
 
@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			var animation = new DoubleAnimation
 			{
 				To = 50,
-				Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(10))
+				Duration = new Duration(TimeSpan.FromSeconds(10))
 			};
 			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
 			Storyboard.SetTarget(animation, _transform);
@@ -39,7 +39,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			var animation = new DoubleAnimation
 			{
 				To = 0,
-				Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(10))
+				Duration = new Duration(TimeSpan.FromSeconds(10))
 			};
 			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
 			Storyboard.SetTarget(animation, _transform);

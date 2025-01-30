@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
 
@@ -8,13 +8,13 @@ using System;
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Disposables;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class ViewportManagerWithPlatformFeatures : ViewportManager
 	{
@@ -69,7 +69,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable m_layoutUpdatedRevoker;
 		private IDisposable m_renderingToken;
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private Rect _uno_viewportUsedInLastMeasure;
+#endif
 
 		private bool HasScroller => m_scroller != null;
 
@@ -270,8 +272,11 @@ namespace Microsoft.UI.Xaml.Controls
 				m_effectiveViewportChangedRevoker?.Dispose();
 			}
 			else if (m_effectiveViewportChangedRevoker == null
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+				&& m_owner.ItemsSourceView?.Count > 0
+#endif
+				)
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
@@ -304,8 +309,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			EnsureScroller();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// Uno workaround: Perf
 			_uno_viewportUsedInLastMeasure = m_visibleWindow;
+#endif
 		}
 
 		public override void OnOwnerArranged()
@@ -418,10 +425,10 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_renderingToken = Disposable.Create(() =>
 					{
-						Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
 						m_renderingToken = null;
 					});
-					Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
 				}
 			}
 		}
@@ -508,11 +515,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ResetScrollers();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
 				if (m_owner.ItemsSourceView?.Count <= 0)
 				{
 					return;
 				}
+#endif
 
 				var parent = CachedVisualTreeHelpers.GetParent(m_owner);
 				while (parent != null)
@@ -582,11 +591,13 @@ namespace Microsoft.UI.Xaml.Controls
 				m_visibleWindow = currentVisibleWindow;
 			}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
 			// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
 			if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
-				&& vl.IsSignificantViewportChange(_uno_viewportUsedInLastMeasure, m_visibleWindow))
+				&& vl.IsSignificantViewportChange(m_owner.LayoutState, _uno_viewportUsedInLastMeasure, m_visibleWindow))
 			// Uno workaround [END]
+#endif
 			{
 				TryInvalidateMeasure();
 			}
@@ -632,8 +643,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Don't invalidate measure if we have an invalid window.
 			if (m_visibleWindow != new Rect()
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				// Uno workaround: [Perf] Do not invalidate measure if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+				&& m_owner.ItemsSourceView?.Count > 0
+#endif
+				)
 			{
 				// We invalidate measure instead of just invalidating arrange because
 				// we don't invalidate measure in UpdateViewport if the view is changing to

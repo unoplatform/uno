@@ -4,17 +4,12 @@
 namespace Windows.Devices.Sensors
 {
 #if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented("__SKIA__")]
+	[global::Uno.NotImplemented]
 #endif
 	public partial class Compass
 	{
-#if false || false || false || false || false || false || false
-		internal Compass()
-		{
-		}
-#endif
 #if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval
 		{
 			get
@@ -128,23 +123,17 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCompass%3E%20Compass.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Devices.Sensors.Compass GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Compass Compass.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compass%20Compass.GetDefault%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.Devices.Sensors.Compass.GetDefault()
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Compass, global::Windows.Devices.Sensors.CompassReadingChangedEventArgs> ReadingChanged
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Compass", "event TypedEventHandler<Compass, CompassReadingChangedEventArgs> Compass.ReadingChanged");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Compass", "event TypedEventHandler<Compass, CompassReadingChangedEventArgs> Compass.ReadingChanged");

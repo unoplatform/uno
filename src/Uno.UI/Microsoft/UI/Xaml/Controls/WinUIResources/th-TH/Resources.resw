@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>น้ำเงินอ่อน</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>ฟ้าใส</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>เอกสาร</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>ปุ่มแยก</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>หน้าต่าง</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>บานหน้าต่าง</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>ส่วนหัว</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>รายการส่วนหัว</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>ตาราง</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>แถบชื่อเรื่อง</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>ตัวคั่น</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>การย่อ/ขยายข้อมูลภาพรวม</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>สวิตช์การสลับ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>รายการ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 รายการ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>ยกเลิกการลาก %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>ถัดไป</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>ก่อนหน้า</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>เล่น</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>หยุดชั่วคราว</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>เวลาที่ผ่านไป</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>เวลาที่เหลือ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>ความคืบหน้าการบัฟเฟอร์</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>ค้นหา</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>ปิดเสียง</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>ระดับเสียง</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>ข้อผิดพลาด</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>วัน </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>เดือน </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>ปี </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ชั่วโมง</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>นาที</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 นาที</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 นาที</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 วินาที</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 วินาที</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>ลดลงจำนวนมากแนวตั้ง</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>ลดลงจำนวนน้อยแนวตั้ง</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ตัด</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>ปิด IME</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>ขาว</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>เทาอ่อน</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>เทา</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>เทาเข้ม</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ดำ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ส้มปะการัง</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ชมพูกุหลาบ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ส้มอ่อน</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>แทน</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>เหลืองอ่อน</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>เขียวอ่อน</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>เขียวเหลือง</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ฟ้าแกมเขียว</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ฟ้าคราม</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ฟ้าเทอร์คอยส์อ่อน</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ฟ้าจาง</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>น้ำเงินอ่อน</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ฟ้าใส</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ม่วงแพงพวย</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ม่วงลาเวนเดอร์</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ชมพู</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>แดง</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ส้ม</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>น้ำตาล</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ทอง</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>เหลือง</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>เขียวใบมะกอก</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>เขียว</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>เขียวสว่าง</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>น้ำเงินอมเขียว</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ฟ้าเทอร์คอยส์</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>น้ำเงิน</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>น้ำเงิน-เทา</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>คราม</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ม่วง</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>แดงเข้ม</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>เหลืองเข้ม</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>เขียวเข้ม</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>เขียวหัวเป็ดเข้ม</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>น้ำเงินเข้ม</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ม่วงเข้ม</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ม่วงพลัม</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ปิด</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

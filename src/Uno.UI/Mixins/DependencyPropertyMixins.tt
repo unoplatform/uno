@@ -3,12 +3,12 @@
 
 <#
 	_namespaces = new NamespacesBuilder()
-		.Namespace("Windows.UI.Xaml.Controls")
+		.Namespace("Microsoft.UI.Xaml.Controls")
 
 			.Class("Control")
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
-				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
-				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
+				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")
+				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")				
 			.Class("Picker", condition: "__IOS__")			
 				.Property("ItemsSource", "object", "null")
 				.Property("SelectedItem", "object", "null")
@@ -20,7 +20,6 @@
 				.Property("Placeholder", "object", "null")
 			.Class("ComboBox")
 				.Property("PlaceholderText", "string", "string.Empty")
-				.Property("IsDropDownOpen", "bool", "false")
 				.Property("MaxDropDownHeight", "double", "double.PositiveInfinity")
 			.Class("ItemsControl")
 				.Property("DisplayMemberPath", "string", "string.Empty")
@@ -71,18 +70,12 @@
 				.Property("DayVisible", "bool", "true")
 				.Property("MonthVisible", "bool", "true")
 				.Property("YearVisible", "bool", "true")
-			.Class("TimePickerFlyout")
-				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
-				.Property("MinuteIncrement", "int", "1")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
 			.Class("TimePickerSelector")
 				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
 				.Property("MinuteIncrement", "int", "1")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
-			.Class("TimePicker")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
+				.Property("ClockIdentifier", "string", "global::Windows.Globalization.ClockIdentifiers.TwelveHour")
 
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 			.Class("SelectorItem")
 				.Property("IsSelected", "bool", "false")
 			.Class("Popup")
@@ -102,7 +95,7 @@
 				.Property("DisplayMemberPath", "string", "string.Empty")
 			.Class("HorizontalGridView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 	.Build();
 #>
 

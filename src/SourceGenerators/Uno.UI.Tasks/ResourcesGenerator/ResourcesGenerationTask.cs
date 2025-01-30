@@ -165,7 +165,8 @@ public class ResourcesGenerationTask_v0 : Task
 			new Dictionary<string, string>()
 			{
 				{ "UnoResourceTarget", "Uno" },
-				{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') }
+				{ "LogicalName", logicalTargetPath.Replace(Path.DirectorySeparatorChar, '.') },
+				{ "Language", language }
 			}
 		);
 	}

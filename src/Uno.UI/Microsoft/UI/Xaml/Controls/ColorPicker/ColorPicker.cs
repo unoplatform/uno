@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 
 #if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ColorPicker : Control
 	{
@@ -1069,9 +1069,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rgb GetRgbColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_redTextBox?.Text, out int redValue);
-			_ = int.TryParse(m_greenTextBox?.Text, out int greenValue);
-			_ = int.TryParse(m_blueTextBox?.Text, out int blueValue);
+			_ = int.TryParse(m_redTextBox?.Text, CultureInfo.InvariantCulture, out int redValue);
+			_ = int.TryParse(m_greenTextBox?.Text, CultureInfo.InvariantCulture, out int greenValue);
+			_ = int.TryParse(m_blueTextBox?.Text, CultureInfo.InvariantCulture, out int blueValue);
 
 			return new Rgb(redValue / 255.0, greenValue / 255.0, blueValue / 255.0);
 		}
@@ -1079,9 +1079,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private Hsv GetHsvColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_hueTextBox?.Text, out int hueValue);
-			_ = int.TryParse(m_saturationTextBox?.Text, out int saturationValue);
-			_ = int.TryParse(m_valueTextBox?.Text, out int valueValue);
+			_ = int.TryParse(m_hueTextBox?.Text, CultureInfo.InvariantCulture, out int hueValue);
+			_ = int.TryParse(m_saturationTextBox?.Text, CultureInfo.InvariantCulture, out int saturationValue);
+			_ = int.TryParse(m_valueTextBox?.Text, CultureInfo.InvariantCulture, out int valueValue);
 
 			return new Hsv(hueValue, saturationValue / 100.0, valueValue / 100.0);
 		}

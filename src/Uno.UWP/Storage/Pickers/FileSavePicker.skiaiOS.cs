@@ -22,6 +22,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileSavePicker extension is not registered.");
 			}
 
+			_fileSavePickerExtension.Customize(this);
 			return await _fileSavePickerExtension.PickSaveFileAsync(token);
 		}
 	}

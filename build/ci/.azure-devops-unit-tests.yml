@@ -5,6 +5,7 @@ jobs:
 - job: Unit_Tests
   displayName: 'Unit Tests'
   timeoutInMinutes: 90
+  cancelTimeoutInMinutes: 1
 
   pool: ${{ parameters.poolName }}
 
@@ -13,19 +14,10 @@ jobs:
       UWP:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
-        ADDITIONAL_FLAGS: ''
 
       WinUI:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
-        ADDITIONAL_FLAGS: ''
-
-      # Keep for future previews
-      # Preview:
-      #   ADDITIONAL_FLAGS: '/p:LangVersion=preview /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final'
-
-      #CSharp9:
-      #  ADDITIONAL_FLAGS: '/p:LangVersion=9.0'
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -33,10 +25,6 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
-
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self
@@ -52,10 +40,24 @@ jobs:
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
 
+  # We need just the .NET 8 runtime (not the SDK).
+  # Building with .NET 9 SDK is fine, but running the app when the TFM is net8.0 requires the .NET 8 runtime
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'runtime'
+      version: '8.x'
+
   - task: DownloadBuildArtifacts@0
     displayName: Download build artifact
     inputs:
       artifactName: 'NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)'
+      downloadPath: '$(Agent.WorkFolder)'
+
+  # Unfortunate, but this is needed specifically for a single test: TestAndroidViewImplementingDependencyObject
+  - task: DownloadBuildArtifacts@0
+    displayName: Download build artifact
+    inputs:
+      artifactName: 'NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)'
       downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1
@@ -66,10 +68,9 @@ jobs:
       cleanDestinationFolder: false
       overwriteExistingFiles: true
 
-  - task: MSBuild@1
-    inputs:
-      solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+  - pwsh: |
+      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Build unit tests solution filter
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -79,27 +80,17 @@ jobs:
       ArtifactName: NugetPackages-Artifacts
       ArtifactType: Container
 
-  - task: VisualStudioTestPlatformInstaller@1
-    inputs:
-      versionSelector: specificVersion
-      testPlatformVersion: 17.6.0
+  - pwsh: |
+      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build -- --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+    displayName: Run unit tests
 
-  - task: VSTest@2
+  - task: PublishTestResults@2
+    displayName: Publish TRX Test Results
     inputs:
-      testAssemblyVer2: |
-        **\*test*.dll
-        !**\obj\**
-        !**\*Wasm.Test*.dll
-        !**\*UITests.dll
-        !**\*.RuntimeTests.dll
-        !**\Uno.UI.Tests.ViewLibraryProps.dll
-        !**\Uno.UI.Tests.ViewLibrary.dll
-        !**\testhost*.*
-        !**\Microsoft*.dll
-
-      vsTestVersion: toolsInstaller
-      testRunTitle: $(Agent.JobName)
-      testSelector: testAssemblies
-      batchingBasedOnAgentsOption: customBatchSize
-      rerunFailedTests: 'true'
-      customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
+      testRunTitle: 'Unit Tests $(XAML_FLAVOR_BUILD)'
+      mergeTestResults: true
+    continueOnError: true
+    condition: always()

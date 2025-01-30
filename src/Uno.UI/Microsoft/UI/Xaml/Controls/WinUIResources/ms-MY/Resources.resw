@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Biru muda</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Biru ais</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>dokumen</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>butang pisah</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>tetingkap</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>anak tetingkap</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>pengepala</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>item pengepala</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>jadual</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>bar tajuk</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>pemisah</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>zum semantik</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>tukar togol</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>item</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 item</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>batalkan menyeret %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Seterusnya</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Sebelumnya</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Jeda</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Masa berlalu</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Baki masa</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Kemajuan Penimbalan</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Cari</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Redam</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Kelantangan</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Ralat</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Hari </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Bulan </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Tahun </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Jam </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Minit </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 minit</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 minit</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 saat</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 saat</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Pengurangan Besar Menegak</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Pengurangan Kecil Menegak</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Potong</value>
   </data>
@@ -1262,5 +1394,135 @@
   </data>
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME HIDUP</value>
+  </data>
+  <data name="5114" xml:space="preserve">
+    <value>Putih</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Kelabu muda</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Kelabu</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Kelabu tua</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Hitam</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Merjan</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ros</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Jingga muda</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sawo matang</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Kuning muda</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Hijau muda</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Hijau limau</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Biru Kehijau-hijauan</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Biru langit</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Hijau kebiruan muda</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Biru pucat</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Biru muda</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Biru ais</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Biru Muda Keunguan</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavender</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Merah jambu</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Merah</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Jingga</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Perang</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Emas</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Kuning</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Hijau buah zaitun</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Hijau</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Hijau terang</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Teal</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Hijau kebiruan</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Biru</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Biru-kelabu</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Ungu</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Merah gelap</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Kuning tua</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Hijau gelap</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Teal gelap</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Biru tua</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Ungu gelap</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plum</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Tutup</value>
+    <comment>Automation name for the nav view provided close button</comment>
   </data>
 </root>

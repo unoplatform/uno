@@ -7,13 +7,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Uno.UI.RemoteControl.Server.Processors.Helpers
+namespace Uno.UI.RemoteControl.Helpers
 {
 	internal class ProcessHelper
 	{
 		public static (int exitCode, string output, string error) RunProcess(string executable, string parameters, string? workingDirectory = null)
 		{
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+			if (!OperatingSystem.IsWindows()
 				&& executable.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 			{
 				executable = Path.GetFileNameWithoutExtension(executable);
@@ -24,6 +24,8 @@ namespace Uno.UI.RemoteControl.Server.Processors.Helpers
 				StartInfo =
 				{
 					UseShellExecute = false,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					FileName = executable,

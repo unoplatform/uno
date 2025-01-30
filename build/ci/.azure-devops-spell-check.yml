@@ -17,8 +17,9 @@ jobs:
     inputs:
       versionSpec: '18.x'
 
-  - bash: npm install -g cspell
+  # Keep that version in sync with documentation at doc/README.md
+  - bash: npm install -g cspell@8.3.2
     displayName: Install cSpell
 
-  - bash: cspell --config ./build/cSpell.json "doc/**/*.md" --no-progress
+  - bash: cspell --config ./build/cSpell.json "doc/**/*.md" "doc/**/toc.yml" --no-progress
     displayName: Run Spell Checking
