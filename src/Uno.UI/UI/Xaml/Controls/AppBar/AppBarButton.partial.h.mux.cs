@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\AppBarButton_Partial.h, tag winui3/release/1.6.4, commit 262a901e09
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -7,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -24,7 +29,7 @@ partial class AppBarButton
 
 	// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
 	// Animate the width to NaN if width is not overridden and right-aligned labels and no LabelOnRightStyle. 
-	private Storyboard m_widthAdjustmentsForLabelOnRightStyleStoryboard;
+	private Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 	private bool m_isWithToggleButtons;
 	private bool m_isWithIcons;
@@ -52,8 +57,8 @@ partial class AppBarButton
 
 	// Helpers to track the current opened state of the flyout.
 	private bool m_isFlyoutClosing;
-	private FlyoutBaseOpenedEventCallback m_flyoutOpenedHandler;
-	private FlyoutBaseClosedEventCallback m_flyoutClosedHandler;
+	private SerialDisposable m_flyoutOpenedHandler = new();
+	private SerialDisposable m_flyoutClosedHandler = new();
 
 	// Holds the last position that its flyout was opened at.
 	// Used to reposition the flyout on size changed.
