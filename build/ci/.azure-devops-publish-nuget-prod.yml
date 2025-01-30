@@ -15,9 +15,6 @@ jobs:
         - task: DownloadPipelineArtifact@2
           inputs:
             artifactName: 'NuGet_Packages'
-            itemPattern: |
-              **/*.nupkg;
-              !*Private*.nupkg
             targetPath: '$(Pipeline.Workspace)/NuGet_Packages'
           displayName: Download artifacts
 
@@ -25,6 +22,7 @@ jobs:
 
 - job: Tag_Release
   displayName: 'Set git tag'
+  dependsOn: 'Nuget_Prod_Nuget_Org'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -39,6 +37,6 @@ jobs:
   - script: |
       git config user.email "info@platform.uno"
       git config user.name "Uno DevOps"
-      git tag '$(GitVersion.MajorMinorPatch)'
-      git push origin '$(GitVersion.MajorMinorPatch)'
+      git tag $(GitVersion.MajorMinorPatch)
+      git push origin $(GitVersion.MajorMinorPatch)
     displayName: "Tag and push to GitHub"
