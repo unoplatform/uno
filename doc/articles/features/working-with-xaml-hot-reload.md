@@ -413,14 +413,39 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 ### [**Common issues**](#tab/common-issues)
 
 - If the Hot Reload Indicator is red and shows a connection failure, ensure that you have the [latest stable version](https://www.nuget.org/packages/Uno.Sdk/latest) of [Uno.SDK](xref:Uno.Features.Uno.Sdk) and the latest version of your IDE’s extension ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [Visual Studio Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace)). Additionally, [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to update dependencies, then relaunch your IDE, [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), and rebuild your application.
+
+  For existing applications, refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+  > [!IMPORTANT]
+  > When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
-- You can troubleshoot Hot Reload further from the DevServer client running in the app by:
-  - Setting `builder.SetMinimumLevel(LogLevel.Information)` to `LogLevel.Debug` or `Trace`
-  - Setting `builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
+- You can troubleshoot **Hot Reload** further by adjusting the **logging level** in your app.
 
-  The diagnostics messages will appear in the app's debug output.
+  - **For Blank App Preset** (in `App.xaml.cs`, inside `InitializeLogging`):
+  
+    ```csharp
+    // Adjust logging level
+    builder.SetMinimumLevel(LogLevel.Debug); // or LogLevel.Trace
+
+    // Uncomment and adjust logging level
+    builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Debug); // or LogLevel.Trace
+    ```
+
+  - **For Recommended App Preset** (in `App.xaml.cs`, inside `UseLogging`):
+
+    ```csharp
+    // Adjust logging level
+    logBuilder.SetMinimumLevel(LogLevel.Debug); // or LogLevel.Trace
+
+    // Uncomment and adjust logging level
+    logBuilder.HotReloadCoreLogLevel(LogLevel.Debug); // or LogLevel.Trace
+    ```
+
+  The diagnostic messages will appear in the app's **Debug Output**.
+
+  If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), it is recommended to set `LogLevel` to **Trace** to provide the most detailed logs for investigation.
+
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each .csproj project head):
 
   ```xml
