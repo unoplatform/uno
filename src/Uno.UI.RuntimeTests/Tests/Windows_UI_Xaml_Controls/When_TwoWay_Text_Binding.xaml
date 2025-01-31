@@ -13,6 +13,8 @@
 		<TextBox x:Name="tbTwoWay_triggerLostFocus" Text="{Binding VMProperty, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" x:FieldModifier="public" />
 		<TextBox x:Name="tbTwoWay_triggerPropertyChanged" Text="{Binding VMProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:FieldModifier="public" />
 		<TextBox x:Name="tbTwoWay_triggerExplicit" Text="{Binding VMProperty, Mode=TwoWay, UpdateSourceTrigger=Explicit}" x:FieldModifier="public" />
+		<TextBox x:Name="tbTwoWay_triggerDefault_xBind" Text="{x:Bind VMForXBind.VMProperty, Mode=TwoWay, UpdateSourceTrigger=Default}" x:FieldModifier="public" />
+		<TextBox x:Name="tbTwoWay_triggerLostFocus_xBind" Text="{x:Bind VMForXBind.VMProperty, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" x:FieldModifier="public" />
 		<Button x:Name="dummyButton" Content="Dummy" x:FieldModifier="public" />
 	</StackPanel>
 </Page>
