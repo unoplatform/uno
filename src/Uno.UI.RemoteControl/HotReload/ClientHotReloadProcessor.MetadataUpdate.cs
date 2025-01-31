@@ -208,6 +208,11 @@ partial class ClientHotReloadProcessor
 			// or replace the element with a new one
 			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
+				if (elementHandlers.IsDefaultOrEmpty)
+				{
+					continue;
+				}
+
 				// Action: ElementUpdate
 				// This is invoked for each existing element that is in the tree that needs to be replaced
 				foreach (var elementHandler in elementHandlers)
