@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 [RequiresFullWindow]
-public class Given_ContentPresenter
+public partial class Given_ContentPresenter
 {
 	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
