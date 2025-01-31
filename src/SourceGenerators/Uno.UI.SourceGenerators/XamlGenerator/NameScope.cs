@@ -2,21 +2,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using Uno.Extensions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class NameScope
+	/// <summary>
+	/// Represents the current scope of the XAML generation
+	/// </summary>
+	/// <param name="Parents">The stack of parent scopes</param>
+	/// <param name="FileUniqueId">Unique ID of the generated file.</param>
+	/// <param name="Namespace"></param>
+	/// <param name="ClassName"></param>
+	internal record NameScope(ImmutableStack<NameScope> Parents, string FileUniqueId, string Namespace, string ClassName)
 	{
-		public NameScope(string? @namespace, string className)
-		{
-			Namespace = @namespace ?? string.Empty;
-			ClassName = className;
-		}
-
 		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
-		public string Namespace { get; private set; }
-		public string ClassName { get; private set; }
+
+		/// <summary>
+		/// Name of the root class for all sub-classes
+		/// </summary>
+		/// <remarks>All sub-classes will be generated nested to this class, which is flagged with CreateNewOnMetadataUpdate attribute to avoid issues with HR.</remarks>
+		public string SubClassesRoot => $"__{FileUniqueId}_{string.Join("_", [Name, ..Parents.Select(scope => scope.Name)])}";
 
 		/// <summary>
 		/// Used to detect duplicate x:Name and report error for those.
@@ -28,7 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// List of action handlers for registering x:Bind events
 		/// </summary>
-		public List<EventHandlerBackingFieldDefinition> xBindEventsHandlers { get; } = [];
+		public List<XBindEventInitializerDefinition> xBindEventsHandlers { get; } = [];
 
 		/// <summary>
 		/// Lists the ElementStub builder holder variables used to pin references for implicit pinning platforms
@@ -39,6 +46,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public Dictionary<string, Subclass> Subclasses { get; } = [];
 
+		public List<Action<IIndentedStringBuilder>> Subclasses2 { get; } = [];
+
 		public List<ComponentDefinition> Components { get; } = [];
 
 		public List<XamlObjectDefinition> XBindExpressions { get; } = [];
@@ -47,7 +56,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<string> ExplicitApplyMethods { get; } = [];
 
-		public List<Action<IIndentedStringBuilder>> EventHandlers { get; } = [];
+		/// <summary>
+		/// Set of method builders to be generated for the current scope.
+		/// This is usually used to avoid delegates like for event handlers.
+		/// </summary>
+		public List<Action<IIndentedStringBuilder>> CallbackMethods { get; } = [];
 
 		public int ComponentCount => Components.Count;
 	}

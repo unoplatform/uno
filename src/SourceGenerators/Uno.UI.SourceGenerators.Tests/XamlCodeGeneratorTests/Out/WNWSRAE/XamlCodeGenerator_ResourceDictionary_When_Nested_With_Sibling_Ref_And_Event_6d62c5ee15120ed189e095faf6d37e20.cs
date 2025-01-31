@@ -136,8 +136,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									__that._component_0 = __p1;
 									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
 									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-									var Invoked_AnEventHandler_That = (__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-									/* second level */ __p1.Invoked += (AnEventHandler_sender,AnEventHandler_args) => (Invoked_AnEventHandler_That.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(AnEventHandler_sender,AnEventHandler_args);
+									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__ResourcesSC0_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.ApplyMethod_3_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
 									}
 									))
 								);
@@ -202,6 +202,19 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				{
 					var owner = this;
 					_component_0.UpdateResourceBindings();
+				}
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+				private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__ResourcesSC0_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event
+				{
+						public class ApplyMethod_3_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+						{
+							public void Invoke(global::Microsoft.UI.Xaml.Controls.SwipeItem sender, global::Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
+							{
+								(target.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(sender, args);
+							}
+						}
+
 				}
 			}
 		}
