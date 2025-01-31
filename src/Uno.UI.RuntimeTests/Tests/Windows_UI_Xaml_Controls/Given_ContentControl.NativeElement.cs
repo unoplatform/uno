@@ -10,12 +10,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ContentControl
 	{
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = (RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native) & ~(RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf))]
 		public async Task When_Native_Element()
 		{
 			var checkButtonType =
-				Type.GetType("Gtk.CheckButton, GtkSharp", false)
-				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
+				RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaWpf
+					? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false)
+					: Type.GetType("Gtk.CheckButton, GtkSharp", false);
 
 			if (checkButtonType is null)
 			{
@@ -33,12 +34,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.IsNativeHost);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = (RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native) & ~(RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf))]
 		public async Task When_Native_Element_Detached()
 		{
 			var checkButtonType =
-				Type.GetType("Gtk.CheckButton, GtkSharp", false)
-				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
+				RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaWpf
+					? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false)
+					: Type.GetType("Gtk.CheckButton, GtkSharp", false);
 
 			if (checkButtonType is null)
 			{
