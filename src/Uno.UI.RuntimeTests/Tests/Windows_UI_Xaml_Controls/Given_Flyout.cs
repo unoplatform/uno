@@ -973,7 +973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Ignore("Fails")
+		[Ignore("Fails")]
 		public async Task When_Opening_And_Closing_Nested_Flyouts_Canceled()
 		{
 			var flyout1 = new Flyout();
