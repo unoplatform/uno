@@ -190,13 +190,13 @@ partial class ClientHotReloadProcessor
 						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
 						// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
 
-						return (fe, ImmutableArray<ElementUpdateHandlerActions>.Empty, liveType);
+						return (fe, [], liveType);
 					}
 					else
 					{
-						return !handlers.IsDefaultOrEmpty || mappedType is not null
+						return (!handlers.IsDefaultOrEmpty || mappedType is not null)
 							? (fe, handlers, mappedType)
-							: default;
+							: (null, [], null);
 					}
 				},
 				parentKey: default);
@@ -208,21 +208,26 @@ partial class ClientHotReloadProcessor
 			// or replace the element with a new one
 			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
+				if (element is null)
+				{
+					continue;
+				}
+
 				// Action: ElementUpdate
 				// This is invoked for each existing element that is in the tree that needs to be replaced
 				foreach (var elementHandler in elementHandlers)
 				{
 					elementHandler?.ElementUpdate(element, updatedTypes);
+				}
 
-					if (elementMappedType is not null)
+				if (elementMappedType is not null)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						if (_log.IsEnabled(LogLevel.Trace))
-						{
-							_log.Error($"Updating element [{element}] to [{elementMappedType}]");
-						}
-
-						ReplaceViewInstance(element, elementMappedType, elementHandler);
+						_log.Error($"Updating element [{element}] to [{elementMappedType}]");
 					}
+
+					ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
 				}
 			}
 
@@ -408,7 +413,7 @@ partial class ClientHotReloadProcessor
 	}
 #endif
 
-	private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
+	private static void ReplaceViewInstance(UIElement instance, Type replacementType, in ImmutableArray<ElementUpdateHandlerActions> handlers, Type[] updatedTypes)
 	{
 		if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
 		{
@@ -429,11 +434,17 @@ partial class ClientHotReloadProcessor
 				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
 #endif
 
-				handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				foreach (var handler in handlers)
+				{
+					handler.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
 
 				SwapViews(instanceFE, newInstanceFE);
 
-				handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				foreach (var handler in handlers)
+				{
+					handler.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
 			}
 		}
 		else
