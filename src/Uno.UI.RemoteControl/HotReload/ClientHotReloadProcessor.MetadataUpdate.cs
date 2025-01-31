@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -20,6 +21,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
 using Uno.Threading;
+using static Uno.UI.RemoteControl.HotReload.MetadataUpdater.ElementUpdateAgent;
 
 #if HAS_UNO_WINUI
 using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
@@ -119,82 +121,108 @@ partial class ClientHotReloadProcessor
 
 			var capturedStates = new Dictionary<string, Dictionary<string, object>>();
 
+			static int GetSubClassDepth(Type? type, Type baseType)
+			{
+				var count = 0;
+				if (type == baseType)
+				{
+					return 0;
+				}
+				for (; type != null; type = type.BaseType)
+				{
+					count++;
+					if (type == baseType)
+					{
+						return count;
+					}
+				}
+				return -1;
+			}
+
 			var isCapturingState = true;
 			var treeIterator = EnumerateHotReloadInstances(
-					window.Content,
-					async (fe, key) =>
+				window.Content,
+				async (fe, key) =>
+				{
+					// Get the original type of the element, in case it's been replaced
+					var liveType = fe.GetType();
+					var originalType = liveType.GetOriginalType() ?? fe.GetType();
+
+					// Get the handler for the type specified
+					// Since we're only interested in handlers for specific element types
+					// we exclude those registered for "object". Handlers that want to run
+					// for all element types should register for FrameworkElement instead
+					ImmutableArray<ElementUpdateHandlerActions> handlers =
+					[
+						..from handler in handlerActions
+						let depth = GetSubClassDepth(originalType, handler.Key)
+						where depth is not -1 && handler.Key != typeof(object)
+						orderby depth descending
+						select handler.Value
+					];
+
+					// Get the replacement type, or null if not replaced
+					var mappedType = originalType.GetMappedType();
+					foreach (var handler in handlers)
 					{
-						// Get the original type of the element, in case it's been replaced
-						var liveType = fe.GetType();
-						var originalType = liveType.GetOriginalType() ?? fe.GetType();
-
-						// Get the handler for the type specified
-						// Since we're only interested in handlers for specific element types
-						// we exclude those registered for "object". Handlers that want to run
-						// for all element types should register for FrameworkElement instead
-						var handler = (from h in handlerActions
-									   where (originalType == h.Key ||
-											originalType.IsSubclassOf(h.Key)) &&
-											h.Key != typeof(object)
-									   select h.Value).FirstOrDefault();
-
-						// Get the replacement type, or null if not replaced
-						var mappedType = originalType.GetMappedType();
-
-						if (handler is not null)
+						if (!capturedStates.TryGetValue(key, out var dict))
 						{
-							if (!capturedStates.TryGetValue(key, out var dict))
-							{
-								dict = new();
-							}
-							if (isCapturingState)
-							{
-								handler.CaptureState(fe, dict, updatedTypes);
-								if (dict.Any())
-								{
-									capturedStates[key] = dict;
-								}
-							}
-							else
-							{
-								await handler.RestoreState(fe, dict, updatedTypes);
-							}
+							dict = new();
 						}
 
-						if (updatedTypes.Contains(liveType))
+						if (isCapturingState)
 						{
-							// This may happen if one of the nested types has been hot reloaded, but not the type itself.
-							// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
-							// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
-
-							return (fe, null, liveType);
+							handler.CaptureState(fe, dict, updatedTypes);
+							if (dict.Any())
+							{
+								capturedStates[key] = dict;
+							}
 						}
 						else
 						{
-							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+							await handler.RestoreState(fe, dict, updatedTypes);
 						}
-					},
-					parentKey: default);
+					}
+
+					if (updatedTypes.Contains(liveType))
+					{
+						// This may happen if one of the nested types has been hot reloaded, but not the type itself.
+						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
+						// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
+
+						return (fe, ImmutableArray<ElementUpdateHandlerActions>.Empty, liveType);
+					}
+					else
+					{
+						return !handlers.IsDefaultOrEmpty || mappedType is not null
+							? (fe, handlers, mappedType)
+							: default;
+					}
+				},
+				parentKey: default);
 
 			// Forced iteration to capture all state before doing ui update
 			var instancesToUpdate = await treeIterator.ToArrayAsync();
 
 			// Iterate through the visual tree and either invoke ElementUpdate, 
 			// or replace the element with a new one
-			foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
+			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
 				// Action: ElementUpdate
 				// This is invoked for each existing element that is in the tree that needs to be replaced
-				elementHandler?.ElementUpdate(element, updatedTypes);
-
-				if (elementMappedType is not null)
+				foreach (var elementHandler in elementHandlers)
 				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Error($"Updating element [{element}] to [{elementMappedType}]");
-					}
+					elementHandler?.ElementUpdate(element, updatedTypes);
 
-					ReplaceViewInstance(element, elementMappedType, elementHandler);
+					if (elementMappedType is not null)
+					{
+						if (_log.IsEnabled(LogLevel.Trace))
+						{
+							_log.Error($"Updating element [{element}] to [{elementMappedType}]");
+						}
+
+						ReplaceViewInstance(element, elementMappedType, elementHandler);
+					}
 				}
 			}
 
