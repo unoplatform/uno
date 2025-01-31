@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// List of action handlers for registering x:Bind events
 		/// </summary>
-		public List<EventHandlerBackingFieldDefinition> xBindEventsHandlers { get; } = new();
+		public List<XBindEventInitializerDefinition> xBindEventsHandlers { get; } = new();
 
 	}
 }

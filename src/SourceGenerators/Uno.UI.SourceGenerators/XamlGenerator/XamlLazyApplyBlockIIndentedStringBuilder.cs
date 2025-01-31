@@ -24,9 +24,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly IDisposable? _parentDisposable;
 		private readonly bool _exposeContext;
 		private readonly Action<string> _onRegisterApplyMethodBody;
-		private readonly string? _exposeContextMethod;
+		private readonly string _exposeContextMethod;
 		private readonly string _appliedType;
 		private readonly string _topLevelType;
+
+		public string? MethodName => _exposeContext ? _exposeContextMethod : null;
 
 		public XamlLazyApplyBlockIIndentedStringBuilder(
 			IIndentedStringBuilder source,
@@ -37,7 +39,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Action<string> onRegisterApplyMethodBody,
 			string appliedType,
 			string topLevelType,
-			string? exposeContextMethod,
+			string exposeContextMethod,
 			IDisposable? parentDisposable = null)
 		{
 			_closureName = closureName;
