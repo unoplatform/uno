@@ -322,7 +322,7 @@ public class Given_WebView2
 			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 
-			if (ConditionalTestAttribute.IsSkiaX11()) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
+			if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaX11) // On X11 we double escape. This makes sense because in site.js, we stringify a string. Other webkit-based implementations get this wrong
 			{
 				Assert.AreEqual("\"\\\"rgb(255, 0, 0)\\\"\"", message);
 			}
@@ -466,7 +466,7 @@ public class Given_WebView2
 #if !WINAPPSDK && !__ANDROID__
 	[DataRow(true)]
 	[DataRow(false)]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
