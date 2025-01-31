@@ -384,7 +384,6 @@ public class X11NativeWebView : INativeWebView
 
 	private string JsValueToString(Value value)
 	{
-		// TODO: fix this to make Given_WebView2 green. Some tests are failing over quoting.
 		if (value.IsNull)
 		{
 			return "null";
