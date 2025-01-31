@@ -139,7 +139,7 @@ internal partial class Win32WindowWrapper
 			if (hdc != new HDC(IntPtr.Zero))
 			{
 				var success = PInvoke.ReleaseDC(hwnd, hdc) == 1;
-				if (success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}
 		}
 
@@ -172,7 +172,7 @@ internal partial class Win32WindowWrapper
 		void IRenderer.CopyPixels(int width, int height)
 		{
 			var success = PInvoke.SwapBuffers(_hdc);
-			if (success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
+			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
 
 		void IRenderer.Reset()

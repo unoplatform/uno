@@ -90,7 +90,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		OnWindowSizeOrLocationChanged();
 
 		var success2 = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0;
-		if (success2) { this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 		UpdateWindowPropertiesFromPackage();
 
@@ -265,7 +265,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
 		UpdateDisplayInfo();
 		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-		if (success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	private void OnWmDestroy()
