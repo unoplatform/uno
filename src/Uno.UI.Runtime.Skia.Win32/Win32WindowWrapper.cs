@@ -21,6 +21,7 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
@@ -87,7 +88,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
-		OnWindowSizeOrLocationChanged();
+		// an asynchronous call here is needed because we need to wait for the subscriptions in
+		// BaseWindowImplementation.InitializeNativeWindow to fire SizeChanged.
+		NativeDispatcher.Main.Enqueue(OnWindowSizeOrLocationChanged, NativeDispatcherPriority.High);
 
 		var success2 = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0;
 		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
