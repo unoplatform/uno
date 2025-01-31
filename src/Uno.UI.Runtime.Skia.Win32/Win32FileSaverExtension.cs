@@ -32,14 +32,14 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
 		hResult = iFileSaveDialog.Value->GetOptions(out var dialogOptions);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
@@ -53,7 +53,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		hResult = iFileSaveDialog.Value->SetOptions(dialogOptions);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
@@ -78,7 +78,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				.AsSpan());
 			if (hResult.Failed)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<StorageFile?>(null);
 			}
 		}
@@ -86,7 +86,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		hResult = iFileSaveDialog.Value->SetOkButtonLabel(picker.CommitButtonText);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
@@ -100,7 +100,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			}
 			return Task.FromResult<StorageFile?>(null);
 		}
@@ -111,7 +111,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetResult)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IFileDialog.GetResult)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			}
 			return Task.FromResult<StorageFile?>(null);
 		}
@@ -120,7 +120,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		iShellItem.Value->GetDisplayName(SIGDN.SIGDN_FILESYSPATH, (PWSTR*)&resultName);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
@@ -140,7 +140,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 				}
 				else
 				{
-					_ = this.Log().Log(LogLevel.Error, entry, pattern, static (entry, pattern) => $"Skipping invalid file extension pattern '{pattern}' for key {entry.Key}");
+					this.LogError()?.Error($"Skipping invalid file extension pattern '{pattern}' for key {entry.Key}");
 				}
 			}
 		}

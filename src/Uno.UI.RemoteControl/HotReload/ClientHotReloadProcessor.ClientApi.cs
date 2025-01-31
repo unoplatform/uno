@@ -117,8 +117,8 @@ public partial class ClientHotReloadProcessor
 			}
 
 			var log = this.Log();
-			var trace = log.IsTraceEnabled(LogLevel.Trace) ? log : default;
-			var debug = log.IsDebugEnabled(LogLevel.Debug) ? log : default;
+			var trace = log.IsTraceEnabled() ? log : default;
+			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.FilePath)}]";
 
 			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText?[..100]} | to: {req.NewText?[..100]}.");

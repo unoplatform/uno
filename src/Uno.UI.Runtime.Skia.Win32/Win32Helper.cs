@@ -77,7 +77,7 @@ internal static class Win32Helper
 		firstByte = PInvoke.GlobalLock(handle);
 		if (firstByte is null)
 		{
-			typeof(Win32Helper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {GetErrorMessage()}");
+			typeof(Win32Helper).LogError()?.Error($"{nameof(PInvoke.GlobalLock)} failed: {GetErrorMessage()}");
 			return null;
 		}
 
@@ -88,7 +88,8 @@ internal static class Win32Helper
 	{
 		public void Dispose()
 		{
-			_ = PInvoke.GlobalUnlock(handle) != IntPtr.Zero || Marshal.GetLastWin32Error() == (int)WIN32_ERROR.NO_ERROR || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {GetErrorMessage()}");
+			var success = PInvoke.GlobalUnlock(handle) != IntPtr.Zero || Marshal.GetLastWin32Error() == (int)WIN32_ERROR.NO_ERROR;
+			if (!success) { typeof(GlobalLockDisposable).LogError()?.Error($"{nameof(PInvoke.GlobalUnlock)} failed: {GetErrorMessage()}"); }
 		}
 	}
 
@@ -97,7 +98,7 @@ internal static class Win32Helper
 		handle = PInvoke.GlobalAlloc(uFlags, dwBytes);
 		if (handle == IntPtr.Zero)
 		{
-			typeof(Win32Helper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {GetErrorMessage()}");
+			typeof(Win32Helper).LogError()?.Error($"{nameof(PInvoke.GlobalAlloc)} failed: {GetErrorMessage()}");
 			return null;
 		}
 
@@ -110,7 +111,8 @@ internal static class Win32Helper
 		{
 			if (shouldFree?.Invoke() ?? true)
 			{
-				_ = PInvoke.GlobalFree(handle) != IntPtr.Zero || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {GetErrorMessage()}");
+				var success = PInvoke.GlobalFree(handle) != IntPtr.Zero;
+				if (!success) { typeof(GlobalLockDisposable).LogError()?.Error($"{nameof(PInvoke.GlobalFree)} failed: {GetErrorMessage()}"); }
 			}
 		}
 	}

@@ -233,15 +233,8 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		}
 	}
 
-	public void RequestFullScreen()
-	{
-		// TODO
-	}
-
-	public void ExitFullScreen()
-	{
-		// TODO
-	}
+	public void RequestFullScreen() { /* No need to do anything. */ }
+	public void ExitFullScreen() { /* No need to do anything. */ }
 
 	public void RequestCompactOverlay()
 	{

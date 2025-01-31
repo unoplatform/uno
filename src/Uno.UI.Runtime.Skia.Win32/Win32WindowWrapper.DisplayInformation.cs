@@ -2,9 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Windows.Win32;
-using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
-using Uno.Disposables;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -61,7 +59,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 
 		if (!PInvoke.GetMonitorInfo(hMonitor, (MONITORINFO*)(&monitorInfo)))
 		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetMonitorInfo)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.GetMonitorInfo)} failed: {Win32Helper.GetErrorMessage()}");
 			return DisplayInfo.Default;
 		}
 
@@ -75,7 +73,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		};
 		if (!PInvoke.EnumDisplaySettingsEx(monitorInfo.szDevice.ToString(), ENUM_DISPLAY_SETTINGS_MODE.ENUM_CURRENT_SETTINGS, ref devMode, ENUM_DISPLAY_SETTINGS_FLAGS.EDS_RAWMODE))
 		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnumDisplaySettingsEx)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.EnumDisplaySettingsEx)} failed: {Win32Helper.GetErrorMessage()}");
 			return DisplayInfo.Default;
 		}
 
@@ -98,7 +96,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		var dpi = PInvoke.GetDpiForWindow(_hwnd);
 		if (dpi == 0)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
 			dpi = 96;
 		}
 

@@ -67,14 +67,19 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
 		using var cursorDisposable = new DisposableStruct<HCURSOR, Win32WindowWrapper>(static (hCursor, @this) =>
 		{
-			_ = PInvoke.DestroyCursor(hCursor) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
+			var success = PInvoke.DestroyCursor(hCursor);
+			if (!success) { @this.LogError()?.Error($"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}, hCursor, this);
 		PInvoke.SetCursor(hCursor);
 	}
 
 	[NotImplemented] public Point PointerPosition => default;
 
-	public void ReleasePointerCapture() => _ = PInvoke.ReleaseCapture() || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseCapture)} failed: {Win32Helper.GetErrorMessage()}");
+	public void ReleasePointerCapture()
+	{
+		var success = PInvoke.ReleaseCapture();
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ReleaseCapture)} failed: {Win32Helper.GetErrorMessage()}"); }
+	}
 
 	public void SetPointerCapture() => PInvoke.SetCapture(_hwnd);
 
@@ -98,8 +103,10 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		position = pointerInfo.ptPixelLocation;
 		rawPosition = pointerInfo.ptPixelLocationRaw;
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
-		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.ScreenToClient(_hwnd, ref position);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
+		var success2 = PInvoke.ScreenToClient(_hwnd, ref rawPosition);
+		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 		var scale = XamlRoot!.RasterizationScale;
 		position = new System.Drawing.Point((int)(position.X / scale), (int)(position.Y / scale));
@@ -166,22 +173,28 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			{
 				case POINTER_INPUT_TYPE.PT_TOUCH:
 					properties.TouchConfidence = Win32Helper.HAS_POINTER_CONFIDENCE_WPARAM(wParam);
-					if (PInvoke.GetPointerTouchInfo(pointerId, out var pointerTouchInfo)
-						|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetPointerTouchInfo)} failed: {Win32Helper.GetErrorMessage()}"))
+					if (PInvoke.GetPointerTouchInfo(pointerId, out var pointerTouchInfo))
 					{
 						properties.ContactRect = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_CONTACTAREA) == 0 ? new Rect() : pointerTouchInfo.rcContact.ToRect();
 						properties.Orientation = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_CONTACTAREA) == 0 ? 0 : pointerTouchInfo.orientation;
 						properties.Pressure = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_PRESSURE) == 0 ? 0 : pointerTouchInfo.pressure;
 					}
+					else
+					{
+						this.LogError()?.Error($"{nameof(PInvoke.GetPointerTouchInfo)} failed: {Win32Helper.GetErrorMessage()}");
+					}
 					break;
 				case POINTER_INPUT_TYPE.PT_PEN:
 					properties.IsBarrelButtonPressed = Win32Helper.IS_POINTER_SECONDBUTTON_WPARAM(wParam);
-					if (PInvoke.GetPointerPenInfo(pointerId, out var pointerPenInfo)
-						|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetPointerPenInfo)} failed: {Win32Helper.GetErrorMessage()}"))
+					if (PInvoke.GetPointerPenInfo(pointerId, out var pointerPenInfo))
 					{
 						properties.XTilt = (pointerPenInfo.penMask & PInvoke.PEN_MASK_TILT_X) == 0 ? 0 : pointerPenInfo.tiltX;
 						properties.YTilt = (pointerPenInfo.penMask & PInvoke.PEN_MASK_TILT_Y) == 0 ? 0 : pointerPenInfo.tiltY;
 						properties.Pressure = (pointerPenInfo.penMask & PInvoke.PEN_MASK_PRESSURE) == 0 ? 0 : pointerPenInfo.pressure;
+					}
+					else
+					{
+						this.LogError()?.Error($"{nameof(PInvoke.GetPointerPenInfo)} failed: {Win32Helper.GetErrorMessage()}");
 					}
 					break;
 				case POINTER_INPUT_TYPE.PT_MOUSE:
@@ -226,7 +239,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			_ => throw new ArgumentOutOfRangeException(nameof(msg), msg, null)
 		};
 
-		this.Log().Log(LogLevel.Trace, msgName, static msgName => $"WndProc received a {msgName} message.");
+		this.LogTrace()?.Trace($"WndProc received a {msgName} message.");
 		evt?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
 	}
 }

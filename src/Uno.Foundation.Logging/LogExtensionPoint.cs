@@ -32,10 +32,16 @@ namespace Uno.Foundation.Logging
 		public static Logger Log<T>(this T instance)
 			=> Container<T>.Logger;
 
-		public static Logger? Log<T>(this T instance, LogLevel level)
+		private static Logger? Log<T>(this T instance, LogLevel level)
 		{
 			var logger = Container<T>.Logger;
 			return logger.IsEnabled(level) ? logger : null;
 		}
+
+		public static Logger? LogError<T>(this T instance) => instance.Log(LogLevel.Error);
+		public static Logger? LogWarn<T>(this T instance) => instance.Log(LogLevel.Warning);
+		public static Logger? LogInfo<T>(this T instance) => instance.Log(LogLevel.Information);
+		public static Logger? LogDebug<T>(this T instance) => instance.Log(LogLevel.Debug);
+		public static Logger? LogTrace<T>(this T instance) => instance.Log(LogLevel.Trace);
 	}
 }

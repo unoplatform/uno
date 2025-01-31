@@ -27,7 +27,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
 
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
-	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
+	private static readonly Logger? _logTrace = _log.IsTraceEnabled() ? _log : null;
 
 	// TODO: Verify the boot time unit (ms or ticks)
 	private ulong _bootTime;

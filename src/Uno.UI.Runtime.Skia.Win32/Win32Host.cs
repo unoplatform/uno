@@ -47,7 +47,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		var hResult = PInvoke.OleInitialize();
 		if (hResult.Failed)
 		{
-			typeof(Win32Host).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			typeof(Win32Host).LogError()?.Error($"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new Win32NativeWindowFactoryExtension());
@@ -89,14 +89,14 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			var hResult = PInvoke.OleInitialize();
 			if (hResult.Failed)
 			{
-				typeof(Win32Host).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				typeof(Win32Host).LogError()?.Error($"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			}
 
 			GdiplusStartupOutput o = default;
 			var status = PInvoke.GdiplusStartup(ref _gdiPlusToken, new GdiplusStartupInput { GdiplusVersion = 1 }, ref o);
 			if (status != Status.Ok)
 			{
-				typeof(Win32Host).Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdiplusStartup)} failed: {status}");
+				typeof(Win32Host).LogError()?.Error($"{nameof(PInvoke.GdiplusStartup)} failed: {status}");
 			}
 		}, NativeDispatcherPriority.Normal);
 	}

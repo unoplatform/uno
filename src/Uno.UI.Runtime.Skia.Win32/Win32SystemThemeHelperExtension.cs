@@ -30,7 +30,7 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 				var errorCode = PInvoke.RegOpenKeyEx(HKEY.HKEY_CURRENT_USER, hSubKeyString, 0, REG_SAM_FLAGS.KEY_READ, &hSubKey);
 				if (errorCode != WIN32_ERROR.ERROR_SUCCESS)
 				{
-					this.Log().Log(LogLevel.Error, errorCode, static errorCode => $"{nameof(PInvoke.RegOpenKeyEx)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
+					this.LogError()?.Error($"{nameof(PInvoke.RegOpenKeyEx)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
 					return;
 				}
 				while (true)
@@ -39,7 +39,7 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 					var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
 					if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
 					{
-						this.Log().Log(LogLevel.Error, errorCode2, static errorCode => $"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
+						this.LogError()?.Error($"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
 						return;
 					}
 
@@ -68,7 +68,7 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 		var errorCode = PInvoke.RegGetValue(HKEY.HKEY_CURRENT_USER, hSubKey, appsUseLightTheme, REG_ROUTINE_FLAGS.RRF_RT_DWORD, &regValueType, &value, &valueSize);
 		if (errorCode is not WIN32_ERROR.ERROR_SUCCESS)
 		{
-			this.Log().Log(LogLevel.Error, errorCode, static errorCode => $"{nameof(PInvoke.RegGetValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
+			this.LogError()?.Error($"{nameof(PInvoke.RegGetValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
 			return SystemTheme.Light;
 		}
 

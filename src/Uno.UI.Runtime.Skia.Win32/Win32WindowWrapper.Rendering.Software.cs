@@ -46,7 +46,8 @@ internal partial class Win32WindowWrapper
 		{
 			if (_hBitmap != HBITMAP.Null)
 			{
-				_ = PInvoke.DeleteObject(_hBitmap) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.DeleteObject(_hBitmap) == 1;
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
 				_hBitmap = HBITMAP.Null;
 			}
 		}
@@ -56,7 +57,7 @@ internal partial class Win32WindowWrapper
 			var paintDc = PInvoke.BeginPaint(hwnd, out var lpPaint);
 			if (paintDc == new HDC(IntPtr.Zero))
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.BeginPaint)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.BeginPaint)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
 			using var endPaintDisposable = new DisposableStruct<HWND, PAINTSTRUCT>(static (hwnd, lpPaint) => PInvoke.EndPaint(hwnd, lpPaint), hwnd, lpPaint);
@@ -64,22 +65,23 @@ internal partial class Win32WindowWrapper
 			var bitmapDc = PInvoke.CreateCompatibleDC(paintDc);
 			if (bitmapDc == new HDC(IntPtr.Zero))
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CreateCompatibleDC)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.CreateCompatibleDC)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
 			using var bitmapDcDisposable = new DisposableStruct<HDC>(static bitmapDc =>
 			{
-				_ = PInvoke.DeleteObject(new HGDIOBJ(bitmapDc.Value)) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.DeleteObject(new HGDIOBJ(bitmapDc.Value)) == 1;
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}, bitmapDc);
 
 			if (PInvoke.SelectObject(bitmapDc, _hBitmap) == 0)
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SelectObject)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.SelectObject)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
 
-			_ = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY)
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}");
+			var success2 = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
+			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
 
 		bool IRenderer.IsSoftware() => true;

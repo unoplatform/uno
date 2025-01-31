@@ -93,7 +93,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		}
 
 		// No need to unregister. This class lasts the lifetime on the app.
-		_ = PInvoke.AddClipboardFormatListener(_hwnd) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.AddClipboardFormatListener(_hwnd);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}"); }
 		Win32Host.RegisterWindow(_hwnd);
 	}
 
@@ -142,7 +143,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 			if (Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS)
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnumClipboardFormats)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.EnumClipboardFormats)} failed: {Win32Helper.GetErrorMessage()}");
 			}
 			else
 			{
@@ -151,7 +152,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 					var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)format);
 					if (handle == IntPtr.Zero)
 					{
-						typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+						typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
 						return null;
 					}
 
@@ -257,7 +258,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
 		if (filesDropped == 0)
 		{
-			typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
@@ -267,7 +268,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
 			if (charLength == 0)
 			{
-				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
+				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
 				continue;
 			}
 			charLength++; // + 1 for \0
@@ -277,7 +278,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
 			if (charsWritten == 0)
 			{
-				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
+				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
 				break;
 			}
 			var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
@@ -291,7 +292,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			}
 			else
 			{
-				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
+				typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
 			}
 		}
 
@@ -319,7 +320,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 			if (!task.IsCompletedSuccessfully)
 			{
-				this.Log().Log(LogLevel.Error, task, static task => $"{nameof(view.GetTextAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+				this.LogError()?.Error($"{nameof(view.GetTextAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
 				return;
 			}
 
@@ -343,7 +344,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 				using var lockDisposable = Win32Helper.GlobalLock(handle, out var dstBytes);
 				Buffer.MemoryCopy(srcBytes, dstBytes, bufferLength, bufferLength);
-				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(handle)) != HANDLE.Null;
+				if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 				// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
 				shouldFree = !success;
@@ -367,7 +369,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 		if (!task.IsCompletedSuccessfully)
 		{
-			this.Log().Log(LogLevel.Error, task, static task => $"{nameof(view.GetBitmapAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+			this.LogError()?.Error($"{nameof(view.GetBitmapAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
 			return;
 		}
 
@@ -379,7 +381,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 		if (!task2.IsCompletedSuccessfully)
 		{
-			this.Log().Log(LogLevel.Error, task2, static task => $"{nameof(RandomAccessStreamReference.OpenReadAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+			this.LogError()?.Error($"{nameof(RandomAccessStreamReference.OpenReadAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
 			return;
 		}
 
@@ -390,7 +392,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var readStream = stream.AsStreamForRead();
 		if (readStream.ReadByte() != 0x42 || readStream.ReadByte() != 0x4D)
 		{
-			this.Log().Log(LogLevel.Error, static () => "Failed to copy BMP image to clipboard: invalid BMP format.");
+			this.LogError()?.Error("Failed to copy BMP image to clipboard: invalid BMP format.");
 			return;
 		}
 
@@ -408,7 +410,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		readStream.Seek(sizeof(BITMAPFILEHEADER), SeekOrigin.Begin);
 		readStream.ReadExactly(new Span<byte>(bmp, (int)stream.Size - sizeof(BITMAPFILEHEADER)));
 
-		var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB, new HANDLE(handle)) != HANDLE.Null;
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}"); }
 		// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
 		shouldFree = !success;
 	}
@@ -418,10 +421,12 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		private readonly bool _shouldClose;
 		public ClipboardDisposable(HWND hwnd, bool ownClipboard)
 		{
-			_shouldClose = PInvoke.OpenClipboard(hwnd) || typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.OpenClipboard)} failed: {Win32Helper.GetErrorMessage()}");
+			_shouldClose = PInvoke.OpenClipboard(hwnd);
+			if (!_shouldClose) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.OpenClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
 			if (ownClipboard)
 			{
-				_ = PInvoke.EmptyClipboard() || typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EmptyClipboard)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.EmptyClipboard();
+				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.EmptyClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}
 		}
 
@@ -429,7 +434,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		{
 			if (_shouldClose)
 			{
-				_ = PInvoke.CloseClipboard() || typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CloseClipboard)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.CloseClipboard();
+				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.CloseClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}
 		}
 	}

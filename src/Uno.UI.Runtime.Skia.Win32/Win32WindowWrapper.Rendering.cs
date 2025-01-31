@@ -20,14 +20,14 @@ internal partial class Win32WindowWrapper
 
 	private void Paint()
 	{
-		this.Log().Log(LogLevel.Trace, this, static @this => $"Render {@this._renderCount++}");
+		this.LogTrace()?.Trace($"Render {this._renderCount++}");
 
 		_renderer.StartPaint();
 		using var paintDisposable = new DisposableStruct<IRenderer>(static r => r.EndPaint(), _renderer);
 
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 

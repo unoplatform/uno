@@ -172,6 +172,7 @@ namespace Uno.UI.Runtime.Skia.Win32
 			{
 				RunOnce();
 			}
+			// ReSharper disable once FunctionNeverReturns
 		}
 	}
 }

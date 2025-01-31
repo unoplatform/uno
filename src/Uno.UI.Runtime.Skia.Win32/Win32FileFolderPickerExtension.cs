@@ -10,7 +10,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
@@ -44,14 +43,14 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
 		hResult = iFileOpenDialog.Value->GetOptions(out var dialogOptions);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
@@ -66,7 +65,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		hResult = iFileOpenDialog.Value->SetOptions(dialogOptions);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
@@ -91,7 +90,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 				.AsSpan());
 			if (hResult.Failed)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 			}
 		}
@@ -99,7 +98,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		hResult = iFileOpenDialog.Value->SetOkButtonLabel(picker.CommitButtonTextInternal);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
@@ -113,7 +112,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			}
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
@@ -122,14 +121,14 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		hResult = iFileOpenDialog.Value->GetResults(iShellItemArray);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileOpenDialog.GetResults)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IFileOpenDialog.GetResults)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
 		hResult = iShellItemArray.Value->GetCount(out var count);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItemArray.GetCount)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IShellItemArray.GetCount)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
@@ -145,7 +144,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 							continue;
 						}
 						var hResult = (HRESULT)ptr->Release();
-						_ = hResult.Succeeded || typeof(Win32FileFolderPickerExtension).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IUnknown.Release)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+						if (hResult.Failed) { typeof(Win32FileFolderPickerExtension).LogError()?.Error($"{nameof(IUnknown.Release)} failed: {Win32Helper.GetErrorMessage(hResult)}"); }
 					}
 				}, items);
 
@@ -157,7 +156,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			hResult = iShellItemArray.Value->GetItemAt((uint)i, &temp);
 			if (hResult.Failed)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItemArray.GetItemAt)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IShellItemArray.GetItemAt)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 			}
 			items[i] = temp;
@@ -165,7 +164,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			temp->GetDisplayName(SIGDN.SIGDN_FILESYSPATH, (PWSTR*)&resultName);
 			if (hResult.Failed)
 			{
-				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				this.LogError()?.Error($"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 				continue;
 			}
 
@@ -195,7 +194,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 			else
 			{
-				_ = this.Log().Log(LogLevel.Error, pattern, static pattern => $"Skipping invalid file extension filter: '{pattern}'");
+				this.LogError()?.Error($"Skipping invalid file extension filter: '{pattern}'");
 			}
 		}
 

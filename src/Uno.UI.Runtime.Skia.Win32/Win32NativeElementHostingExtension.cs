@@ -68,7 +68,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
@@ -95,7 +95,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		var status = PInvoke.GdipCreatePath(intersectionPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
 		if (status != Status.Ok)
 		{
-			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreatePath)} failed: {status}");
+			this.LogError()?.Error($"{nameof(PInvoke.GdipCreatePath)} failed: {status}");
 			return;
 		}
 
@@ -114,7 +114,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 					status = PInvoke.GdipAddPathLine(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y);
 					if (status != Status.Ok)
 					{
-						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathLine)} failed: {status}");
+						this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathLine)} failed: {status}");
 						return;
 					}
 					break;
@@ -126,7 +126,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 						status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, pointSpan[2].X, pointSpan[2].Y);
 						if (status != Status.Ok)
 						{
-							this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+							this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
 							return;
 						}
 					}
@@ -151,7 +151,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 						status = PInvoke.GdipAddPathBezier(gpPath, p0.X, p0.Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, p2.X, p2.Y);
 						if (status != Status.Ok)
 						{
-							this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+							this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
 							return;
 						}
 					}
@@ -160,7 +160,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y, pointSpan[2].X, pointSpan[2].Y, pointSpan[3].X, pointSpan[3].Y);
 					if (status != Status.Ok)
 					{
-						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+						this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
 						return;
 					}
 					break;
@@ -168,7 +168,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 					status = PInvoke.GdipClosePathFigure(gpPath);
 					if (status != Status.Ok)
 					{
-						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipClosePathFigure)} failed: {status}");
+						this.LogError()?.Error($"{nameof(PInvoke.GdipClosePathFigure)} failed: {status}");
 						return;
 					}
 					break;
@@ -183,7 +183,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		status = PInvoke.GdipCreateRegionPath(gpPath, &region);
 		if (status != Status.Ok)
 		{
-			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreateRegionPath)} failed: {status}");
+			this.LogError()?.Error($"{nameof(PInvoke.GdipCreateRegionPath)} failed: {status}");
 			return;
 		}
 
@@ -191,7 +191,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		status = PInvoke.GdipCreateFromHWND(Hwnd, ref graphics);
 		if (status != Status.Ok)
 		{
-			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreateFromHWND)} failed: {status}");
+			this.LogError()?.Error($"{nameof(PInvoke.GdipCreateFromHWND)} failed: {status}");
 			return;
 		}
 
@@ -199,13 +199,13 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		status = PInvoke.GdipGetRegionHRgn(region, graphics, &hrgn);
 		if (status != Status.Ok)
 		{
-			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipGetRegionHRgn)} failed: {status}");
+			this.LogError()?.Error($"{nameof(PInvoke.GdipGetRegionHRgn)} failed: {status}");
 			return;
 		}
 
 		// "After a successful call to SetWindowRgn, the system owns the region specified by the region handle hRgn. The system does not make a copy of the region. Thus, you should not make any further function calls with this region handle. In particular, do not delete this region handle. The system deletes the region handle when it no longer needed."
-		_ = PInvoke.SetWindowRgn((HWND)((Win32NativeWindow)presenter.Content).Hwnd, new HRGN(hrgn), true) != 0
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetWindowRgn((HWND)((Win32NativeWindow)presenter.Content).Hwnd, new HRGN(hrgn), true) != 0;
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	public void DetachNativeElement(object content)
@@ -220,7 +220,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
 		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathChanged -= OnRenderingNegativePathChanged;
@@ -235,15 +235,18 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 
 		_lastArrangeRect = arrangeRect;
 
-		_ = PInvoke.SetWindowPos(
+		var success = PInvoke.SetWindowPos(
 				(HWND)window.Hwnd,
 				HWND.Null,
 				(int)arrangeRect.X,
 				(int)arrangeRect.Y,
 				(int)arrangeRect.Width,
 				(int)arrangeRect.Height,
-				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 		OnRenderingNegativePathChanged(this, _lastClipPath);
 	}
 
@@ -304,7 +307,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		_ = PInvoke.SetLayeredWindowAttributes((HWND)window.Hwnd, new COLORREF(0), (byte)Math.Round(opacity * 255), LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetLayeredWindowAttributes)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetLayeredWindowAttributes((HWND)window.Hwnd, new COLORREF(0), (byte)Math.Round(opacity * 255), LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetLayeredWindowAttributes)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 }

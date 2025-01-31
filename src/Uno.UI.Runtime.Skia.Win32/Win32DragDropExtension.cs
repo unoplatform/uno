@@ -43,7 +43,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		_dropTarget = ComHelpers.TryGetComScope<IDropTarget>(this, out HRESULT hResult);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(ComHelpers.TryGetComScope)}<{nameof(IDropTarget)}> failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(ComHelpers.TryGetComScope)}<{nameof(IDropTarget)}> failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return;
 		}
 
@@ -51,7 +51,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		hResult = PInvoke.RegisterDragDrop(_hwnd, _dropTarget);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 	}
 
@@ -68,7 +68,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return HRESULT.E_UNEXPECTED;
 		}
 
@@ -81,12 +81,13 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return HRESULT.E_UNEXPECTED;
 		}
 
 		var position = new System.Drawing.Point(pt.x, pt.y);
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.ScreenToClient(_hwnd, ref position);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
 		var src = new DragEventSource(position.X, position.Y, grfKeyState);
 
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
@@ -113,7 +114,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 				}
 				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
 				{
-					typeof(Win32DragDropExtension).Log().Log(LogLevel.Error, formatetc, static formatetc => $"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					typeof(Win32DragDropExtension).LogError()?.Error($"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
 					return false;
 				}
 
@@ -150,10 +151,11 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	unsafe HRESULT IDropTarget.Interface.DragOver(MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.ScreenToClient(_hwnd, ref position);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
 		var src = new DragEventSource(position.X, position.Y, grfKeyState);
 
-		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
+		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
@@ -162,7 +164,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	HRESULT IDropTarget.Interface.DragLeave()
 	{
-		this.Log().Log(LogLevel.Trace, static () => $"{nameof(IDropTarget.Interface.DragLeave)}");
+		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragLeave)}");
 
 		_manager.ProcessAborted(_fakePointerId);
 
@@ -172,10 +174,11 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	unsafe HRESULT IDropTarget.Interface.Drop(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.ScreenToClient(_hwnd, ref position);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"); }
 		var src = new DragEventSource(position.X, position.Y, grfKeyState);
 
-		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.Drop)} @ {position}");
+		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
 

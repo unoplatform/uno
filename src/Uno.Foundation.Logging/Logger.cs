@@ -26,56 +26,6 @@ namespace Uno.Foundation.Logging
 			}
 		}
 
-		/// <returns>Always returns false to allow chaining without chaining  like this: operationFailed = (operation() == expectedValue) || Log()</returns>
-		public bool Log(LogLevel level, Func<string> func, Exception? exception = null)
-		{
-			if (IsEnabled(level))
-			{
-				_externalLogger?.Log(level, func(), exception);
-			}
-			return false;
-		}
-
-		/// <returns>Always returns false to allow chaining without chaining  like this: operationFailed = (operation() == expectedValue) || Log()</returns>
-		public bool Log<T1>(LogLevel level, T1 arg, Func<T1, string> func, Exception? exception = null)
-		{
-			if (IsEnabled(level))
-			{
-				_externalLogger?.Log(level, func(arg), exception);
-			}
-			return false;
-		}
-
-		/// <returns>Always returns false to allow chaining without chaining  like this: operationFailed = (operation() == expectedValue) || Log()</returns>
-		public bool Log<T1, T2>(LogLevel level, T1 arg1, T2 arg2, Func<T1, T2, string> func, Exception? exception = null)
-		{
-			if (IsEnabled(level))
-			{
-				_externalLogger?.Log(level, func(arg1, arg2), exception);
-			}
-			return false;
-		}
-
-		/// <returns>Always returns false to allow chaining without chaining  like this: operationFailed = (operation() == expectedValue) || Log()</returns>
-		public bool Log<T1, T2, T3>(LogLevel level, T1 arg1, T2 arg2, T3 arg3, Func<T1, T2, T3, string> func, Exception? exception = null)
-		{
-			if (IsEnabled(level))
-			{
-				_externalLogger?.Log(level, func(arg1, arg2, arg3), exception);
-			}
-			return false;
-		}
-
-		/// <returns>Always returns false to allow chaining without chaining  like this: operationFailed = (operation() == expectedValue) || Log()</returns>
-		public bool Log<T1, T2, T3, T4>(LogLevel level, T1 arg1, T2 arg2, T3 arg3, T4 arg4, Func<T1, T2, T3, T4, string> func, Exception? exception = null)
-		{
-			if (IsEnabled(level))
-			{
-				_externalLogger?.Log(level, func(arg1, arg2, arg3, arg4), exception);
-			}
-			return false;
-		}
-
 		public void Log(LogLevel level, IFormattable formattable, Exception? exception = null)
 		{
 			if (IsEnabled(level))
@@ -122,11 +72,11 @@ namespace Uno.Foundation.Logging
 		public void Info(IFormattable formattable) => Log(LogLevel.Information, formattable.ToString());
 
 		public bool IsEnabled(LogLevel logLevel) => _level <= logLevel;
-		public bool IsTraceEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Trace);
-		public bool IsDebugEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Debug);
-		public bool IsErrorEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Error);
-		public bool IsInformationEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Information);
-		public bool IsWarningEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Warning);
-		public bool IsCriticalEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Critical);
+		public bool IsTraceEnabled() => IsEnabled(LogLevel.Trace);
+		public bool IsDebugEnabled() => IsEnabled(LogLevel.Debug);
+		public bool IsErrorEnabled() => IsEnabled(LogLevel.Error);
+		public bool IsInformationEnabled() => IsEnabled(LogLevel.Information);
+		public bool IsWarningEnabled() => IsEnabled(LogLevel.Warning);
+		public bool IsCriticalEnabled() => IsEnabled(LogLevel.Critical);
 	}
 }

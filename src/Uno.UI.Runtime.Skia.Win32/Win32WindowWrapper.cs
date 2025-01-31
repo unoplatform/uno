@@ -16,8 +16,6 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Windowing.Native;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
@@ -75,8 +73,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window
 	public Win32WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_ = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0;
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 		// this must come before CreateWindow(), which sends a WM_GETMINMAXINFO message that reads from _applicationView
 		_applicationView = ApplicationView.GetForWindowId(window.AppWindow.Id);
@@ -91,8 +89,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		OnWindowSizeOrLocationChanged();
 
-		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
+		var success2 = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0;
+		if (success2) { this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 
 		UpdateWindowPropertiesFromPackage();
 
@@ -117,7 +115,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var hResult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
 		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			this.LogError()?.Error($"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 	}
 
@@ -127,12 +125,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			if (!PInvoke.GetWindowRect(_hwnd, out var rect))
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
 			// We are setting the window rect to itself to trigger a WM_GETMINMAXINFO
-			_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+			var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}
 	}
 
@@ -169,8 +167,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		_ = PInvoke.RegisterTouchWindow(hwnd, 0) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-		_ = PInvoke.EnableMouseInPointer(true) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnableMouseInPointer)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.RegisterTouchWindow(hwnd, 0);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		var success2 = PInvoke.EnableMouseInPointer(true);
+		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.EnableMouseInPointer)} failed: {Win32Helper.GetErrorMessage()}"); }
 		return hwnd;
 	}
 
@@ -209,30 +209,30 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				OnWmDpiChanged(wParam, lParam);
 				return new LRESULT(0);
 			case PInvoke.WM_SIZE:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
 				Paint();
 				break;
 			case PInvoke.WM_KEYDOWN:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
 				break;
 			case PInvoke.WM_KEYUP:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
 				OnKey(wParam, lParam, false);
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
@@ -240,11 +240,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				OnPointer(msg, wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_POINTERCAPTURECHANGED)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_POINTERCAPTURECHANGED)} message.");
 				OnPointerCaptureChanged(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_SETCURSOR:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SETCURSOR)} message.");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SETCURSOR)} message.");
 				if ((uint)Win32Helper.LOWORD(lParam) is not (PInvoke.HTBOTTOM or PInvoke.HTBOTTOMLEFT or PInvoke.HTBOTTOMRIGHT
 					or PInvoke.HTLEFT or PInvoke.HTRIGHT or PInvoke.HTTOP or PInvoke.HTTOPLEFT or PInvoke.HTTOPRIGHT))
 				{
@@ -260,17 +260,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe void OnWmDpiChanged(WPARAM wParam, LPARAM lParam)
 	{
 		RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
-		this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
+		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
 		// the order of the next lines matters or else the canvas might not be resized correctly
 		RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
 		UpdateDisplayInfo();
-		_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+		if (success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	private void OnWmDestroy()
 	{
-		this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
+		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		Win32Host.UnregisterWindow(_hwnd);
@@ -281,7 +281,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private bool OnWmClose()
 	{
-		this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_CLOSE), static messageName => $"WndProc received a {messageName} message.");
+		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_CLOSE)} message.");
 		var closingArgs = RaiseClosing();
 		if (closingArgs.Cancel)
 		{
@@ -297,19 +297,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		switch ((uint)Win32Helper.LOWORD(wParam))
 		{
 			case PInvoke.WA_ACTIVE:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
 				ActivationState = CoreWindowActivationState.CodeActivated;
 				break;
 			case PInvoke.WA_CLICKACTIVE:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
 				ActivationState = CoreWindowActivationState.PointerActivated;
 				break;
 			case PInvoke.WA_INACTIVE:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
+				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
 				ActivationState = CoreWindowActivationState.Deactivated;
 				break;
 			default:
-				this.Log().Log(LogLevel.Error, wParam, static wParam => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
+				this.LogError()?.Error($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
 				break;
 		}
 	}
@@ -318,19 +318,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
 		if (!PInvoke.GetWindowRect(_hwnd, out RECT windowRect))
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
 		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
 
-		this.Log().Log(LogLevel.Trace, windowRect, clientRect, static (windowRect, clientRect) => $"Adjusting window dimensions to {windowRect.ToRect()} and client area dimensions to {clientRect.ToRect()}");
+		this.LogTrace()?.Trace($"Adjusting window dimensions to {windowRect.ToRect()} and client area dimensions to {clientRect.ToRect()}");
 
 		// For things to work correctly with layoutting, Bounds and VisibleBounds need to start at (0,0) regardless of
 		// the reported top-left corner by Windows.
@@ -351,38 +351,42 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			char* title = stackalloc char[1024];
 			var readChars = PInvoke.GetWindowText(_hwnd, new PWSTR(title), 1024);
-			_ = readChars is not 0 || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetWindowText)} read 0 chars: {Win32Helper.GetErrorMessage()}");
+			if (readChars is 0) { this.LogError()?.Error($"{nameof(PInvoke.GetWindowText)} read 0 chars: {Win32Helper.GetErrorMessage()}"); }
 			return Marshal.PtrToStringUni((IntPtr)title, readChars);
 		}
-		set => _ = PInvoke.SetWindowText(_hwnd, value) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowText)} failed: {Win32Helper.GetErrorMessage()}");
+		set
+		{
+			var success = PInvoke.SetWindowText(_hwnd, value);
+			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowText)} failed: {Win32Helper.GetErrorMessage()}"); }
+		}
 	}
 
 	protected internal override void Activate()
 	{
-		_ = PInvoke.SetActiveWindow(_hwnd) != HWND.Null
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetActiveWindow)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.SetActiveWindow(_hwnd) != HWND.Null;
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetActiveWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	protected override void ShowCore() => PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 
 	protected override void CloseCore()
 	{
-		this.Log().Log(LogLevel.Information, _hwnd, static hwnd => $"Forcibly closing window {hwnd.Value.ToString("X", CultureInfo.InvariantCulture)}");
+		this.LogInfo()?.Info($"Forcibly closing window {_hwnd.Value.ToString("X", CultureInfo.InvariantCulture)}");
 
-		_ = PInvoke.DestroyWindow(_hwnd)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.DestroyWindow(_hwnd);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	public override void Move(PointInt32 position)
 	{
-		_ = !PInvoke.SetWindowPos(_hwnd, HWND.Null, position.X, position.Y, 0, 0, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOSIZE)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = !PInvoke.SetWindowPos(_hwnd, HWND.Null, position.X, position.Y, 0, 0, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	public override void Resize(SizeInt32 size)
 	{
-		_ = !PInvoke.SetWindowPos(_hwnd, HWND.Null, 0, 0, size.Width, size.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = !PInvoke.SetWindowPos(_hwnd, HWND.Null, 0, 0, size.Width, size.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	private unsafe void UpdateWindowPropertiesFromPackage()
@@ -394,17 +398,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 			if (File.Exists(iconPath))
 			{
-				this.Log().Log(LogLevel.Information, iconPath, static iconPath => $"Loading icon file [{iconPath}] from Package.appxmanifest file");
+				this.LogInfo()?.Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				SetIcon(iconPath);
 			}
 			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
-				this.Log().Log(LogLevel.Information, scaledPath, static scaledPath => $"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+				this.LogInfo()?.Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				SetIcon(scaledPath);
 			}
 			else
 			{
-				this.Log().Log(LogLevel.Warning, iconPath, static iconPath => $"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
+				this.LogWarn()?.Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
 			}
 		}
 
@@ -434,14 +438,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 			if (!File.Exists(iconPath))
 			{
-				this.Log().Log(LogLevel.Error, iconPath, static iconPath => $"Couldn't find icon file [{iconPath}].");
+				this.LogError()?.Error($"Couldn't find icon file [{iconPath}].");
 				return;
 			}
 
 			var image = SKImage.FromEncodedData(iconPath);
 			if (image is null)
 			{
-				this.Log().Log(LogLevel.Error, iconPath, static iconPath => $"Couldn't load icon file [{iconPath}].");
+				this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
 				return;
 			}
 			using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
@@ -477,7 +481,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
 			if (hIcon == HICON.Null)
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
 				return;
 			}
 
@@ -490,8 +494,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
-		_ = PInvoke.InvalidateRect(_hwnd, default(RECT*), true)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
+		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
 	private void RegisterForBackgroundColor()
@@ -508,11 +512,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		else if (_window?.Background is not null)
 		{
-			this.Log().Log(LogLevel.Error, static () => "This platform only supports SolidColorBrush for the Window background");
+			this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
 		}
 		else if (_window is null)
 		{
-			this.Log().Log(LogLevel.Debug, static () => $"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
+			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
 		}
 	}
 }

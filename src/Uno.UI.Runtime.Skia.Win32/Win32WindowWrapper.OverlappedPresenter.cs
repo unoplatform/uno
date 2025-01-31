@@ -63,7 +63,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		if (!PInvoke.SetWindowPos(_hwnd, isAlwaysOnTop ? HWND.HWND_TOPMOST : HWND.HWND_NOTOPMOST, 0, 0, 0, 0,
 				SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE))
 		{
-			this.Log(LogLevel.Error)?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 	}
 
@@ -80,7 +80,7 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			WINDOWPLACEMENT placement = default;
 			if (!PInvoke.GetWindowPlacement(_hwnd, ref placement))
 			{
-				this.Log(LogLevel.Error)?.Error($"{nameof(PInvoke.GetWindowPlacement)} failed: {Win32Helper.GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.GetWindowPlacement)} failed: {Win32Helper.GetErrorMessage()}");
 				return OverlappedPresenterState.Restored;
 			}
 

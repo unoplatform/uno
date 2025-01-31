@@ -12,20 +12,20 @@ internal class Win32ApplicationViewExtension(ApplicationView owner) : IApplicati
 	{
 		if (!AppWindow.TryGetFromWindowId(owner.WindowId, out var appWindow))
 		{
-			this.Log().Log(LogLevel.Warning, static () => $"{nameof(AppWindow)} not found for WindowId.");
+			this.LogWarn()?.Warn($"{nameof(AppWindow)} not found for WindowId.");
 			return false;
 		}
 
 		var window = Window.GetFromAppWindow(appWindow);
 		if (window.RootElement?.XamlRoot is not { } xamlRoot)
 		{
-			this.Log().Log(LogLevel.Warning, static () => $"The {nameof(XamlRoot)} of the window should have been initialized at this point.");
+			this.LogWarn()?.Warn($"The {nameof(XamlRoot)} of the window should have been initialized at this point.");
 			return false;
 		}
 
 		if (Win32WindowWrapper.XamlRootMap.GetHostForRoot(xamlRoot) is not { } wrapper)
 		{
-			this.Log().Log(LogLevel.Warning, static () => $"{nameof(Win32WindowWrapper)}.{nameof(Win32WindowWrapper.XamlRootMap)} should have been filled at this point.");
+			this.LogWarn()?.Warn($"{nameof(Win32WindowWrapper)}.{nameof(Win32WindowWrapper.XamlRootMap)} should have been filled at this point.");
 			return false;
 		}
 
