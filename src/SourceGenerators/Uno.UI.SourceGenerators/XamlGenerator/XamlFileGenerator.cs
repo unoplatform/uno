@@ -186,10 +186,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
-		private string RoField(string type, string name)
-			=> _isHotReloadEnabled
-				? $"private {type} {name} {{ get; }}"
-				: $"private readonly {type} {name};";
 		private string Field(string type, string name)
 			=> $"private {type} {name} {(_isHotReloadEnabled ? "{ get; set; }" : ";")}";
 
