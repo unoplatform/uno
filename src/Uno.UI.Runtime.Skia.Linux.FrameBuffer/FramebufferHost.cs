@@ -4,20 +4,22 @@ using System.Threading;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
+using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
+using System.Threading.Tasks;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
-	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
+	public class FrameBufferHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisposable
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
@@ -52,44 +54,60 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
 		public float? DisplayScale { get; set; }
 
-		public void Run()
+		protected override void Initialize()
 		{
 			StartConsoleInterception();
 
-			_eventLoop.Schedule(Initialize);
+			_eventLoop.Schedule(InnerInitialize, NativeDispatcherPriority.Normal);
+		}
 
+		protected override Task RunLoop()
+		{
 			_terminationGate.WaitOne();
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Application is exiting");
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private void StartConsoleInterception()
 		{
-			_consoleInterceptionThread = new(() =>
+			// Only use the keyboard interception if the input is not redirected, to support
+			// starting the app without a pty.
+			if (!Console.IsInputRedirected && Console.KeyAvailable)
 			{
-
-				// Loop until Application.Current.Exit() is invoked
-				while (!_coreApplicationExtension!.ExitRequested)
+				_consoleInterceptionThread = new(() =>
 				{
-					// Read the console keys without showing them on screen.
-					// The keyboard input is handled by libinput.
-					Console.ReadKey(true);
+					// Loop until Application.Current.Exit() is invoked
+					while (!_coreApplicationExtension!.ExitRequested)
+					{
+						// Read the console keys without showing them on screen.
+						// The keyboard input is handled by libinput.
+						Console.ReadKey(true);
+					}
+
+					// The process asked to exit
+					_terminationGate.Set();
+				});
+
+				// The thread must not block the process from exiting
+				_consoleInterceptionThread.IsBackground = true;
+
+				_consoleInterceptionThread.Start();
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Console input is redirected, skipping input interception");
 				}
-
-				// The process asked to exit
-				_terminationGate.Set();
-			});
-
-			// The thread must not block the process from exiting
-			_consoleInterceptionThread.IsBackground = true;
-
-			_consoleInterceptionThread.Start();
+			}
 		}
 
-		private void Initialize()
+		private void InnerInitialize()
 		{
 			_isDispatcherThread = true;
 
@@ -97,17 +115,19 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
-			ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new FrameBufferNativeElementHostingExtension());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
-			void Dispatch(System.Action d)
-				=> _eventLoop.Schedule(() => d());
+			void Dispatch(System.Action d, NativeDispatcherPriority p)
+				=> _eventLoop.Schedule(() => d(), p);
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder();
 				app.Host = this;
+
+				// Force intialization of the DisplayInformation
+				var displayInformation = DisplayInformation.GetForCurrentViewSafe();
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -115,15 +135,12 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 						$"{_renderer?.FrameBufferDevice.ScreenSize.Width}x{_renderer?.FrameBufferDevice.ScreenSize.Height} " +
 						$"({_renderer?.FrameBufferDevice.ScreenPhysicalDimensions} mm), " +
 						$"PixelFormat: {_renderer?.FrameBufferDevice.PixelFormat}, " +
-						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
-						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
-						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
-						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
-						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+						$"ResolutionScale: {displayInformation.ResolutionScale}, " +
+						$"LogicalDpi: {displayInformation.LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {displayInformation.RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {displayInformation.DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {displayInformation.ScreenWidthInRawPixels}x{displayInformation.ScreenHeightInRawPixels}");
 				}
-
-				// Force intialization of the DisplayInformation
-				DisplayInformation.GetForCurrentView();
 
 				if (_displayInformationExtension is null)
 				{
@@ -131,6 +148,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 
 				_displayInformationExtension.Renderer = _renderer;
+
+				// Force the first render once the app has been setup
+				Dispatch(() => _renderer?.InvalidateRender(), NativeDispatcherPriority.High);
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
@@ -140,11 +160,15 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_renderer = new Renderer(this);
 
-			WUX.Application.StartWithArguments(CreateApp);
+			WUX.Application.Start(CreateApp);
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
 		WUX.UIElement? IXamlRootHost.RootElement => FrameBufferWindowWrapper.Instance.Window?.RootElement;
+
+		public void Dispose()
+		{
+		}
 	}
 }

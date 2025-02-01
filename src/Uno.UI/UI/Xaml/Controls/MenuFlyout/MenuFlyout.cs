@@ -343,8 +343,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			pCoreMenuFlyout.ShowAtImpl(target as FrameworkElement, point);
 		}
+#endif
 
-		void OnProcessKeyboardAcceleratorsImpl(ProcessKeyboardAcceleratorEventArgs pArgs)
+		protected override void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
 		{
 			if (m_tpItems != null)
 			{
@@ -352,11 +353,10 @@ namespace Microsoft.UI.Xaml.Controls
 				for (int i = 0; i < itemCount; i++)
 				{
 					MenuFlyoutItemBase spItem = m_tpItems[i];
-					(spItem as MenuFlyoutItemBase).TryInvokeKeyboardAccelerator(pArgs);
+					(spItem as MenuFlyoutItemBase).TryInvokeKeyboardAccelerator(args);
 				}
 			}
 		}
-#endif
 
 		IMenu IMenu.ParentMenu
 		{

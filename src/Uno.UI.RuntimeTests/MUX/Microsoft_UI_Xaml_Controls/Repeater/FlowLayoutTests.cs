@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -168,10 +168,10 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				const int numItems = 10;
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
-					foreach (DimensionChoice dimension in Enum.GetValues(typeof(DimensionChoice)))
+					foreach (var dimension in Enum.GetValues<DimensionChoice>())
 					{
 						LayoutPanel panel = new LayoutPanel()
 						{
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				const int itemWidth = 50;
 				const int itemHeight = 50;
 
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					LayoutPanel panel = new LayoutPanel()
 					{
@@ -366,7 +366,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation, useLayoutRounding: true);
@@ -488,7 +488,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation, useLayoutRounding: true);
@@ -586,7 +586,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation, useLayoutRounding: true);
@@ -646,7 +646,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -692,7 +692,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -764,7 +764,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("ScrollOrientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -835,7 +835,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("Orientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -954,7 +954,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("Orientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -998,7 +998,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment(string.Format("Orientation: {0}", scrollOrientation));
 					var om = new OrientationBasedMeasures(scrollOrientation);
@@ -1100,7 +1100,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					Log.Comment("ScrollOrientation is " + scrollOrientation);
 
@@ -1182,7 +1182,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				return layouts;
 			});
 
-			foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+			foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 			{
 				foreach (var layout in createLayouts(scrollOrientation))
 				{
@@ -1267,7 +1267,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					var repeater = new ItemsRepeater()
 					{
@@ -1795,7 +1795,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			LayoutPanel panel = null;
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					panel = new LayoutPanel()
 					{
@@ -1856,7 +1856,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+				foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 				{
 					LayoutPanel panel = new LayoutPanel()
 					{

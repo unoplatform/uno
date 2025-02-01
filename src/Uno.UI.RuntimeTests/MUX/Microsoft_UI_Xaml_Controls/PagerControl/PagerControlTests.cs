@@ -34,7 +34,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PagerControlTests : MUXApiTestBase
 	{
 
@@ -55,9 +54,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
-#if !__WASM__ && !__ANDROID__ && !__SKIA__// IdleSynchronizer.Wait(); is not supported on WASM
+#if !__ANDROID__
 		[TestMethod]
-		public void VerifyNumberPanelButtonUIABehavior()
+		public async Task VerifyNumberPanelButtonUIABehavior()
 		{
 			RunOnUIThread.Execute(() =>
 			{
@@ -67,9 +66,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = pagerControl;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(async () =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				await Task.Delay(500);
 
@@ -89,7 +88,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
-		public void VerifyComboBoxItemsListNormal()
+		public async Task VerifyComboBoxItemsListNormal()
 		{
 			PagerControl control = null;
 			RunOnUIThread.Execute(() =>
@@ -100,7 +99,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content = control;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -112,7 +111,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				control.NumberOfPages = 100;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -126,7 +125,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 		[Ignore("ComboBox version of the control is slow on Android/iOS (issue #3144)")]
-		public void VerifyComboBoxItemsInfiniteItems()
+		public async Task VerifyComboBoxItemsInfiniteItems()
 		{
 			PagerControl control = null;
 			RunOnUIThread.Execute(() =>
@@ -138,7 +137,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				control.NumberOfPages = -1;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -152,7 +151,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				control.NumberOfPages = -1;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -165,14 +164,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyEmptyPagerDoesNotCrash()
+		public async Task VerifyEmptyPagerDoesNotCrash()
 		{
 			RunOnUIThread.Execute(() =>
 			{
 				Content = new PagerControl();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -181,7 +180,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifySelectedIndexChangedEventArgs()
+		public async Task VerifySelectedIndexChangedEventArgs()
 		{
 			PagerControl pager = null;
 			var previousIndex = -2;
@@ -194,7 +193,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

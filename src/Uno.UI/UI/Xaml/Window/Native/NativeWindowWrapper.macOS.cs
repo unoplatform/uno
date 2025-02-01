@@ -13,6 +13,9 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
+using Uno.Disposables;
+using Windows.Graphics;
+using Windows.Graphics.Display;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
@@ -20,6 +23,8 @@ namespace Uno.UI.Xaml.Controls;
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
+
+	private readonly DisplayInformation _displayInformation;
 
 	private Uno.UI.Controls.Window _window;
 
@@ -47,13 +52,36 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
 		ObserveOrientationAndSize();
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
+
+	public override string Title
+	{
+		get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : base.Title;
+		set
+		{
+			if (IsKeyWindowInitialized())
+			{
+				NSApplication.SharedApplication.KeyWindow.Title = value;
+			}
+
+			base.Title = value;
+		}
+	}
+
+	private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	public override Uno.UI.Controls.Window NativeWindow => _window;
 
 	internal RootViewController MainController => _mainController;
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	protected override void ShowCore()
 	{
@@ -68,19 +96,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal AppWindowClosingEventArgs OnNativeClosing() => RaiseClosing();
-
-	internal void OnNativeClosed() => RaiseClosed();
 
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = new Size(_window.Frame.Width, _window.Frame.Height);
 		Bounds = new Rect(default, newWindowSize);
 		VisibleBounds = Bounds;
+		Size = newWindowSize.ToSizeInt32();
 	}
 
 	private void ObserveOrientationAndSize()
@@ -92,4 +119,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private void ResizeObserver(NSNotification obj) => RaiseNativeSizeChanged();
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
+		return Disposable.Create(() => NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null));
+	}
 }

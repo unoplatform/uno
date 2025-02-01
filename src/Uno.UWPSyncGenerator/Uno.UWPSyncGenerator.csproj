@@ -2,11 +2,13 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RollForward>Major</RollForward>
 
-		<SyncGeneratorCodeAnalysisVersion>4.5.0</SyncGeneratorCodeAnalysisVersion>
+		<!-- NOTE: Updating to 4.9 will break the BinaryLogger usage we have -->
+		<!-- It will silently stop producing binlogs -->
+		<SyncGeneratorCodeAnalysisVersion>4.8.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
 
@@ -25,10 +27,17 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+
+		<!-- BEGIN WORKAROUND: These are included transitively, but the transitive versions have vulnerabilities -->
+		<!-- Note that this is actually a false positive from NuGet side -->
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
+		<!-- END WORKAROUND -->
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 </Project>

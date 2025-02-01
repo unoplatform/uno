@@ -8,6 +8,8 @@ using Uno;
 using Uno.UI;
 using Windows.Foundation;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -227,9 +229,9 @@ namespace Microsoft.UI.Xaml.Controls
 					elementSize.Direct;
 
 				// Arrange the element
-				Windows.Foundation.Rect bounds = isHorizontal ?
-					new Windows.Foundation.Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
-					new Windows.Foundation.Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
+				Rect bounds = isHorizontal ?
+					new Rect(directOffset, indirectOffset, directGrowth, indirectGrowth) :
+					new Rect(indirectOffset, directOffset, indirectGrowth, directGrowth);
 
 				ArrangeElement(element, bounds);
 

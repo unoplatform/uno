@@ -2,6 +2,10 @@
 
   <PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 	<TargetFrameworks>$(UnoTargetFrameworkOverride.Replace('$(NetCurrent)', '$(NetPrevious)'))</TargetFrameworks>
+
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-macos'">net8.0-macos14.0</TargetFrameworks>
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-ios' and '$(OutputType)'!='Exe'">net8.0-ios17.0</TargetFrameworks>
+	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-maccatalyst' and '$(OutputType)'!='Exe'">net8.0-maccatalyst17.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

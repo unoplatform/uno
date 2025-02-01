@@ -5,16 +5,17 @@
 #nullable enable
 
 using System;
-using Uno.Foundation.Logging;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml.Input;
-using Uno.UI.Xaml.Islands;
-using Windows.Foundation;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
+using Windows.UI;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if __IOS__
@@ -84,6 +85,27 @@ namespace Uno.UI.Xaml.Core
 				RootElement = RootVisual;
 			}
 
+			if (ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				var config = RootScaleConfig.ParentApply; //XamlOneCoreTransforms.IsEnabled ? RootScaleConfig::ParentApply : RootScaleConfig::ParentInvert;
+				RootScale = new CoreWindowRootScale(config, coreServices, this);
+			}
+			else if (ContentRoot.Type == ContentRootType.XamlIslandRoot)
+			{
+				RootScale = new XamlIslandRootScale(coreServices, this);
+
+				// If an override scale was set earlier for tests, apply it to this new island.
+				//float testOverrideScale = m_pCoreNoRef->GetTestOverrideScale();
+				//if (testOverrideScale != 0.0f)
+				//{
+				//	IFCFAILFAST(m_rootScale->SetTestOverride(testOverrideScale));
+				//}
+			}
+			else
+			{
+				throw new InvalidOperationException("Invalid ContentRoot type.");
+			}
+
 			_focusInputHandler = new UnoFocusInputHandler(RootElement);
 		}
 
@@ -108,8 +130,6 @@ namespace Uno.UI.Xaml.Core
 		/// For XamlIsland content, it's the XamlIsland.
 		/// </summary>
 		public UIElement RootElement { get; }
-
-		public XamlRoot? XamlRoot { get; private set; }
 
 		/// <summary>
 		/// Gets the currently active root visual - can be either public root visual or full-window
@@ -228,7 +248,9 @@ namespace Uno.UI.Xaml.Core
 					AddRoot(PublicRootVisual);
 				}
 
-				//_pCoreNoRef.RaisePendingLoadedRequests();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				_coreServices.RaisePendingLoadedRequests();
+#endif
 			}
 
 			// Re-enter the roots with the new public root's namescope.
@@ -251,6 +273,8 @@ namespace Uno.UI.Xaml.Core
 			//{
 			//	AddRoot(_renderTargetBitmapRoot));
 			//}
+
+			ContentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.Content);
 		}
 
 		/// <summary>
@@ -409,10 +433,32 @@ namespace Uno.UI.Xaml.Core
 			if (root != null)
 			{
 				//TODO Uno: The logic here is more complex in WinUI,
-				//setting the namespace owner. Not needed currently.
+				//setting the namescope owner. Not needed currently.
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (IsMainVisualTree())
+				{
+					UIElement rootVisual = RootVisual!;
+					rootVisual.IsLoaded = true;
+				}
+				else if (root.XamlRoot?.VisualTree.RootElement is { } xamlIsland)
+				{
+					xamlIsland.IsLoaded = true;
+				}
+#endif
 
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				EnterParams enterParams = new(
+					isLive: true
+				);
+
+				// In WinUI, this is called only under IsMainVisualTree condition.
+				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
+				root.Enter(enterParams, 0);
+#endif
 			}
 		}
 
@@ -552,6 +598,19 @@ namespace Uno.UI.Xaml.Core
 			return false;
 		}
 
+		internal static XamlIsland? GetXamlIslandRootForElement(DependencyObject? pObject)
+		{
+			if (pObject is null) // || !pObject.GetContext().HasXamlIslandRoots())
+			{
+				return null;
+			}
+			if (GetForElement(pObject) is { } visualTree)
+			{
+				return visualTree.RootElement as XamlIsland;
+			}
+			return null;
+		}
+
 #if false
 		/// <summary>
 		/// Removes the given root from the implicit root visual, and potentially 'Leave' it
@@ -592,20 +651,6 @@ namespace Uno.UI.Xaml.Core
 			// publicRoot.LeavePCSceneRecursive();
 		}
 #endif
-
-		[NotImplemented]
-		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
-		{
-			//if (!pObject || !pObject->GetContext()->HasXamlIslands())
-			//{
-			//	return nullptr;
-			//}
-			if (GetForElement(pObject) is VisualTree visualTree)
-			{
-				return visualTree.RootElement;
-			}
-			return null;
-		}
 
 		internal static VisualTree? GetForElement(DependencyObject? element, LookupOptions options = LookupOptions.WarningIfNotFound)
 		{
@@ -783,6 +828,98 @@ namespace Uno.UI.Xaml.Core
 			return XamlRoot;
 		}
 
+		public XamlRoot? XamlRoot { get; private set; }
+
+		internal RootScale RootScale { get; private set; }
+
+		internal double RasterizationScale
+		{
+			get
+			{
+				if (RootScale is { } rootScale)
+				{
+					return rootScale.GetEffectiveRasterizationScale();
+				}
+				else
+				{
+					return 1.0;
+				}
+			}
+		}
+
+		//public Size Size
+		//{
+		//	get
+		//	{
+		//		if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+		//		{
+		//			return Content?.RenderSize ?? Size.Empty;
+		//		}
+
+		//		var rootElement = VisualTree.RootElement;
+		//		if (rootElement is RootVisual)
+		//		{
+		//			if (Window.CurrentSafe is null)
+		//			{
+		//				throw new InvalidOperationException("Window.Current must be set.");
+		//			}
+
+		//			return Window.CurrentSafe.Bounds.Size;
+		//		}
+		//		else if (rootElement is XamlIsland xamlIslandRoot)
+		//		{
+		//			var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+		//			var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+		//			return new Size(width, height);
+		//		}
+
+		//		return default;
+		//	}
+		//}
+
+		internal Size Size
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.GetSize();
+				}
+				else if (RootElement is RootVisual)
+				{
+					if (Window.CurrentSafe is null)
+					{
+						throw new InvalidOperationException("Window.Current must be set.");
+					}
+
+					return Window.CurrentSafe.Bounds.Size;
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
+
+		internal bool IsVisible
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.IsVisible();
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					return CoreServices.Instance.IsXamlVisible();
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 		private static void VisualTreeNotFoundWarning()
 		{
 			if (typeof(VisualTree).Log().IsEnabled(LogLevel.Debug))
@@ -790,5 +927,10 @@ namespace Uno.UI.Xaml.Core
 				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private bool IsMainVisualTree()
+			=> RootVisual != null;
+#endif
 	}
 }

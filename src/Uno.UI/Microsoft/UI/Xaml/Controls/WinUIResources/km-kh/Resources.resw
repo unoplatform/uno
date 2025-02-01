@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>បិទ IME</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ស</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ប្រផេះខ្ចី</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ប្រផេះ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ប្រផេះ​ចាស់</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ខ្មៅ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ផ្កាឈូកស្រស់</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ពណ៌ផ្កាកុលាប</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ទឹក​ក្រូចខ្ចី</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ដាំដែង</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>លឿងខ្ចី</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>បៃតងខ្ចី</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>បៃតងស្រអាប់</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>បៃតងខៀវ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ផ្ទៃមេឃ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>បៃតងខៀវខ្ចី</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ខៀវស្រាល</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ខៀវ​ខ្ចី</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ខៀវទឹកកក</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ខៀវស្វាយ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ស្វាយប្រផេះ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ផ្កាឈូក</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ក្រហម</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ទឹកក្រូច</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ត្នោត</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>មាស</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>លឿង</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>បៃតងលឿង</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>បៃតង</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>បៃតងភ្លឺ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>កាប់ស្ទាំង</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>បៃតងខៀវ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ខៀវ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ខៀវ-ប្រផេះ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ស្វាយខៀវចាស់</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ស្វាយ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ក្រហមចាស់</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>លឿងចាស់</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>បៃតង​ចាស់</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>កាប់ស្ទាំងចាស់</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ខៀវចាស់</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ស្វាយ​ចាស់</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ស្វាយ​ក្រហមចាស់</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>បិទ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

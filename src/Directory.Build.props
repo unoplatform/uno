@@ -1,16 +1,18 @@
-﻿<Project>
+<Project>
 
-	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
 
 	<PropertyGroup>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
-		<Authors>Uno Platform</Authors>
+
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
+
+		<!-- Enable the MSTest runner, this is an opt-in feature when not using MSTest.Sdk -->
+		<EnableMSTestRunner>true</EnableMSTestRunner>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
@@ -28,14 +30,6 @@
 
 		<DefaultLanguage>en-US</DefaultLanguage>
 
-		<!-- Disable source link when not building on GitHub -->
-		<SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
-		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
-		<Deterministic>true</Deterministic>
-
-		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
-
 		<!-- Resizetizer codegen is not supported in UWP -->
 		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
 
@@ -50,28 +44,11 @@
 		<EnableDefaultPageItems>false</EnableDefaultPageItems>
 		<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
 
-		<NetCurrent>net8.0</NetCurrent>
-		<NetPrevious>net7.0</NetPrevious>
-
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
-
-		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
-		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
-
-		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
-		<NetWpfPreviousAndCurrent>$(NetPreviousWpf);$(NetCurrentWpf)</NetWpfPreviousAndCurrent>
-		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
-		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
-		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
-		<NetUnitTests>$(NetPrevious)</NetUnitTests>
-
-		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
-		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.8.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.12.0-1.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -238,7 +215,7 @@
 
 	<PropertyGroup>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+		<UnoDisableNetAnalyzers Condition="$(MSBuildProjectName.Contains('Test'))">true</UnoDisableNetAnalyzers>
 		<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -246,6 +223,12 @@
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
+		<NoWarn>$(NoWarn);CS0436</NoWarn>
+		
+		<!-- Required for studio -->
+		<NoWarn>$(NoWarn);UNO0008</NoWarn>
 
 		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
 		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->
@@ -264,12 +247,12 @@
 				<!-- Enable some CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
 				<!-- Normally, we'd want to use latest -->
 				<!-- But that is currently problematic due to https://github.com/dotnet/roslyn-analyzers/issues/6999 -->
-				<AnalysisLevel>8</AnalysisLevel>
+				<AnalysisLevel>9</AnalysisLevel>
 				<AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24454.1" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -298,5 +281,8 @@
 			</ItemGroup>
 		</When>
 	</Choose>
+
+	<!-- empty placeholder -->
+	<Target Name="_UnoGetCopyToOutputItems" />
 
 </Project>

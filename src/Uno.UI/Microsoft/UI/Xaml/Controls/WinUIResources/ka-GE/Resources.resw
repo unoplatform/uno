@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME-ს გამორთვა</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>თეთრი</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ღია ნაცრისფერი</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ნაცრისფერი</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>მუქი ნაცრისფერი</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>შავი</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>მარჯნისფერი</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ვარდისფერი</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ღია ნარინჯისფერი</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ტანინი</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ღია ყვითელი</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ღია მწვანე</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ლიმონისფერი</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ზღვის ტალღის ფერი</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ცასავით ლურჯი</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ღია ფირუზისფერი</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>მკრთალი ლურჯი</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ღია ლურჯი</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ყინულის ლურჯი</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>იისფერ-ცისფერი</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>იასამნისფერი</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ვარდისფერი</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>წითელი</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ნარინჯისფერი</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ყავისფერი</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ოქროსფერი</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ყვითელი</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>წენგოსფერი მწვანე</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>მწვანე</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ნათელი მწვანე</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>მომწვანო-მოცისფრო</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ფირუზისფერი</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ლურჯი</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ლურჯი-ნაცრისფერი</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ინდიგო</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>მეწამული</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>მუქი წითელი</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>მუქი ყვითელი</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>მუქი მწვანე</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>მუქი ლურჯ-მწვანე</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>მუქი ლურჯი</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>მუქი მეწამული</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ქლიავისფერი</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>დახურვა</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

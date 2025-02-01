@@ -18,6 +18,7 @@ using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Hosting;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
 using Window = Gdk.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -406,8 +407,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		ModifierType state,
 		Event? evt)
 	{
-		var displayInformation = DisplayInformation.GetForCurrentView();
-		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(_windowHost);
+		var positionAdjustment = xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX / positionAdjustment, rootY / positionAdjustment);
@@ -474,6 +475,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 				properties.IsRightButtonPressed = IsPressed(state, ModifierType.Button3Mask, properties.PointerUpdateKind, RightButtonPressed, RightButtonReleased);
 				properties.IsXButton1Pressed = IsPressed(state, ModifierType.Button4Mask, properties.PointerUpdateKind, XButton1Pressed, XButton1Released);
 				properties.IsXButton2Pressed = IsPressed(state, ModifierType.Button5Mask, properties.PointerUpdateKind, XButton1Pressed, XButton2Released);
+				properties.IsTouchPad = dev.Source == InputSource.Touchpad;
 				break;
 
 			case PointerDeviceType.Pen:
@@ -499,10 +501,10 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		properties.IsInRange = true;
-
+		var timeInMicroseconds = time * 1000;
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: time,
-			timestamp: time * (ulong)TimeSpan.TicksPerMillisecond, // time is in ms, timestamp is in ticks
+			timestamp: timeInMicroseconds,
 			device: pointerDevice,
 			pointerId: pointerId,
 			rawPosition: rawPosition,

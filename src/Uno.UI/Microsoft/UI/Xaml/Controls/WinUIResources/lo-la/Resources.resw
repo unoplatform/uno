@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>ປິດ IME</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ສີຂາວ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າອ່ອນ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ສີຂີ້ເທົ່າເຂັ້ມ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ສີດຳ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ສີເສດເຂັ້ມ</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ກຸຫຼາບ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ສີສົ້ມອອ່ນ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ສີແທນ</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ສີເຫຼືອງອ່ອນ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ສີຂຽວໝາກນາວ</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ສີຟ້າອົມຂຽວ“</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ສີຟ້າທ້ອງຟ້າ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ສີຟ້າແກມສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ສີຟ້າອ່ອນ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ສີຟ້າຈາງ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ສີຟ້າອອ່ນນ້ຳແຂງ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ສີຟ້າ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ດອກລາເວນເດີ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ສີບົວ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ແດງ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ສີສົ້ມ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ສີນໍ້າຕານ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ສີຄຳ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ສີເຫຼືອງ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ຂຽວ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ສີຂຽວອ່ອນ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ສີນໍ້າເງິນອົມຂຽວ</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ສີຟ້າແກມຂຽວອ່ອນ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ສີຟ້າ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ສີຟ້າແກມສີເທົາ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ສີຄາມ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ສີມ່ວງ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ສີແດງຊ້ຳ</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ສີເຫຼືອງແກ່</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ສີຂຽວແກ່</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ສີນ້ຳເງິນອົມຂຽວແກ່</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ສີຟ້າແກ່</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ສີມ່ວງແກ່</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ສີມ່ວງເຂັ້ມ</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ປິດ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

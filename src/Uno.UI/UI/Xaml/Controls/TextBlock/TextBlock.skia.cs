@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 
 #nullable enable
 
@@ -25,11 +26,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly TextVisual _textVisual;
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
+		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
 		public TextBlock()
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
@@ -80,13 +83,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
+		// the entire body of the text block is considered hit-testable
+		internal override bool HitTest(Point point) => TransformToVisual((UIElement)this.GetParent()).Inverse.TransformBounds(LayoutSlotWithMarginsAndAlignments).Contains(point);
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
-			if (_inlines is { })
-			{
-				_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
-			}
-
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 		}
@@ -141,7 +142,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				if (font.CanChange)
+				{
+					font.RegisterElementForFontLoaded(this);
+				}
+
 				return font.LineHeight;
 			}
 		}
@@ -157,39 +163,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
 
-		partial void OnInlinesChangedPartial()
+		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
+
+		private void InvalidateInlineAndRequireRepaint()
 		{
 			Inlines.InvalidateMeasure();
+			_textVisual.Compositor.InvalidateRender(_textVisual);
 		}
 
-		// Invalidate Inlines measure when any IBlock properties used during measuring change:
+		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
 
-		partial void OnMaxLinesChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnTextWrappingChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnLineHeightChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnLineStackingStrategyChangedPartial()
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
-		{
-			Inlines.InvalidateMeasure();
-		}
-
-		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
+		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
+		string IBlock.GetText() => Text;
 
 		partial void OnSelectionChanged()
 			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
@@ -200,14 +190,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+
+				using (SkiaHelper.GetTempSKPaint(out var paint))
 				{
-					Color = SelectionHighlightColor.Color.ToSKColor(),
-					Style = SKPaintStyle.Fill
-				});
+					paint.Color = SelectionHighlightColor.Color.ToSKColor();
+					paint.Style = SKPaintStyle.Fill;
+					canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
+				}
 			};
 
-			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
 			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 
@@ -215,11 +206,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			switch (args.Key)
 			{
-				case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					CopySelectionToClipboard();
 					args.Handled = true;
 					break;
-				case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					SelectAll();
 					args.Handled = true;
 					break;
@@ -230,38 +221,106 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTextSelectionEnabled)
 			{
-				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
-				if (nullableSpan.HasValue)
+				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
-					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
+					var chunk = GetChunkAt(Text, index);
+
+					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}
+		}
+
+		// Note: this is a very close copy of TextBox.GenerateChunks. Note how, unlike TextBox, we don't need
+		// to add any caching here, since chunked-selection in TextBlocks only occurs on double-tapping,
+		// which is a lot less frequent than the TextBox scenarios (e.g. holding ctrl+shift+<right|left>).
+		private (int start, int length) GetChunkAt(string text, int index)
+		{
+			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+			// \r and \t are always their own chunks
+			var length = text.Length;
+			for (var i = 0; i < length;)
+			{
+				var start = i;
+				var c = text[i];
+				if (c is '\r')
+				{
+					i++;
+					if (text[i] is '\n')
+					{
+						i++;
+					}
+				}
+				else if (c is '\n' or '\t')
+				{
+					i++;
+				}
+				else if (c == ' ')
+				{
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else if (char.IsLetterOrDigit(text[i]))
+				{
+					while (i < length && char.IsLetterOrDigit(text[i]))
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else
+				{
+					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+
+				// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
+				if (start <= index && index < i || i == length)
+				{
+					return (start, i - start);
+				}
+			}
+
+			throw new UnreachableException("No chunk was selected after chunking the entire input");
 		}
 
 		// TODO: remove this context menu when TextCommandBarFlyout is implemented
 		private void OnRightTapped(RightTappedRoutedEventArgs e)
 		{
-			e.Handled = true;
-
-			Focus(FocusState.Pointer);
-
-			if (_contextMenu is null)
+			if (IsTextSelectionEnabled)
 			{
-				_contextMenu = new MenuFlyout();
+				e.Handled = true;
 
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+				Focus(FocusState.Pointer);
+
+				if (_contextMenu is null)
+				{
+					_contextMenu = new MenuFlyout();
+
+					_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
+					_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+				}
+
+				_contextMenu.Items.Clear();
+
+				if (Selection.start != Selection.end)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+				}
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+
+				_contextMenu.ShowAt(this, e.GetPosition(this));
 			}
-
-			_contextMenu.Items.Clear();
-
-			if (Selection.start != Selection.end)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-			}
-			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-			_contextMenu.ShowAt(this, e.GetPosition(this));
 		}
 
 		public void CopySelectionToClipboard()
@@ -299,7 +358,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
 			newBrush ??= DefaultBrushes.SelectionHighlightColor;
-			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+
+			_selectionHighlightBrushChangedSubscription?.Dispose();
+			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);

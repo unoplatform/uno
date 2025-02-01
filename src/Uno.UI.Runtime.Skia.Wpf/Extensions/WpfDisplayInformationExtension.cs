@@ -2,8 +2,12 @@
 using System;
 using System.Windows;
 using System.Windows.Media;
+using Microsoft.UI.Windowing;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
+using Windows.ApplicationModel.Core;
 using Windows.Graphics.Display;
 using WpfApplication = global::System.Windows.Application;
+using WpfWindow = global::System.Windows.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
@@ -11,17 +15,44 @@ namespace Uno.UI.Runtime.Skia.Wpf
 	{
 		private readonly DisplayInformation _displayInformation;
 
+		private WpfWindow? _window;
 		private float? _dpi;
 
 		public WpfDisplayInformationExtension(object owner)
 		{
 			_displayInformation = (DisplayInformation)owner;
-			WpfApplication.Current.Activated += Current_Activated;
+			GetWindow().Activated += Current_Activated;
 		}
 
 		private void Current_Activated(object? sender, EventArgs e)
 		{
-			WpfApplication.Current.MainWindow.DpiChanged += OnDpiChanged;
+			GetWindow().DpiChanged += OnDpiChanged;
+		}
+
+		private WpfWindow GetWindow()
+		{
+			if (_window is { })
+			{
+				return _window;
+			}
+
+			if (CoreApplication.IsFullFledgedApp)
+			{
+				// TODO: this is a ridiculous amount of indirection, find something better
+				if (!AppWindow.TryGetFromWindowId(_displayInformation.WindowId, out var appWindow) ||
+					Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+					UnoWpfWindow.GetFromWinUIWindow(window) is not { } wpfWindow)
+				{
+					throw new InvalidOperationException($"{nameof(WpfDisplayInformationExtension)} couldn't find a WPF window.");
+				}
+				_window = wpfWindow;
+			}
+			else
+			{
+				_window = WpfApplication.Current.MainWindow ?? throw new InvalidOperationException("WpfApplication.Current.MainWindow is null");
+			}
+
+			return _window;
 		}
 
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.Landscape;

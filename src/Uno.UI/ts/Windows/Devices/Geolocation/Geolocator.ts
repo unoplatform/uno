@@ -37,9 +37,7 @@
 					Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
 				}
 				else {
-					Geolocator.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchAccessRequest");
-					Geolocator.dispatchError = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchError");
-					Geolocator.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchGeoposition");
+					throw `Unable to find dotnet exports`;
 				}
 
 				Geolocator.interopInitialized = true;

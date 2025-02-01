@@ -26,7 +26,7 @@ uid: Uno.Features.WAB
 
 * You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head. Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
 
-  ``` csharp
+  ```csharp
   // Android: add this class near the MainActivity, in the head project
   [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
   [IntentFilter(
@@ -52,7 +52,7 @@ uid: Uno.Features.WAB
 
 For special needs, it is possible to create a custom implementation of the Web Authentication Broker by using the `[ApiExtension]` mechanism of Uno and implementing the `IWebAuthenticationBrokerProvider` interface:
 
-``` csharp
+```csharp
 [assembly: ApiExtension(typeof(MyNameSpace.MyBrokerImplementation), typeof(Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider))]
 
 public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider
@@ -74,7 +74,7 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
 
 1. Create an `<iframe>` control:
 
-   ``` csharp
+   ```csharp
    [HtmlElement("iframe")]
    public class LoginIFrame : Control
    {
@@ -89,7 +89,7 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
 
 2. Use the `LoginIFrame` control in the page:
 
-   ``` xml
+   ```xml
    <Page ...>
        <Grid>
            [...]
@@ -100,7 +100,7 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
 
 3. Set the `HtmlId` before calling the `WebAuthenticationBroker`:
 
-   ``` csharp
+   ```csharp
    private async void LoginHidden_Click(object sender, RoutedEventArgs e)
    {
        // Set configuration to use the control as the iframe control

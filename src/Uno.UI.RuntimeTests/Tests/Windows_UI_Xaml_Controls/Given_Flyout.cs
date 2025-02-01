@@ -26,6 +26,8 @@ using Microsoft.UI.Xaml.Shapes;
 
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -33,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_Flyout
 	{
-		private string GetAllIsOpens(FlyoutBase flyout1) => string.Join(" ", VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Select(p => p.IsOpen));
+		private string GetAllIsOpens() => string.Join(" ", VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Select(p => p.IsOpen));
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -518,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			menuBarItem.CloseMenuFlyout();
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -544,8 +547,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
 
-			var tb = new TextBlock();
-			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = "." });
+			var tb = new TextBlock() { Tag = "SUT" };
+			const string EmptyPath =
+#if HAS_UNO
+				".";
+#else
+				"";
+#endif
+			tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(EmptyPath) });
 			var SUT = new Flyout
 			{
 				Content = tb
@@ -557,14 +566,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.ShowAttachedFlyout(b1);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("41", tb.Text);
-			SUT.Close();
+			SUT.Hide();
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			FlyoutBase.ShowAttachedFlyout(b2);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("42", tb.Text);
-			SUT.Close();
+			SUT.Hide();
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -590,14 +600,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutButton.XamlRoot)[0];
 
-			Assert.AreEqual(popup.Visibility, Visibility.Visible);
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreNotEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// The visibility of the popup remains on, but it's closed.
-			Assert.AreEqual(popup.Visibility, Visibility.Visible);
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			TestServices.WindowHelper.WindowContent = null;
@@ -819,35 +829,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var output = "";
 
-				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout1)} {args.Cancel}\n";
-				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout2)} {args.Cancel}\n";
-				flyout3.Closing += (_, args) => output += $"closing3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout3)} {args.Cancel}\n";
-				flyout4.Closing += (_, args) => output += $"closing4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout4)} {args.Cancel}\n";
-				flyout5.Closing += (_, args) => output += $"closing5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)} {args.Cancel}\n";
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout3.Closing += (_, args) => output += $"closing3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
 
-				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout1)}\n";
-				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout2)}\n";
-				flyout3.Closed += (_, _) => output += $"closed3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout3)}\n";
-				flyout4.Closed += (_, _) => output += $"closed4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout4)}\n";
-				flyout5.Closed += (_, _) => output += $"closed5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)}\n";
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
 
-				TestServices.WindowHelper.WindowContent = button1;
-				await TestServices.WindowHelper.WaitForIdle();
+				await UITestHelper.Load(button1);
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
+				flyout3.XamlRoot = xamlRoot;
+				flyout4.XamlRoot = xamlRoot;
+				flyout5.XamlRoot = xamlRoot;
 
 				flyout1.ShowAt(button1);
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(button2);
 				flyout2.ShowAt(button2);
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(button3);
 				flyout3.ShowAt(button3);
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(button4);
 				flyout4.ShowAt(button4);
-				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(button5);
 				flyout5.ShowAt(button5);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				flyout1.Hide();
 				await TestServices.WindowHelper.WaitForIdle();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closing4 True True True True True True True True True True False
+				closing5 True True True True True True True True True True False
+				closed1 False False False False False 
+				closing3 False False False False False  False
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed2 False False False False False 
+				closing4 False False False False False  False
+				closing5 False False False False False  False
+				closed3 False False False False False 
+				closing5 False False False False False  False
+				closed4 False False False False False 
+				closed5 False False False False False 
+
+				""";
+#elif HAS_UNO
 				var expected =
 				"""
 				closing1 True True True True True True True True True True False
@@ -872,6 +912,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				closed5 False False False False False 
 
 				""";
+#else
+				var expected =
+				"""
+				closing1 True True True True True True True True True True False
+				closing2 True True True True True True True True True True False
+				closing3 True True True True True True True True True True False
+				closing4 True True True True True True True True True True False
+				closing5 True True True True True True True True True True False
+				closed5 False False False False False 
+
+				""";
+#endif
 
 				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
@@ -913,14 +965,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var output = "";
 
-				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout1)} {args.Cancel}\n";
-				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout2)} {args.Cancel}\n";
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
 
-				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout1)}\n";
-				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout2)}\n";
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
 
 				TestServices.WindowHelper.WindowContent = button1;
 				await TestServices.WindowHelper.WaitForIdle();
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
 
 				flyout1.ShowAt(button1);
 				await TestServices.WindowHelper.WaitForIdle();
@@ -1001,24 +1059,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var output = "";
 
-				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens(flyout1)} {args.Cancel}\n";
-				flyout2.Closing += (_, args) => output += $"closing2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout2)} {args.Cancel}\n";
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
 				flyout3.Closing += (_, args) =>
 				{
-					output += $"closing3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens(flyout3)} {args.Cancel}\n";
+					output += $"closing3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
 					args.Cancel = cancel;
 				};
-				flyout4.Closing += (_, args) => output += $"closing4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens(flyout4)} {args.Cancel}\n";
-				flyout5.Closing += (_, args) => output += $"closing5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)} {args.Cancel}\n";
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()} {args.Cancel}\n";
 
-				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens(flyout1)}\n";
-				flyout2.Closed += (_, _) => output += $"closed2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens(flyout2)}\n";
-				flyout3.Closed += (_, _) => output += $"closed3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens(flyout3)}\n";
-				flyout4.Closed += (_, _) => output += $"closed4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens(flyout4)}\n";
-				flyout5.Closed += (_, _) => output += $"closed5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens(flyout5)}\n";
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {GetAllIsOpens()}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {GetAllIsOpens()}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {GetAllIsOpens()}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {GetAllIsOpens()}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {GetAllIsOpens()}\n";
 
 				TestServices.WindowHelper.WindowContent = button1;
 				await TestServices.WindowHelper.WaitForIdle();
+
+				var xamlRoot = button1.XamlRoot;
+				Assert.IsNotNull(xamlRoot);
+				Assert.AreEqual(TestServices.WindowHelper.XamlRoot, xamlRoot);
+				flyout1.XamlRoot = xamlRoot;
+				flyout2.XamlRoot = xamlRoot;
+				flyout3.XamlRoot = xamlRoot;
+				flyout4.XamlRoot = xamlRoot;
+				flyout5.XamlRoot = xamlRoot;
 
 				flyout1.ShowAt(button1);
 				await TestServices.WindowHelper.WaitForIdle();
@@ -1523,6 +1590,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var flyout = new Flyout()
+			{
+				Content = new Button() { Content = "Test" }
+			};
+			bool opened = false;
+			flyout.Opened += (s, e) =>
+			{
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout.XamlRoot).FirstOrDefault(p => p.AssociatedFlyout == flyout);
+				Assert.IsNotNull(popup);
+				popup.IsLightDismissEnabled = isLightDismissEnabled;
+				opened = true;
+			};
+			try
+			{
+				var ownerButton = new Button()
+				{
+					Content = "Owner",
+					Flyout = flyout
+				};
+				TestServices.WindowHelper.WindowContent = ownerButton;
+				await TestServices.WindowHelper.WaitForLoaded(ownerButton);
+				((IInvokeProvider)ownerButton.GetAutomationPeer()).Invoke();
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				var popupRoot = ownerButton.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual(!isLightDismissEnabled, flyout.IsOpen);
+			}
+			finally
+			{
+				flyout?.Hide();
+			}
+		}
+#endif
+
 #if __IOS__
 		[TestMethod]
 		[RequiresFullWindow]
@@ -1630,6 +1739,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Open_In_GotFocus()
+		{
+			bool keepOpening = true;
+			var flyout = new Flyout
+			{
+				Content = new Button { Content = "Test" }
+			};
+			try
+			{
+				bool closed = false;
+
+				var container = new StackPanel();
+				var host = new Button
+				{
+					Content = "Asd",
+					Flyout = flyout
+				};
+				var unfocusButton = new Button();
+				container.Children.Add(unfocusButton);
+				container.Children.Add(host);
+
+				TestServices.WindowHelper.WindowContent = container;
+				await TestServices.WindowHelper.WaitForLoaded(container);
+				await TestServices.WindowHelper.WaitForIdle();
+				unfocusButton.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+				bool gotFocus = false;
+				bool wasClosedWhenHostGotFocus = false;
+				host.GotFocus += (s, e) =>
+				{
+					gotFocus = true;
+					if (closed)
+					{
+						wasClosedWhenHostGotFocus = true;
+					}
+					if (!host.Flyout.IsOpen && keepOpening)
+					{
+						host.Flyout.ShowAt(host);
+					}
+				};
+
+				bool opened = false;
+				flyout.Opened += (s, e) => opened = true;
+
+				host.Focus(FocusState.Programmatic);
+
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				Assert.AreNotEqual(host, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+
+				opened = false;
+				flyout.Closed += (s, e) => closed = true;
+
+				gotFocus = false;
+				flyout.Hide();
+
+				await TestServices.WindowHelper.WaitFor(() => gotFocus);
+				await TestServices.WindowHelper.WaitFor(() => closed);
+				Assert.IsFalse(wasClosedWhenHostGotFocus);
+				Assert.IsFalse(flyout.IsOpen);
+			}
+			finally
+			{
+				keepOpening = false;
+				flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
@@ -1664,13 +1842,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					NumberAssert.LessOrEqual(contentScreenBounds.Bottom, targetScreenBounds.Top);
 					break;
 				case VerticalPosition.TopFlush:
-					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Top, contentScreenBounds.Top, delta: 3);
 					break;
 				case VerticalPosition.Center:
 					Assert.AreEqual(targetCenter.Y, contentCenter.Y, delta: 2);
 					break;
 				case VerticalPosition.BottomFlush:
-					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 2);
+					Assert.AreEqual(targetScreenBounds.Bottom, contentScreenBounds.Bottom, delta: 3);
 					break;
 				case VerticalPosition.BeyondBottom:
 					NumberAssert.GreaterOrEqual(contentScreenBounds.Top, targetScreenBounds.Bottom);

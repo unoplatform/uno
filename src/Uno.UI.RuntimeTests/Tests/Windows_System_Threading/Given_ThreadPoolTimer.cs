@@ -19,11 +19,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 			await Task.Delay(500);
 
-			Assert.AreEqual(handlerCount, 1);
+			Assert.AreEqual(1, handlerCount);
 
 			await Task.Delay(500);
 
-			Assert.AreEqual(handlerCount, 1);
+			Assert.AreEqual(1, handlerCount);
 		}
 
 		[TestMethod]

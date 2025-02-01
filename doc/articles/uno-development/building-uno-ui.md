@@ -12,10 +12,10 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
   - Select the **ASP.NET and Web Development** workload
   - Select the **.NET Multi-Platform App UI development`** workload
   - Select the **.NET desktop development** workload
-  - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
-- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+  - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.targets))
+- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj))
 - Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET Android/iOS workloads
-- Install the version of the .NET SDK specified in [global.json](../../../global.json).
+- Install the latest [.NET SDK](https://aka.ms/dotnet/download) from Microsoft.
 
 ## Recommended Windows hardware
 
@@ -56,7 +56,7 @@ The step-by-step process is:
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
    - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'.
-   - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
+   - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf|X11|macOS]` project in the Solution Explorer and 'Build'.
 1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers` which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
@@ -64,7 +64,7 @@ Once you've built successfully, for the next steps, [consult the guide here](deb
 > [!IMPORTANT]
 > You will need to repeat the above steps 2. and subsequent when changing the active `UnoTargetFrameworkOverride` value.
 
-If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
+If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord Server](https://platform.uno/discord).
 
 ### Windows and long paths issues
 

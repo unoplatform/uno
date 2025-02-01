@@ -1,30 +1,30 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
-using Windows.Globalization;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
+using Windows.Globalization;
 
 namespace Microsoft.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked;
-		private static string _arguments = "";
+
+		[ThreadStatic]
+		private static Application _current;
 
 		partial void InitializePartial()
 		{
+			_current = this;
 			SetCurrentLanguage();
 
 			if (!_startInvoked)
@@ -32,14 +32,20 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
-
-			CoreApplication.SetInvalidateRender(() =>
+			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
-				var roots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
-				for (int i = 0; i < roots.Count; i++)
+				Debug.Assert(compositionTarget is null or CompositionTarget);
+
+				if (compositionTarget is CompositionTarget { Root: { } root })
 				{
-					roots[i].XamlRoot?.QueueInvalidateRender();
+					foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+					{
+						if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
+						{
+							xRoot.QueueInvalidateRender();
+							return;
+						}
+					}
 				}
 			});
 		}
@@ -53,26 +59,31 @@ namespace Microsoft.UI.Xaml
 			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
 				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
 			{
-				try
+				if (!ApplicationLanguages.InvariantCulture)
 				{
-					// Fallback to English
-					var cultureInfo = CultureInfo.CreateSpecificCulture("en");
-					CultureInfo.CurrentUICulture = cultureInfo;
-					CultureInfo.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentUICulture = cultureInfo;
+
+					try
+					{
+						// Fallback to English
+						var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+						CultureInfo.CurrentUICulture = cultureInfo;
+						CultureInfo.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentUICulture = cultureInfo;
+					}
+					catch (Exception ex)
+					{
+						this.Log().Error($"Failed to set default culture", ex);
+					}
 				}
-				catch (Exception ex)
+				else
 				{
-					this.Log().Error($"Failed to set default culture", ex);
+					if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(ApplicationLanguages).Log().Debug("InvariantCulture mode is enabled");
+					}
 				}
 			}
-		}
-
-		internal static void StartWithArguments(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
-		{
-			_arguments = GetCommandLineArgsWithoutExecutable();
-			Start(callback);
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -84,9 +95,11 @@ namespace Microsoft.UI.Xaml
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
+
+			_current.InvokeOnLaunched();
 		}
 
-		private void Initialize()
+		private void InvokeOnLaunched()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
@@ -95,7 +108,7 @@ namespace Microsoft.UI.Xaml
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
 				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
 				}
 			}
 		}

@@ -14,7 +14,7 @@ Let's create an application illustrating how to use this feature.
 
 ### 0. Before starting
 
-📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
+📝 To reproduce the code in this article, you must [prepare a development environment using Uno's _Getting Started_ article](xref:Uno.GetStarted).
 
 ### 1. Create the solution in Visual Studio
 
@@ -33,7 +33,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 1. Create a new _JavaScript_ file `flatpickrloader.js` in the `WasmScripts` folder of the `.Wasm` project:
 
-   ``` javascript
+   ```javascript
    (function () {
        const head = document.getElementsByTagName("head")[0];
 
@@ -49,7 +49,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 2. Set the file as `Embedded Resource`:
 
-   ``` xml
+   ```xml
    <ItemGroup>
      <EmbeddedResource Include="WasmCSS\Fonts.css" />
      <EmbeddedResource Include="WasmScripts\AppManifest.js" />
@@ -63,7 +63,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 1. Create a `FlatpickrView.cs` class in the `[MyApp]` project like this:
 
-   ``` csharp
+   ```csharp
    using System;
    using System.Globalization;
    using Windows.UI;
@@ -134,7 +134,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
-   ``` xml
+   ```xml
    <Page
        x:Class="FlatpickrDemo.MainPage"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -169,7 +169,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 1. Register event handlers for 2 custom events: `DateChanged` and `OpenedStateChanged`. To achieve this, put this code at the end of the `FlatpickrView` constructor:
 
-   ``` csharp
+   ```csharp
    // Register event handler for custom events from the DOM
    this.RegisterHtmlCustomEventHandler("DateChanged", OnDateChanged, isDetailJson: false);
    this.RegisterHtmlCustomEventHandler("OpenedStateChanged", OnOpenedStateChanged, isDetailJson: false);
@@ -177,7 +177,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 2. Add the implementation for the two handlers in the class:
 
-   ``` csharp
+   ```csharp
    private void OnDateChanged(object sender, HtmlCustomEventArgs e)
    {
        if(DateTimeOffset.TryParse(e.Detail, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeLocal, out var dto))
@@ -202,7 +202,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 3. Change the initialization of `Flatpickr` in injected JavaScript to raise events. Change the implementation of the `OnLoaded` method to this instead:
 
-   ``` csharp
+   ```csharp
    private void LoadJavaScript()
    {
        // For demo purposes, Flatpickr is loaded directly from CDN.

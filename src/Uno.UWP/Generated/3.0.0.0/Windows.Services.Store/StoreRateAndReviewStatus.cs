@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum StoreRateAndReviewStatus
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Succeeded = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CanceledByUser = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkError = 2,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Error = 3,
-#endif
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.Succeeded
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.CanceledByUser
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.NetworkError
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.Error
 	}
 #endif
 }

@@ -20,6 +20,11 @@ using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -41,6 +46,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private static readonly List<FlyoutBase> _openFlyouts = new List<FlyoutBase>();
 
 		internal bool m_isPositionedAtPoint;
+
+		private bool _isClosedPending;
 
 		protected internal Popup _popup;
 		private bool _isLightDismissEnabled = true;
@@ -92,7 +99,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
@@ -238,6 +244,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 
+		public DependencyObject OverlayInputPassThroughElement
+		{
+			get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
+			set => SetValue(OverlayInputPassThroughElementProperty, value);
+		}
+
+		public static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
 		/// </summary>
@@ -324,12 +339,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_openFlyouts.Remove(this);
 
-				Closed?.Invoke(this, EventArgs.Empty);
+				_isClosedPending = true;
 
-				if (_openFlyouts.Count > 0)
+				// TODO Uno: Closed should occur on PresenterUnloaded,
+				// but that requires aligned loading/unloading lifecycle. #2895
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					_openFlyouts[0].Hide();
-				}
+					Closed?.Invoke(this, EventArgs.Empty);
+					_isClosedPending = false;
+
+					if (_openFlyouts.Count > 0)
+					{
+						_openFlyouts[0].Hide();
+					}
+				});
 			}
 		}
 
@@ -351,6 +374,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			EnsurePopupCreated();
 
 			m_hasPlacementOverride = false;
+
+			if (_isClosedPending)
+			{
+				return;
+			}
 
 			if (IsOpen)
 			{
@@ -400,8 +428,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
 					Rect visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 					positionValue = new Point(
-						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
-						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
+						Math.Clamp(positionValue.X, visibleBounds.Left, visibleBounds.Right),
+						Math.Clamp(positionValue.Y, visibleBounds.Top, visibleBounds.Bottom));
 
 					SetTargetPosition(positionValue);
 				}
@@ -438,14 +466,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Open();
-			SynchronizeContentTemplatedParent();
 			IsOpen = true;
 
 			// **************************************************************************************
 			// UNO-FIX: Defer the raising of the Opened event to ensure everything is well
 			// initialized before opening it.
 			// **************************************************************************************
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Idle, () =>
 			// **************************************************************************************
 			{
 				if (IsOpen)
@@ -454,16 +481,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					Opened?.Invoke(this, EventArgs.Empty);
 				}
 			});
-		}
-
-		private void SynchronizeContentTemplatedParent()
-		{
-			// Manual propagation of the templated parent to the content property
-			// until we get the propagation running properly
-			if (_popup.Child is FrameworkElement content)
-			{
-				content.TemplatedParent = TemplatedParent;
-			}
 		}
 
 		private void SetTargetPosition(Point targetPoint)
@@ -559,9 +576,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// since it is not directly a child in the visual tree of the flyout.
 			_popup?.SetValue(property, value, precedence: DependencyPropertyValuePrecedences.Local);
 		}
-
-		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 
 		public static FlyoutBase GetAttachedFlyout(FrameworkElement element)
 		{

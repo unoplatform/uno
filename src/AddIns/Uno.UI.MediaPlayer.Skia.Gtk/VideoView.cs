@@ -62,7 +62,7 @@ namespace Uno.UI.Media
 		/// </summary>
 		public VideoView()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			if (OperatingSystem.IsLinux())
 			{
 #pragma warning disable CA1806 // Do not ignore method results
 				Native.XInitThreads();

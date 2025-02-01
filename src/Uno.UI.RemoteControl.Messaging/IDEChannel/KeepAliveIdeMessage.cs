@@ -2,5 +2,4 @@
 
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-public record KeepAliveIdeMessage : IdeMessage;
-
+public record KeepAliveIdeMessage(string Source) : IdeMessage(WellKnownScopes.IdeChannel);

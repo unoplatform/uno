@@ -3,7 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void UnhandledExceptionEventHandler(object sender, global::Microsoft.UI.Xaml.UnhandledExceptionEventArgs e);
-#endif
+	// Skipping already declared delegate Microsoft.UI.Xaml.UnhandledExceptionEventHandler
 }

@@ -169,6 +169,8 @@ namespace Uno.UWPSyncGenerator
 							// The type in reference compilation (UWP/WinUI) doesn't have an accessible constructor.
 							// So, generated code will generate an internal constructor if there is no constructor defined by individual platforms.
 							// TODO: Consider producing an error if the individual platforms has a publicly accessible constructor.
+							// TODO: GetAllGetNonGeneratedMembers will get members from base types.
+							// This generally doesn't look right, and more specifically for this code path, it's definitely not correct.
 							var nonGeneratedConstructors = GetAllGetNonGeneratedMembers(
 								allSymbols,
 								WellKnownMemberNames.InstanceConstructorName,

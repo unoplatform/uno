@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME बंद</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>धवो</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>हल्को ग्रे</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>गोबरो</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>गाड गोबरो</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>काळो</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>लेव तांबडो</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>गुलाब</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>लेव लारांजी</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>मातयेचो रंग</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>हलको हळदुवो</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>लेव पाचवो</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>लिंबु</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ऍक्वा</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>मळब निळो</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>हलको पाचवोसार निळो</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>लेव निळो</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>विरळ निळो</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>धवसार निळो</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>पॅरिविंकल</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>फिको जांबळो</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>गुलाबी</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>तांबडो</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>नारींगी</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>तपकिरी</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>भांगर</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>हळदुवो</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ऑलीव हिरवो</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>पाचवो</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>उजळ पाचवो</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>पाचवो निळसर</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>पाचवोसार निळो</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>निळो</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>निळो-गोबरो</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>गाड निळो</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>अंजिरी</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>भडक तांबडो</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>भडक हळदुवो</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>गाड पाचवो</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>गाढ निळो</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>भडक निळो</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>गाढ जांबळो</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>खिसमीस</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>बंद करचें</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

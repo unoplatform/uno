@@ -25,7 +25,9 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 			yield return new object[] { 14, 1, 15 };
 		}
 
+#pragma warning disable MSTEST0029 // Public methods should be test methods - https://github.com/microsoft/testfx/issues/4660
 		public void Dispose() =>
 			Assert.Equals(TestSucces_Count, 3);
+#pragma warning restore MSTEST0029 // Public methods should be test methods
 	}
 }

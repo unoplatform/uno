@@ -23,14 +23,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.First()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAll()
+		public void Add(global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.RemoveAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.Add(CompositionProjectedShadowReceiver value)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.First()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection.Count.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -41,9 +41,9 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add(global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver value)
+		public void RemoveAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.Add(CompositionProjectedShadowReceiver value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection", "void CompositionProjectedShadowReceiverUnorderedCollection.RemoveAll()");
 		}
 #endif
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionProjectedShadowReceiver>

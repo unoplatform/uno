@@ -19,6 +19,10 @@ public partial interface ICorePointerInputSource
 
 	bool HasCapture { get; }
 
+	/// <remarks>
+	/// Setting to null should hide the cursor. This only works on some platforms. Other platforms return to the
+	/// default shape if set to null.
+	/// </remarks>>
 	CoreCursor PointerCursor { get; set; }
 
 	Point PointerPosition { get; }

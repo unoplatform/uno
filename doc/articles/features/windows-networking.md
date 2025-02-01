@@ -16,6 +16,12 @@ uid: Uno.Features.WNetworking
 | `GetInternetConnectionProfile` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
 | `NetworkStatusChanged`         | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
 
+## Checking Network Connectivity in Uno
+
+For more detailed guidance on network connectivity, watch our video tutorial:
+
+> [!Video https://www.youtube-nocookie.com/embed/sK9IbkBAXIo]
+
 ## Platform-specific
 
 ### Android
@@ -30,7 +36,7 @@ The `android.permission.ACCESS_NETWORK_STATE` permission is required. It can be 
 
 ### iOS/macOS reachability host name
 
-On iOS and macOS, it is required to make an actual "ping" request, to verify that internet connection is accessible. The default domain that is checked is `www.example.com`, but you can change this to be any other domain by setting the `WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname` property.
+On iOS and macOS, an actual 'ping' request is necessary to verify internet connectivity. The default domain that is checked is `www.example.com`, but you can change this to be any other domain by setting the `WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname` property.
 
 ## Example
 
@@ -56,12 +62,16 @@ else
 You can use the following snippet to observe changes in connectivity:
 
 ```csharp
-var profile = NetworkInformation.GetInternetConnectionProfile();
-profile.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+
+private void NetworkInformation_NetworkStatusChanged(object sender)
+{
+    // Your implementation here
+}
 ```
 
 ### Unsubscribing from the changes
 
 ```csharp
-profile.NetworkStatusChanged -= NetworkInformation_NetworkStatusChanged;
+NetworkInformation.NetworkStatusChanged -= NetworkInformation_NetworkStatusChanged;
 ```

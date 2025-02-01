@@ -23,14 +23,16 @@ internal sealed class ElementUpdateAgent : IDisposable
 	private const DynamicallyAccessedMemberTypes HotReloadHandlerLinkerFlags = DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods;
 
 	private readonly Action<string> _log;
+	private readonly Action<MethodInfo, Exception> _onActionError;
 	private readonly AssemblyLoadEventHandler _assemblyLoad;
 	private readonly ConcurrentDictionary<Type, ElementUpdateHandlerActions> _elementHandlerActions = new();
 
 	internal const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
 
-	public ElementUpdateAgent(Action<string> log)
+	public ElementUpdateAgent(Action<string> log, Action<MethodInfo, Exception> onActionError)
 	{
 		_log = log;
+		_onActionError = onActionError;
 		_assemblyLoad = OnAssemblyLoad;
 		AppDomain.CurrentDomain.AssemblyLoad += _assemblyLoad;
 		LoadElementUpdateHandlerActions();
@@ -145,25 +147,35 @@ internal sealed class ElementUpdateAgent : IDisposable
 		_elementHandlerActions.Clear();
 		foreach (var assembly in sortedAssemblies)
 		{
-			foreach (var attr in assembly.GetCustomAttributesData())
+			try
 			{
-				// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
-				// define their own copy without having to cross-compile.
-				if (attr.AttributeType.FullName == "System.Reflection.Metadata.ElementMetadataUpdateHandlerAttribute")
+				foreach (var attr in assembly.GetCustomAttributesData())
 				{
-
-					var ctorArgs = attr.ConstructorArguments;
-					var elementType = ctorArgs.Count == 2 ? ctorArgs[0].Value as Type : typeof(object);
-					var handlerType = ctorArgs.Count == 2 ? ctorArgs[1].Value as Type :
-											ctorArgs.Count == 1 ? ctorArgs[0].Value as Type : default;
-					if (elementType is null || handlerType is null)
+					// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
+					// define their own copy without having to cross-compile.
+					if (attr.AttributeType.FullName == "System.Reflection.Metadata.ElementMetadataUpdateHandlerAttribute")
 					{
-						_log($"'{attr}' found with invalid arguments. elementType '{elementType?.Name}', handlerType '{handlerType?.Name}'");
-						continue;
-					}
 
-					GetElementHandlerActions(elementType, handlerType);
+						var ctorArgs = attr.ConstructorArguments;
+						var elementType = ctorArgs.Count == 2 ? ctorArgs[0].Value as Type : typeof(object);
+						var handlerType = ctorArgs.Count == 2 ? ctorArgs[1].Value as Type :
+												ctorArgs.Count == 1 ? ctorArgs[0].Value as Type : default;
+						if (elementType is null || handlerType is null)
+						{
+							_log($"'{attr}' found with invalid arguments. elementType '{elementType?.Name}', handlerType '{handlerType?.Name}'");
+							continue;
+						}
+
+						GetElementHandlerActions(elementType, handlerType);
+					}
 				}
+			}
+			catch (Exception e)
+			{
+				// The handlers enumeration may fail for WPF assemblies that are part of the modified assemblies
+				// when building under linux, but which are loaded in that context. We can ignore those assemblies
+				// and continue the processing.
+				_log($"Failed to process assembly {assembly}, {e.Message}");
 			}
 		}
 	}
@@ -304,6 +316,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			}
 			catch (Exception ex)
 			{
+				_onActionError(update, ex);
 				_log($"Exception from '{update.Name}' on {handlerType.Name}: {ex}");
 			}
 		};

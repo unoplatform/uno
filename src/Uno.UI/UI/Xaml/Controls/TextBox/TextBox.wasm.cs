@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -79,6 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBoxView.SetFontSize(FontSize);
 			_textBoxView.SetFontStyle(FontStyle);
 			_textBoxView.SetFontWeight(FontWeight);
+			_textBoxView.SetFontStretch(FontStretch);
 			_textBoxView.SetFontFamily(FontFamily);
 		}
 
@@ -100,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var color = brush.ColorWithOpacity;
 
-					Windows.UI.Color foregroundColor = Colors.White;
+					Color foregroundColor = Colors.White;
 
 					// Check highlight color luminance to choose if black or white foreground is more appropriate
 					if (color.Luminance > 0.5)

@@ -17,10 +17,20 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
+
+#if !HAS_UNO
+using System.Runtime.InteropServices;
+#endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Uno.UI.RuntimeTests.Helpers;
 
@@ -28,14 +38,37 @@ namespace Uno.UI.RuntimeTests.Helpers;
 
 public static class UITestHelper
 {
-	public static async Task<Windows.Foundation.Rect> Load(FrameworkElement element)
+	/// <summary>
+	/// Loads an element onto the test area, and wait for it to be loaded before returning.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="element">The element to be loaded onto the test area.</param>
+	/// <param name="isLoaded">optional, function to override the default is-loaded check.</param>
+	/// <returns>Loaded element absolute bounds.</returns>
+	/// <remarks>The default is-loaded check fails on 0 height/width, or empty list-view, overload the <paramref name="isLoaded"/> with <code>x => x.IsLoaded</code> or <code>x => x.GetTemplateRoot() != null</code> to bypass that.</remarks>
+	public static async Task<Rect> Load<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
 	{
 		TestServices.WindowHelper.WindowContent = element;
-		await TestServices.WindowHelper.WaitForLoaded(element);
-		await TestServices.WindowHelper.WaitForIdle();
+
+		await WaitForLoaded(element, isLoaded);
 
 		return element.GetAbsoluteBounds();
 	}
+
+	public static async Task WaitForLoaded<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
+	{
+		if (isLoaded is null)
+		{
+			await TestServices.WindowHelper.WaitForLoaded(element);
+		}
+		else
+		{
+			await TestServices.WindowHelper.WaitFor(() => isLoaded(element), message: $"Timeout waiting on {element} to be loaded with custom criteria.");
+		}
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
 
 	/// <summary>
 	/// Takes a screen-shot of the given element.
@@ -46,6 +79,7 @@ public static class UITestHelper
 	/// <returns></returns>
 	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = false, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
 	{
+#if HAS_RENDER_TARGET_BITMAP
 		var renderer = new RenderTargetBitmap();
 		element.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -75,6 +109,9 @@ public static class UITestHelper
 		}
 
 		return bitmap;
+#else
+		throw new NotSupportedException("Cannot take screenshot on this platform.");
+#endif
 	}
 
 	public enum ScreenShotScalingMode
@@ -110,6 +147,7 @@ public static class UITestHelper
 		TextBlock pos;
 		var popup = new ContentDialog
 		{
+			XamlRoot = TestServices.WindowHelper.XamlRoot,
 			MinWidth = bitmap.Width + 2,
 			MinHeight = bitmap.Height + 30,
 			Content = new Grid
@@ -211,6 +249,18 @@ public static class UITestHelper
 
 		await popup.ShowAsync(ContentDialogPlacement.Popup);
 	}
+
+	public static void CloseAllPopups()
+#if HAS_UNO
+		=> VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#else
+	{
+		foreach (var popup in VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot))
+		{
+			popup.IsOpen = false;
+		}
+	}
+#endif
 }
 
 public class DynamicDataTemplate : IDisposable
@@ -285,6 +335,16 @@ public partial class DynamicDataTemplatePresenter : ContentPresenter
 
 public static class InputInjectorExtensions
 {
+	public static IInjectedPointer GetPointer(this InputInjector injector, PointerDeviceType pointer)
+		=> pointer switch
+		{
+			PointerDeviceType.Touch => GetFinger(injector),
+#if !WINAPPSDK
+			PointerDeviceType.Mouse => GetMouse(injector),
+#endif
+			_ => throw new NotSupportedException($"Injection of {pointer} is not supported on this platform.")
+		};
+
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
@@ -298,7 +358,7 @@ public interface IInjectedPointer
 {
 	void Press(Point position);
 
-	void MoveTo(Point position);
+	void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null);
 
 	void MoveBy(double deltaX = 0, double deltaY = 0);
 
@@ -328,17 +388,18 @@ public static class InjectedPointerExtensions
 	public static void MoveTo(this IInjectedPointer pointer, double x, double y)
 		=> pointer.MoveTo(new(x, y));
 
-	public static void Drag(this IInjectedPointer pointer, Point from, Point to)
+	public static void Drag(this IInjectedPointer pointer, Point from, Point to, uint? steps = null, uint? stepOffsetInMilliseconds = null)
 	{
 		pointer.Press(from);
-		pointer.MoveTo(to);
+		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
 		pointer.Release();
 	}
 }
 
-public class Finger : IInjectedPointer, IDisposable
+public partial class Finger : IInjectedPointer, IDisposable
 {
 	private const uint _defaultMoveSteps = 10;
+	private const uint _defaultStepOffsetInMilliseconds = 1;
 
 	private readonly InputInjector _injector;
 	private readonly uint _id;
@@ -362,12 +423,13 @@ public class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
-	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
+	void IInjectedPointer.MoveTo(Point position, uint? steps, uint? stepOffsetInMilliseconds) =>
+		MoveTo(position, steps ?? _defaultMoveSteps, stepOffsetInMilliseconds ?? _defaultStepOffsetInMilliseconds);
+	public void MoveTo(Point position, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		if (_currentPosition is { } current)
 		{
-			Inject(GetMove(current, position, steps));
+			Inject(GetMove(current, position, steps, stepOffsetInMilliseconds));
 			_currentPosition = position;
 		}
 	}
@@ -410,7 +472,7 @@ public class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
 
@@ -422,6 +484,7 @@ public class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
+					TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
 					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
@@ -453,18 +516,34 @@ public class Finger : IInjectedPointer, IDisposable
 	private static InjectedInputPoint At(Point position)
 		=> At(position.X, position.Y);
 
+#if !HAS_UNO
+	[LibraryImport("user32.dll", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static partial bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+	[StructLayout(LayoutKind.Sequential)]
+	private struct RECT
+	{
+		public int Left;
+		public int Top;
+		public int Right;
+		public int Bottom;
+	}
+
+#endif
+
 	private static InjectedInputPoint At(double x, double y)
 #if HAS_UNO
 		=> new() { PositionX = (int)x, PositionY = (int)y };
 #else
 	{
-		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
-		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		RECT rect = new();
+		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices.WindowHelper.CurrentTestWindow), ref rect);
+		var scale = TestServices.WindowHelper.CurrentTestWindow.Content.XamlRoot.RasterizationScale;
 
 		return new()
 		{
-			PositionX = (int)((bounds.X + x) * scale),
-			PositionY = (int)((bounds.Y + y) * scale),
+			PositionX = (int)((rect.Left + x) * scale),
+			PositionY = (int)((rect.Top + y) * scale),
 		};
 	}
 #endif
@@ -548,11 +627,10 @@ public class Mouse : IInjectedPointer, IDisposable
 	}
 
 	public void MoveBy(double deltaX, double deltaY)
-		=> Inject(GetMoveBy(deltaX, deltaY));
+		=> Inject(GetMoveBy(deltaX, deltaY, 1));
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
-	public void MoveTo(Point position, uint? steps = null)
-		=> Inject(GetMoveTo(position.X, position.Y, steps));
+	public void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null)
+		=> Inject(GetMoveTo(position.X, position.Y, steps, stepOffsetInMilliseconds));
 
 	public void WheelUp() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 	public void WheelDown() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
@@ -562,7 +640,7 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
 		=> Inject(GetWheel(delta, isHorizontal, steps));
 
-	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps)
+	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps, uint? stepOffsetInMilliseconds = null)
 	{
 		var x0 = Current.X;
 		var y0 = Current.Y;
@@ -570,6 +648,8 @@ public class Mouse : IInjectedPointer, IDisposable
 		var deltaY = y - y0;
 
 		steps ??= (uint)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		stepOffsetInMilliseconds ??= 1;
+
 		if (steps is 0)
 		{
 			yield break;
@@ -587,7 +667,7 @@ public class Mouse : IInjectedPointer, IDisposable
 			var newPositionX = (int)Math.Round(x0 + i * stepX);
 			var newPositionY = (int)Math.Round(y0 + i * stepY);
 
-			yield return GetMoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY);
+			yield return GetMoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY, stepOffsetInMilliseconds.Value);
 
 			prevPositionX = newPositionX;
 			prevPositionY = newPositionY;
@@ -623,12 +703,12 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.RightDown,
 		};
 
-	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY)
+	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY, uint stepOffsetInMilliseconds)
 		=> new()
 		{
 			DeltaX = (int)deltaX,
 			DeltaY = (int)deltaY,
-			TimeOffsetInMilliseconds = 1,
+			TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
 			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
 		};
 

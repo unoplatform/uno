@@ -1370,7 +1370,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 					Verify.AreEqual(button2, FocusManager.GetFocusedElement(rootPanel.XamlRoot));
 				});
 
-				rootPanelKeyDownEventTester.Wait();
+				await rootPanelKeyDownEventTester.Wait();
 			}
 		}
 
@@ -1450,7 +1450,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			using (var innerBtn2GotFocus = new EventTester<Button, RoutedEventArgs>(innerBtn2, "GotFocus"))
 			{
 				await SimulateShiftTabAsync(rootPanel);
-				innerBtn2GotFocus.Wait();
+				await innerBtn2GotFocus.Wait();
 
 				UIExecutor.Execute(() =>
 				{

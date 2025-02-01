@@ -12,7 +12,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
-## Step-by-steps
+## Step-by-step instructions
 
 1. Create a new Uno Platform application, following the instructions in [Get Started guide](../get-started.md).
 1. Modify the content of `MainPage`:
@@ -53,7 +53,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
 1. Create a new resource file for localization in French in the `UnoLocalization.Shared` project:
     1. Add a new folder `fr` under the `Strings` folder by:
-    Right-click on `String` > Add > New Folder
+    Right-click on `Strings` > Add > New Folder
     1. Add a new resource file `Resources.resw` under the `fr` folder by:
     Right-click on `fr` > Add > New Item ... > Visual C# > Xaml > Resources File
 1. Add the localization strings for both English and French:

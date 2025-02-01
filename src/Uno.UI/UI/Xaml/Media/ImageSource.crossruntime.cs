@@ -33,6 +33,27 @@ namespace Microsoft.UI.Xaml.Media
 		private readonly SerialDisposable _opening = new SerialDisposable();
 		private readonly List<Action<ImageData>> _subscriptions = new List<Action<ImageData>>();
 
+		protected ImageSource()
+		{
+
+		}
+
+		partial void InitFromResource(Uri uri)
+		{
+			// TODO: Unify
+#if __SKIA__
+			AbsoluteUri = uri;
+#else
+			var path = uri.PathAndQuery.TrimStart("/");
+			AbsoluteUri = new Uri(path, UriKind.Relative);
+#endif
+		}
+
+		partial void CleanupResource()
+		{
+			AbsoluteUri = null;
+		}
+
 		/// <summary>
 		/// Subscribes to this image source
 		/// </summary>
@@ -40,9 +61,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// A callback that will be invoked each time the source has been updated
 		/// (i.e. a property has changed on the source AND the source has been re-opened)
 		/// </param>
-		/// <param name="targetWidth">An optional width that **can** be used by the source to decode the source directly at the right size (for perf considerations)</param>
-		/// <param name="targetHeight">An optional height that **can** be used by the source to decode the source directly at the right size (for perf considerations)</param>
-		internal IDisposable Subscribe(Action<ImageData> onSourceOpened, int? targetWidth = null, int? targetHeight = null)
+		internal IDisposable Subscribe(Action<ImageData> onSourceOpened)
 		{
 			_subscriptions.Add(onSourceOpened);
 
@@ -52,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 			else if (_subscriptions.Count == 1)
 			{
-				RequestOpen(targetWidth, targetHeight);
+				RequestOpen();
 			}
 
 			return Disposable.Create(() => _subscriptions.Remove(onSourceOpened));
@@ -64,41 +83,6 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		internal bool IsOpened => _imageData.HasData;
 
-		#region Implementers API
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open synchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="image">Returned image data.</param>
-		/// <returns>True if opening synchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-		{
-			image = default;
-			return false;
-		}
-
-		/// <summary>
-		/// Override to provide the capability of concrete ImageSource to open asynchronously.
-		/// </summary>
-		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
-		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
-		/// <param name="asyncImage">Async task for image data retrieval.</param>
-		/// <returns>True if opening asynchronously is possible.</returns>
-		/// <remarks>
-		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-		/// Depending on stretching, only one of each can be provided.
-		/// </remarks>
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
-		{
-			asyncImage = default;
-			return false;
-		}
-
 		private protected void InvalidateSource()
 		{
 			_imageData = default;
@@ -107,13 +91,12 @@ namespace Microsoft.UI.Xaml.Media
 				RequestOpen();
 			}
 		}
-		#endregion
 
-		private protected void RequestOpen(int? targetWidth = null, int? targetHeight = null)
+		private protected void RequestOpen()
 		{
 			try
 			{
-				if (TryOpenSourceSync(targetWidth, targetHeight, out var img))
+				if (TryOpenSourceSync(null, null, out var img))
 				{
 					OnOpened(img);
 				}
@@ -122,7 +105,7 @@ namespace Microsoft.UI.Xaml.Media
 					_opening.Disposable = null;
 
 					_opening.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
-						ct => _ = Open(ct, targetWidth, targetHeight));
+						ct => _ = Open(ct));
 				}
 			}
 			catch (Exception error)
@@ -132,15 +115,15 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private async Task Open(CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
+		private async Task Open(CancellationToken ct)
 		{
 			try
 			{
-				if (TryOpenSourceSync(targetWidth, targetHeight, out var img))
+				if (TryOpenSourceSync(null, null, out var img))
 				{
 					OnOpened(img);
 				}
-				else if (TryOpenSourceAsync(ct, targetWidth, targetHeight, out var asyncImg))
+				else if (TryOpenSourceAsync(ct, null, null, out var asyncImg))
 				{
 					OnOpened(await asyncImg);
 				}

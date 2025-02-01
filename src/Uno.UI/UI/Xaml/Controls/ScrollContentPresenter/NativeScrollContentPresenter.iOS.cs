@@ -107,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 			scroller.Presenter.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
-		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : TemplatedParent as ScrollViewer;
+		private ScrollViewer GetParentScrollViewer() => _scrollViewer.TryGetTarget(out var s) ? s : this.GetTemplatedParent() as ScrollViewer;
 
 		// Called when user starts dragging
 		private void OnDraggingStarted(object sender, EventArgs e)
@@ -296,8 +296,8 @@ namespace Microsoft.UI.Xaml.Controls
 						_content.Frame = new CGRect(
 							GetAdjustedArrangeX(iFwElt, adjustedMeasure, (nfloat)contentMargin.Horizontal()),
 							GetAdjustedArrangeY(iFwElt, adjustedMeasure, (nfloat)contentMargin.Vertical()),
-							adjustedMeasure.Width,
-							adjustedMeasure.Height
+							Math.Max(0, adjustedMeasure.Width),
+							Math.Max(0, adjustedMeasure.Height)
 						);
 					}
 				}

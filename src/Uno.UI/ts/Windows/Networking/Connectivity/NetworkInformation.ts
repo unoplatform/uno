@@ -18,9 +18,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
 				} else {
-					NetworkInformation.dispatchStatusChanged =
-						(<any>Module).mono_bind_static_method(
-							"[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 			NetworkInformation.dispatchStatusChanged();

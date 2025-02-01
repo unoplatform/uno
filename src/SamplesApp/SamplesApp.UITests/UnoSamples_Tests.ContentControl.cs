@@ -34,8 +34,8 @@ namespace SamplesApp.UITests
 
 			_app.Marked("actionButton").FastTap();
 
-			Assert.IsFalse(_app.Marked("innerText").HasResults());
-			Assert.IsFalse(_app.Marked("innerText2").HasResults());
+			Assert.IsTrue(_app.Marked("innerText").HasResults());
+			Assert.IsTrue(_app.Marked("innerText2").HasResults());
 		}
 
 		[Test]

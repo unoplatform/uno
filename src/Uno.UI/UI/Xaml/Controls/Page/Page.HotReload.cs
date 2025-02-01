@@ -18,7 +18,9 @@ namespace Microsoft.UI.Xaml.Controls
 					typeof(PageElementMetadataUpdateHandler).Log().Trace($"Instance of {oldPage.GetType().Name} replaced by instance of {newPage.GetType().Name}");
 				}
 
+#if HAS_UNO
 				newPage.Frame = oldPage.Frame;
+#endif
 
 				if (newPage.Frame is not null)
 				{

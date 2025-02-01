@@ -97,168 +97,162 @@
 
     <!-- TODO: Visibility, Transparent, Border, Rectangle (Fill), Image, Transform, Opacity, Nested buttons, IsHitTestVisible, ScrollViewer, Native views -->
 
-    <controls:SampleControl SampleDescription="Description for sample of Touch">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-				<ScrollViewer>
-					<StackPanel>
-						<TextBlock Text="{Binding [Output]}" x:Uid="touchLog" />
-						<Button Content="Reset"
-								Command="{Binding [GenericCommand]}"
-								CommandParameter="Reset" />
-						<StackPanel>
-							<TextBlock Text="Button inside a white grid" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
+	<ScrollViewer>
+		<StackPanel>
+			<TextBlock Text="{Binding [Output]}" x:Uid="touchLog" />
+			<Button Content="Reset"
+							Command="{Binding [GenericCommand]}"
+							CommandParameter="Reset" />
+			<StackPanel>
+				<TextBlock Text="Button inside a white grid" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
 
-								<Button Background="Tomato"
-												x:Uid="button_inside_grid"
-											Width="50"
-											Height="50"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="button inside grid"
-											Style="{StaticResource ButtonStyle}" />
-							</Grid>
+					<Button Background="Tomato"
+											x:Uid="button_inside_grid"
+										Width="50"
+										Height="50"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="button inside grid"
+										Style="{StaticResource ButtonStyle}" />
+				</Grid>
 
-							<TextBlock Text="Button with a border on top" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
+				<TextBlock Text="Button with a border on top" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
 
-								<Button Background="Tomato"
-												x:Uid="button_border_on_top"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="button under grid"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}" />
+					<Button Background="Tomato"
+											x:Uid="button_border_on_top"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="button under grid"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}" />
 
-								<Border Background="Gray"
-												x:Uid="button_border_on_top_border"
+					<Border Background="Gray"
+											x:Uid="button_border_on_top_border"
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										Margin="30" />
+				</Grid>
+
+				<TextBlock Text="Button with a (border inside a border) on top" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
+
+					<Button Background="Tomato"
+											x:Uid="button_under_grid"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="button under grid"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}" />
+
+					<Border>
+						<Border Background="Gray"
+										VerticalAlignment="Stretch"
+										HorizontalAlignment="Stretch"
+										Margin="30" />
+					</Border>
+				</Grid>
+
+				<TextBlock Text="Button with a border inside" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
+
+					<Button Background="Tomato"
+											x:Uid="button_with_border_inside"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="button with border inside"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}">
+
+						<Border Background="Gray"
 											VerticalAlignment="Stretch"
 											HorizontalAlignment="Stretch"
-											Margin="30" />
-							</Grid>
+											Height="50" Width="50" />
 
-							<TextBlock Text="Button with a (border inside a border) on top" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
+					</Button>
+				</Grid>
 
-								<Button Background="Tomato"
-												x:Uid="button_under_grid"
+				<TextBlock Text="Button in a button" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
+
+					<Button Background="Tomato"
+											x:Uid="outer_button" 
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="outer button"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}">
+
+						<Button Background="Olive"
+											x:Uid="inner_button"
 											Command="{Binding [GenericCommand]}"
-											CommandParameter="button under grid"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}" />
-
-								<Border>
-									<Border Background="Gray"
-											VerticalAlignment="Stretch"
-											HorizontalAlignment="Stretch"
-											Margin="30" />
-								</Border>
-							</Grid>
-
-							<TextBlock Text="Button with a border inside" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
-
-								<Button Background="Tomato"
-												x:Uid="button_with_border_inside"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="button with border inside"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}">
-
-									<Border Background="Gray"
-												VerticalAlignment="Stretch"
-												HorizontalAlignment="Stretch"
-												Height="50" Width="50" />
-
-								</Button>
-							</Grid>
-
-							<TextBlock Text="Button in a button" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
-
-								<Button Background="Tomato"
-												x:Uid="outer_button" 
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="outer button"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}">
-
-									<Button Background="Olive"
-												x:Uid="inner_button"
-												Command="{Binding [GenericCommand]}"
-												CommandParameter="inner button"
-												Style="{StaticResource ButtonStyle}"
-												Height="50" Width="50" />
-
-								</Button>
-							</Grid>
-
-							<TextBlock Text="Button over a button" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
-
-								<Button Background="Tomato"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="bottom button"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}">
-
-								</Button>
-
-								<Button Background="Olive"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="top button"
+											CommandParameter="inner button"
 											Style="{StaticResource ButtonStyle}"
 											Height="50" Width="50" />
-							</Grid>
 
-							<TextBlock Text="Button in scrollviewer in a button" />
-							<Grid Width="100"
-									  Height="100"
-									  Background="White">
+					</Button>
+				</Grid>
 
-								<Button Background="Tomato"
-											Command="{Binding [GenericCommand]}"
-											CommandParameter="bottom button"
-											Height="80" Width="80"
-											Style="{StaticResource ButtonStyle}">
-									<ScrollViewer Height="50" Width="50" >
-										<Button Background="Olive"
-													Command="{Binding [GenericCommand]}"
-													CommandParameter="top button"
-													Style="{StaticResource ButtonStyle}"
-													Height="50" Width="50" />
-									</ScrollViewer>
-								</Button>
-							</Grid>
+				<TextBlock Text="Button over a button" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
 
-							<TextBlock Text="Default button" />
-							<Button Content="Default"
+					<Button Background="Tomato"
 										Command="{Binding [GenericCommand]}"
-										CommandParameter="default button" />
+										CommandParameter="bottom button"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}">
 
-							<TextBlock Text="Default combo box" />
-							<ComboBox ItemsSource="{Binding [Colors]}" />
+					</Button>
 
-							<TextBlock Text="ToggleButton that collapses when clicked" />
-							<ToggleButton Style="{StaticResource ToggleButtonStyle}"
-										  Command="{Binding [GenericCommand]}"
-										  CommandParameter="toggle button"/>
-										  
-						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+					<Button Background="Olive"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="top button"
+										Style="{StaticResource ButtonStyle}"
+										Height="50" Width="50" />
+				</Grid>
+
+				<TextBlock Text="Button in scrollviewer in a button" />
+				<Grid Width="100"
+								  Height="100"
+								  Background="White">
+
+					<Button Background="Tomato"
+										Command="{Binding [GenericCommand]}"
+										CommandParameter="bottom button"
+										Height="80" Width="80"
+										Style="{StaticResource ButtonStyle}">
+						<ScrollViewer Height="50" Width="50" >
+							<Button Background="Olive"
+												Command="{Binding [GenericCommand]}"
+												CommandParameter="top button"
+												Style="{StaticResource ButtonStyle}"
+												Height="50" Width="50" />
+						</ScrollViewer>
+					</Button>
+				</Grid>
+
+				<TextBlock Text="Default button" />
+				<Button Content="Default"
+									Command="{Binding [GenericCommand]}"
+									CommandParameter="default button" />
+
+				<TextBlock Text="Default combo box" />
+				<ComboBox ItemsSource="{Binding [Colors]}" />
+
+				<TextBlock Text="ToggleButton that collapses when clicked" />
+				<ToggleButton Style="{StaticResource ToggleButtonStyle}"
+									  Command="{Binding [GenericCommand]}"
+									  CommandParameter="toggle button"/>
+
+			</StackPanel>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

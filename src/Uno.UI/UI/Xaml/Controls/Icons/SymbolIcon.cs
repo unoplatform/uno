@@ -10,9 +10,9 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Represents an icon that uses a glyph from the Segoe MDL2 Assets font as its content.
 /// </summary>
-public sealed partial class SymbolIcon : IconElement
+public sealed partial class SymbolIcon : IconElement, IThemeChangeAware
 {
-	private const double DefaultFontSize = 20.0;
+	private double _fontSize = 20.0;
 
 	private readonly TextBlock _textBlock;
 
@@ -63,7 +63,12 @@ public sealed partial class SymbolIcon : IconElement
 		_textBlock.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
-		_textBlock.FontSize = DefaultFontSize;
+
+		if (_fontSize > 0)
+		{
+			_textBlock.FontSize = _fontSize;
+		}
+
 		_textBlock.FontStyle = FontStyle.Normal;
 		_textBlock.FontFamily = GetSymbolFontFamily();
 		_textBlock.IsTextScaleFactorEnabled = false;
@@ -71,6 +76,17 @@ public sealed partial class SymbolIcon : IconElement
 
 		SetSymbolText();
 		_textBlock.Foreground = Foreground;
+	}
+
+	internal void SetFontSize(double fontSize)
+	{
+		_fontSize = fontSize;
+		if (fontSize == 0)
+		{
+			_textBlock.ClearValue(TextBlock.FontSizeProperty);
+		}
+
+		InvalidateMeasure();
 	}
 
 	private void SetSymbolText() => _textBlock.Text = new string((char)Symbol, 1);
@@ -85,6 +101,16 @@ public sealed partial class SymbolIcon : IconElement
 		if (_textBlock is not null)
 		{
 			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = Foreground;
 		}
 	}
 }

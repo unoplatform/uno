@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
@@ -207,6 +208,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		#region Private
 
+		//UNO TODO: Implement GetRootNoRef on AutomationPeer
+		internal DependencyObject GetRootNoRef()
+		{
+			return null;
+		}
+
+		//UNO TODO: Check the implementations of IsKeyboardFocusableHelper and IsOffscreenHelper
+		internal bool IsKeyboardFocusableHelper()
+			=> false;
+
+		internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters)
+			=> false;
+
 		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize
@@ -229,7 +243,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return false;
 		}
 
-		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
+		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
 
 		#endregion
 
@@ -238,7 +252,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[Uno.NotImplemented]
 		public static bool ListenerfExists(AutomationEvents eventId)
 		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
 			return false;
 		}
 
@@ -251,19 +265,20 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple AutomationPeer.ProviderFromPeer(AutomationPeer peer) is not implemented in Uno.");
+			// Uno TODO: Properly implement this.
+			return new();
 		}
 
 		[global::Uno.NotImplemented]
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
 
 		[global::Uno.NotImplemented]
 		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
 		}
 		#endregion
 	}

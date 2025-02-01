@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME OʻCHIQ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Oq</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Och kulrang</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Kulrang</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>To‘q kulrang</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Qora</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Marjon rang</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Atirgul rang</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Och apelsinrang</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sarg‘ish jigarrang</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Och sariq</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Och yashil</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Laym</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Dengiz rang</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Osmon ko‘k</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Och feruza rang</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Xira ko‘k</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Och ko‘k</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Pastel ko‘k</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Ko‘kish binafsha rang</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Och binafsha</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Pushti</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Qizil</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Apelsin rang</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Jigarrang</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Tillarang</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Sariq</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Zaytun rang</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Yashil</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Sabza rang</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Moviy</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Feruza rang</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Ko‘k</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Ko‘kimtir</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Och binafsha rang</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>To‘q qizil</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>To‘q sariq</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>To‘q yashil</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>To‘q zangori</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>To‘q moviy</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>To‘q binafsha rang</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Xira binafsharang</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Yopish</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

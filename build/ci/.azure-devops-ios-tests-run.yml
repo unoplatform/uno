@@ -1,7 +1,6 @@
 parameters:
   vmImage: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
   JobName: ''
   JobTimeoutInMinutes: ''
   JobDisplayName: ''
@@ -13,6 +12,7 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+  cancelTimeoutInMinutes: 1
   dependsOn:
   - iOS_Build
 
@@ -26,6 +26,8 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
+    
+    UNO_UITEST_BUCKET_COUNT: 5
 
   steps:
   - checkout: self
@@ -54,7 +56,6 @@ jobs:
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist

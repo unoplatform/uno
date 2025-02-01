@@ -5,6 +5,7 @@ using Uno.UI.Extensions;
 using Windows.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using static Android.App.TimePickerDialog;
+using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -15,25 +16,25 @@ partial class NativeTimePickerFlyout
 	private TimeSpan _initialTime;
 
 	internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
+	internal UnoTimePickerDialog GetNativeDialog() => _dialog;
+
 
 	internal protected override void Open()
 	{
+		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		{
+			Time = GetCurrentTime();
+		}
+
 		SaveInitialTime();
 
-		//Minute increments are not supported with clock and Samsung devices running marshmallow (Android 6.0)
-		//show the clock as truncated in landscape. The spinner style is enforced in these two cases.
-
-		var isSamsungAndMarshmellow = Build.VERSION.SdkInt == BuildVersionCodes.M &&
-									  Build.Manufacturer.Contains("samsung", StringComparison.OrdinalIgnoreCase);
-
-		var tryEnforceSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
-
-		ShowTimePicker(tryEnforceSpinnerStyle);
+		ShowTimePicker();
 
 		AddToOpenFlyouts();
 	}
 
 	private void SaveInitialTime() => _initialTime = Time;
+
 
 	private void SaveTime(TimeSpan time)
 	{
@@ -63,15 +64,18 @@ partial class NativeTimePickerFlyout
 		OnTimePicked(new TimePickedEventArgs(oldTime, Time));
 	}
 
-	private void ShowTimePicker(bool useSpinnerStyle)
+	private void ShowTimePicker()
 	{
-		var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
+		var time = _initialTime.RoundToNextMinuteInterval(MinuteIncrement);
 		var listener = new OnSetTimeListener((view, hourOfDay, minute) => AdjustAndSaveTime(hourOfDay, minute));
-		int timePickerStyleResId = useSpinnerStyle ? 3 : 0;
+
+		var themeResourceId = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Light ?
+			global::Android.Resource.Style.ThemeDeviceDefaultLightDialog :
+			global::Android.Resource.Style.ThemeDeviceDefaultDialog;
 
 		_dialog = new UnoTimePickerDialog(
 				ContextHelper.Current,
-				timePickerStyleResId,
+				themeResourceId,
 				listener,
 				time.Hours,
 				time.Minutes,

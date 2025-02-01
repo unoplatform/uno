@@ -1,11 +1,12 @@
 ﻿#nullable enable
 using System;
-using System.Runtime.InteropServices;
+using System.Numerics;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -35,6 +36,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 		{
+			var compositor = Compositor.GetSharedCompositor();
+
+			bool? previousCompMode = compositor.IsSoftwareRenderer;
+			compositor.IsSoftwareRenderer = true;
+
 			var renderSize = element.RenderSize;
 			var visual = element.Visual;
 
@@ -52,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 			canvas.Scale((float)dpi);
-			visual.RenderRootVisual(surface, ignoreLocation: true);
+			visual.RenderRootVisual(surface, offsetOverride: Vector2.Zero, null);
 
 			var img = surface.Snapshot();
 
@@ -71,9 +77,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			EnsureBuffer(ref buffer, byteCount);
 			unsafe
 			{
-				bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				SkiaCompat.SKBitmap_GetPixelSpan(bitmap).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
 			}
 			bitmap?.Dispose();
+
+			compositor.IsSoftwareRenderer = previousCompMode;
+
 			return (byteCount, width, height);
 		}
 	}

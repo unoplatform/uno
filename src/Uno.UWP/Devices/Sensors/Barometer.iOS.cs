@@ -38,7 +38,7 @@ namespace Windows.Devices.Sensors
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
 				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
-			_readingChanged?.Invoke(
+			_readingChangedWrapper.Invoke(
 				this,
 				new BarometerReadingChangedEventArgs(barometerReading));
 		}

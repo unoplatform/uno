@@ -9,19 +9,15 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UI.SourceGenerators.Telemetry;
+using Uno.DevTools.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
 	{
-		private Telemetry.Telemetry _telemetry;
+		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 
-		public bool IsRunningCI =>
-			!Environment.GetEnvironmentVariable("TF_BUILD").IsNullOrEmpty() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
-			|| !Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-			|| !Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
-			|| !Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
+		private Telemetry _telemetry;
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
@@ -32,11 +28,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
 				|| _isDesignTimeBuild;
 
-			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
+			string getCurrentDirectory()
+			{
+				var solutionDir = context.GetMSBuildPropertyValue("SolutionDir");
+				if (!string.IsNullOrEmpty(solutionDir))
+				{
+					return solutionDir;
+				}
 
-#if DEBUG
-			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
-#endif
+				var projectDir = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
+				if (!string.IsNullOrEmpty(projectDir))
+				{
+					return projectDir;
+				}
+
+				return Environment.CurrentDirectory;
+			}
+
+			_telemetry = new Telemetry(
+				InstrumentationKey,
+				"uno/generation",
+				enabledProvider: isTelemetryOptout,
+				currentDirectoryProvider: getCurrentDirectory,
+				versionAssembly: GetType().Assembly);
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -50,9 +64,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					_telemetry.TrackEvent(
 						"generate-xaml-done",
-						new[] {
-							("IsRunningCI", IsRunningCI.ToString()),
-						},
+						[],
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
@@ -77,8 +89,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_telemetry.TrackEvent(
 						"generate-xaml-failed",
 						new[] {
-							("ExceptionType", exception.GetType().ToString()),
-							("IsRunningCI", IsRunningCI.ToString()),
+							("ExceptionType", exception.GetType().ToString())
 						},
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
@@ -114,8 +125,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
-							("IsRunningCI", IsRunningCI.ToString()),
-							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString()),
+							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
+							("IDE", BuildIDEName()),
 						},
 						new[] { ("FileCount", (double)files.Length) }
 					);
@@ -128,6 +139,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 				}
 #pragma warning restore CS0168 // unused parameter
+			}
+		}
+
+		private string BuildIDEName()
+		{
+			if (bool.TryParse(_generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString(), out var insideVS) && insideVS)
+			{
+				return "vswin";
+			}
+			else if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
+			{
+				return unoPlatformIDE;
+			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSCODE_CWD")) || Environment.GetEnvironmentVariable("TERM_PROGRAM") == "vscode")
+			{
+				return "vscode";
+			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IDEA_INITIAL_DIRECTORY")))
+			{
+				return "rider";
+			}
+			else
+			{
+				return "unknown";
 			}
 		}
 

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ИЗКЛ.</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Бяло</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Светлосиво</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Сиво</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Тъмносиво</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Черно</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Коралово</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Роза</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Светлооранжево</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Жълто-кафяво</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Светложълто</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Светлозелено</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Жълто-зелено</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Аквамарин</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Небесно синьо</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Светлотюркоазено</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Бледосиньо</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Светлосиньо</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Пастелносиньо</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Синьо-виолетово</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Бледолилаво</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Розово</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Червено</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Оранжево</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Кафяво</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Златисто</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Жълто</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Маслинено зелено</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Зелено</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Светлозелено</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Синьо-зелено</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Тюркоазено</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Синьо</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Сиво-синьо</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Индиго</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Лилаво</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Тъмночервено</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Тъмножълто</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Тъмнозелено</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Тъмно синьо-зелено</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Тъмносиньо</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Тъмнолилаво</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Синя слива</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Затвори</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

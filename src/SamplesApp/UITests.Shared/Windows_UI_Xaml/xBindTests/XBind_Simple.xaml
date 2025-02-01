@@ -14,11 +14,5 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="Description for sample of XBind_Simple">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate x:DataType="local:Data01">
-				<local:XBindControl01 />
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<local:XBindControl01 />
 </UserControl>

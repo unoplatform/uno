@@ -11,12 +11,13 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Dispatching;
+using Uno.Helpers;
+using System.Threading;
 
 namespace Microsoft.UI.Xaml.Media
 {
 	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ISkiaCompositionSurfaceProvider
 	{
-		private HttpClient? _httpClient;
 		private double _dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
 		internal SkiaCompositionSurface? InternalSurface;
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml.Media
 							uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
 							uri.IsFile)
 						{
-							stream = await imgSurf.OpenStreamFromUriAsync(uri);
+							stream = await ImageSourceHelpers.OpenStreamFromUriAsync(uri, CancellationToken.None);
 						}
 						else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 						{
@@ -141,20 +142,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public void Dispose()
 		{
-			_httpClient?.Dispose();
 			InternalSurface?.Image?.Dispose();
-		}
-
-		private async Task<Stream> OpenStreamFromUriAsync(Uri uri)
-		{
-			if (uri.IsFile)
-			{
-				return File.Open(uri.LocalPath, FileMode.Open);
-			}
-
-			_httpClient ??= new HttpClient();
-			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead);
-			return await response.Content.ReadAsStreamAsync();
 		}
 	}
 }

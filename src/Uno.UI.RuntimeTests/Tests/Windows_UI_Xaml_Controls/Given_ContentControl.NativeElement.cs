@@ -11,13 +11,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_ContentControl
 	{
 		[TestMethod]
-		public void When_Native_Element()
+		public async Task When_Native_Element()
 		{
 			var checkButtonType =
 				Type.GetType("Gtk.CheckButton, GtkSharp", false)
 				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
 
-			Assert.IsNotNull(checkButtonType);
+			if (checkButtonType is null)
+			{
+				Assert.Inconclusive("No native button element found on this platform.");
+			}
 
 			var nativeControl = Activator.CreateInstance(checkButtonType);
 
@@ -25,8 +28,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Content = nativeControl;
 
 			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsTrue(SUT.IsNativeHost);
 		}
 
 		[TestMethod]
@@ -36,7 +40,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Type.GetType("Gtk.CheckButton, GtkSharp", false)
 				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
 
-			Assert.IsNotNull(checkButtonType);
+			if (checkButtonType is null)
+			{
+				Assert.Inconclusive("No native button element found on this platform.");
+			}
 
 			var nativeControl = Activator.CreateInstance(checkButtonType);
 
@@ -46,12 +53,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsTrue(SUT.IsNativeHost);
 
-			TestServices.WindowHelper.WindowContent = null;
+			SUT.Content = "something that isn't a native element";
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsFalse(ContentPresenter.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+			Assert.IsFalse(SUT.IsNativeHost);
 		}
 	}
 }

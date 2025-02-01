@@ -31,9 +31,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[DataTestMethod]
+#pragma warning disable MSTEST0014 // DataRow should be valid - Works in our case
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
 		[DataRow(new string[] { "en-US", "abcd" })]
+#pragma warning restore MSTEST0014 // DataRow should be valid
 		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
 		{
 			try
@@ -1576,7 +1578,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Vaii");
 		}
 
-		public void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
+		private void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
 			sut.NumeralSystem = numeralSystem;

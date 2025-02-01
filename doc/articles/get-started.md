@@ -2,6 +2,53 @@
 uid: Uno.GetStarted
 ---
 
+## Quick Start
+
+1. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites
+2. Download the Uno Platform extension for your IDE:
+
+   <!-- markdownlint-disable MD001 MD009 -->
+
+   <div class="row">
+
+   <!-- Visual Studio -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/vs-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
+
+   #### Visual Studio 2022
+
+   Get the VSIX from the marketplace
+   </div>
+   </a>
+   </div>
+
+   <!-- Code -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/vscode-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
+
+   #### Visual Studio Code
+
+   Install the VSIX from the marketplace
+   </div>
+   </a>
+   </div>
+
+   <!-- Rider -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/rider-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
+
+   #### JetBrains Rider
+
+   Get the extension from the marketplace
+   </div>
+   </a>
+   </div>
+
+   </div> <!-- row -->
+
 ## Get Started
 
 Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time.
@@ -30,15 +77,14 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 |-----------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
 | Windows 10/11 (UWP/WinUI)         | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
 | Android                           | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
-| iOS                               | ✔️†                                             | ✔️††                                       | ❌                                                   | ✔️†                                             |
-| Web (WebAssembly)                 | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
+| iOS                               | ✔️†                                             | ✔️††                                       | ❌                                                   | ❌                                              |
+| Web (WebAssembly)                 | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️†††                                           |
 | mac Catalyst                      | ❌                                              | ✔️††                                       | ❌                                                   | ❌                                              |
-| macOS (Skia-Gtk)                  | ✔️                                              | ✔️††                                       | ✔️                                                   | ✔️                                              |
-| Linux (Skia-Gtk)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
-| Windows 7+ (Skia-WPF)             | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
+| Skia Desktop                      | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
 
 - † You will need to be connected to a Mac to run and debug iOS apps from Windows.
 - †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
+- ††† [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
 
 # [**macOS**](#tab/macos)
 
@@ -58,9 +104,9 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | iOS                               | ✔️                                       | ❌                                                   | ✔️                                               |
 | Web (WebAssembly)                 | ✔️                                       | ✔️                                                   | ✔️                                               |
 | mac Catalyst                      | ✔️                                       | ❌                                                   | ✔️                                               |
-| macOS (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
-| Linux (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
-| Windows 7+ (Skia-WPF)             | ❌                                       | ✔️                                                   | ❌                                               |
+| Skia Desktop                      | ✔️                                       | ✔️                                                   | ✔️                                              |
+
+The latest macOS release and Xcode version are required to develop with Uno Platform for iOS and Mac Catalyst targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.IosCatalyst#developing-on-older-mac-hardware).
 
 # [**Linux**](#tab/linux)
 
@@ -75,20 +121,22 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 |                                   | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
 |-----------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)         | ❌                                        | ❌                                                     | ❌                                                |
-| Android                           | ✔️                                        | ❌                                                     | ❌†                                               |
-| iOS                               | ❌                                        | ❌                                                     | ❌                                                |
-| Web (WebAssembly)                 | ✔️                                        | ✔️                                                     | ✔️                                                |
-| mac Catalyst                      | ❌                                        | ❌                                                     | ❌                                                |
-| macOS (Skia-Gtk)                  | ✔️                                        | ✔️                                                     | ✔️                                                |
-| Linux (Skia-Gtk)                  | ✔️                                        | ✔️                                                     | ✔️                                                |
-| Windows 7+ (Skia-WPF)             | ❌                                        | ❌                                                     | ❌                                                |
+| Windows 10/11 (UWP/WinUI)         | ❌                                        | ❌                                                     | ❌                                            |
+| Android                           | ✔️                                        | ❌                                                     | ✔️                                            |
+| iOS                               | ❌                                        | ❌                                                     | ❌                                            |
+| Web (WebAssembly)                 | ✔️                                        | ✔️                                                     | ✔️†                                           |
+| mac Catalyst                      | ❌                                        | ❌                                                     | ❌                                            |
+| Skia Desktop                      | ✔️                                        | ✔️                                                     | ✔️                                            |
 
 **Notes:**
 
-† Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
+- † [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
 
-***
+---
+
+## Questions
+
+For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Development.FAQ) or see the [troubleshooting section](xref:Uno.UI.CommonIssues) for common issues and their solutions.
 
 ## Next Steps
 

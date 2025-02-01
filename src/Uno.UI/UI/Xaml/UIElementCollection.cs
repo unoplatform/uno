@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Collections;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -57,7 +57,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void Add(UIElement item)
 		{
+#if !__CROSSRUNTIME__ // SetParent is already called in AddCore and calling it here messes up the check inside AddCore for a preexisting parent. VerifyNavigationViewItemToolTipPaneDisplayMode (in DEBUG) fails otherwise because Enter is called multiple times on the same element
 			item.SetParent(_owner);
+#endif
 
 			AddCore(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
@@ -70,8 +72,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
 			var itemsEnumerator = items.GetEnumerator();
+			var hasItems = false;
 			while (itemsEnumerator.MoveNext())
 			{
+				hasItems = true;
 				var item = itemsEnumerator.Current;
 
 				if (item is IDependencyObjectStoreProvider provider)
@@ -80,9 +84,19 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			if (!hasItems)
+			{
+				return;
+			}
+
 			if (_owner is FrameworkElement fe)
 			{
 				fe.InvalidateMeasure();
+			}
+
+			if (!hasItems)
+			{
+				return;
 			}
 
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
@@ -145,6 +159,16 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="newIndex">The zero-based index specifying the new location of the item.</param>
 		public void Move(uint oldIndex, uint newIndex)
 		{
+			if (oldIndex >= Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(oldIndex));
+			}
+
+			if (newIndex >= Count)
+			{
+				throw new ArgumentOutOfRangeException(nameof(newIndex));
+			}
+
 			if (oldIndex == newIndex)
 			{
 				return;

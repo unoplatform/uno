@@ -3,51 +3,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum TeachingTipPlacementMode
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Auto = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Top = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Bottom = 2,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Left = 3,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Right = 4,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TopRight = 5,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TopLeft = 6,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		BottomRight = 7,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		BottomLeft = 8,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftTop = 9,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftBottom = 10,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RightTop = 11,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RightBottom = 12,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Center = 13,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Top
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Bottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Left
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Right
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.TopRight
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.TopLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.BottomRight
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.BottomLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.LeftTop
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.LeftBottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.RightTop
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.RightBottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Center
 	}
 #endif
 }

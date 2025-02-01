@@ -4,6 +4,8 @@ uid: Uno.GettingStarted.UsingWizard
 
 # The Uno Platform Solution Template
 
+> [!Video https://www.youtube-nocookie.com/embed/s_QbZbPIeWY]
+
 ## Solution Structure
 
 Both the Visual Studio Template Wizard, which comes with the [Uno Platform Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), and the `dotnet new` [unoapp template](xref:Uno.GetStarted.dotnet-new) create a Uno Platform application with the same solution structure. In this guide, we'll explain the different options that can be used to configure the solution that gets generated. The options will be discussed in the groups they appear in the wizard.

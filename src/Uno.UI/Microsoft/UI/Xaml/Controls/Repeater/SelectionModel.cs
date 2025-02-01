@@ -432,6 +432,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			OnSelectionChanged();
 		}
 
+		// This function assumes a flat list data source.
+		// This allows us to avoid devirtualizing all the items.
+		internal void SelectAllFlat()
+		{
+			m_rootNode.SelectAll();
+			OnSelectionChanged();
+		}
+
+
 		public void ClearSelection()
 		{
 			ClearSelection(true /*resetAnchor*/, true /* raiseSelectionChanged */);
@@ -490,7 +499,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		internal void OnSelectionInvalidatedDueToCollectionChange()
 		{
-			OnSelectionChanged();
+			m_selectionInvalidatedDueToCollectionChange = true;
+			try
+			{
+				OnSelectionChanged();
+			}
+			finally
+			{
+				m_selectionInvalidatedDueToCollectionChange = false;
+			}
 		}
 
 		internal object ResolvePath(object data, IndexPath dataIndexPath)

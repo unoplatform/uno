@@ -255,7 +255,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region HorizontalAlignment Dependency Property
 
-		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
 		public HorizontalAlignment HorizontalAlignment
@@ -267,7 +267,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region VerticalAlignment Dependency Property
 
-		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
 		public VerticalAlignment VerticalAlignment
@@ -362,7 +362,6 @@ namespace <#= mixin.NamespaceName #>
 
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 				RenderSize = _actualSize;
-				AssignedActualSize = _actualSize;
 #endif
 
 				CoreAnimation.CATransform3D? oldTransform = null;
@@ -864,17 +863,18 @@ namespace <#= mixin.NamespaceName #>
 
 
 		Action _brushChanged;
+		IDisposable _backgroundBrushChangedSubscription;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var oldValue = e.OldValue as Brush;
 			var newValue = e.NewValue as Brush;
 			if (newValue is not null)
 			{
 				WantsLayer = true;
 			}
 
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
+			_backgroundBrushChangedSubscription?.Dispose();
+			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
 		}
 
 		#endregion

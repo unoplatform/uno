@@ -47,20 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Foreground
 		// Skipping already declared property FontWeight
 		// Skipping already declared property FontStyle
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Text.FontStretch FontStretch
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
-			}
-			set
-			{
-				this.SetValue(FontStretchProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property FontStretch
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -150,14 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
-			typeof(global::Microsoft.UI.Xaml.Controls.Control),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
-#endif
+		// Skipping already declared property FontStretchProperty
 		// Skipping already declared property FontStyleProperty
 		// Skipping already declared property FontWeightProperty
 		// Skipping already declared property ForegroundProperty
@@ -274,15 +254,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnManipulationCompleted(Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnKeyUp(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnPreviewKeyDown(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyDown(KeyRoutedEventArgs e)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnPreviewKeyUp(global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyUp(KeyRoutedEventArgs e)");

@@ -1,12 +1,11 @@
 <Project>
-	<Import Project="TargetFrameworkSelection.targets" />
-	<Import Project="uno.mobile-cross-targeting-disable.props" />
 	<Import Project="Uno.CrossTargetting.targets" />
 
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<TestingPlatformDotNetTestSupport Condition="'$(IsTestingPlatformApplication)' == 'true'">true</TestingPlatformDotNetTestSupport>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -62,6 +61,21 @@
 		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
 	</Target>
 
+	<PropertyGroup>
+		<!-- IMPORTANT!!! KEEP BOTH MSTest and MTP versions in sync -->
+		<!-- For a given MSTest version, go to https://www.nuget.org/packages/MSTest.TestAdapter/3.7.1#dependencies-body-tab -->
+		<!-- (replacing 3.7.1 in the url with the MSTest version in question) -->
+		<!-- And look for MTP version in there, and make sure MicrosoftTestingPlatformVersion is the same -->
+		<!-- Alternatively, migrate to MSTest.Sdk and let it handle the MTP versioning for you -->
+		<!-- In case of MSTest.Sdk, the TrxReport package will not be needed. It will be added automatically -->
+		<MSTestVersion>3.7.1</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.5.1</MicrosoftTestingPlatformVersion>
+
+		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
+		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
+		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
@@ -71,10 +85,13 @@
 		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.252" />
-		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.252" />
-		<PackageReference Update="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.8" />
+		<PackageReference Update="MSTest" Version="$(MSTestVersion)" />
+		<PackageReference Update="MSTest.TestFramework" Version="$(MSTestVersion)" />
+		<PackageReference Update="MSTest.TestAdapter" Version="$(MSTestVersion)" />
+		<PackageReference Update="MSTest.Analyzers" Version="$(MSTestVersion)" />
+		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
+
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
@@ -84,52 +101,56 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
+		<PackageReference Update="Uno.Fonts.Fluent" version="2.6.1" />
 		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-		<PackageReference Update="Xamarin.UITest" Version="4.3.3" />
+		<PackageReference Update="Xamarin.UITest" Version="4.3.5" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Update="System.Private.Uri" Version="4.3.2" />
+		<PackageReference Update="System.Net.Http" Version="4.3.4" />
+		<PackageReference Update="System.Text.RegularExpressions" Version="4.3.1" />
+		<PackageReference Update="NuGet.Packaging" Version="6.3.4" />
+		<PackageReference Update="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
-		<!-- 
-			NoWarn="NU1903" is added to avoid .NET 7 discrepancies added when workloads
-			are incorrectly upgraded by dependencies. This will change in .NET 8, at which
-			time we'll be able to upgrade SkiaSharp.
-			Note that project templats are updated, which means that end users won't
-			be affected.
-		-->
-		<PackageReference Update="SkiaSharp.Views" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
+		
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
+
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
-
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
@@ -137,16 +158,21 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
-		<!-- Xamarin.AndroidX.Legacy.Support.v4 shouldn't be brought for any version after net7.0 -->
-		<!-- Remove this line once we are net8.0+ -->
-		<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+		<!-- Workaround: For iOS/macOS builds, System.Private.Uri is pulled implicitly with a vulnerable version -->
+		<!-- There is a bit of related discussions in https://github.com/dotnet/sdk/issues/30659 -->
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">
@@ -188,4 +214,6 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<Import Project="Workaround-43339.targets" />
 </Project>

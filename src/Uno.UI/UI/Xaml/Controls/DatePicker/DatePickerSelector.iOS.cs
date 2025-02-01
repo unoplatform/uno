@@ -10,6 +10,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Globalization;
 using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -63,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
 			UpdatePickerStyle();
-			OverrideUIDatePickerTheme();
+			OverrideUIDatePickerTheme(this);
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -125,10 +126,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// TODO: support non-gregorian calendars
 
-			var winCalendar = new Windows.Globalization.Calendar(
+			var winCalendar = new global::Windows.Globalization.Calendar(
 				Array.Empty<string>(),
-				Windows.Globalization.CalendarIdentifiers.Gregorian,
-				Windows.Globalization.ClockIdentifiers.TwentyFourHour);
+				global::Windows.Globalization.CalendarIdentifiers.Gregorian,
+				global::Windows.Globalization.ClockIdentifiers.TwentyFourHour);
 
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 
@@ -236,14 +237,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal static void OverrideUIDatePickerTheme()
+		internal static void OverrideUIDatePickerTheme(UIView picker)
 		{
 			// Force the background of the UIDatePicker to allow for proper
 			// readability.
 			UIDatePicker.Appearance.BackgroundColor =
-				SystemThemeHelper.SystemTheme == SystemTheme.Dark
+				CoreApplication.RequestedTheme == SystemTheme.Dark
 				? UIColor.Black
 				: UIColor.White;
+
+			picker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Dark
+				? UIUserInterfaceStyle.Dark
+				: UIUserInterfaceStyle.Light;
 
 			// UIDatePicker does not allow for fine-grained control of its appearance:
 			// https://developer.apple.com/documentation/uikit/uidatepicker

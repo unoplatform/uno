@@ -42,10 +42,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		/// However a too high threshold would cause longer passes (as more items would been added / removed at once).
 		/// Note: this is used only for viewport, if the size of the ItemsRepeater changes it will still be re-layouted.
 		/// </summary>
+		/// <param name="state">The layout state</param>
 		/// <param name="oldViewport">Previous viewport</param>
 		/// <param name="newViewport">Updated viewport</param>
 		[UnoOnly]
-		protected internal virtual bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		protected internal virtual bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
 		{
 			const double delta = 50;
 			return Math.Abs(oldViewport.Width - newViewport.Width) > delta

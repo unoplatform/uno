@@ -73,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			var messageDialog = new MessageDialog("Hello");
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
 			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
 #endif

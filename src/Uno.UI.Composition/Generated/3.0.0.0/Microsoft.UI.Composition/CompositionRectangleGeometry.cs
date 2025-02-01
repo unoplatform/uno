@@ -10,9 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Size
 		// Skipping already declared property Offset
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Size.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRectangleGeometry.Offset.get
 	}
 }

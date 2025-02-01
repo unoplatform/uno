@@ -158,9 +158,6 @@
 	<!-- Default native ToggleSwitch styles -->
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
 			   TargetType="ToggleSwitch">
-		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
-		<Setter Property="ClipsToBounds"
-				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">

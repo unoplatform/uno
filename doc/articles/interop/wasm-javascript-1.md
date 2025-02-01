@@ -22,7 +22,7 @@ The Uno Bootstrapper can automatically embed any asset and deploy them with the 
 
 1. **JavaScript files** should be in the `WasmScripts`  folder: they will be copied to the output folder and loaded automatically by the bootstrapper when the page loads. **They must be marked with the `EmbeddedResources` build action**:
 
-   ``` xml
+   ```xml
    <!-- .csproj file -->
    <ItemGroup>
      <EmbeddedResource Include="WasmScripts\javascriptfile.js" />
@@ -32,7 +32,7 @@ The Uno Bootstrapper can automatically embed any asset and deploy them with the 
 
 2. **CSS Style files** should be in the `WasmCSS` folder: they will be copied to the output folder and referenced in the *HTML head* of the application. **They must be marked with the `EmbeddedResources` build action**.
 
-   ``` xml
+   ```xml
    <!-- .csproj file -->
    <ItemGroup>
      <EmbeddedResource Include="WasmCSS\stylefile.css" />
@@ -42,7 +42,7 @@ The Uno Bootstrapper can automatically embed any asset and deploy them with the 
 
 3. **Asset files** should be marked with the `Content` build action in the app. The file will be copied to the output folder and will preserve the same relative path.
 
-   ``` xml
+   ```xml
    <!-- .csproj file -->
    <ItemGroup>
      <Content Include="Assets\image.png" />
@@ -60,7 +60,7 @@ The [philosophy of Uno](../concepts/overview/philosophy-of-uno.md) is to rely on
 
 That also means that it is possible to control how this element is created.  By default it is a `<div>`, but it can be changed in the constructor by providing the `htmlTag` parameter to the one required. For example:
 
-``` csharp
+```csharp
 public sealed partial class MyDivControl : FrameworkElement
 {
     public MyDivControl() // will create a <div> HTML element (by default)
@@ -86,7 +86,7 @@ public sealed partial class MyInputControl : FrameworkElement
 ```
 
 > [!NOTE]
-> When using `HtmlElementAttribute` in a WebAssembly-only library, importing the `Uno.WinUI.Runtime.WebAssembly` is required. If multiple targets frameworks are needed, you'll need to create a [cross-targeted library](../cross-targeted-libraries.md), as well as adding the `Uno.WinUI.Runtime.WebAssembly` library.
+> When using `HtmlElementAttribute` in a WebAssembly-only library, importing the `Uno.WinUI.Runtime.WebAssembly` is required. If multiple targets frameworks are needed, you'll need to create a [control class library](xref:Guide.HowTo.Create-Control-Library), as well as adding the `Uno.WinUI.Runtime.WebAssembly` library.
 
 Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the *Wasm* platform. It is possible to use [conditional code](../platform-specific-csharp.md) to use these methods in a multi-platform project.
 
@@ -94,7 +94,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * The extension method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
 
-  ``` csharp
+  ```csharp
   // Setting only one CSS style
   this.SetCssStyle("text-shadow", "2px 2px red");
 
@@ -104,7 +104,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * The `element.ClearCssStyle()` extension method can be used to set CSS styles to their default values. Example:
 
-  ``` csharp
+  ```csharp
   // Reset text-shadow style to its default value
   this.ClearCssStyle("text-shadow");
 
@@ -114,7 +114,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` extension methods can be used to set HTML attributes on the element:
 
-  ``` csharp
+  ```csharp
   // Set the "href" attribute of an <a> element
   this.SetHtmlAttribute("href", "#section2");
 
@@ -130,7 +130,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * The `element.SetCssClass()` and `element.UnsetCssClass()` extension methods can be used to add or remove CSS classes to the HTML Element:
 
-  ``` csharp
+  ```csharp
   // Add the class to element
   this.SetCssClass("warning");
 
@@ -148,7 +148,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * The `element.SetHtmlContent()` extension method can be used to set arbitrary HTML content as child of the control.
 
-  ``` csharp
+  ```csharp
   this.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
   ```
 
@@ -160,7 +160,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as *extension methods* on the elements.
 
-``` csharp
+```csharp
 // Invoke javascript synchronously
 WebAssemblyRuntime.InvokeJS("alert(\"It works!\");");
 
@@ -196,7 +196,7 @@ There's 2 ways to *callback* to managed C# code from JavaScript:
 
 1. Use Mono to wrap a dotnet static method into a JavaScript function like this:JavaScript_:
 
-   ``` javascript
+   ```javascript
    // Register the method wrapper (should be cached)
    const sumMethod = Module.mono_bind_static_method(
        "[Assembly.Name] Fully.Qualified.ClassType:SumMethod");
@@ -206,7 +206,7 @@ There's 2 ways to *callback* to managed C# code from JavaScript:
 
    *C#*:
 
-   ``` csharp
+   ```csharp
    // In assembly "Assembly.Name"
    namespace Fully.Qualified
    {

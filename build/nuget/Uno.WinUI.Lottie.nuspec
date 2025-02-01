@@ -21,73 +21,77 @@
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
-			<group targetFramework="net7.0">
+			<group targetFramework="net8.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
 
+			<group targetFramework="net9.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="System.Json" version="4.7.1" />
+			</group>
 
 			<group targetFramework="net8.0-android">
-				<dependency id="SkiaSharp.Skottie" version="2.88.3" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
-			<group targetFramework="net8.0-ios">
-				<dependency id="SkiaSharp.Skottie" version="2.88.3" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.3" />
-
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="System.Json" version="4.7.1" />
-			</group>
-			<group targetFramework="net8.0-maccatalyst">
-				<dependency id="SkiaSharp.Skottie" version="2.88.3" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.3" />
+			<group targetFramework="net8.0-ios17.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
-			<group targetFramework="net8.0-macos">
-				<dependency id="SkiaSharp.Skottie" version="2.88.3" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.3" />
+			<group targetFramework="net8.0-maccatalyst17.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.7" />
+
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="System.Json" version="4.7.1" />
+			</group>
+			<group targetFramework="net8.0-macos14.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
 
-			<group targetFramework="net7.0-android">
-				<dependency id="SkiaSharp.Skottie" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.1-preview.79" />
+			<group targetFramework="net9.0-android">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
-			<group targetFramework="net7.0-ios">
-				<dependency id="SkiaSharp.Skottie" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.1-preview.79" />
-
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="System.Json" version="4.7.1" />
-			</group>
-			<group targetFramework="net7.0-maccatalyst">
-				<dependency id="SkiaSharp.Skottie" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.1-preview.79" />
+			<group targetFramework="net9.0-ios18.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
 			</group>
-			<group targetFramework="net7.0-macos">
-				<dependency id="SkiaSharp.Skottie" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.1-preview.79" />
-				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.1-preview.79" />
+			<group targetFramework="net9.0-maccatalyst18.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.7" />
+
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="System.Json" version="4.7.1" />
+			</group>
+			<group targetFramework="net9.0-macos15.0">
+				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
+				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
+				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="System.Json" version="4.7.1" />
@@ -95,31 +99,31 @@
 		</dependencies>
 
 		<references>
-			<group targetFramework="net8.0-ios">
+			<group targetFramework="net8.0-ios17.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net8.0-maccatalyst">
+			<group targetFramework="net8.0-maccatalyst17.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net8.0-macos">
+			<group targetFramework="net8.0-macos14.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net8.0-android">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net7.0-ios">
+			<group targetFramework="net9.0-ios18.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net7.0-maccatalyst">
+			<group targetFramework="net9.0-maccatalyst18.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net7.0-macos">
+			<group targetFramework="net9.0-macos15.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net7.0-android">
+			<group targetFramework="net9.0-android">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="net7.0">
+			<group targetFramework="net9.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<group targetFramework="net8.0">
@@ -131,15 +135,15 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net8.0\Uno.UI.Lottie.dll" target="lib\net8.0" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net7.0\Uno.UI.Lottie.dll" target="lib\net7.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net9.0\Uno.UI.Lottie.dll" target="lib\net9.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-android\Uno.UI.Lottie.dll" target="lib\net8.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios\Uno.UI.Lottie.dll" target="lib\net8.0-ios" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Lottie.dll" target="lib\net8.0-ios17.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst17.0" />
 
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-android\Uno.UI.Lottie.dll" target="lib\net7.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-ios\Uno.UI.Lottie.dll" target="lib\net7.0-ios" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-android\Uno.UI.Lottie.dll" target="lib\net9.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Lottie.dll" target="lib\net9.0-ios18.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Lottie.dll" target="lib\net9.0-maccatalyst18.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
@@ -150,15 +154,15 @@
 		<!-- net8.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\skia" />
 
-		<!-- net7.0 WebAssembly -->
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\webassembly" />
+		<!-- net9.0 WebAssembly -->
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net9.0\Uno.UI.Lottie.*" target="uno-runtime\net9.0\webassembly" />
 
-		<!-- net7.0 Skia -->
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\skia" />
+		<!-- net9.0 Skia -->
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net9.0\Uno.UI.Lottie.*" target="uno-runtime\net9.0\skia" />
 		
 		<!-- Force UAP/netx-win to ignore netX.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
 		<file src="_._" target="build\uap10.0.19041" />
-		<file src="_._" target="build\net7.0-windows" />
+		<file src="_._" target="build\net8.0-windows" />
 	</files>
 </package>

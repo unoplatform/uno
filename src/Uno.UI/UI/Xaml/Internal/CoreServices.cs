@@ -5,10 +5,12 @@
 #nullable enable
 
 using System;
-using Windows.UI;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -18,10 +20,95 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+
+		private static int _isAdditionalFrameRequested;
+
+		public EventManager EventManager { get; private set; }
+#endif
+
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			EventManager = EventManager.Create();
+#endif
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private static XamlRoot? GetXamlRoot()
+		{
+			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
+			{
+				return CoreServices.Instance.ContentRootCoordinator.ContentRoots[0].XamlRoot;
+			}
+
+			if (CoreServices.Instance.MainVisualTree is { } mainVisualTree)
+			{
+				return mainVisualTree.XamlRoot;
+			}
+
+			return null;
+		}
+
+		internal static void RequestAdditionalFrame()
+		{
+			if (GetXamlRoot() is { Bounds: { Width: not 0, Height: not 0 } } &&
+				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
+			{
+				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
+				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Normal);
+			}
+		}
+
+		private static void OnTick()
+		{
+			_isAdditionalFrameRequested = 0;
+
+			// NOTE: The below code should really be replaced with just this:
+			// ----------------------------
+			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
+			//{
+			//	root.UpdateLayout();
+			//
+			//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+			//	{
+			//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
+			//		root.UpdateLayout();
+			//	}
+			//}
+			// -----------------------------
+			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
+
+			// This happens for Islands.
+			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
+			{
+				xamlIsland.UpdateLayout();
+
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					xamlIsland.UpdateLayout();
+				}
+			}
+
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement is not { } root)
+				{
+					continue;
+				}
+
+				root.UpdateLayout();
+
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					root.UpdateLayout();
+				}
+			}
+		}
+#endif
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
@@ -51,7 +138,7 @@ namespace Uno.UI.Xaml.Core
 
 		public VisualTree? MainVisualTree => _mainVisualTree;
 
-		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
+		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
 		internal void InitCoreWindowContentRoot()
 		{
@@ -74,9 +161,22 @@ namespace Uno.UI.Xaml.Core
 			//}
 		}
 
+		internal bool IsXamlVisible()
+		{
+			// TODO Uno: This is currently highly simplified, adjust when all islands are rooted under main tree.
+			return ContentRootCoordinator.CoreWindowContentRoot?.CompositionContent.IsSiteVisible ?? false;
+		}
+
 		[NotImplemented]
 		internal void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
 		{
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void RaisePendingLoadedRequests()
+		{
+			EventManager.RequestRaiseLoadedEventOnNextTick();
+		}
+#endif
 	}
 }

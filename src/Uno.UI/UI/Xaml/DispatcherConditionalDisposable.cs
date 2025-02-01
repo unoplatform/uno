@@ -4,6 +4,7 @@ using System.Text;
 using Uno.Disposables;
 using Uno.UI.Common;
 using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml
 {

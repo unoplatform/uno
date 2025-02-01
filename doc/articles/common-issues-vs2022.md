@@ -4,6 +4,16 @@ uid: Uno.UI.CommonIssues.vs2022
 
 # Issues related to Visual Studio 2022 for Windows
 
+## Unable to select the `MyApp (Unpackaged WinAppSDK)` profile
+
+A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735) is preventing the Unpackaged profile if iOS/Android target frameworks are present in the project. In order for the unpackaged profile to be selected, you'll need to edit the `Properties/launchSettings.json` file to remove the `MyApp (Packaged WinAppSDK)` entry. Once it is removed, select the `MyApp (Unpackaged WinAppSDK)` then start the debugging of your app.
+
+## An iOS fails to run with `No class inheriting from a valid Application Delegate found`
+
+When using iOS Hot Restart on Visual Studio 2022, a [limitation of the environment](https://developercommunity.visualstudio.com/t/iOS-Hot-Restart-does-not-work-for-non-MA/10714660) prevents an Uno Platform app from starting properly when MAUI Embedding is referenced.
+
+A workaround is to disable MAUI Embedding in the [`UnoFeatures` of your project](xref:Uno.Features.Uno.Sdk#uno-platform-features).
+
 ## App builds in Visual Studio 2022 are taking a long time
 
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
@@ -18,7 +28,7 @@ C# Hot Reload is provided by Visual Studio 2022, and there may be occasions wher
 
 If that is the case:
 
-- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
+- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging with `net8.0-desktop`, select the `net8.0-desktop` project.
 - WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
 - Try recompiling the application completely (with the `Rebuild` command)
 
@@ -42,6 +52,14 @@ Android deployment requires a few considerations:
         1. Open your project properties
         1. In the android section search for `Fast Deployment`
         1. uncheck all target platforms
+
+### My application does not start under WSL
+
+Your application may fail to run under WSL for multiple reasons:
+
+- Your app is in a path that contains spaces and/or characters such as `[` or `]`
+- [WSLg](xref:Uno.GetStarted.vs2022#additional-setup-for-windows-subsystem-for-linux-wsl) has not been installed
+- [X11 dependencies](xref:Uno.GetStarted.vs2022#additional-setup-for-skia-desktop-projects) have not been installed
 
 ## Legacy issues
 

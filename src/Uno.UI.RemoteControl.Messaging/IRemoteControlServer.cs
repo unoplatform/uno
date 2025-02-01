@@ -9,7 +9,7 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		string GetServerConfiguration(string key);
 
-		Task SendFrame(IMessage fileReload);
+		Task SendFrame(IMessage message);
 
 		Task SendMessageToIDEAsync(IdeMessage message);
 	}

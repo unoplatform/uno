@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 
 #if __ANDROID__
@@ -55,6 +56,10 @@ namespace Microsoft.UI.Xaml
 		/// the tree.
 		/// </summary>
 		private bool _isMaterializing;
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		private bool _fromLegacyTemplate;
+#endif
 
 		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
@@ -116,11 +121,14 @@ namespace Microsoft.UI.Xaml
 #else
 			ContentBuilder = contentBuilder;
 #endif
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+			_fromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+#endif
 		}
 
 		public ElementStub()
 		{
-			Visibility = Visibility.Collapsed;
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -147,34 +155,31 @@ namespace Microsoft.UI.Xaml
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void EnterImpl(EnterParams @params, int depth)
 		{
-			base.OnVisibilityChanged(oldValue, newValue);
-
-			if (ContentBuilder != null
-				&& oldValue == Visibility.Collapsed
-				&& newValue == Visibility.Visible
-				&& Parent != null
-			)
-			{
-				Materialize(isVisibilityChanged: true);
-			}
+			// the base impl would cause immediately materialization by loading this stub
+			// which is not something we want here.
 		}
+
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			// do nothing
+		}
+#endif
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			if (ContentBuilder != null
-				&& Visibility == Visibility.Visible
-			)
+			if (ContentBuilder != null && Load)
 			{
 				Materialize();
 			}
 		}
 
 		public void Materialize()
-			=> Materialize(isVisibilityChanged: false);
+			=> MaterializeInner();
 
 		private void RaiseMaterializing()
 		{
@@ -184,11 +189,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void Materialize(bool isVisibilityChanged)
+		private void MaterializeInner()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+				this.Log().Debug($"ElementStub.Materialize()");
 			}
 
 			if (_content == null && !_isMaterializing)
@@ -196,24 +201,19 @@ namespace Microsoft.UI.Xaml
 				try
 				{
 					_isMaterializing = true;
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(GetTemplatedParent(), _fromLegacyTemplate);
+#endif
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-					var targetDependencyObject = _content as DependencyObject;
-
-					if (isVisibilityChanged && targetDependencyObject != null)
-					{
-						var visibilityProperty = GetVisibilityProperty(_content);
-
-						// Set the visibility at the same precedence it was currently set with on the stub.
-						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
-
-						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
-					}
 
 					MaterializationChanged?.Invoke(this);
 				}
 				finally
 				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
 					_isMaterializing = false;
 				}
 			}
@@ -235,18 +235,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				MaterializationChanged?.Invoke(this);
-			}
-		}
-
-		private static DependencyProperty GetVisibilityProperty(View view)
-		{
-			if (view is FrameworkElement)
-			{
-				return VisibilityProperty;
-			}
-			else
-			{
-				return DependencyProperty.GetProperty(view.GetType(), nameof(Visibility));
 			}
 		}
 	}

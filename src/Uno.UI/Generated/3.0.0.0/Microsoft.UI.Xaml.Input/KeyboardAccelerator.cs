@@ -32,21 +32,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ModifiersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Input.KeyboardAccelerator, global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs> Invoked
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.KeyboardAccelerator", "event TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> KeyboardAccelerator.Invoked");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.KeyboardAccelerator", "event TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> KeyboardAccelerator.Invoked");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked
 	}
 }

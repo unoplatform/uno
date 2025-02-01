@@ -1,21 +1,32 @@
 ﻿#if !WINAPPSDK
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Globalization;
+
+#if HAS_UNO && !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_DatePicker
 	{
 		[TestInitialize]
@@ -26,8 +37,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+#if HAS_UNO
 		[TestMethod]
-		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS")]
+#endif
+		public async Task When_Time_Zone()
+		{
+			for (int offset = -14; offset <= 14; offset++)
+			{
+				var now = DateTimeOffset.Now;
+				now = now.Add(TimeSpan.FromHours(offset) - now.Offset);
+				using (new TimeZoneModifier(TimeZoneInfo.CreateCustomTimeZone("FakeTestTimeZone", TimeSpan.FromHours(offset), "FakeTestTimeZone", "FakeTestTimeZone")))
+				{
+					var datePicker = new DatePicker();
+					await UITestHelper.Load(datePicker);
+
+					await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+					var openFlyouts = FlyoutBase.OpenFlyouts;
+					Assert.AreEqual(1, openFlyouts.Count);
+					var associatedFlyout = (DatePickerFlyout)openFlyouts[0];
+					Assert.IsNotNull(associatedFlyout);
+
+					await ControlHelper.ClickFlyoutCloseButton(datePicker, isAccept: true);
+
+					Assert.AreEqual(datePicker.Date, associatedFlyout.Date);
+					Assert.AreEqual(now.Year, associatedFlyout.Date.Year);
+					Assert.AreEqual(now.Month, associatedFlyout.Date.Month);
+					Assert.AreEqual(now.Day, associatedFlyout.Date.Day);
+
+					bool unloaded = false;
+					datePicker.Unloaded += (s, e) => unloaded = true;
+
+					TestServices.WindowHelper.WindowContent = null;
+
+					await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
+
+				}
+			}
+		}
+#endif
+
+		[TestMethod]
 		public async Task When_United_States_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -46,7 +98,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_CanadaEnglish_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -65,7 +116,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -84,7 +137,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_Czech_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -103,7 +158,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -122,12 +179,77 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
+		public async Task When_Opened_From_Button_Flyout()
+		{
+			var button = new Button();
+			var datePickerFlyout = new DatePickerFlyout();
+			button.Flyout = datePickerFlyout;
+
+			var root = new Grid();
+			root.Children.Add(button);
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			await TestServices.WindowHelper.WaitForLoaded(root);
+
+			var buttonAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+			var invokePattern = buttonAutomationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			invokePattern.Invoke();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+
+			try
+			{
+				Assert.IsNotNull(datePickerFlyoutPresenter);
+				Assert.AreEqual(1, datePickerFlyoutPresenter.Opacity);
+			}
+			finally
+			{
+				if (popup is not null)
+				{
+					popup.IsOpen = false;
+				}
+			}
+		}
+
+#if HAS_UNO
+		// Validates the workaround for missing support of MonochromaticOverlayPresenter in Uno
+		[TestMethod]
+		public async Task When_MonochromaticOverlayPresenter_Workaround()
+		{
+			var timePicker = new DatePicker();
+			timePicker.UseNativeStyle = false;
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+			Assert.IsNotNull(datePickerFlyoutPresenter);
+
+			var presenters = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(datePickerFlyoutPresenter);
+			foreach (var presenter in presenters)
+			{
+				Assert.AreEqual(0, presenter.Opacity);
+			}
+
+			var highlightRect = VisualTreeUtils.FindVisualChildByName(datePickerFlyoutPresenter, "HighlightRect") as Grid;
+			Assert.IsNotNull(highlightRect);
+			Assert.AreEqual(0.5, highlightRect.Opacity);
+		}
+#endif
+
+		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
@@ -176,12 +298,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
@@ -225,6 +345,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 #endif
 		}
+
+#if __IOS__
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
+		{
+			using var _ = ThemeHelper.UseDarkTheme();
+			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
+
+		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
+		{
+			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			datePicker.UseNativeStyle = true;
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
+
+			var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
+
+			var nativeDatePicker = nativeDatePickerFlyout._selector;
+			Assert.AreEqual(expectedStyle, nativeDatePicker.OverrideUserInterfaceStyle);
+		}
+#endif
 
 		private static IDisposable SetAmbiantLanguage(string language)
 		{

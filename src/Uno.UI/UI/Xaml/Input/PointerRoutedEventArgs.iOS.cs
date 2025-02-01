@@ -5,6 +5,8 @@ using Windows.Foundation;
 using Windows.System;
 using Foundation;
 using UIKit;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -42,7 +44,7 @@ namespace Microsoft.UI.Xaml.Input
 			_properties = previous._properties;
 		}
 
-		internal PointerRoutedEventArgs(uint pointerId, UITouch nativeTouch, UIEvent nativeEvent, UIElement receiver) : this()
+		internal PointerRoutedEventArgs(uint pointerId, UITouch nativeTouch, UIEvent nativeEvent, UIElement originalSource) : this()
 		{
 			_nativeTouch = nativeTouch;
 			_nativeEvent = nativeEvent;
@@ -55,15 +57,26 @@ namespace Microsoft.UI.Xaml.Input
 			FrameId = ToFrameId(_nativeTouch.Timestamp);
 			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
-			OriginalSource = FindOriginalSource(_nativeTouch) ?? receiver;
+			OriginalSource = originalSource;
+
+			var inputManager = VisualTree.GetContentRootForElement(originalSource)?.InputManager;
+			if (inputManager is not null)
+			{
+				inputManager.LastInputDeviceType = deviceType switch
+				{
+					PointerDeviceType.Mouse => InputDeviceType.Mouse,
+					PointerDeviceType.Pen => InputDeviceType.Pen,
+					_ => InputDeviceType.Touch
+				};
+			}
 
 			_properties = GetProperties(); // Make sure to capture the properties state so we can re-use them in "mixed" ctor
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
-			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
+			var timestamp = ToTimestamp(_nativeTouch.Timestamp);
+			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
 			var position = relativeTo == null
 				? rawPosition
@@ -97,13 +110,11 @@ namespace Microsoft.UI.Xaml.Input
 			};
 
 		#region Misc static helpers
-		private static long? _bootTime;
 
-		private static ulong ToTimeStamp(double timestamp)
+		private static ulong ToTimestamp(double nativeTimestamp)
 		{
-			_bootTime ??= DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
-
-			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
+			// iOS Timestamp is in seconds from boot time, convert to microseconds.
+			return (ulong)(nativeTimestamp * 1000 * 1000);
 		}
 
 		private static double? _firstTimestamp;
@@ -118,22 +129,6 @@ namespace Microsoft.UI.Xaml.Input
 			// When we cast, we are not overflowing but instead capping to uint.MaxValue.
 			// We use modulo to make sure to reset to 0 in that case (1.13 years of app run-time, but we prefer to be safe).
 			return (uint)(frameId % uint.MaxValue);
-		}
-
-		private static UIElement FindOriginalSource(UITouch touch)
-		{
-			var view = touch.View;
-			while (view != null)
-			{
-				if (view is UIElement elt)
-				{
-					return elt;
-				}
-
-				view = view.Superview;
-			}
-
-			return null;
 		}
 		#endregion
 	}

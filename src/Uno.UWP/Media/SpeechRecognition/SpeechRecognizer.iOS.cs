@@ -42,11 +42,7 @@ public partial class SpeechRecognizer : IDisposable
 		var audioSession = AVAudioSession.SharedInstance();
 		NSError err;
 		err = audioSession.SetCategory(AVAudioSessionCategory.Record);
-#if NET8_0_OR_GREATER
 		audioSession.SetMode(AVAudioSessionMode.Measurement, out err);
-#else
-		audioSession.SetMode(AVAudioSession.ModeMeasurement, out err);
-#endif
 		err = audioSession.SetActive(true, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
 
 		// Configure request to get partial results
@@ -103,11 +99,7 @@ public partial class SpeechRecognizer : IDisposable
 
 				audioSession = AVAudioSession.SharedInstance();
 				err = audioSession.SetCategory(AVAudioSessionCategory.Playback);
-#if NET8_0_OR_GREATER
 				audioSession.SetMode(AVAudioSessionMode.Default, out err);
-#else
-				audioSession.SetMode(AVAudioSession.ModeDefault, out err);
-#endif
 				err = audioSession.SetActive(false, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
 
 				_recognitionTask = null;

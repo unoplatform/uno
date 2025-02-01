@@ -16,22 +16,32 @@ uid: Uno.Features.WSPower
 * ✔  Supported
 * ✖ Not supported
 
-| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ | ✖ ️  |
-| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ | ✖ ️  |
+| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | Skia Desktop |
+|----------------|-------|-------------|---------|-------|-------|-----|
+| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ |
+| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ |
+| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ |
 
 ### Usage
 
 For general usage, see [PowerManager Class](https://learn.microsoft.com/uwp/api/windows.system.power.powermanager).
+
+## Platform-specific requirements
+
+### Android
+
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.BATTERY_STATS" />
+```
 
 ### Limitations
 

@@ -50,10 +50,6 @@ namespace Windows.Graphics.Display
 #endif
 
 #if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
-
-		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
-
 		[NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.None;
 

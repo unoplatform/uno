@@ -32,6 +32,19 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
+		private static ClientHotReloadProcessor? _instance;
+
+#if HAS_UNO
+		private static ClientHotReloadProcessor? Instance => _instance;
+#else
+		private static ClientHotReloadProcessor? Instance => _instance ??= new();
+
+		private ClientHotReloadProcessor()
+		{
+			_status = new(this);
+		}
+#endif
+
 		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object? instance,
 			Func<FrameworkElement, string, Task<TMatch?>> predicate,
@@ -59,6 +72,31 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
+#if __IOS__ || __ANDROID__
+#if __IOS__
+			else if (instance is UIView nativeView)
+#elif __ANDROID__
+			else if (instance is global::Android.Views.ViewGroup nativeView)
+#endif
+			{
+				// Enumerate through native instances, such as NativeFramePresenter
+
+				var idx = 0;
+				foreach (var nativeChild in nativeView.EnumerateChildren())
+				{
+					var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+					var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
+					var inner = EnumerateHotReloadInstances(nativeChild, predicate, $"{instanceKey}_[{idx}]");
+
+					idx++;
+
+					await foreach (var validElement in inner)
+					{
+						yield return validElement;
+					}
+				}
+			}
+#endif
 		}
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
@@ -76,8 +114,10 @@ namespace Uno.UI.RemoteControl.HotReload
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
 #endif
 
+#if !HAS_UNO
 			var parentDataContext = (parentAsContentControl as FrameworkElement)?.DataContext;
-
+			var oldDataContext = oldView.DataContext;
+#endif
 			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
 				parentAsContentControl.Content = newView;
@@ -111,13 +151,20 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 #endif
 
+#if !HAS_UNO
 			if (oldView is FrameworkElement oldViewAsFE && newView is FrameworkElement newViewAsFE)
 			{
-				ApplyDataContext(parentDataContext, oldViewAsFE, newViewAsFE);
+				ApplyDataContext(parentDataContext, oldViewAsFE, newViewAsFE, oldDataContext);
 			}
+#endif
 		}
 
-		private static void ApplyDataContext(object? parentDataContext, FrameworkElement oldView, FrameworkElement newView)
+#if !HAS_UNO
+		private static void ApplyDataContext(
+			object? parentDataContext,
+			FrameworkElement oldView,
+			FrameworkElement newView,
+			object? oldDataContext)
 		{
 			if (oldView == null || newView == null)
 			{
@@ -125,14 +172,15 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 
 			if ((newView.DataContext is null || newView.DataContext == parentDataContext)
-				&& (oldView.DataContext is not null && oldView.DataContext != parentDataContext))
+				&& (oldDataContext is not null && oldDataContext != parentDataContext))
 			{
 				// If the DataContext is not provided by the page itself, it may
 				// have been provided by an external actor. Copy the value as is
 				// in the DataContext of the new element.
 
-				newView.DataContext = oldView.DataContext;
+				newView.DataContext = oldDataContext;
 			}
 		}
+#endif
 	}
 }

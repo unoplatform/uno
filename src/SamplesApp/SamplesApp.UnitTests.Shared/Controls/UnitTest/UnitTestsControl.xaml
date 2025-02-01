@@ -23,7 +23,7 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Row="0">
+		<StackPanel Grid.Row="0" Spacing="4">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -34,16 +34,24 @@
 				<Button
 					x:Name="runButton"
 					Grid.Column="0"
-					Content="▶ Run"
 					Click="OnRunTests"
-					Margin="0,0,4,0"/>
+					Margin="0,0,4,0">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<SymbolIcon Symbol="Play" />
+						<TextBlock Text="Run" />
+					</StackPanel>
+				</Button>
 				<Button
 					x:Name="stopButton"
 					Grid.Column="1"
 					IsEnabled="False"
-					Content="⏹️ Stop"
 					Click="OnStopTests"
-					Margin="0,0,4,0" />
+					Margin="0,0,4,0">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<SymbolIcon Symbol="Stop" />
+						<TextBlock Text="Stop" />
+					</StackPanel>
+				</Button>
 				<TextBox
 					x:Name="testFilter"
 					Grid.Column="2"
@@ -56,67 +64,67 @@
 					<Button.Flyout>
 						<Flyout>
 							<StackPanel>
-								<ToggleButton
-									x:Name="consoleOutput"
-									Content="🖥️ Console Output"
-									/>
-								<ToggleButton
-									x:Name="runIgnored"
-									Content="🚫 Run [Ignore]"
-									/>
-								<ToggleButton
-									x:Name="retry"
-									IsChecked="True"
-									Content="➰ Auto retry"
-									/>
+								<ToggleButton x:Name="consoleOutput">
+									<StackPanel Orientation="Horizontal" Spacing="8">
+										<FontIcon Glyph="&#xED0D;" />
+										<TextBlock Text="Console Output" />
+									</StackPanel>
+								</ToggleButton>
+								<ToggleButton x:Name="runIgnored">
+									<StackPanel Orientation="Horizontal" Spacing="8">
+										<FontIcon Glyph="&#xEE35;" />
+										<TextBlock Text="Run ignored tests" />
+									</StackPanel>
+								</ToggleButton>
+								<ToggleButton x:Name="retry" IsChecked="True">
+									<StackPanel Orientation="Horizontal" Spacing="8">
+										<FontIcon Glyph="&#xEC57;" />
+										<TextBlock Text="Auto retry" />
+									</StackPanel>
+								</ToggleButton>
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
 				</Button>
 			</Grid>
 
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" Margin="0,8">
 				<TextBlock Text="Status: " />
 				<TextBlock x:Name="runStatus" Text="Not initialized" />
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+				<StackPanel.Resources>
+					<Style TargetType="TextBlock">
+						<Setter Property="VerticalAlignment" Value="Center" />
+						<Setter Property="Width" Value="40" />
+					</Style>
+					<Style TargetType="FontIcon">
+						<Setter Property="VerticalAlignment" Value="Center" />
+					</Style>
+				</StackPanel.Resources>
+
+				<FontIcon Glyph="&#xE768;" />
 				<TextBlock
-					FontSize="15"
-					Text="🏃‍: "
-					/>
-				<TextBlock
-					FontSize="15"
 					x:Name="runTestCount"
 					Text="None" />
 
+				<FontIcon Glyph="&#xE73E;" Foreground="DarkGreen" />
 				<TextBlock
-					FontSize="15"
-					Text=" 🚫: "
-					/>
-				<TextBlock
-					FontSize="15"
-					x:Name="ignoredTestCount"
-					Foreground="DarkGray"
-					Text="None" />
-
-				<TextBlock
-					FontSize="15"
-					Text=" ✔️: "
-					/>
-				<TextBlock
-					FontSize="15"
 					x:Name="succeededTestCount"
 					Foreground="DarkGreen"
 					Text="None" />
 
+				<FontIcon Glyph="&#xE711;" Foreground="Red" />
 				<TextBlock
-					FontSize="15"
-					Text=" ❌: " />
-				<TextBlock
-					FontSize="15"
 					x:Name="failedTestCount"
 					Foreground="Red"
+					Text="None" />
+
+				<FontIcon Glyph="&#xEE35;" Foreground="DarkGray" />
+				<TextBlock
+					x:Name="ignoredTestCount"
+					Foreground="DarkGray"
 					Text="None" />
 			</StackPanel>
 		</StackPanel>

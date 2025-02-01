@@ -20,6 +20,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	[TestClass]
 	public class Given_GestureRecognizer
 	{
+		private const int MicrosecondsPerMillisecond = 1000;
+
 		private const GestureSettings ManipulationsWithoutInertia = GestureSettings.ManipulationTranslateX
 			| GestureSettings.ManipulationTranslateY
 			| GestureSettings.ManipulationTranslateRailsX
@@ -133,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void DoubleTapped_Without_Tapped()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettings.DoubleTap };
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
 			var taps = new List<TappedEventArgs>();
 			sut.Tapped += (snd, e) => taps.Add(e);
 
@@ -162,7 +164,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			taps.Should().BeEquivalentTo(Tap(25, 25));
 
 			// Double tapped
-			var tooSlow = GetPoint(25, 25, ts: 1 + GestureRecognizer.MultiTapMaxDelayTicks + 1);
+			var tooSlow = GetPoint(25, 25, ts: 1 + GestureRecognizer.MultiTapMaxDelayMicroseconds + 1);
 			sut.CanBeDoubleTap(tooSlow).Should().BeFalse();
 			sut.ProcessDownEvent(tooSlow);
 
@@ -1002,8 +1004,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1049,8 +1051,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1096,8 +1098,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1143,8 +1145,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(98, 98, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(98, 98, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1192,8 +1194,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(50, -25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, -50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1222,8 +1224,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of Pi/4 in a quarter of second
 			sut.ProcessDownEvent(-25, -50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, -25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1252,8 +1254,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(-50, 25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, 50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1282,8 +1284,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(25, 50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, 25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1312,8 +1314,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, -25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(25, -50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, -25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1341,8 +1343,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(-25, -25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(-50, -25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, -50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1371,8 +1373,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(-25, 25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(-25, 50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, 25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1401,8 +1403,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(50, 25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, 50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1449,8 +1451,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Start mouse dragging 
 			sut.ProcessDownEvent(25, 25, ts: 0);
-			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
 			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
 		}
@@ -1480,8 +1482,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			using var _ = Pen();
 
 			sut.ProcessDownEvent(25, 25, ts: 0);
-			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
 			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
 		}
@@ -1511,8 +1513,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			using var _ = Touch();
 
 			sut.ProcessDownEvent(25, 25, ts: 0);
-			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
 			drags.Should().BeEquivalentTo(Drag(start, DraggingState.Started));
 		}
@@ -1529,8 +1531,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, ts: 0);
 			sut.ProcessMoveEvent(50, 50, ts: 1);
 			sut.ProcessMoveEvent(25, 25, ts: 2);
-			sut.ProcessMoveEvent(25, 25, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			sut.ProcessMoveEvent(25, 25, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
 			drags.Should().BeEmpty();
 		}
@@ -1545,10 +1547,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			using var _ = Touch();
 
 			sut.ProcessDownEvent(25, 25, ts: 0);
-			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
-			var move = sut.ProcessMoveEvent(51, 51, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
-			var end = sut.ProcessUpEvent(52, 52, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
+			var move = sut.ProcessMoveEvent(51, 51, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 1);
+			var end = sut.ProcessUpEvent(52, 52, ts: GestureRecognizer.DragWithTouchMinDelayMicroseconds + 2);
 
 			drags.Should().BeEquivalentTo(
 				Drag(start, DraggingState.Started),
@@ -1559,7 +1561,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Drag_And_Holding_Touch()
 		{
-			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayTicks, GestureRecognizer.HoldMinDelayTicks);
+			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayMicroseconds, GestureRecognizer.HoldMinDelayMicroseconds);
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag | GestureSettings.Hold };
 			var drags = new List<DraggingEventArgs>();
 			var holds = new List<HoldingEventArgs>();

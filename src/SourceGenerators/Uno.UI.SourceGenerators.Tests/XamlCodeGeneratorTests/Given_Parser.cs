@@ -90,7 +90,7 @@ public class Given_Parser
 
 					<Grid>
 
-						<local:MyStackPanel xmlns:SUT="NamespaceUnderTest" Source="SUT:C" />
+						<local:MyStackPanel xmlns:SUT="using:NamespaceUnderTest" Source="SUT:C" />
 
 					</Grid>
 				</Page>
@@ -131,6 +131,287 @@ public class Given_Parser
 					"""
 				}
 			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Attached_DP_Interface_Type()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:TestRepro"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<Grid>
+					<local:MyAttached.MyProperty>
+						<local:TestDisposable />
+					</local:MyAttached.MyProperty>
+				</Grid>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						internal class TestDisposable : ITestInterface { }
+
+						internal static class MyAttached
+						{
+							public static ITestInterface GetMyProperty(DependencyObject obj)
+							{
+								return (ITestInterface)obj.GetValue(MyPropertyProperty);
+							}
+
+							public static void SetMyProperty(DependencyObject obj, ITestInterface value)
+							{
+								obj.SetValue(MyPropertyProperty, value);
+							}
+
+							public static readonly DependencyProperty MyPropertyProperty =
+								DependencyProperty.RegisterAttached("MyProperty", typeof(ITestInterface), typeof(MyAttached), new PropertyMetadata(null));
+						}
+
+
+						interface ITestInterface { }
+					
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Infinity()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:TestRepro"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<local:MyGrid MyProperty="Infinity">
+					<local:MyGrid MyProperty="Infinity" />
+				</local:MyGrid>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyGrid : Grid
+						{
+							public double MyProperty { get; set; }
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Nested_Setters()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+						xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:local="using:TestRepro"
+						xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Page.Resources>
+						<Style x:Key="MyStyle" TargetType="local:MyGrid">
+							<Setter Property="FirstStyle">
+								<Setter.Value>
+									<Style TargetType="Button" />
+								</Setter.Value>
+							</Setter>
+							<Setter Property="Second" Value="Hello" />
+						</Style>
+					</Page.Resources>
+				</Page>
+				""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyGrid : Grid
+						{
+							public static DependencyProperty FirstStyleProperty => throw null;
+							public Style FirstStyle { get; set; }
+
+							public static DependencyProperty SecondProperty => throw null;
+							public string Second { get; set; }
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Skia_Xml_Namespace()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+						xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:skia="using:SkiaSharp.Views.Windows"
+						xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+					<!-- This is NOT conditional XAML -->
+					<skia:SKXamlCanvas />
+				</Page>
+				""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			DisableBuildReferences = true,
+			ReferenceAssemblies = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("SkiaSharp.Views.Uno.WinUI", "3.0.0-preview.3.1")]),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Event_On_TopLevel_Not_DependencyObject()
+	{
+		var xamlFile = new XamlFile(
+			"MainWindow.xaml",
+				"""
+				<Window x:Class="TestRepro.MainWindow"
+						xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						Closed="Window_Closed">
+					
+				</Window>
+				""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainWindow : Window
+						{
+							public MainWindow()
+							{
+								this.InitializeComponent();
+							}
+
+							private void Window_Closed(object sender, WindowEventArgs args) { }
+						}
+					}
+					"""
+				}
+			},
+			DisableBuildReferences = true,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage("5.3.114"),
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

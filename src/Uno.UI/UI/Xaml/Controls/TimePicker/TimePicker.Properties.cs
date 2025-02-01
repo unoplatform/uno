@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Windows.Globalization;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -23,7 +24,7 @@ partial class TimePicker
 			typeof(string),
 			typeof(TimePicker),
 			new FrameworkPropertyMetadata(
-				defaultValue: (string)Windows.Globalization.ClockIdentifiers.TwelveHour,
+				defaultValue: (string)ClockIdentifiers.TwelveHour,
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnClockIdentifierChangedPartial((string)e.OldValue, (string)e.NewValue)
 			)
@@ -109,23 +110,8 @@ partial class TimePicker
 			new FrameworkPropertyMetadata(
 				defaultValue: 1,
 				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
-				coerceValueCallback: (s, e, _) =>
-				{
-					var value = (int)e;
-
-					if (value < 1)
-					{
-						return 1;
-					}
-
-					if (value > 30)
-					{
-						return 30;
-					}
-
-					return value;
-				}));
+				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue)
+			));
 
 	/// <summary>
 	/// Gets or sets the time currently selected in the time picker.

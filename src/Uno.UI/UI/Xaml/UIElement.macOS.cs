@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
+		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotImplementedException();
 		}
@@ -122,12 +122,6 @@ namespace Microsoft.UI.Xaml
 		/// <inheritdoc />
 		public override bool AcceptsFirstResponder()
 			=> true; // This is required to receive the KeyDown / KeyUp. Note: Key events are then bubble in managed.
-
-
-		internal static void LoadingRootElement(UIElement visualTreeRoot) { }
-
-		internal static void RootElementLoaded(UIElement visualTreeRoot) =>
-			visualTreeRoot.SetHitTestVisibilityForRoot();
 
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
@@ -148,7 +142,7 @@ namespace Microsoft.UI.Xaml
 			var newFlags = evt.ModifierFlags;
 			var modifiers = VirtualKeyHelper.FromFlagsToVirtualModifiers(newFlags);
 
-			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			var flags = Enum.GetValues<NSEventModifierMask>();
 			foreach (var flag in flags)
 			{
 				var key = VirtualKeyHelper.FromFlagsToKey(flag);

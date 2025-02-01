@@ -22,7 +22,7 @@
 			<TextBox x:Name="url" Header="Image Url" Text="https://uno-assets.platform.uno/tests/images/uno-overalls.svg" />
 			<StackPanel Orientation="Horizontal" Spacing="6">
 				<CheckBox x:Name="streamMode">Use streaming mode instead of url</CheckBox>
-				<CheckBox x:Name="showLow" IsChecked="True">Show Log Output</CheckBox>
+				<CheckBox x:Name="showLog" IsChecked="True">Show Log Output</CheckBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Spacing="6">
 				<Button x:Name="btnBitmap"  Click="LoadClicked" Tag="BitmapImage">Load w/BitmapImage</Button>

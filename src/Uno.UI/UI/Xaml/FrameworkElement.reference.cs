@@ -29,10 +29,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 
-		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
-
-		internal int InvalidateMeasureCallCount => throw new NotSupportedException("Reference assembly");
-
 		private bool IsTopLevelXamlView() => throw new NotSupportedException("Reference assembly");
 
 		internal void SuspendRendering() => throw new NotSupportedException("Reference assembly");
@@ -40,19 +36,14 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		public double ActualWidth => throw new NotSupportedException("Reference assembly");
-
-		public double ActualHeight => throw new NotSupportedException("Reference assembly");
-
-		internal Size UnclippedDesiredSize => throw new NotSupportedException("Reference assembly");
-
 #pragma warning disable 67
-		private event TypedEventHandler<FrameworkElement, object> _loading;
+#pragma warning disable IDE0051
 		private event RoutedEventHandler _loaded;
 		private event RoutedEventHandler _unloaded;
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 		public event RoutedEventHandler Loaded;
 		public event RoutedEventHandler Unloaded;
+#pragma warning restore IDE0051
 #pragma warning restore 67
 	}
 }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ToggleSplitButtonAutomationPeer.cpp, tag winui3/release/1.4.2
+
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Windows.Graphics.Display;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -13,11 +12,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
 	public partial class ToggleSplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IToggleProvider
 	{
-		private readonly ToggleSplitButton _owner;
-
 		public ToggleSplitButtonAutomationPeer(ToggleSplitButton owner) : base(owner)
 		{
-			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides
@@ -41,7 +37,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			return AutomationControlType.SplitButton;
 		}
 
-		private ToggleSplitButton GetImpl() => _owner;
+		private ToggleSplitButton GetImpl()
+		{
+			ToggleSplitButton impl = null;
+
+			if (Owner is ToggleSplitButton splitButton)
+			{
+				impl = splitButton;
+			}
+
+			return impl;
+		}
 
 		// IExpandCollapseProvider 
 		public ExpandCollapseState ExpandCollapseState
@@ -50,8 +56,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			{
 				ExpandCollapseState currentState = ExpandCollapseState.Collapsed;
 
-				var splitButton = GetImpl();
-				if (splitButton != null)
+				if (GetImpl() is { } splitButton)
 				{
 					if (splitButton.IsFlyoutOpen)
 					{
@@ -63,9 +68,21 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			}
 		}
 
-		public void Expand() => GetImpl()?.OpenFlyout();
+		public void Expand()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.OpenFlyout();
+			}
+		}
 
-		public void Collapse() => GetImpl()?.CloseFlyout();
+		public void Collapse()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.CloseFlyout();
+			}
+		}
 
 		// IToggleProvider
 		public ToggleState ToggleState
@@ -74,8 +91,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			{
 				ToggleState state = ToggleState.Off;
 
-				var splitButton = GetImpl();
-				if (splitButton != null)
+				if (GetImpl() is { } splitButton)
 				{
 					if (splitButton.IsChecked)
 					{
@@ -87,6 +103,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			}
 		}
 
-		public void Toggle() => GetImpl()?.Toggle();
+		public void Toggle()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.Toggle();
+			}
+		}
 	}
 }

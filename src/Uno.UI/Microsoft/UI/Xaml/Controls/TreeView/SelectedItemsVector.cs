@@ -18,6 +18,8 @@ internal class SelectedItemsVector : ObservableVector<object>
 		m_viewModel = viewModel;
 	}
 
+	public override void Add(object item) => Append(item);
+
 	internal void Append(object item) => InsertAt(Count, item);
 
 	internal void InsertAt(int index, object item)

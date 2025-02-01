@@ -62,13 +62,13 @@ namespace Uno.UI.Tests.BinderTests
 			var master = new Binder_INPC_Base_Class();
 			SUT.DataContext = master;
 
-			Assert.AreEqual(2, master.ValueGetCount);
+			Assert.AreEqual(1, master.ValueGetCount);
 			Assert.AreEqual(0, master.ValueSetCount);
 
 			master.RaiseUpdated();
 
 			Assert.AreEqual(SUT.MyValue, master.Value);
-			Assert.AreEqual(4, master.ValueGetCount);
+			Assert.AreEqual(3, master.ValueGetCount);
 			Assert.AreEqual(0, master.ValueSetCount);
 		}
 

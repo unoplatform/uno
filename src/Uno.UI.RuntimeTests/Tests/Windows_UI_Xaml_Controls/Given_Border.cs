@@ -109,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				//Assert.AreEqual(new Vector3((float)expectedOffsetDimension, (float)expectedOffsetDimension, 0), customControl.ActualOffset);
 
 				Assert.AreEqual(expectedSizeInner, customControl.DesiredSize);
-				Assert.AreEqual(null, customControl.Clip);
+				Assert.IsNull(customControl.Clip);
 			}
 
 			// TODO: This assert currently fails.
@@ -119,7 +119,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Size(innerDimension, innerDimension), innerBorder.RenderSize);
 			Assert.AreEqual(new Vector2((float)innerDimension, (float)innerDimension), innerBorder.ActualSize);
 			Assert.AreEqual(expectedSizeInner, innerBorder.DesiredSize);
-			Assert.AreEqual(null, innerBorder.Clip);
+			Assert.IsNull(innerBorder.Clip);
+		}
+
+		[TestMethod]
+#if __ANDROID__
+		[Ignore("It doesn't yet work properly on Android")]
+#endif
+		public async Task When_Clip_And_CornerRadius()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				CornerRadius = new CornerRadius(50),
+				Clip = new RectangleGeometry()
+				{
+					Rect = new Rect(0, 0, 150, 150),
+				},
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, 10);
+			Assert.AreEqual(new Size(149, 149), new Size(redBounds.Width, redBounds.Height));
+			ImageAssert.DoesNotHaveColorAt(screenshot, 10, 10, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 20, 20, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 10, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 148, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 5, 148, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 155, 155, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
+
+		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails on Android")]
+#endif
+		public async Task When_Clipped_With_TransformMatrix()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Clip = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 100, 100),
+					Transform = new TranslateTransform
+					{
+						Y = -50
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 50, 100, 50), Microsoft.UI.Colors.Red);
 		}
 
 		[TestMethod]
@@ -420,7 +487,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ || __IOS__ || __WASM__
 		[Ignore("Not supported yet")]
 #endif
-		public async Task Border_CornerRadiusAndClip_Clipping()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task Border_CornerRadiusAndClip_Clipping(bool useNullBackground)
 		{
 			var sut = new Border
 			{
@@ -430,7 +499,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CornerRadius = new CornerRadius(50),
 				BorderBrush = new SolidColorBrush(Colors.Red),
 				BorderThickness = new Thickness(20),
-				Background = new SolidColorBrush(Colors.Blue),
+				Background = useNullBackground ? null : new SolidColorBrush(Colors.Blue),
 				Clip = new RectangleGeometry
 				{
 					Rect = new Rect(10, 10, 130, 130)
@@ -506,13 +575,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX - (float)(0.45 * textBoxRect.Width), textBoxRect.Y, "#FF0000", tolerance: 20);
 		}
 
-#if HAS_UNO
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
-#else
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Child_Set_Same_Reference()
+		{
+			var SUT = new Border() { Width = 100, Height = 100 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var child = new MeasureArrangeCounterButton();
+			SUT.Child = child;
+
+			await WindowHelper.WaitForLoaded(child);
+
+#if !HAS_UNO // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+			Assert.AreEqual(1, child.MeasureCount);
+			Assert.AreEqual(1, child.ArrangeCount);
 #endif
+
+			var initialMeasureCount = child.MeasureCount;
+			var initialArrangeCount = child.ArrangeCount;
+
+			SUT.Child = child;
+
+			// Both measure and arrange count must increase
+			await WindowHelper.WaitFor(() => child.MeasureCount > initialMeasureCount);
+			await WindowHelper.WaitFor(() => child.ArrangeCount > initialArrangeCount);
+
+#if !HAS_UNO // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+			Assert.AreEqual(2, child.MeasureCount);
+			Assert.AreEqual(2, child.ArrangeCount);
+#endif
+		}
+
+		internal partial class MeasureArrangeCounterButton : Button
+		{
+			internal int MeasureCount { get; private set; }
+
+			internal int ArrangeCount { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				ArrangeCount++;
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
+#if HAS_UNO
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task Nested_Element_Tapped()
 		{
 			var SUT = new Border()
@@ -547,11 +667,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
-#else
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Parent_DoubleTapped_When_Child_Has_Tapped()
 		{
 			var SUT = new Border()
@@ -695,6 +814,131 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreSimilarAsync(bitmap2, bitmap2Expected, imperceptibilityThreshold: 0.7);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("Only skia accurately hittests CorderRadius")]
+#endif
+		[DataRow(true, true)]
+		[DataRow(false, true)]
+		[DataRow(false, false)]
+		public async Task When_Border_CornerRadius_HitTesting(bool addBorderChild, bool addGridBackground)
+		{
+			var borderPressedCount = 0;
+			var rectanglePressedCount = 0;
+			var gridPressedCount = 0;
+			var root = new Grid
+			{
+				Background = addGridBackground ? new SolidColorBrush(Colors.Transparent) : null,
+				Children =
+				{
+					new Border
+					{
+						Height = 150,
+						Width = 150,
+						CornerRadius = 50,
+						BorderBrush = Colors.Red,
+						BorderThickness = new Thickness(20),
+						Child = !addBorderChild ? null : new Rectangle
+						{
+							Width = 150,
+							Height = 150,
+							Fill = Colors.Green
+						}.Apply(r => r.PointerPressed += (_, args) =>
+						{
+							rectanglePressedCount++;
+							args.Handled = true;
+						})
+					}.Apply(b => b.PointerPressed += (_, args) =>
+					{
+						borderPressedCount++;
+						args.Handled = true;
+					})
+				}
+			}.Apply(g => g.PointerPressed += (_, _) => gridPressedCount++);
+
+			await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// points are relative to root
+			var pointToTarget = new Dictionary<Point, string>
+			{
+				{ new Point(12, 11), addGridBackground ? "grid" : "" },
+				{ new Point(7, 21), addGridBackground ? "grid" : "" },
+				{ new Point(7, 127), addGridBackground ? "grid" : "" },
+				{ new Point(19, 138), addGridBackground ? "grid" : "" },
+				{ new Point(9, 143), addGridBackground ? "grid" : "" },
+				{ new Point(125, 144), addGridBackground ? "grid" : "" },
+				{ new Point(140, 134), addGridBackground ? "grid" : "" },
+				{ new Point(145, 27), addGridBackground ? "grid" : "" },
+				{ new Point(134, 13), addGridBackground ? "grid" : "" },
+
+				{ new Point(140, 77), "border" },
+				{ new Point(122, 135), "border" },
+				{ new Point(74, 143), "border" },
+				{ new Point(19, 125), "border" },
+				{ new Point(10, 80), "border" },
+				{ new Point(24, 18), "border" },
+
+				// This is actually what WinUI reports.The inner radius of the corners doesn't clip in hit-testing, but is itself hit-testable.
+				// So if there's a child in the border, you can click it "through" the thickness of the border, but if there is no child,
+				// the border will be clicked.
+				{ new Point(24, 25), addBorderChild ? "rectangle" : "border" },
+				{ new Point(20, 125), addBorderChild ? "rectangle" : "border" },
+				{ new Point(122, 126), addBorderChild ? "rectangle" : "border" },
+				{ new Point(121, 22), addBorderChild ? "rectangle" : "border" },
+				{ new Point(29, 123), addBorderChild ? "rectangle" : "border" },
+				{ new Point(118, 123), addBorderChild ? "rectangle" : "border" },
+				{ new Point(117, 29), addBorderChild ? "rectangle" : "border" },
+				{ new Point(27, 33), addBorderChild ? "rectangle" : "border" },
+
+				{ new Point(35, 39), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(33, 112), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(73, 126), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(113, 119), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(127, 73), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(116, 37), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(74, 26), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(33, 35), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+			};
+
+			var expectedBorderPressedCount = 0;
+			var expectedRectanglePressedCount = 0;
+			var expectedGridPressedCount = 0;
+
+			Assert.AreEqual(expectedBorderPressedCount, borderPressedCount);
+			Assert.AreEqual(expectedRectanglePressedCount, rectanglePressedCount);
+			Assert.AreEqual(expectedGridPressedCount, gridPressedCount);
+
+			await Task.Delay(100); // wait for the renderer
+			foreach (var (point, actualTarget) in pointToTarget)
+			{
+				mouse.MoveTo(root.TransformToVisual(null).TransformPoint(point), 1);
+				mouse.Press();
+				mouse.Release();
+
+				switch (actualTarget)
+				{
+					case "grid":
+						expectedGridPressedCount++;
+						break;
+					case "border":
+						expectedBorderPressedCount++;
+						break;
+					case "rectangle":
+						expectedRectanglePressedCount++;
+						break;
+				}
+
+				Assert.AreEqual(expectedBorderPressedCount, borderPressedCount);
+				Assert.AreEqual(expectedRectanglePressedCount, rectanglePressedCount);
+				Assert.AreEqual(expectedGridPressedCount, gridPressedCount);
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task Border_AntiAlias()

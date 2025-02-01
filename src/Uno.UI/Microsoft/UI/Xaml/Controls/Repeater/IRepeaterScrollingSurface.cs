@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Private.Controls
 {
@@ -20,6 +21,6 @@ namespace Microsoft.UI.Private.Controls
 		event ViewportChangedEventHandler ViewportChanged;
 		void RegisterAnchorCandidate(UIElement element);
 		void UnregisterAnchorCandidate(UIElement element);
-		Windows.Foundation.Rect GetRelativeViewport(UIElement child);
+		Rect GetRelativeViewport(UIElement child);
 	}
 }

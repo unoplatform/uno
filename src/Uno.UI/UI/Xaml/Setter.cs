@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml
 {
@@ -56,11 +57,16 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				ValidateIsSealed();
+				if (!IsMutable)
+				{
+					ValidateIsSealed();
+				}
 
 				_value = value;
 			}
 		}
+
+		internal bool IsMutable { get; set; }
 
 		private void ValidateIsSealed()
 		{
@@ -128,6 +134,7 @@ namespace Microsoft.UI.Xaml
 			Value = value;
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal override void ApplyTo(DependencyObject o)
 		{
 			if (Property != null)
@@ -139,7 +146,7 @@ namespace Microsoft.UI.Xaml
 				else
 				{
 					object? value = _valueProvider != null ? _valueProvider() : _value;
-					o.SetValue(Property, BindingPropertyHelper.Convert(() => Property.Type, value));
+					o.SetValue(Property, BindingPropertyHelper.Convert(Property.Type, value));
 				}
 			}
 			else
@@ -148,15 +155,15 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void ApplyValue(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		internal void ApplyValue(IFrameworkElement owner)
 		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
+			var path = TryGetOrCreateBindingPath(owner);
 
 			if (path != null)
 			{
 				RefreshBindingPath();
 
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;
@@ -168,11 +175,33 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		internal override bool TryGetSetterValue(out object? value, DependencyObject _)
+		{
+			if (ThemeResourceKey.HasValue)
+			{
+				if (ResourceResolver.TryStaticRetrieval(ThemeResourceKey.Value, ThemeResourceContext, out value))
+				{
+					value = BindingPropertyHelper.Convert(Property!.Type, value);
+					return true;
+				}
+
+				value = null;
+				return false;
+			}
+			else
+			{
+				value = _valueProvider != null ? _valueProvider() : _value;
+				value = BindingPropertyHelper.Convert(Property!.Type, value);
+				return true;
+			}
+		}
+
 		private void RefreshBindingPath()
 			// force binding value to re-evaluate the source and use converters
 			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
 
-		private BindingPath? TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
+		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{
 			if (_bindingPath != null)
 			{
@@ -208,7 +237,7 @@ namespace Microsoft.UI.Xaml
 				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
 			}
 
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: precedence, allowPrivateMembers: false);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, forAnimations: true, allowPrivateMembers: false);
 
 			if (Target.Target is ElementNameSubject subject)
 			{
@@ -235,17 +264,6 @@ namespace Microsoft.UI.Xaml
 		internal void ClearValue()
 		{
 			_bindingPath?.ClearValue();
-		}
-
-		internal bool HasSameTarget(Setter other, DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
-		{
-			var path = TryGetOrCreateBindingPath(precedence, owner);
-			var otherPath = other.TryGetOrCreateBindingPath(precedence, owner);
-
-			return path != null
-				&& otherPath != null
-				&& path.Path == otherPath.Path
-				&& !DependencyObjectStore.AreDifferent(path.DataContext, otherPath.DataContext);
 		}
 
 		private string DebuggerDisplay => $"Property={Property?.Name ?? "<null>"},Target={Target?.Target?.ToString() ?? Target?.TargetName ?? "<null>"},Value={Value?.ToString() ?? "<null>"}";

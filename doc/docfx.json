@@ -8,7 +8,6 @@
                 "files": [
                     "articles/**.md",
                     "articles/**/toc.yml",
-                    "toc.yml",
                     "*.md"
                 ],
                 "exclude": [
@@ -39,6 +38,15 @@
         "template": ["default", "templates/uno"],
         "postProcessors": ["ExtractSearchIndex"],
         "markdownEngineName": "markdig",
+        "markdownEngineProperties": {
+            "markdigExtensions": [
+                "abbreviations",
+                "definitionlists",
+                "tasklists",
+                "footnotes",
+                "diagrams"
+            ]
+        },
         "noLangKeyword": false,
         "keepFileLink": false,
         "cleanupCacheHistory": false,

@@ -24,8 +24,10 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
     ![Visual Studio Installer - .NET desktop development workload](Assets/quick-start/vs-install-dotnet.png)
 
+> [!NOTE]
+> If you intend to do Linux development with WSL, make sure to select **.NET Debugging with WSL** in the **Individual components** section.
 > [!IMPORTANT]
-> Uno Platform 5.0 [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
+> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 ## Check your environment
 
@@ -43,7 +45,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
 ## Additional Setup for Windows Subsystem for Linux (WSL)
 
-It is possible to build and debug Skia+GTK projects under WSL, if you choose to do so.
+It is possible to build and debug Skia Desktop projects under WSL if you choose to do so.
 
 To setup your environment for WSL:
 
@@ -51,19 +53,15 @@ To setup your environment for WSL:
 - Install the prerequisites for Linux mentioned below, in your installed distribution using the Ubuntu shell
 
 > [!NOTE]
-> Running Uno Platform apps using WSL makes use of [WSLg's support for Wayland](https://github.com/microsoft/wslg).
+> Running Uno Platform apps using WSL makes use of [WSLg's support for Wayland](https://github.com/microsoft/wslg#install-instructions-existing-wsl-install). In general, running `wsl --update`, then optionally rebooting the Windows machine can get you started.
 
-## Additional Setup for Skia+GTK projects
+## Additional Setup for Skia Desktop projects
 
-# [**Windows**](#tab/windows)
-
-[!include[windows-setup](includes/additional-windows-setup-inline.md)]
-
-# [**WSL**](#tab/linux)
+### WSL
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
-***
+---
 
 ## Next Steps
 

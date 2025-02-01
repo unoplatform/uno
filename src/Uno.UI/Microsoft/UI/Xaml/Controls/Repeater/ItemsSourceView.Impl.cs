@@ -176,6 +176,11 @@ public partial class ItemsSourceView
 				_collectionChangedListener = Disposable.Create(() => observableVector.VectorChanged -= OnVectorChanged);
 				observableVector.VectorChanged += OnVectorChanged;
 				break;
+
+			case IObservableVector observableVectorUntyped:
+				_collectionChangedListener = Disposable.Create(() => observableVectorUntyped.UntypedVectorChanged -= OnUntypedVectorChanged);
+				observableVectorUntyped.UntypedVectorChanged += OnUntypedVectorChanged;
+				break;
 		}
 	}
 
@@ -187,6 +192,11 @@ public partial class ItemsSourceView
 	void OnBindableVectorChanged(IBindableObservableVector sender, object e)
 	{
 		OnVectorChanged(default, (IVectorChangedEventArgs)e);
+	}
+
+	void OnUntypedVectorChanged(object sender, IVectorChangedEventArgs args)
+	{
+		OnVectorChanged(default, args);
 	}
 
 	void OnVectorChanged(IObservableVector<object> _, IVectorChangedEventArgs e)

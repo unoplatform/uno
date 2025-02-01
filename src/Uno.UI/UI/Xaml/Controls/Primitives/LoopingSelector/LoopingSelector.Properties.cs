@@ -80,14 +80,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(Items), typeof(IList<object>),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(IList<object>)));
+				new FrameworkPropertyMetadata(default(IList<object>), propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
 			DependencyProperty.Register(
 				nameof(SelectedIndex), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(default(int), propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 
 
 		public static DependencyProperty SelectedItemProperty { get; } =
@@ -101,6 +101,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ShouldLoop), typeof(bool),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(bool)));
+				new FrameworkPropertyMetadata(default(bool), propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 	}
 }

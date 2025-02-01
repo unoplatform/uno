@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME casta as</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Bán</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Liath éadrom</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Liath</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Liathdhorcha</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Dubh</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Coiréalach</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rósach</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Oráiste éadrom</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Crón</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Buí éadrom</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Glas éadrom</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Líoma</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Muirghorm</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Gorm na spéire</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turcaid éadrom</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Gorm éadrom</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Gorm éadrom</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Oighearghorm</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Gormvialait</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Labhandar</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Bándearg</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Dearg</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Flannbhuí</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Donn</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Ór</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Buí</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Buíghlas</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Glas</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Gléghlas</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Téalghorm</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turcaidghorm</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Gorm</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Liathghorm</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indeagó</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Corcra</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Dorcha dearg</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Dúbhuí</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Dúghlas</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Téal dorcha</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Dorcha gorm</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Corcra dorcha</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plumchorcra</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Dún</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

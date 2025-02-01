@@ -19,22 +19,6 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
-		public ImageSource()
-		{
-		}
-
-		partial void InitFromResource(Uri uri)
-		{
-			var path = uri.PathAndQuery.TrimStart("/");
-
-			AbsoluteUri = new Uri(path, UriKind.Relative);
-		}
-
-		partial void CleanupResource()
-		{
-			AbsoluteUri = null;
-		}
-
 		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)
 		{
 			try

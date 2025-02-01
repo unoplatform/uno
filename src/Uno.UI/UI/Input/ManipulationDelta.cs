@@ -1,6 +1,7 @@
-﻿using System;
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -33,7 +34,6 @@ namespace Windows.UI.Input
 		// IsEmpty is intentionally not included in equality since it's calculated from the other fields.
 		internal bool IsEmpty => Translation == Point.Zero && Rotation == 0 && Scale == 1 && Expansion == 0;
 
-		[Pure]
 		internal ManipulationDelta Add(ManipulationDelta right) => Add(this, right);
 		internal static ManipulationDelta Add(ManipulationDelta left, ManipulationDelta right)
 			=> new ManipulationDelta
@@ -47,7 +47,6 @@ namespace Windows.UI.Input
 			};
 
 		// Note: We should apply a velocity factor to thresholds to determine if isSignificant
-		[Pure]
 		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Translation.X) >= thresholds.TranslateX
 			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
@@ -55,7 +54,6 @@ namespace Windows.UI.Input
 			|| Math.Abs(Expansion) >= thresholds.Expansion;
 
 		/// <inheritdoc />
-		[Pure]
 		public override string ToString()
 			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
 
@@ -84,3 +82,4 @@ namespace Windows.UI.Input
 		#endregion
 	}
 }
+#endif

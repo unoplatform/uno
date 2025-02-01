@@ -20,20 +20,20 @@ Here's what to look for:
   - The default [`ListViewItem` and `GridViewItem` styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature-rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
   - If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `not_win:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86).
   
-  This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
+    This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
 
-  You'll need to set the property on the top-level element of your item templates, as follows:
+    You'll need to set the property on the top-level element of your item templates, as follows:
 
-  ```xml
-  <ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
-   <DataTemplate x:Key="MyTemplate">
-    <Grid Height="44" not_win:AreDimensionsConstrained="True">
-     ...
-    </Grid>
-   </DataTemplate>
-  ```
+      ```xml
+      <ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
+      <DataTemplate x:Key="MyTemplate">
+        <Grid Height="44" not_win:AreDimensionsConstrained="True">
+        ...
+        </Grid>
+      </DataTemplate>
+      ```
 
-  Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
+    Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
   - Avoid controls that contain inline popups, menus, or flyouts. Doing so will create as many popups as there are items visible on the screen. As in general, there is only one popup visible at a time, it is generally best to move the popup to a separate static resource.
 
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
@@ -46,11 +46,12 @@ Here's what to look for:
     - `ProgressRing` and `ProgressBar` controls indeterminate mode generally consume rendering time. Make sure to set those to determinate modes when not visible.
     - Troubleshooting of animations can be done by enabling the following logger:
 
-   ```csharp
-   builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
-   ```
+      ```csharp
+      builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
+      builder.AddFilter("Microsoft.UI.Xaml.Media.Animation", LogLevel.Debug);
+      ```
 
-   The logger will provide all the changes done to animated properties, with element names.
+      The logger will provide all the changes done to animated properties, with element names.
 
 - Image Assets
   - Try using an image that is appropriate for the DPI and screen size.
@@ -68,13 +69,13 @@ Here's what to look for:
   - Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
     - When data binding to classes not inheriting from `DependencyObject`, in Debug configuration only, the following message may appear:
 
-   ```console
-   The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.
-   Reflection was used instead of the binding engine and generated static metadata. Add the Bindable  attribute to prevent this message and performance issues.
-   ```
+      ```console
+      The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.
+      Reflection was used instead of the binding engine and generated static metadata. Add the Bindable  attribute to prevent this message and performance issues.
+      ```
 
-   This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
-   This attribute is inherited and is generally used on ViewModel based classes.
+      This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
+      This attribute is inherited and is generally used on ViewModel based classes.
 - [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
@@ -83,17 +84,17 @@ Here's what to look for:
  attribute is ignored for templates of `ContentControl` instances, or any other control.
   - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
 
-       ```xml
-       <TextBlock Text="My Text">
-           <TextBlock.Foreground>
-               <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, FallbackValue=Red}" />
-           </TextBlock.Foreground>
-       </TextBlock>
-       ```
+      ```xml
+      <TextBlock Text="My Text">
+          <TextBlock.Foreground>
+              <SolidColorBrush Color="{x:Bind Color, Mode=OneWay, FallbackValue=Red}" />
+          </TextBlock.Foreground>
+      </TextBlock>
+      ```
 
 - Resources
   - Avoid using `x:Name` in `ResourceDictionary` as those force early instantiation of the resource
-  - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `AppResources.xaml` or `App.xaml` resource dictionaries
+  - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `App.xaml` resource dictionaries
 
 ## WebAssembly specifics
 
@@ -105,41 +106,53 @@ Here's what to look for:
 - Adjusting the GC configuration may be useful to limit the collection runs on large allocations. Add the following to your `csproj` file:
 
     ```xml
-
- <ItemGroup>
-  <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
- </ItemGroup>
+    <ItemGroup>
+      <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+    </ItemGroup>
     ```
- You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for more details.
+
+  You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for more details.
+
 - The size of the application can be reduced by:
+
   - Enabling the [IL Linker](features/using-il-linker-webassembly.md)
   - Enabling [XAML Resources Trimming](features/resources-trimming.md)
 
 ## Android specifics
 
 - Adjust the [GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) by modifying the `environment.conf` file with parameters matching your application
+- Enable `LLVM` in `Release` with `-p:EnableLLVM=true` for better runtime performance at the expense of package size and longer compilation times
+- Enable `Marshal Methods` in `Release` with `-p:AndroidEnableMarshalMethods=true` to improve startup performance (.NET 8 +)
 - [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
 
- ```bash
- dotnet add package Mono.AotProfiler.Android
- dotnet build -t:BuildAndStartAotProfiling
- # Wait until the app launches, then navigate around the most common screens
- dotnet build -t:FinishAotProfiling
- ```
+    ```bash
+    dotnet add package Mono.AotProfiler.Android
+    dotnet build -t:BuildAndStartAotProfiling
+    # Wait until the app launches, then navigate around the most common screens
+    dotnet build -t:FinishAotProfiling
+    ```
 
- This will produce a `custom.aprof` in your project directory. Move the file to the `Android` folder and add the following to your `csproj`:
+  This will produce a `custom.aprof` in your project directory. Move the file to the `Android` folder and add the following to your `csproj`:
 
- ```xml
- <ItemGroup>
-  <AndroidAotProfile Include="Android/custom.aprof" />
- </ItemGroup>
- ```
+    ```xml
+    <ItemGroup>
+      <AndroidAotProfile Include="Android/custom.aprof" />
+    </ItemGroup>
+    ```
+
+- Enable `Full AOT` instead of `Startup Tracing` in `Release` with `-p:AndroidEnableProfiledAot=false` to get the best runtime performance
+
+  This will make your package size **significantly** larger and your compilation times longer.
+
+  You may combine this with `-p:EnableLLVM=true` and `-p:AndroidEnableMarshalMethods=true` to get even better performance.
+
+- Use [String Resource Trimming](xref:Uno.Features.StringResourceTrimming) to improve package size and startup time
 
 ## Advanced performance Tracing
 
 ### Profiling applications
 
-A profiling guide for Uno Platform apps is [available here](ref:Uno.Tutorials.ProfilingApplications).
+A profiling guide for Uno Platform apps is [available here](xref:Uno.Tutorials.ProfilingApplications).
 
 ### FrameworkTemplatePool
 

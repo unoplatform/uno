@@ -162,6 +162,11 @@ namespace Uno.UI.Controls
 			// Content
 			var content = element.Content;
 			native.Title = content as string;
+			if (_contentContainer.Child != content && content is UIElement contentAsUIElement && contentAsUIElement.Parent is UIElement parent)
+			{
+				parent.RemoveChild(contentAsUIElement);
+			}
+
 			_contentContainer.Child = content as UIElement;
 			_contentContainer.VerticalAlignment = element.VerticalContentAlignment;
 			_contentContainer.HorizontalAlignment = element.HorizontalContentAlignment;

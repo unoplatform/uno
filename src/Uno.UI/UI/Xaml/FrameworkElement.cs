@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno.UI;
 using System.Linq;
 using Windows.Foundation;
@@ -24,6 +25,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
@@ -63,13 +65,15 @@ namespace Microsoft.UI.Xaml
 		private FrameworkElementLayouter _layouter;
 
 		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
+		Size ILayouterElement.LastAvailableSize => m_previousAvailableSize;
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
 #endif
 
 		private bool _defaultStyleApplied;
+
+		private ResourceDictionary _resources;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 
@@ -141,6 +145,9 @@ namespace Microsoft.UI.Xaml
 		{
 			InternalBackgroundSizing = (BackgroundSizing)e.NewValue;
 			OnBackgroundSizingChangedPartial(e);
+#if __SKIA__
+			(this as IBorderInfoProvider)?.UpdateBackgroundSizing();
+#endif
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);
@@ -160,34 +167,90 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
-		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
-
-		private void OnFlowDirectionChanged(FlowDirection oldValue, FlowDirection newValue)
-		{
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL
-			this.InvalidateArrange();
-			VisualTreeHelper.GetParent(this)?.InvalidateArrange();
+			FrameworkPropertyMetadataOptions.AffectsMeasure |
 #endif
-		}
+			FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			_renderTransform?.UpdateSize(args.NewSize);
+#endif
 #endif
 		}
 
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void UpdateRenderTransformSize(Size newSize)
+			=> _renderTransform?.UpdateSize(newSize);
+#endif
+
+#if !IS_UNIT_TESTS
+		private protected override double GetActualHeight()
+		{
+			var height = Height;
+			if (double.IsNaN(height))
+			{
+				height = Math.Min(MinHeight, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				height = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				height = RenderSize.Height;
+			}
+			else
+			{
+				height = ComputeHeightInMinMaxRange(height);
+			}
+
+			return height;
+		}
+
+		private protected override double GetActualWidth()
+		{
+			var width = Width;
+			if (double.IsNaN(width))
+			{
+				width = Math.Min(MinWidth, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				width = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				width = RenderSize.Width;
+			}
+			else
+			{
+				width = ComputeWidthInMinMaxRange(width);
+			}
+
+			return width;
+		}
+
+		private double ComputeWidthInMinMaxRange(double width)
+			=> Math.Max(Math.Min(width, MaxWidth), MinWidth);
+
+		private double ComputeHeightInMinMaxRange(double height)
+			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
+#endif
 
 		partial void Initialize()
 		{
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -198,8 +261,20 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get; set;
+			get => _resources ??= new ResourceDictionary();
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
 		}
+
+		/// <summary>
+		/// Tries getting the ResourceDictionary without initializing it.
+		/// </summary>
+		/// <returns>A ResourceDictionary instance or null</returns>
+		internal Microsoft.UI.Xaml.ResourceDictionary TryGetResources()
+			=> _resources;
 
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -209,10 +284,12 @@ namespace Microsoft.UI.Xaml
 		new
 #endif
 		DependencyObject Parent =>
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
 			LogicalParentOverride ??
-#endif
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+#if !__NETSTD_REFERENCE__
+		internal bool HasParent() => Parent != null;
+#endif
 
 		public global::System.Uri BaseUri
 		{
@@ -227,12 +304,10 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
 		/// <summary>
 		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
 		/// </summary>
 		internal DependencyObject LogicalParentOverride { get; set; }
-#endif
 
 		/// <summary>
 		/// Provides the managed visual parent of the element. This property can be overriden for specific
@@ -351,6 +426,10 @@ namespace Microsoft.UI.Xaml
 
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+
+			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
+			// Updates theme references to account for new ancestor theme dictionaries.
+			this.UpdateResourceBindings();
 		}
 
 		partial void OnUnloadedPartial()
@@ -456,7 +535,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
+		private protected Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
 
 		#region Requested theme dependency property
 
@@ -542,11 +621,7 @@ namespace Microsoft.UI.Xaml
 
 		public Brush FocusVisualSecondaryBrush
 		{
-			get
-			{
-				EnsureFocusVisualBrushDefaults();
-				return GetFocusVisualSecondaryBrushValue();
-			}
+			get => GetFocusVisualSecondaryBrushValue();
 			set => SetFocusVisualSecondaryBrushValue(value);
 		}
 
@@ -563,11 +638,7 @@ namespace Microsoft.UI.Xaml
 
 		public Brush FocusVisualPrimaryBrush
 		{
-			get
-			{
-				EnsureFocusVisualBrushDefaults();
-				return GetFocusVisualPrimaryBrushValue();
-			}
+			get => GetFocusVisualPrimaryBrushValue();
 			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
@@ -584,21 +655,6 @@ namespace Microsoft.UI.Xaml
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
-
-		private bool _focusVisualBrushesInitialized;
-
-		internal void EnsureFocusVisualBrushDefaults()
-		{
-			if (_focusVisualBrushesInitialized)
-			{
-				return;
-			}
-
-			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
-			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
-
-			_focusVisualBrushesInitialized = true;
-		}
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
@@ -630,7 +686,7 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
-		internal
+		internal virtual
 #if __ANDROID__
 			new
 #endif
@@ -748,12 +804,55 @@ namespace Microsoft.UI.Xaml
 
 		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
 
-		public event EventHandler<object> LayoutUpdated;
+		#region LayoutUpdated
 
-		internal virtual void OnLayoutUpdated()
+		private event EventHandler<object> _layoutUpdated;
+
+		public event EventHandler<object> LayoutUpdated
 		{
-			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
+			add
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var isFirstSubscriber = _layoutUpdated is null;
+#endif
+
+				_layoutUpdated += value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (isFirstSubscriber)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
+			remove
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var hadSubscribers = _layoutUpdated is not null;
+#endif
+
+				_layoutUpdated -= value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (hadSubscribers && _layoutUpdated is null)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
 		}
+
+		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
+		internal
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			virtual
+#endif
+			void OnLayoutUpdated()
+		{
+			_layoutUpdated?.Invoke(null, null);
+		}
+
+		#endregion
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
 
@@ -870,11 +969,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings(updateReason);
+			TryGetResources()?.UpdateThemeBindings(updateReason);
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
-
-			// After theme change, the focus visual brushes may not reflect the correct settings
-			_focusVisualBrushesInitialized = false;
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
 			{
@@ -969,5 +1065,49 @@ namespace Microsoft.UI.Xaml
 			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
 		}
 #endif
+
+		private protected virtual FrameworkTemplate/*?*/ GetTemplate()
+		{
+			return null;
+		}
+
+		// WinUI overrides this in CalendarViewBaseItemChrome, ListViewBaseItemChrome, and MediaPlayerElement.
+		private protected virtual bool HasTemplateChild()
+		{
+			return GetFirstChild() is not null;
+		}
+
+		internal UIElement GetFirstChildNoAddRef() => GetFirstChild();
+
+		internal virtual UIElement/*?*/ GetFirstChild()
+		{
+#if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
+			if (GetChildren() is { Count: > 0 } children)
+			{
+				return children[0] as UIElement;
+			}
+#elif XAMARIN
+			if (this is IShadowChildrenProvider { ChildrenShadow: { Count: > 0 } childrenShadow })
+			{
+				return childrenShadow[0] as UIElement;
+			}
+#endif
+
+			if (VisualTreeHelper.GetChildrenCount(this) > 0)
+			{
+				return VisualTreeHelper.GetChild(this, 0) as UIElement;
+			}
+
+			return null;
+		}
+
+		internal DependencyObject GetTemplatedParent()
+		{
+			return (this as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+		}
+		internal void SetTemplatedParent(DependencyObject tp)
+		{
+			(this as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+		}
 	}
 }

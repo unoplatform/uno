@@ -20,7 +20,7 @@ using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	class Given_ProgressRing
+	public class Given_ProgressRing
 	{
 		[TestMethod]
 		[RunsOnUIThread]
@@ -32,20 +32,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 				20;
 #endif
-
-			var panel = new StackPanel();
 			var ring = new ProgressRing() { IsActive = true };
-			panel.Children.Add(ring);
-			var border = new Border();
-			border.Child = panel;
+			try
+			{
+				var panel = new StackPanel();
+				panel.Children.Add(ring);
+				var border = new Border();
+				border.Child = panel;
 
-			TestServices.WindowHelper.WindowContent = border;
-			await TestServices.WindowHelper.WaitForIdle();
+				TestServices.WindowHelper.WindowContent = border;
+				await TestServices.WindowHelper.WaitForIdle();
 
-			border.Measure(new Size(1000, 1000));
-			border.Arrange(new Rect(0, 0, 1000, 1000));
+				border.Measure(new Size(1000, 1000));
+				border.Arrange(new Rect(0, 0, 1000, 1000));
 
-			Assert.AreEqual(expectedSize, Math.Round(ring.ActualHeight));
+				Assert.AreEqual(expectedSize, Math.Round(ring.ActualHeight));
+			}
+			finally
+			{
+				ring.IsActive = false;
+			}
 		}
 
 		[TestMethod]

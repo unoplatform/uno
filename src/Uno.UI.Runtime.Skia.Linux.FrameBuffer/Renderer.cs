@@ -42,7 +42,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			_displayInformation ??= DisplayInformation.GetForCurrentView();
+			_displayInformation ??= DisplayInformation.GetForCurrentViewSafe();
 
 			var scale = _displayInformation.RawPixelsPerViewPixel;
 
@@ -70,7 +70,14 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual, null);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Unable to render frame, _host.RootElement?.Visual is null");
+					}
 				}
 
 				_fbDev.VSync();

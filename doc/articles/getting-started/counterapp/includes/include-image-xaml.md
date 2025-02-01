@@ -1,4 +1,4 @@
-- Open the **MainPage.xaml** file in the **Counter** project.
+- Open the **MainPage.xaml** file.
 - Replace the **`TextBlock`** with the following **`Image`** element.
 
     ```xml

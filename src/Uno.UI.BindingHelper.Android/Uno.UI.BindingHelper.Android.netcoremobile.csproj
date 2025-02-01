@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetCurrent)-android</TargetFrameworks>
+		<TargetFrameworks>$(NetAndroidPreviousAndCurrent)</TargetFrameworks>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>
@@ -9,7 +9,7 @@
 		<!-- generated\src\Uno.UI.UnoRecyclerView.cs(168,25): Error CA1812: 'UnoRecyclerViewInvoker' is an internal class that is apparently never instantiated. -->
 		<!-- generated\src\Java.Interop.__TypeRegistrations.cs(16,6): Error CA1861: Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array -->
 		<!-- TODO: Figure out a way to enable these analyzers back and exclude those generated files only -->
-		<NoWarn>$(NoWarn);CA1825;CA1812;CA1852;CA1861</NoWarn>
+		<NoWarn>$(NoWarn);CA1825;CA1812;CA1852;CA1861;IDE0051;IDE0055</NoWarn>
 		<AssemblyName>Uno.UI.BindingHelper.Android</AssemblyName>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -27,18 +27,11 @@
 	</PropertyGroup>
 
 	<!-- This condition isn't always true. -->
-	<!-- Docs generation build uses UnoTargetFrameworkOverride=net7.0, so this project will build with net7.0 instead of net7.0-android -->
-	<!-- If we attempted to always build with net7.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
+	<!-- Docs generation build uses UnoTargetFrameworkOverride=net8.0, so this project will build with net8.0 instead of net8.0-android -->
+	<!-- If we attempted to always build with net8.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
-	</ItemGroup>
-
-	<!-- This condition is **explicitly** for net7.0 -->
-	<!-- Don't include this package for any version later than net7.0 -->
-	<!-- Once we remove net7.0 support, this ItemGroup should be deleted. -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,7 +57,7 @@
 	</Target>
 
 	<ItemGroup>
-		<!-- This feature does not take androidx dependencies in (yet? https://github.com/xamarin/xamarin-android/blob/3b164b02772a13204ecb244b7be542505d4f2cb6/Documentation/guides/BindingJavaSource.md)  -->
+		<!-- This feature does not take androidx dependencies in (yet? https://github.com/xamarin/xamarin-android/blob/3b164b02772a13204ecb244b7be542505d4f2cb6/Documentation/guides/BindingJavaSource.md) -->
 		<AndroidJavaSource Remove="Uno\**\*.java" />
 	</ItemGroup>
 
@@ -82,16 +75,13 @@
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings" />
 		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports" />
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
-
-		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" /> <!-- This target generates the \lp\**\classes.jar -->
 	</ItemGroup>
 
 	<Target Name="_CompileUnoJava"
 			BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
-			AfterTargets="@(_CompileUnoJavaAfterTargets)"
 			Inputs="@(_JavaFile)"
 			Outputs="@(EmbeddedJar)"
-			DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
+			DependsOnTargets="_ExtractLibraryProjectImports;_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
 
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
@@ -136,12 +126,5 @@
 		</CreateItem>
 	</Target>
 
-
-
-	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
-	<ItemGroup Condition="$(IsAndroid)">
-		<Compile Remove="**\*.cs" />
-	</ItemGroup>
-	<Target Name="GetBuiltProjectOutputRecursive" Condition="!$(IsAndroid)" />
 
 </Project>

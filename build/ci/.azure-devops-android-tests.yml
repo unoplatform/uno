@@ -1,8 +1,9 @@
 parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
   xCodeRoot: ''
-  XamarinSDKVersion: ''
 
   automatedTestsBuckets:
     - 1
@@ -15,6 +16,8 @@ parameters:
     - 0
     - 1
     - 2
+    - 3
+    - 4
 
 jobs:
 
@@ -29,15 +32,16 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  # Install android 34 as we're running on macos-15
+  - bash: |
+      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
+    displayName: Install Android 34
+
+  - template: templates/dotnet-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -47,12 +51,12 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net7.0-android -c Release -p:UnoTargetFrameworkOverride=net7.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Android samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-android/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
@@ -72,14 +76,18 @@ jobs:
   dependsOn:
   - Android_Build_NetCoreMobile_For_Tests
 
-  timeoutInMinutes: 90
+  timeoutInMinutes: 45
+  cancelTimeoutInMinutes: 1
+
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-  pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+    UNO_UITEST_BUCKET_COUNT: 5
+
+  pool: ${{ parameters.vmLinuxPool }}
+    # vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
@@ -89,35 +97,35 @@ jobs:
       #  UITEST_TEST_MODE_NAME: Automated
 
       ${{ each testBucket in parameters.automatedTestsBuckets }}:
-        Android_9.0_Group_${{ testBucket }}_net7:
+        Android_9.0_Group_${{ testBucket }}_net8:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-          TARGETPLATFORM_NAME: net7
+          TARGETPLATFORM_NAME: net8
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: true
           UITEST_TEST_TIMEOUT: '270s'
 
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
-        Android_9.0_RuntimeTests_${{ testGroup }}_net7:
+        Android_9.0_RuntimeTests_${{ testGroup }}_net8:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_NAME: RuntimeTests
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+          UITEST_RUNTIME_TEST_GROUP_COUNT: 5
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-          TARGETPLATFORM_NAME: net7
+          TARGETPLATFORM_NAME: net8
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: false
           UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_Snapshots_net7:
+      Android_9.0_Snapshots_net8:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
-        TARGETPLATFORM_NAME: net7
+        TARGETPLATFORM_NAME: net8
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270s'
@@ -130,6 +138,12 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
 
   - task: DownloadBuildArtifacts@0
     displayName: 'Download SamplesApp UnitTests'
@@ -147,17 +161,12 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
-
-  - task: PowerShell@2
-    displayName: 'Install coreutils'
-    inputs:
-      targetType: inline
-      script: |
-        brew install coreutils
+  # - task: PowerShell@2
+  #   displayName: 'Install coreutils'
+  #   inputs:
+  #     targetType: inline
+  #     script: |
+  #       brew install coreutils
 
   - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
@@ -176,6 +185,8 @@ jobs:
 
   ## First tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
+      # always set execute bit, as git has a tendency to remove it
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
       $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
 
     displayName: Run Android Tests

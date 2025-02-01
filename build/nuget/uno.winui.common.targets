@@ -186,40 +186,23 @@
              ContinueOnError="true" />
 	</Target>
 
-	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!='' and '$(_AndroidApiLevel)'!=''">
-
-		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
-			<UnoUIMinAndroidSDKVersion>31</UnoUIMinAndroidSDKVersion>
-			<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
-		</PropertyGroup>
-
-		<!-- JELA TODO -->
-		<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
-			<UnoUIMinAndroidSDKVersion>12.0</UnoUIMinAndroidSDKVersion>
-			<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
-		</PropertyGroup>
-
-		<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
-					 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
-	</Target>
-
-	<!-- Validation for https://github.com/unoplatform/uno/issues/9430 and the static registrar requirement -->
-	<Target Name="_ValidateIOSStaticRegistrar"
-			BeforeTargets="BeforeBuild"
-			Condition="
-			'$(UnoDisableValidateIOSStaticRegistrar)'=='' and
-			'$(TargetFramework)'=='net6.0-ios' and '$(RuntimeIdentifier)'=='iossimulator-x64' and (
-				'$(MtouchExtraArgs)'!=''
-				and !$(MtouchExtraArgs.Contains('--registrar:static'))
-				and !$(MtouchExtraArgs.Contains('--registrar=static'))
-			)
-			">
-		<Error Text="Building for the iOS Simulator requires the use of the static registrar. Make sure that `MtouchExtraArgs` contains `--registrar:static`. See https://github.com/unoplatform/uno/issues/9430 for more details." />
-	</Target>
-
 	<!-- Workaround for OmniSharp single-TargetFramework use -->
 	<PropertyGroup Condition="'$(UnoForceSingleTFM)' == 'true'">
 		<TargetFrameworks></TargetFrameworks>
 	</PropertyGroup>
   
+	<Target Name="CleanupMarkupPass1" BeforeTargets="MarkupCompilePass1" Condition="'$(UseWPF)'=='true'">
+		<!--
+		Remove Uno files when building for WPF, and move those files to the
+		UnoPage and UnoApplicationDefinition to avoid conflicts with the WPF ones.
+		-->
+		<ItemGroup>
+			<UnoPage Include="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
+			<UnoApplicationDefinition Include="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
+
+			<Page Remove="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
+			<ApplicationDefinition Remove="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
+		</ItemGroup>
+	</Target>
+	
 </Project>

@@ -104,7 +104,10 @@ partial class TimePickerFlyout
 			_tpPresenter.Style = TimePickerFlyoutPresenterStyle;
 		}
 		// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
-		_tpPresenter.Opacity = 0.0;
+		if (_tpTarget is not null)
+		{
+			_tpPresenter.Opacity = 0.0;
+		}
 
 		return _tpPresenter;
 	}

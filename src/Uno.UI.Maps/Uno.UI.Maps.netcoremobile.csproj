@@ -1,17 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-netprevious.props" />
 
 	<PropertyGroup>
-		<Authors>uno platform</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -31,9 +26,17 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
+		<!-- Required for the empty net7.0 target -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Make the package installable on net7.0 targets as a noop -->
+		<None Include="..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />
@@ -47,10 +50,9 @@
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="118.1.0.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="120.0.0.1" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="118.1.0.1" />
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -59,7 +61,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

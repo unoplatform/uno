@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				await Task.WhenAny(tcs.Task, Task.Delay(30000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
-				Assert.AreEqual(count, 3);
+				Assert.AreEqual(3, count);
 			}
 			finally
 			{
@@ -102,7 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			}
 		}
 
-#if !WINAPPSDK && !__WASM__ // CoreDispatcher.Main.HasThreadAccess is always false on WASM ...
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_Tick_Then_RunningOnDispatcher()
 		{

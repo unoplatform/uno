@@ -8,6 +8,8 @@ Uno Platform offers fine-grained customization of typography, corner radius, and
 
 These themes affect both the `Background` and `Foreground` colors to accommodate user preferences. All of the color modes mentioned above are available for use in your app. This guide will detail how to change the system theme setting, make your app receive change notifications for it, and react to those changes at runtime.
 
+> [!Video https://www.youtube-nocookie.com/embed/FXHUiHjgAQ4]
+
 ## Enable dark mode
 
 As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms.
@@ -42,7 +44,6 @@ When you change the theme mode on your device, the system will send a notificati
 
 - `App` constructor
 - `App.xaml`
-- `AppResources.xaml`
 - The `RequestedTheme` property of a parent `FrameworkElement`
 
 However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) NuGet package which contains a `SystemThemeHelper` class.
@@ -66,9 +67,9 @@ public class MainPage : Page
 
     private void OnThemeChanged(ThemeListener sender)
     {
-        bool isDarkMode = sender.CurrentTheme == ApplicationTheme.Dark;
+        var theme = SystemThemeHelper.IsRootInDarkMode(this.XamlRoot) ? ElementTheme.Light : ElementTheme.Dark;
 
-        SystemThemeHelper.SetApplicationTheme(darkMode: isDarkMode);
+        SystemThemeHelper.SetApplicationTheme(this.XamlRoot, theme);
     }
 }
 ```
@@ -93,12 +94,14 @@ public class SettingsPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        this.DarkModeToggle.IsOn = SystemThemeHelper.IsDarkModeEnabled;
+        this.DarkModeToggle.IsOn = SystemThemeHelper.IsRootInDarkMode(this.XamlRoot);
     }
 
     private void OnDarkModeToggleToggled(object sender, RoutedEventArgs e)
     {
-        SystemThemeHelper.SetApplicationTheme(darkMode: this.DarkModeToggle.IsOn);
+        var theme = DarkModeToggle.IsOn ? ElementTheme.Light : ElementTheme.Dark;
+
+        SystemThemeHelper.SetApplicationTheme(this.XamlRoot, theme);
     }
 }
 ```

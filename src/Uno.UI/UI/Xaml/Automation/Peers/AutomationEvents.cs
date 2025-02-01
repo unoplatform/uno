@@ -1,7 +1,8 @@
 ﻿namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
-/// Specifies the event that is raised by the element through the associated AutomationPeer. Used by RaiseAutomationEvent.
+/// Specifies the event that is raised by the element through the associated AutomationPeer. 
+/// Used by RaiseAutomationEvent.
 /// </summary>
 public enum AutomationEvents
 {
@@ -151,7 +152,8 @@ public enum AutomationEvents
 	TextEditTextChanged = 28,
 
 	/// <summary>
-	/// The event that is raised when the window layout has become invalidated. This event is also used for Auto-suggest accessibility.
+	/// The event that is raised when the window layout has become invalidated. 
+	/// This event is also used for Auto-suggest accessibility.
 	/// </summary>
 	LayoutInvalidated = 29,
 }

@@ -23,6 +23,9 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core;
+using DirectUI;
+using Uno.UI.Xaml.Input;
 
 
 namespace Microsoft.UI.Xaml
@@ -123,6 +126,16 @@ namespace Microsoft.UI.Xaml
 				{
 					CanBubbleNatively = false,
 				};
+
+				var inputManager = VisualTree.GetContentRootForElement(element)?.InputManager;
+				if (inputManager is not null && XboxUtility.IsGamepadNavigationInput(virtualKey))
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+				}
+				else
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+				}
 
 				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
 					UIElement.KeyDownEvent :
@@ -320,7 +333,7 @@ namespace Microsoft.UI.Xaml
 #pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
-			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+			var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
 			if (!handled)
 			{
 				base.OnBackPressed();
@@ -384,7 +397,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-		[Java.Interop.Export]
+		[Java.Interop.Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 	}

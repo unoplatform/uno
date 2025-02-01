@@ -32,9 +32,13 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
@@ -62,6 +66,9 @@ namespace SamplesApp
 		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
+#if __SKIA__
+		private bool _gotOnLaunched;
+#endif
 
 		static App()
 		{
@@ -94,6 +101,12 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
+#if __SKIA__
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
+			{
+				Assert.IsTrue(_gotOnLaunched);
+			});
+#endif
 		}
 
 		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
@@ -107,18 +120,27 @@ namespace SamplesApp
 #if HAS_UNO
 			internal
 #endif
-			override void OnLaunched(LaunchActivatedEventArgs e)
+		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __SKIA__
+			_gotOnLaunched = true;
+#endif
 			EnsureMainWindow();
 
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
-			// requires Xamarin Test Cloud Agent
-			Xamarin.Calabash.Start();
+#if __WASM__
+			DispatcherQueue.Main.TryEnqueue(
+				DispatcherQueuePriority.Low,
+				() => InitWasmSampleRunner()
+			);
+#endif
 
+			SetupAndroidEnvironment();
+
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 				e.UWPLaunchActivatedEventArgs.Kind
 #else
 				e.Kind
@@ -132,14 +154,13 @@ namespace SamplesApp
 				AssertIssue12936();
 
 				AssertIssue12937();
+
+				AssertIssue15521();
 			}
 
 			var sw = Stopwatch.StartNew();
-#if DEBUG
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// this.DebugSettings.EnableFrameRateCounter = true;
-			}
+#if WINAPPSDK && DEBUG
+			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
 			AssertInitialWindowSize();
 
@@ -152,6 +173,8 @@ namespace SamplesApp
 
 #if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#else
+			MainWindow!.Title = "Uno Samples";
 #endif
 
 #if __SKIA__ && DEBUG
@@ -182,7 +205,7 @@ namespace SamplesApp
 		private void EnsureMainWindow()
 		{
 			_mainWindow ??=
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 				new Microsoft.UI.Xaml.Window();
 #else
 				Microsoft.UI.Xaml.Window.Current!;
@@ -190,6 +213,30 @@ namespace SamplesApp
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
 		}
+
+		private void SetupAndroidEnvironment()
+		{
+#if __ANDROID__
+			// Read a file from /sdcard/environment.txt and set the environment variables	
+			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+			if (File.Exists(environmentFilePath))
+			{
+				var lines = File.ReadAllLines(environmentFilePath);
+				foreach (var line in lines)
+				{
+					var parts = line.Split('=');
+					if (parts.Length == 2)
+					{
+						var key = parts[0];
+						var value = parts[1];
+						Console.WriteLine($"Setting environment variable {key} to {value}");
+						System.Environment.SetEnvironmentVariable(key, value);
+					}
+				}
+			}
+#endif
+		}
+
 
 #if __IOS__
 		/// <summary>
@@ -224,7 +271,7 @@ namespace SamplesApp
 								_ =>
 								{
 									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-									throw new Exception($"Watchdog failed");
+									System.Environment.Exit(1);
 								});
 						}
 
@@ -276,7 +323,7 @@ namespace SamplesApp
 
 		public event EventHandler? MainWindowActivated;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
 		{
 			if (Current is null)
@@ -329,10 +376,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
-			if (launchActivatedEventArgs.Arguments is not { } args)
-			{
-				return;
-			}
+			var args = launchActivatedEventArgs.Arguments ?? "";
 
 			if (HandleAutoScreenshots(args))
 			{
@@ -353,6 +397,11 @@ namespace SamplesApp
 			{
 				var dlg = new MessageDialog(args, "Launch arguments");
 				await dlg.ShowAsync();
+			}
+
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 			}
 		}
 
@@ -407,6 +456,10 @@ namespace SamplesApp
 				builder.AddConsole();
 #endif
 
+#if __IOS__
+				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
+#endif
+
 #if !DEBUG
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);
@@ -428,7 +481,7 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
-				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Warning);
+				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
@@ -490,11 +543,15 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
-#if __SKIA__
-			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
+
+			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
+#endif
+#if __ANDROID__
+			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
 		}
 
@@ -520,7 +577,10 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+#pragma warning restore SYSLIB1045
+
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);
@@ -533,7 +593,9 @@ namespace SamplesApp
 					{
 						try
 						{
-							property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
+							// ChangeType doesn't handle Nullable types
+							var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+							property.SetValue(null, value == "null" ? null : Convert.ChangeType(value, type));
 						}
 						catch (Exception)
 						{
@@ -557,6 +619,9 @@ namespace SamplesApp
 #endif
 		}
 
+#if __WASM__
+		[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 		public static string GetDisplayScreenScaling(string displayId)
 			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
 	}

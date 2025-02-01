@@ -10,6 +10,7 @@ namespace Uno.UI.Hosting;
 internal class XamlRootMap<THost> where THost : IXamlRootHost
 {
 	private readonly Dictionary<XamlRoot, THost> _map = new();
+	private readonly Dictionary<THost, XamlRoot> _reverseMap = new();
 
 	internal event EventHandler<XamlRoot>? Registered;
 
@@ -33,6 +34,7 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		}
 
 		_map[xamlRoot] = host;
+		_reverseMap[host] = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
 		xamlRoot.InvalidateRender += host.InvalidateRender;
@@ -51,10 +53,14 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		{
 			xamlRoot.InvalidateRender -= host.InvalidateRender;
 			_map.Remove(xamlRoot);
+			_reverseMap.Remove(host);
 			Unregistered?.Invoke(this, xamlRoot);
 		}
 	}
 
 	internal THost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : default;
+
+	internal XamlRoot? GetRootForHost(THost host) =>
+		_reverseMap.TryGetValue(host, out var xamlRoot) ? xamlRoot : default;
 }

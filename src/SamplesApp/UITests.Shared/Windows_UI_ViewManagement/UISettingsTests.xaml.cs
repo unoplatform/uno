@@ -56,8 +56,7 @@ namespace UITests.Windows_UI_ViewManagement
 		private void UpdateColors()
 		{
 			UIColors.Clear();
-			var colorTypes = Enum.GetValues(typeof(UIColorType)).Cast<UIColorType>();
-			foreach (var colorType in colorTypes)
+			foreach (var colorType in Enum.GetValues<UIColorType>())
 			{
 				try
 				{

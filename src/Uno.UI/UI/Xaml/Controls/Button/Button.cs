@@ -5,19 +5,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{
-		static Button()
-		{
-			HorizontalContentAlignmentProperty.OverrideMetadata(
-				typeof(Button),
-				new FrameworkPropertyMetadata(HorizontalAlignment.Center)
-			);
-
-			VerticalContentAlignmentProperty.OverrideMetadata(
-				typeof(Button),
-				new FrameworkPropertyMetadata(VerticalAlignment.Center)
-			);
-		}
-
 		/// <summary>
 		/// Initializes a new instance of the Button class.
 		/// </summary>

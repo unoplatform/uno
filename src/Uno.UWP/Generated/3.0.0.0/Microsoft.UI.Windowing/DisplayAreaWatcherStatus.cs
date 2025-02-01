@@ -3,27 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum DisplayAreaWatcherStatus
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Created = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Started = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		EnumerationCompleted = 2,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Stopping = 3,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Stopped = 4,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Aborted = 5,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Created
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Started
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.EnumerationCompleted
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Stopping
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Stopped
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Aborted
 	}
 #endif
 }

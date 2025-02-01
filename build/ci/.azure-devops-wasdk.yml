@@ -8,15 +8,11 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   variables:
-    CombinedConfiguration: Release|Any CPU
+    CombinedConfiguration: Release|AnyCPU
     CI_Build: true
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
-
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self
@@ -37,7 +33,15 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:RuntimeIdentifier=win10-x64 /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      # Using x64 to workaround this error:
+      # ---
+      # Microsoft.Build.Msix.Packaging.targets(1036,5): Error : Packaged .NET applications with an
+      # app host exe cannot be ProcessorArchitecture neutral. Please specify a RuntimeIdentifier
+      # or a Platform other than AnyCPU.
+      # ---
+      # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
+      # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
+      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -46,7 +50,7 @@ jobs:
   - task: CopyFiles@2
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false

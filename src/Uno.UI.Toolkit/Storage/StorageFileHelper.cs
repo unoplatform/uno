@@ -1,11 +1,11 @@
 ﻿#nullable enable
-using System.Threading;
 using System;
-using System.Threading.Tasks;
-using Uno;
-using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno;
 
 namespace Uno.UI.Toolkit;
 
@@ -16,14 +16,16 @@ public partial class StorageFileHelper
 	/// </summary>
 	/// <param name="fileName">relative file path</param>
 	/// <returns>A task that will complete with a result of true if file exists, otherwise with a result of false.</returns>
-	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
-
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	private static Task<bool> FileExistsInPackage(string fileName)
-		=> throw new NotImplementedException();
+	public static async Task<bool> ExistsInPackage(string fileName)
+	{
+#if HAS_UNO
+		return await Windows.Storage.Helpers.StorageFileHelper.ExistsInPackage(fileName);
+#else
+		return await FileExistsInPackage(fileName);
 #endif
+	}
 
-#if __SKIA__ || WINDOWS || WINAPPSDK || WINDOWS_UWP || WINUI
+#if !HAS_UNO
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
 		var executingPath = Assembly.GetExecutingAssembly().Location;

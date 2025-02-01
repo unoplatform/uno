@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private bool _fontStyleChanged;
 		private bool _fontWeightChanged;
+		private bool _fontStretchChanged;
 		private bool _textChanged;
 		private bool _fontFamilyChanged;
 		private bool _fontSizeChanged;
@@ -34,9 +35,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _textWrappingChanged;
 		private bool _paddingChangedChanged;
 
+		private bool _shouldUpdateIsTextTrimmed;
+
 		public TextBlock() : base("p")
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			OnFontStyleChangedPartial();
 			OnFontWeightChangedPartial();
@@ -48,17 +51,20 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
 			OnIsTextSelectionEnabledChangedPartial();
-			InitializeDefaultValues();
 
+			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 		}
 
-		/// <summary>
-		/// Set default properties to vertical top.
-		/// In wasm, this behavior is closer to the default textblock property than stretch.
-		/// </summary>
-		private void InitializeDefaultValues()
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
-			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
+			if (property == VerticalAlignmentProperty)
+			{
+				// In wasm, this behavior is closer to the default TextBlock property than stretch.
+				defaultValue = Uno.UI.Helpers.Boxes.VerticalAlignmentBoxes.Top;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
@@ -74,6 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ConditionalUpdate(ref _fontStyleChanged, () => this.SetFontStyle(FontStyle));
 			ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
+			ConditionalUpdate(ref _fontStretchChanged, () => this.SetFontStretch(FontStretch));
 			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
 			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
 			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
@@ -161,16 +168,21 @@ namespace Microsoft.UI.Xaml.Controls
 			return base.ArrangeOverride(arrangeSize);
 		}
 
-		internal override void OnLayoutUpdated()
+		internal override void AfterArrange()
 		{
-			base.OnLayoutUpdated();
+			base.AfterArrange();
 
-			UpdateIsTextTrimmed();
+			if (_shouldUpdateIsTextTrimmed)
+			{
+				UpdateIsTextTrimmed();
+			}
 		}
 
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
+
+		partial void OnFontStretchChangedPartial() => _fontStretchChanged = true;
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{

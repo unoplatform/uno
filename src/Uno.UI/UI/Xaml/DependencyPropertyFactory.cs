@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml
 		// This is a method to support code from WinUI
 		internal static void IsUnsetValue(object spDateFormat, out bool isUnsetValue)
 		{
-			isUnsetValue = spDateFormat is UnsetValue;
+			isUnsetValue = spDateFormat == DependencyProperty.UnsetValue;
 		}
 	}
 }

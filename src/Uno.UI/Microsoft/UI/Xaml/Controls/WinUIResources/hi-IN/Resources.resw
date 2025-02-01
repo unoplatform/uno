@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME बंद है</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>सफ़ेद</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>हल्का सलेटी</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>सलेटी</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>गहरा सलेटी</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>काला</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>कोरल</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>गुलाब का रंग</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>हल्का नारंगी</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>टैन</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>हल्का पीला</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>हल्का हरा</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>नींबू का रंग</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>पनीला</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>आसमानी</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>हल्का फ़िरोज़ी</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>पीला नीला</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>हल्का नीला</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>बर्फ़ानी नीला</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>पेरिविंकल</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>लैवेंडर</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>गुलाबी</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>लाल</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>नारंगी</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>भूरा</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>सुनहरा</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>पीला</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>जैतूनी हरा</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>हरा</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>चमकीला हरा</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>हरा-नीला</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>फ़िरोज़ी</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>नीला</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>नीला-सलेटी</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>जामुनी</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>बैंगनी</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>गहरा लाल</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>गहरा पीला</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>गहरा हरा</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>गहरा हरा-नीला</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>गहरा नीला</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>गहरा बैंगनी</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>प्लम</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>बंद करें</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

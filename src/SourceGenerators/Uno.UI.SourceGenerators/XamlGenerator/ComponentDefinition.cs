@@ -1,10 +1,14 @@
 ﻿#nullable enable
 
+namespace Uno.UI.SourceGenerators.XamlGenerator;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator
+/// <summary>
+/// Definition for Components used for lazy static resources and x:Load marked objects
+/// </summary>
+internal record ComponentDefinition(XamlObjectDefinition XamlObject, bool IsWeakReference, string MemberName)
 {
 	/// <summary>
-	/// Definition for Components used for lazy static resources and x:Load marked objects
+	/// Non-FrameworkElement's resource binding requires an FE ancestor to properly resolve locally inherited resources.
 	/// </summary>
-	internal record ComponentDefinition(XamlObjectDefinition XamlObject, bool IsWeakReference, string MemberName);
+	public ComponentDefinition? ResourceContext { get; set; }
 }

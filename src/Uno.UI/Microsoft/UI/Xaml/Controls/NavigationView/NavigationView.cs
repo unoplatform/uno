@@ -3871,7 +3871,7 @@ public partial class NavigationView : ContentControl
 		}
 	}
 
-	private void HandleTopNavigationMeasureOverrideNormal(Windows.Foundation.Size availableSize)
+	private void HandleTopNavigationMeasureOverrideNormal(Size availableSize)
 	{
 		var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
 		if (desiredWidth > availableSize.Width)
@@ -3880,7 +3880,7 @@ public partial class NavigationView : ContentControl
 		}
 	}
 
-	private void HandleTopNavigationMeasureOverrideOverflow(Windows.Foundation.Size availableSize)
+	private void HandleTopNavigationMeasureOverrideOverflow(Size availableSize)
 	{
 		var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
 		if (desiredWidth > availableSize.Width)

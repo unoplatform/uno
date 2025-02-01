@@ -72,9 +72,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private string[] GetTraceProperties() => _owner?.GetTraceProperties();
 
 			private void ClearValue() => _owner?.ClearValue();
-			private void ClearAnimationFillingValue() => _owner?.ClearAnimationFillingValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
-			private void SetAnimationFillingValue(object value) => _owner?.SetAnimationFillingValue(value);
 			private object GetValue() => _owner?.GetValue();
 			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
 			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
@@ -116,7 +114,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_animator?.Cancel(); // stop could be called before the initialization
 				_startingValue = null;
 				ClearValue();
-				ClearAnimationFillingValue();
 				State = TimelineState.Stopped;
 			}
 
@@ -197,7 +194,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// Set property to its final value
 				var value = ComputeToValue();
 				SetValue(value);
-				SetAnimationFillingValue(value);
 
 				OnEnd();
 			}
@@ -352,20 +348,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// There are two types of fill behaviors:
 				if (FillBehavior == FillBehavior.HoldEnd) // HoldEnd: Keep displaying the last frame
 				{
+#if __IOS__ || __MACOS__
+					// iOS && macOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
+					// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
+					//		 it from application code. Instead we should set the value using a lower precedence
+					//		 (possibly "Local" with PropertyInfo.SetLocalValue(ComputeToValue())) but we must keep the
+					//		 original "Local" value, so will be able to rollback the animation when
+					//		 going to another VisualState (if the storyboard ran in that context).
+					//		 In that case we should also do "ClearValue();" to remove the "Animations" value, even if using "HoldEnd"
+					//		 cf. https://github.com/unoplatform/uno/issues/631
+					PropertyInfo.Value = ComputeToValue();
+#endif
 					State = TimelineState.Filling;
-
-					// The HoldEnd value can be overriden by setting a Local value while it is filling, but not while it is animating.
-					// Since in the dependency property, we doesnt have the context here as to wheter the "animation value" is animating or filling,
-					// we also need to set the AnimationFilling value to indicate the case.
-					SetValue(ComputeToValue());
-					SetAnimationFillingValue(ComputeToValue());
 				}
 				else // Stop: Put back the initial state
 				{
 					State = TimelineState.Stopped;
 
 					ClearValue();
-					ClearAnimationFillingValue();
 				}
 
 				_owner.OnCompleted();
@@ -381,7 +381,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				State = TimelineState.Stopped;
 
 				ClearValue();
-				ClearAnimationFillingValue();
 
 				_owner.OnFailed();
 			}
@@ -441,7 +440,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					var value = FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue
 						? GetValueCore()
 						: GetNonAnimatedValue();
-					if (value != null && value != DependencyProperty.UnsetValue)
+					if (value != null)
 					{
 						return AnimationOwner.Convert(value);
 					}

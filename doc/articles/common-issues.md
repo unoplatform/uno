@@ -8,9 +8,19 @@ The Uno Platform features and support are constantly evolving, yet you may encou
 
 [!include[getting-help](includes/getting-help.md)]
 
+A better resource for high-level questions about Uno Platform is the [general FAQ](xref:Uno.Development.FAQ).
+
+## Sign in with Uno Platform
+
+Sign in with your Uno Platform account directly in your favorite IDE—Visual Studio, VS Code, or Rider, to unlock powerful tools like Hot Reload, helping you speed up development.
+
+More detailed information is available [here](xref:Uno.GetStarted.Licensing).
+
 ## Hot Reload
 
-More troubleshooting information is available [in this section](xref:Uno.Features.HotReload#troubleshooting).
+When using Hot Reload, ensure you first review the [supported features](xref:Uno.Features.HotReload#features), [supported features per OS](xref:Uno.Features.HotReload#supported-features-per-os), and [supported features per platform](xref:Uno.Features.HotReload#supported-features-per-platform).
+
+If issues persist, additional troubleshooting information is available in [this section](xref:Uno.Features.HotReload#troubleshooting).
 
 ## Development Environments
 
@@ -22,8 +32,14 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 ## Platforms
 
 - [Common issues on WebAssembly](xref:Uno.UI.CommonIssues.Wasm)
-- [Common issues on Skia (Gtk/WPF/Framebuffer)](xref:Uno.UI.CommonIssues.Skia)
+- [Common issues on Skia (X11/macOS/Framebuffer/Windows)](xref:Uno.UI.CommonIssues.Skia)
 - [Common issues on iOS/mac Catalyst](xref:Uno.UI.CommonIssues.IosCatalyst)
+- [Common issues on UWP](xref:Uno.UI.CommonIssues.UWP)
+
+## Build Errors
+
+- [Troubleshooting build errors](xref:Uno.Development.Troubleshooting)
+- [Build error codes](xref:Build.Solution.error-codes)
 
 ## Next Steps
 

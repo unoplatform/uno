@@ -23,7 +23,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming
 
 		private void ObserveSystemTheme()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (OperatingSystem.IsWindows())
 			{
 				SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 			}
@@ -37,7 +37,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming
 
 		private void UnobserveSystemTheme()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (OperatingSystem.IsWindows())
 			{
 				SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 			}
@@ -66,7 +66,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming
 
 		public SystemTheme GetSystemTheme()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (OperatingSystem.IsWindows())
 			{
 				return GetWindowsTheme();
 			}

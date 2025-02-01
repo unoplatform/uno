@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum KeyboardAcceleratorPlacementMode
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Auto = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Hidden = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode.Hidden
 	}
 #endif
 }

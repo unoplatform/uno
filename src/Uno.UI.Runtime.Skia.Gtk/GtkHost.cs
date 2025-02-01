@@ -71,7 +71,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		public void TakeScreenshot(string filePath)
 		{
-			InitialWindow?.Host.Renderer?.TakeScreenshot(filePath);
+			InitialWindow?.Host.TakeScreenshot(filePath);
 		}
 
 		private void InitializeDispatcher()
@@ -90,7 +90,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 				app.Host = this;
 			}
 
-			WinUIApplication.StartWithArguments(CreateApp);
+			WinUIApplication.Start(CreateApp);
 		}
 
 		private bool InitializeGtk()

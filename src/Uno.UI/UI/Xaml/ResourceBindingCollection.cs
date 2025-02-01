@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml;
 
 internal class ResourceBindingCollection
 {
-	private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new();
+	private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new(DependencyPropertyComparer.Default);
 	private BindingEntry[]? _cachedAllBindings;
 
 	public bool HasBindings

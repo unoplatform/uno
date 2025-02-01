@@ -10,24 +10,21 @@ namespace Microsoft.UI.Xaml.Documents
 	partial class Inline
 	{
 		private FontDetails? _fontInfo;
-		private SKPaint? _paint;
 
-		internal SKPaint Paint
+		internal FontDetails FontInfo
 		{
 			get
 			{
-				var paint = _paint ??= new SKPaint(FontInfo.SKFont)
-				{
-					TextEncoding = SKTextEncoding.Utf16,
-					IsStroke = false,
-					IsAntialias = true,
-				};
+				_fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
 
-				return paint;
+				if (_fontInfo.CanChange)
+				{
+					_fontInfo.RegisterElementForFontLoaded(this);
+				}
+
+				return _fontInfo;
 			}
 		}
-
-		internal FontDetails FontInfo => _fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
 
 		internal float LineHeight => FontInfo.LineHeight;
 
@@ -44,6 +41,12 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
+			InvalidateFontInfo();
+		}
+
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
 			InvalidateFontInfo();
 		}
 

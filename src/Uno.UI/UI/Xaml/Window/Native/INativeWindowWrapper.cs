@@ -5,11 +5,15 @@ using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Windowing.Native;
+using Microsoft.UI.Content;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal interface INativeWindowWrapper
+internal interface INativeWindowWrapper : INativeAppWindow
 {
+	ContentSiteView ContentSiteView { get; }
+
 	Rect Bounds { get; }
 
 	Rect VisibleBounds { get; }
@@ -18,7 +22,9 @@ internal interface INativeWindowWrapper
 
 	CoreWindowActivationState ActivationState { get; }
 
-	bool Visible { get; }
+	float RasterizationScale { get; }
+
+	bool WasShown { get; }
 
 	event EventHandler<Size>? SizeChanged;
 
@@ -30,13 +36,9 @@ internal interface INativeWindowWrapper
 
 	event EventHandler<AppWindowClosingEventArgs>? Closing;
 
-	event EventHandler? Closed;
-
 	event EventHandler? Shown;
 
-	void Activate();
-
-	void Show();
-
 	void Close();
+
+	void ExtendContentIntoTitleBar(bool extend);
 }

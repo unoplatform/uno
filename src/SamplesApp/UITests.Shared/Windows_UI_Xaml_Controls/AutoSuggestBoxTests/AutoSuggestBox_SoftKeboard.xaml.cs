@@ -3,14 +3,13 @@ using System.Linq;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
-[SampleControlInfo("AutoSuggestBox",
-				   "AutoSuggestBox_SoftKeboard",
-					description: "This test needs the Soft Keyboard. To validate the fix, start typing using the Keyboard on the Screen and tapping over one of the options should make the selection.",
-					isManualTest: true)]
+[Sample("AutoSuggestBox", IsManualTest = true,
+	Description =
+		"This test requires Soft Keyboard. To validate the fix, start typing using the Keyboard" +
+		"on the Screen and tapping over one of the options should make the selection. " +
+		"The item should become selected and displayed below the input.")]
 public sealed partial class AutoSuggestBox_SoftKeboard : UserControl
 {
 	public AutoSuggestBox_SoftKeboard()

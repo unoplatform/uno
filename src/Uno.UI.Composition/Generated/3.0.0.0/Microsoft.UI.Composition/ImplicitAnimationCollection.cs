@@ -23,14 +23,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Insert(string, Microsoft.UI.Composition.ICompositionAnimationBase)
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Lookup(string)
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.HasKey(string)
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.GetView()
+		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Insert(string, Microsoft.UI.Composition.ICompositionAnimationBase)
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Remove(string)
 		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.HasKey(string)
+		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Lookup(string)
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>

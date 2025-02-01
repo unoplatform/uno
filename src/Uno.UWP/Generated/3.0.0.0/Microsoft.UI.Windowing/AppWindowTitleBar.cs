@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppWindowTitleBar
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal AppWindowTitleBar()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Color? InactiveForegroundColor
@@ -69,20 +64,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ExtendsContentIntoTitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.ExtendsContentIntoTitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowTitleBar.ExtendsContentIntoTitleBar");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "bool AppWindowTitleBar.ExtendsContentIntoTitleBar");
-			}
-		}
-#endif
+		// Skipping already declared property ExtendsContentIntoTitleBar
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Color? ButtonPressedForegroundColor
@@ -253,13 +235,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ResetToDefault()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.ResetToDefault()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.set
@@ -271,7 +247,7 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonHoverForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveBackgroundColor.set
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.set
@@ -290,7 +266,13 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.InactiveForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.RightInset.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void ResetToDefault()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.ResetToDefault()");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetDragRectangles(global::Windows.Graphics.RectInt32[] value)
@@ -300,12 +282,6 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsCustomizationSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.IsCustomizationSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowTitleBar.IsCustomizationSupported%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()
 	}
 }

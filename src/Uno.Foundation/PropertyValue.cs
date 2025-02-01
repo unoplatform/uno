@@ -48,6 +48,8 @@ public static partial class PropertyValue
 
 	public static object CreateDateTime(DateTimeOffset value) => value;
 
+	internal static object CreateDateTime(WindowsFoundationDateTime value) => value;
+
 	public static object CreateTimeSpan(TimeSpan value) => value;
 
 	public static object CreatePoint(Point value) => value;

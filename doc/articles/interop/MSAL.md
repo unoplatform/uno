@@ -20,7 +20,7 @@ To use MSAL into an Uno project, follow the following steps:
 
 3. Change the `IPublicCLientApplication` initialization to add a call to `.WithUnoHelpers()` like this:
 
-   ``` csharp
+   ```csharp
    IPublicClientApplication _app = PublicClientApplicationBuilder.Create(clientId)
        [...]
        .WithUnoHelpers() // Add this line before the .Build()
@@ -29,7 +29,7 @@ To use MSAL into an Uno project, follow the following steps:
 
 4. Where you are using the *Interactive* mode (`_app.AcquireTokenInteractive`), add another call to `.WithUnoHelpers()` like this:
 
-   ``` csharp
+   ```csharp
    var authResult = await _app.AcquireTokenInteractive(scopes)
        .WithPrompt(Prompt.SelectAccount)
        [...]

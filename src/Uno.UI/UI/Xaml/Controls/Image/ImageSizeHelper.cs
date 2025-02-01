@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
@@ -9,7 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal static class ImageSizeHelper
 	{
-		[Pure]
 		public static Size MeasureSource(this Image image, Size finalSize, Size imageSize)
 		{
 			switch (image.Stretch)
@@ -67,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return imageSize;
 		}
 
-		[Pure]
+#if !__SKIA__
 		public static Rect ArrangeSource(this Image image, Size finalSize, Size containerSize)
 		{
 			var child = new Rect(default, containerSize);
@@ -139,14 +137,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return child;
 		}
+#endif
 
-		[Pure]
 		public static (double x, double y) BuildScale(this Image image, Size destinationSize, Size sourceSize)
 		{
 			return BuildScale(image.Stretch, destinationSize, sourceSize);
 		}
 
-		[Pure]
 		internal static (double x, double y) BuildScale(Stretch stretch, Size destinationSize, Size sourceSize)
 		{
 			if (stretch != None)
@@ -194,13 +191,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		[Pure]
 		public static Size AdjustSize(this Image image, Size availableSize, Size measuredSize)
 		{
 			return AdjustSize(image.Stretch, image.ApplySizeConstraints(availableSize), measuredSize);
 		}
 
-		[Pure]
 		internal static Size AdjustSize(Stretch stretch, Size availableSize, Size measuredSize)
 		{
 			var scale = BuildScale(stretch, availableSize, measuredSize);

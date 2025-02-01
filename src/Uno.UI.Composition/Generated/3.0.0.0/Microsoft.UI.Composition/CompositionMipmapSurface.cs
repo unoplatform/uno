@@ -53,7 +53,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.AlphaMode.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.LevelCount.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.PixelFormat.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.SizeInt32.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.CompositionDrawingSurface GetDrawingSurfaceForLevel(uint level)
@@ -61,9 +63,7 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionMipmapSurface.GetDrawingSurfaceForLevel(uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDrawingSurface%20CompositionMipmapSurface.GetDrawingSurfaceForLevel%28uint%20level%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.LevelCount.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.PixelFormat.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.SizeInt32.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMipmapSurface.AlphaMode.get
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}
 }

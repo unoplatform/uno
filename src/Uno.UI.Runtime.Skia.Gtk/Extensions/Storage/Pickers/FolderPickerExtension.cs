@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia.Gtk;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Uno.UI.Helpers;
 
 namespace Uno.Extensions.Storage.Pickers
 {

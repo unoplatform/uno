@@ -1,65 +1,52 @@
 ﻿using System;
-using System.Diagnostics;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
-	private bool _isMeasureWaiting;
-	private bool _isArrangeWaiting;
-	private bool _isMeasuringOrArranging;
 	private bool _renderQueued;
 
 	internal event Action InvalidateRender = () => { };
 
 	internal void InvalidateMeasure()
 	{
-#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
-		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
-#else
-		InnerInvalidateMeasure();
+		VisualTree.RootElement.InvalidateMeasure();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		CoreServices.RequestAdditionalFrame();
 #endif
 	}
 
 	internal void InvalidateArrange()
 	{
-#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
-		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
-#else
-		// We are invalidating both arrange and measure the same way on WASM.
-		InnerInvalidateMeasure();
+		VisualTree.RootElement.InvalidateArrange();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		CoreServices.RequestAdditionalFrame();
 #endif
+	}
+
+	internal void RaiseInvalidateRender()
+	{
+		InvalidateRender();
 	}
 
 	internal void QueueInvalidateRender()
 	{
-		if (!_isMeasuringOrArranging && !_renderQueued)
+		if (!_renderQueued)
 		{
 			_renderQueued = true;
 
 			DispatchQueueRender();
 		}
 	}
+
 	private void DispatchQueueRender()
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
-			if (_isMeasureWaiting || _isArrangeWaiting)
-			{
-				// If the Render request happens during a UI update pass, and later in the same
-				// dispatched iteration a measure is requested, visuals may be in an
-				// inconsistent state. We need to skip this request to be rescheduled
-				// to run after the pending measure/arrange so the visuals are drawn properly.
-				DispatchQueueRender();
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Trace))
-				{
-					this.Log().Trace("Delaying Render request");
-				}
-			}
-			else if (_renderQueued)
+			if (_renderQueued)
 			{
 				_renderQueued = false;
 				InvalidateRender();
@@ -67,92 +54,10 @@ public sealed partial class XamlRoot
 		});
 	}
 
-
-	internal void ScheduleInvalidateMeasureOrArrange(bool invalidateMeasure)
-	{
-		if (VisualTree.RootElement is not UIElement rootElement || !(rootElement.IsLoading || rootElement.IsLoaded))
-		{
-			// The root element is not loaded, no need to schedule anything.
-			return;
-		}
-
-		if (invalidateMeasure)
-		{
-			if (_isMeasureWaiting)
-			{
-				// A measure is already queued
-				return;
-			}
-
-			_isMeasureWaiting = true;
-
-			if (_isArrangeWaiting)
-			{
-				// Since an arrange is already queued, no need to
-				// schedule something on the dispatcher
-				return;
-			}
-		}
-		else
-		{
-			if (_isArrangeWaiting)
-			{
-				// An arrange is already queued
-				return;
-			}
-
-			_isArrangeWaiting = true;
-
-			if (_isMeasureWaiting)
-			{
-				// Since a measure is already queued, no need to
-				// schedule something on the dispatcher
-				return;
-			}
-		}
-
-		NativeDispatcher.Main.Enqueue(RunMeasureAndArrange);
-	}
-
-	private void RunMeasureAndArrange()
-	{
-		if (_isMeasuringOrArranging || VisualTree.RootElement is not UIElement rootElement)
-		{
-			return; // weird case
-		}
-
-		var forMeasure = _isMeasureWaiting;
-		var forArrange = _isArrangeWaiting;
-
-		_isMeasureWaiting = false;
-		_isArrangeWaiting = false;
-		try
-		{
-			_isMeasuringOrArranging = true;
-
-			var sw = Stopwatch.StartNew();
-
-			if (forMeasure)
-			{
-				rootElement.Measure(Bounds.Size);
-			}
-
-			if (forArrange)
-			{
-				rootElement.Arrange(Bounds);
-				InvalidateRender();
-			}
-
-			sw.Stop();
-
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
-			}
-		}
-		finally
-		{
-			_isMeasuringOrArranging = false;
-		}
-	}
+	/// <summary>
+	/// This is used to adjust the sizing of managed vs. native elements on GTK, as it does not have built-in support for fractional scaling
+	/// which is available on Windows. We can still emulate this by up-scaling native GTK controls by the ratio between the actual scale 
+	/// and the emulated scale.
+	/// </summary>
+	internal double FractionalScaleAdjustment => RasterizationScale / Math.Truncate(RasterizationScale);
 }

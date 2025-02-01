@@ -365,8 +365,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 							, BitmapAlphaMode.Premultiplied
 							, (uint)renderer.PixelWidth
 							, (uint)renderer.PixelHeight
-							, DisplayInformation.GetForCurrentView().RawDpiX
-							, DisplayInformation.GetForCurrentView().RawDpiY
+							, XamlRoot.RasterizationScale
+							, XamlRoot.RasterizationScale
 							, pixels.ToArray()
 							);
 						await encoder.FlushAsync();

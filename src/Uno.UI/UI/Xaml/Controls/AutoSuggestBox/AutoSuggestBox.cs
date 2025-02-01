@@ -8,10 +8,12 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -22,7 +24,7 @@ using AppKit;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
+	public partial class AutoSuggestBox : ItemsControl
 	{
 		private TextBox _textBox;
 		private Popup _popup;
@@ -30,9 +32,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private ListView _suggestionsList;
 		private Button _queryButton;
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-		private string userInput;
-		private BindingPath _textBoxBinding;
+		private string _userInput;
 		private FrameworkElement _suggestionsContainer;
+		private IDisposable _textChangedDisposable;
+		private IDisposable _textBoxLoadedDisposable;
 
 		public AutoSuggestBox() : base()
 		{
@@ -50,7 +53,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_suggestionsContainer = GetTemplateChild("SuggestionsContainer") as FrameworkElement;
-			_queryButton = GetTemplateChild("QueryButton") as Button;
+
+			// This is *expected* to be null on platforms with proper lifecycle.
+			// The queryButton is part of the TextBox template, which is not applied yet.
+			// On WinUI, QueryButton is never retrieved in OnTextBoxLoaded, not in OnApplyTemplate.
+			// We do in both to account for all our platforms.
+			_queryButton = _textBox?.GetTemplateChild("QueryButton") as Button;
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
 			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
@@ -70,11 +78,26 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-			UpdateQueryButton();
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
-			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
+			_textChangedDisposable?.Dispose();
+			_textBoxLoadedDisposable?.Dispose();
+			if (_textBox is { })
+			{
+				_textBox.TextChanged += OnTextBoxTextChanged;
+				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
+
+				if (_textBox.IsLoaded)
+				{
+					UpdateQueryButton();
+				}
+				else
+				{
+					_textBox.Loaded += OnTextBoxLoaded;
+					_textBoxLoadedDisposable = Disposable.Create(() => _textBox.Loaded -= OnTextBoxLoaded);
+				}
+			}
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -85,13 +108,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object value)
+		private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 		{
-			if (value is string str)
+			if (args.IsTextChangedPending)
 			{
-				// If TextBox's Text value is null, we ignore it.
-				Text = str;
+				// just respond to the last TextChanged event. This is not exactly what WinUI does, but it should be close enough.
+				return;
 			}
+			Text = _textBox.Text;
+			OnTextChanged(args.IsUserModifyingText);
+		}
+
+		private void OnTextBoxLoaded(object sender, RoutedEventArgs args)
+		{
+			UpdateQueryButton();
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -144,8 +174,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					IsSuggestionListOpen = true;
 					_suggestionsList.ItemsSource = GetItems();
-
-					LayoutPopup();
 				}
 			}
 		}
@@ -158,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateUserInput(Object o)
 		{
-			userInput = GetObjectText(o);
+			_userInput = GetObjectText(o);
 		}
 
 		private void LayoutPopup()
@@ -266,6 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
+				_queryButton = _textBox.GetTemplateChild<Button>("QueryButton");
 			}
 
 			if (_queryButton != null)
@@ -276,16 +305,22 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged += OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
 			{
 				_popup.Closed += OnPopupClosed;
+				_popup.Opened += OnPopupOpened;
 			}
+
+			SizeChanged += OnSizeChanged;
 		}
 
 		void UnregisterEvents()
 		{
+			_textChangedDisposable?.Dispose();
+			_textBoxLoadedDisposable?.Dispose();
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
@@ -299,12 +334,18 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged -= OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
 			{
 				_popup.Closed -= OnPopupClosed;
+				_popup.Opened -= OnPopupOpened;
 			}
+
+			_textChangedDisposable?.Dispose();
+
+			SizeChanged -= OnSizeChanged;
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
@@ -317,6 +358,19 @@ namespace Microsoft.UI.Xaml.Controls
 			IsSuggestionListOpen = false;
 		}
 
+		private void OnPopupOpened(object sender, object e)
+		{
+			LayoutPopup();
+		}
+
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (_suggestionsContainer is not null)
+			{
+				_suggestionsContainer.Width = ActualWidth;
+			}
+		}
+
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.NewValue is bool isOpened && _popup != null)
@@ -327,13 +381,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateQueryButton()
 		{
+			_queryButton = _textBox?.GetTemplateChild<Button>("QueryButton");
 			if (_queryButton == null)
 			{
 				return;
 			}
 
-			_queryButton.Content = QueryIcon;
-			_queryButton.Visibility = QueryIcon == null ? Visibility.Collapsed : Visibility.Visible;
+			var queryIcon = QueryIcon;
+			if (queryIcon is SymbolIcon symbolIcon)
+			{
+				symbolIcon.SetFontSize(0);
+			}
+			_queryButton.Content = queryIcon;
+			_queryButton.Visibility = queryIcon == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		private void UpdateTextBox()
@@ -357,6 +417,11 @@ namespace Microsoft.UI.Xaml.Controls
 			SubmitSearch(e.ClickedItem);
 		}
 
+		private void OnSuggestionsListSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
+		}
+
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -376,7 +441,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
 		{
-			if (e.Key == Windows.System.VirtualKey.Enter)
+			if (e.Key == VirtualKey.Enter)
 			{
 				e.Handled = true;
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -386,12 +451,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				SubmitSearch(IsSuggestionListOpen ? _suggestionsList.SelectedItem : null);
 			}
-			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
+			else if ((e.Key == VirtualKey.Up || e.Key == VirtualKey.Down) && IsSuggestionListOpen)
 			{
 				e.Handled = true;
 				HandleUpDownKeys(e);
 			}
-			else if (e.Key == Windows.System.VirtualKey.Escape && IsSuggestionListOpen)
+			else if (e.Key == VirtualKey.Escape && IsSuggestionListOpen)
 			{
 				e.Handled = true;
 				RevertTextToUserInput();
@@ -409,12 +474,12 @@ namespace Microsoft.UI.Xaml.Controls
 			int numSuggestions = _suggestionsList.NumberOfItems;
 			int nextIndex = -1;
 
-			if (e.Key == Windows.System.VirtualKey.Up)
+			if (e.Key == VirtualKey.Up)
 			{
 				// C# modulo isn't actually a modulo it's a remainder, so need to account for negative index
 				nextIndex = ((currentIndex % numSuggestions) + numSuggestions) % numSuggestions - ((currentIndex == -1) ? 0 : 1);
 			}
-			else if (e.Key == Windows.System.VirtualKey.Down)
+			else if (e.Key == VirtualKey.Down)
 			{
 				int indexPlusOne = currentIndex + 1;
 				// The next step after the last index should be -1, not 0.
@@ -455,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_suggestionsList.SelectedIndex = -1;
 			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 
-			Text = userInput ?? "";
+			Text = _userInput ?? "";
 		}
 
 		private string GetObjectText(Object o)
@@ -469,50 +534,45 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (TextMemberPath != null)
 			{
-				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) { DataContext = o };
+				using var bindingPath = new BindingPath(TextMemberPath, "", forAnimations: false, allowPrivateMembers: true) { DataContext = o };
 				value = bindingPath.Value;
 			}
 
 			return value?.ToString() ?? "";
 		}
 
-		private static void OnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnTextChanged(bool isUserModifyingText)
 		{
-			var newValue = args.NewValue as string ?? string.Empty;
-
-			if (dependencyObject is AutoSuggestBox tb)
+			// On some platforms, the TextChangeReason is not updated
+			// as KeyDown is not triggered (e.g. Android)
+			if (_textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && _textBox is not null)
 			{
-				// On some platforms, the TextChangeReason is not updated
-				// as KeyDown is not triggered (e.g. Android)
-				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
+				if (isUserModifyingText)
 				{
-					if (tb._textBox.IsUserModifying)
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
-					}
-					else
-					{
-						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
-					}
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
 				}
-
-				tb.UpdateTextBox();
-				tb.UpdateSuggestionList();
-
-				if (tb._textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+				else
 				{
-					tb.UpdateUserInput(newValue);
+					_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 				}
-
-				tb.TextChanged?.Invoke(tb, new AutoSuggestBoxTextChangedEventArgs()
-				{
-					Reason = tb._textChangeReason,
-					Owner = tb
-				});
-
-				// Reset the default - otherwise SuggestionChosen could remain set.
-				tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 			}
+
+
+			UpdateSuggestionList();
+
+			if (_textChangeReason == AutoSuggestionBoxTextChangeReason.UserInput)
+			{
+				UpdateUserInput(Text);
+			}
+
+			TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs
+			{
+				Reason = _textChangeReason,
+				Owner = this
+			});
+
+			// Reset the default - otherwise SuggestionChosen could remain set.
+			_textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		}
 
 		private void UpdateDescriptionVisibility(bool initialization)

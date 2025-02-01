@@ -40,7 +40,7 @@ namespace Windows.Devices.Sensors
 
 		internal static void HandleShake()
 		{
-			_instance?.OnShaken(DateTimeOffset.UtcNow);
+			_instance.Value?.OnShaken(DateTimeOffset.UtcNow);
 		}
 
 		private static Accelerometer? TryCreateInstance()

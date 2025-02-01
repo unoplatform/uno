@@ -7,7 +7,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Xaml;
+using Uno.UI.Extensions;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -154,13 +157,16 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
+#if !__NETSTD_REFERENCE__
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void EnterImpl(bool live)
+		{
+			base.EnterImpl(live);
+#else
 		private void EnterImpl()
 		{
-			//TODO:Uno Specific: This should be called by the base class each time the element enters the visual tree.
-			//For now we call it on Loaded.
-
-			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
-
+#endif
 			// In case any of the TextBlock properties have been updated while
 			// we were out of the visual tree, we should update them in order to ensure
 			// that we always have the most up-to-date values.
@@ -175,6 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateRender();
 		}
 
+#endif
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 
@@ -288,8 +295,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spItemToFocus is { })
 			{
-				var focused = FocusManager.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, false, focusNavigationDirection);
-				pFocused = !focused;
+				var focused = this.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, focusNavigationDirection);
+				pFocused = focused;
 			}
 
 			return pFocused;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,6 +13,7 @@ using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -76,8 +78,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+		public async Task When_Value_Decimal()
+		{
+			var slider = new Slider()
+			{
+				Value = 0.5,
+				Minimum = 0,
+				Maximum = 1,
+				StepFrequency = 0.01,
+				Orientation = Orientation.Horizontal,
+			};
+			WindowHelper.WindowContent = slider;
+			await WindowHelper.WaitForLoaded(slider);
+
+			var thumb = VisualTreeUtils.FindVisualChildByName(slider, "HorizontalThumb");
+			var toolTip = ToolTipService.GetToolTipReference(thumb);
+			var tb = (TextBlock)toolTip.Content;
+			var text = tb.Text;
+			Assert.AreEqual("0.50", text);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Slider_Dragged()
 		{
@@ -105,13 +130,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press(slider.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(Math.Abs(50 - slider.Value) < 1);
+			slider.Value.Should().BeInRange(49, 52, "we dragged the thumb at the center of the slider");
 
 			var clickableLength = slider.ActualWidth - slider.FindVisualChildByType<Thumb>().ActualWidth;
 
 			mouse.MoveBy(clickableLength / 4, 0);
 
-			Assert.IsTrue(Math.Abs(75 - slider.Value) < 1);
+			slider.Value.Should().BeInRange(74, 76, "we dragged the thumb 1/4 of width on right");
 
 			mouse.Release();
 		}

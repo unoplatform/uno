@@ -16,10 +16,10 @@ Before reading it, you should first read the documentation of [ListViewBase aime
 
 Other important features of `ListView`:
 
-    * selection, including multiple selection
-    * support for 'observable' collections, allowing items to be inserted and deleted without completely resetting the state of the list, and (on some platforms) with an animation of the item being added or removed
-    * item groups (with optional 'sticky' group headers)
-    * drag and drop to reorder items in the list
+- selection, including multiple selection
+- support for 'observable' collections, allowing items to be inserted and deleted without completely resetting the state of the list, and (on some platforms) with an animation of the item being added or removed
+- item groups (with optional 'sticky' group headers)
+- drag and drop to reorder items in the list
 
 ## Platform-specific implementations of `ListView`
 
@@ -33,12 +33,12 @@ The managed ListView implementation is newer and lacks some features that are su
 
 `ListView` can scroll either vertically or horizontally, and the layouting logic is written as much as possible to reuse the same code for both orientations. Accordingly, certain terms are used throughout the code to avoid using orientation-specific terms like 'width' and 'height'. (These usages are probably unique to the Uno codebase.) The main terms are the following:
 
-* Extent: Size along the dimension parallel to scrolling. The equivalent of 'Height' if scrolling is vertical, or 'Width' otherwise.
-* Breadth: Size along the dimension orthogonal to scrolling. The equivalent of 'Width' if scrolling is vertical, or 'Height' otherwise.
-* Start: The edge of the element nearest to the top of the content panel, ie 'Top' or 'Left' depending whether scrolling is vertical or horizontal.
-* End: The edge of the element nearest to the bottom of the content panel, ie 'Bottom' or 'Right' depending whether scrolling is vertical or horizontal.
-* Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
-* Trailing: When scrolling, the edge that is disappearing from view.
+- Extent: Size along the dimension parallel to scrolling. The equivalent of 'Height' if scrolling is vertical, or 'Width' otherwise.
+- Breadth: Size along the dimension orthogonal to scrolling. The equivalent of 'Width' if scrolling is vertical, or 'Height' otherwise.
+- Start: The edge of the element nearest to the top of the content panel, ie 'Top' or 'Left' depending whether scrolling is vertical or horizontal.
+- End: The edge of the element nearest to the bottom of the content panel, ie 'Bottom' or 'Right' depending whether scrolling is vertical or horizontal.
+- Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
+- Trailing: When scrolling, the edge that is disappearing from view.
 
 ### Android and iOS ListViews in detail
 
@@ -50,9 +50,9 @@ Architecturally, the Android and iOS implementations share a similar high-level 
 
 [This diagram](../controls/ListViewBase.md#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from UWP. The key differences are:
 
-* the scrolling container is the `NativeListViewBase` itself, not the `ScrollViewer`. Thus the `ItemsPresenter` is **outside** the scrollable region. Additionally, there's no ScrollContentPresenter; instead there's a ListViewBaseScrollContentPresenter. (It was implemented this way back when ScrollContentPresenter inherited directly from the native scroll container.)
-* the `ItemsStackPanel` (or `ItemsWrapGrid`) is not actually present in the visual tree. These items panels are created, and their configured values (eg `Orientation`) are used to set the behavior of the list, but they are not actually loaded into the visual hierarchy or measured and arranged. They just act as a facade for the native layouter.
-* the Header and Footer, if present, are managed by the native list on Android and iOS, whereas on UWP they're outside the ItemsStackPanel/ItemsWrapGrid.
+- the scrolling container is the `NativeListViewBase` itself, not the `ScrollViewer`. Thus the `ItemsPresenter` is **outside** the scrollable region. Additionally, there's no ScrollContentPresenter; instead there's a ListViewBaseScrollContentPresenter. (It was implemented this way back when ScrollContentPresenter inherited directly from the native scroll container.)
+- the `ItemsStackPanel` (or `ItemsWrapGrid`) is not actually present in the visual tree. These items panels are created, and their configured values (eg `Orientation`) are used to set the behavior of the list, but they are not actually loaded into the visual hierarchy or measured and arranged. They just act as a facade for the native layouter.
+- the Header and Footer, if present, are managed by the native list on Android and iOS, whereas on UWP they're outside the ItemsStackPanel/ItemsWrapGrid.
 
 Much of the time, these are implementation details that are invisible to the end user. In certain cases they can have a visible impact. They're useful to be aware of when working on `ListView` bugs.
 
@@ -117,8 +117,8 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
 
 On WASM, Skia, and macOS, `ListViewBase` uses a shared implementation that's dubbed 'managed' because it doesn't rely upon an external native control. The visible implementation details of the managed `ListView` are much closer to UWP. Specifically:
 
-* the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
-* the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
+- the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
+- the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
 
 The internals of the managed `ListView` were originally implemented independently of the UWP source, but have been gradually converging on the internals of UWP.
 

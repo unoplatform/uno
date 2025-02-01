@@ -115,9 +115,16 @@ internal static class DateTimePickerHelper
 			List<LoopingSelector> loopingSelectors = new();
 			TreeHelper.GetVisualChildrenByType(timePickerFlyoutPresenter, ref loopingSelectors);
 			Assert.AreEqual(3, loopingSelectors.Count, "Expected to find 3 LoopingSelectors");
-			hourLoopingResult = loopingSelectors[0];
-			minuteLoopingResult = loopingSelectors[1];
-			periodLoopingResult = loopingSelectors[2];
+
+			// Uno Specific: we use GetOrder as the order may vary
+#if HAS_UNO
+			timePickerFlyoutPresenter.GetOrder(out var hourOrder, out var minuteOrder, out var periodOrder, out _);
+#else
+			var (hourOrder, minuteOrder, periodOrder) = (0, 1, 2);
+#endif
+			hourLoopingResult = loopingSelectors[hourOrder];
+			minuteLoopingResult = loopingSelectors[minuteOrder];
+			periodLoopingResult = loopingSelectors[periodOrder];
 		});
 
 		return (hourLoopingResult, minuteLoopingResult, periodLoopingResult);

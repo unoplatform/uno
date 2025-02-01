@@ -1,7 +1,10 @@
 ﻿#nullable enable
 #if !WINAPPSDK
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -9,6 +12,9 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -120,13 +126,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_xLoad_xBind_xLoad_Initial()
+		public async Task When_xLoad_xBind_xLoad_Initial()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 
 			var SUT = new When_xLoad_xBind_xLoad_Initial();
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
@@ -138,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_xLoad_xBind_xLoad_While_Loading()
+		public async Task When_xLoad_xBind_xLoad_While_Loading()
 		{
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
@@ -146,12 +154,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_xBind_xLoad_While_Loading();
 			grid.Children.Add(SUT);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.IsNotNull(SUT.tb01);
 			Assert.AreEqual(1, SUT.tb01.Tag);
 
 			SUT.Model.MyValue = 42;
 
 			Assert.AreEqual(42, SUT.tb01.Tag);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/16250")]
+		public async Task When_xLoad_Referenced_By_xBind()
+		{
+			var SUT = new When_xLoad_Referenced_By_xBind();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNull(SUT.LoadElement);
+			Assert.IsTrue(SUT.button1.IsEnabled);
+			Assert.IsFalse(SUT.ToggleLoad.IsChecked);
+
+			SUT.ToggleLoad.IsChecked = true;
+
+			Assert.IsNotNull(SUT.LoadElement);
+			Assert.IsFalse(SUT.button1.IsEnabled);
+			Assert.IsTrue(SUT.ToggleLoad.IsChecked);
 		}
 
 
@@ -179,6 +208,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var grid = new Grid();
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
+
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);
@@ -229,10 +260,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb02);
 			Assert.IsNotNull(SUT.tb03);
 			Assert.IsNotNull(SUT.panel01);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsNotNull(SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb06);
 
 			SUT.TopLevelVisiblity2 = false;
 
@@ -241,27 +272,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
 			// Note: If not null, this usually means that the control is leaking!!!
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.tb06);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.tb06);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
 
 			SUT.TopLevelVisiblity1 = false;
 
-			await AssertIsNullAsync(() => SUT.tb01);
-			await AssertIsNullAsync(() => SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
+			Assert.IsNull(SUT.tb06);
 		}
 
+#if HAS_UNO
 #if __ANDROID__
 		[Ignore("https://github.com/unoplatform/uno/issues/7305")]
 #endif
@@ -293,6 +325,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			TestServices.WindowHelper.WindowContent = grid;
 			grid.Children.Add(SUT);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.IsNull(SUT.tb01);
 			Assert.IsNull(SUT.tb02);
 			Assert.IsNull(SUT.tb03);
@@ -303,10 +337,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(2, SUT.TopLevelVisiblity1GetCount);
 			Assert.AreEqual(0, SUT.TopLevelVisiblity1SetCount);
 
-			var tb01Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "tb01")!;
-			var tb02Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "tb02")!;
-			var panel01Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel01")!;
-			var panel03Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel03")!;
+			var stubs = GetAllChildren(SUT).OfType<ElementStub>().ToList();
+			var tb01Stub = stubs.First(e => e.Name == "tb01");
+			var tb02Stub = stubs.First(e => e.Name == "tb02")!;
+			var panel01Stub = stubs.First(e => e.Name == "panel01")!;
+			var panel03Stub = stubs.First(e => e.Name == "panel03");
 
 			var tb01StubChangedCount = 0;
 			tb01Stub.MaterializationChanged += _ => tb01StubChangedCount++;
@@ -350,7 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, tb02StubChangedCount);
 			Assert.AreEqual(1, panel01StubChangedCount);
 
-			var panel02Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel02")!;
+			var panel02Stub = GetAllChildren(SUT).OfType<ElementStub>().First(e => e.Name == "panel02");
 
 			var panel02StubChangedCount = 0;
 			panel02Stub.MaterializationChanged += _ => panel02StubChangedCount++;
@@ -380,10 +415,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb02);
 			Assert.IsNotNull(SUT.tb03);
 			Assert.IsNotNull(SUT.panel01);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsNotNull(SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb06);
 			Assert.IsTrue(panel03Stub.Load);
 			Assert.AreEqual(1, tb01StubChangedCount);
 			Assert.AreEqual(1, tb02StubChangedCount);
@@ -396,14 +431,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.tb06);
 			Assert.IsFalse(panel03Stub.Load);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
 			Assert.AreEqual(1, tb01StubChangedCount);
 			Assert.AreEqual(1, tb02StubChangedCount);
 			Assert.AreEqual(2, panel01StubChangedCount);
@@ -413,38 +448,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await Task.Yield();
 
-			await AssertIsNullAsync(() => SUT.tb01);
-			await AssertIsNullAsync(() => SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsFalse(panel03Stub.Load);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
+			Assert.IsNull(SUT.tb06);
 			Assert.AreEqual(2, tb01StubChangedCount);
 			Assert.AreEqual(2, tb02StubChangedCount);
 			Assert.AreEqual(2, panel01StubChangedCount);
 			Assert.AreEqual(2, panel02StubChangedCount);
-		}
 
-		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
-		{
-			timeout ??= TimeSpan.FromSeconds(10);
-			var sw = Stopwatch.StartNew();
-
-			while (sw.Elapsed < timeout && getter() != null)
+			IEnumerable<UIElement> GetAllChildren(UIElement element)
 			{
-				await Task.Delay(100);
-
-				// Wait for the ElementNameSubject and ComponentHolder
-				// instances to release their references.
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
+				yield return element;
+				foreach (var child in VisualTreeHelper.GetChildren(element).OfType<UIElement>())
+				{
+					foreach (var childChild in GetAllChildren(child))
+					{
+						yield return childChild;
+					}
+				}
 			}
+		}
+#endif
 
-			Assert.IsNull(getter());
+		[TestMethod]
+		public async Task When_xLoad_Visibility_Set()
+		{
+			var SUT = new xLoad_Visibility();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.GetChildren().Count(c => c is ElementStub));
+			Assert.AreEqual(0, SUT.GetChildren().Count(c => c is Border));
 		}
 	}
 }

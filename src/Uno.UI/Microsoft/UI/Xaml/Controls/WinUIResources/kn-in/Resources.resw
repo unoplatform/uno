@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ಆಫ್</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ಬಿಳಿ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ತಿಳಿ ಬೂದು</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ಬೂದು</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ಗಾಢ ಬೂದು</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ಕಪ್ಪು</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ಹವಳಗೆಂಪು</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ಗುಲಾಬಿ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ತಿಳಿ ಕಿತ್ತಳೆ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ಹಳದಿಗಂದು</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ತಿಳಿ ಹಳದಿ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ತಿಳಿ ಹಸಿರು</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ಲೈಮ್</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ಅಕ್ವಾ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ಆಕಾಶ ನೀಲಿ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ತಿಳಿ ಹಸಿರುನೀಲಿ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ನಸು ನೀಲಿ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ತಿಳಿನೀಲಿ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ಐಸ್ ನೀಲಿ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ಪೆರಿವಿಂಕಲ್</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ನಸು ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ಗುಲಾಬಿ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ಕೆಂಪು</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ಕಿತ್ತಳೆ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ಕಂದು</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ಚಿನ್ನ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ಹಳದಿ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ಆಲಿವ್ ಹಸಿರು</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ಹಸಿರು</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ಪ್ರಕಾಶ ಹಸಿರು</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ಕಡು ಹಸಿರು</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ಹಸಿರುನೀಲಿ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ನೀಲಿ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ನೀಲಿ-ಬೂದು</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ಇಂಡಿಗೋ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ಗಾಢ ಕೆಂಪು</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ಗಾಢ ಹಳದಿ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ಗಾಢ ಹಸಿರು</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ಗಾಢ ಕಡು ಹಸಿರು</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ಗಾಢ ನೀಲಿ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ಗಾಢ ಕೆನ್ನೀಲಿ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ಪ್ಲಮ್</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ಮುಚ್ಚಿರಿ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

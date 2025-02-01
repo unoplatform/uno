@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!ignoreColumnDesiredSize)
 				{
 					Xuint columnSpan = GetColumnSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (columnSpan == 1)
 					{
 						DefinitionBase pChildColumn = GetColumnNoRef(pChild);
@@ -398,7 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!forceRowToInfinity)
 				{
 					Xuint rowSpan = GetRowSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (rowSpan == 1)
 					{
 						DefinitionBase pChildRow = GetRowNoRef(pChild);
@@ -1083,10 +1083,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 						//currentChild.Measure(innerAvailableSize);
 						this.MeasureElement(currentChild, innerAvailableSize);
-						//currentChild.EnsureLayoutStorage();
+						currentChild.EnsureLayoutStorage();
 
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
 						desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
 					}
@@ -1375,11 +1374,16 @@ namespace Microsoft.UI.Xaml.Controls
 					while (childrenEnumerator.MoveNext())
 					{
 						var currentChild = childrenEnumerator.Current;
+#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+						if (currentChild is null)
+						{
+							continue;
+						}
+#endif
 						ASSERT(currentChild is { });
 
-						//currentChild.EnsureLayoutStorage();
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						currentChild.EnsureLayoutStorage();
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						innerRect.Width = Math.Max(innerRect.Width, childDesiredSize.Width);
 						innerRect.Height = Math.Max(innerRect.Height, childDesiredSize.Height);
 						//currentChild.Arrange(innerRect);
@@ -1416,6 +1420,12 @@ namespace Microsoft.UI.Xaml.Controls
 				for (Xuint childIndex = 0; childIndex < count; childIndex++)
 				{
 					UIElement currentChild = children[childIndex];
+#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+					if (currentChild is null)
+					{
+						continue;
+					}
+#endif
 					ASSERT(currentChild is { });
 
 					DefinitionBase row = GetRowNoRef(currentChild);

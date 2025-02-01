@@ -3,29 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Vector2KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal Vector2KeyFrameAnimation()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector2 value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector2KeyFrameAnimation", "void Vector2KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector2 value, CompositionEasingFunction easingFunction)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector2 value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector2KeyFrameAnimation", "void Vector2KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector2 value)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2)
+		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2, Microsoft.UI.Composition.CompositionEasingFunction)
 	}
 }

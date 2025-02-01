@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
 
@@ -12,14 +13,10 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
-		private readonly DependencyProperty _templatedParentProperty;
-
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
-		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
 		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
 		private readonly static LinearArrayPool<DependencyPropertyDetails?> _pool = LinearArrayPool<DependencyPropertyDetails?>.CreateAutomaticallyManaged(BucketSize, 16);
@@ -36,16 +33,58 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
 		{
-			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
-			_templatedParentProperty = templatedParentProperty;
 
 			_entries = _empty;
+		}
+
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
+		{
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				if (_entries[i] is { Property: { } oldDP } oldDetails)
+				{
+					var newDP = DependencyProperty.GetProperty(oldDP.OwnerType, oldDP.Name);
+					if (newDP is null)
+					{
+						continue;
+					}
+
+					if (other.GetPropertyDetails(newDP) is { } newDetails)
+					{
+						oldDetails.CloneToForHotReload(newDetails);
+
+						// This may not work well for x:Bind, we will investigate proper support for x:Bind.
+						// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
+						// x:Bind to be fully compiled, as in WinUI.
+						if (oldDetails.GetBinding() is { ParentBinding: { } binding })
+						{
+							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
+							var newSource = binding.Source;
+							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							{
+								newSource = otherStore.ActualInstance;
+							}
+
+							newBinding.Source = newSource;
+							newBinding.Mode = binding.Mode;
+							newBinding.TargetNullValue = binding.TargetNullValue;
+							newBinding.ElementName = binding.ElementName;
+							newBinding.FallbackValue = binding.FallbackValue;
+							if (binding.RelativeSource is { } relativeSource)
+							{
+								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
+							}
+
+							otherStore.SetBinding(newDP, newBinding);
+						}
+					}
+				}
+			}
 		}
 
 		public void Dispose()
@@ -60,13 +99,12 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ReturnEntriesAndOffsetsToPools();
+
+			_entries = null!;
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
 			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
-
-		public DependencyPropertyDetails TemplatedParentPropertyDetails
-			=> _templatedParentPropertyDetails ??= GetPropertyDetails(_templatedParentProperty);
 
 		/// <summary>
 		/// Gets the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/>
@@ -86,6 +124,11 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (_entries is null)
+			{
+				return null;
+			}
+
 			if (forceCreate)
 			{
 				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
@@ -144,12 +187,7 @@ namespace Microsoft.UI.Xaml
 
 				if (propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
-
-					if (TryResolveDefaultValueFromProviders(property, out var value))
-					{
-						propertyEntry.SetDefaultValue(value);
-					}
+					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty);
 				}
 
 				return propertyEntry;
@@ -173,18 +211,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private bool TryResolveDefaultValueFromProviders(DependencyProperty property, out object? value)
-		{
-			// Replicate the WinUI behavior of DependencyObject::GetDefaultValue2 specifically for UIElement.
-			if (Owner is UIElement uiElement)
-			{
-				return uiElement.GetDefaultValue2(property, out value);
-			}
-
-			value = null;
-			return false;
-		}
-
 		private void ReturnEntriesAndOffsetsToPools()
 		{
 			if (_entries != _empty)
@@ -198,7 +224,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
+		internal DependencyPropertyDetails?[] GetAllDetails()
+			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
+			=> _entries ?? _empty;
 
 		internal void TryEnableHardReferences()
 		{

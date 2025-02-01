@@ -15,7 +15,7 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 ## How to use MapControl in an Uno Platform app
 
 1. Install the [Uno.WinUI.Maps NuGet package](https://www.nuget.org/packages/Uno.WinUI.Maps/) in the Android and/or iOS head projects of your app.
-1. Add the `MapResources` resource dictionary to `Application.Resources` in your `AppResources.xaml` or `App.xaml` file:
+1. Add the `MapResources` resource dictionary to `Application.Resources` in your `App.xaml` file:
 
     ```xml
     <Application.Resources>

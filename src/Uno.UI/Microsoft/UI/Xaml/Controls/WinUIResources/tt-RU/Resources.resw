@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>Кертү ысулы редакторы - сүндерү</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Ак</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ачык соры</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Соры</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Куе соры</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Кара</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Мәрҗән</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ал</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ачык кызгылт-сары</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Саргылт-көрән</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Саргылт</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Яшькелт</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Үлән төсендә</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Яшел-зәңгәр</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Күк</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Аксыл фирүзә</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Сыек зәңгәр</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Зәңгәрсу</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Күксел</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Зәңгәрсу-шәмәхә</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ала миләүшә</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Алсу</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Кызыл</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Кызгылт-сары</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Көрән</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Алтын</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Сары</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Куе зәйтүн</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Яшел</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ачык яшел</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Яшькелт-зәңгәр</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Фирүзә</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Зәңгәр</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Күгелҗем</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Карасу-күк</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Ачык шәмәхә</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Караңгы кызыл</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Куе сары</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Куе яшел</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Куе яшькелт-зәңгәр</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Куе зәңгәр</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Куе шәмәхә</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Чия төсе</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Ябу</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

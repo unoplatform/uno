@@ -5,8 +5,8 @@ IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
-npm i chromedriver@119.0.0
-npm i puppeteer@21.6.1
+npm i chromedriver@127.0.0
+npm i puppeteer@22.14.0
 
 # Download chromium explicitly
 pushd ./node_modules/puppeteer
@@ -21,7 +21,7 @@ export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
-export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome
+export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-127.0.6533.72/chrome-linux64/chrome
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP
 export UNO_UITEST_PLATFORM=Browser
@@ -83,8 +83,14 @@ dotnet test \
 	-v m \
 	|| true
 
+echo "Killing dotnet serve"
+
+jobs
+
 ## terminate dotnet serve
 kill %%
+
+echo "Killed!"
 
 ## Copy the results file to the results folder
 cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
@@ -102,8 +108,13 @@ cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+echo "Running NUnitTransformTool"
 
 ## Fail the build when no test results could be read
 dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+
+if [ $? -eq 0 ]; then
+	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+fi
+
 popd

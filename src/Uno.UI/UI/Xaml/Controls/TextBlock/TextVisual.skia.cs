@@ -27,7 +27,7 @@ namespace Microsoft.UI.Composition
 			_owner = new WeakReference<TextBlock>(owner);
 		}
 
-		internal override void Draw(in DrawingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{

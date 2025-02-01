@@ -68,6 +68,13 @@ namespace Microsoft.UI.Xaml.Documents
 			InvalidateSegmentsPartial();
 		}
 
+		protected override void OnFontStretchChanged()
+		{
+			base.OnFontStretchChanged();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
+		}
+
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();

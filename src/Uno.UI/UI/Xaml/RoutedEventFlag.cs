@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Xaml
@@ -119,35 +118,27 @@ namespace Uno.UI.Xaml
 		//   RoutedEventFlag.ContextRequested
 		// | RoutedEventFlag.ContextCanceled;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsPointerEvent(this RoutedEventFlag flag) => (flag & _isPointer) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsKeyEvent(this RoutedEventFlag flag) => (flag & _isKey) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsTunnelingEvent(this RoutedEventFlag flag) => (flag & _isTunneling) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsFocusEvent(this RoutedEventFlag flag) => (flag & _isFocus) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsDragAndDropEvent(this RoutedEventFlag flag) => (flag & _isDragAndDrop) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsManipulationEvent(this RoutedEventFlag flag) => (flag & _isManipulation) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsGestureEvent(this RoutedEventFlag flag) => (flag & _isGesture) != 0;
 
-		[Pure]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsContextEvent(this RoutedEventFlag flag) => (flag & _isContextMenu) != 0;
 	}

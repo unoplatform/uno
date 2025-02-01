@@ -31,6 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _eventsRegistered;
 
 		private (double? horizontal, double? vertical)? _pendingScrollTo;
+		private (double? horizontal, double? vertical) _lastScrollToRequest;
 		private FrameworkElement _rootEltUsedToProcessScrollTo;
 
 		internal Size ScrollBarSize
@@ -202,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RestoreScroll()
 		{
-			if (TemplatedParent is ScrollViewer sv)
+			if (GetTemplatedParent() is ScrollViewer sv)
 			{
 				if (sv.HorizontalOffset > 0 || sv.VerticalOffset > 0)
 				{
@@ -228,11 +229,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		/// <inheritdoc />
-		internal override void OnLayoutUpdated()
+		internal override void AfterArrange()
 		{
-			base.OnLayoutUpdated();
-
+			base.AfterArrange();
 			TryProcessScrollTo();
 		}
 
@@ -263,6 +262,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
+			_lastScrollToRequest = (horizontalOffset, verticalOffset);
 
 			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
 
@@ -284,6 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_rootEltUsedToProcessScrollTo is null && rootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
+					// TODO: LayoutUpdated doesn't look like the right thing to do.
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 
@@ -307,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// If those values are invalid, the browser will raise the final event anyway.
 						// Note: If the caller has allowed animation, we assume that it's not interested by a sync response,
 						//		 we prefer to wait for the browser to effectively scroll.
-						(TemplatedParent as ScrollViewer)?.OnPresenterScrolled(
+						(GetTemplatedParent() as ScrollViewer)?.OnPresenterScrolled(
 							horizontalOffset ?? nativeHorizontalOffset,
 							verticalOffset ?? nativeVerticalOffset,
 							isIntermediate: false
@@ -347,14 +348,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
 			// The main issue is that the IsPointerPressed be true ONLY when dragging the scrollbars with the mouse, 
 			// as for finger and pen we will get a PointerCancelled which will reset the pressed state to false.
-			// And it would also requires us to explicitly invoke OnScroll in PointerRelease in order to raise the
-			// final SV.ViewChanged event with a IsIntermediate == false.
-			// This is probably safer for now to always consider the scroll as final, even if it introduce a performance cost
-			// (the SV updates mode is always sync when isIntermediate is false).
-			var isIntermediate = false;
-
+			// And it would also require us to explicitly invoke OnScroll in PointerRelease in order to raise the
+			// final SV.ViewChanged event with an IsIntermediate == false.
+			// As a best-effort guess, we will consider the scroll as intermediate if the native offset is different from the last ScrollTo request.
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
+			var isIntermediate =
+				(_lastScrollToRequest.horizontal.HasValue && Math.Abs(_lastScrollToRequest.horizontal.Value - horizontalOffset) >= 1) ||
+				(_lastScrollToRequest.vertical.HasValue && Math.Abs(_lastScrollToRequest.vertical.Value - verticalOffset) >= 1);
+			if (!isIntermediate)
+			{
+				_lastScrollToRequest = (null, null);
+			}
 
 			if (IsArrangeDirty
 				&& _pendingScrollTo is { } pending

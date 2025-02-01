@@ -262,7 +262,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			that.m_tpPrimaryDraggedContainer = null;
 
-			that.ChangeSelectorItemsVisualState(true);
+			// CompleteReordering will remove the children and add them back on next measure.
+			// We defer ChangeSelectorItemsVisualState to the next measure so that the children are there and updated.
+			// An alternative could be to retrieve the children before CompleteReordering and then update the visual state here.
+#if HAS_UNO_WINUI
+			that.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => that.ChangeSelectorItemsVisualState(true));
+#else
+			_ = that.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => that.ChangeSelectorItemsVisualState(true));
+#endif
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue
@@ -396,8 +403,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)
-			=> src.GetType() is { IsGenericType: true } srcType
-				&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>);
+		{
+			var type = src.GetType();
+
+			while (type != null && type != typeof(object))
+			{
+				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ObservableCollection<>))
+				{
+					return true;
+				}
+				type = type.BaseType;
+			}
+			return false;
+		}
 
 		private static void DoMove(ItemCollection items, int oldIndex, int newIndex)
 		{

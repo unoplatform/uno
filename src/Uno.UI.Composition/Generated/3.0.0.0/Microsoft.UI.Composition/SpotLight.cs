@@ -237,11 +237,18 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeColor.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.CoordinateSpace.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.QuadraticAttenuation.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.ConstantAttenuation.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MaxAttenuationCutoff.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeIntensity.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeIntensity.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MinAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MinAttenuationCutoff.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.CoordinateSpace.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeIntensity.get
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeIntensity.get
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MaxAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeAngle.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.ConstantAttenuation.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.CoordinateSpace.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.Direction.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.Direction.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeAngle.get
@@ -258,16 +265,9 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeAngle.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeAngleInDegrees.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeAngleInDegrees.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeAngle.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeColor.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.QuadraticAttenuation.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeIntensity.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.InnerConeIntensity.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeIntensity.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeIntensity.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MinAttenuationCutoff.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MinAttenuationCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MaxAttenuationCutoff.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.MaxAttenuationCutoff.set
+		// Forced skipping of method Microsoft.UI.Composition.SpotLight.QuadraticAttenuation.set
 	}
 }

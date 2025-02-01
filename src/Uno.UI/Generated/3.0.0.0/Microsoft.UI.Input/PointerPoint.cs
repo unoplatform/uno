@@ -15,8 +15,8 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Position
 		// Skipping already declared property Properties
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.IsInContact.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.IsInContact.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerId.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Position.get

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME AUS</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Wäiss</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Hellgro</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Gro</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Donkelgro</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Schwaarz</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korallrout</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Hellorange</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Hellbrong</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Hellgiel</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Hellgréng</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limette</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Waasserblo</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himmelblo</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Hellturquoise</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Pastellblo</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Hellblo</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Äisblo</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Ëmmergréng</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavendel</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rout</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brong</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gëllen</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Giel</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivgréng</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Gréng</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Knallgréng</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blogréng</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turquoise</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blo</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blogro</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Mof</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Donkelrout</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Donkelgiel</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Donkelgréng</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Donkelblogréng</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Donkelblo</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Donkelmof</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Promm</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zoumaachen</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

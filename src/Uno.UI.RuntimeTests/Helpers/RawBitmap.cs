@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static async Task<RawBitmap> From(RenderTargetBitmap bitmap, UIElement renderedElement, double? implicitScaling = null)
 		{
-			implicitScaling ??= DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			implicitScaling ??= renderedElement.XamlRoot?.RasterizationScale ?? 1;
 			var raw = new RawBitmap(bitmap, renderedElement, implicitScaling.Value);
 			await raw.Populate();
 

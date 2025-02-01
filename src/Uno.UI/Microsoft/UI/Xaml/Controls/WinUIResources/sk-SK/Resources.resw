@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>EDITOR IME VYPNUTÝ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Biela</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Svetlosivá</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Sivá</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tmavosivá</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Čierna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koralová</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ružová</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Svetlooranžová</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Hnedá</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Svetložltá</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Svetlozelená</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Žltozelená</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Jasná zelenomodrá</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Nebeská modrá</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Svetlotyrkysová</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bledomodrá</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Svetlomodrá</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ľadová modrá</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Zvončekovomodrá</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Levanduľová</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Ružová</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Červená</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranžová</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Hnedá</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zlatá</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Žltá</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivovozelená</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zelená</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Jasnozelená</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Sivozelená</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Tyrkysová</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Modrá</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Modrosivá</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigovomodrá</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpurová</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tmavočervená</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tmavožltá</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tmavozelená</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tmavá sivozelená</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tmavomodrá</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tmavopurpurová</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Slivková</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zavrieť</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

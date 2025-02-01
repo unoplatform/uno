@@ -54,7 +54,7 @@ namespace UITests.Uno_Web.Http
 
 		public bool Secure { get; set; }
 
-		public CookieSameSite[] SameSiteOptions { get; } = Enum.GetValues(typeof(CookieSameSite)).OfType<CookieSameSite>().ToArray();
+		public CookieSameSite[] SameSiteOptions { get; } = Enum.GetValues<CookieSameSite>();
 
 		public CookieSameSite SameSite { get; set; }
 

@@ -24,15 +24,21 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner);
 
+	/// <summary>
+	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
+	/// </summary>
+	public delegate View? NewFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
+
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
-		internal readonly FrameworkTemplateBuilder? _viewFactory;
+		internal readonly NewFrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
+		private readonly bool _isLegacyTemplate;
 
 		/// <summary>
-		/// The scope at the time of the template's creation, which will be used when its contents are materialized.
+		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
 
@@ -40,11 +46,30 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, _ => factory?.Invoke())
+			: this(null, (o, s) => factory?.Invoke(), factory)
+		{
+			// TODO: to be removed on next major update.
+			// This overload simply should not exist, since the materialized members do not have the tp injected.
+			// It can lead to issues like template-parent binding not working...
+			// Currently, it seems to be only used in unit tests & runtime tests.
+			this._isLegacyTemplate = true;
+		}
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: this(owner, (o, s) => factory?.Invoke(o), factory)
+		{
+			// TODO: to be removed on next major update.
+			this._isLegacyTemplate = true;
+		}
+#endif
+
+		public FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
+			: this(owner, factory, factory)
 		{
 		}
 
-		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		private FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory, Delegate? rawFactory)
 		{
 			InitializeBinder();
 
@@ -53,13 +78,15 @@ namespace Microsoft.UI.Xaml
 
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
-			_hashCode = (factory?.Target?.GetHashCode() ?? 0) ^ (factory?.Method.GetHashCode() ?? 0);
+			_hashCode = HashCode.Combine(rawFactory?.Target, rawFactory?.Method);
+#if DEBUG
+			// `rawFactory` is guarantee to contains the actual factory method,
+			// `factory` can sometime be the lambda from the overloads
+			TemplateSource = $"{rawFactory?.Method.DeclaringType}.{rawFactory?.Method.Name}";
+#endif
 
 			_xamlScope = ResourceResolver.CurrentScope;
 		}
-
-		public static implicit operator Func<View?>(FrameworkTemplate? obj)
-			=> () => obj?._viewFactory?.Invoke(null);
 
 		/// <summary>
 		/// Loads a potentially cached template from the current template, see remarks for more details.
@@ -70,7 +97,7 @@ namespace Microsoft.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View? LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) => FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
@@ -84,23 +111,45 @@ namespace Microsoft.UI.Xaml
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		View? IFrameworkTemplateInternal.LoadContent()
+		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
 		{
-			View? view = null;
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-				if (_viewFactory != null)
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+				TemplatedParentScope.PushScope(templatedParent, _isLegacyTemplate);
+#endif
+
+				if (!FrameworkTemplatePool.IsPoolingEnabled || _isLegacyTemplate)
 				{
-					view = _viewFactory(_ownerRef?.Target);
+					var settings = new TemplateMaterializationSettings(templatedParent, null);
+
+					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+					return view;
+				}
+				else
+				{
+					var members = new List<DependencyObject>();
+					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
+
+					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+
+					if (view is { })
+					{
+						// TODO: impl recycling (tp update) for tracked template members
+						FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
+					}
+
+					return view;
 				}
 			}
 			finally
 			{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+				TemplatedParentScope.PopScope();
+#endif
 				ResourceResolver.PopScope();
 			}
-			return view;
-
 		}
 
 		public override bool Equals(object? obj)
@@ -121,7 +170,7 @@ namespace Microsoft.UI.Xaml
 		public override int GetHashCode() => _hashCode;
 
 #if DEBUG
-		public string TemplateSource => $"{_viewFactory?.Method.DeclaringType}.{_viewFactory?.Method.Name}";
+		public string TemplateSource { get; init; }
 #endif
 
 		internal class FrameworkTemplateEqualityComparer : IEqualityComparer<FrameworkTemplate>

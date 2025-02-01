@@ -11,7 +11,7 @@ This guide will walk you through the necessary steps for changing app language a
 
 ## Prerequisites
 
-Make sure to setup your environment for Uno Platform. Follow [Get Started on Visual Studio 2022](../../articles/get-started-vs-2022.md), [Get Started on VS Code](../../articles/get-started-vscode.md), or [Get Started on JetBrains Rider](../../articles/get-started-rider.md).
+Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted).
 
 ## Steps to change application language at runtime
 
@@ -133,6 +133,6 @@ See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com
 
 * [Globalization and localization](https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal)
 
-***
+---
 
 [!include[getting-help](../includes/getting-help.md)]

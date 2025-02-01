@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME 끔</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>흰색</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>연한 회색</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>회색</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>어두운 회색</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>검정</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>산호색</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>다홍</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>연한 주황</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>황갈색</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>연한 노랑</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>연한 녹색</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>라임</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>바다색</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>하늘색</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>연한 옥색</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>흐린 파랑</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>연한 파랑</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>담청색</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>빙카색</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>연한 보라</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>분홍</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>빨강</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>주황</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>밤색</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>황금색</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>노랑</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>황록색</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>녹색</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>밝은 녹색</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>청록</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>옥색</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>파랑</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>청회색</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>남색</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>자주</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>진한 빨강</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>진한 노랑</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>진한 녹색</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>진한 청록</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>진한 파랑</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>진한 자주</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>진한 보라</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>닫기</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

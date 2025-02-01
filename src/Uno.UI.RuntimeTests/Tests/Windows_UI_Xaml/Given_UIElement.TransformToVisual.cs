@@ -126,29 +126,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
 
 				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
+				Assert.AreEqual(0, containerToListView.X, tolerance);
+				Assert.AreEqual(0, containerToListView.X, tolerance);
 				Assert.AreEqual(containerToListView.Y, ((100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToListView.Width, 42, tolerance);
-				Assert.AreEqual(containerToListView.Height, 42, tolerance);
+				Assert.AreEqual(42, containerToListView.Width, tolerance);
+				Assert.AreEqual(42, containerToListView.Height, tolerance);
 
 				var borderToListView = border.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToListView.X, 0, tolerance);
+				Assert.AreEqual(0, borderToListView.X, tolerance);
 				Assert.AreEqual(borderToListView.Y, ((100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToListView.Width, 42, tolerance);
-				Assert.AreEqual(borderToListView.Height, 42, tolerance);
+				Assert.AreEqual(42, borderToListView.Width, tolerance);
+				Assert.AreEqual(42, borderToListView.Height, tolerance);
 
 				var containerToSut = container.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToSut.X, 15, tolerance);
+				Assert.AreEqual(15, containerToSut.X, tolerance);
 				Assert.AreEqual(containerToSut.Y, (15 + (100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToSut.Width, 42, tolerance);
-				Assert.AreEqual(containerToSut.Height, 42, tolerance);
+				Assert.AreEqual(42, containerToSut.Width, tolerance);
+				Assert.AreEqual(42, containerToSut.Height, tolerance);
 
 				var borderToSut = border.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToSut.X, 15, tolerance);
+				Assert.AreEqual(15, borderToSut.X, tolerance);
 				Assert.AreEqual(borderToSut.Y, (15 + (100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToSut.Width, 42, tolerance);
-				Assert.AreEqual(borderToSut.Height, 42, tolerance);
+				Assert.AreEqual(42, borderToSut.Width, tolerance);
+				Assert.AreEqual(42, borderToSut.Height, tolerance);
 			}
 		}
 #endif
@@ -1099,6 +1099,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					yield return (sv.ScrollableWidth, sv.ScrollableHeight);
 				}
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Not_InLiveVisualTree()
+		{
+			var inner = new Rectangle
+			{
+				Margin = new Thickness(10),
+				Width = 150,
+				Height = 150,
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Green)
+			};
+			var outer = new Border
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Child = inner
+			};
+			var root = new Grid
+			{
+				Width = 200,
+				Margin = new Thickness(10),
+				Children =
+				{
+					outer
+				}
+			};
+			await UITestHelper.Load(root);
+
+			Assert.IsFalse(((MatrixTransform)inner.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)outer.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)root.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)inner.TransformToVisual(outer)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)outer.TransformToVisual(root)).Matrix.IsIdentity);
+			Assert.IsFalse(((MatrixTransform)root.TransformToVisual((UIElement)root.Parent)).Matrix.IsIdentity);
+
+			WindowContent = null;
+
+			Assert.IsTrue(((MatrixTransform)inner.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)outer.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)root.TransformToVisual(null)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)inner.TransformToVisual(outer)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)outer.TransformToVisual(root)).Matrix.IsIdentity);
+			Assert.IsTrue(((MatrixTransform)root.TransformToVisual((UIElement)root.Parent)).Matrix.IsIdentity);
 		}
 
 		[TestMethod]

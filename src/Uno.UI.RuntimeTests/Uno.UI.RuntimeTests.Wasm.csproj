@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 	</ItemGroup>
@@ -39,6 +40,7 @@
 	</ItemGroup>
 
 	<Import Project="UnitTestsImport.props" />
+	<Import Project="UITestsImport.props" />
 
 	<ItemGroup>
 		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />

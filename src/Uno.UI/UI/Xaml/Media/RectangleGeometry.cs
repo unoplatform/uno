@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+
 #if __IOS__
 using UIKit;
 #endif
@@ -28,8 +29,14 @@ namespace Microsoft.UI.Xaml.Media
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
 				new FrameworkPropertyMetadata(
-					null,
-					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
+					default(Rect),
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: OnRectChanged));
+
+		private static void OnRectChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((RectangleGeometry)dependencyObject).RaiseGeometryChanged();
+		}
 
 		#endregion
 

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
@@ -18,12 +22,30 @@ using UIKit;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_CommandBar
 	{
 		[TestMethod]
-		[RunsOnUIThread]
+		public async Task TestNativeCommandBarIcon()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new CommandBarTests();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			ImageAssert.HasColorInRectangle(result, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), result.Size), Color.FromArgb(0xFF, 0xFF, 0x0, 0x0));
+		}
+
+		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Popup_Open_Then_Click_Outside()
 		{
@@ -66,9 +88,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
 		}
 
+		[TestMethod]
+#if __IOS__
+		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
+#endif
+		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
+		{
+			var SUT = new CommandBar
+			{
+				PrimaryCommands =
+				{
+					new AppBarButton
+					{
+						Content = "PrimaryCommand"
+					}
+				},
+				SecondaryCommands =
+				{
+					new AppBarButton
+					{
+						Content="SecondaryCommand"
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var moreButton = (Button)SUT.FindName("MoreButton");
+#if !__ANDROID__ // layout timings are different on android
+			Assert.AreEqual(48, moreButton.ActualHeight);
+#endif
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
+
+			SUT.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+#if !__ANDROID__ // layout timings are different on android
+			Assert.AreEqual(64, moreButton.ActualHeight);
+#endif
+			Assert.AreEqual(VerticalAlignment.Stretch, moreButton.VerticalAlignment);
+
+			SUT.IsOpen = false;
+			await Task.Delay(1000); // wait for animations
+#if !__ANDROID__ // layout timings are different on android
+			Assert.AreEqual(48, moreButton.ActualHeight);
+#endif
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
+		}
+
 #if __IOS__
 		[TestMethod]
-		[RunsOnUIThread]
 		[RequiresFullWindow]
 
 		public async Task Can_Navigate_Forward_And_Backwards()
@@ -94,6 +162,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(firstNavBar);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_IsOpen_True_LayoutCycle()
+		{
+			var SUT = new CommandBar
+			{
+				SecondaryCommands =
+				{
+					new AppBarButton { Content="SecondaryCommand" }
+				}
+			};
+			await UITestHelper.Load(SUT);
+
+			SUT.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+		}
 	}
 
 #if __IOS__

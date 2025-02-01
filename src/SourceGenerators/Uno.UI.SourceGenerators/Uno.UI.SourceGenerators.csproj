@@ -6,15 +6,18 @@
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<!-- Too noisy for us right now -->
+		<EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
-		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.0.0-dev.24" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -78,8 +81,8 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>Uno.UI</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
+			<_OverridePackageId>uno.ui</_OverridePackageId>
+			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
 
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>

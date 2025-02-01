@@ -5,6 +5,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Markup;
 using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -14,9 +15,29 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// </summary>
 	public partial class UnoXamlHost : UnoXamlHostBase
 	{
+		private static readonly Style _style = (Style)XamlReader.Parse(
+			"""
+			<Style xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   xmlns:xamlHostWpf="clr-namespace:Uno.UI.XamlHost.Skia.Wpf;assembly=Uno.UI.XamlHost.Skia.Wpf"
+				   TargetType="{x:Type xamlHostWpf:UnoXamlHost}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type xamlHostWpf:UnoXamlHost}">
+							<Border Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}">
+								<Canvas x:Name="NativeOverlayLayer" />
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""");
+
 		public UnoXamlHost()
 		{
-			this.DefaultStyleKey = typeof(UnoXamlHost);
+			this.Style = _style;
 			this.DataContextChanged += UnoXamlHost_DataContextChanged;
 			this.Loaded += OnLoaded;
 		}
@@ -30,6 +51,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			Child = CreateXamlContent();
 			TryLoadContent();
+
+			// Specifically on Uno islands, the UnoXamlHost isn't focused by default
+			Focus();
 		}
 
 		/// <summary>

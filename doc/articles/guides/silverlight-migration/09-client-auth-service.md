@@ -25,7 +25,7 @@ As discussed earlier, the UWP implementation of the **TimeEntryUno** application
 > [!TIP]
 > The IdentityServer4 server-side implementation used in the sample mirrors the QuickStart tutorial shown below. :
 >
-> * [Protecting an API using Client Credentials](http://docs.identityserver.io/en/latest/quickstarts/1_client_credentials.html)
+> * [Protecting an API using Client Credentials](https://docs.duendesoftware.com/identityserver/v7/quickstarts/1_client_credentials/)
 
 The code to retrieve the access token is encapsulated within the a class **IdentityServerClient** and uses the **HttpClient** class as well as the **IdentityModel** NuGet package.
 
@@ -80,8 +80,8 @@ The code to retrieve the access token is encapsulated within the a class **Ident
     > [!TIP]
     > You can learn more about platform-specific C# and XAML here:
     >
-    > * [Platform-specific C# code in Uno](https://platform.uno/docs/articles/platform-specific-csharp.html)
-    > * [Platform-specific XAML markup in Uno](https://platform.uno/docs/articles/platform-specific-xaml.html)
+    > * [Platform-specific C# code in Uno](xref:Uno.Development.PlatformSpecificCSharp)
+    > * [Platform-specific XAML markup in Uno](xref:Uno.Development.PlatformSpecificXaml)
 
 1. To supply the required parameters to the **IdentityServerClient** class, add the following constructor:
 

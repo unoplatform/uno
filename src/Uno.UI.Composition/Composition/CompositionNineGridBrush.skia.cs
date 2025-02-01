@@ -89,7 +89,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		void IOnlineBrush.Draw(in DrawingSession session, SKRect bounds)
+		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
 			SKRect sourceBounds;
 			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
@@ -113,9 +113,10 @@ namespace Microsoft.UI.Composition
 
 				if (_surface is not null)
 				{
-					_surface.Canvas.Clear();
-					_surface.Canvas.DrawRect(sourceBounds, _sourcePaint);
-					_surface.Canvas.Flush();
+					var canvas = _surface.Canvas;
+					canvas.Clear();
+					canvas.DrawRect(sourceBounds, _sourcePaint);
+					canvas.Flush();
 					_sourceImage?.Dispose();
 					_sourceImage = _surface.Snapshot();
 				}
@@ -130,10 +131,10 @@ namespace Microsoft.UI.Composition
 
 				if (IsCenterHollow)
 				{
-					session.Surface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
+					session.Canvas?.ClipRect(_insetRect, SKClipOperation.Difference, true);
 				}
 
-				session.Surface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
+				session.Canvas?.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
 			}
 		}
 

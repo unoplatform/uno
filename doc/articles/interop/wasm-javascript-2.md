@@ -10,7 +10,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 ### 0. Before starting
 
-📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](../get-started.md).
+📝 To reproduce the code in this article, you must [prepare a development environment using Uno's _Getting Started_ article](xref:Uno.GetStarted).
 
 ### 1. Create the projects
 
@@ -201,7 +201,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
 
-   ``` csharp
+   ```csharp
    public PrismJsView()
    {
        // This is required to set to <code> style for PrismJS to works well
@@ -212,7 +212,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 2. Now, we need to create an `UpdateDisplay()` method, used to generate HTML each time there's a new version to update. Here's the code for the method to add in the `PrismJsView` class:
 
-   ``` csharp
+   ```csharp
    private void UpdateDisplay(string oldLanguage = null, string newLanguage = null)
    {
        string javascript = $@"
@@ -246,7 +246,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 3. Change `CodeChanged()` and `LanguageChanged()` to call the new `UpdateDisplay()` method:
 
-   ``` csharp
+   ```csharp
    private static void CodeChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
    {
        (dependencyobject as PrismJsView)?.UpdateDisplay();
@@ -259,7 +259,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 4. We also need to update the result when the control is loaded in the DOM. So we need to change the constructor again like this:
 
-   ``` csharp
+   ```csharp
    public PrismJsView()
    {
        // This is required to set to <code> style for PrismJS to works well

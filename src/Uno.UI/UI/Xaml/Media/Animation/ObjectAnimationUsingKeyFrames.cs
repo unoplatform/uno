@@ -1,19 +1,20 @@
-﻿using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Uno.Disposables;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Markup;
 using Windows.UI.Core;
-using System.Threading.Tasks;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline
+	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -283,5 +284,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_frameScheduler = null;
 			}
 		}
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

@@ -9,17 +9,20 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {
 	public static partial class ViewExtensions
 	{
-		internal static TResult? FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult?> selector)
+		internal static TResult? FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult?> selector, out bool hasAnyChildren)
 			where TResult : class
 		{
+			hasAnyChildren = false;
 			var children = group.GetChildren();
 			for (int i = children.Count - 1; i >= 0; i--)
 			{
+				hasAnyChildren = true;
 				var result = selector(children[i], param);
 				if (result is not null)
 				{
@@ -97,7 +100,7 @@ namespace Uno.UI
 				var uiElement = innerView as UIElement;
 				var desiredSize = uiElement?.DesiredSize.ToString("F1") ?? "<native/unk>";
 				var fe = innerView as IFrameworkElement;
-				var layoutSlot = innerView.LayoutSlot;
+				var layoutSlot = LayoutInformation.GetLayoutSlot(innerView);
 
 				return sb
 					.Append(spacing)

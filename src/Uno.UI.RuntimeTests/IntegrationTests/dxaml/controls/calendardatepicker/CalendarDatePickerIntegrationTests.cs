@@ -3,6 +3,7 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -16,6 +17,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -31,7 +33,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		public void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
@@ -202,6 +204,15 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 #endif
 		public async Task CanOpenFlyoutByKeyboard()
 		{
+			// The test using fluent styles is broken due to lifecycle issues. https://github.com/unoplatform/uno/issues/16433
+			IDisposable styleDisposable = null;
+			await RunOnUIThread(() =>
+			{
+				var undoUseUwpStyles = StyleHelper.UseUwpStyles();
+				styleDisposable = Disposable.Create(() => RunOnUIThread(() => undoUseUwpStyles.Dispose()));
+			});
+
+
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
@@ -231,12 +242,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press enter to open flyout
-			TestServices.KeyboardHelper.Enter();
+			await TestServices.KeyboardHelper.Enter();
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape();
+			await TestServices.KeyboardHelper.Escape();
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await helper.PrepareOpenedEvent();
@@ -248,13 +259,15 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press space to open flyout
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape();
+			await TestServices.KeyboardHelper.Escape();
 			await TestServices.WindowHelper.WaitForIdle();
+
+			styleDisposable?.Dispose();
 		}
 
 
@@ -263,46 +276,50 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		{
 			TestCleanupWrapper cleanup;
 
-			Grid rootPanel = null;
-			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
-			await helper.PrepareLoadedEvent();
-			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
-
-			rootPanel = await CreateTestResources();
-
-			// load into visual tree
-			await RunOnUIThread(() =>
+			// This test may be unstable on iOS
+			await TestHelper.RetryAssert(async () =>
 			{
-				rootPanel.Children.Append(cp);
+				Grid rootPanel = null;
+				CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
+				await helper.PrepareLoadedEvent();
+				Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+
+				rootPanel = await CreateTestResources();
+
+				// load into visual tree
+				await RunOnUIThread(() =>
+				{
+					rootPanel.Children.Append(cp);
+				});
+
+				await helper.WaitForLoaded();
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				await helper.PrepareOpenedEvent();
+
+				await RunOnUIThread(() =>
+				{
+					cp.IsCalendarOpen = true;
+				});
+				await helper.WaitForOpened();
+
+				await helper.PrepareClosedEvent();
+
+				await RunOnUIThread(() =>
+				{
+					cp.IsCalendarOpen = false;
+				});
+
+				await helper.WaitForClosed();
+
+				await RunOnUIThread(() =>
+				{
+					// disable CP to make sure input pane is not open during clean up.
+					cp.IsEnabled = false;
+				});
+				await TestServices.WindowHelper.WaitForIdle();
 			});
-
-			await helper.WaitForLoaded();
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await helper.PrepareOpenedEvent();
-
-			await RunOnUIThread(() =>
-			{
-				cp.IsCalendarOpen = true;
-			});
-			await helper.WaitForOpened();
-
-			await helper.PrepareClosedEvent();
-
-			await RunOnUIThread(() =>
-			{
-				cp.IsCalendarOpen = false;
-			});
-
-			await helper.WaitForClosed();
-
-			await RunOnUIThread(() =>
-			{
-				// disable CP to make sure input pane is not open during clean up.
-				cp.IsEnabled = false;
-			});
-			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]

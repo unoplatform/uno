@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Media.Animation;
-using Android.App;
 using Android.Views.Animations;
-using Android.Views;
-using Uno.Extensions;
-using Uno.Extensions.Specialized;
-using Uno.Foundation.Logging;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
@@ -27,21 +20,21 @@ namespace Uno.UI.Controls
 	{
 		private static DependencyProperty BackButtonVisibilityProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonVisibility");
 
-		private readonly Grid _pageStack;
 		private Frame _frame;
 		private bool _isUpdatingStack;
-		private PageStackEntry _currentEntry;
-		private Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
+		private (Page page, NavigationTransitionInfo transitionInfo) _currentPage;
+		private readonly Queue<(Page page, NavigationEventArgs args)> _stackUpdates = new Queue<(Page, NavigationEventArgs)>();
+		private CompositeDisposable _subscriptions;
 
 		public NativeFramePresenter()
 		{
-			_pageStack = this;
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		private protected override void OnLoaded()
 		{
-			base.OnTemplatedParentChanged(e);
-			Initialize(TemplatedParent as Frame);
+			base.OnLoaded();
+
+			Initialize(this.GetTemplatedParent() as Frame);
 		}
 
 		private void Initialize(Frame frame)
@@ -51,18 +44,31 @@ namespace Uno.UI.Controls
 				return;
 			}
 
+			global::System.Diagnostics.Debug.Assert(_subscriptions is null);
+			_subscriptions = new CompositeDisposable();
+
 			_frame = frame;
 			_frame.Navigated += OnNavigated;
+			_subscriptions.Add(Disposable.Create(() => _frame.Navigated -= OnNavigated));
+
 			if (_frame.BackStack is ObservableCollection<PageStackEntry> backStack)
 			{
 				backStack.CollectionChanged += OnBackStackChanged;
+				_subscriptions.Add(Disposable.Create(() => backStack.CollectionChanged -= OnBackStackChanged));
 			}
 
 			if (_frame.Content is Page startPage)
 			{
-				_stackUpdates.Enqueue((_frame.CurrentEntry, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
+				_stackUpdates.Enqueue((_frame.Content as Page, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
 				_ = InvalidateStack();
 			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			_subscriptions?.Dispose();
+			_subscriptions = null;
 		}
 
 		private void OnBackStackChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -87,7 +93,7 @@ namespace Uno.UI.Controls
 
 		private void OnNavigated(object sender, NavigationEventArgs e)
 		{
-			_stackUpdates.Enqueue((_frame.CurrentEntry, e));
+			_stackUpdates.Enqueue((_frame.Content as Page, e));
 
 			_ = InvalidateStack();
 		}
@@ -104,99 +110,77 @@ namespace Uno.UI.Controls
 			while (_stackUpdates.Any())
 			{
 				var navigation = _stackUpdates.Dequeue();
-				await UpdateStack(navigation.pageEntry, navigation.args);
+				await UpdateStack(navigation.page, navigation.args.NavigationTransitionInfo);
 			}
 
 			_isUpdatingStack = false;
 		}
 
-		private async Task UpdateStack(PageStackEntry entry, NavigationEventArgs e)
+		private async Task UpdateStack(Page newPage, NavigationTransitionInfo transitionInfo)
 		{
-			var oldEntry = _currentEntry;
-			var newEntry = entry;
+			// When AndroidUnloadInactivePages is false, we keep the pages that are still a part of the navigation history
+			// (i.e. in BackStack or ForwardStack) as children and make then invisible instead of removing them. The order
+			// of these "hidden" children is not necessarily similar to BackStack.Concat(ForwardStack), since the
+			// back and forward stacks can be manipulated explicitly beside navigating. We could attempt to maintain
+			// a correspondence between the "hidden" children and the back and forward stacks by listening to their
+			// CollectionChanged events, but this breaks our optimization attempts since these events fire before
+			// Navigated events are fired. For example, in a GoBack action, the BackStack is updated first and we would
+			// remove the element that corresponds to the previously-last element in the BackStack, and then respond to
+			// the Navigated event by making the newly-navigated-to page visible, except that the element we just removed
+			// is the one we want. Therefore, we treat the "hidden" children as a list that we have to walk through to
+			// remove items that are no longer a part of the navigation history. Although costly, navigation is not
+			// a heavily-automated action and is mostly bottlenecked by human reaction times, so it's fine.
 
-			var newPage = newEntry?.Instance;
-			var oldPage = oldEntry?.Instance;
+			var oldPage = _currentPage.page;
+			var oldTransitionInfo = _currentPage.transitionInfo;
+			_currentPage = (newPage, transitionInfo);
 
-			if (newPage == null || newPage == oldPage)
+			if (oldPage is not null)
 			{
-				return;
+				if (GetIsAnimated(oldTransitionInfo))
+				{
+					await oldPage.AnimateAsync(GetExitAnimation());
+					oldPage.ClearAnimation();
+				}
+				if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+				{
+					Children.Remove(oldPage);
+				}
+				else
+				{
+					oldPage.Visibility = Visibility.Collapsed;
+				}
 			}
 
-			switch (e.NavigationMode)
+			if (newPage is not null)
 			{
-				case NavigationMode.Forward:
-				case NavigationMode.New:
-				case NavigationMode.Refresh:
-					_pageStack.Children.Add(newPage);
-					if (GetIsAnimated(newEntry))
-					{
-						await newPage.AnimateAsync(GetEnterAnimation());
-						newPage.ClearAnimation();
-					}
-					if (oldPage is not null)
-					{
-						if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
-						{
-							_pageStack.Children.Remove(oldPage);
-						}
-						else
-						{
-							oldPage.Visibility = Visibility.Collapsed;
-						}
-					}
-					break;
-				case NavigationMode.Back:
-					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
-					{
-						_pageStack.Children.Insert(0, newPage);
-					}
-					else
-					{
-						newPage.Visibility = Visibility.Visible;
-					}
-					if (GetIsAnimated(oldEntry))
-					{
-						await oldPage.AnimateAsync(GetExitAnimation());
-						oldPage.ClearAnimation();
-					}
-
-					if (oldPage != null)
-					{
-						_pageStack.Children.Remove(oldPage);
-					}
-
-					if (!FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
-					{
-						// Remove pages from the grid that may have been removed from the BackStack list
-						// Those items are not removed on BackStack list changes to avoid interfering with the GoBack method's behavior.
-						for (var pageIndex = _pageStack.Children.Count - 1; pageIndex >= 0; pageIndex--)
-						{
-							var page = _pageStack.Children[pageIndex];
-							if (page == newPage)
-							{
-								break;
-							}
-
-							_pageStack.Children.Remove(page);
-						}
-
-						//In case we cleared the whole stack. This should never happen
-						if (_pageStack.Children.Count == 0)
-						{
-							_pageStack.Children.Insert(0, newPage);
-						}
-					}
-
-					break;
+				if (Children.Contains(newPage))
+				{
+					newPage.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					Children.Add(newPage);
+				}
+				if (GetIsAnimated(transitionInfo))
+				{
+					await newPage.AnimateAsync(GetEnterAnimation());
+					newPage.ClearAnimation();
+				}
 			}
 
-			_currentEntry = newEntry;
+			if (!FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+			{
+				var pagesStillInHistory = _frame.BackStack.Select(entry => entry.Instance).ToHashSet();
+				pagesStillInHistory.AddRange(_frame.ForwardStack.Select(entry => entry.Instance));
+				pagesStillInHistory.Add(newPage);
+				Children.Remove(element => !pagesStillInHistory.Contains(element));
+			}
 		}
 
-		private static bool GetIsAnimated(PageStackEntry entry)
+		private static bool GetIsAnimated(NavigationTransitionInfo transitionInfo)
 		{
-			return !(entry.NavigationTransitionInfo is SuppressNavigationTransitionInfo);
+			return !(transitionInfo is SuppressNavigationTransitionInfo);
 		}
 
 		private static Animation GetEnterAnimation()

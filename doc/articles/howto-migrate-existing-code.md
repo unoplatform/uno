@@ -13,4 +13,4 @@ The articles in this guide cover:
 - Steps for [migrating a class library](migrating-libraries.md)
 - [General guidance](migrating-guidance.md) for converting WinUI-only code to Uno-compatible code
 
-See also the [guide to working with cross-targeted class libraries](cross-targeted-libraries.md).
+See also the [guide to working with Control Class Libraries](xref:Guide.HowTo.Create-Control-Library).

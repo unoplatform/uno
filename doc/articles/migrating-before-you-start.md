@@ -56,5 +56,3 @@ On certain target platforms, support for some .NET functionality is limited or u
 Currently, WebAssembly code in the browser executes on a single thread (much like JavaScript code in the browser). This limitation is expected to be lifted in the future, but for now, code that expects additional threads to be available may not function as expected.
 
 [This issue](https://github.com/unoplatform/uno/issues/2302) tracks support for multi-threading on WebAssembly in Uno Platform.
-
-Additionally, if you're using full AOT compilation on WASM, the same API restrictions will apply as for AOT compilation on iOS.

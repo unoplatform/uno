@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Input
 			IsInContact = isInContact;
 			IsInRange = isInRange;
 
-			UniqueId = new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)type, id);
+			UniqueId = new PointerIdentifier((global::Windows.Devices.Input.PointerDeviceType)type, id);
 		}
 
 		internal Pointer(PointerIdentifier uniqueId, bool isInContact, bool isInRange)
@@ -46,14 +46,14 @@ namespace Microsoft.UI.Xaml.Input
 			PointerId = id;
 			PointerDeviceType = type;
 
-			UniqueId = new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)type, id);
+			UniqueId = new PointerIdentifier((global::Windows.Devices.Input.PointerDeviceType)type, id);
 		}
 #endif
 
 		/// <summary>
 		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
 		/// </summary>
-		internal Windows.Devices.Input.PointerIdentifier UniqueId { get; }
+		internal global::Windows.Devices.Input.PointerIdentifier UniqueId { get; }
 
 		public uint PointerId { get; }
 

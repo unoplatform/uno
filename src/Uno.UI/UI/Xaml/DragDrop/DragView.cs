@@ -159,11 +159,6 @@ namespace Microsoft.UI.Xaml
 			Visibility = Visibility.Visible;
 		}
 
-		public void Hide()
-		{
-			Visibility = Visibility.Collapsed;
-		}
-
 		private static Visibility ToVisibility(bool isVisible)
 			=> isVisible ? Visibility.Visible : Visibility.Collapsed;
 

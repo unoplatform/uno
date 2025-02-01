@@ -41,11 +41,6 @@ internal partial class RootVisual : Panel, IRootElement
 		_rootElementLogic = new(this);
 	}
 
-	void IRootElement.NotifyFocusChanged() => _rootElementLogic.NotifyFocusChanged();
-
-	void IRootElement.ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp) =>
-		_rootElementLogic.ProcessPointerUp(args, isAfterHandledUp);
-
 	/// <summary>
 	/// Gets or sets the Visual Tree.
 	/// </summary>
@@ -99,7 +94,7 @@ internal partial class RootVisual : Panel, IRootElement
 
 			if (true)//child.GetIsArrangeDirty() || child.GetIsOnArrangeDirtyPath())
 			{
-				//child.EnsureLayoutStorage();
+				child.EnsureLayoutStorage();
 
 				var childRect = new Rect(x, y, finalSize.Width, finalSize.Height);
 

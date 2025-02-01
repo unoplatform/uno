@@ -55,11 +55,11 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialValue.get
-		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialVelocity.set
-		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.FinalValue.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.FinalValue.set
+		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialValue.get
+		// Forced skipping of method Microsoft.UI.Composition.Vector2NaturalMotionAnimation.InitialValue.set
 	}
 }

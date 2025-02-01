@@ -1,10 +1,10 @@
 ﻿using System;
-using Windows.Media.Playback;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Windows.Media.Playback;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PosterSource),
 				typeof(ImageSource),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(ImageSource), OnPosterSourceChanged));
+				new FrameworkPropertyMetadata(default(ImageSource), FrameworkPropertyMetadataOptions.AffectsMeasure, OnPosterSourceChanged));
 
 		private static void OnPosterSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -134,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -211,24 +211,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MediaPlayer Property
 
-		public Windows.Media.Playback.MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(Windows.Media.Playback.MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 					oldMediaPlayer.Dispose();
 				}
 
-				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
@@ -248,21 +248,21 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 		}
 
-		private void OnNaturalVideoDimensionChanged(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ShowPosterImage(!sender.IsVideo));
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ShowPosterImage(true));
 		}
 
-		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnMediaOpened(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
@@ -284,7 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -301,7 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Stretch.Uniform));
+				new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -382,7 +382,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+				MediaPlayer = new global::Windows.Media.Playback.MediaPlayer();
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
@@ -396,7 +396,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
+		public void SetMediaPlayer(global::Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			MediaPlayer = mediaPlayer;
 		}

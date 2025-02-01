@@ -8,163 +8,36 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ComboBox
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Style TextBoxStyle
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Style)this.GetValue(TextBoxStyleProperty);
-			}
-			set
-			{
-				this.SetValue(TextBoxStyleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string Text
-		{
-			get
-			{
-				return (string)this.GetValue(TextProperty);
-			}
-			set
-			{
-				this.SetValue(TextProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger SelectionChangedTrigger
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)this.GetValue(SelectionChangedTriggerProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionChangedTriggerProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TextBoxStyle
+		// Skipping already declared property Text
+		// Skipping already declared property SelectionChangedTrigger
 		// Skipping already declared property PlaceholderText
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Media.Brush PlaceholderForeground
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(PlaceholderForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderForegroundProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property PlaceholderForeground
 		// Skipping already declared property MaxDropDownHeight
 		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property IsTextSearchEnabled
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsEditable
-		{
-			get
-			{
-				return (bool)this.GetValue(IsEditableProperty);
-			}
-			set
-			{
-				this.SetValue(IsEditableProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsEditable
 		// Skipping already declared property IsDropDownOpen
 		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
 		// Skipping already declared property Description
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSelectionBoxHighlighted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ComboBox.IsSelectionBoxHighlighted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ComboBox.IsSelectionBoxHighlighted");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object SelectionBoxItem
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ComboBox.SelectionBoxItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ComboBox.SelectionBoxItem");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.DataTemplate SelectionBoxItemTemplate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataTemplate ComboBox.SelectionBoxItemTemplate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataTemplate%20ComboBox.SelectionBoxItemTemplate");
-			}
-		}
-#endif
+		// Skipping already declared property IsSelectionBoxHighlighted
+		// Skipping already declared property SelectionBoxItem
+		// Skipping already declared property SelectionBoxItemTemplate
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property IsDropDownOpenProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsEditableProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsEditable), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsEditableProperty
 		// Skipping already declared property IsTextSearchEnabledProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property MaxDropDownHeightProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderForeground), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
-#endif
+		// Skipping already declared property PlaceholderForegroundProperty
 		// Skipping already declared property PlaceholderTextProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionChangedTriggerProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionChangedTrigger), typeof(global::Microsoft.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextBoxStyle), typeof(global::Microsoft.UI.Xaml.Style),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Style)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Text), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+		// Skipping already declared property SelectionChangedTriggerProperty
+		// Skipping already declared property TextBoxStyleProperty
+		// Skipping already declared property TextProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.IsDropDownOpen.get
@@ -220,21 +93,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DescriptionProperty.get
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownOpened
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ComboBox, global::Microsoft.UI.Xaml.Controls.ComboBoxTextSubmittedEventArgs> TextSubmitted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ComboBox", "event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> ComboBox.TextSubmitted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ComboBox", "event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> ComboBox.TextSubmitted");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.TextSubmitted
 	}
 }

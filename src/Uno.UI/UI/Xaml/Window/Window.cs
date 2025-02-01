@@ -47,11 +47,16 @@ partial class Window
 	private bool _splashScreenDismissed;
 	private WindowType _windowType;
 
-	private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
-	private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
+	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
+	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
 	internal Window(WindowType windowType)
 	{
+		if (_current is null && CoreApplication.IsFullFledgedApp)
+		{
+			windowType = WindowType.CoreWindow;
+		}
+
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 
@@ -86,18 +91,16 @@ partial class Window
 		InitializeWindowingFlavor();
 
 		SizeChanged += OnWindowSizeChanged;
-		Closed += OnWindowClosed;
-
-		ApplicationHelper.AddWindow(this);
 
 		// Eagerly initialize if possible.
 		if (Application.Current?.InitializationComplete == true)
 		{
 			Initialize();
 		}
-	}
 
-	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);
+		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
+		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+	}
 
 	internal static Window GetFromAppWindow(AppWindow appWindow)
 	{
@@ -189,7 +192,7 @@ partial class Window
 	{
 		get
 		{
-			if (_current is null)
+			if (_current is null && CoreApplication.IsFullFledgedApp)
 			{
 				EnsureWindowCurrent();
 			}
@@ -237,6 +240,9 @@ partial class Window
 		if (_windowType is WindowType.CoreWindow)
 		{
 			WinUICoreServices.Instance.InitCoreWindowContentRoot();
+#if __WASM__ // We normally call SetHost from the NativeWindowWrapper on DesktopXamlSource targets, but for WASM we put it here.
+			WinUICoreServices.Instance.MainVisualTree!.ContentRoot.SetHost(this);
+#endif
 		}
 
 		_windowImplementation.Initialize();
@@ -313,12 +319,18 @@ partial class Window
 	// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
 	public void SetTitleBar(
 #if HAS_UNO_WINUI
-		UIElement titleBar
+		UIElement? titleBar
 #else
-		UIElement value
+		UIElement? value
 #endif
 		)
 	{
+	}
+
+	public bool ExtendsContentIntoTitleBar
+	{
+		get => AppWindow.TitleBar.ExtendsContentIntoTitleBar;
+		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
 	}
 
 	internal Brush? Background
@@ -328,13 +340,7 @@ partial class Window
 		{
 			_background = value;
 
-			if (_backgroundChangedHandlers != null)
-			{
-				foreach (var action in _backgroundChangedHandlers)
-				{
-					action(this, EventArgs.Empty);
-				}
-			}
+			_backgroundChangedHandlers?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -343,7 +349,7 @@ partial class Window
 			_backgroundChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as EventHandler)?.Invoke(s, (EventArgs)e)
+				(h as EventHandler)?.Invoke(s, (EventArgs)e!)
 		);
 
 	/// <summary>
@@ -353,18 +359,15 @@ partial class Window
 	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
 	{
 		return WeakEventHelper.RegisterEvent(
-			_sizeChangedHandlers,
+			_sizeChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
 		);
 	}
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 	{
-		foreach (var action in _sizeChangedHandlers)
-		{
-			action(this, e);
-		}
+		_sizeChangedHandlers?.Invoke(this, e);
 	}
 }

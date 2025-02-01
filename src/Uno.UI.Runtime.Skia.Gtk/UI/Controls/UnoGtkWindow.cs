@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using Gtk;
@@ -19,10 +20,16 @@ internal class UnoGtkWindow : Window
 {
 	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
+	private static readonly ConcurrentDictionary<WinUIWindow, UnoGtkWindow> _windowToGtkWindow = new();
+
+	public static UnoGtkWindow? GetGtkWindowFromWindow(WinUIWindow window)
+		=> _windowToGtkWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
 
 	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
+		_winUIWindow = winUIWindow;
+		_windowToGtkWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToGtkWindow.TryRemove(winUIWindow, out _);
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
@@ -52,6 +59,8 @@ internal class UnoGtkWindow : Window
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		Destroyed += UnoGtkWindow_Destroyed;
 		Shown += UnoGtkWindow_Shown;
 		UpdateWindowPropertiesFromPackage();
@@ -66,11 +75,13 @@ internal class UnoGtkWindow : Window
 	private void UnoGtkWindow_Destroyed(object? sender, EventArgs e)
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -104,23 +115,24 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 
-	internal void UpdateWindowPropertiesFromCoreApplication()
+	private void UpdateWindowPropertiesFromCoreApplication()
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
-		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
+
+	internal void ExtendContentIntoTitleBar(bool extend) => Decorated = !extend;
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Core;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DirectUI
 {
@@ -1586,15 +1587,47 @@ namespace DirectUI
 	//}
 	#endregion
 
-	internal class TrackerCollection<T> : List<T>, IVector<T>
+	internal class TrackerCollection<T> : IList<T>, IVector<T>
 	{
-		public void RemoveAtEnd()
+		private readonly List<T> _collection = new();
+
+		public virtual T this[int index]
+		{
+			get => _collection[index];
+			set => _collection[index] = value;
+		}
+
+		public int Count => _collection.Count;
+
+		public bool IsReadOnly => false;
+
+		public virtual void Add(T item) => _collection.Add(item);
+
+		public virtual void Insert(int index, T item) => _collection.Insert(index, item);
+
+		public virtual void Clear() => _collection.Clear();
+
+		public bool Contains(T item) => _collection.Contains(item);
+
+		public void CopyTo(T[] array, int arrayIndex) => _collection.CopyTo(array, arrayIndex);
+
+		public IEnumerator<T> GetEnumerator() => _collection.GetEnumerator();
+
+		public int IndexOf(T item) => _collection.IndexOf(item);
+
+		public bool Remove(T item) => _collection.Remove(item);
+
+		public virtual void RemoveAt(int index) => _collection.RemoveAt(index);
+
+		public virtual void RemoveAtEnd()
 		{
 			if (Count > 0)
 			{
-				RemoveAt(Count - 1);
+				_collection.RemoveAt(Count - 1);
 			}
 		}
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 
 	internal class TrackerView<T> : IVectorView<T>

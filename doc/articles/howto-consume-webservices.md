@@ -20,7 +20,7 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 >
 > [!TIP]
-> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
+> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](xref:Uno.GetStarted.vs2022)
 
 ## Task 1 - Create a simple Uno application
 
@@ -51,24 +51,6 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
     The **Manage Packages for Solution** page will open.
 
 1. At the top-right of the **Manage Packages for Solution** page, in the **Package source** dropdown, ensure that **nuget.org** or **NuGet official package source** is selected.
-
-1. At the top-left of page, to view solution packages available to update, click **Updates**.
-
-1. On the **Updates** tab, to use the stable version of the packages, ensure  **Include prerelease** is unchecked.
-
-1. From the list of available updates, select the following packages if they appear:
-
-    * **Uno.Core**
-    * **Uno.WinUI** (or **Uno.UI**)
-    * **Uno.WinUI.DevServer** (or **Uno.UI.DevServer**)
-    * **Uno.WinUI.WebAssembly** (or **Uno.UI.WebAssembly**)
-    * **Uno.Wasm.Bootstrap**
-    * **Uno.Wasm.Bootstrap.DevServer**
-
-    > [!IMPORTANT]
-    > **Do not** update the **Microsoft.Extensions.Logging.Console**. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
-
-1. To update the packages, click **Update**.
 
 1. At the top-left of the page, to browse the available packages, click **Browse**.
 

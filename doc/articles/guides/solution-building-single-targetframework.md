@@ -3,17 +3,74 @@ uid: Build.Solution.TargetFramework-override
 ---
 # Improve Build Times with Visual Studio 2022
 
-The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
+The Uno Platform template **prior to Uno Platform 5.2** provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
 
-## Cross-targeted library builds in Visual Studio
+> [!NOTE]
+> For projects created with Uno Platform 5.2 or later, the Uno.Sdk takes care of building appropriate target frameworks for the selected debugger target when starting a debugging session. Optionally, you can follow [our migration guide](xref:Uno.Development.MigratingToSingleProject) to use the new project structure. If you want to always build one target framework you can follow the guide below.
 
-While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, as of Visual Studio 17.8, class library builds are considering all target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372) being built. _(Please help the Uno Platform community by upvoting the issue!)_
+## Reduce the number of built TargetFrameworks (5.2 templates and later)
 
-Considering that during development, it is common to work on a single platform at a given time, the two sections below contain a suggested set of changes to the Uno Platform solution that can be performed on the solution to restrict the active build platform, and therefore significantly speed up build times and make intellisense respond faster.
+When using an Uno Platform 5.2 template or later, in the **Folder Explorer**, you can apply the following steps to build only a subset of target frameworks using a configuration file.
 
-Choose the section that covers your cases, whether you're using a solution built using Uno Platform 5.0 templates, or if it was created with an earlier version.
+To do so:
 
-## Improve performance using the Uno Platform templates
+- Create a file named `solution-config.props.sample` next to your `.sln` file, with this content:
+
+    ```xml
+    <Project>
+        <!--
+            This file is used to control the platforms compiled by Visual Studio, and allow for a faster
+            build when testing for a single platform. This will also result in better intellisense, as
+            the compiler will only load the assemblies for the platform that is being built. You do not
+            need to use this when compiling from Visual Studio Code, the command line or other IDEs.
+
+            Instructions:
+            1) Copy this file and remove the ".sample" name
+            2) Uncomment the single property below for the target you want to build
+            3) Make sure to do a Rebuild, so that nuget restores the proper packages for the new target
+
+            Notes:
+            - You may optionally close the solution before making changes and reload the solution afterwards. This will avoid Visual Studio
+            asking you to reload any projects, it will also ensure that the changes are picked up by Visual Studio, and trigger a restore of
+            the packages.
+            - You may want to unload the platform heads that you are not going to build for. This will ensure that Visual Studio does not
+            try to build them, and will speed up the build process.
+        -->
+
+        <PropertyGroup>
+            <!-- Uncomment each line for each platform that you want to build: -->
+
+            <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">net8.0-windows10.0.19041.0</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Webassembly'">net8.0-browserwasm</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Desktop'">net8.0-desktop</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net8.0-ios</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net8.0-android</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: MacCatalyst'">net8.0-maccatalyst</OverrideTargetFramework> -->
+        </PropertyGroup>
+    </Project>
+    ```
+
+    Make sure to replace `net8.0` and `-windows10.0.19041.0` with the appropriate version from your `.csproj` project.
+
+- You can commit `solution-config.props.sample` to your source control.
+- Next, make a copy of `solution-config.props.sample` to `solution-config.props`. This file is [automatically loaded](https://github.com/unoplatform/uno/blob/71f1d5ab067c0dcfad2f4cccd310e506cdeaf6bf/src/Uno.Sdk/targets/Uno.Import.SolutionConfig.props#L9) by the `Uno.Sdk`.
+- If you're using git, add this `solution-config.props` to your `.gitignore`.
+
+  > [!NOTE]
+  > This avoids altering the target frameworks or your own CI, as well as other clones made by other developers.
+
+- Follow the directives from the file, uncommenting one of the `OverrideTargetFramework` to your choosing.
+- In the project head, as well as any other libraries using the `Sdk="Uno.Sdk"`, add the following block immediately below the last `<TargetFrameworks>` line:
+
+    ```xml
+    <TargetFrameworks Condition=" '$(OverrideTargetFramework)' != '' ">$(OverrideTargetFramework)</TargetFrameworks>
+    ```
+
+- Once done, if you're in Visual Studio 2022, you may need to close and re-open your solution or otherwise click the reload button. For other IDEs, the projects will reload automatically.
+
+At this point, you'll notice that the list of target frameworks available in the debugger will have been reduced to the list you added in `OverrideTargetFramework`.
+
+## Improve performance using the Uno Platform templates (5.1 and earlier)
 
 When using an Uno Platform 5.0 template, in the **Solution Explorer**, you'll find a folder named **Solution Items**, and a file named `solution-config.props.sample`.
 
@@ -33,7 +90,15 @@ Repeat this process when changing your active development platform.
 > [!NOTE]
 > The `solution-config.props` is automatically included in a `.gitignore` file to avoid having your CI environment build only for one target.
 
-## Improve your own solution
+## Cross-targeted library builds in Visual Studio
+
+While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, as of Visual Studio 17.8, class library builds are considering all target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372) being built. _(Please help the Uno Platform community by upvoting the issue!)_
+
+Considering that during development, it is common to work on a single platform at a given time, the two sections below contain a suggested set of changes to the Uno Platform solution that can be performed on the solution to restrict the active build platform, and therefore significantly speed up build times and make intellisense respond faster.
+
+Choose the section covering your cases, whether you're using a solution built using Uno Platform 5.0 templates or created with an earlier version.
+
+## Improve your own solution (4.9 and earlier)
 
 If you created your solution with an earlier version of Uno Platform, you can make some modifications to make your build faster:
 

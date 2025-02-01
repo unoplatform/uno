@@ -12,6 +12,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.Foundation;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Helpers;
+
+using Expander = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -217,6 +221,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Template_Changes_Should_Not_Be_Materialized_Immediately()
+		{
+			ConstructorCounterControl.Reset();
+
+			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+
+			var controlTemplate = (ControlTemplate)XamlReader.Load("""
+				<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								 xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+					<local:ConstructorCounterControl />
+				</ControlTemplate>
+				""");
+
+			var control = new OnApplyTemplateCounterContentControl();
+
+			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(0, control.ApplyTemplateCount);
+			Assert.IsFalse(control.ApplyTemplate());
+			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(0, control.ApplyTemplateCount);
+
+			control.Template = controlTemplate;
+
+			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(0, control.ApplyTemplateCount);
+			Assert.IsTrue(control.ApplyTemplate());
+			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(1, control.ApplyTemplateCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Measure_Should_Materialize_Template()
+		{
+			ConstructorCounterControl.Reset();
+
+			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+
+			var controlTemplate = (ControlTemplate)XamlReader.Load("""
+				<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								 xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+					<local:ConstructorCounterControl />
+				</ControlTemplate>
+				""");
+
+			var control = new OnApplyTemplateCounterContentControl();
+
+			control.Template = controlTemplate;
+
+			control.Measure(new Size(100, 100));
+
+			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(1, control.ApplyTemplateCount);
+			Assert.IsFalse(control.ApplyTemplate());
+			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
+			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
+			Assert.AreEqual(1, control.ApplyTemplateCount);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Refresh_Setter_BindingOnInvocation_ElementName()
@@ -283,6 +359,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// Padding shouldn't affect measure
 			Assert.AreEqual(0, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCButton_ApplyTemplate_WithChild()
+		{
+			// When_CC(Button|Expander)_ApplyTemplate_With(No)?Child tests are designed to verify that
+			// when content is added as direct child (as a result of IsContentPresenterBypassEnabled),
+			// the template would still be applied.
+			// These tests can be removed once IsContentPresenterBypassEnabled is removed.
+
+			var SUT = XamlHelper.LoadXaml<Button>("""
+				<Button>
+					<TextBlock Text="Asd" />
+
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCButton_ApplyTemplate_WithNoChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Button>("""
+				<Button Content="Asd">
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCExpander_ApplyTemplate_WithChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Expander>("""
+				<muxc:Expander>
+					<TextBlock Text="Asd" />
+
+					<muxc:Expander.Template>
+						<ControlTemplate TargetType="muxc:Expander">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</muxc:Expander.Template>
+				</muxc:Expander>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCExpander_ApplyTemplate_WithNoChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Expander>("""
+				<muxc:Expander Content="Asd">
+					<muxc:Expander.Template>
+						<ControlTemplate TargetType="muxc:Expander">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</muxc:Expander.Template>
+				</muxc:Expander>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
 		}
 	}
 }

@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.System;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Opening += OnOpening;
 			Opened += OnOpened;
 
-			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
+			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTimeOffset?>(this, () => default);
 		}
 
 		protected override bool ShouldShowConfirmationButtons()
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_tpPresenter = spFlyoutPresenter;
 
 			// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
-			if (_tpPresenter is FrameworkElement presenter)
+			if (_tpPresenter is FrameworkElement presenter && _tpTarget is not null)
 			{
 				presenter.Opacity = 0.0;
 			}
@@ -87,14 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return _tpPresenter as Control;
 		}
 
-		private protected override void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
-		{
-			_tpTarget = placementTarget;
-			base.ShowAtCore(placementTarget, showOptions);
-			//_asyncOperationManager.Start(placementTarget);
-		}
-
-		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
+		public IAsyncOperation<DateTimeOffset?> ShowAtAsync(FrameworkElement target)
 		{
 			_tpTarget = target;
 			return _asyncOperationManager.Start(target);
@@ -318,7 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return "GregorianCalendar";
 		}
 
-		static DateTime GetDefaultDate()
+		static DateTimeOffset GetDefaultDate()
 		{
 			DateTime currentDate = default;
 
@@ -328,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return currentDate;
 		}
 
-		static DateTime GetDefaultMinYear()
+		static DateTimeOffset GetDefaultMinYear()
 		{
 			DateTime minDate = default;
 
@@ -339,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return minDate;
 		}
 
-		static DateTime GetDefaultMaxYear()
+		static DateTimeOffset GetDefaultMaxYear()
 		{
 
 			DateTime maxDate = default;

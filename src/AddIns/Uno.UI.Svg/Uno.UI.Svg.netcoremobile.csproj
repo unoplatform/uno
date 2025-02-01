@@ -15,11 +15,11 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.Svg.targets" />
+		<None Remove="buildTransitive\*.Svg.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive\Uno.UI.Svg.targets">
+		<Content Include="buildTransitive\*.Svg.targets">
 			<PackagePath>build</PackagePath>
 			<Pack>true</Pack>
 		</Content>
@@ -71,7 +71,11 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI.Svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

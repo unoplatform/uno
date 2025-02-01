@@ -20,7 +20,7 @@ xmlns:toolkit="using:Uno.UI.Toolkit"
 
 After that, use the `ElevatedView` to host the content you need to be elevated:
 
-``` xml
+```xml
 <StackPanel Orientation="Horizontal" Spacing="20">
 
     <Button>Non-Elevated Button</Button>

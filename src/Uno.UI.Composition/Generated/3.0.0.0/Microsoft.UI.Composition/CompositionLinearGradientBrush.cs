@@ -11,8 +11,8 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property StartPoint
 		// Skipping already declared property EndPoint
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
 	}
 }

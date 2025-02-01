@@ -66,9 +66,10 @@ internal partial class SystemFocusVisual : Control
 
 		if (args.NewValue is FrameworkElement element)
 		{
-			element.EnsureFocusVisualBrushDefaults();
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
+#endif
 			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
@@ -84,7 +85,9 @@ internal partial class SystemFocusVisual : Control
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
+#endif
 				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
@@ -105,7 +108,9 @@ internal partial class SystemFocusVisual : Control
 
 	private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
+#endif
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 
@@ -126,10 +131,26 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
+		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
+		if (parentElement is null)
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		RenderTransform = FocusedElement.RenderTransform;
+		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
-		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
+		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
+		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
+
+		var point = new Windows.Foundation.Point
+		{
+			X = parentPoint.X + FocusedElement.ActualOffset.X,
+			Y = parentPoint.Y + FocusedElement.ActualOffset.Y
+		};
+
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
 		if (newRect != _lastRect)
@@ -137,6 +158,7 @@ internal partial class SystemFocusVisual : Control
 			Width = FocusedElement.ActualSize.X;
 			Height = FocusedElement.ActualSize.Y;
 
+			// FocusVisual and Element has same position and width
 			Canvas.SetLeft(this, point.X);
 			Canvas.SetTop(this, point.Y);
 

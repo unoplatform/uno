@@ -10,8 +10,8 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property ViewBox
 		// Skipping already declared property Shapes
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Shapes.get
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
 	}
 }

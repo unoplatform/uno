@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "EmptyImageFixedWidth")]
+	[SampleControlInfo("Image", "EmptyImageFixedWidth", Description = "EmptyImageFixedWidth - the Aquamarine-coloured StarStackPanel below should stretch to the fixed Width given by the Image control, even though the Image is empty.")]
 	public sealed partial class EmptyImageFixedWidth : UserControl
 	{
 		public EmptyImageFixedWidth()

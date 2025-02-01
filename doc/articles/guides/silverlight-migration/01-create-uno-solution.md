@@ -65,7 +65,7 @@ As part of the continuing evolution of desktop development on Windows, Microsoft
 > [!NOTE]
 > The Uno Platform has great support for WinUI 2.x and preview support for WinUI 3:
 >
-> * For WinUI 2.5, see [Fluent-styled controls](https://platform.uno/docs/articles/features/fluent-styles.html)
+> * For WinUI 2.5, see [Fluent-styled controls](xref:Uno.Features.FluentStyles)
 > * For WinUI 3, see [Uno Platform 3.3 – Day 0 support for WinUI 3 Preview 3, Android 11](https://platform.uno/blog/uno-platform-3-3-day-0-support-for-winui-3-preview-3-android-11/).
 >
 > [!TIP]
@@ -86,7 +86,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
     > [!NOTE]
     > The [Uno.UI](https://www.nuget.org/packages/Uno.UI) NuGet package already includes the WinUI 2.x bits so there are no changes for the WASM head.
 
-1. To add the WinUI resources to the app, open the `AppResources.xaml` or `App.xaml` file and add the following:
+1. To add the WinUI resources to the app, open the `App.xaml` file and add the following:
 
     ```xml
     <Application.Resources>

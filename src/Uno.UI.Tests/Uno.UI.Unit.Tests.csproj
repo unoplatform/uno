@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
+		<OutputType>Exe</OutputType>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
@@ -17,29 +18,20 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 	</PropertyGroup>
 	-->
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<Optimize>false</Optimize>
-		<DefineConstants>$(DefineConstants);TRACE;DEBUG;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION;NET46</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<Optimize>false</Optimize>
-		<DefineConstants>$(DefineConstants);TRACE;HAS_UMBRELLA_BINDING;IS_UNIT_TESTS;HAS_GEOCOORDINATE_WATCHER;HAS_GEOCOORDINATE;HAS_COMPILED_REGEX;HAS_ISTORAGEFILE;HAS_SEMAPHORE;HAS_FILE_IO;IS_UNO;HAS_CRIPPLEDREFLECTION</DefineConstants>
-	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-		<PackageReference Include="MSTest.TestAdapter" />
-		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest" />
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+
+		<!-- https://github.com/NuGet/Home/issues/7344 -->
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<!-- https://github.com/NuGet/Home/issues/7344 -->
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,8 +50,6 @@
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
-
-	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1" />
 
 	<ItemGroup>
 		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />

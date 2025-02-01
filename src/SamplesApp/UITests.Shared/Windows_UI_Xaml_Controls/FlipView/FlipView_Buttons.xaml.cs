@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.FlipView
 {
-	[SampleControlInfo("FlipView", "FlipView_Buttons")]
+	[Sample("FlipView", IsManualTest = true, Description = "Flipping should be tested using touch swiping on Wasm")]
 	public sealed partial class FlipView_Buttons : UserControl
 	{
 		public FlipView_Buttons()

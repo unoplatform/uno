@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -34,10 +36,8 @@ namespace Windows.UI.Input
 		/// <summary>Enable support for the slide gesture through pointer input, on the vertical axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
 		ManipulationTranslateY = 128U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the horizontal axis using rails (guides). The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateRailsX = 256U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the vertical axis using rails (guides). The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateRailsY = 512U,
 		/// <summary>Enable support for the rotation gesture through pointer input. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.</summary>
 		ManipulationRotate = 1024U,
@@ -110,3 +110,4 @@ namespace Windows.UI.Input
 			| GestureSettings.ManipulationRotateInertia;
 	}
 }
+#endif

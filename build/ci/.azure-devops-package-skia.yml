@@ -1,12 +1,18 @@
 parameters:
-  poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
+- template: .azure-devops-package-skia-native-assets.yml
+  parameters:
+    UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
+    XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+    macOSImageName: ${{ parameters.macOSImageName }}
+
 - job: skia_package_build
   displayName: 'Skia Package Binaries'
   container: nv-bionic-wasm
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -35,12 +41,14 @@ jobs:
 
   - template: templates/gitversion.yml
   
-  - script: |
-      cp global.json global-net7.json
-      cp global-net8.json global.json
-    displayName: Replace global.json with .NET 8
-
   - template: templates/dotnet-install.yml
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

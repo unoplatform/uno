@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {
@@ -15,12 +16,14 @@ namespace Uno.UI
 		/// <returns></returns>
 		public static List<UIElement> GetChildren(this UIElement group) => (group as FrameworkElement)?._children ?? new List<UIElement>();
 
-		internal static TResult FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult> selector)
+		internal static TResult FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult> selector, out bool hasAnyChildren)
 			where TResult : class
 		{
+			hasAnyChildren = false;
 			var children = group.GetChildren();
 			for (int i = children.Count - 1; i >= 0; i--)
 			{
+				hasAnyChildren = true;
 				var result = selector(children[i], param);
 				if (result is not null)
 				{
@@ -108,7 +111,7 @@ namespace Uno.UI
 					.Append(s)
 					.Append(innerView == viewOfInterest ? "*>" : ">")
 					.Append(innerView.ToString() + namePart)
-					.Append($"-({fe.ActualWidth}x{fe.ActualHeight})@({fe.LayoutSlot.Left},{fe.LayoutSlot.Top})")
+					.Append($"-({fe.ActualWidth}x{fe.ActualHeight})@({LayoutInformation.GetLayoutSlot(fe).Left},{LayoutInformation.GetLayoutSlot(fe).Top})")
 					.Append($"  {innerView.Visibility}")
 					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")

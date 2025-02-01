@@ -221,10 +221,6 @@
 
 	<Style x:Key="XamlDefaultTextBox"
 		   TargetType="TextBox">
-		<Setter Property="MinWidth"
-				Value="{ThemeResource TextControlThemeMinWidth}" />
-		<Setter Property="MinHeight"
-				Value="{ThemeResource TextControlThemeMinHeight}" />
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 		<Setter Property="Background"
@@ -1348,7 +1344,6 @@
 							<ContentPresenter x:Name="ContentPresenter"
 											  ContentTransitions="{TemplateBinding ContentTransitions}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
-											  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 											  Content="{TemplateBinding Content}"
 											  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -7719,7 +7714,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<ItemsPresenter />
+					<ItemsPresenter Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -7745,6 +7740,46 @@
 		</Setter>
 	</not_netstdref:Style>
 
+	<wasm:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<wasm:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</wasm:Style>
+
+	<skia:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
+	<skia:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
@@ -7757,7 +7792,6 @@
 					<Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
 						<ContentPresenter x:Name="Text"
                             Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 

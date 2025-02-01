@@ -23,14 +23,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimationGroup.First()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add(global::Microsoft.UI.Composition.CompositionAnimation value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.Add(CompositionAnimation value)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Remove(global::Microsoft.UI.Composition.CompositionAnimation value)
@@ -40,12 +32,20 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void Add(global::Microsoft.UI.Composition.CompositionAnimation value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.Add(CompositionAnimation value)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimationGroup.Count.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void RemoveAll()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.RemoveAll()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimationGroup.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimationGroup.First()
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionAnimation>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionAnimation>

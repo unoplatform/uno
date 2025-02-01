@@ -24,6 +24,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnLoadingPartial();
 
+		private partial void ReconfigureViewportPropagationPartial();
+
 		public T AddChild<T>(T child) where T : View
 		{
 			_children.Add(child);
@@ -71,11 +73,6 @@ namespace Microsoft.UI.Xaml
 		public virtual IEnumerable<View> GetChildren()
 		{
 			return _children;
-		}
-
-		internal bool HasParent()
-		{
-			return Parent != null;
 		}
 
 		protected internal override void OnInvalidateMeasure()

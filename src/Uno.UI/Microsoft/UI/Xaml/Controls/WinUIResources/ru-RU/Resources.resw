@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ВЫКЛ.</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Белый</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Светло-серый</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Серый</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Темно-серый</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Черный</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Коралловый</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Розовый</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Светло-оранжевый</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Желто-коричневый</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Светло-желтый</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Бледно-зеленый</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Салатовый</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Зеленовато-голубой</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Небесно-голубой</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Светло-бирюзовый</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Бледно-голубой</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Голубой</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Пастельный голубой</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Сине-фиолетовый</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Бледный розовато-лиловый</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Розовый</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Красный</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Оранжевый</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Коричневый</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Золотистый</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Желтый</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Темно-оливковый</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Зеленый</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ярко-зеленый</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Сине-зеленый</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Бирюзовый</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Синий</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Сизый</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Индиго</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Сиреневый</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Темно-красный</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Темно-желтый</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Темно-зеленый</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Темный сине-зеленый</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Темно-синий</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Темно-фиолетовый</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Бледно-фиолетовый</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Закрыть</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

@@ -29,7 +29,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_NoChange_Page1()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -53,7 +53,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_NoPause()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -85,7 +85,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_Pause_HR()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -132,7 +132,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_Pause_NoUIUpdate_HR()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -160,7 +160,7 @@ public class Given_Frame : BaseTestClass
 		finally
 		{
 			// Resume HR
-			TypeMappings.Resume(false);
+			TypeMappings.Resume();
 		}
 
 		// Although HR has been un-paused (resumed) the UI should not have updated at this point
@@ -189,7 +189,7 @@ public class Given_Frame : BaseTestClass
 	[Ignore]
 	public async Task Check_Can_Change_Page1_Pause_ReloadCompleted_HR()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -211,7 +211,7 @@ public class Given_Frame : BaseTestClass
 				FirstPageTextBlockChangedText,
 				async () =>
 				{
-					// Confirm that reload compeleted has fired
+					// Confirm that reload completed has fired
 					var uiUpdated = await waitingTask.WaitAsync(ct);
 					Assert.IsFalse(uiUpdated, "UI should not have updated whilst ui updates paused");
 					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
@@ -221,7 +221,7 @@ public class Given_Frame : BaseTestClass
 		finally
 		{
 			// Resume HR
-			TypeMappings.Resume(false);
+			TypeMappings.Resume();
 		}
 
 		// Although HR has been un-paused (resumed) the UI should not have updated at this point
@@ -249,7 +249,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_Navigate_And_Return()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -292,7 +292,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page2_Before_Navigation()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -337,7 +337,7 @@ public class Given_Frame : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;

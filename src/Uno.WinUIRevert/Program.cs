@@ -17,44 +17,20 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "tsBindings")); // Generated
 
-			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "Colors.cs");
-			if (File.Exists(colorsFilepath))
-			{
-				File.Delete(colorsFilepath);
-			}
-
-			var colorHelperFilePath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "ColorHelper.cs");
-			if (File.Exists(colorHelperFilePath))
-			{
-				File.Delete(colorHelperFilePath);
-			}
-
-			var fontWeightsFilePath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "Text", "FontWeights.cs");
-			if (File.Exists(fontWeightsFilePath))
-			{
-				File.Delete(fontWeightsFilePath);
-			}
-
-			var inputPath = Path.Combine(basePath, "src", "Uno.UI", "UI", "Input");
-			if (Directory.Exists(inputPath))
-			{
-				Directory.Delete(inputPath, true);
-			}
-
 			var dispatcherQueuePath = Path.Combine(basePath, "src", "Uno.UI.Dispatching", "Dispatching");
 			if (Directory.Exists(dispatcherQueuePath))
 			{
 				Directory.Delete(dispatcherQueuePath, true);
 			}
 
-			ReplaceInFile(Path.Combine(basePath, @"src", "Directory.Build.props"), "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>");
+			ReplaceInFile(Path.Combine(basePath, "Directory.Build.props"), "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>");
 
 			// Generic replacements
 			var genericReplacements = new[] {
 				("Microsoft.UI.Xaml", "Windows.UI.Xaml"),
 				("Microsoft.UI.Composition", "Windows.UI.Composition"),
 				("Microsoft.UI.Colors", "Windows.UI.Colors"),
-				("Microsoft.UI.Text.FontWeights", "Windows.UI.Text.FontWeights"),
+				("Microsoft.UI.Text", "Windows.UI.Text"),
 				("Microsoft.UI.ColorHelper", "Windows.UI.ColorHelper"),
 				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
 				("__LinkerHints.Is_Windows_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),

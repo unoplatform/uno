@@ -4,21 +4,15 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:GenericApp.Views.Content.UITests.ImageBrushTestControl"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:ios="http://nventive.com/ios"
-	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://nventive.com/android"
-	xmlns:not_ios="http://nventive.com/not_ios"
-	mc:Ignorable="d not_ios android"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	d:DesignHeight="300"
-	d:DesignWidth="400">
+	mc:Ignorable="d"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
 
 	<StackPanel >
 		<Border BorderThickness="30"
 				Width="200"
 				Height="100">
 			<Border.Background>
-				<ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg">
+				<ImageBrush x:Name="imageBrush1" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg">
 					<ImageBrush.RelativeTransform>
 						<ScaleTransform ScaleX="2"
 										ScaleY="3"
@@ -33,7 +27,7 @@
 				Width="600"
 				Height="300">
 			<Border.Background>
-				<ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg">
+				<ImageBrush x:Name="imageBrush2" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg">
 					<ImageBrush.RelativeTransform>
 						<ScaleTransform ScaleX="2"
 										ScaleY="3"

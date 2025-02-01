@@ -158,6 +158,11 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
+				if (!ContainsKey(key))
+				{
+					return false;
+				}
+
 				using var preferences = CreatePreferences();
 
 				preferences

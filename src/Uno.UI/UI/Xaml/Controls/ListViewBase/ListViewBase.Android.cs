@@ -180,8 +180,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (selectorItem.LayoutParameters is RecyclerView.LayoutParams)
 				{
-					var displayPosition = NativePanel.GetChildLayoutPosition(selectorItem);
+					var displayPosition = NativePanel.GetChildAdapterPosition(selectorItem);
 					var index = ConvertDisplayPositionToIndex(displayPosition);
+
 					return index;
 				}
 			}
@@ -210,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			foreach (var item in (NativePanel?.CachedItemViews).Safe())
 			{
-				ApplyMultiSelectState(item);
+				item.UpdateMultiSelectStates(useTransitions: false);
 			}
 		}
 

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME خاموش</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>سفید</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>خاکستری کم رنگ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>خاکستری</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>خاکستری تیره</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>مشکی</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مرجانی</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>رز</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>نارنجی کمرنگ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>قهوه‌ای مایل به زرد</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>زرد کم رنگ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>سبز کمرنگ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>لیمویی</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>آبی دریایی</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>آبی آسمانی</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>آبی مایل به خاکستری کم رنگ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>آبی کمرنگ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>آبی روشن</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>آبی یخی</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>آبی ارغوانی</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>بنفش کم رنگ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>صورتی</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>قرمز</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>نارنجی</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>قهوه ای</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>طلایی</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>زرد</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>سبز زیتونی</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>سبز</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>سبز روشن</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>آبی سیر</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>آبی مایل به خاکستری</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>آبی</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>خاکستری مایل به آبی</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>نیلی</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>بنفش</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>قرمز تیره</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>زرد تیره</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>سبز تیره</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>فیروزه‌ای تیره</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>آبی تیره</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>بنفش تیره</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>گوجه‌ای</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>بستن</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

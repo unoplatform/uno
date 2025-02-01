@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 # Counter App using XAML and MVUX
 
-[Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX)  
+[Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX)  
 
 [!INCLUDE [Intro](includes/include-intro.md)]
 
@@ -34,7 +34,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 At this point you'll enter the **Uno Platform Template Wizard**, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
 
-- Select **Blank** and click **Customize**
+- Select **Blank** in **Presets** selection
 
 - Select the **Presentation** tab and choose **MVUX**
 
@@ -44,7 +44,7 @@ Before completing the wizard, take a look through each of the sections and see w
 
 - Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
 
 ## [Command Line](#tab/cli)
 
@@ -85,46 +85,46 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
 
-[!INCLUDE [View Model](includes/include-mvux.md)]
+[!INCLUDE [Main Model](includes/include-mvux.md)]
 
 ## Data Binding
 
-Now that we have the **`BindableMainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
 - Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
 
     ```xml
     <Page.DataContext>
-        <local:BindableMainModel />
+        <local:MainViewModel />
     </Page.DataContext>
     ```
 
-- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Count`** property of the **BindableMainModel**.
+- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Countable.Count`** property of the **MainViewModel**.
 
     ```xml
     <TextBlock Margin="12"
                HorizontalAlignment="Center"
                TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
+        <Run Text="Counter: " /><Run Text="{Binding Countable.Count}" />
     </TextBlock>
     ```
 
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **MainViewModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```xml
     <TextBox Margin="12"
              HorizontalAlignment="Center"
              PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
+             Text="{Binding Countable.Step, Mode=TwoWay}"
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCounter`** task of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
     ```
 
@@ -137,7 +137,7 @@ The final code for **MainPage.xaml** should look like this:
       xmlns:local="using:Counter"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
   <Page.DataContext>
-    <local:BindableMainModel />
+    <local:MainViewModel />
   </Page.DataContext>
   <StackPanel VerticalAlignment="Center">
     <Image Width="150"
@@ -149,23 +149,23 @@ The final code for **MainPage.xaml** should look like this:
     <TextBox Margin="12"
              HorizontalAlignment="Center"
              PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
+             Text="{Binding Countable.Step, Mode=TwoWay}"
              TextAlignment="Center" />
 
     <TextBlock Margin="12"
                HorizontalAlignment="Center"
                TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
+        <Run Text="Counter: " /><Run Text="{Binding Countable.Count}" />
     </TextBlock>
 
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
   </StackPanel>
 </Page>
 ```
 
-[!INCLUDE [View Model](includes/include-wrap.md)]
+[!INCLUDE [Wrap Up](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX).

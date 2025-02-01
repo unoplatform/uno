@@ -47,9 +47,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.IsEnabled.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.Targets.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.Targets.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 	}
 }

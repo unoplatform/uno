@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using Windows.Foundation;
+using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -36,7 +38,50 @@ namespace Microsoft.UI.Xaml.Shapes
 				{
 					_mainSvgElement.AddChild(data.GetSvgElement());
 				}
+
+				_bboxCacheKey = null;
 			}
+		}
+
+		private protected override string? GetBBoxCacheKeyImpl() =>
+			Data is GeometryData g
+				? ("path," + g.Data)
+				: null;
+
+		internal override bool HitTest(Point relativePosition)
+		{
+			// ContainsPoint acts on SVGGeometryElement, and "g" HTML element is not SVGGeometryElement.
+			// So, we override ContainsPoint for Path specifically to operate on the inner child.
+			var considerFill = Fill != null;
+
+			// TODO: Verify if this should also consider StrokeThickness (likely it should)
+			var considerStroke = Stroke != null;
+
+			if (!considerFill && !considerStroke)
+			{
+				return false;
+			}
+
+			if (_mainSvgElement._children.Count == 0)
+			{
+				return false;
+			}
+
+			if (_mainSvgElement._children.Count == 1)
+			{
+				return WindowManagerInterop.ContainsPoint(_mainSvgElement._children[0].HtmlId, relativePosition.X, relativePosition.Y, considerFill, considerStroke);
+			}
+
+			foreach (var child in _mainSvgElement._children)
+			{
+				// Unexpected to be hit, but just in case.
+				if (WindowManagerInterop.ContainsPoint(child.HtmlId, relativePosition.X, relativePosition.Y, considerFill, considerStroke))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

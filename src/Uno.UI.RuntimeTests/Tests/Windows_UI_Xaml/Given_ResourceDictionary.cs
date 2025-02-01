@@ -5,6 +5,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+
 
 
 #if HAS_UNO
@@ -17,6 +20,142 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_ResourceDictionary
 	{
+		[TestMethod]
+#if __IOS__ || __MACOS__
+		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
+#endif
+		public async Task When_FrameworkElement_In_Resources_Should_Receive_Loaded_Unloaded()
+		{
+			var textBlock = new TextBlock();
+			var resourceTextBlock = new TextBlock();
+			var resourceGrid = new Grid()
+			{
+				Children =
+				{
+					resourceTextBlock,
+				},
+			};
+			var grid = new Grid()
+			{
+				Children =
+				{
+					textBlock,
+				},
+				Width = 100,
+				Height = 100,
+			};
+
+			grid.Resources.Add("MyResourceGridKey", resourceGrid);
+
+			bool wasXamlRootNull = false;
+			string result = "";
+
+			resourceTextBlock.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= resourceTextBlock.XamlRoot is null;
+				result += "ResourceTextBlockLoaded,";
+			};
+			resourceGrid.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= resourceGrid.XamlRoot is null;
+				result += "ResourceGridLoaded,";
+			};
+			textBlock.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= textBlock.XamlRoot is null;
+				result += "TextBlockLoaded,";
+			};
+
+			resourceTextBlock.Unloaded += (_, _) => result += "ResourceTextBlockUnloaded,";
+			resourceGrid.Unloaded += (_, _) => result += "ResourceGridUnloaded,";
+			textBlock.Unloaded += (_, _) => result += "TextBlockUnloaded,";
+
+			await UITestHelper.Load(grid);
+
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
+#endif
+
+			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
+
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+#endif
+		}
+
+		[TestMethod]
+#if __IOS__ || __MACOS__
+		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
+#endif
+		public async Task When_FrameworkElement_In_Resources_Then_Removed_Should_Receive_Loaded_Unloaded()
+		{
+			var textBlock = new TextBlock();
+			var resourceTextBlock = new TextBlock();
+			var resourceGrid = new Grid()
+			{
+				Children =
+				{
+					resourceTextBlock,
+				},
+			};
+			var grid = new Grid()
+			{
+				Children =
+				{
+					textBlock,
+				},
+				Width = 100,
+				Height = 100,
+			};
+
+			grid.Resources.Add("MyResourceGridKey", resourceGrid);
+
+			string result = "";
+
+			resourceTextBlock.Loaded += (_, _) => result += "ResourceTextBlockLoaded,";
+			resourceGrid.Loaded += (_, _) => result += "ResourceGridLoaded,";
+			textBlock.Loaded += (_, _) => result += "TextBlockLoaded,";
+
+			resourceTextBlock.Unloaded += (_, _) => result += "ResourceTextBlockUnloaded,";
+			resourceGrid.Unloaded += (_, _) => result += "ResourceGridUnloaded,";
+			textBlock.Unloaded += (_, _) => result += "TextBlockUnloaded,";
+
+			await UITestHelper.Load(grid);
+
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
+#endif
+
+			grid.Resources.Remove("MyResourceGridKey");
+			await TestServices.WindowHelper.WaitForIdle();
+
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,", result);
+#endif
+
+			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
+
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+#endif
+		}
+
 		[TestMethod]
 		public void When_Key_Overwritten()
 		{
@@ -96,8 +235,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var materialized4 = (SolidColorBrush)copy[TestBrush];
 
 				// validation
-				Assert.AreEqual(false, ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
-				Assert.AreEqual(false, ReferenceEquals(materialized3, materialized4)); // ^same
+				Assert.IsFalse(ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
+				Assert.IsFalse(ReferenceEquals(materialized3, materialized4)); // ^same
 				Assert.AreNotEqual(materialized2Color, materialized4.Color); // check the theme change is actually applied (otherwise it would void the next check)
 				Assert.AreEqual(materialized3.Color, materialized4.Color); // check the theme change is propagated to the source res-dict
 			}
@@ -106,6 +245,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// clean up
 				ResourceDictionary.SetActiveTheme(theme);
 			}
+		}
+
+		[TestMethod]
+		public void When_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+			resourceDictionary["Key1"] = "Value1";
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			m1["Key1"] = "Value1";
+
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.ThemeDictionaries["Light"] = m1;
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
 		}
 #endif
 	}

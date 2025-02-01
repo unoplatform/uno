@@ -4,12 +4,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NumberBox.properties.cpp, commit 7c3ba16da9e273c73169c062cc803868695fa864
 
-using Windows.Globalization.NumberFormatting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.Globalization.NumberFormatting;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -158,7 +159,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextReadingOrderProperty { get; } =
-			DependencyProperty.Register(nameof(TextReadingOrder), typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TextReadingOrder), typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(TextReadingOrder.Default));
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -167,7 +168,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
-			DependencyProperty.Register(nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false));
 
 		public new object Description
 		{
@@ -228,6 +229,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		public static DependencyProperty NumberFormatterProperty { get; } =
 			DependencyProperty.Register(nameof(NumberFormatter), typeof(INumberFormatter2), typeof(NumberBox), new FrameworkPropertyMetadata(null, (s, e) => (s as NumberBox)?.OnNumberFormatterPropertyChanged(e)));
 
-		public event Windows.Foundation.TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs> ValueChanged;
+		public event TypedEventHandler<NumberBox, NumberBoxValueChangedEventArgs> ValueChanged;
 	}
 }

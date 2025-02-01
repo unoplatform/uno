@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
+using System.Runtime.InteropServices.JavaScript;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -30,21 +31,32 @@ partial class App
 	private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
 	private static int _testIdCounter = 0;
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static string GetAllTests() => SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 
 	public static async Task<bool> HandleRuntimeTests(string args)
 	{
-#if __SKIA__ || __MACOS__
 		var runRuntimeTestsResultsParam =
 			args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 		var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
+		// Used to autostart the runtime tests for iOS/Android Runtime tests
+		runtimeTestResultFilePath ??= Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
+
+		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
+
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
-			Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
+			Console.WriteLine($"Writing canary file {runtimeTestResultFilePath}.canary");
+			System.IO.File.WriteAllText(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString(), System.Text.Encoding.Unicode);
 
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
@@ -58,11 +70,11 @@ partial class App
 		}
 
 		return false;
-#else
-		return await Task.FromResult(false);
-#endif
 	}
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static string RunTest(string metadataName)
 	{
 		if (_mainWindow is null)
@@ -141,6 +153,11 @@ partial class App
 	private bool HandleAutoScreenshots(string args)
 	{
 #if __SKIA__ || __MACOS__
+		if (string.IsNullOrEmpty(args))
+		{
+			return false;
+		}
+
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
@@ -241,5 +258,10 @@ partial class App
 
 	[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
 	public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
+#endif
+
+#if __WASM__
+	[JSImport("globalThis.SampleRunner.init")]
+	public static partial void InitWasmSampleRunner();
 #endif
 }

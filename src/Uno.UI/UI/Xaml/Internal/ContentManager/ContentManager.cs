@@ -31,8 +31,6 @@ internal partial class ContentManager
 
 	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
 
-	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.NotifyChanged();
-
 	private void SetContent(UIElement? newContent)
 	{
 		var oldContent = Content;
@@ -51,6 +49,10 @@ internal partial class ContentManager
 			}
 			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			WinUICoreServices.Instance.RaisePendingLoadedRequests();
+#endif
 
 			if (_rootVisual is null)
 			{
@@ -99,6 +101,10 @@ internal partial class ContentManager
 			return;
 		}
 
+#if !IS_UNIT_TESTS
+		// Even if we're on the main thread, we need to delay this enough so that the window is initialized (i.e. Application._initializationComplete is true)
+		_ = rootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
+#else
 		var dispatcher = rootElement.Dispatcher;
 
 		if (dispatcher.HasThreadAccess)
@@ -109,6 +115,7 @@ internal partial class ContentManager
 		{
 			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
 		}
+#endif
 	}
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);

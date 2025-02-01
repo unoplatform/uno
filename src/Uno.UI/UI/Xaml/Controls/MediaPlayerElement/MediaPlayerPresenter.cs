@@ -35,25 +35,36 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				return (float)naturalOtherDimension * scaledOneDimension / (float)naturalOneDimension;
+#if __IOS__
+				// There are situations where between measurements scaledDimension and naturalDimension
+				// have a small difference in value (a few pixels) causing the measurement to go into an infinite loop.
+				// Related to: https://github.com/unoplatform/uno/issues/15254
+				var ratio = (float)Math.Round(scaledOneDimension / naturalOneDimension, 1);
+#else
+				var ratio = scaledOneDimension / naturalOneDimension;
+#endif
+				return naturalOtherDimension * ratio;
 			}
 		}
 
 
 		#region MediaPlayer Property
 
-		public Windows.Media.Playback.MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(Windows.Media.Playback.MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(
+					default(global::Windows.Media.Playback.MediaPlayer),
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -63,14 +74,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
 				}
-				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
 					oldPlayer.NaturalVideoDimensionChanged -= presenter.OnNaturalVideoDimensionChanged;
 					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
 					oldPlayer.SourceChanged -= presenter.OnSourceChanged;
 				}
 
-				if (args.NewValue is Windows.Media.Playback.MediaPlayer newPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newPlayer)
 				{
 					newPlayer.NaturalVideoDimensionChanged += presenter.OnNaturalVideoDimensionChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
@@ -87,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		partial void OnMediaPlayerChangedPartial(Windows.Media.Playback.MediaPlayer mediaPlayer);
+		partial void OnMediaPlayerChangedPartial(global::Windows.Media.Playback.MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
@@ -102,7 +113,10 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
+				new FrameworkPropertyMetadata(
+					Stretch.Uniform,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		#endregion
 
@@ -119,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -147,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
-		private void OnNaturalVideoDimensionChanged(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -157,14 +171,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Collapsed;
 			});
 		}
-		private void OnSourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
+		private void OnSourceChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{

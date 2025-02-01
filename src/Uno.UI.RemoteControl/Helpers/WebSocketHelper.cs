@@ -31,20 +31,38 @@ public static class WebSocketHelper
 					return null;
 				}
 
+				if (result.Count != 0)
+				{
+					await mem.WriteAsync(buff, 0, result.Count, token);
+				}
+
 				if (result.EndOfMessage)
 				{
-					if (result.Count != 0)
-					{
-						await mem.WriteAsync(buff, 0, result.Count);
-					}
-
 					mem.Position = 0;
 
-					return Frame.Read(mem);
-				}
-				else
-				{
-					await mem.WriteAsync(buff, 0, result.Count);
+					try
+					{
+						return Frame.Read(mem);
+					}
+					catch (Exception error)
+					{
+#if IS_DEVSERVER
+						var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							Microsoft.Extensions.Logging.LoggerExtensions.LogError(log, error, "Failed to read frame");
+						}
+#else // Client
+						var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							log.LogError("Failed to read frame", error);
+						}
+#endif
+
+						mem.Position = 0;
+						mem.SetLength(0);
+					}
 				}
 			}
 		}
@@ -59,6 +77,6 @@ public static class WebSocketHelper
 		using var stream = manager.GetStream();
 		frame.WriteTo(stream);
 
-		await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Length), WebSocketMessageType.Binary, true, ct);
+		await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Position), WebSocketMessageType.Binary, true, ct);
 	}
 }

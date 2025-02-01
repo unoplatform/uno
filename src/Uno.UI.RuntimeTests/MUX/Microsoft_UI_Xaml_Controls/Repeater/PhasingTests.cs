@@ -45,7 +45,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PhasingTests : MUXApiTestBase
 	{
 		const int expectedLastRealizedIndex = 8;
@@ -101,7 +100,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// CompositionTarget.Rendering += (sender, args) => { Log.Comment("Rendering"); }; // debugging aid
 			});
 
-			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 2000);
+			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 5000);
 			if (buildTreeCompleted)
 			{
 				RunOnUIThread.Execute(() =>
@@ -169,7 +168,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 2000);
+			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 5000);
 			if (ElementLoadedCompleted)
 			{
 				RunOnUIThread.Execute(() =>

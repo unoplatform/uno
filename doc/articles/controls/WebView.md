@@ -2,7 +2,7 @@
 
 > Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
 
-`WebView2` is currently supported on Windows, Android, iOS, and macOS.
+`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), Desktop (Windows), and WebAssembly.
 
 ## Basic usage
 
@@ -23,6 +23,16 @@ Afterward, you can perform actions such as navigating to an HTML string:
 ```csharp
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
+
+> [!IMPORTANT]
+> For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
+
+## WebAssembly support
+
+In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
+
+- The [`frame-ancestors` Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) can be used to allow embedding a site you have control over, while at the same time blocking third-party sites from embedding
+- External site you are embedding must not block embedding via [`X-FRAME-OPTIONS` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
 
 ## Executing JavaScript
 
@@ -58,7 +68,7 @@ function postWebViewMessage(message){
             // Android
             unoWebView.postMessage(JSON.stringify(message));
         } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-            // iOS and macOS
+            // iOS and macOS (Catalyst)
             webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
         }
     }
@@ -124,3 +134,21 @@ The web files can reference each other in a relative path fashion, for example, 
 ```
 
 Is referencing a `site.js` file inside the `js` subfolder.
+
+## iOS and macOS (Catalyst) specifics
+
+From MacOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+
+```csharp
+public App()
+{
+    this.InitializeComponent();
+#if __IOS__
+    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
+#endif
+}
+```
+
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.

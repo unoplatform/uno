@@ -10,9 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Offset
 		// Skipping already declared property Color
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.get
 	}
 }

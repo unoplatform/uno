@@ -20,6 +20,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -532,7 +533,7 @@ public partial class Slider
 	//		in the absence of an explicitly defined one
 	//
 	//---------------------------------------------------------------------------
-	private protected override string GetPlainText()
+	internal override string GetPlainText()
 	{
 		var header = Header;
 
@@ -1511,16 +1512,16 @@ public partial class Slider
 						szFormat = "{0:0}";
 						break;
 					case 1:
-						szFormat = "{0:0.0}f";
+						szFormat = "{0:0.0}";
 						break;
 					case 2:
-						szFormat = "{0:0.00}f";
+						szFormat = "{0:0.00}";
 						break;
 					case 3:
-						szFormat = "{0:0.000}f";
+						szFormat = "{0:0.000}";
 						break;
 					default:
-						szFormat = "{0:0.0000}f";
+						szFormat = "{0:0.0000}";
 						break;
 				}
 			}

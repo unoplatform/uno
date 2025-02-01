@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.BitmapImageTests
 {
@@ -45,7 +37,7 @@ namespace Uno.UI.Tests.BitmapImageTests
 		[DataRow("ms-appx:///folder/image.png", "/folder/image.png")]
 		public void When_UriString(string expected, string uri)
 		{
-			var SUT = new BitmapImage(uri);
+			var SUT = new BitmapImage(ImageSource.TryCreateUriFromString(uri));
 
 			Assert.AreEqual(new Uri(expected), SUT.AbsoluteUri);
 		}

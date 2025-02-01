@@ -12,7 +12,5 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// This mimics UWP
 		private protected override Type GetDefaultStyleKey() => null;
-
-		private protected override bool IsTabStopDefaultValue => false;
 	}
 }

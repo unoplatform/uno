@@ -2,6 +2,7 @@
 
 using System;
 using Gtk;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
@@ -15,7 +16,7 @@ internal class MultilineTextBoxView : GtkTextBoxView
 	private readonly ScrolledWindow _scrolledWindow = new();
 	private readonly UnoGtkTextView _textView = new();
 
-	public MultilineTextBoxView()
+	public MultilineTextBoxView(XamlRoot? xamlRoot) : base(xamlRoot)
 	{
 		_scrolledWindow.Add(_textView);
 		_scrolledWindow.StyleContext.AddClass(MultilineHostCssClass);

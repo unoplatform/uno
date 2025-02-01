@@ -13,41 +13,24 @@ namespace Windows.Storage {
 		/**
 		 * Try to get a value from localStorage
 		 * */
-		private static tryGetValue(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_TryGetValueReturn();
+		private static getValue(locality: string, key: string): string {
+			const storageKey = ApplicationDataContainer.buildStorageKey(locality, key);
 
-			const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-
-			try {
-				if (localStorage.hasOwnProperty(storageKey)) {
-					ret.HasValue = true;
-					ret.Value = localStorage.getItem(storageKey);
-				} else {
-					ret.Value = "";
-					ret.HasValue = false;
-				}
-			} catch (e) {
-				ret.Value = "";
-				ret.HasValue = false;
-				console.debug(`ApplicationDataContainer.tryGetValue failed: ${e}`);
+			if (localStorage.hasOwnProperty(storageKey)) {
+				return localStorage.getItem(storageKey);
+			} else {
+				throw `ApplicationDataContainer.getValue failed for ${storageKey}`;
 			}
-
-			ret.marshal(pReturn);
-
-			return true;
 		}
 
 		/**
 		 * Set a value to localStorage
 		 * */
-		private static setValue(pParams: number): boolean {
+		private static setValue(locality: string, key: string, value: string): boolean {
 			try {
-				const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
+				const storageKey = ApplicationDataContainer.buildStorageKey(locality, key);
 
-				const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
-
-				localStorage.setItem(storageKey, params.Value);
+				localStorage.setItem(storageKey, value);
 			} catch (e) {
 				console.debug(`ApplicationDataContainer.setValue failed: ${e}`);
 			}
@@ -58,34 +41,23 @@ namespace Windows.Storage {
 		/**
 		 * Determines if a key is contained in localStorage
 		 * */
-		private static containsKey(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_ContainsKeyReturn();
-
-			const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+		private static containsKey(locality: string, key: string): boolean {
+			const storageKey = ApplicationDataContainer.buildStorageKey(locality, key);
 
 			try {
-				ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
+				return localStorage.hasOwnProperty(storageKey);
 			} catch (e) {
-				ret.ContainsKey = false;
-				console.debug(`ApplicationDataContainer.containsKey failed: ${e}`);
+				throw `ApplicationDataContainer.containsKey failed: ${e}`;
 			}
-
-			ret.marshal(pReturn);
-
-			return true;
 		}
 
 		/**
 		 * Gets a key by index in localStorage
 		 * */
-		private static getKeyByIndex(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
-
+		private static getKeyByIndex(locality: string, index: number): string {
 			let localityIndex = 0;
 			let returnKey = "";
-			const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+			const prefix = ApplicationDataContainer.buildStoragePrefix(locality);
 
 			try {
 				for (let i = 0; i < localStorage.length; i++) {
@@ -93,58 +65,45 @@ namespace Windows.Storage {
 
 					if (storageKey.startsWith(prefix)) {
 
-						if (localityIndex === params.Index) {
-							returnKey = storageKey.substr(prefix.length);
+						if (localityIndex === index) {
+							return storageKey.substr(prefix.length);
 						}
 
 						localityIndex++;
 					}
 				}
 			} catch (e) {
-				console.debug(`ApplicationDataContainer.getKeyByIndex failed: ${e}`);
+				throw `ApplicationDataContainer.getKeyByIndex failed: ${e}`;
 			}
-
-			ret.Value = returnKey;
-
-			ret.marshal(pReturn);
-
-			return true;
 		}
 
 		/**
 		 * Determines the number of items contained in localStorage
 		 * */
-		private static getCount(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_GetCountReturn();
-
-			ret.Count = 0;
-			const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+		private static getCount(locality: string): number {
+			let count = 0;
+			const prefix = ApplicationDataContainer.buildStoragePrefix(locality);
 
 			try {
 				for (let i = 0; i < localStorage.length; i++) {
 					const storageKey = localStorage.key(i);
 
 					if (storageKey.startsWith(prefix)) {
-						ret.Count++;
+						count++;
 					}
 				}
 			} catch (e) {
 				console.debug(`ApplicationDataContainer.getCount failed: ${e}`);
 			}
 
-			ret.marshal(pReturn);
-
-			return true;
+			return count;
 		}
 
 		/**
 		 * Clears items contained in localStorage
 		 * */
-		private static clear(pParams: number): boolean {
-			const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
-
-			const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+		private static clear(locality: string) {
+			const prefix = ApplicationDataContainer.buildStoragePrefix(locality);
 
 			const itemsToRemove: string[] = [];
 
@@ -161,47 +120,39 @@ namespace Windows.Storage {
 					localStorage.removeItem(itemsToRemove[item]);
 				}
 			} catch (e) {
-				console.debug(`ApplicationDataContainer.clear failed: ${e}`);
+				throw `ApplicationDataContainer.clear failed: ${e}`;
 			}
-
-			return true;
 		}
 
 		/**
 		 * Removes an item contained in localStorage
 		 * */
-		private static remove(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_RemoveReturn();
+		private static remove(locality: string, key: string): boolean {
+			const storageKey = ApplicationDataContainer.buildStorageKey(locality, key);
 
-			const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+			let remove = false;
 
 			try {
-				ret.Removed = localStorage.hasOwnProperty(storageKey);
+				remove = localStorage.hasOwnProperty(storageKey);
 			} catch (e) {
-				ret.Removed = false;
+				remove = false;
 				console.debug(`ApplicationDataContainer.remove failed: ${e}`);
 			}
 
-			if (ret.Removed) {
+			if (remove) {
 				localStorage.removeItem(storageKey);
 			}
 
-			ret.marshal(pReturn);
-
-			return true;
+			return remove;
 		}
 
 		/**
 		 * Gets a key by index in localStorage
 		 * */
-		private static getValueByIndex(pParams: number, pReturn: number): boolean {
-			const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
-			const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
-
+		private static getValueByIndex(locality: string, index: number): string {
 			let localityIndex = 0;
 			let returnKey = "";
-			const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+			const prefix = ApplicationDataContainer.buildStoragePrefix(locality);
 
 			try {
 				for (let i = 0; i < localStorage.length; i++) {
@@ -209,23 +160,16 @@ namespace Windows.Storage {
 
 					if (storageKey.startsWith(prefix)) {
 
-						if (localityIndex === params.Index) {
-							returnKey = localStorage.getItem(storageKey);
+						if (localityIndex === index) {
+							return localStorage.getItem(storageKey);
 						}
 
 						localityIndex++;
 					}
 				}
 			} catch (e) {
-				console.debug(`ApplicationDataContainer.getValueByIndex failed: ${e}`);
+				throw `ApplicationDataContainer.getValueByIndex failed: ${e}`;
 			}
-
-			ret.Value = returnKey;
-
-			ret.marshal(pReturn);
-
-			return true;
 		}
-
 	}
 }

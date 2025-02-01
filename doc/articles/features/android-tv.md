@@ -10,7 +10,7 @@ Uno Platform is proud to support Android TV, enabling you to extend your applica
 
 To make your application properly show up among installed apps on Android TV and to be able to publish the app to the store, you need to adjust the app manifest to declare support for Android TV.
 
-First, open the `MainActivity` class in the `YourApp.Mobile` project (or the `YourApp.Droid` project for older versions of Uno Platform), and add an `[IntentFilter]` attribute for `ActionMain` declaring support for `LeanbackLauncher` category.
+First, open the `MainActivity` class in the `YourApp` project (or the `YourApp.Droid` project for older versions of Uno Platform), and add an `[IntentFilter]` attribute for `ActionMain` declaring support for `LeanbackLauncher` category.
 
 > [!IMPORTANT]
 > If your activity has multiple IntentFilter attributes, make sure ActionMain follows directly after the Activity attribute, otherwise, the app will not launch for debugging in Visual Studio.

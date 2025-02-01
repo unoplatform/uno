@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME TẮT</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Trắng</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Xám nhạt</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Xám</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Xám đậm</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Đen</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>San hô</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Hồng</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Màu cam nhạt</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Nâu vàng</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Vàng nhạt</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Lục nhạt</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Vàng chanh</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Xanh nước</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Xanh da trời</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ngọc lam nhạt</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Lam nhạt</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Lam nhạt</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Lam kem</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Periwinkle</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Oải hương</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Hồng</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Đỏ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Cam</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Nâu</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Vàng</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Vàng</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Xanh ôliu</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Xanh lục</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Lục nhạt</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Mòng két</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Ngọc lam</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Lam</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Xanh dương xám</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Chàm</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Tía</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Đỏ đậm</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Vàng đậm</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Lục đậm</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Xanh mòng két đậm</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Xanh dương đậm</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Màu tía đậm</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Màu mận chín</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Đóng</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 #nullable enable
 
 using System;
@@ -20,10 +22,14 @@ namespace Windows.UI.Input
 {
 	public partial class GestureRecognizer
 	{
+		public static bool IsOutOfTapRange(Point p1, Point p2)
+			=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
+			   || Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
+
 		/// <summary>
 		/// This is the state machine which handles the gesture ([Double|Right]Tapped and Holding gestures)
 		/// </summary>
-		internal class Gesture
+		private class Gesture
 		{
 			private readonly GestureRecognizer _recognizer;
 			private DispatcherQueueTimer? _holdingTimer;
@@ -55,7 +61,6 @@ namespace Windows.UI.Input
 			{
 				_recognizer = recognizer;
 				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
-				Settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
@@ -128,7 +133,7 @@ namespace Windows.UI.Input
 				}
 
 				Settings &= ~gestures;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				if (Settings == GestureSettings.None)
 				{
 					IsCompleted = true;
 				}
@@ -244,7 +249,7 @@ namespace Windows.UI.Input
 			private void StartHoldingTimer()
 			{
 				_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-				_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
+				_holdingTimer.Interval = TimeSpan.FromMicroseconds(HoldMinDelayMicroseconds);
 				_holdingTimer.State = this;
 				_holdingTimer.Tick += OnHoldingTimerTick;
 				_holdingTimer.Start();
@@ -318,7 +323,7 @@ namespace Windows.UI.Input
 				var currentPosition = down.Position;
 
 				return previousTap.id == currentId
-					&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+					&& currentTs - previousTap.ts <= MultiTapMaxDelayMicroseconds
 					&& !IsOutOfTapRange(previousTap.position, currentPosition);
 			}
 
@@ -389,12 +394,9 @@ namespace Windows.UI.Input
 			}
 
 			private static bool IsLongPress(PointerPoint down, PointerPoint current)
-				=> current.Timestamp - down.Timestamp > HoldMinDelayTicks;
-
-			public static bool IsOutOfTapRange(Point p1, Point p2)
-				=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
-				|| Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
+				=> current.Timestamp - down.Timestamp > HoldMinDelayMicroseconds;
 			#endregion
 		}
 	}
 }
+#endif

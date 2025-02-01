@@ -211,8 +211,8 @@ namespace Uno.UI.Tests.FrameTests
 					Assert.AreEqual(navigatedCurrentSourcePageType, SUT.SourcePageType);
 				};
 
-				Assert.AreEqual(null, SUT.SourcePageType);
-				Assert.AreEqual(null, SUT.CurrentSourcePageType);
+				Assert.IsNull(SUT.SourcePageType);
+				Assert.IsNull(SUT.CurrentSourcePageType);
 
 				// Navigate from null to SourceTypePage1
 
@@ -274,7 +274,7 @@ namespace Uno.UI.Tests.FrameTests
 		{
 			var SUT = new Frame();
 			SUT.Navigate(typeof(MyPage));
-			Assert.ThrowsException<InvalidOperationException>(
+			Assert.ThrowsException<ArgumentNullException>(
 				() => SUT.SourcePageType = null);
 		}
 

@@ -20,7 +20,6 @@ using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class IndexPathTests : MUXApiTestBase
 	{
 		[TestMethod]

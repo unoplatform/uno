@@ -14,25 +14,19 @@
 			 d:DesignHeight="2000"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="EmptyImageFixedWidth - the Aquamarine-coloured StarStackPanel below should stretch to the fixed Width given by the Image control, even though the Image is empty.">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer Height="500"
-							  Width="500"
-							  Background="Black">
-					<u:StarStackPanel VerticalAlignment="Center"
-									  HorizontalAlignment="Center"
-									  Background="Aquamarine">
-						<Image Width="100"
-							   Stretch="Uniform" />
-						
-						<Rectangle Height="100"
-								   Width="20"
-								   HorizontalAlignment="Center"
-								   Fill="Gray" />
-					</u:StarStackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+	<ScrollViewer Height="500"
+						  Width="500"
+						  Background="Black">
+		<u:StarStackPanel VerticalAlignment="Center"
+								  HorizontalAlignment="Center"
+								  Background="Aquamarine">
+			<Image Width="100"
+						   Stretch="Uniform" />
+
+			<Rectangle Height="100"
+							   Width="20"
+							   HorizontalAlignment="Center"
+							   Fill="Gray" />
+		</u:StarStackPanel>
+	</ScrollViewer>
 </UserControl>

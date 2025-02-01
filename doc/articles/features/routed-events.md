@@ -10,7 +10,7 @@ This article covers some of the finer technical details of Uno Platform's routed
 
 ## Event Bubbling Flow
 
-``` plain
+```plain
 [1]---------------------+
 | An event is fired     |
 +--------+--------------+
@@ -80,7 +80,7 @@ platform propagate the events. But this will cause more interop between managed 
 You can control which events are bubbling in managed code by using the `EventsBubblingInManagedCode`
 dependency property. The value of this property is inherited to children. Example:
 
-``` csharp
+```csharp
   // Make sure PointerPressed and PointerReleased are always bubbling in
   // managed code when they are originating from myControl and its children.
   myControl.EventsBubblingInManagedCode =

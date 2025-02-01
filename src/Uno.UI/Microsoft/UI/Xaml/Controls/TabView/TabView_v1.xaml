@@ -3,6 +3,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)"
     xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
@@ -10,8 +11,9 @@
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:ios="http://uno.ui/ios"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="ios">
+    xmlns:android="http://uno.ui/android"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    mc:Ignorable="ios android">
 
     <Style TargetType="local:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
 
@@ -205,7 +207,11 @@
                                 Content="&#xE76B;"/>
 							<!-- TODO:MZ Use Style="{StaticResource RepeatButtonRevealStyle}" -->
 
-                            <ScrollContentPresenter x:Name="ScrollContentPresenter"
+                            <android:ListViewBaseScrollContentPresenter x:Name="ScrollContentPresenter"
+                                Grid.Column="1"
+                                Padding="1,0,0,0"
+                                contract4Present:TabFocusNavigation="Once" />
+                            <not_android:ScrollContentPresenter x:Name="ScrollContentPresenter"
                                 Grid.Column="1"
                                 Padding="1,0,0,0"
                                 contract4Present:TabFocusNavigation="Once" />

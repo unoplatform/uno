@@ -28,11 +28,12 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		base.DoUpdateVisitedHistory(view, url, isReload);
 
-		_coreWebView.DocumentTitle = view.Title;
+		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
 		_nativeWebViewWrapper.RefreshHistoryProperties();
 		_coreWebView.RaiseHistoryChanged();
 	}
+
 
 #pragma warning disable CS0672 // Member overrides obsolete member
 	public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView view, string url)
@@ -68,7 +69,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{
-		_coreWebView.DocumentTitle = view.Title;
+		_nativeWebViewWrapper.DocumentTitle = view.Title;
 
 		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
 

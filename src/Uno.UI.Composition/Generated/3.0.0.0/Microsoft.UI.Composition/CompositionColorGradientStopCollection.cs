@@ -18,19 +18,19 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Append(Microsoft.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetMany(uint, Microsoft.UI.Composition.CompositionColorGradientStop[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.ReplaceAll(Microsoft.UI.Composition.CompositionColorGradientStop[])
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetView()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.IndexOf(Microsoft.UI.Composition.CompositionColorGradientStop, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.SetAt(uint, Microsoft.UI.Composition.CompositionColorGradientStop)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.InsertAt(uint, Microsoft.UI.Composition.CompositionColorGradientStop)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetAt(uint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetView()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAtEnd()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.ReplaceAll(Microsoft.UI.Composition.CompositionColorGradientStop[])
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.RemoveAt(uint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Append(Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.SetAt(uint, Microsoft.UI.Composition.CompositionColorGradientStop)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStopCollection.GetMany(uint, Microsoft.UI.Composition.CompositionColorGradientStop[])
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionColorGradientStop>
 		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionColorGradientStop>

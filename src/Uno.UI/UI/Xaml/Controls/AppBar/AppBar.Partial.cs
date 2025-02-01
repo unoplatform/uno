@@ -243,6 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
+
 			if (GetOwner() is { } pageOwner)
 			{
 				// UNO TODO
@@ -767,7 +769,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// If the AppBar is not live, then wait until it's loaded before
 			// responding to changes to opened state and firing our Opening/Opened events.
-			if (!IsInLiveTree)
+			// Uno Specific: using IsLoaded instead of IsInLiveTree, which makes more sense because OnOpening (called below) -> SetupOverlayState expects OnApplyTemplate to have already been called
+			if (!IsLoaded)
 			{
 				return;
 			}

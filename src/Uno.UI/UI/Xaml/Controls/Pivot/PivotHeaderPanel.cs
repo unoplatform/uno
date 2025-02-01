@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected override Size ArrangeOverride(Size arrangeSize)
 		{
-			var childRectangle = new Windows.Foundation.Rect(0d, 0d, arrangeSize.Width, arrangeSize.Height);
+			var childRectangle = new Rect(0d, 0d, arrangeSize.Width, arrangeSize.Height);
 
 			var previousChildSize = 0.0;
 

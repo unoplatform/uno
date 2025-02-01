@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME AF</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Wit</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Liggrys</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grys</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Donkergrys</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Swart</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koraal</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Roos</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ligoranje</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Leerbruin</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Liggeel</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Liggroen</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lemmetjie</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akwa</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Hemelblou</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ligturkoois</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bleekblou</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Ligblou</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ysblou</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Persblou</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Laventel</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Pienk</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rooi</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranje</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Bruin</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Goud</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Geel</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olyfgroen</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Groen</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Heldergroen</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blougroen</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkoois</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blou</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blougrys</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Bloupers</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Pers</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Donkerrooi</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Donkergeel</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Donkergroen</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Donker blougroen</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Donkerblou</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Donkerpers</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Pruim</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Sluit</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

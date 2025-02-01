@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME VÄLJAS</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Valge</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Helehall</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Hall</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tumehall</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Must</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korallpunane</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Roosiroosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Heleoranž</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Kollakaspruun</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Helekollane</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Heleroheline</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Laimiroheline</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamariin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Taevasinine</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Hele türkiissinine</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Kahvatusinine</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Helesinine</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Jääsinine</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Kahvatulilla</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavendlililla</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Roosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Punane</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranž</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Pruun</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Kuldne</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Kollane</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Oliivroheline</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Roheline</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ereroheline</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Meresinine</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Türkiis</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Sinine</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Sinakashall</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Lilla</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tumepunane</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tumekollane</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tumeroheline</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Rohekassinine</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tumesinine</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tumelilla</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Ploomililla</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Sule</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

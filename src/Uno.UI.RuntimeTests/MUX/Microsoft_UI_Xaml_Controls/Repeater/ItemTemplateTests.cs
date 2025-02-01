@@ -45,7 +45,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 	[TestClass]
 	[RequiresFullWindow]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ItemTemplateTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -528,22 +527,22 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				_ = ValidateTemplateSwitchingRefreshesElements(new StackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
 		}
 
 		[TestMethod]
 		public async Task ValidateTemplateSwitchingRefreshesElementsNonVirtualizingLayout()
 		{
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
-				_ = ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
+				await ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});
 		}
 
-		public async Task ValidateTemplateSwitchingRefreshesElements(Layout layout)
+		private async Task ValidateTemplateSwitchingRefreshesElements(Layout layout)
 		{
 			var dataTemplate1 = (DataTemplate)XamlReader.Load(
 					 @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>

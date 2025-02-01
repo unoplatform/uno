@@ -6,21 +6,31 @@
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
 		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<IsPackable>false</IsPackable>
-
+		<OutputType>Exe</OutputType>
 		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
+
+		<!-- To be able to get newer versions of Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest -->
+		<!-- that are not yet published to NuGet.org -->
+		<!-- The latest on NuGet.org doesn't have the fix from https://github.com/dotnet/roslyn-sdk/pull/988 -->
+		<!-- which is very important for us -->
+		<RestoreAdditionalProjectSources>https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="Microsoft.NET.Test.SDK" Version="17.8.0" />
+		<PackageReference Include="MSTest" />
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest" Version="1.1.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest" Version="1.1.2-beta1.23578.3" />
+
+		<PackageReference Include="NuGet.Packaging" Version="6.0.2" />
+		<PackageReference Include="System.Formats.Asn1" Version="6.0.1" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>

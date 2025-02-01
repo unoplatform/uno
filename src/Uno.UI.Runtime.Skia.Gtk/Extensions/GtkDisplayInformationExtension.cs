@@ -4,6 +4,7 @@ using Gtk;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.Graphics.Display;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -28,10 +29,22 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		OnDpiChanged(null, EventArgs.Empty);
 	}
 
-	private Window? GetWindow()
+	private Window GetWindow()
 	{
-		_window ??= GtkHost.Current?.InitialWindow;
+		if (_window is { })
+		{
+			return _window;
+		}
 
+		// TODO: this is a ridiculous amount of indirection, find something better
+		if (AppWindow.GetFromWindowId(_displayInformation.WindowId) is not { } appWindow ||
+			Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+			UnoGtkWindow.GetGtkWindowFromWindow(window) is not { } gtkWindow)
+		{
+			throw new InvalidOperationException($"{nameof(GtkDisplayInformationExtension)} couldn't find a GTK window.");
+		}
+
+		_window = gtkWindow;
 		return _window;
 	}
 
@@ -93,20 +106,5 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		_displayInformation.NotifyDpiChanged();
 	}
 
-	private float GetNativeDpi()
-	{
-		var dpi = _dpiHelper.GetNativeDpi();
-
-		if (GtkHost.Current?.RenderSurfaceType == RenderSurfaceType.Software)
-		{
-			// Software rendering is not affected by fractional DPI.
-			return dpi;
-		}
-
-		// We need to make sure that in case of fractional DPI, we use the nearest whole DPI instead,
-		// otherwise we get GuardBand related rendering issues.
-		var fractionalDpi = dpi / DisplayInformation.BaseDpi;
-		var wholeDpi = Math.Max(1.0f, float.Floor(fractionalDpi));
-		return wholeDpi * DisplayInformation.BaseDpi;
-	}
+	private float GetNativeDpi() => _dpiHelper.GetNativeDpi();
 }

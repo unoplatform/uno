@@ -15,6 +15,10 @@ namespace Microsoft.UI.Composition
 
 		internal CompositionCapabilities(Compositor? compositor) => _compositor = compositor;
 
+		public CompositionCapabilities() : this(Compositor.GetSharedCompositor())
+		{
+		}
+
 		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.GetSharedCompositor());
 	}
 }

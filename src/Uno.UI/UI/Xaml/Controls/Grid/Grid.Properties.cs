@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Row Property
-		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty RowProperty { get; } = CreateRowProperty();
 
 		public static int GetRow(View view) => GetRowValue(view);
@@ -142,13 +142,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				parent.InvalidateMeasure();
 			}
 		}
 		#endregion
 
 		#region Column Property
-		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty ColumnProperty { get; } = CreateColumnProperty();
 
 		public static int GetColumn(View view) => GetColumnValue(view);
@@ -159,14 +159,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				parent.InvalidateMeasure();
 			}
 		}
 
 		#endregion
 
 		#region RowSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty RowSpanProperty { get; } = CreateRowSpanProperty();
 
 		public static int GetRowSpan(View view) => GetRowSpanValue(view as UIElement);
@@ -185,13 +185,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				parent.InvalidateMeasure();
 			}
 		}
 		#endregion
 
 		#region ColumnSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallback = true)]
 		public static DependencyProperty ColumnSpanProperty { get; } = CreateColumnSpanProperty();
 
 		public static int GetColumnSpan(View view) => GetColumnSpanValue(view as UIElement);
@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
 			{
-				parent.InvalidateArrange();
+				parent.InvalidateMeasure();
 			}
 		}
 		#endregion
@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
 				default(double),
-				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+				FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public double ColumnSpacing
 		{
@@ -241,6 +241,6 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
 				default(double),
-				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+				FrameworkPropertyMetadataOptions.AffectsMeasure));
 	}
 }

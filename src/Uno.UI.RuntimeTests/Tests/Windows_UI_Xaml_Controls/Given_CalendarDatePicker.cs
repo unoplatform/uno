@@ -12,11 +12,14 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+#if !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_CalendarDatePicker
 {
-#if !WINAPPSDK && !__MACOS__ // test is failling in macOS for some reason.
+#if __MACOS__
+	[Ignore("test is failling in macOS for some reason.")]
+#endif
 	[TestMethod]
 	public async Task TestCalendarPanelSize()
 	{
@@ -36,9 +39,10 @@ public class Given_CalendarDatePicker
 
 		flyout.Close();
 	}
-#endif
 
-#if !WINAPPSDK && !__MACOS__
+#if __MACOS__
+	[Ignore]
+#endif
 	[TestMethod]
 	public async Task When_Theme_Changes()
 	{
@@ -74,7 +78,7 @@ public class Given_CalendarDatePicker
 				{
 					continue;
 				}
-				var background = ((SolidColorBrush)backgroundBrush).Color;
+				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush)backgroundBrush).Color;
 
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
@@ -108,7 +112,7 @@ public class Given_CalendarDatePicker
 				{
 					continue;
 				}
-				var background = ((SolidColorBrush)backgroundBrush).Color;
+				var background = (backgroundBrush as SolidColorBrush)?.Color ?? ((Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush)backgroundBrush).Color;
 
 				// Skip colored dates (selected), or those with opacity of zero.
 				if (background.R == background.G && background.G == background.B && background.A != 0)
@@ -125,5 +129,5 @@ public class Given_CalendarDatePicker
 			}
 		}
 	}
-#endif
 }
+#endif

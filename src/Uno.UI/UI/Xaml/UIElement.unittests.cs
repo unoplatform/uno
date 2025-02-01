@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotSupportedException();
 		}

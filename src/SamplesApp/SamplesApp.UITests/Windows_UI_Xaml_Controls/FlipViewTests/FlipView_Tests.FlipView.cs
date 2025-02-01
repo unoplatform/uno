@@ -65,6 +65,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlipViewTests
 
 			// check for selection index && content
 			Assert.AreEqual(expectedIndex, flipview.GetDependencyPropertyValue<int>("SelectedIndex"));
+
+			var rect = _app.Query("SUT").Single().Rect;
+
+			// Get rid of Button hover color so we can assert the actual button background.
+			_app.TapCoordinates(rect.Right + 5, rect.Bottom + 5);
+
 			using (var screenshot = TakeScreenshot($"Post_{navigationContext}_Navigation", ignoreInSnapshotCompare: true))
 			{
 				ImageAssert.HasColorAt(

@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -232,8 +233,9 @@ public sealed partial class Thumb
 
 				var pointerDeviceType = pointerPoint.PointerDevice.PointerDeviceType;
 
-				var templatedParentAsSlider = TemplatedParent as Slider;
-				if (templatedParentAsSlider != null)
+				var spTemplatedParent = GetTemplatedParent();
+
+				if (spTemplatedParent is Slider spTemplatedParentAsSlider)
 				{
 					// Since we are marking the event as handled, Slider never sees it because of this bug:
 					//      33598 - RoutedEvent Handled flag shouldn't be modified by templated parts
@@ -249,14 +251,13 @@ public sealed partial class Thumb
 						mode = AutomaticToolTipInputMode.Mouse;
 					}
 
-					templatedParentAsSlider.UpdateThumbToolTipVisibility(true, mode);
-					templatedParentAsSlider.SetIsPressed(true);
+					spTemplatedParentAsSlider.UpdateThumbToolTipVisibility(true, mode);
+					spTemplatedParentAsSlider.SetIsPressed(true);
 				}
 
-				var templatedParentAsScrollViewer = TemplatedParent as ScrollBar;
-				if (templatedParentAsScrollViewer != null)
+				if (spTemplatedParent is ScrollBar spTemplatedParentAsScrollBar)
 				{
-					var isIgnoringUserInput = templatedParentAsScrollViewer.IsIgnoringUserInput;
+					var isIgnoringUserInput = spTemplatedParentAsScrollBar.IsIgnoringUserInput;
 					if (isIgnoringUserInput)
 					{
 						// Do not start a thumb drag operation when the owning ScrollBar was told to ignore user input.
@@ -268,7 +269,7 @@ public sealed partial class Thumb
 				args.Handled = true;
 
 				var pointer = args.Pointer;
-				var pointerCaptured = CapturePointer(pointer);
+				var pointerCaptured = CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventOSSteal);
 				IsDragging = true;
 
 				// If logical parent is a popup, TransformToVisual can fail because a popup's child

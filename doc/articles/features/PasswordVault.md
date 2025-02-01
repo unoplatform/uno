@@ -46,7 +46,7 @@ There is no way to persist a secured data in a Web browser. Even if we generate 
 there is no safe place to store this key except by relying on server components, which broke the offline support (and Progressive Web App).
 So currently we preferred to **not** implement the `PasswordVault`. It will throw a `NotSupportedException` when you try to create a new instance.
 
-***
+---
 
 ## PasswordCredential
 
@@ -72,5 +72,5 @@ vault.Add(new Windows.Security.Credentials.PasswordCredential(
 var vault = new Windows.Security.Credentials.PasswordVault();
 var credential = vault.Retrieve("My App", userName);
 credential.RetrievePassword();
-var password = loginCredential.Password;
+var password = credential.Password;
 ```

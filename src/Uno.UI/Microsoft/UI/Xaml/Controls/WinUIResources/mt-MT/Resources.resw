@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME DIŻATTIVAT</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Abjad</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Griż ċar</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Griż</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Griż skur</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Iswed</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Oranġjo fir-roża</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Kulur il-Ward</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Oranġjo ċar</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Kulur il-ġilda</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Isfar ċar</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Aħdar ċar</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lime</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akwa</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Blu tas-sema</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turkważ ċar</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Ikħal ċar</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Blu ċar</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Blu kulur is-silġ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Blu fil-vjola ċar</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavander</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Roża</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Aħmar</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranġjo</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Kannella</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Deheb</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Isfar</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Aħdar żebbuġa</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Aħdar</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Aħdar jgħajjat</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Aħdar fil-blu</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkważ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blu</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Griż fil-blu</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Blu fil-vjola</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Vjola</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Aħmar skur</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Isfar skur</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Aħdar skur</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Aħdar skur fil-blu skur</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Blu skur</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Vjola skur</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Vjola fil-marun</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Agħlaq</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

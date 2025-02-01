@@ -1131,12 +1131,12 @@ public class Given_ItemsPresenter
 
 		var SUT = ic.FindVisualChildByType<ItemsPresenter>();
 
-		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "initial header value");
+		Assert.AreEqual("initial header value", SUT.FindVisualChildByType<TextBlock>().Text);
 
 		SUT.Header = "updated header value";
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "updated header value");
+		Assert.AreEqual("updated header value", SUT.FindVisualChildByType<TextBlock>().Text);
 	}
 
 	[TestMethod]
@@ -1172,12 +1172,30 @@ public class Given_ItemsPresenter
 
 		var SUT = ic.FindVisualChildByType<ItemsPresenter>();
 
-		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "initial footer value");
+		Assert.AreEqual("initial footer value", SUT.FindVisualChildByType<TextBlock>().Text);
 
 		SUT.Footer = "updated footer value";
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "updated footer value");
+		Assert.AreEqual("updated footer value", SUT.FindVisualChildByType<TextBlock>().Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Inside_ScrollContentPresenter()
+	{
+		var lv = new ListView();
+		ScrollViewer.SetHorizontalScrollBarVisibility(lv, ScrollBarVisibility.Visible);
+		ScrollViewer.SetHorizontalScrollMode(lv, ScrollMode.Enabled);
+		lv.Items.Add("1");
+
+		await UITestHelper.Load(lv);
+
+		var sv = (ScrollViewer)((Border)VisualTreeHelper.GetChild(lv, 0)).Child;
+		var itemsPresenter = (ItemsPresenter)sv.Content;
+
+		var availableSize = LayoutInformation.GetAvailableSize(itemsPresenter);
+		Assert.AreNotEqual(double.PositiveInfinity, availableSize.Width);
 	}
 
 	public record MyTextModel(string MyText);

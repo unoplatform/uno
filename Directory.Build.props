@@ -1,0 +1,46 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryBranch>$(GITVERSION_BranchName)</RepositoryBranch>
+		<RepositoryCommit>$(GitVersion_Sha)</RepositoryCommit>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+		<Authors>Uno Platform</Authors>
+		<PackageIcon>uno.png</PackageIcon>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+		<!-- Disable source link when not building on GitHub -->
+		<SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
+		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
+		<Deterministic>true</Deterministic>
+
+		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
+
+		<NetCurrent>net9.0</NetCurrent>
+		<NetPrevious>net8.0</NetPrevious>
+
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.0;$(NetCurrent)-maccatalyst18.0;$(NetCurrent)-macos15.0</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-macos14.0</NetPreviousNetCoreMobile>
+
+		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
+		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
+
+		<NetPreviousWinAppSDK>$(NetPrevious)-windows10.0.19041.0</NetPreviousWinAppSDK>
+		<NetCurrentWinAppSDK>$(NetCurrent)-windows10.0.19041.0</NetCurrentWinAppSDK>
+
+		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
+		<NetAndroidPreviousAndCurrent>$(NetPrevious)-android;$(NetCurrent)-android</NetAndroidPreviousAndCurrent>
+		<NetWpfPreviousAndCurrent>$(NetPreviousWpf);$(NetCurrentWpf)</NetWpfPreviousAndCurrent>
+		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
+		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
+		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
+		<NetWinAppSDKPreviousAndCurrent>$(NetPreviousWinAppSDK);$(NetCurrentWinAppSDK)</NetWinAppSDKPreviousAndCurrent>
+		<NetUnitTests>$(NetPrevious)</NetUnitTests>
+
+		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
+		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>
+	</PropertyGroup>
+
+</Project>

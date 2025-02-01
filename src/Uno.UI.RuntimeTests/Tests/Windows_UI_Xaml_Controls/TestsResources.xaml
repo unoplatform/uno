@@ -351,11 +351,19 @@
 	</DataTemplate>
 
 	<DataTemplate x:Key="TreeViewItemTemplate">
-		<mux:TreeViewItem HorizontalContentAlignment="Left"
-						  VerticalContentAlignment="Center"
-						  Content="{Binding Path=Label}"
+		<mux:TreeViewItem Content="{Binding Path=Label}"
 						  IsExpanded="{Binding Path=IsExpanded, Mode=TwoWay}"
-						  ItemsSource="{Binding Path=Items}" />
+						  IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
+						  ItemsSource="{Binding Path=Items}"
+						  HorizontalContentAlignment="Left"
+						  VerticalContentAlignment="Center" />
+	</DataTemplate>
+	<DataTemplate x:Key="TreeViewItemTemplate_WithoutIsSelectedBinding">
+		<mux:TreeViewItem Content="{Binding Path=Label}"
+						  IsExpanded="{Binding Path=IsExpanded, Mode=TwoWay}"
+						  ItemsSource="{Binding Path=Items}"
+						  HorizontalContentAlignment="Left"
+						  VerticalContentAlignment="Center" />
 	</DataTemplate>
 
 	<DataTemplate x:Key="When_Item_Changes_Measure_Count_Template">

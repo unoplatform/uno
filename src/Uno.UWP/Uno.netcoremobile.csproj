@@ -37,36 +37,16 @@
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
 	</ItemGroup>
 
-	<!-- This condition is **explicitly** for net7.0 -->
-	<!-- Don't include this package for any version later than net7.0 -->
-	<!-- Once we remove net7.0 support, this ItemGroup should be deleted. -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 	</ItemGroup>
 
-	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-		<!--
-				VS4Mac seems to process System.Memory differently, and removes
-				the System.Memory local reference if the package is transitively referenced.
-				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
-				is properly adding the local System.Memory to the Reference item group.
-		-->
-		<ItemGroup>
-			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
-			<Reference Remove="@(_ReferenceToRemove)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
-		<ItemGroup>
-			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
-			<ReferencePath Remove="@(_ReferencePathToRemove)" />
-		</ItemGroup>
-	</Target>
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
+		<Compile Include="..\Uno.UI\UI\Colors.cs" />
+		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
+		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
+	</ItemGroup>
 
 </Project>

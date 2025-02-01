@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME-ն անջատված է</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Սպիտակ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Բաց մոխրագույն</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Մոխրագույն</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Մուգ մոխրագույն</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Սև</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Կորալագույն</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Վարդագույն</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Բաց նարնջագույն</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Դեղնաշագանակագույն</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Բաց դեղին</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Բաց կանաչ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Լայմ</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Ծովագույն</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Լուրթ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Բաց փիրուզագույն</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Դժգույն կապույտ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Բաց կապույտ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Լաջվարդ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Բաց մանուշակագույն</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Նարդոս</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Կարմրաթույր</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Կարմիր</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Նարնջագույն</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Շագանակագույն</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Ոսկեգույն</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Դեղին</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Կանաչավուն</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Կանաչ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Բաց կանաչ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Կապտականաչ</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Փիրուզագույն</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Երկնագույն</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Կապտա-մոխրագույն</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Ինդիգո</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Մանուշակագույն</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Մուգ կարմիր</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Մուգ դեղին</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Մուգ կանաչ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Մուգ կապտականաչ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Մուգ կապույտ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Մուգ մանուշակագույն</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Սալորագույն</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Փակել</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

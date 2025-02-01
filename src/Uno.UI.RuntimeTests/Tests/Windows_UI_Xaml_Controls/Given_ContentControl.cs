@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.Extensions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using System.Linq;
-using static Private.Infrastructure.TestServices;
+using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
+using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages;
 using Windows_UI_Xaml_Controls;
+using static Private.Infrastructure.TestServices;
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -21,7 +18,6 @@ using UIKit;
 #elif __MACOS__
 using AppKit;
 #else
-using Uno.UI;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -63,6 +59,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public void Init()
 		{
 			_testsResources = new TestsResources();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(Grid))]
+		[DataRow(typeof(StackPanel))]
+		[DataRow(typeof(Border))]
+		[DataRow(typeof(ContentPresenter))]
+		public async Task When_SelfLoading(Type type)
+		{
+			var control = (FrameworkElement)Activator.CreateInstance(type);
+
+			control.Width = 200;
+			control.Height = 200;
+
+			await UITestHelper.Load(control);
 		}
 
 		[TestMethod]
@@ -113,26 +125,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(control);
 				control.Content = items[0];
 				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
-				Assert.AreEqual(text1.Text, "Selectable A", $"Template selector not applied for {control.GetType()}");
+				Assert.AreEqual("Selectable A", text1.Text, $"Template selector not applied for {control.GetType()}");
 
 				control.Content = items[1];
 				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
-				Assert.AreEqual(text2.Text, "Selectable B");
+				Assert.AreEqual("Selectable B", text2.Text);
 
 				control.Content = items[2];
 				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
-				Assert.AreEqual(text3.Text, "Selectable C");
+				Assert.AreEqual("Selectable C", text3.Text);
 			}
 		}
 
 
 		[TestMethod]
-		public async Task When_ContentTemplateSelector_And_Default_Style_And_Fluent()
+		public async Task When_ContentTemplateSelector_And_Default_Style_And_Uwp()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_ContentTemplateSelector_And_Default_Style();
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_ContentTemplateSelector_And_Default_Style();
 		}
 
 		[TestMethod]
@@ -183,8 +193,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			contentControl.Content = null;
 
-			Assert.IsTrue(comboBox.Items.Count == 0);
-			Assert.IsTrue(comboBox.SelectedIndex == -1);
+#if __IOS__ || __ANDROID__
+			Assert.AreEqual(0, comboBox.Items.Count);
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+#else // this is correct
+			Assert.AreEqual(3, comboBox.Items.Count);
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+#endif
 		}
 
 #if HAS_UNO

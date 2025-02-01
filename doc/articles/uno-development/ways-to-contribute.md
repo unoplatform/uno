@@ -52,7 +52,7 @@ If you have a question, be sure first to check out our [documentation](https://p
 
 If you've already done some Uno development, maybe there's a GitHub discussion question you can answer, giving another user the benefit of your experience.
 
-For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
+For a more direct conversation, [visit our Discord Server](https://platform.uno/discord).
 
 ### Spreading the word
 
@@ -64,11 +64,11 @@ You can:
 - present Uno at a local user group
 - share your open-source Uno projects
 
-Whatever you do, let us know [through Twitter](https://twitter.com/unoplatform) or via info@platform.uno.
+Whatever you do, let us know [through X/Twitter](https://x.com/unoplatform), our [Discord Server](https://platform.uno/discord) in #contributing, or by emailing us at [info@platform.uno](mailto:info@platform.uno).
 
 ## Contributing code
 
-The UWP framework and WinUI are pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno's codebase.
+The WinUI framework is pretty big, but many hands make light work. We welcome code and content contributions from the community, and the core team is more than happy to help new contributors ramp up and familiarize themselves with Uno Platform's codebase.
 
 ### Diving into the code
 
@@ -96,4 +96,14 @@ Once you're ready to create a PR, check out the [Guidelines for pull requests](.
 
 ### Need help?
 
-If there's anything you need, [give us a shout in the #uno-platform Discord Channel](https://discord.gg/eBHZSKG).
+If there's anything you need, [ping us on our Discord Server](https://platform.uno/discord).
+
+## Sponsors & Grants
+
+Please consider sponsoring Uno Platform development, especially if your company benefits from this library.
+
+Your contribution will go towards adding new features and closing issues raised by the community at Uno Platform backlog on GitHub ([Issues · unoplatform/uno (github.com)](https://github.com/unoplatform/uno/issues)) and making sure all functionality continues to meet our high-quality standards.
+
+A grant for continuous full-time development has the biggest impact on progress. Periods of 2 to 5 days allow a contributor to tackle substantial complex issues that are otherwise left to linger until somebody can’t afford to not fix them.
+
+Contact [@jlaban](https://github.com/jeromelaban) or [@sasakrsmanovic](https://github.com/sasakrsmanovic) to arrange a grant to Uno Platform and its core contributors.

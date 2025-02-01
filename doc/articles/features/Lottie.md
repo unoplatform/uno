@@ -33,14 +33,28 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
+#### References in a Single Project
+
+In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+
+```xml
+<UnoFeatures>
+    ...
+    Lottie;
+    ...
+</UnoFeatures>
+```
+
+#### References in a Legacy Project
+
 On all Uno Platform targets, you'll need the following packages:
 
 * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
 
-Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
+Additionally, on Skia Desktop targets, you'll need the following packages:
 
-* `SkiaSharp.Views.Uno.WinUI` version 2.88.3 or later
-* `SkiaSharp.Skottie` version 2.88.3 or later
+* `SkiaSharp.Views.Uno.WinUI` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
 
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
@@ -70,25 +84,25 @@ On all Uno Platform targets, you'll need the following packages:
 
 * `Uno.UI.Lottie` (for the `LottieVisualSource`)
 
-Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
+Additionally, on Skia Desktop targets, you'll need the following packages:
 
-* `SkiaSharp.Views.Uno` version 2.88.3 or later
-* `SkiaSharp.Skottie` version 2.88.3 or later
+* `SkiaSharp.Views.Uno` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
 
 On UWP, you'll need to reference the following packages in your head project:
 
 * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
 * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 
-***
+---
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
 ## Lottie JSON file location
 
-On WASM, iOS, and macOS, you can put the Lottie .json files directly in a folder of the Class Library project or your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
+On WASM, iOS, and macOS, you can put the Lottie .json files directly in a folder of your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
 
-On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
+On Android, Lottie .json files need to be added to the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
 
 To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-appx:///Lottie/myanimation.json`.
 
@@ -117,7 +131,7 @@ Here's how to use this feature:
 
 1. Add a _css-like_ declaration to your Lottie shape like this then put this in the name of the shape. That means the `nm` property in the json-generated file.
 
-   ``` css
+   ```css
    { Color: var(MyColor); }
    ```
 
@@ -125,7 +139,7 @@ Here's how to use this feature:
 
 2. Use it that way:
 
-   ``` xml
+   ```xml
    <winui:AnimatedVisualPlayer
        x:Name="player"
        AutoPlay="true">

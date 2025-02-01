@@ -385,8 +385,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpMonthTextBlock = null;
 				m_tpDayTextBlock = null;
 
-				// UNO TODO
-				// DatePickerGenerated.OnApplyTemplate();
+				base.OnApplyTemplate();
 
 				// Get selectors for day/month/year pickers
 				GetTemplatePart<Selector>("DayPicker", out spDayPicker);
@@ -518,7 +517,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				RefreshSetup();
 
-				// UpdateVisualState(false);
+				UpdateVisualState(false);
 
 			}
 			finally
@@ -2266,12 +2265,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/* static */
 
 		private static DateTimeOffset NullDateSentinel { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		/* static */
 
 		private static DateTimeOffset NullDateSentinelValue { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)
 		{

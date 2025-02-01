@@ -1,4 +1,6 @@
-﻿namespace Uno;
+﻿using System.Globalization;
+
+namespace Uno;
 
 public static partial class WinRTFeatureConfiguration
 {
@@ -19,4 +21,38 @@ public static partial class WinRTFeatureConfiguration
 		/// </summary>
 		public static bool UseLegacyPrimaryLanguageOverride { get; set; } = true;
 	}
+
+	public static class ResourceLoader
+	{
+		/// <summary>
+		/// Use <see cref="Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride"/> as the override for resource resolution.
+		/// Alternatively if set to false, use <see cref="CultureInfo.CurrentUICulture"/> as the override.
+		/// </summary>
+		public static bool UsePrimaryLanguageOverride { get; set; } = true;
+
+		/// <summary>
+		/// Determines if parsed string resources are preserved between languages change.
+		/// </summary>
+		public static bool PreserveParsedResources { get; set; }
+	}
+
+#if __ANDROID__
+	public static class StoreContext
+	{
+		/// <summary>
+		/// Set True to test Store Context APIs on Android. False by default.
+		/// </summary>
+		public static bool TestMode { get; set; }
+	}
+#endif
+
+#if DEBUG
+	internal static class DebugOptions
+	{
+		/// <summary>
+		/// Adjusts all PointerPoint instances as if they were of type Touch.
+		/// </summary>
+		public static bool SimulateTouch { get; set; }
+	}
+#endif
 }

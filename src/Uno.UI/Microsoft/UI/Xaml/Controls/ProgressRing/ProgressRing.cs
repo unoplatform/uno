@@ -111,7 +111,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (_lottieProvider == null)
 			{
-				this.Log().Error($"{nameof(ProgressRing)} control needs the Uno.UI.Lottie package to run properly.");
+				this.Log().Error($"UNOX0001: The {nameof(ProgressRing)} control needs an additional package to be enabled. https://aka.platform.uno/UNOX0001");
 			}
 
 			RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
@@ -304,8 +304,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 				var txt = new TextBlock
 				{
-					Text = "⚠️ Uno.UI.Lottie missing ⚠️",
-					Foreground = SolidColorBrushHelper.Red
+					Text = "⚠️ UNOX0001: https://aka.platform.uno/UNOX0001 ⚠️",
+					Foreground = SolidColorBrushHelper.Red,
+					FontSize = 8
 				};
 
 				_layoutRoot.Children.Add(txt);

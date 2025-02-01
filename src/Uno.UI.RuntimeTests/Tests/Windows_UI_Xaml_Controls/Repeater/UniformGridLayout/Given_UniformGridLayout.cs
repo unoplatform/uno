@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 using Private.Infrastructure;

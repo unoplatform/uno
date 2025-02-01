@@ -20,19 +20,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<authors>Uno Platform</authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId>Uno.UI.MSAL</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+		<None Remove="buildTransitive\*.MSAL.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,7 +55,11 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

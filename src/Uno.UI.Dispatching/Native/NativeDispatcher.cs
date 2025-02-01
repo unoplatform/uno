@@ -73,25 +73,23 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal static void CheckThreadAccess()
 		{
-			// This check is disabled on WASM unless threading is enabled
-			if (
-#if __WASM__
-				NativeDispatcher.IsThreadingSupported &&
-#endif
-				!Main.HasThreadAccess)
+			if (!Main.HasThreadAccess)
 			{
 				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
 			}
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __MACOS__ || __IOS__ || IS_UNIT_TESTS
-		private void DispatchItems()
+		private static void DispatchItems()
 		{
-			if (Rendering != null)
+			// Currently, we have a singleton NativeDispatcher.
+			// We want DispatchItems to be static to avoid delegate allocations.
+			var @this = NativeDispatcher.Main;
+			if (@this.Rendering != null)
 			{
-				Debug.Assert(RenderingEventArgsGenerator != null);
+				Debug.Assert(@this.RenderingEventArgsGenerator != null);
 
-				Rendering.Invoke(null, RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(_startTime)));
+				@this.Rendering.Invoke(null, @this.RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(@this._startTime)));
 			}
 
 			Action? action = null;
@@ -100,21 +98,21 @@ namespace Uno.UI.Dispatching
 
 			for (var p = 0; p <= 3; p++)
 			{
-				var queue = _queues[p];
+				var queue = @this._queues[p];
 
-				lock (_gate)
+				lock (@this._gate)
 				{
 					if (queue.Count > 0)
 					{
 						action = Unsafe.As<Action>(queue.Dequeue());
 
-						_currentPriority = (NativeDispatcherPriority)p;
+						@this._currentPriority = (NativeDispatcherPriority)p;
 
-						if (Interlocked.Decrement(ref _globalCount) > 0)
+						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
 							didEnqueue = true;
 
-							EnqueueNative();
+							@this.EnqueueNative(@this._currentPriority);
 						}
 
 						break;
@@ -122,32 +120,42 @@ namespace Uno.UI.Dispatching
 				}
 			}
 
+			RunAction(@this, action);
+
+			// Restore the priority to the default for native events
+			// (i.e. not dispatched by this running loop)
+			@this._currentPriority = NativeDispatcherPriority.Normal;
+
+			if (!didEnqueue && @this.Rendering != null)
+			{
+				@this.DispatchWakeUp();
+			}
+		}
+
+		/// <remarks>
+		/// This method runs in a separate method in order to workaround for the following issue:
+		/// https://github.com/dotnet/runtime/issues/111281
+		/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+		/// </remarks>
+		private static void RunAction(NativeDispatcher dispatcher, Action? action)
+		{
 			if (action != null)
 			{
 				try
 				{
-					using (_synchronizationContexts[(int)_currentPriority].Apply())
+					using (dispatcher._synchronizationContexts[(int)dispatcher._currentPriority].Apply())
 					{
 						action();
 					}
 				}
 				catch (Exception exception)
 				{
-					this.Log().Error("NativeDispatcher unhandled exception", exception);
+					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (Rendering == null && this.Log().IsEnabled(LogLevel.Debug))
+			else if (dispatcher.Rendering == null && dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Error("Dispatch queue is empty.");
-			}
-
-			// Restore the priority to the default for native events
-			// (i.e. not dispatched by this running loop)
-			_currentPriority = NativeDispatcherPriority.Normal;
-
-			if (!didEnqueue && Rendering != null)
-			{
-				DispatchWakeUp();
+				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
 
@@ -390,14 +398,14 @@ namespace Uno.UI.Dispatching
 
 			if (shouldEnqueue)
 			{
-				EnqueueNative();
+				EnqueueNative(priority);
 			}
 		}
 
 		/// <summary>
 		/// Enqueues an operation on the native UI thread.
 		/// </summary>
-		partial void EnqueueNative();
+		partial void EnqueueNative(NativeDispatcherPriority priority);
 
 		partial void Initialize();
 
@@ -435,7 +443,7 @@ namespace Uno.UI.Dispatching
 
 			if (Interlocked.Increment(ref _globalCount) == 1)
 			{
-				EnqueueNative();
+				EnqueueNative(NativeDispatcherPriority.Normal);
 			}
 
 			Interlocked.Decrement(ref _globalCount);

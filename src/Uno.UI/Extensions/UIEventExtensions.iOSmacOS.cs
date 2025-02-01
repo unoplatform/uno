@@ -58,6 +58,22 @@ namespace Uno.UI.Extensions
 				&& screenLocation.X < bounds.Right
 				&& screenLocation.Y < bounds.Bottom;
 		}
+
+		internal static UIElement FindOriginalSource(this _Touch touch)
+		{
+			var view = touch.View;
+			while (view != null)
+			{
+				if (view is UIElement elt)
+				{
+					return elt;
+				}
+
+				view = view.Superview;
+			}
+
+			return null;
+		}
 #endif
 
 		/// <summary>

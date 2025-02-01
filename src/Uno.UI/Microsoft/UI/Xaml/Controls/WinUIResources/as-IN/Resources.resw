@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME অফ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>বগা</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>পাতল ধূসৰ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ধূসৰ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>গাঢ় ধূসৰ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ক'লা</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>প্ৰবাল</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>গোলাপী</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>পাতল কমলাৰঙী</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>টেন</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>পাতল হালধীয়া</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>পাতল সেউজীয়া</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>নেমু ৰঙী</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>একুৱা</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>স্কাই ব্লু</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>পাতল ফিৰোজা</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>পেল ব্লু</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>পাতল নীলা</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>বৰফ নীলা</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>পেৰিংকল</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>লভেণ্ডাৰ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>গুলপীয়া</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ৰঙা</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>কমলা ৰঙী</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>মুগা</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>সোণালী</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>হালধীয়া</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>জলফাই সেউজীয়া</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>সেউজীয়া</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>উজ্জ্বল সেউজীয়া</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>হৰিত্ নীলা</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ফিৰোজা</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>নীলা</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>নীলা-ধূসৰ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ইণ্ডিগ'</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>জামুৰঙী</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>গাঢ় ৰঙা</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>গাঢ় হালধীয়া</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>গাঢ় সেউজীয়া</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ডাৰ্ক টিল</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>গাঢ় নীলা</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>গাঢ় বেঙুনীয়া</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>প্লাম</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>বন্ধ কৰক</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

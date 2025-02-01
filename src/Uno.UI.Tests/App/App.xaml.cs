@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI;
 using Uno.UI.Tests.App.Views;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
@@ -97,14 +98,17 @@ namespace UnitTestsApp
 		[MemberNotNull(nameof(_mainWindow))]
 		private void EnsureMainWindow()
 		{
-			_mainWindow ??=
+			if (CoreApplication.IsFullFledgedApp)
+			{
+				_mainWindow ??=
 #if HAS_UNO_WINUI
-				new Microsoft.UI.Xaml.Window();
+					new Microsoft.UI.Xaml.Window();
 #elif HAS_UNO
 				Microsoft.UI.Xaml.Window.CurrentSafe!;
 #else
 				Window.Current;
 #endif
+			}
 		}
 	}
 }

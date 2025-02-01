@@ -196,6 +196,15 @@ namespace Uno.UI
 			}
 
 			/// <summary>
+			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
+			/// </summary>
+			/// <remarks>
+			/// The default is Segoe UI, which is not available on Mac and Linux as well as browsers running on Mac and Linux.
+			/// So, you can change to OpenSans. For more information, see https://aka.platform.uno/feature-opensans
+			/// </remarks>
+			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
+
+			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
@@ -229,17 +238,6 @@ namespace Uno.UI
 			/// </summary>
 			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
 #endif
-
-			/// <summary>
-			/// [WebAssembly Only] Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
-			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on WebAssembly.
-			/// Setting it to true avoids the use of costly JavaScript->C# interop.
-			/// </remarks>
-			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
 
 			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
@@ -335,6 +333,12 @@ namespace Uno.UI
 			/// legacy behavior, use this property to override it.
 			/// </summary>
 			public static bool EnableLightDismissByDefault { get; set; }
+
+			/// <summary>
+			/// When set to true, light dismiss UI popups will not be dismissed when the window is deactivated.
+			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
+			/// </summary>
+			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 		}
 
 		public static class ProgressRing
@@ -399,6 +403,18 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; }
 		}
 
+		public static class Frame
+		{
+			/// <summary>
+			/// On non-Skia targets, Frame pools page instances to improve performance by default.
+			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
+			/// </summary>
+			public static bool UseWinUIBehavior { get; set; }
+#if __SKIA__
+				= true;
+#endif
+		}
+
 		public static class PointerRoutedEventArgs
 		{
 #if __ANDROID__
@@ -455,7 +471,7 @@ namespace Uno.UI
 			{
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
@@ -487,6 +503,18 @@ namespace Uno.UI
 			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static bool IsJavaStringCachedEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines the maximum capacity of the Java string-cache.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static int JavaStringCachedCapacity { get; set; } = 1000;
 		}
 
 		public static class TextBox
@@ -502,7 +530,7 @@ namespace Uno.UI
 			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
-			public static bool UseOverlayOnSkia { get; set; } = true;
+			public static bool UseOverlayOnSkia { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -566,7 +594,7 @@ namespace Uno.UI
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
-#if __WASM__
+#if __WASM__ || __SKIA__
 				= true;
 #endif
 
@@ -687,6 +715,20 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class WebView2
+		{
+#if __IOS__
+			/// <summary>
+			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
+			/// </summary>
+			/// <remarks>
+			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
+			/// Important: It will only work when the app runs in Debug mode.
+			/// </remarks>
+			public static bool IsInspectable { get; set; }
+#endif
+		}
+
 		public static class Xaml
 		{
 			/// <summary>
@@ -790,6 +832,78 @@ namespace Uno.UI
 			/// will be from the animated value or local value, when the From property is omitted.
 			/// </summary>
 			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
+		}
+
+		public static class Rendering
+		{
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
+			/// OpenGL if available. Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseOpenGLOnX11 { get; set; }
+		}
+
+		public static class DependencyProperty
+		{
+			/// <summary>
+			/// Accessing the dependency property system isn't thread safe and should only
+			/// happen on the UI thread.
+			/// By default, attempting to access it from non UI thread will throw an exception.
+			/// Setting this flag to true will prevent the exception from being thrown at the risk
+			/// of having an undefined behavior and/or race conditions.
+			/// </summary>
+			public static bool DisableThreadingCheck { get; set; }
+
+			/// <summary>
+			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
+			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
+			/// set/got.
+			/// </summary>
+			public static bool ValidatePropertyOwnerOnReadWrite { get; set; } =
+#if DEBUG
+				true;
+#else
+				global::System.Diagnostics.Debugger.IsAttached;
+#endif
+		}
+
+		/// <summary>
+		/// This is for internal use to facilitate turning on/off certain logic that makes it easier/harder
+		/// to debug.
+		/// </summary>
+		internal static class DebugOptions
+		{
+			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
+
+			public static bool WaitIndefinitelyInEventTester { get; set; }
+		}
+
+		public static class Shape
+		{
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
+			/// </summary>
+			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
+			public static bool WasmDelayUpdateUntilFirstArrange { get; set; } = true;
+
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native getBBox() result will be cached.
+			/// </summary>
+			public static bool WasmCacheBBoxCalculationResult { get; set; } = true;
+
+			internal const int WasmDefaultBBoxCacheSize = 64;
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
+			/// </summary>
+#if __WASM__
+			public static int WasmBBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+#else
+			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
+#endif
 		}
 	}
 }

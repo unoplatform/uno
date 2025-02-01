@@ -7,6 +7,7 @@ using CoreLocation;
 using Foundation;
 using Uno.Extensions;
 using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 namespace Windows.Devices.Geolocation
 {
@@ -16,14 +17,21 @@ namespace Windows.Devices.Geolocation
 
 		partial void PlatformInitialize()
 		{
-			_locationManager = new CLLocationManager
+			if (NativeDispatcher.Main.HasThreadAccess)
 			{
-				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
-			};
+				_locationManager = new CLLocationManager
+				{
+					DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
+				};
 
-			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
+				_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
-			_locationManager.StartUpdatingLocation();
+				_locationManager.StartUpdatingLocation();
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(PlatformInitialize, NativeDispatcherPriority.Normal);
+			}
 		}
 
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)

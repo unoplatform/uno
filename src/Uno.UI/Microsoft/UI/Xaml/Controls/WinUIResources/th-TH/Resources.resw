@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>ปิด IME</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ขาว</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>เทาอ่อน</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>เทา</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>เทาเข้ม</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ดำ</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>ส้มปะการัง</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ชมพูกุหลาบ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ส้มอ่อน</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>แทน</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>เหลืองอ่อน</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>เขียวอ่อน</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>เขียวเหลือง</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ฟ้าแกมเขียว</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ฟ้าคราม</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ฟ้าเทอร์คอยส์อ่อน</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ฟ้าจาง</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>น้ำเงินอ่อน</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ฟ้าใส</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ม่วงแพงพวย</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ม่วงลาเวนเดอร์</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ชมพู</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>แดง</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ส้ม</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>น้ำตาล</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ทอง</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>เหลือง</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>เขียวใบมะกอก</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>เขียว</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>เขียวสว่าง</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>น้ำเงินอมเขียว</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ฟ้าเทอร์คอยส์</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>น้ำเงิน</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>น้ำเงิน-เทา</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>คราม</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ม่วง</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>แดงเข้ม</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>เหลืองเข้ม</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>เขียวเข้ม</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>เขียวหัวเป็ดเข้ม</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>น้ำเงินเข้ม</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ม่วงเข้ม</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ม่วงพลัม</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ปิด</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

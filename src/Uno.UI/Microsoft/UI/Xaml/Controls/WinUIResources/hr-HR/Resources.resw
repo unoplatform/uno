@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ISKLJUČENO</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Bijela</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Svjetlosiva</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Siva</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tamnosiva</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Crna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koraljna</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Roza</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Svjetlonarančasta</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Žutosmeđa</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Svjetložuta</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Svjetlozelena</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Žutozelena</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Nebeskoplava</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Svjetlotirkizna</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blijedoplava</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Svjetloplava</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ledenoplava</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Ljubičastoplava</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Ružičasta</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Crvena</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Narančasta</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Smeđa</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zlatna</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Žuta</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Maslinasta</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zelena</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Žarkozelena</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Modrozelena</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Tirkizna</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Plava</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Plavosiva</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpurna</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tamnocrvena</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tamnožuta</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tamnozelena</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tamnomodrozelena</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tamnoplava</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tamnopurpurna</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Šljiva</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zatvori</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

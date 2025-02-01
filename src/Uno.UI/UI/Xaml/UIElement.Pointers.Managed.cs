@@ -21,6 +21,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -59,6 +61,11 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		private object CoerceHitTestVisibility(object baseValue)
 		{
+			if (this is RootVisual or XamlIsland)
+			{
+				return HitTestability.Visible;
+			}
+
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 			var parentValue = baseValue == DependencyProperty.UnsetValue
 				? HitTestability.Collapsed
@@ -72,13 +79,23 @@ namespace Microsoft.UI.Xaml
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (
-#if !__MACOS__
+#if __WASM__
+				!(IsLoaded || HtmlTagIsSvg) ||
+#elif !__MACOS__
 				!IsLoaded ||
 #endif
 				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
+
+#if __WASM__
+			// Special case for external html element, we are always considering them as hit testable.
+			if (HtmlTagIsExternallyDefined && !FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
+			{
+				return HitTestability.Visible;
+			}
+#endif
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!IsViewHit())
@@ -88,19 +105,6 @@ namespace Microsoft.UI.Xaml
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
 			return HitTestability.Visible;
-		}
-
-		internal void SetHitTestVisibilityForRoot()
-		{
-			// Root element must be visible to hit testing, regardless of the other properties values.
-			// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-			// Collapsed.
-			HitTestVisibility = HitTestability.Visible;
-		}
-
-		internal void ClearHitTestVisibilityForRoot()
-		{
-			this.ClearValue(HitTestVisibilityProperty);
 		}
 	}
 }

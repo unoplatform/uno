@@ -2,10 +2,13 @@
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -17,6 +20,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
+	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper()
 	{
@@ -31,32 +35,39 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+
 	protected override void ShowCore()
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
-		Visible = true;
 	}
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed(); // TODO: Handle closing when multiwindow #13847
+	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing cancellation when multiwindow is supported #13847
 
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);
+		Size = new((int)(newWindowSize.Width * RasterizationScale), (int)(newWindowSize.Height * RasterizationScale));
 
 		SetVisibleBounds(_nativeWindow, newWindowSize);
 	}
@@ -123,4 +134,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		CoreDispatcher.CheckThreadAccess();
+		UIApplication.SharedApplication.StatusBarHidden = true;
+		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
+	}
 }

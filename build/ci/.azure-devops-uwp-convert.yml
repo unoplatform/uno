@@ -17,10 +17,6 @@ jobs:
     UNO_UWP_BUILD: true
     XAML_FLAVOR_BUILD: WinUI
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - checkout: self
     clean: true
@@ -47,12 +43,19 @@ jobs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
+      msbuildArguments: /r /m /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.sourcesdirectory)/src/Uno.UWPSyncGenerator/bin/Release/binlogs/build-winui-convert.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/Uno.UWPSyncGenerator/bin/Release/binlogs
+      ArtifactName: SyncGenerator-Binlogs
+      ArtifactType: Container
 
   - powershell: |
         git config --global user.email "ci@ci.com"

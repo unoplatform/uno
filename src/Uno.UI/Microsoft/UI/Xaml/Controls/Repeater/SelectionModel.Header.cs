@@ -11,10 +11,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 	public partial class SelectionModel
 	{
+		internal bool SelectionInvalidatedDueToCollectionChange()
+		{
+			return m_selectionInvalidatedDueToCollectionChange;
+		}
+
 		internal SelectionNode SharedLeafNode => m_leafNode;
 
 		private SelectionNode m_rootNode = null;
 		private bool m_singleSelect = false;
+
+		private bool m_selectionInvalidatedDueToCollectionChange = false;
 
 		private IReadOnlyList<IndexPath> m_selectedIndicesCached = null;
 		private IReadOnlyList<object> m_selectedItemsCached = null;

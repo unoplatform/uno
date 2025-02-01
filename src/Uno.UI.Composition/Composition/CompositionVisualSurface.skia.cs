@@ -1,30 +1,26 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
-using System.Threading.Tasks;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.UI.Composition;
-using Windows.Graphics.Display;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
-		private DrawingSession? _drawingSession;
+		private float _scale = 1.0f;
+		private IDisposable? _scaleChangedDisposable;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
 		void ISkiaSurface.UpdateSurface(bool recreateSurface)
 		{
-			if (_surface is null || _drawingSession is null || recreateSurface)
+			SKCanvas? canvas = null;
+			if (_surface is null || recreateSurface)
 			{
-				_drawingSession?.Dispose();
 				_surface?.Dispose();
 
 				Vector2 size = SourceSize switch
@@ -37,36 +33,57 @@ namespace Microsoft.UI.Composition
 					}
 				};
 
+				if (SourceVisual?.CompositionTarget is ICompositionTarget target)
+				{
+					SubscribeScaleChanged();
+
+					_scale = (float)target.RasterizationScale;
+				}
+
+				size *= _scale;
+
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
-				_drawingSession = new DrawingSession(_surface, DrawingFilters.Default);
+				canvas = _surface.Canvas;
+				canvas.Scale(_scale, _scale);
 			}
+
+			canvas ??= _surface.Canvas;
 
 			if (SourceVisual is not null && _surface is not null)
 			{
-				_surface.Canvas.Clear();
-				if (SourceOffset != default)
-				{
-					_surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-				}
+				canvas.Clear();
 
-				SourceVisual.Draw(_drawingSession.Value);
+				var previousCompMode = Compositor.IsSoftwareRenderer;
+				Compositor.IsSoftwareRenderer = true;
+				SourceVisual.RenderRootVisual(_surface, SourceOffset, null);
+				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
 
-		void ISkiaSurface.UpdateSurface(in DrawingSession session)
+		private void DpiChanged(object? sender, EventArgs args)
 		{
-			if (SourceVisual is not null && session.Surface is not null)
+			if (_surface is not null)
 			{
-				int save = session.Surface.Canvas.Save();
+				((ISkiaSurface)this).UpdateSurface(true);
+			}
+		}
+
+		void ISkiaSurface.UpdateSurface(in Visual.PaintingSession session)
+		{
+			if (SourceVisual is not null && session.Canvas is not null)
+			{
+				int save = session.Canvas.Save();
 				if (SourceOffset != default)
 				{
-					session.Surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-					session.Surface.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Surface.Canvas.DeviceClipBounds.Width, session.Surface.Canvas.DeviceClipBounds.Height));
+					// clip to the left of and above the origin (in local coordinates).
+					// Note that this is applied before the SourceOffset translates the canvas' matrix, so
+					// when the translation happens, the drawing will be clipped by the SourceOffset.
+					session.Canvas.ClipRect(new SKRect(0, 0, int.MaxValue, int.MaxValue));
 				}
 
-				SourceVisual.Draw(in session);
-				session.Surface.Canvas.RestoreToCount(save);
+				SourceVisual.RenderRootVisual(session.Surface, SourceOffset, null);
+				session.Canvas.RestoreToCount(save);
 			}
 		}
 
@@ -74,11 +91,51 @@ namespace Microsoft.UI.Composition
 		{
 			base.Dispose();
 
-			_drawingSession?.Dispose();
 			_surface?.Dispose();
+			UnsubscribeScaleChanged();
 		}
 
-		partial void OnSourceVisualChangedPartial(Visual? sourceVisual) => ((ISkiaSurface)this).UpdateSurface(SourceSize == default && sourceVisual?.Size != default);
+		partial void OnSourceVisualChangedPartial(Visual? sourceVisual)
+		{
+			bool needsRecreation = false;
+
+			UnsubscribeScaleChanged();
+
+			if (sourceVisual?.CompositionTarget is ICompositionTarget target)
+			{
+				SubscribeScaleChanged();
+
+				var scale = (float)target.RasterizationScale;
+				if (scale != _scale)
+				{
+					_scale = scale;
+					needsRecreation = true;
+				}
+			}
+
+			((ISkiaSurface)this).UpdateSurface(needsRecreation || (SourceSize == default && sourceVisual?.Size != default));
+		}
+
+		private void UnsubscribeScaleChanged()
+		{
+			_scaleChangedDisposable?.Dispose();
+			_scaleChangedDisposable = null;
+		}
+
+		private void SubscribeScaleChanged()
+		{
+			if (_scaleChangedDisposable is not null)
+			{
+				return;
+			}
+
+			if (SourceVisual?.CompositionTarget is ICompositionTarget target)
+			{
+				_scaleChangedDisposable = Disposable.Create(() => target.RasterizationScaleChanged -= DpiChanged);
+				target.RasterizationScaleChanged += DpiChanged;
+			}
+		}
+
 		partial void OnSourceOffsetChangedPartial(Vector2 offset) => ((ISkiaSurface)this).UpdateSurface();
 		partial void OnSourceSizeChangedPartial(Vector2 size) => ((ISkiaSurface)this).UpdateSurface(true);
 	}

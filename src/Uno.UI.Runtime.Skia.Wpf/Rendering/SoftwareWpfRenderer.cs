@@ -4,9 +4,11 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Windows.Graphics.Display;
+using Uno.UI.Helpers;
+using Visibility = System.Windows.Visibility;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -14,10 +16,10 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
-	private WpfControl _hostControl;
-	private DisplayInformation? _displayInformation;
+	private readonly WpfControl _hostControl;
+	private readonly IWpfXamlRootHost _host;
 	private WriteableBitmap? _bitmap;
-	private IWpfXamlRootHost _host;
+	private XamlRoot? _xamlRoot;
 
 	public SoftwareWpfRenderer(IWpfXamlRootHost host)
 	{
@@ -47,12 +49,8 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		if (_displayInformation == null)
-		{
-			_displayInformation = DisplayInformation.GetForCurrentView();
-		}
-
-		var dpi = _displayInformation.RawPixelsPerViewPixel;
+		_xamlRoot ??= WpfManager.XamlRootMap.GetRootForHost(_host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
+		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)
@@ -81,11 +79,12 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 		_bitmap.Lock();
 		using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 		{
-			surface.Canvas.Clear(BackgroundColor);
-			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
+			var canvas = surface.Canvas;
+			canvas.Clear(BackgroundColor);
+			canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, surface);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
 				{

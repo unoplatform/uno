@@ -56,6 +56,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
@@ -86,6 +87,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
@@ -100,11 +102,19 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: packages_tests
+  displayName: Test Packages
+  dependsOn:
+    - packages_build
+
+  jobs: 
   - template: .azure-devops-project-template-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
       vmPoolLinux: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
+      xCodeRoot: '$(xCodeRoot)'
 
 - stage: unit_tests
   displayName: Tests - Unit
@@ -141,6 +151,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
@@ -155,6 +166,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
@@ -169,7 +181,6 @@ stages:
     parameters:
       vmImage: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
-      XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: android_tests
   displayName: Tests - Android
@@ -180,9 +191,10 @@ stages:
   - template: .azure-devops-android-tests.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       vmMacOSImage: '$(macOSVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
-      XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: ios_tests
   displayName: Tests - iOS
@@ -195,9 +207,7 @@ stages:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
-      XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-      XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK  
@@ -223,3 +233,33 @@ stages:
   - template: .azure-devops-screenshot-compare.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+
+##
+## Publishing
+##
+- stage: Publish_Dev
+  displayName: 'Publish Dev NuGet'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: packages_build
+  jobs:
+  - template: .azure-devops-publish-nuget-dev.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+
+- stage: Publish_Prod_Dev
+  displayName: 'Publish Prod Dev NuGet'
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: packages_build
+  jobs:
+  - template: .azure-devops-publish-nuget-prod-dev.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+  
+- stage: Publish_Prod_Public
+  displayName: 'Publish Prod NuGet.org'
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: Publish_Prod_Dev
+  jobs:
+  - template: .azure-devops-publish-nuget-prod.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'

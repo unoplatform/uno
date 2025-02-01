@@ -3,7 +3,7 @@
 
 using System;
 using Windows.Foundation;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -24,15 +24,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
+#if !__NETSTD_REFERENCE__
 			this.Loaded += (_, _) =>
 			{
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-				_borderRenderer ??= new();
+#if !UNO_HAS_BORDER_VISUAL
+				_borderRenderer ??= new(this);
 #endif
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				EnterImpl();
+#endif
 			};
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-			this.Unloaded += (_, _) => _borderRenderer.Clear();
 #endif
 		}
 

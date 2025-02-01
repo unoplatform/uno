@@ -1,11 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<!-- We keep TFM as NetPrevious to allow local build to work with "Previous" SDK -->
+		<!-- However, in CI, we run with "Current" SDK and so "Previous" .NET runtime may not be installed, so we set RollForward -->
 		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<RollForward>Major</RollForward>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
-		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
+		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().Contains('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
+
+		<!-- Use 'GeneratedRegexAttribute' to generate the regular expression -->
+		<NoWarn>$(NoWarn);SYSLIB1045;CS1998</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,6 +27,7 @@
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,15 +44,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MessageDialogTests\" />
-	  <Folder Include="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\" />
-	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
+		<Folder Include="MessageDialogTests\" />
+		<Folder Include="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\" />
+		<Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+		<None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,9 +62,9 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\Devices\Input\PointerDeviceType.cs">
 			<Link>TestFramework\PointerDeviceType.cs</Link>
 		</Compile>
-	  <None Update="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\Border.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+		<None Update="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\Border.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

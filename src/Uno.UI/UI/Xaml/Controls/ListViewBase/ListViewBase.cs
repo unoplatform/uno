@@ -101,6 +101,10 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
+
+#if __WASM__
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
+#endif
 				return true;
 			}
 			else
@@ -444,13 +448,20 @@ namespace Microsoft.UI.Xaml.Controls
 			// In Single mode, we respond to SelectedIndex changing, which is more reliable if there are duplicate items
 			if (IsSelectionMultiple)
 			{
-				foreach (var item in e.AddedItems)
+				if (e.AddedItems is not null)
 				{
-					SetSelectedState(IndexFromItem(item), true);
+					foreach (var item in e.AddedItems)
+					{
+						SetSelectedState(IndexFromItem(item), true);
+					}
 				}
-				foreach (var item in e.RemovedItems)
+
+				if (e.RemovedItems is not null)
 				{
-					SetSelectedState(IndexFromItem(item), false);
+					foreach (var item in e.RemovedItems)
+					{
+						SetSelectedState(IndexFromItem(item), false);
+					}
 				}
 			}
 		}
@@ -549,7 +560,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
 			{
-				ApplyMultiSelectState(item);
+				item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
 			}
 
 			ApplyMultiSelectStateToCachedItems();
@@ -558,8 +569,6 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ApplyMultiSelectStateToCachedItems();
 
 		partial void PrepareNativeLayout(VirtualizingPanelLayout layout);
-
-
 
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
@@ -1063,7 +1072,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (element is SelectorItem selectorItem)
 			{
-				ApplyMultiSelectState(selectorItem);
+				selectorItem.UpdateMultiSelectStates(useTransitions: selectorItem.IsLoaded);
 			}
 		}
 
@@ -1081,15 +1090,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);
-		}
-
-		/// <summary>
-		/// Apply the multi-selection state to the provided item
-		/// </summary>
-		/// <param name="selectorItem"></param>
-		internal void ApplyMultiSelectState(SelectorItem selectorItem)
-		{
-			selectorItem.ApplyMultiSelectState(SelectionMode == ListViewSelectionMode.Multiple);
 		}
 
 		/// <summary>

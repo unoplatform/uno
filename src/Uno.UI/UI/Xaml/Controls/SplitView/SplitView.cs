@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uno.Disposables;
 using System.Text;
-using Uno.Extensions;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
-using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -28,6 +29,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public SplitView()
 		{
 			DefaultStyleKey = typeof(SplitView);
+
+			TemplateSettings = new SplitViewTemplateSettings(this);
 		}
 
 #if __IOS__
@@ -87,7 +90,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnContentChanged(DependencyPropertyChangedEventArgs e)
 		{
-			SynchronizeContentTemplatedParent();
 		}
 
 		#endregion
@@ -156,12 +158,12 @@ namespace Microsoft.UI.Xaml.Controls
 		//There is an error in the MSDN docs saying that the default value for IsPaneOpen is true, it is actually false
 		public static DependencyProperty IsPaneOpenProperty { get; } =
 			DependencyProperty.Register(
-				"IsPaneOpen",
+				nameof(IsPaneOpen),
 				typeof(bool),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
 					false,
-
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)
 			);
@@ -235,11 +237,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PanePlacementProperty { get; } =
 			DependencyProperty.Register(
-				"PanePlacement",
+				nameof(PanePlacement),
 				typeof(SplitViewPanePlacement),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
 					SplitViewPanePlacement.Left,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnPanePlacementChanged(e)
 				)
 			);
@@ -265,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(SplitViewTemplateSettings),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					new SplitViewTemplateSettings(null),
+					null,
 					(s, e) => ((SplitView)s)?.OnTemplateSettingsPropertyChanged(e)
 				)
 			);
@@ -293,15 +296,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SetNeedsUpdateVisualStates();
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			// This is required to ensure that FrameworkElement.FindName can dig through the tree after
-			// the control has been created.
-			SynchronizeContentTemplatedParent();
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -311,8 +305,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_runningSubscription.Disposable = _subscriptions;
 
 			UpdateControl();
-
-			SynchronizeContentTemplatedParent();
 		}
 
 		private protected override void OnUnloaded()
@@ -320,20 +312,6 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_runningSubscription.Disposable = null;
-		}
-
-		private void SynchronizeContentTemplatedParent()
-		{
-			// Manual propagation of the templated parent to the content property
-			// until we get the propagation running properly
-			if (Content is IFrameworkElement contentBinder)
-			{
-				contentBinder.TemplatedParent = this.TemplatedParent;
-			}
-			if (Pane is IFrameworkElement paneBinder)
-			{
-				paneBinder.TemplatedParent = this.TemplatedParent;
-			}
 		}
 
 		private void UpdateControl()
@@ -366,7 +344,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateTemplateSettings()
 		{
-			this.TemplateSettings = new SplitViewTemplateSettings(this);
+			var templateSettings = TemplateSettings;
+
+			templateSettings.OpenPaneLength = OpenPaneLength;
+			templateSettings.CompactPaneLength = CompactPaneLength;
 		}
 
 		/// <summary>
@@ -420,7 +401,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_needsVisualStateUpdate = true;
 
 			_ = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() =>
 				{
 					UpdateVisualStates(true);

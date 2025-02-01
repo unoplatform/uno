@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 
 namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
@@ -19,15 +9,26 @@ namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
 [TestClass]
 public class Given_HotReloadService
 {
-	[DataTestMethod]
+	[TestMethod]
 	[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)
 		{
+			if (scenario.IsCrashingRoslyn)
+			{
+				Assert.Inconclusive("Case is known to crash roslyn.");
+				return;
+			}
+
 			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
-			for (int i = 0; i < scenario.PassResults.Length; i++)
+			if (scenario.PassResults.Length != results.Length)
+			{
+				Assert.Fail($"Scenario describes {scenario.PassResults.Length} results while the tests produced {results.Length} (you should have n+1 scenario.PassResults for n directory on disk).");
+			}
+
+			for (var i = 0; i < scenario.PassResults.Length; i++)
 			{
 				var resultValidation = scenario.PassResults[i];
 
@@ -47,7 +48,7 @@ public class Given_HotReloadService
 
 	public record Project(string Name, ProjectReference[]? ProjectReferences);
 	public record ProjectReference(string Name);
-	public record Scenario(bool IsDebug, bool IsMono, bool UseXamlReaderReload, params PassResult[] PassResults)
+	public record Scenario(bool IsDebug, bool IsMono, bool IsCrashingRoslyn, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
 		public override string ToString()
 			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
@@ -61,11 +62,18 @@ public class Given_HotReloadService
 		foreach (var scenarioFolder in Directory.EnumerateDirectories(ScenariosFolder, "*.*", SearchOption.TopDirectoryOnly))
 		{
 			var scenarioName = Path.GetFileName(scenarioFolder);
-			var path = Path.Combine(scenarioFolder, "Scenario.json");
+			var scenarioConfig = Path.Combine(scenarioFolder, "Scenario.json");
 
-			if (File.Exists(path))
+#if DEBUG && false
+			if (!scenarioName.Contains("When_DataTemplate_Event_Add"))
 			{
-				var scenariosDescriptor = ReadScenarioConfig(path);
+				continue;
+			}
+#endif
+
+			if (File.Exists(scenarioConfig))
+			{
+				var scenariosDescriptor = ReadScenarioConfig(scenarioConfig);
 
 				if (scenariosDescriptor is not null)
 				{
@@ -118,7 +126,8 @@ public class Given_HotReloadService
 		, bool isDebugCompilation
 		, bool isMono
 		, bool useXamlReaderReload
-		, [CallerMemberName] string? name = null)
+		, [CallerMemberName] string? name = null
+		, CancellationToken ct = default)
 	{
 		if (name is null)
 		{
@@ -126,6 +135,7 @@ public class Given_HotReloadService
 		}
 
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
+		var scenarioFile = Path.Combine(scenarioFolder, "Scenario.json");
 
 		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
@@ -134,51 +144,99 @@ public class Given_HotReloadService
 		{
 			foreach (var project in projects)
 			{
-				SUT.AddProject(
-					project.Name
-					, (project.ProjectReferences ?? Array.Empty<ProjectReference>()).Select(r => r.Name).ToArray());
+				SUT.AddProject(project.Name, (project.ProjectReferences ?? []).Select(r => r.Name).ToArray());
 			}
 		}
 
 		var steps = Directory
 			.GetFiles(scenarioFolder, "*.*", SearchOption.AllDirectories)
-			.OrderBy(f => f)
-			.GroupBy(f => Path.GetRelativePath(scenarioFolder, f).Split(Path.DirectorySeparatorChar)[0]);
+			.Where(file => file != scenarioFile)
+			.OrderBy(file => file)
+			.Select(file => ScenarioFileDescriptor.Create(scenarioFolder, file))
+			.GroupBy(file => file.StepIndex)
+			.Select(step => new Step(
+				step.Key,
+				step
+					.GroupBy(file => file.ProjectName)
+					.Select(filesPerProject => new StepProject(filesPerProject.Key, filesPerProject.Select(file => new StepFile(file.File)).ToImmutableList()))
+					.ToImmutableDictionary(project => project.Name)))
+			.ToImmutableDictionary(step => step.Index);
 
-		int index = 0;
-		foreach (var step in steps)
+		var initialStep = steps[0];
+		foreach (var project in initialStep.Projects.Values)
 		{
-			foreach (var file in step)
+			foreach (var file in project.Files)
 			{
-				if (file == Path.Combine(scenarioFolder, "Scenario.json"))
+				var content = await File.ReadAllTextAsync(Path.Combine(scenarioFolder, initialStep.Index.ToString(), project.Name, file.Path), ct);
+				if (file.IsCs)
 				{
-					continue;
-				}
-
-				var pathParts = Path.GetRelativePath(scenarioFolder, file).Split(Path.DirectorySeparatorChar);
-
-				var fileContent = File.ReadAllText(file);
-
-				if (Path.GetExtension(file) == ".cs")
-				{
-					SUT.SetSourceFile(pathParts[1], pathParts[2], fileContent);
+					SUT.UpdateSourceFile(project.Name, file.Path, content);
 				}
 				else
 				{
-					SUT.SetAdditionalFile(pathParts[1], pathParts[2], fileContent);
+					SUT.UpdateAdditionalFile(project.Name, file.Path, content);
+				}
+			}
+		}
+		await SUT.Initialize(ct);
+
+		var previousStep = initialStep;
+		for (var i = 1; i < steps.Count; i++)
+		{
+			var currentStep = steps[i];
+			if (!currentStep.Projects.Keys.SequenceEqual(previousStep.Projects.Keys))
+			{
+				throw new InvalidOperationException("Projects removal is not yet supported.");
+			}
+
+			foreach (var project in currentStep.Projects.Values)
+			{
+				foreach (var file in project.Files)
+				{
+					var content = await File.ReadAllTextAsync(Path.Combine(scenarioFolder, currentStep.Index.ToString(), project.Name, file.Path), ct);
+					if (file.IsCs)
+					{
+						SUT.UpdateSourceFile(project.Name, file.Path, content);
+					}
+					else
+					{
+						SUT.UpdateAdditionalFile(project.Name, file.Path, content);
+					}
+				}
+
+				foreach (var removedFile in previousStep.Projects[project.Name].Files.ExceptBy(project.Files.Select(file => file.Path), previousFile => previousFile.Path))
+				{
+					if (removedFile.IsCs)
+					{
+						SUT.UpdateSourceFile(project.Name, removedFile.Path, null);
+					}
+					else
+					{
+						SUT.UpdateAdditionalFile(project.Name, removedFile.Path, null);
+					}
 				}
 			}
 
-			if (index++ == 0)
-			{
-				await SUT.Initialize(CancellationToken.None);
-			}
-			else
-			{
-				results.Add(await SUT.Update());
-			}
+			results.Add(await SUT.Update());
+			previousStep = currentStep;
 		}
 
 		return results.ToArray();
+	}
+
+	private readonly record struct ScenarioFileDescriptor(int StepIndex, string ProjectName, string File)
+	{
+		public static ScenarioFileDescriptor Create(string scenarioFolder, string filePath)
+		{
+			var parts = Path.GetRelativePath(scenarioFolder, filePath).Split(Path.DirectorySeparatorChar, 3);
+			return new ScenarioFileDescriptor(int.Parse(parts[0]), parts[1], parts[2]);
+		}
+	}
+
+	private record Step(int Index, IImmutableDictionary<string, StepProject> Projects);
+	private record StepProject(string Name, IImmutableList<StepFile> Files);
+	private record StepFile(string Path) // Path relative to the scenario/step/project (i.e. scenario/step/project/{PATH})
+	{
+		public bool IsCs { get; } = System.IO.Path.GetExtension(Path) == ".cs";
 	}
 }

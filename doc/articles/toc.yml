@@ -32,25 +32,47 @@
     - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
       items:
-      - name: All Development Environments
-        href: xref:Uno.UI.CommonIssues.AllIDEs
-      - name: Visual Studio 2022 for Windows
-        href: xref:Uno.UI.CommonIssues.vs2022
-      - name: VS Code
-        href: xref:Uno.UI.CommonIssues.vscode
-      - name: WebAssembly
-        href: xref:Uno.UI.CommonIssues.Wasm
-      - name: Skia (Gtk/Wpf/Framebuffer)
-        href: xref:Uno.UI.CommonIssues.Skia
-      - name: iOS/mac Catalyst
-        href: xref:Uno.UI.CommonIssues.IosCatalyst
-      - name: Troubleshooting build errors
-        href: uno-builds-troubleshooting.md
-      - name: Build error codes
-        href: xref:Build.Solution.error-codes
+      - name: Overview
+        href: xref:Uno.UI.CommonIssues
+      - name: Sign in with Uno Platform
+        href: xref:Uno.GetStarted.Licensing
+      - name: Hot Reload
+        topicHref: xref:Uno.Features.HotReload#troubleshooting
+      - name: Development Environments
+        topicHref: xref:Uno.UI.CommonIssues.AllIDEs
+        items:
+        - name: All Development Environments
+          href: xref:Uno.UI.CommonIssues.AllIDEs
+        - name: Visual Studio 2022 for Windows
+          href: xref:Uno.UI.CommonIssues.vs2022
+        - name: VS Code
+          href: xref:Uno.UI.CommonIssues.vscode
+        - name: Rider
+          href: xref:Uno.UI.CommonIssues.rider
+      - name: Platforms
+        topicHref: xref:Uno.UI.CommonIssues.Wasm
+        items:
+        - name: WebAssembly
+          href: xref:Uno.UI.CommonIssues.Wasm
+        - name: UWP
+          href: xref:Uno.UI.CommonIssues.UWP
+        - name: Skia (Gtk/Wpf/Framebuffer)
+          href: xref:Uno.UI.CommonIssues.Skia
+        - name: iOS/mac Catalyst
+          href: xref:Uno.UI.CommonIssues.IosCatalyst
+      - name: Build Errors
+        topicHref: xref:Uno.Development.Troubleshooting
+        items:
+        - name: Troubleshooting build errors
+          href: xref:Uno.Development.Troubleshooting
+        - name: Build error codes
+          href: xref:Build.Solution.error-codes
 
 - name: Samples & Tutorials
+  topicHref: xref:Uno.SamplesTutorials.Overview
   items:
+    - name: Overview
+      href: xref:Uno.SamplesTutorials.Overview
     - name: Counter
       href: xref:Uno.Workshop.Counter
       items:
@@ -64,6 +86,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Hot Design
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
       topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
@@ -71,73 +95,72 @@
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
     - name: Tutorials
+      topicHref: xref:Uno.Tutorials.Intro
       items:
       - name: Overview
-        href: tutorials-intro.md
+        href: xref:Uno.Tutorials.Intro
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
-        href: guides/azure-static-webapps.md
-      - name: How to integrate Uno.Material
-        href: external/uno.themes/doc/material-getting-started.md
-      - name: How to integrate Uno.Cupertino
-        href: external/uno.themes/doc/cupertino-getting-started.md
+        href: xref:Uno.Tutorials.AzureStaticWepApps
       - name: How to use Windows Community Toolkit
-        href: uno-community-toolkit.md
+        topicHref: xref:Uno.Development.CommunityToolkit
+        items:
+          - name: Windows Community Toolkit - Version 8.x
+            href: xref:Uno.Development.CommunityToolkit.v8
+          - name: Windows Community Toolkit - Version 7.x
+            href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
-        href: guides/native-frame-nav-tutorial.md
+        href: xref:Uno.Tutorials.UseNativeFrameNav
       - name: How to consume a web API
-        href: howto-consume-webservices.md
+        href: xref:Uno.Development.ConsumeWebApi
       - name: How to localize text resources
-        href: guides/localization.md
+        href: xref:Uno.Tutorials.Localization
       - name: How to change app language at runtime
-        href: guides/hotswap-app-language.md
+        href: xref:Uno.Tutorials.ChangeAppLanguage
       - name: How to integrate SignalR
-        href: signalr.md
+        href: xref:Uno.Development.SignalR
       - name: How to update StatusBar color based on dark/light theme
-        href: guides/status-bar-theme-color.md
+        href: xref:Uno.Tutorials.StatusBarThemeColor
       - name: How to use MSAL for Azure Authentication
-        href: interop/MSAL.md
+        href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
-        href: guides/open-id-connect.md
+        href: xref:Uno.Tutorials.OpenIDConnect
+      - name: How to implement a sign-in with Apple Button
+        href: xref:Uno.Tutorials.SignInWithApple
       - name: Embed a JavaScript Component
-        topicHref: interop/wasm-javascript-1.md
+        topicHref: xref:Uno.Interop.WasmJavaScript1
         items:
           - name: Part 1
-            href: interop/wasm-javascript-1.md
+            href: xref:Uno.Interop.WasmJavaScript1
           - name: Part 2
-            href: interop/wasm-javascript-2.md
+            href: xref:Uno.Interop.WasmJavaScript2
           - name: Part 3
-            href: interop/wasm-javascript-3.md
+            href: xref:Uno.Interop.WasmJavaScript3
       - name: Deploy to Raspberry Pi
-        href: guides/raspberry-pi/raspberry-pi-intro.md
+        href: xref:Uno.RaspberryPi.Intro
       - name: (Wasm) Handling custom HTML events
-        href: wasm-custom-events.md
-      - name: Using Uno Platform Controls in Xamarin.Forms
-        href: howto-use-uno-in-xamarin-forms.md
+        href: xref:Uno.Development.WasmCustomEvents
       - name: Community Tutorials
-        topicHref: guides/community-tutorials.md
+        topicHref: xref:Uno.Tutorials.CommunityTutorials
     - name: Samples
-      topicHref: uno-samples.md
+      href: xref:Uno.Samples
     - name: Additional Resources
       href: xref:Uno.GetStarted.NextSteps
 
 - name: Overview
   items:
+    - name: Intro
+      href: xref:Uno.Documentation.Intro
     - name: Architecture
-      topicHref: xref:Uno.Development.About
       items:
-        - name: Intro
-          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:
           - name: .NET Versions
             href: net-version-support.md
-          - name: Working with Skia+GTK
-            href: features/using-skia-gtk.md
-          - name: Working with Skia+WPF
-            href: features/using-skia-wpf.md
+          - name: Working with Skia Desktop
+            href: xref:Uno.Skia.Desktop
           - name: Working with the Linux Framebuffer
             href: features/using-linux-framebuffer.md
         - name: Philosophy
@@ -147,6 +170,35 @@
         - name: Best practices
           href: best-practices-uno.md
 
+    - name: Authoring
+      items:
+      - name: Using the Uno.SDK
+        href: xref:Uno.Features.Uno.Sdk
+      - name: Platform-specific C# code
+        href: platform-specific-csharp.md
+      - name: Platform-specific XAML markup
+        href: platform-specific-xaml.md
+      - name: Creating Custom Controls
+        href: guides/creating-custom-controls.md
+      - name: Control Libraries
+        href: guides/how-to-create-control-libraries.md
+      - name: Adding New Platforms
+        href: guides/how-to-add-platforms-existing-project.md
+      - name: Getting Started With Tests
+        href: xref:Uno.Authoring.Tests
+      - name: Logging
+        href: logging.md
+      - name: AppManifest (WebAssembly)
+        href: wasm-appmanifest.md
+      - name: Hosting a WebAssembly app
+        href: xref:Uno.Development.HostWebAssemblyApp
+      - name: Using Skia Desktop (macOS)
+        href: xref:Uno.Skia.macOS
+      - name: Legacy Topics
+        items:
+        - name: Working with Skia+GTK
+          href: features/using-skia-gtk.md
+
     - name: Debugging
       items:
         - name: How to create a repro sample
@@ -155,25 +207,10 @@
           href: debugging-wasm.md
         - name: VS Code Advanced Mobile Debugging
           href: xref:uno.vscode.mobile.advanced.debugging
-
-    - name: Authoring
-      items:
-      - name: Platform-specific C# code
-        href: platform-specific-csharp.md
-      - name: Platform-specific XAML markup
-        href: platform-specific-xaml.md
-      - name: Control Libraries
-        href: guides/how-to-create-control-libraries.md
-      - name: Adding New Platforms
-        href: guides/how-to-add-platforms-existing-project.md
-      - name: Logging
-        href: logging.md
-      - name: AppManifest (WebAssembly)
-        href: wasm-appmanifest.md
-      - name: Creating a cross-targeted library
-        href: cross-targeted-libraries.md
-      - name: Hosting a WebAssembly app
-        href: xref:Uno.Development.HostWebAssemblyApp
+        - name: Generic Unhandled Exceptions handler
+          href: xref:Uno.Development.UnhandledExceptions
+        - name: Debugging Troubleshooting
+          href: xref:Uno.Debugging.Troubleshooting
 
     - name: Embedding
       items:
@@ -190,10 +227,12 @@
         href: xref:Uno.Development.UpgradeUnoNuget
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
+      - name: Upgrading to Single Project
+        href: xref:Uno.Development.MigratingToSingleProject
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
-      - name: Upgrading to Uno.Sdk
-        href: xref:Uno.Development.MigratingToUnoSdk
+      - name: Upgrading from .NET 8 to .NET 9
+        href: xref:Uno.Development.MigratingFromNet8ToNet9
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
@@ -226,18 +265,57 @@
         topicHref: guides/silverlight-migration/silverlight-migration-landing.md
         href: guides/silverlight-migration/toc.yml
 
+    - name: Publishing
+      items:
+        - name: Overview
+          href: xref:uno.publishing.overview
+        - name: Publishing for Desktop
+          topicHref: xref:uno.publishing.desktop
+          items:
+            - name: Publishing Your App for Desktop
+              href: xref:uno.publishing.desktop
+            - name: Publishing Your App for macOS
+              href: xref:uno.publishing.desktop.macos
+            - name: Publishing Your App for macOS - Advanced Topics
+              href: xref:uno.publishing.desktop.macos.advanced
+            - name: Publishing Your App for Linux
+              href: xref:uno.publishing.desktop.linux
+        - name: Publishing for WebAssembly
+          href: xref:uno.publishing.webassembly
+        - name: Publishing for Windows App SDK
+          topicHref: xref:uno.publishing.windows
+          items:
+            - name: Build Packaged Unsigned Apps
+              href: xref:uno.publishing.windows.sideload.packaged.unsigned
+            - name: Build Packaged Signed Apps
+              href: xref:uno.publishing.windows.sideload.packaged.signed
+            - name: Build Unpackaged Apps
+              href: xref:uno.publishing.windows.sideload.unpackaged.unsigned
+        - name: Publishing for iOS
+          href: xref:uno.publishing.ios
+        - name: Publishing for Android
+          href: xref:uno.publishing.android
+        - name: Publishing for Mac Catalyst
+          href: xref:uno.publishing.maccatalyst
+
     - name: Performance
       items:
         - name: Improving Build Times
           href: xref:Build.Solution.TargetFramework-override
         - name: Performance tips
           href: Uno-UI-Performance.md
+        - name: Memory Profiling
+          href: xref:Uno.Contributing.MemoryIssues
         - name: How to profile applications
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Working with String Resource Trimming
+          href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
+        - name: Error Monitoring & Crash Reporting with Raygun
+          href: xref:Monitoring.Raygun
 
     - name: Contributing
       items:
@@ -271,6 +349,8 @@
             href: uno-development/listviewbase-internals.md
           - name: ThemeResource
             href: uno-development/themeresource-internals.md
+          - name: InteractionTracker internals
+            href: uno-development/interaction-tracker-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
@@ -337,15 +417,37 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
-
+    - name: Why use Uno Platform?
+      href: xref:Uno.Overview.WhyUno
     - name: FAQ
       href: xref:Uno.Development.FAQ
+
+- name: Studio
+  items:
+    - name: Overview
+      href: xref:Uno.Platform.Studio.Overview
+    - name: Hot Reload
+      href: xref:Uno.Platform.Studio.HotReload.Overview
+    - name: Hot Design
+      href: xref:Uno.HotDesign.Overview
+      items:
+      - name: Overview
+        href: xref:Uno.HotDesign.Overview
+      - name: Getting Started with Hot Design
+        href: xref:Uno.HotDesign.GetStarted.Guide
+      - name: Counter Tutorial
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+    - name: Design-to-Code
+      href: external/figma-docs/toc.yml
+    - name: Feedback
+      href: xref:Uno.Platform.Studio.Feedback
 
 - name: Reference
   items:
     - name: Overview
-      href: using-uno-ui.md
       items:
+      - name: Developing with Uno Platform
+        href: xref:Uno.Development.Overview
       - name: Features List
         href: supported-features.md
       - name: Feature Flags
@@ -384,12 +486,16 @@
               href: controls/ComboBox.md
             - name: CommandBar
               href: controls/CommandBar.md
-            - name: ContentDialog
-              href: controls/ContentDialog.md
             - name: DatePicker
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
+            - name: Frame
+              href: controls/Frame.md
+            - name: GLCanvasElement
+              href: xref:Uno.Controls.GLCanvasElement
+            - name: Image
+              href: xref:Uno.Features.Image
             - name: ListView and GridView
               href: controls/ListViewBase.md
             - name: MapControl
@@ -398,14 +504,20 @@
               href: controls/MediaPlayerElement.md
             - name: MenuFlyout
               href: controls/MenuFlyout.md
+            - name: NavigationView
+              href: controls/NavigationView.md
             - name: Pivot
               href: controls/Pivot.md
             - name: Popup
               href: controls/Popup.md
             - name: ProgressRing
               href: features/progressring.md
+            - name: RefreshContainer (Pull to Refresh)
+              href: controls/RefreshContainer.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
+            - name: SKCanvasElement
+              href: xref:Uno.Controls.SKCanvasElement
             - name: TextBox
               href: controls/TextBox.md
             - name: TimePicker
@@ -414,8 +526,6 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
-            - name: Window
-              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -449,6 +559,8 @@
           href: features/working-with-assets.md
         - name: Composition API
           href: composition.md
+        - name: Dialogs
+          href: features/dialogs.md
         - name: Fluent styles
           href: features/fluent-styles.md
         - name: Focus management
@@ -479,6 +591,8 @@
           href: features/windows-ui-markup-extensions.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
+        - name: Windowing
+          href: features/windows-ui-xaml-window.md
 
       - name: 3rd-party libraries
         href: supported-libraries.md
@@ -505,6 +619,8 @@
         href: features/windows-system-power.md
       - name: Bluetooth
         href: features/bluetoothdevice.md
+      - name: Capture (Camera)
+        href: features/windows-media-capture.md
       - name: Clipboard
         href: features/clipboard.md
       - name: Compass
@@ -533,6 +649,8 @@
         href: features/gyrometer.md
       - name: Haptics
         href: features/windows-devices-haptics.md
+      - name: Hardware back button
+        href: features/hardware-back-button.md
       - name: Keeping Screen On
         href: features/windows-system-display.md
       - name: Light Sensor
@@ -561,6 +679,8 @@
         href: features/SpeechRecognition.md
       - name: Step Counter
         href: features/step-counter.md
+      - name: Store Context
+        href: features/windows-ui-storecontext.md
       - name: Title Bar Customization
         href: features/windows-ui-viewmanagement.md
       - name: URI Launcher
@@ -575,20 +695,16 @@
         href: features/working-with-cookies.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
+  # topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 
 - name: Themes
-  topicHref: external/uno.themes/doc/themes-overview.html
+  # topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 
 - name: Toolkit
-  topicHref: external/uno.toolkit.ui/doc/getting-started.md
+  #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
-  
-- name: Figma
-  #topicHref: xref:Uno.Figma.GetStarted
-  href: external/figma-docs/toc.yml
 
 - name: Tooling
   items:
@@ -610,6 +726,10 @@
         href: xref:Uno.GetStarted.vscode.DevKit
       - name: Omnisharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
+    - name: Rider
+      items:
+      - name: License Agreement
+        href: xref:Uno.Rider.EULA
     - name: Templates
       items:
       - name: Visual Studio Wizard

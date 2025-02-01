@@ -5,11 +5,11 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -23,7 +23,9 @@ internal partial class InputManager : IInputInjectorTarget
 
 		ConstructPointerManager();
 
+#if ANDROID // for some reason, moving InitDragAndDrop to Initialize breaks Android in CI
 		InitDragAndDrop();
+#endif
 	}
 
 	partial void ConstructKeyboardManager();
@@ -36,12 +38,13 @@ internal partial class InputManager : IInputInjectorTarget
 	internal void Initialize(object host)
 	{
 		InitializeKeyboard(host);
-		InitializeManagedPointers(host);
+		InitializePointers(host);
+#if !ANDROID
+		InitDragAndDrop();
+#endif
 	}
 
 	partial void InitializeKeyboard(object host);
-
-	partial void InitializeManagedPointers(object host);
 
 	internal ContentRoot ContentRoot { get; }
 
@@ -56,9 +59,16 @@ internal partial class InputManager : IInputInjectorTarget
 		return false;
 	}
 
-	internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+	internal void NotifyFocusChanged(DependencyObject focusedElement, bool bringIntoView, bool animateIfBringIntoView)
 	{
-		//TODO Uno: Implement
+		//TODO Uno: match WinUI
+		if (bringIntoView)
+		{
+			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = animateIfBringIntoView
+			});
+		}
 	}
 
 	internal bool LastInputWasNonFocusNavigationKeyFromSIP()

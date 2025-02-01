@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
@@ -42,7 +44,8 @@ public static class TypeMappings
 	/// </summary>
 	/// <param name="instanceType">This is the type that may have been replaced</param>
 	/// <returns>If instanceType has been replaced, then the replacement type, otherwise the instanceType</returns>
-	public static Type GetReplacementType(this Type instanceType)
+	public static Type GetReplacementType(
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] this Type instanceType)
 	{
 		// Two scenarios:
 		// 1. The instance type is a mapped type, in which case we need to get the original type
@@ -56,7 +59,8 @@ public static class TypeMappings
 	/// </summary>
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>()
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 
 	/// <summary>
@@ -65,7 +69,7 @@ public static class TypeMappings
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>(params object[] args)
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TOriginalType>(params object[] args)
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
 	internal static Type GetMappedType(this Type originalType) =>
@@ -92,6 +96,7 @@ public static class TypeMappings
 	{
 		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
 		AllOriginalTypeToMappedType[originalType] = mappedType;
+
 		if (_mappingsPaused is null)
 		{
 			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
@@ -112,19 +117,7 @@ public static class TypeMappings
 		AllOriginalTypeToMappedType.Clear();
 	}
 
-	private static TaskCompletionSource<bool> _mappingsPaused;
-
-	/// <summary>
-	/// Gets a Task that can be awaited to ensure type mappings
-	/// are being applied. This is useful particularly for testing 
-	/// HR the pause/resume function of type mappings
-	/// </summary>
-	/// <returns>A task that will complete when type mapping collection
-	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active.</returns>
-	[Obsolete("Use WaitForResume instead")]
-	public static Task WaitForMappingsToResume()
-		=> WaitForResume();
+	private static TaskCompletionSource _mappingsPaused;
 
 	/// <summary>
 	/// Gets a Task that can be awaited to ensure type mappings
@@ -135,8 +128,13 @@ public static class TypeMappings
 	/// has resumed. Returns a completed task if type mapping collection
 	/// is currently active
 	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
-	public static Task<bool> WaitForResume()
+	public static Task WaitForResume()
 		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
+
+	/// <summary>
+	/// Gets whether type mappings are currently paused 
+	/// </summary>
+	public static bool IsPaused => _mappingsPaused is not null;
 
 
 	/// <summary>
@@ -144,8 +142,7 @@ public static class TypeMappings
 	/// Internally the type mappings are still collected but will only be
 	/// applied to the mapping dictionaries after Resume is called
 	/// </summary>
-	public static void Pause()
-		=> _mappingsPaused ??= new TaskCompletionSource<bool>();
+	public static void Pause() => Interlocked.CompareExchange(ref _mappingsPaused, new TaskCompletionSource(), null);
 
 	/// <summary>
 	/// Resumes the collection of type mappings
@@ -154,24 +151,12 @@ public static class TypeMappings
 	/// the WaitForResume task completes
 	/// </summary>
 	public static void Resume()
-		=> Resume(true);
-
-	/// <summary>
-	/// Resumes the collection of type mappings
-	/// If new types have been created whilst type mapping
-	/// was paused, those new mappings will be applied before
-	/// the WaitForResume task completes
-	/// </summary>
-	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
-	public static void Resume(bool updateLayout)
 	{
-		var completion = _mappingsPaused;
-		_mappingsPaused = null;
-		if (completion is not null)
+		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
 		{
-			MappedTypeToOriginalTypeMappings = AllMappedTypeToOriginalTypeMappings.ToDictionary(x => x.Key, x => x.Value);
-			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
-			completion.TrySetResult(updateLayout);
+			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
+			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
+			completion.TrySetResult();
 		}
 	}
 }

@@ -4,29 +4,57 @@ uid: Uno.Features.SVG
 
 # Using SVG images
 
-* Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.WinUI.Svg` (or `Uno.UI.Svg`) NuGet package.
+Uno Platform supports using vector SVG graphics inside of your cross-platform applications, using the `SvgImageSource` class. SVG Images can also be used through [`UnoImage` with Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
 ![Uno SVG sample](../Assets/features/svg/heliocentric.png)
 
 ## How to use SVG
 
+## [**Single Project**](#tab/singleproject)
+
+To use an SVG, for iOS, Android, and Mac Catalyst, you'll need to add the `Svg` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+
+```xml
+<UnoFeatures>
+    ...
+    Svg;
+    ...
+</UnoFeatures>
+```
+
+On Desktop Skia and WebAssembly, the feature is enabled by default.
+
+To include an SVG file, you will need to place it in a folder named `Svg` (e.g. `Assets\Svg\MyFile.svg`). This is required in order to avoid [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted) transform the file into a set of scaled PNGs files.
+
+Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
+
+```xml
+<Image Source="ms-appx:///Assets/Svg/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
+```
+
+## [**Legacy Project**](#tab/legacyproject)
+
 To use SVG, install the following NuGet packages into the iOS, macOS, Mac Catalyst, Android, and Skia projects:
 
-* `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using a UWP-based app template).
-* `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using a UWP-based app template).
+* `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using a UWP-based app template)
+* `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using a UWP-based app template)
+* `Svg.Skia` (required only for the Skia project)
 
 > [!NOTE]
 > If the `Uno.[UI|WinUI].Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
->
-> [!NOTE]
-> The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly.
+> If the `Svg.Skia` package is not installed, you will get an error when an `.svg` image is loaded for the Skia project.
+> [!IMPORTANT]
+> The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly, and must only be installed on the Mobile and Skia heads. It must not be in any other class libraries of your solution.
 
-Add the SVG Image into the project's class library (or shared project) and make sure that the build action is set to Content.
+Add the SVG Image to the app project and make sure that the build action is set to Content.
+
 Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
 
 ```xml
 <Image Source="ms-appx:///Assets/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
 ```
+
+---
 
 You can also explicitly use `SvgImageSource`:
 
@@ -42,10 +70,8 @@ You can also explicitly use `SvgImageSource`:
 
 SVG is supported on all Uno Platform targets.
 
-* On Android, iOS, macOS, Mac Catalyst, and Skia, we are using SkiaSharp to render the SVG graphics.
-
+* On Android, iOS, macOS, Mac Catalyst, and Skia, Uno Platform is using SkiaSharp to render the SVG graphics.
 * On WebAssembly, the SVG images are rendered directly by the browser.
-
 * On Windows, the OS is responsible for SVG rendering (and complex SVG files may not render properly).
 
 ## When to use SVG

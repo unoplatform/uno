@@ -21,11 +21,8 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property CenterPoint
 		// Skipping already declared property AnchorPoint
 		// Skipping already declared property SnapToPixels
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngleInDegrees.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngleInDegrees.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngle.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Stretch.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngle.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.BitmapInterpolationMode.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.HorizontalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.HorizontalAlignmentRatio.set
@@ -35,13 +32,16 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Surface.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.CenterPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngle.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Scale.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngle.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Stretch.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.RotationAngleInDegrees.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.Scale.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.TransformMatrix.set

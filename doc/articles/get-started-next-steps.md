@@ -65,7 +65,7 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 ### Raspberry Pi Applications with Uno Platform (Free)
 
-If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
+If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started](https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation](xref:Uno.RaspberryPi.Intro).
 
 ### XAML Fundamentals for Web and Mobile (Free)
 
@@ -85,7 +85,7 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 
 If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on WinAppSDK or UWP but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 
-For more chat-like troubleshooting, visit the Uno Platform team and the Uno community on our [Discord Channel #uno-platform]( https://discord.gg/eBHZSKG). Both have our engineering team monitoring discussions and answering questions.
+For more chat-like troubleshooting, visit the Uno Platform team and community on our [Discord Server](https://platform.uno/discord). Both have our engineering team monitoring discussions and answering questions.
 
 ## Some additional resources
 

@@ -1,15 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -111,18 +112,99 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
+			base.OnPointerReleased(args);
+			var handled = args.Handled;
+			if (handled)
+			{
+				return;
+			}
+
 			if (m_isPointerLeftButtonPressed)
 			{
+				//GestureModes gestureFollowing = GestureModes.None;
+
+				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				// Uno Specific: On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
-				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
-				// skip focusing, or focus some child of this faux RootScrollViewer. To match the other platforms, we do the former.
-				if (this.GetParent() is UIElement { IsVisualTreeRoot: false })
+				//var gestureFollowing = args.GestureFollowing;
+
+				//if (gestureFollowing == GestureModes.RightTapped)
+				//{
+				//	// Schedule the focus change for OnRightTappedUnhandled.
+				//	m_shouldFocusOnRightTapUnhandled = true;
+				//}
+				//else
 				{
-					args.Handled = Focus(FocusState.Pointer);
+					// Set focus on the Flyout inner ScrollViewer to dismiss IHM.
+					//if (m_isFocusableOnFlyoutScrollViewer)
+					//{
+					var isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
+					//}
+					if (isFocusedOnLightDismissPopupOfFlyout)
+					{
+						args.Handled = true;
+					}
+					else
+					{
+						bool scrollViewerIsFocusAncestor = false;
+						var scrollViewerIsTabStop = IsTabStop;
+
+						if (VisualTree.GetFocusManagerForElement(this) is FocusManager focusManager)
+						{
+							if (focusManager.FocusedElement is DependencyObject currentFocusedElement)
+							{
+								scrollViewerIsFocusAncestor = this.IsAncestorOf(currentFocusedElement);
+							}
+						}
+
+						if (!scrollViewerIsTabStop && scrollViewerIsFocusAncestor)
+						{
+							// Do not take focus when:
+							// - ScrollViewer.IsTabStop is False and
+							// - Currently focused element is within this ScrollViewer.
+							// In that case, leave the focus as is by marking this event handled.
+							args.Handled = true;
+						}
+						else
+						{
+							// Focus now.
+							// Set focus to the ScrollViewer to capture key input for scrolling
+							var focused = Focus(FocusState.Pointer);
+							args.Handled = focused;
+						}
+					}
 				}
 			}
+		}
+
+		private static bool ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(UIElement pScrollContentControl)
+		{
+#if __WASM__
+			if ((pScrollContentControl as ScrollViewer)?.DisableSetFocusOnPopupByPointer ?? false)
+			{
+				return false;
+			}
+#endif
+
+			PopupRoot? pPopupRoot = null;
+			Popup? pPopup = null;
+
+			if (pScrollContentControl.GetRootOfPopupSubTree() is not null)
+			{
+				pPopupRoot = VisualTree.GetPopupRootForElement(pScrollContentControl);
+				if (pPopupRoot is not null)
+				{
+					pPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOnly);
+					// Uno-specific: We don't yet have GetSavedFocusState()
+					if (pPopup is not null && FocusSelection.ShouldUpdateFocus(pPopup.Child, pPopup.FocusState/*.GetSavedFocusState()*/) && pPopup.IsForFlyout)
+					{
+						bool wasFocusUpdated = pPopup.Focus(FocusState.Pointer, false /*animateIfBringIntoView*/);
+						return wasFocusUpdated;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 

@@ -8,12 +8,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
+
 internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
-	private readonly Func<TextBox, IOverlayTextBoxView> _textBoxViewFactory;
+	private readonly Func<MuxTextBox, IOverlayTextBoxView> _textBoxViewFactory;
 	private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 	private readonly SerialDisposable _pasteDisposable = new SerialDisposable();
 
@@ -26,7 +28,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	private int? _selectionStartCache;
 	private int? _selectionLengthCache;
 
-	protected OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBox, IOverlayTextBoxView> textBoxViewFactory)
+	protected OverlayTextBoxViewExtension(TextBoxView owner, Func<MuxTextBox, IOverlayTextBoxView> textBoxViewFactory)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
@@ -226,7 +228,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public int GetSelectionLengthBeforeKeyDown() => _textBoxView!.SelectionBeforeKeyDown.length;
 
-	private void EnsureTextBoxView(TextBox textBox)
+	private void EnsureTextBoxView(MuxTextBox textBox)
 	{
 		if (_textBoxView is null ||
 			!_textBoxView.IsCompatible(textBox))

@@ -16,66 +16,68 @@ Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Boots
 1. Install the `Uno.Core` NuGet package;
 2. In your application, as early as possible in the initialization (generally in the `App.cs` or `App.xaml.cs` constructor), add and call the following method:
 
-``` csharp
-using Uno.UI.DataBinding;
-using Uno.UI.DataBinding;
-using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno.Logging;
+    ```csharp
+    using Uno.UI.DataBinding;
+    using Uno.UI.DataBinding;
+    using System.Threading.Tasks;
+    using Uno.Extensions;
+    using Uno.Logging;
 
-// ....
-private void EnableViewsMemoryStatistics()
-{
- //
- // Call this method to enable Views memory tracking.
- // Make sure that you've added the following :
- //
-        //  builder.AddFilter("Uno.UI.DataBinding", LogLevel.Information );
- //
- // in the logger settings, so that the statistics are showing up.
- //
-
- var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-  CoreDispatcherPriority.Normal,
-  async () =>
-  {
-   BinderReferenceHolder.IsEnabled = true;
-
-   while (true)
-   {
-    await Task.Delay(1500);
-
-    try
+    // ....
+    private void EnableViewsMemoryStatistics()
     {
-     BinderReferenceHolder.LogReport();
+    //
+    // Call this method to enable Views memory tracking.
+    // Make sure that you've added the following :
+    //
+            //  builder.AddFilter("Uno.UI.DataBinding", LogLevel.Information );
+    //
+    // in the logger settings, so that the statistics are showing up.
+    //
 
-     var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
+    var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+      CoreDispatcherPriority.Normal,
+      async () =>
+      {
+      BinderReferenceHolder.IsEnabled = true;
 
-     // Force the variable to be kept by the linker so we can see it with the debugger.
-     // Put a breakpoint on this line to dig into the inactive views.
-     inactiveInstances.ToString();
+      while (true)
+      {
+        await Task.Delay(1500);
+
+        try
+        {
+        BinderReferenceHolder.LogReport();
+
+        var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
+
+        // Force the variable to be kept by the linker so we can see it with the debugger.
+        // Put a breakpoint on this line to dig into the inactive views.
+        inactiveInstances.ToString();
+        }
+        catch (Exception ex)
+        {
+        this.Log().Error("Report generation failed", ex);
+        }
+      }
+      }
+    );
     }
-    catch (Exception ex)
-    {
-     this.Log().Error("Report generation failed", ex);
-    }
-   }
-  }
- );
-}
-```
+    ```
 
-  You'll also need to add the following logger filter:
+    You'll also need to add the following logger filter:
 
-```csharp
-builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
-```
+    ```csharp
+    builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
+    ```
 
-  As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
+    As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
 
-```xaml
-<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
-```
+    ```xaml
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
+    ```
+
+It is also possible to create diffs between memory snapshots by using the `BinderReferenceHolder.LogInactiveViewReferencesStatsDiff` method.
 
 ## Interpreting the statistics output
 

@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum IconShowOptions
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ShowIconAndSystemMenu = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HideIconAndSystemMenu = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.IconShowOptions.ShowIconAndSystemMenu
+		// Skipping already declared field Microsoft.UI.Windowing.IconShowOptions.HideIconAndSystemMenu
 	}
 #endif
 }

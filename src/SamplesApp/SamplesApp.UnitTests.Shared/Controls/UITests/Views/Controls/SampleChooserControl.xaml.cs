@@ -8,6 +8,10 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Input;
+using System.Threading;
+using SampleControl.Entities;
+
+
 #if WINAPPSDK
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls;
@@ -34,11 +38,17 @@ namespace Uno.UI.Samples.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			Assert.IsNotNull(XamlRoot, "XamlRoot was not initialized before measure");
+#if HAS_UNO
+			Assert.IsTrue(XamlRoot.VisualTree.ContentRoot.CompositionContent.RasterizationScaleInitialized, "Rasterization scale was not initialized");
+#endif
+
 			if (_initialMeasure && availableSize == default)
 			{
-				_initialMeasure = false;
 				Assert.Fail("Initial Measure should not be called with empty size");
 			}
+
+			_initialMeasure = false;
 			return base.MeasureOverride(availableSize);
 		}
 
@@ -46,9 +56,10 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (_initialArrange && availableSize == default)
 			{
-				_initialArrange = false;
 				Assert.Fail("Initial Arrange should not be called with empty size");
 			}
+
+			_initialArrange = false;
 			return base.ArrangeOverride(availableSize);
 		}
 
@@ -56,7 +67,31 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				((SampleChooserViewModel)DataContext).TryOpenSample();
+				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
+			}
+		}
+
+		private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+			{
+				((SampleChooserViewModel)DataContext).SearchTerm = sender.Text;
+			}
+		}
+
+		private void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			if (args is not null)
+			{
+				((SampleChooserViewModel)DataContext).TryOpenSingleSearchResult();
+			}
+		}
+
+		private void SearchBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+		{
+			if (args.SelectedItem is SampleChooserContent control)
+			{
+				_ = ((SampleChooserViewModel)DataContext).OpenSample(CancellationToken.None, control);
 			}
 		}
 	}

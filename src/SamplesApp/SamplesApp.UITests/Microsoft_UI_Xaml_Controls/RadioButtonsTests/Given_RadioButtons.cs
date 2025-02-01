@@ -14,19 +14,20 @@ using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
-namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
+namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
 	public partial class Given_RadioButtons : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS #9080
 		public void SelectionTest()
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests.RadioButtonsPage");
 
 			SetItemType(RadioButtonsSourceType.RadioButton);
 
-			foreach (RadioButtonsSourceLocation location in Enum.GetValues(typeof(RadioButtonsSourceLocation)))
+			foreach (var location in Enum.GetValues<RadioButtonsSourceLocation>())
 			{
 				SetSource(location);
 

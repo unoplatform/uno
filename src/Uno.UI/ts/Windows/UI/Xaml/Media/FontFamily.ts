@@ -52,8 +52,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FontFamily.managedNotifyFontLoaded = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoaded;
 				} else {
-					FontFamily.managedNotifyFontLoaded =
-						(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 
@@ -66,8 +65,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FontFamily.managedNotifyFontLoadFailed = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoadFailed;
 				} else {
-					FontFamily.managedNotifyFontLoadFailed =
-						(<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 

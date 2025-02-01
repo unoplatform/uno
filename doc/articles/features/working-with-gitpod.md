@@ -50,7 +50,7 @@ If you want to start from an empty repository, follow these steps:
 
 1. Using the Gitpod top left menu, open the `MyApp` folder
 
-You're ready to develop for WebAssembly or the Linux desktop (Skia+Gtk).
+You're ready to develop for WebAssembly or the Linux desktop (Skia Desktop).
 
 ## Contributing to Uno using Gitpod
 
@@ -80,4 +80,4 @@ Once the server is started, Gitpod will automatically open a browser window on t
 
 You can make your changes in XAML directly, to view the changes through Hot Reload. If you make changes in the code, you'll need to rerun the `build-wasm.sh` script, then refresh the browser section on the side.
 
-Once you're done with your changes, make a Pull Request through the [Gitpod's GitHub integration](https://www.gitpod.io/docs/58_pull_requests/) and let us know about it on our [Discord Channel #uno-platform](https://discord.gg/eBHZSKG)!
+Once you're done with your changes, make a Pull Request through the [Gitpod's GitHub integration](https://www.gitpod.io/docs/58_pull_requests/) and let us know about it on our [Discord Server](https://platform.uno/discord)!

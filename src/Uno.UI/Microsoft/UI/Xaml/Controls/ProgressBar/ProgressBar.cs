@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -55,10 +57,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			set => SetValue(TemplateSettingsProperty, value);
 		}
 
-		private Grid m_layoutRoot;
-		private Rectangle m_determinateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator2;
+		private Grid? m_layoutRoot;
+		private Rectangle? m_determinateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator2;
 		private Size? m_previousMeasuredWidths;
 
 		public ProgressBar()
@@ -67,7 +69,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			SizeChanged += (snd, evt) => OnSizeChange();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			// Uno-specific: TODO: Investigate why we need this. It's a quite very old workaround from 2020
+			// https://github.com/unoplatform/uno/commit/641bbc9483f33c64d5eddc474f069c07b79039ba
+			// So, maybe it's no longer needed.
+			// For now, we're sure it's no longer needed with enhanced lifecycle (actually, it's problematic if it exists there)
+			// Note: LayoutUpdated event isn't really tied to a specific element. It really means that some element in the visual tree had a layout update.
+			// So, this event subscription is wrong because it will cause the ProgressBar to transition to Updating visual state then back
+			// to a state based on its properties (e.g, Indeterminate) every time any element in the visual tree has a layout update.
+			// So it will cause some bad flickers in ProgressBar, and will also get us into a cycle in case there is a listener
+			// to CurrentStateChanged event where the listener does something that updates the layout.
 			LayoutUpdated += (snd, evt) => OnSizeChange();
+#endif
 
 			RegisterPropertyChangedCallback(ValueProperty, OnRangeBasePropertyChanged);
 			RegisterPropertyChangedCallback(MinimumProperty, OnRangeBasePropertyChanged);
@@ -96,8 +109,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void OnSizeChange()
 		{
 #if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
-			var measures = new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth);
-			if (m_previousMeasuredWidths != measures)
+			if (m_layoutRoot is not null &&
+				m_determinateProgressBarIndicator is not null &&
+				m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
 #endif
 			{
 				SetProgressBarIndicatorWidth();

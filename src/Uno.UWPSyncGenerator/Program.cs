@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Uno.UWPSyncGenerator
@@ -11,6 +13,14 @@ namespace Uno.UWPSyncGenerator
 
 		static async Task Main(string[] args)
 		{
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UWP\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.Foundation\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Composition\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Dispatching\Generated\");
+
 			if (args.Length == 0)
 			{
 				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");
@@ -27,6 +37,7 @@ namespace Uno.UWPSyncGenerator
 				await new SyncGenerator().Build("Uno", "Windows.Networking.Connectivity.WwanContract");
 				await new SyncGenerator().Build("Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
 				await new SyncGenerator().Build("Uno", "Windows.Services.Store.StoreContract");
+				await new SyncGenerator().Build("Uno", "Microsoft.Windows.AppLifecycle");
 
 				// When adding support for a new WinRT contract here, ensure to add it to the list of supported contracts in ApiInformation.shared.cs
 
@@ -42,7 +53,8 @@ namespace Uno.UWPSyncGenerator
 				await new SyncGenerator().Build("Uno.UI.Composition", "Microsoft.UI");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Text");
-				await new SyncGenerator().Build("Uno.UI", "Microsoft.ApplicationModel.Resources");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Input");
@@ -64,7 +76,8 @@ namespace Uno.UWPSyncGenerator
 			if (mode == DocMode || mode == AllMode)
 			{
 #if HAS_UNO_WINUI
-				await new DocGenerator().Build("Uno.UI", "Microsoft.ApplicationModel.Resources");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
 				await new DocGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
 				await new DocGenerator().Build("Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
@@ -83,6 +96,12 @@ namespace Uno.UWPSyncGenerator
 				await new DocGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}
+		}
+
+		private static void DeleteDirectoryIfExists(string path)
+		{
+			if (Directory.Exists(path))
+				Directory.Delete(path, recursive: true);
 		}
 	}
 }

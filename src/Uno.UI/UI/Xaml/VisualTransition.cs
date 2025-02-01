@@ -13,8 +13,14 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public partial class VisualTransition : DependencyObject
 	{
+		/// <summary>
+		/// Lazy builder provided by the source generator. Invoking this will
+		/// optionally fill <see cref="Storyboard"/>.
+		/// </summary>
 		internal Action LazyBuilder { get; set; }
-
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal bool? FromLegacyTemplate { get; set; }
+#endif
 		public VisualTransition()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
@@ -44,7 +50,19 @@ namespace Microsoft.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				builder.Invoke();
+				try
+				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
+#endif
+					builder.Invoke();
+				}
+				finally
+				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
+				}
 
 				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
 				{

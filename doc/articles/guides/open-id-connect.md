@@ -220,7 +220,7 @@ private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 > On WebAssembly, it's important to configure the linker to prevent the removal of some important part of the *OIDC Connect* client library:
 > `LinkerConfig.xml`:
 >
-> ``` xml
+> ```xml
 > <linker>
 >   <assembly fullname="My.Oidc.Client.App.Wasm" />
 >   <assembly fullname="Uno.UI" />

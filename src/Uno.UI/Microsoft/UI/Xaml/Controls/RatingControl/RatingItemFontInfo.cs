@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RatingItemFontInfo.properties.cpp, commit de78834
+// MUX Reference RatingItemFontInfo.properties.cpp, tag winui3/release/1.5.3, commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1
 
 using Microsoft.UI.Xaml;
 
@@ -31,7 +31,11 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the DisabledGlyph dependency property.
 	/// </summary>
 	public static DependencyProperty DisabledGlyphProperty { get; } =
-		DependencyProperty.Register(nameof(DisabledGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(DisabledGlyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has been set by the user.
@@ -46,7 +50,11 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the Glyph dependency property.
 	/// </summary>
 	public static DependencyProperty GlyphProperty { get; } =
-		DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(Glyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that is showing a placeholder value.
@@ -61,7 +69,11 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the PlaceholderGlyph dependency property.
 	/// </summary>
 	public static DependencyProperty PlaceholderGlyphProperty { get; } =
-		DependencyProperty.Register(nameof(PlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(PlaceholderGlyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has the pointer over it.
@@ -76,7 +88,11 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the PointerOverGlyph dependency property.
 	/// </summary>
 	public static DependencyProperty PointerOverGlyphProperty { get; } =
-		DependencyProperty.Register(nameof(PointerOverGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(PointerOverGlyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element showing a placeholder value with the pointer over it.
@@ -91,7 +107,11 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the PointerOverPlaceholderGlyph dependency property.
 	/// </summary>
 	public static DependencyProperty PointerOverPlaceholderGlyphProperty { get; } =
-		DependencyProperty.Register(nameof(PointerOverPlaceholderGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(PointerOverPlaceholderGlyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 
 	/// <summary>
 	/// Gets or sets a Segoe MDL2 Assets font glyph that represents a rating element that has not been set.
@@ -106,5 +126,9 @@ public partial class RatingItemFontInfo : RatingItemInfo
 	/// Identifies the UnsetGlyph dependency property.
 	/// </summary>
 	public static DependencyProperty UnsetGlyphProperty { get; } =
-		DependencyProperty.Register(nameof(UnsetGlyph), typeof(string), typeof(RatingItemFontInfo), new FrameworkPropertyMetadata(string.Empty));
+		DependencyProperty.Register(
+			nameof(UnsetGlyph),
+			typeof(string),
+			typeof(RatingItemFontInfo),
+			new FrameworkPropertyMetadata(string.Empty));
 }

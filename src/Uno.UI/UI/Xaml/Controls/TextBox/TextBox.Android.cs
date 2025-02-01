@@ -70,10 +70,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(false));
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
@@ -389,10 +387,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Parent != null && _textBoxView != null)
 			{
-				var style = TypefaceStyleHelper.GetTypefaceStyle(FontStyle, FontWeight);
-				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
-
-				_textBoxView.SetTypeface(typeface, style);
+				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight, FontStyle, FontStretch);
+				_textBoxView.Typeface = typeface;
 				_textBoxView.SetTextSize(ComplexUnitType.Px, (float)Math.Round(ViewHelper.LogicalToPhysicalFontPixels((float)FontSize)));
 			}
 		}

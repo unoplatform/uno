@@ -7,7 +7,7 @@ using Uno.Extensions;
 namespace Uno.UI.Tests.RelativePanelTests
 {
 	[TestClass]
-	public class Given_RelativePanel : Context
+	public class Given_RelativePanel
 	{
 		[TestMethod]
 		public void When_Empty_And_MeasuredEmpty()

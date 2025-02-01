@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
-	public class RelativePanelUnitTests : MUXApiTestBase
+	public class RelativePanelUnitTests
 	{
 		private RPNode AddNodeToGraph(
 			RPGraph graph,
@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls
 			float width,
 			float height)
 		{
-			LayoutInformation.SetDesiredSize(element, new Size(width, height));
+			element.m_desiredSize = new Size(width, height);
 
 			var node = new RPNode(element);
 			graph.GetNodes().AddFirst(node);

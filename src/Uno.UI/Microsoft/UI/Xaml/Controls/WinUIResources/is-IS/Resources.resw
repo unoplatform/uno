@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME-SLÖKKT</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Hvítur</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ljósgrár</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grár</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Dökkgrár</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Svartur</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Rauðbleikur</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rósrauður</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ljósappelsínugulur</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Gulbrúnn</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Ljósgulur</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Ljósgrænn</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Súraldingrænn</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Sægrænn</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himinblár</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ljósgrænblár</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Fölblár</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Ljósblár</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ísblár</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Gráfjólublár</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ljósfjólublár</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Bleikur</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rauður</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Appelsínugulur</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brúnn</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gulllitaður</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Gulur</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Ólífugrænn</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Grænn</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Skærgrænn</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blágrænn</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Grænblár</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blár</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blágrár</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Djúpfjólublár</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Fjólublár</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Dökkrauður</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Dökkgulur</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Dökkgrænn</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Dökkgrænblár</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Dökkblár</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Dökkfjólublár</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plómulitaður</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Loka</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

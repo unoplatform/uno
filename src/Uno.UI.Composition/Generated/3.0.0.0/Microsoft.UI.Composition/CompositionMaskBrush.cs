@@ -10,9 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Source
 		// Skipping already declared property Mask
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Source.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Mask.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Mask.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Source.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Source.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Mask.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionMaskBrush.Mask.get
 	}
 }

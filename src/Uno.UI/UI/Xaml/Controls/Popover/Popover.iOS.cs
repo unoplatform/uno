@@ -112,9 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Frame = _popover.ContentViewController.View.Bounds,
 				AutoresizingMask = UIViewAutoresizing.All,
-				TemplatedParent = this.TemplatedParent,
 			};
-
 			_popover.ContentViewController.View.AddSubview(_host);
 
 			if (Child != null)

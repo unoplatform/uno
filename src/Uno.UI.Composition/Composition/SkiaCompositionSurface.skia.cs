@@ -1,28 +1,57 @@
 ﻿#nullable enable
 
-
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal partial class SkiaCompositionSurface : ICompositionSurface
+	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{
-		private SKImage? _image;
+		// Don't set this field directly. Use SetFrameProviderAndOnFrameChanged instead.
+		private IFrameProvider? _frameProvider;
 
-		public SKImage? Image { get => _image; }
+		// Unused: But intentionally kept!
+		// This is here to keep the Action lifetime the same as SkiaCompositionSurface.
+		// i.e, only cause the Action to be GC'ed if SkiaCompositionSurface is GC'ed.
+		private Action? _onFrameChanged;
+
+		// Don't set directly. Use SetFrameProviderAndOnFrameChanged instead
+		private IFrameProvider? FrameProvider
+		{
+			get => _frameProvider;
+			set
+			{
+				_frameProvider?.Dispose();
+				_frameProvider = value;
+				OnPropertyChanged(nameof(FrameProvider), isSubPropertyChange: false);
+			}
+		}
+
+		public SKImage? Image => FrameProvider?.CurrentImage;
 
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			_image = image;
+			FrameProvider = FrameProviderFactory.Create(image);
 		}
+
+		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
+		{
+			FrameProvider = provider;
+			_onFrameChanged = onFrameChanged;
+		}
+
+		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
 
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
@@ -41,20 +70,32 @@ namespace Microsoft.UI.Composition
 					this.Log().Debug($"Image load result {result}");
 				}
 
+				if (result == SKCodecResult.Success)
+				{
+					SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromBitmap(bitmap)), null);
+				}
+
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
 			}
 			else
 			{
 				try
 				{
-					_image = SKImage.FromEncodedData(stream);
-					return _image is null
-						? (false, "Failed to decode image")
-						: (true, "Success");
+					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
+					if (!FrameProviderFactory.TryCreate(stream, onFrameChanged, out var provider))
+					{
+						SetFrameProviderAndOnFrameChanged(null, null);
+						return (false, "Failed to decode image");
+					}
+
+					SetFrameProviderAndOnFrameChanged(provider, onFrameChanged);
+					GC.KeepAlive(onFrameChanged);
+					return (true, "Success");
 				}
 				catch (Exception e)
 				{
-					return (true, e.Message);
+					SetFrameProviderAndOnFrameChanged(null, null);
+					return (false, e.Message);
 				}
 			}
 		}
@@ -68,8 +109,13 @@ namespace Microsoft.UI.Composition
 
 			using (var pData = data.Pin())
 			{
-				_image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
+				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4)), null);
 			}
+		}
+
+		~SkiaCompositionSurface()
+		{
+			SetFrameProviderAndOnFrameChanged(null, null);
 		}
 	}
 }

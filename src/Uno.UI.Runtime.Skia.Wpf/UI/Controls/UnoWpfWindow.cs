@@ -1,46 +1,68 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
 using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Xaml.Controls;
+using WindowChrome = System.Windows.Shell.WindowChrome;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
 internal class UnoWpfWindow : WpfWindow
 {
-	private readonly WinUI.Window _winUIWindow;
 	private readonly ApplicationView _applicationView;
+	private readonly WinUI.Window _winUIWindow;
 
 	private bool _shown;
 
+	private static readonly ConcurrentDictionary<WinUI.Window, WpfWindow> _windowToWpfWindow = new();
+
 	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
+		_winUIWindow = winUIWindow;
+		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
-		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Windows.Foundation.Size.Empty)
+		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize.IsEmpty)
 		{
-			Width = (int)preferredWindowSize.Width;
-			Height = (int)preferredWindowSize.Height;
+			preferredWindowSize = new Windows.Foundation.Size(NativeWindowWrapperBase.InitialWidth, NativeWindowWrapperBase.InitialHeight);
 		}
+		Width = (int)preferredWindowSize.Width;
+		Height = (int)preferredWindowSize.Height;
 
-		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
-		WpfManager.XamlRootMap.Register(xamlRoot, Host);
+		var windowHost = new UnoWpfWindowHost(this, winUIWindow);
+		Host = windowHost;
+		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+
 		Closed += UnoWpfWindow_Closed;
 		Activated += UnoWpfWindow_Activated;
 
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
+
+		this.SourceInitialized += (s, e) => windowHost.InitializeRenderer();
 	}
+
+	public static WpfWindow? GetFromWinUIWindow(WinUI.Window window)
+		=> _windowToWpfWindow.TryGetValue(window, out var wpfWindow) ? wpfWindow : null;
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{
@@ -57,20 +79,21 @@ internal class UnoWpfWindow : WpfWindow
 	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
 	{
 		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
-	internal UnoWpfWindowHost Host { get; private set; }
+	internal WpfControl Host { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		MinWidth = _applicationView.PreferredMinSize.Width;
 		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -104,9 +127,38 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+	}
+
+	private void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
+	}
+
+	internal void ExtendContentIntoTitleBar(bool extend)
+	{
+		if (extend)
+		{
+			WindowStyle = WindowStyle.None;
+			WindowChrome.SetWindowChrome(this, new WindowChrome
+			{
+				UseAeroCaptionButtons = false,
+				// this removes the thin white bar at the top, but this causes the window to grow a little.
+				// No work around has been found for this yet.
+				CaptionHeight = 0
+			});
+
+			// for some reason touchpad physical presses work without this, but not "taps"
+			WindowChrome.SetIsHitTestVisibleInChrome((IInputElement)Content, true);
+		}
+		else
+		{
+			WindowStyle = WindowStyle.SingleBorderWindow;
+			ClearValue(WindowChrome.WindowChromeProperty);
 		}
 	}
 }

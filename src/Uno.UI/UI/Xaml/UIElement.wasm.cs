@@ -446,8 +446,6 @@ namespace Microsoft.UI.Xaml
 
 			child.SetParent(this);
 
-			OnAddingChild(child);
-
 			if (index is { } i)
 			{
 				_children.Insert(i, child);
@@ -458,6 +456,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 
@@ -627,10 +628,41 @@ namespace Microsoft.UI.Xaml
 			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
 		}
 
+		/// <remarks>
+		/// This doesn't consider renderingBounds and defaults to true, where currently only Shapes override it to provide proper hit testing.
+		/// Caller is responsible for checking rendering bounds
+		/// </remarks>
+		internal virtual bool HitTest(Point relativePosition) => true;
+
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			// TODO: include modifier info
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload), VirtualKeyModifiers.None) { CanBubbleNatively = true };
+			var key = VirtualKey.None;
+			var modifiers = VirtualKeyModifiers.None;
+			if (payload.Length > 4)
+			{
+				// Modifiers are in this order Ctrl, Alt, Windows, Shift
+				if (payload[0] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Control;
+				}
+				if (payload[1] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Menu;
+				}
+				if (payload[2] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Windows;
+				}
+				if (payload[3] == '1')
+				{
+					modifiers |= VirtualKeyModifiers.Shift;
+				}
+
+				// Remaining characters are the pressed key
+				key = VirtualKeyHelper.FromKey(payload[4..]);
+
+			}
+			return new KeyRoutedEventArgs(src, key, modifiers) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
@@ -667,40 +699,6 @@ namespace Microsoft.UI.Xaml
 					yield return type.Name.ToLowerInvariant();
 					type = type.BaseType;
 				}
-			}
-		}
-
-
-		private Microsoft.UI.Input.InputCursor _protectedCursor;
-
-#if HAS_UNO_WINUI
-		protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#else
-		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#endif
-		{
-			get => _protectedCursor;
-			set
-			{
-				if (_protectedCursor != value)
-				{
-					_protectedCursor = value;
-					SetProtectedCursorNative();
-				}
-			}
-
-		}
-
-		private void SetProtectedCursorNative()
-		{
-			if (_protectedCursor is Microsoft.UI.Input.InputSystemCursor inputSystemCursor)
-			{
-				var cursorShape = inputSystemCursor.CursorShape.ToCssProtectedCursor();
-				this.SetStyle("cursor", cursorShape);
-			}
-			else
-			{
-				this.ResetStyle("cursor");
 			}
 		}
 	}

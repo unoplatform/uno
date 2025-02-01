@@ -7,8 +7,8 @@
 
 			.Class("Control")
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
-				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
-				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
+				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")
+				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")				
 			.Class("Picker", condition: "__IOS__")			
 				.Property("ItemsSource", "object", "null")
 				.Property("SelectedItem", "object", "null")
@@ -20,7 +20,6 @@
 				.Property("Placeholder", "object", "null")
 			.Class("ComboBox")
 				.Property("PlaceholderText", "string", "string.Empty")
-				.Property("IsDropDownOpen", "bool", "false")
 				.Property("MaxDropDownHeight", "double", "double.PositiveInfinity")
 			.Class("ItemsControl")
 				.Property("DisplayMemberPath", "string", "string.Empty")
@@ -74,7 +73,7 @@
 			.Class("TimePickerSelector")
 				.Property("Time", "TimeSpan", "DateTime.Now.TimeOfDay")
 				.Property("MinuteIncrement", "int", "1")
-				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
+				.Property("ClockIdentifier", "string", "global::Windows.Globalization.ClockIdentifiers.TwelveHour")
 
 		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 			.Class("SelectorItem")

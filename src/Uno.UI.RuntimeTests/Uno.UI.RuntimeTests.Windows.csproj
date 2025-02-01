@@ -8,6 +8,12 @@
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 		<UseWinUI>true</UseWinUI>
+		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		
+		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
+		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
+
+		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -15,6 +21,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
 	</ItemGroup>
 
@@ -54,13 +61,16 @@
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230913002" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+
+		<!-- https://github.com/NuGet/Home/issues/7344 -->
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
+		<!-- https://github.com/NuGet/Home/issues/7344 -->
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
-		<!-- We remove WebView2 tests, as the installed version of Microsoft.UI.Xaml does not include this control -->
-		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.cs" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -69,6 +79,7 @@
 
 	<PropertyGroup>
 		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml</PageExclusions>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -10,15 +10,6 @@ internal enum HotReloadMode
 	/// <summary>
 	/// Hot reload using Metadata updates
 	/// </summary>
+	/// <remarks>This can be metadata-updates pushed by either VS or the dev-server.</remarks>
 	MetadataUpdates,
-
-	/// <summary>
-	/// Hot Reload using partial updated types discovery
-	/// </summary>
-	Partial,
-
-	/// <summary>
-	/// Hot Reload using XAML reader
-	/// </summary>
-	XamlReader,
 }

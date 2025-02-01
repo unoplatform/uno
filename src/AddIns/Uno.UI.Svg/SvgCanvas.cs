@@ -116,18 +116,19 @@ internal partial class SvgCanvas : SkiaCanvas
 	protected override void OnPaintSurface(SkiaPaintEventArgs e)
 	{
 		var scale = (float)GetScaleFactorForLayoutRounding();
-		e.Surface.Canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
-		e.Surface.Canvas.Clear(SKColors.Transparent);
+		var canvas = e.Surface.Canvas;
+		canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
+		canvas.Clear(SKColors.Transparent);
 		if (_svgImageSource.UseRasterized && _svgProvider.SkBitmap is { } bitmap)
 		{
 			var sourceRect = new SKRect(0, 0, bitmap.Width, bitmap.Height);
 			var destRect = new SKRect(0, 0, (float)_lastArrangeSize.Width, (float)_lastArrangeSize.Height);
-			e.Surface.Canvas.DrawBitmap(bitmap, sourceRect, destRect);
+			canvas.DrawBitmap(bitmap, sourceRect, destRect);
 		}
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			var svgScaleMatrix = CreateScaleMatrix();
-			e.Surface.Canvas.DrawPicture(picture, ref svgScaleMatrix);
+			canvas.DrawPicture(picture, ref svgScaleMatrix);
 		}
 	}
 

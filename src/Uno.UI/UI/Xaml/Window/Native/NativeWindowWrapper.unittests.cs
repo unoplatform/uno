@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -10,13 +11,18 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
+	public NativeWindowWrapper()
+	{
+		RasterizationScale = 1f;
+	}
+
 	public override object NativeWindow => null;
 
-	internal void OnNativeClosed() => RaiseClosed();
+	internal void OnNativeClosed() => RaiseClosing();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void RaiseNativeSizeChanged(double width, double height)
 	{
@@ -24,5 +30,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = bounds;
 		VisibleBounds = bounds;
+		Size = new((int)(bounds.Width * RasterizationScale), (int)(bounds.Height * RasterizationScale));
 	}
 }

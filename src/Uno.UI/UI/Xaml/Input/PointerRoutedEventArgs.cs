@@ -1,15 +1,16 @@
-﻿using Windows.Foundation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Threading;
+using Uno;
+using Uno.UI.Core;
+using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Uno;
-using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -42,8 +43,8 @@ namespace Microsoft.UI.Xaml.Input
 		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
 
 		/// <inheritdoc />
-		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
+		global::Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> (global::Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };
@@ -51,6 +52,8 @@ namespace Microsoft.UI.Xaml.Input
 		internal uint FrameId { get; }
 
 		internal bool CanceledByDirectManipulation { get; set; }
+
+		internal bool IsInjected { get; set; }
 
 		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
@@ -81,13 +84,13 @@ namespace Microsoft.UI.Xaml.Input
 		}
 
 		internal bool IsPointCoordinatesOver(UIElement element)
-			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+			=> new Rect(default, element.ActualSize.ToSize()).Contains(GetCurrentPoint(element).Position);
 
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 
-		Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+		global::Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
 
 		long IDragEventSource.Id => Pointer.UniqueId;
 		uint IDragEventSource.FrameId => FrameId;

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME sönülü</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Ağ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Açıq boz</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Boz</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tünd boz</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Qara</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Mərcan rəngi</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Çəhrayı</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Açıq narıncı</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sarı-şabalıdı</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Açıq sarı</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Açıq yaşıl</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limon rəngi</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Abı</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Səma mavisi</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Açıq firuzəyi</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Solğun mavi</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Açıq mavi</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Buz mavisi</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Bənövşəyi-mavi</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Çəhrayı</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Qırmızı</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Narıncı</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Qəhvəyi</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Qızılı</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Sarı</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Sarı yaşıl</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Yaşıl</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Parlaq yaşıl</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Dəniz mavisi</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Firuzəyi</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Mavi</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Boz-Mavi</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Tünd göy</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Bənövşəyi</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tünd qırmızı</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tünd sarı</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tünd yaşıl</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tünd mavi</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tünd mavi</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tünd bənövşəyi</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Bənövşəyi rəng</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Bağla</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

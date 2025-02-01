@@ -1,7 +1,7 @@
 ﻿#nullable enable
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __IOS__)
+#if !(IS_NATIVE_ELEMENT && __IOS__) && !UNO_HAS_ENHANCED_LIFECYCLE
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 // so avoid check of the '_isLayouted' flag
 #define CHECK_LAYOUTED
@@ -38,15 +38,18 @@ namespace Microsoft.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
+#endif
+
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
-		private bool _hasNewHandler;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
 		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+		private Point? _lastScrollOffsets;
 #if CHECK_LAYOUTED
 		private bool _isLayouted;
 #endif
@@ -55,7 +58,6 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-				_hasNewHandler = true;
 				_effectiveViewportChanged += value;
 				ReconfigureViewportPropagation(isInternal: true);
 			}
@@ -69,9 +71,16 @@ namespace Microsoft.UI.Xaml
 		// ctor (invoked by IFrameworkElement.Initialize())
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
+#if IS_NATIVE_ELEMENT
 			Loaded += ReconfigureViewportPropagationOnLoad;
 			Unloaded += ReconfigureViewportPropagationOnUnload;
+#endif
 		}
+
+#if !IS_NATIVE_ELEMENT && !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__ // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
+		private partial void ReconfigureViewportPropagationPartial()
+			=> ReconfigureViewportPropagation();
+#endif
 
 		/// <summary>
 		/// Indicates if the effective viewport should/will be propagated to/by this element
@@ -83,7 +92,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private void ReconfigureViewportPropagation(
 			bool isInternal = false,
-			IFrameworkElement_EffectiveViewport? child = null
+			IFrameworkElement_EffectiveViewport? child = null,
+			bool isLeavingTree = false
 #if TRACE_EFFECTIVE_VIEWPORT
 			, [CallerMemberName] string? caller = null)
 		{
@@ -92,7 +102,13 @@ namespace Microsoft.UI.Xaml
 		{
 			const string caller = "--unavailable--";
 #endif
-			if (IsLoaded && IsEffectiveViewportEnabled)
+			if (
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				!isLeavingTree
+#else
+				IsLoaded
+#endif
+				&& IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
 				if (IsLoaded)
@@ -108,8 +124,6 @@ namespace Microsoft.UI.Xaml
 					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
 					if (parent is null)
 					{
-						global::System.Diagnostics.Debug.Assert(IsVisualTreeRoot);
-
 						// We are the root of the visual tree, we update the effective viewport
 						// in order to initialize the _parentViewport of children.
 						PropagateEffectiveViewportChange(isInitial: true, isInternal: isInternal);
@@ -198,11 +212,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (!isInitial && viewport == _parentViewport)
-			{
-				return;
-			}
-
 			_parentViewport = viewport;
 			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
@@ -210,7 +219,7 @@ namespace Microsoft.UI.Xaml
 #if IS_NATIVE_ELEMENT
 		private bool IsScrollPort { get; } = false;
 		private bool IsVisualTreeRoot { get; } = false;
-		private Windows.Foundation.Point ScrollOffsets { get; } = default;
+		private global::Windows.Foundation.Point ScrollOffsets { get; } = default;
 
 		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
@@ -221,17 +230,29 @@ namespace Microsoft.UI.Xaml
 			PropagateEffectiveViewportChange();
 		}
 #else
-		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
 
+#if !UNO_REFERENCE_API
+		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
+#endif
+
+#if __SKIA__
+		private protected sealed override void OnViewportUpdated() // a.k.a. OnLayoutUpdated / OnClippingApplied
+		{
+			base.OnViewportUpdated();
+#else
 		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
 			base.OnViewportUpdated(viewport);
+#endif
 
 			// The 'viewport' (a.k.a. the clipping) is actually not used to compute the EffectiveViewport ...
 			// except for element flagged as ScrollHost!
 			// For now we are using the LayoutSlot + ScrollOffsets (which is internal only!), but we should use that 'viewport'.
 
+#if CHECK_LAYOUTED
 			_isLayouted = true;
+#endif
+
 			PropagateEffectiveViewportChange();
 		}
 
@@ -281,10 +302,14 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// The visible window of the SCP
-				// TODO: We should constrains the clip only on axis on which we can scroll
+				// TODO: We should constrain the clip to only the axes on which we can scroll
+#if __SKIA__ // The viewport on an IsScrollPort element should not be affected by its ScrollOffsets. Skia does this correctly, but the other platforms need this inaccuracy due to the way TransformToVisual works (which is only correct on skia).
+				var scrollport = LayoutInformation.GetLayoutSlot(this);
+#else
 				var scrollport = new Rect(
 					new Point(ScrollOffsets.X, ScrollOffsets.Y),
 					LayoutInformation.GetLayoutSlot(this).Size);
+#endif
 
 				if (viewport.IsInfinite)
 				{
@@ -355,20 +380,19 @@ namespace Microsoft.UI.Xaml
 				+ $"| reason: {caller} "
 				+ $"| children: {_childrenInterestedInViewportUpdates?.Count ?? 0}");
 
-			if (viewportUpdated
-				&& (
-					!isInternal // We don't want to raise the event when we are only initializing the tree due to a new event handler somewhere in sub tree
-					|| _hasNewHandler // but if we have a new local handler, we do need to raise the event!
-				))
+			if (viewportUpdated)
 			{
-				_hasNewHandler = false;
-
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#else
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#endif
 			}
 
-			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
+			// the ScrollOffsets check is only relevant on skia. It will only be true when viewportUpdated is also true on other platforms.
+			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
 				_isEnumeratingChildrenInterestedInViewportUpdates = true;
 				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
@@ -385,7 +409,11 @@ namespace Microsoft.UI.Xaml
 					enumerator.Dispose();
 				}
 			}
+
+			_lastScrollOffsets = ScrollOffsets;
 		}
+
+		internal void RaiseEffectiveViewportChanged(EffectiveViewportChangedEventArgs args) => _effectiveViewportChanged?.Invoke(this, args);
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)

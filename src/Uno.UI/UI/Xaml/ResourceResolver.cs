@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI
 {
@@ -82,7 +83,10 @@ namespace Uno.UI
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static object ResolveResourceStatic(object key, Type type, object context = null)
+		public static object ResolveResourceStatic(
+			object key,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
 			{
@@ -92,7 +96,7 @@ namespace Uno.UI
 				}
 				else
 				{
-					var convertedValue = BindingPropertyHelper.Convert(() => type, value);
+					var convertedValue = BindingPropertyHelper.Convert(type, value);
 					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
 					{
 						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{type}'");
@@ -289,6 +293,7 @@ namespace Uno.UI
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			// If the invocation comes from XAML and from theme resources, resolution
@@ -300,7 +305,7 @@ namespace Uno.UI
 			// Set initial value based on statically-available top-level resources.
 			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
-				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
+				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
@@ -379,7 +384,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
-		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
@@ -390,9 +395,11 @@ namespace Uno.UI
 
 				var source = sourcesEnumerator.Current;
 
-				var dictionary = (source.Target as FrameworkElement)?.Resources
+				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;
-				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+
+				if (dictionary != null
+					&& dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}

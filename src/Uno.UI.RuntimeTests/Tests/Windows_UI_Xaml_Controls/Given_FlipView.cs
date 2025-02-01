@@ -17,6 +17,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Input.Preview.Injection;
+using Uno.Extensions;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -58,10 +61,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Given_Infinite_Width()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					new FlipView()
+					{
+						Height = 100,
+						Items =
+						{
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Red),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Green),
+							},
+							new Grid
+							{
+								Background = new SolidColorBrush(Colors.Blue),
+							},
+						}
+					}
+				},
+			};
+
+			await UITestHelper.Load(stackPanel);
+			var bitmap = await UITestHelper.ScreenShot(stackPanel);
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
+			Assert.AreEqual(redBounds.Width, bitmap.Width - 1);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Green);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new(default, new(bitmap.Width, bitmap.Height)), Microsoft.UI.Colors.Blue);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS, will be handled on #12780")]
 #endif
 		public async Task When_Background_Color()
 		{
@@ -69,35 +113,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.
 			}
+
 			var parent = new Border()
 			{
 				Width = 300,
 				Height = 300,
 				Background = new SolidColorBrush(Colors.Green)
 			};
-
 			var SUT = new FlipView
 			{
 				Background = new SolidColorBrush(Colors.Red),
 				Width = 200,
 				Height = 200
 			};
-
 			parent.Child = SUT;
 
 			WindowHelper.WindowContent = parent;
-
 			await WindowHelper.WaitForLoaded(parent);
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = parent.GetRelativeCoords(SUT);
-			var centerX = sample.X + sample.Width / 2;
-			var centerY = sample.Y + sample.Height / 2;
+			var coords = parent.GetRelativeCoords(SUT); // logical
+			var center = new Point(coords.CenterX, coords.CenterY); // logical
+#if __ANDROID__
+			// droid-specific: the snapshot size is in physical size, NOT logical
+			// so the coords needs to be converted into physical to be against the snapshot.
+			center = ViewHelper.LogicalToPhysicalPixels(center); // physical
+#endif
 
-			ImageAssert.HasPixels(
-				snapshot,
-				ExpectedPixels.At(centerX, centerY).Named("center with color").Pixel(Colors.Red));
+			ImageAssert.HasPixels(snapshot, ExpectedPixels
+				.At((int)center.X, (int)center.Y)
+				.Named("center with color")
+				.Pixel(Colors.Red)
+			);
 		}
 
 		[TestMethod]
@@ -451,6 +499,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ScrollWheel()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+			mouse.MoveTo(rect.GetCenter().X, rect.GetCenter().Y);
+			const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200 + 50; // 50ms margin to reduce flakiness
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelDown();
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(1, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
+			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
+			mouse.WheelUp();
+			Assert.AreEqual(0, flipView.SelectedIndex);
+		}
+#endif
 	}
 
 #if __SKIA__ || __WASM__

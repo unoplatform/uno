@@ -1,5 +1,10 @@
 steps:
 
+  - bash: |
+      rm global.json
+      cp build/ci/net9/global.json global.json
+    displayName: "Using .NET 9 global.json"
+
   - task: UseDotNet@2
     displayName: 'Use .NET SDK'
     retryCountOnTaskFailure: 3

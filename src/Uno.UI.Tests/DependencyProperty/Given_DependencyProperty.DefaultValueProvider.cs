@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.BinderTests;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace Uno.UI.Tests.DependencyPropertyTests
 {
@@ -17,7 +19,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new DefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(3, value);
 		}
 
@@ -26,7 +28,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new DefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.OtherProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Other;
 			Assert.AreEqual(0, value);
 		}
 
@@ -35,7 +37,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new InheritedDefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(17, value);
 		}
 
@@ -44,7 +46,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new InheritedDefaultValueProviderSample2();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(3, value); // GetDefaultValue should apply
 		}
 
@@ -53,22 +55,19 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var expected = 42;
 			var defaultValueTest = new DefaultValueTest();
-			Assert.AreEqual(expected, defaultValueTest.GetPrecedenceSpecificValue(DefaultValueTest.TestValueProperty, DependencyPropertyValuePrecedences.DefaultValue));
 			Assert.AreEqual(expected, defaultValueTest.GetValue(DefaultValueTest.TestValueProperty));
-			Assert.AreEqual(expected, (defaultValueTest as IDependencyObjectStoreProvider).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).GetDefaultValue());
+			Assert.AreEqual(expected, (defaultValueTest as IDependencyObjectStoreProvider).Store.GetDefaultValue(DefaultValueTest.TestValueProperty));
 			Assert.AreEqual(expected, defaultValueTest.TestValue);
 		}
 
 		[TestMethod]
-		public void When_SetDefaultValue()
+		public void When_SetParentInGetDefaultValue()
 		{
-			var expected = 24;
-			var defaultValueTest = new DefaultValueTest();
-			((IDependencyObjectStoreProvider)defaultValueTest).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).SetDefaultValue(expected);
-			Assert.AreEqual(expected, defaultValueTest.GetPrecedenceSpecificValue(DefaultValueTest.TestValueProperty, DependencyPropertyValuePrecedences.DefaultValue));
-			Assert.AreEqual(expected, defaultValueTest.GetValue(DefaultValueTest.TestValueProperty));
-			Assert.AreEqual(expected, ((IDependencyObjectStoreProvider)defaultValueTest).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).GetDefaultValue());
-			Assert.AreEqual(expected, defaultValueTest.TestValue);
+			DPCollectionDefaultValue value = new DPCollectionDefaultValue();
+			// The issue happens inside TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
+			// where it initially starts off with 16 entries, but setting the child collection
+			// as a child makes it expand to 32 entries, which caused the already-in-progress code to lose reference.
+			value.GetValue(DPCollectionDefaultValue.ChildCollectionProperty);
 		}
 	}
 
@@ -109,6 +108,30 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 			}
 
 			return base.GetDefaultValue2(property, out value);
+		}
+	}
+
+	internal partial class DPCollectionDefaultValue : UIElement
+	{
+		public IList<DependencyObject> ChildCollection
+		{
+			get { return (IList<DependencyObject>)GetValue(ChildCollectionProperty); }
+			set { SetValue(ChildCollectionProperty, value); }
+		}
+
+		public static readonly DependencyProperty ChildCollectionProperty =
+			DependencyProperty.Register("ChildCollection", typeof(IList<DependencyObject>), typeof(DPCollectionDefaultValue), new PropertyMetadata(null));
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == ChildCollectionProperty)
+			{
+				defaultValue = new DependencyObjectCollection();
+				defaultValue.SetParent(this);
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 	}
 
