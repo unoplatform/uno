@@ -3825,6 +3825,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
 		}
 
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
+		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
+		{
+			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "longer text",
+				TextWrapping = TextWrapping.Wrap,
+				AcceptsReturn = true
+			};
+
+			SUT.KeyUp += (_, e) =>
+			{
+				SUT.Text = "shorter";
+				e.Handled = true;
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
