@@ -899,7 +899,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using var _ = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
 
 			// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
-			if (!_isHotReloadEnabled && CurrentScope.Subclasses is not { Count: > 0 } && CurrentScope.Subclasses2 is not { Count: > 0 })
+			if (!_isHotReloadEnabled && CurrentScope.Subclasses is not { Count: > 0 } && CurrentScope.SubclassBuilders is not { Count: > 0 })
 			{
 				return;
 			}
@@ -980,7 +980,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				foreach (var subClass in CurrentScope.Subclasses2)
+				foreach (var subClass in CurrentScope.SubclassBuilders)
 				{
 					subClass(writer);
 					writer.AppendLine();
@@ -4026,7 +4026,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string RegisterChildSubclass(string name, Action<string, IIndentedStringBuilder> build)
 		{
 			var fullName = $"{CurrentScope.SubClassesRoot}.{name}";
-			CurrentScope.Subclasses2.Add(writer => build(name, writer));
+			CurrentScope.SubclassBuilders.Add(writer => build(name, writer));
 
 			return fullName;
 		}

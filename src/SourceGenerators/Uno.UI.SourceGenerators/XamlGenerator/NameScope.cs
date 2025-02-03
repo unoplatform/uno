@@ -46,7 +46,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public Dictionary<string, Subclass> Subclasses { get; } = [];
 
-		public List<Action<IIndentedStringBuilder>> Subclasses2 { get; } = [];
+		public List<Action<IIndentedStringBuilder>> SubclassBuilders { get; } = [];
 
 		public List<ComponentDefinition> Components { get; } = [];
 
