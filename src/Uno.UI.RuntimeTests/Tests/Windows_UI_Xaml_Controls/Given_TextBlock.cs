@@ -19,6 +19,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -609,6 +610,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(SUT.XamlRoot, inline.XamlRoot);
 			}
 		}
+
+#if __WASM__
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		public async Task When_Changing_Text_Through_Inlines()
+		{
+			var SUT = new TextBlock { Text = "Initial Text" };
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
+			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
+
+			SUT.Inlines.Clear();
+			SUT.Inlines.Add(new Run { Text = "Updated Text" });
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
+
+			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
+		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
