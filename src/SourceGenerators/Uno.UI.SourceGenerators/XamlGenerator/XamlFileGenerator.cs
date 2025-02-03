@@ -3582,17 +3582,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.
 			var template = IsMemberInsideFrameworkTemplate(member.Owner);
-			var eventSource = (template.isInside, _xClassName) switch
+			var targetInstance = (template.isInside, _xClassName) switch
 			{
 				(false, _) => "this",
 				(_, not null) => CurrentResourceOwnerName,
 				_ => null
 			};
-			if (eventSource is null)
+			if (targetInstance is null)
 			{
 				GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
 				return;
 			}
+			EnsureXClassName();
 
 			var parentApply = (writer as XamlLazyApplyBlockIIndentedStringBuilder)?.MethodName;
 			var parametersWithType = delegateSymbol
@@ -3615,89 +3616,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				CurrentScope.XBindExpressions.Add(bind);
 
-				var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
-
-				if (eventTarget == null)
+				var path = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
+				if (path is null)
 				{
 					throw new InvalidOperationException("x:Bind event path cannot by empty");
 				}
 
-				var parts = eventTarget.Split('.').ToList();
-				var isStaticTarget = parts.FirstOrDefault()?.Contains(":") ?? false;
-
-				eventTarget = RewriteNamespaces(eventTarget);
-
-				// x:Bind to second-level method generates invalid code
-				// sanitizing member.Member.Name so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
-				var sanitizedEventTarget = SanitizeResourceName(eventTarget);
-
-				(string target, string weakReference, IMethodSymbol targetMethod) buildTargetContext()
+				INamedTypeSymbol GetTargetType()
 				{
-					IMethodSymbol FindTargetMethodSymbol(INamedTypeSymbol? sourceType)
-					{
-						if (eventTarget.Contains("."))
-						{
-							ITypeSymbol? currentType = sourceType;
-
-							if (isStaticTarget)
-							{
-								// First part is a type for static method binding and should
-								// overide the original source type
-								currentType = GetType(RewriteNamespaces(parts[0]));
-								parts.RemoveAt(0);
-							}
-
-							for (var i = 0; i < parts.Count - 1; i++)
-							{
-								var next = currentType.GetAllMembersWithName(RewriteNamespaces(parts[i])).FirstOrDefault();
-
-								currentType = next switch
-								{
-									IFieldSymbol fs => fs.Type,
-									IPropertySymbol ps => ps.Type,
-									null => throw new InvalidOperationException($"Unable to find member {parts[i]} on type {currentType}"),
-									_ => throw new InvalidOperationException($"The field {next.Name} is not supported for x:Bind event binding")
-								};
-							}
-
-							var method = currentType?.GetFirstMethodWithName(parts.Last(), includeBaseTypes: true)
-								?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
-
-							return method;
-						}
-						else
-						{
-							return sourceType?.GetFirstMethodWithName(eventTarget, includeBaseTypes: true)
-								?? throw new InvalidOperationException($"Failed to find {eventTarget} on {sourceType}");
-						}
-					}
-
 					if (template.isInside)
 					{
 						var dataTypeObject = FindMember(template.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
 						if (dataTypeObject?.Value == null)
 						{
-							throw new Exception($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
+							throw new Exception("Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
 						}
 
-						var dataTypeSymbol = GetType(dataTypeObject.Value.ToString() ?? "");
-
-						return (
-							$"({member.Member.Name}_{sanitizedEventTarget}_That.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {dataTypeSymbol.GetFullyQualifiedTypeIncludingGlobal()}",
-
-							// Use of __rootInstance is required to get the top-level DataContext, as it may be changed
-							// in the current visual tree by the user.
-							$"(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-							FindTargetMethodSymbol(dataTypeSymbol)
-						);
+						return GetType(dataTypeObject.Value.ToString() ?? "");
 					}
-					else if (_xClassName?.Symbol != null)
+					else if (_xClassName?.Symbol is not null)
 					{
-						return (
-							$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_xClassName}",
-							$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-							FindTargetMethodSymbol(_xClassName.Symbol)
-						);
+						return _xClassName.Symbol;
 					}
 					else
 					{
@@ -3705,10 +3644,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var targetContext = buildTargetContext();
-				var targetMethodHasParameters = targetContext.targetMethod?.Parameters.Any() ?? false;
+				var targetType = GetTargetType(); // The type of the target object onto which the x:Bind path should be resolved
+				var targetInstanceWeakRef = template.isInside
+					// Use of __rootInstance is required to get the top-level DataContext, as it may be changed in the current visual tree by the user.
+					? "(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference"
+					: $"({targetInstance} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference";
 
-				EnsureXClassName();
+				var method = ResolveXBindMethod(targetType, path);
+				var invokeTarget = (method.isStatic, template.isInside) switch
+				{
+					(true, _) => method.declaringType.GetFullyQualifiedTypeIncludingGlobal(), // If the method is static, the target onto which the method should be invoked is the declaringType itself
+					(_, true) => $"((target.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {targetType.GetFullyQualifiedTypeIncludingGlobal()})?",
+					_ => $"(target.Target as {targetType.GetFullyQualifiedTypeIncludingGlobal()})?"
+				};
 
 				var handler = RegisterChildSubclass(
 					$"{parentApply}_{member.Member.Name}_Handler",
@@ -3717,7 +3665,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								public void Invoke({{parametersWithType.JoinBy(", ")}})
 								{
-									(target.Target as {{_xClassName}})?.{{eventTarget}}({{(targetMethodHasParameters ? parameters.JoinBy(", ") : "")}});
+									{{invokeTarget}}.{{method.path}}({{(method.symbol.Parameters.Any() ? parameters.JoinBy(", ") : "")}});
 								}
 							}
 						"""));
@@ -3736,15 +3684,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									return;
 								}
 
-								{{componentDefinition.MemberName}}.{{member.Member.Name}} += new {{handler}}({{targetContext.weakReference}}).Invoke;
+								{{componentDefinition.MemberName}}.{{member.Member.Name}} += new {{handler}}({{targetInstanceWeakRef}}).Invoke;
 								__is{{name}}d = true;
 							}
 						"""));
 			}
 			else
 			{
-				EnsureXClassName();
-
 				//
 				// Generate a sub-class that uses a weak ref, so the owner is not being held onto by the delegate.
 				// We can use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
@@ -3762,8 +3708,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 							}
 						"""));
-				writer.AppendLineIndented($"var {member.Member.Name}_Handler = new {subClass}(({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);");
+				writer.AppendLineIndented($"var {member.Member.Name}_Handler = new {subClass}(({targetInstance} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);");
 				writer.AppendLineIndented($"/* second level */ {closureName}.{member.Member.Name} += {member.Member.Name}_Handler.Invoke;");
+			}
+		}
+
+		private (string path, ITypeSymbol declaringType, IMethodSymbol symbol, bool isStatic) ResolveXBindMethod(INamedTypeSymbol contextType, string path)
+		{
+			if (path.Contains("."))
+			{
+				var rewrittenPath = new StringBuilder();
+				ITypeSymbol currentType = contextType;
+
+				var parts = path.Split('.').ToList();
+				var isStatic = parts.FirstOrDefault()?.Contains(":") ?? false;
+				if (isStatic)
+				{
+					// First part is a type for static method binding and should override the original source type
+					currentType = contextType = GetType(RewriteNamespaces(parts[0]));
+					parts.RemoveAt(0);
+				}
+
+				for (var i = 0; i < parts.Count - 1; i++)
+				{
+					var memberName = RewriteNamespaces(parts[i]);
+					var next = currentType.GetAllMembersWithName(memberName).FirstOrDefault();
+
+					currentType = next switch
+					{
+						IFieldSymbol fs => fs.Type,
+						IPropertySymbol ps => ps.Type,
+						null => throw new InvalidOperationException($"Unable to find member {parts[i]} on type {currentType}"),
+						_ => throw new InvalidOperationException($"The field {next.Name} is not supported for x:Bind event binding")
+					};
+
+					rewrittenPath.Append(memberName);
+					rewrittenPath.Append("?.");
+				}
+
+				var method = currentType.GetFirstMethodWithName(parts.Last(), includeBaseTypes: true)
+					?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
+
+				rewrittenPath.Append(method.Name);
+
+				return (rewrittenPath.ToString(), contextType, method, isStatic);
+			}
+			else
+			{
+				var method = contextType.GetFirstMethodWithName(path, includeBaseTypes: true)
+					?? throw new InvalidOperationException($"Failed to find {path} on {contextType}");
+
+				return (method.Name, contextType, method, false);
 			}
 		}
 
