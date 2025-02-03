@@ -218,3 +218,18 @@ An app bundle (.app) can be submitted to Apple's [App Store](https://www.apple.c
 
 > [!NOTE]
 > Notarization of the app bundle is **not** required as the Apple App Store will be taking care of your app binary distribution.
+
+## Troubleshooting
+
+### Apple Developer Account
+
+An active Apple Developer Account is **required** for code signing and notarization.
+
+An error, such as the one below, means that the Apple Developer Account is not active or the necessary agreements have not been signed.
+
+```text
+Uno.Sdk.Extras.Publish.MacOS.targets(75,3): error : Failed to submit tmpcZQgA4.zip to Apple's notarization service. Exit code: 1: Error: HTTP status code: 403. A required agreement is missing or has expired. This request requires an in-effect agreement that has not been signed or has expired. Ensure your team has signed the necessary legal agreements and that they are not expired.
+```
+
+Try logging into your [Apple Developer Account](https://developer.apple.com/account) to see if any action is required to activate your account.
+Once re-enabled it might take a few minutes (for the update to propagate) before you'll be able to sign or notarize your app bundle.
