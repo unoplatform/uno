@@ -9,6 +9,8 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
+using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -57,11 +59,11 @@ partial class SvgImageSource
 
 		var imageData = await GetSvgImageDataAsync(ct);
 
-		if (imageData.Kind == ImageDataKind.ByteArray &&
-			imageData.ByteArray is not null &&
-			await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
+		if (imageData is { Kind: ImageDataKind.ByteArray, ByteArray: not null } &&
+			await _svgProvider.TryLoadSvgDataAsPictureAsync(imageData.ByteArray) is { } picture)
 		{
-			return imageData;
+			var sourceSize = _svgProvider.SourceSize;
+			return ImageData.FromCompositionSurface(new SkiaCompositionSurface(SKImage.FromPicture(picture, new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height))));
 		}
 
 		return ImageData.Empty;

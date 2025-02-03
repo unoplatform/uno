@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using SkiaSharp;
 
 namespace Uno.UI.Xaml.Media.Imaging.Svg;
 
@@ -24,6 +25,8 @@ public interface ISvgProvider
 	event EventHandler? SourceLoaded;
 
 	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
+
+	Task<SKPicture?> TryLoadSvgDataAsPictureAsync(byte[] imageData);
 
 	void Unload();
 }

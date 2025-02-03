@@ -96,6 +96,22 @@ public partial class SvgProvider : ISvgProvider
 
 	public
 #if !__NETSTD_REFERENCE__
+		async
+#endif
+		Task<SkiaSharp.SKPicture?> TryLoadSvgDataAsPictureAsync(byte[] svgBytes)
+	{
+		if (await TryLoadSvgDataAsync(svgBytes))
+		{
+			return _skSvg!.Picture;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public
+#if !__NETSTD_REFERENCE__
 	async
 #endif
 	Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
