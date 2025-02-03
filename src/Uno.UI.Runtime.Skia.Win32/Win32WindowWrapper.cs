@@ -335,12 +335,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		this.LogTrace()?.Trace($"Adjusting window dimensions to {windowRect.ToRect()} and client area dimensions to {clientRect.ToRect()}");
 
-		// For things to work correctly with layoutting, Bounds and VisibleBounds need to start at (0,0) regardless of
-		// the reported top-left corner by Windows.
+		// For things to work correctly with layoutting, Bounds and VisibleBounds need to start at (0,0) and have the
+		// same size regardless of the reported top-left corner by Windows.
 		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
 		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
-		Bounds = new Rect(0, 0, windowRect.Width / scale, windowRect.Height / scale);
-		VisibleBounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+		VisibleBounds = Bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
 
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
