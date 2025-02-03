@@ -1100,7 +1100,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var xBindEventHandler in xBindEventsHandlers)
 			{
-				writer.AppendLineIndented($"{prefix}{xBindEventHandler.MethodName}();");
+				writer.AppendLineIndented($"{prefix}{xBindEventHandler.MethodName}(true);");
+			}
+		}
+
+		private void BuildxBindEventHandlerUnInitializers(IIndentedStringBuilder writer, List<XBindEventInitializerDefinition> xBindEventsHandlers, string prefix = "")
+		{
+			foreach (var xBindEventHandler in xBindEventsHandlers)
+			{
+				writer.AppendLineIndented($"{prefix}{xBindEventHandler.MethodName}(false);");
 			}
 		}
 
@@ -3677,10 +3685,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{{Field("bool", $"__is{name}d")}}
 
 							[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-							private void {{name}}()
+							private void {{name}}(bool init)
 							{
 								if (__is{{name}}d || {{componentDefinition.MemberName}} is null)
 								{
+									if (!init)
+									{
+										__is{{name}}d = false;
+										// Note: {{componentDefinition.MemberName}} will be collected, no needs to unsubscribe
+									}
+									
 									return;
 								}
 
@@ -6513,6 +6527,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											foreach (var elementName in elementNames)
 											{
 												innerWriter.AppendLineIndented($"that._{elementName}Subject.ElementInstance = null;");
+											}
+
+											if (CurrentXLoadScope is not null)
+											{
+												BuildxBindEventHandlerUnInitializers(innerWriter, CurrentXLoadScope.xBindEventsHandlers, "that.");
 											}
 										}
 									}

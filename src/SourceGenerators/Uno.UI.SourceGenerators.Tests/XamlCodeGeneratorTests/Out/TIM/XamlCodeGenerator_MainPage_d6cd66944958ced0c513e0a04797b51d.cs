@@ -135,10 +135,16 @@ namespace TestRepro
 			private bool __is__ApplyMethod_0_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_0_Click_Initialize()
+			private void __ApplyMethod_0_Click_Initialize(bool init)
 			{
 				if (__is__ApplyMethod_0_Click_Initialized || _component_0 is null)
 				{
+					if (!init)
+					{
+						__is__ApplyMethod_0_Click_Initialized = false;
+						// Note: _component_0 will be collected, no needs to unsubscribe
+					}
+					
 					return;
 				}
 		
@@ -149,10 +155,16 @@ namespace TestRepro
 			private bool __is__ApplyMethod_1_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_1_Click_Initialize()
+			private void __ApplyMethod_1_Click_Initialize(bool init)
 			{
 				if (__is__ApplyMethod_1_Click_Initialized || _component_1 is null)
 				{
+					if (!init)
+					{
+						__is__ApplyMethod_1_Click_Initialized = false;
+						// Note: _component_1 will be collected, no needs to unsubscribe
+					}
+					
 					return;
 				}
 		
@@ -163,10 +175,16 @@ namespace TestRepro
 			private bool __is__ApplyMethod_2_Click_Initialized ;
 		
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private void __ApplyMethod_2_Click_Initialize()
+			private void __ApplyMethod_2_Click_Initialize(bool init)
 			{
 				if (__is__ApplyMethod_2_Click_Initialized || _component_2 is null)
 				{
+					if (!init)
+					{
+						__is__ApplyMethod_2_Click_Initialized = false;
+						// Note: _component_2 will be collected, no needs to unsubscribe
+					}
+					
 					return;
 				}
 		
@@ -186,7 +204,7 @@ namespace TestRepro
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
-						(target.Target as global::TestRepro.MainPage)?.P1.Button_Click(sender, e);
+						(target.Target as global::TestRepro.MainPage)?.P1?.Button_Click(sender, e);
 					}
 				}
 
@@ -194,7 +212,7 @@ namespace TestRepro
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
-						(target.Target as global::TestRepro.MainPage)?.P2.Button_Click(sender, e);
+						(target.Target as global::TestRepro.MainPage)?.P2?.Button_Click(sender, e);
 					}
 				}
 
@@ -202,7 +220,7 @@ namespace TestRepro
 				{
 					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
 					{
-						(target.Target as global::TestRepro.MainPage)?.P3.Button_Click(sender, e);
+						(target.Target as global::TestRepro.MainPage)?.P3?.Button_Click(sender, e);
 					}
 				}
 
@@ -289,20 +307,20 @@ namespace TestRepro
 			{
 				var owner = Owner;
 				owner._component_0.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize();
-				owner.__ApplyMethod_1_Click_Initialize();
-				owner.__ApplyMethod_2_Click_Initialize();
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_1.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize();
-				owner.__ApplyMethod_1_Click_Initialize();
-				owner.__ApplyMethod_2_Click_Initialize();
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_2.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize();
-				owner.__ApplyMethod_1_Click_Initialize();
-				owner.__ApplyMethod_2_Click_Initialize();
-				owner.__ApplyMethod_0_Click_Initialize();
-				owner.__ApplyMethod_1_Click_Initialize();
-				owner.__ApplyMethod_2_Click_Initialize();
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
