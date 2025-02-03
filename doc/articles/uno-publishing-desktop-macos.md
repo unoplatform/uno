@@ -232,4 +232,4 @@ Uno.Sdk.Extras.Publish.MacOS.targets(75,3): error : Failed to submit tmpcZQgA4.z
 ```
 
 Try logging into your [Apple Developer Account](https://developer.apple.com/account) to see if any action is required to activate your account.
-Once re-enabled it might take a few minutes (for the update to propagate) before you'll be able to sign or notarize your app bundle.
+Once re-enabled, it might take a few minutes (for the update to propagate) before you can sign or notarize your app bundle.
