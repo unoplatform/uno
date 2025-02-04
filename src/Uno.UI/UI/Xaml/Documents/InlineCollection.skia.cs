@@ -443,6 +443,8 @@ namespace Microsoft.UI.Xaml.Documents
 			_invalidationPending = true;
 		}
 
+		private static SKPaint _spareDrawPaint = new SKPaint();
+
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
@@ -500,7 +502,10 @@ namespace Microsoft.UI.Xaml.Documents
 					var inline = segment.Inline;
 					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
-					using var paintDisposable = SkiaHelper.GetTempSKPaint(out var paint);
+					var paint = _spareDrawPaint;
+
+					paint.Reset();
+
 					paint.TextEncoding = SKTextEncoding.Utf16;
 					paint.IsStroke = false;
 					paint.IsAntialias = true;

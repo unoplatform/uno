@@ -81,7 +81,6 @@ public partial class ContainerVisual : Visual
 			return false;
 		}
 
-		dst.Rewind();
 		var clipRect = rect.ToSKRect();
 		dst.AddRect(clipRect);
 		if (isAncestorClip)
@@ -97,33 +96,35 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
+	private static SKPath _sparePrePaintingClippingPath = new SKPath();
+
 	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
+		var prePaintingClipPath = _sparePrePaintingClippingPath;
+
+		prePaintingClipPath.Rewind();
+
 		if (base.GetPrePaintingClipping(dst))
 		{
-			using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
+			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
-				{
-					dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
-				}
-				return true;
+				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
 			}
+
+			return true;
 		}
 		else
 		{
-			using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
+			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
-				{
-					dst.Reset();
-					dst.AddPath(prePaintingClipPath);
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				dst.Reset();
+				dst.AddPath(prePaintingClipPath);
+
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}

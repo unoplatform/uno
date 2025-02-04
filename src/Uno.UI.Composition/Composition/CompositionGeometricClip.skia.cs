@@ -39,7 +39,7 @@ partial class CompositionGeometricClip
 				var path = geometrySource.Geometry;
 				if (!TransformMatrix.IsIdentity)
 				{
-					using var _ = SkiaHelper.GetTempSKPath(out var transformedPath);
+					var transformedPath = new SKPath();
 					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
 					path = transformedPath;
 				}

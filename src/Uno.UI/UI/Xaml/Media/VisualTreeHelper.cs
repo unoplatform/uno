@@ -476,6 +476,10 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
+#if __SKIA__
+		private static SkiaSharp.SKPath _spareViewBoxPath = new SkiaSharp.SKPath();
+#endif
+
 		/// <param name="position">
 		/// On skia: The absolute position relative to the window origin.
 		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
@@ -524,13 +528,13 @@ namespace Microsoft.UI.Xaml.Media
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
 			Rect clippingBounds;
-			using (SkiaHelper.GetTempSKPath(out var viewBoxPath))
-			{
-				clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
-					? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
-					: Rect.Infinite;
-			}
+			var viewBoxPath = _spareViewBoxPath;
 
+			viewBoxPath.Rewind();
+
+			clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
+				? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
+				: Rect.Infinite;
 
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{

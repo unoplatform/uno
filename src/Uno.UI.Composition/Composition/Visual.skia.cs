@@ -248,6 +248,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		canvas.Restore();
 	}
 
+	private static SKPath _spareRenderPath = new SKPath();
+
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
@@ -273,12 +275,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			using (SkiaHelper.GetTempSKPath(out var preClip))
+			var preClip = _spareRenderPath;
+
+			preClip.Rewind();
+
+			if (GetPrePaintingClipping(preClip))
 			{
-				if (GetPrePaintingClipping(preClip))
-				{
-					canvas.ClipPath(preClip, antialias: true);
-				}
+				canvas.ClipPath(preClip, antialias: true);
 			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
