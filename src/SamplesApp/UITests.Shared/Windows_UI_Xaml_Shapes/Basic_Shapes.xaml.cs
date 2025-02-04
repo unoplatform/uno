@@ -273,7 +273,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		}
 
-		private async
+		private
 #if __SKIA__
 		void
 #else
