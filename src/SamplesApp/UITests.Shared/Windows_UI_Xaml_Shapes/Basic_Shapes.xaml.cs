@@ -273,7 +273,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		}
 
-		private
+		private async
 #if __SKIA__
 		void
 #else
@@ -323,10 +323,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			_root.Visibility = Visibility.Visible;
 			_testZone.Child = null;
-#if !__SKIA__
-			return Task.CompletedTask;
-#endif
 		}
+
 		public string RunTests(string testNames)
 		{
 			TestResult = "";
