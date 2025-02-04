@@ -30,6 +30,12 @@
 		<ProjectCapability Include="WindowsXamlResourceDictionary"/>
 		<ProjectCapability Include="WindowsXamlUserControl"/>
 		<ProjectCapability Include="WindowsUniversalMultiViews"/>
+
+		<!-- 
+		Allow VS to start using a single TFM, instead of building all available TFMs when starting a debugging session
+		Note that this capability must be defined on all TFMs to be effectively enabled.
+		-->
+		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFrameworks)' != '' AND ( $(TargetFrameworks.Contains('-ios')) OR $(TargetFrameworks.Contains('-android')) OR $(TargetFrameworks.Contains('-catalyst')) )">
