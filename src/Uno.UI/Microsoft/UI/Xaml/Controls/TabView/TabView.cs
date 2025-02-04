@@ -36,7 +36,7 @@ using Microsoft.UI.Windowing;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.UI.Content;
 using Windows.Graphics;
-using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs; // Required for Android to avoid clashes.
+using MUXDragEventArgs = Microsoft.UI.Xaml.DragEventArgs; // Required for Android to avoid clashes.
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -1027,12 +1027,12 @@ public partial class TabView : Control
 		UpdateBottomBorderLineVisualStates();
 	}
 
-	private void OnListViewDragOver(object sender, DragEventArgs args)
+	private void OnListViewDragOver(object sender, MUXDragEventArgs args)
 	{
 		TabStripDragOver?.Invoke(this, args);
 	}
 
-	void OnListViewDrop(object sender, DragEventArgs args)
+	void OnListViewDrop(object sender, MUXDragEventArgs args)
 	{
 		if (!args.Handled)
 		{
@@ -1042,7 +1042,7 @@ public partial class TabView : Control
 		UpdateIsItemDraggedOver(false);
 	}
 
-	private void OnListViewDragEnter(object sender, DragEventArgs args)
+	private void OnListViewDragEnter(object sender, MUXDragEventArgs args)
 	{
 		// DragEnter can occur when we're dragging an item from within this TabView,
 		// which will be handled internally.  In that case, we don't want to do anything here.
@@ -1060,7 +1060,7 @@ public partial class TabView : Control
 		UpdateIsItemDraggedOver(true);
 	}
 
-	private void OnListViewDragLeave(object sender, DragEventArgs args)
+	private void OnListViewDragLeave(object sender, MUXDragEventArgs args)
 	{
 		UpdateIsItemDraggedOver(false);
 	}
