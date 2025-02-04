@@ -403,6 +403,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							BuildXBindTryGetDeclarations(writer);
 						}
 					}
+
+					if (_isHotReloadEnabled && Generation.IOSViewSymbol.Value is not null)
+					{
+						// Workaround for HR behaving incorrectly on iOS
+						// https://github.com/xamarin/xamarin-macios/issues/22102
+
+						using (writer.BlockInvariant($"namespace __internal"))
+						{
+							writer.AppendLineIndented("/// <remarks>Internal Use for iOS only.</remarks>");
+							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+							writer.AppendLineIndented("[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
+							using (writer.BlockInvariant($"static partial class __{_xClassName.ClassName}_Dummy"))
+							{
+								using (writer.BlockInvariant("private static class Dummy_Bindings"))
+								{
+									writer.AppendLineIndented("private static object Owner { get; set; }");
+								}
+							}
+						}
+					}
 				}
 			}
 
