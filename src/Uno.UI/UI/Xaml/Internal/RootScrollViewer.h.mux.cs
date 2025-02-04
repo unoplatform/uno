@@ -1,0 +1,38 @@
+﻿using System;
+using Microsoft.UI.Xaml.Controls;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Uno.UI.Xaml.Core;
+
+internal partial class RootScrollViewer : ScrollViewer
+{
+	private void SetRootScrollViewerAllowImplicitStyle()
+	{
+		m_isAllowImplicitStyle = true;
+	}
+
+	private void SetRootScrollContentPresenter(ScrollContentPresenter pScrollContentPresenter)
+	{
+
+		m_trElementScrollContentPresenter = null;
+		m_trElementScrollContentPresenter = pScrollContentPresenter;
+	}
+
+	private protected override bool IsRootScrollViewer => true;
+
+	private protected bool IsRootScrollViewerAllowImplicitStyle => m_isAllowImplicitStyle;
+
+	private protected bool IsInputPaneShow => m_isInputPaneShow;
+
+	// Indicates the root ScrollViewer for InputPane
+	private bool m_isInputPaneShow;
+	private bool m_isInputPaneTransit;
+	private bool m_isInputPaneTransitionCompleted;
+	private bool m_isAllowImplicitStyle;
+
+	// InputPane offset variables to restore the original scroll position when InputPane is closed
+	private double m_preInputPaneOffsetX;
+	private double m_preInputPaneOffsetY;
+	private double m_postInputPaneOffsetX;
+	private double m_postInputPaneOffsetY;
+}
