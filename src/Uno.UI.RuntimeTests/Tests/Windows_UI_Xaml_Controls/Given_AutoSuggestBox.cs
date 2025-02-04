@@ -1127,5 +1127,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
+		public async Task When_Loaded_Unloaded()
+		{
+			var SUT = new AutoSuggestBox();
+			var suggestions = new List<string> { "ab", "abc", "abcde" };
+			SUT.ItemsSource = suggestions;
+
+			SUT.TextChanged += (sender, args) =>
+			{
+				if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					var filteredSuggestions =
+						suggestions.Where(s => s.StartsWith(sender.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+					sender.ItemsSource = filteredSuggestions;
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("a");
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+		}
 	}
 }
