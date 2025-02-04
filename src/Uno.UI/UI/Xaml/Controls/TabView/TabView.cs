@@ -36,6 +36,7 @@ using Microsoft.UI.Windowing;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.UI.Content;
 using Windows.Graphics;
+using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs; // Required for Android to avoid clashes.
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
