@@ -28,8 +28,6 @@ using _View = Microsoft.UI.Xaml.UIElement;
 using _View = Android.Views.View;
 #elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
