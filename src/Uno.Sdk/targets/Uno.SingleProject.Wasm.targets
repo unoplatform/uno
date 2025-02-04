@@ -33,7 +33,7 @@
 
 		<UnoEnableDefaultCompressedItems Condition=" '$(UnoEnableDefaultCompressedItems)' == '' ">true</UnoEnableDefaultCompressedItems>
 		<!-- based on https://github.com/dotnet/sdk/blob/be30c95a22d25aaedaed184ee4d188c5e31218c8/src/StaticWebAssetsSdk/Targets/Microsoft.NET.Sdk.StaticWebAssets.Compression.targets#L25 -->
-		<CompressionIncludePatterns Condition="'$(UnoEnableDefaultCompressedItems)' == 'true' AND $([MSBuild]::VersionGreaterThanOrEquals('$(TargetFrameworkVersion)', '9.0'))">
+		<CompressionIncludePatterns Condition="'$(UnoEnableDefaultCompressedItems)' == 'true' AND '$(TargetFrameworkVersion)'!='' AND $([MSBuild]::VersionGreaterThanOrEquals('$(TargetFrameworkVersion)', '9.0'))">
 			$(CompressionIncludePatterns);
 			**/*.ttf;
 			**/*.woff;
