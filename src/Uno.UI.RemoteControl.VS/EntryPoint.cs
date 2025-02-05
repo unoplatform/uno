@@ -644,6 +644,7 @@ public partial class EntryPoint : IDisposable
 			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
 			_globalJsonObserver?.Dispose();
+			_debuggerObserver?.Dispose();
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
 		}
@@ -670,25 +671,6 @@ public partial class EntryPoint : IDisposable
 			}
 			return _visualStudioServiceProvider;
 		}
-	}
-
-	private Version? GetVisualStudioReleaseVersion()
-	{
-		ThreadHelper.ThrowIfNotOnUIThread();
-
-		if (VisualStudioServiceProvider?.GetService(typeof(SVsShell)) is IVsShell service)
-		{
-			if (service.GetProperty(-9068, out var releaseVersion) != 0)
-			{
-				return null;
-			}
-			if (releaseVersion is string releaseVersionAsText && Version.TryParse(releaseVersionAsText.Split(' ')[0], out var result))
-			{
-				return result;
-			}
-		}
-
-		return null;
 	}
 
 	private class Logger(EntryPoint entryPoint) : ILogger

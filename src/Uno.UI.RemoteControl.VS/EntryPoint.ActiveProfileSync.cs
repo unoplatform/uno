@@ -27,11 +27,11 @@ public partial class EntryPoint : IDisposable
 	private const string CompatibleTargetFrameworkProfileKey = "compatibleTargetFramework";
 	private const string Windows10TargetFrameworkIdentifier = "windows10";
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
-	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
 	private Stopwatch _lastOperation = new Stopwatch();
 	private TimeSpan _profileOrFrameworkDelay = TimeSpan.FromSeconds(1);
 	private bool _pendingRequestedChanged;
+	private bool _isFirstProfileTfmChange = true;
 
 	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool forceReload = false)
 	{
@@ -40,7 +40,10 @@ public partial class EntryPoint : IDisposable
 		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
 		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier && _debuggerObserver is not null)
 		{
-			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
+			var isFirstProfileTfmChange = _isFirstProfileTfmChange;
+			_isFirstProfileTfmChange = false;
+
+			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload}, isFirstProfileTfmChange:{isFirstProfileTfmChange})");
 
 			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
 			{
@@ -56,7 +59,7 @@ public partial class EntryPoint : IDisposable
 			_pendingRequestedChanged = false;
 			_lastOperation.Restart();
 
-			if (!forceReload && string.IsNullOrEmpty(previousFramework))
+			if (!isFirstProfileTfmChange && !forceReload && string.IsNullOrEmpty(previousFramework))
 			{
 				// The first change after a reload is always the active target. This happens
 				// when going to/from desktop/wasm for VS issues.
@@ -85,7 +88,7 @@ public partial class EntryPoint : IDisposable
 
 			if (profileFilter is not null)
 			{
-				// If the current profile already matches the targetframework we're going to
+				// If the current profile already matches the TargetFramework we're going to
 				// prefer using it. It can happen if the change is initiated through the profile
 				// selector.
 				var selectedProfile = profiles
@@ -102,17 +105,18 @@ public partial class EntryPoint : IDisposable
 					await _debuggerObserver.SetActiveLaunchProfileAsync(selectedProfile.Name);
 				}
 			}
-
-			await TryReloadTargetAsync(previousFramework, newFramework, targetFrameworkIdentifier, forceReload);
 		}
 	}
 
 	private async Task OnDebugProfileChangedAsync(string? previousProfile, string newProfile)
 	{
-		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
-		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile})");
+		var isFirstProfileTfmChange = _isFirstProfileTfmChange;
+		_isFirstProfileTfmChange = false;
 
-		if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
+		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile}) isFirstProfileTfmChange:{isFirstProfileTfmChange}");
+
+		if (!isFirstProfileTfmChange && !_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
 		{
 			// This debouncing needs to happen when VS intermittently changes the active
 			// profile or target framework on project reloading. We skip the change if it
@@ -126,7 +130,7 @@ public partial class EntryPoint : IDisposable
 		_pendingRequestedChanged = false;
 		_lastOperation.Restart();
 
-		if (string.IsNullOrEmpty(previousProfile))
+		if (!isFirstProfileTfmChange && string.IsNullOrEmpty(previousProfile))
 		{
 			// The first change after a reload is always the active target. This happens
 			// when going to/from desktop/wasm for VS issues.
@@ -167,137 +171,6 @@ public partial class EntryPoint : IDisposable
 			=> targetFrameworks.FirstOrDefault(f => f.IndexOf("-" + identifier, StringComparison.OrdinalIgnoreCase) != -1);
 	}
 
-	private async Task TryReloadTargetAsync(string? previousFramework, string newFramework, string targetFrameworkIdentifier, bool forceReload)
-	{
-		if (_wasmProjectReloadTask is not null)
-		{
-			_wasmProjectReloadTask.Cancel();
-		}
-
-		var currentReloadTask = _wasmProjectReloadTask = new CancellationTokenSource();
-
-		try
-		{
-			if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
-				&&
-				(
-					forceReload
-					||
-					(
-						previousFramework is not null
-						&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
-						&& (
-							(
-								// 17.12 or later properly supports having their TFM anywhere in the
-								// TFMs lists, except Wasm.
-								GetVisualStudioReleaseVersion() >= new Version(17, 12)
-								&& (
-									previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier
-									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier))
-
-							|| (
-								// 17.11 or earlier needs reloading most TFMs
-								GetVisualStudioReleaseVersion() < new Version(17, 12)
-								&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
-									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier))
-						)
-					)
-				)
-			)
-			{
-				var startupProjectUniqueName = startupProjects[0].UniqueName;
-				var userFilePath = startupProjects[0].FileName + ".user";
-
-				var sw = Stopwatch.StartNew();
-
-				// Wait for VS to write down the active target, so that on reload the selected target 
-				// stays the same.
-				while (!currentReloadTask.IsCancellationRequested && sw.Elapsed < TimeSpan.FromSeconds(2))
-				{
-					if (File.Exists(userFilePath))
-					{
-						var content = File.ReadAllText(userFilePath);
-
-						if (content.Contains($"<{UnoSelectedTargetFrameworkProperty}>{newFramework}</{UnoSelectedTargetFrameworkProperty}>"))
-						{
-							_debugAction?.Invoke($"Detected new target framework in {userFilePath}, continuing.");
-							break;
-						}
-					}
-
-					await Task.Delay(100);
-				}
-
-				if (currentReloadTask.IsCancellationRequested)
-				{
-					return;
-				}
-
-				_warningAction?.Invoke($"Detected that the active framework was changed from/to WebAssembly/Desktop/Windows, reloading the project (See https://aka.platform.uno/singleproject-vs-reload)");
-
-				// In this context, in order to work around the fact that VS does not handle Wasm
-				// to be in the same project as other target framework, we're using the `_SelectedTargetFramework`
-				// to reorder the list and make browser-wasm first or not.
-
-				// Assuming serviceProvider is an IServiceProvider instance available in your context
-				if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-					&& solution is IVsSolution4 solution4)
-				{
-					if (currentReloadTask.IsCancellationRequested)
-					{
-						return;
-					}
-
-					if (solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var startupProject) == 0)
-					{
-						if (startupProject.GetGuidProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out var guidObj) == 0
-							&& guidObj is Guid projectGuid)
-						{
-							// Set the property early before unloading so the msbuild cache
-							// properly keeps the value.
-							await WriteProjectUserSettingsAsync(newFramework);
-
-							var reloadStopWatch = Stopwatch.StartNew();
-							// Reload the project in-place. This allows to keep files related to
-							// this project opened even when reloading.
-							startupProject.ReloadProjectInSolution();
-							reloadStopWatch.Stop();
-
-							// Adjust the delay, but cannot be below 1s (fast machines) nor
-							// above 3s (very slow machines) to attempt to guess for other
-							// IDE delays after reloading a project.
-							_profileOrFrameworkDelay = TimeSpan.FromSeconds(
-								Math.Max(1.0, Math.Min(3.0, reloadStopWatch.Elapsed.TotalSeconds))
-							);
-
-							_debugAction?.Invoke($"Adjust in profile/framework change delay to {_profileOrFrameworkDelay}");
-
-							var sw2 = Stopwatch.StartNew();
-
-							await WriteProjectUserSettingsAsync(newFramework);
-						}
-					}
-				}
-			}
-			else
-			{
-				// No need to reload, but we still need to update the selected target framework
-				await WriteProjectUserSettingsAsync(newFramework);
-			}
-		}
-		catch (Exception e)
-		{
-			_errorAction?.Invoke($"Failed to reload project {e}");
-		}
-		finally
-		{
-			if (currentReloadTask == _wasmProjectReloadTask)
-			{
-				_wasmProjectReloadTask = null;
-			}
-		}
-	}
-
 	private string? GetTargetFrameworkIdentifier(string newFramework)
 	{
 		var regex = new Regex(@"net(\d+\.\d+)-(?<tfi>\w+)(\d+\.\d+\.\d+)?");
@@ -310,7 +183,7 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnStartupProjectChangedAsync()
 	{
-		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
+		if (_debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
 
@@ -334,93 +207,4 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task<bool> EnsureProjectUserSettingsAsync()
-	{
-		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
-			&& _debuggerObserver is not null)
-		{
-			// Convert DTE project to IVsHierarchy
-			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
-
-			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
-			{
-				var currentActiveDebugFramework = _debuggerObserver.CurrentActiveDebugFramework;
-
-				if (currentActiveDebugFramework is null)
-				{
-					_debuggerObserver
-						.UnconfiguredProject
-						?.Services
-						.ActiveConfiguredProjectProvider
-						?.ActiveConfiguredProject
-						?.ProjectConfiguration
-						.Dimensions
-						.TryGetValue("TargetFramework", out currentActiveDebugFramework);
-				}
-
-				propertyStorage.GetPropertyValue(
-					UnoSelectedTargetFrameworkProperty
-					, null
-					, (uint)_PersistStorageType.PST_USER_FILE
-					, out var currentSettingValue);
-
-				if (string.IsNullOrEmpty(currentSettingValue) && currentActiveDebugFramework is not null)
-				{
-					// The UnoSelectedTargetFrameworkProperty is not defined, we need to reload the
-					// project so it can be set.
-					return false;
-				}
-				else
-				{
-					_debugAction?.Invoke($"User Setting is already set: {UnoSelectedTargetFrameworkProperty}={currentSettingValue}, currentActiveDebugFramework={currentActiveDebugFramework}");
-				}
-			}
-			else
-			{
-				_debugAction?.Invoke("Could not write .user file (2)");
-			}
-		}
-		else
-		{
-			_debugAction?.Invoke("Could not write .user file (1)");
-		}
-
-		return true;
-	}
-
-	private async Task WriteProjectUserSettingsAsync(string targetFramework)
-	{
-		_debugAction?.Invoke($"WriteProjectUserSettingsAsync {targetFramework}");
-
-		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
-		{
-			// Convert DTE project to IVsHierarchy
-			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);
-
-			if (hierarchy is IVsBuildPropertyStorage propertyStorage)
-			{
-				WriteUserProperty(propertyStorage, UnoSelectedTargetFrameworkProperty, targetFramework);
-			}
-			else
-			{
-				_debugAction?.Invoke("Could not write .user file (2)");
-			}
-		}
-		else
-		{
-			_debugAction?.Invoke("Could not write .user file (1)");
-		}
-	}
-
-	private static void WriteUserProperty(IVsBuildPropertyStorage propertyStorage, string propertyName, string propertyValue)
-	{
-		propertyStorage.SetPropertyValue(
-			propertyName,        // Property name
-			null,                 // Configuration name, null applies to all configurations
-			(uint)_PersistStorageType.PST_USER_FILE,  // Specifies that this is a user-specific property
-			propertyValue             // Property value
-		);
-	}
 }

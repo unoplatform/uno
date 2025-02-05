@@ -146,8 +146,14 @@
 	<!-- Enable WSL support in VS 17.13 Pre 2 and later, when a desktop target is present -->
 	<ItemGroup Condition="
 			   $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.13.0)) 
-			   AND '$(TargetFrameworks)' != '' 
+			   AND '$(TargetFrameworks)' != ''
 			   AND $(TargetFrameworks.Contains('desktop')) ">
 		<ProjectCapability Include="DotNetWslLaunch" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="
+			   '$(TargetFrameworks)' != ''
+			   AND $(TargetFrameworks.Contains('browserwasm')) ">
+		<ProjectCapability Include="DotNetCoreWeb" />
 	</ItemGroup>
 </Project>
