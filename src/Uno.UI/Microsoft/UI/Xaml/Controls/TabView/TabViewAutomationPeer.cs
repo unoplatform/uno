@@ -4,6 +4,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
