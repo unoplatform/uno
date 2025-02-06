@@ -36,6 +36,7 @@ public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebVie
 
 public class X11NativeWebView : INativeWebView
 {
+	[ThreadStatic] private static bool _isGtkThread;
 	private static readonly Exception? _initException;
 	private static readonly bool _usingWebKit2Gtk41;
 
@@ -101,6 +102,7 @@ public class X11NativeWebView : INativeWebView
 
 			new Thread(() =>
 			{
+				_isGtkThread = true;
 				Application.Init();
 				Application.Run();
 			})
@@ -175,25 +177,39 @@ public class X11NativeWebView : INativeWebView
 
 	private static T RunOnGtkThread<T>(Func<T> func)
 	{
-		var tcs = new TaskCompletionSource<T>();
-		GLib.Idle.Add(() =>
+		if (_isGtkThread)
 		{
-			tcs.SetResult(func());
-			return false;
-		});
-		return tcs.Task.Result;
+			return func();
+		}
+		else
+		{
+			var tcs = new TaskCompletionSource<T>();
+			GLib.Idle.Add(() =>
+			{
+				tcs.SetResult(func());
+				return false;
+			});
+			return tcs.Task.Result;
+		}
 	}
 
 	private static void RunOnGtkThread(Action func)
 	{
-		var tcs = new TaskCompletionSource();
-		GLib.Idle.Add(() =>
+		if (_isGtkThread)
 		{
 			func();
-			tcs.SetResult();
-			return false;
-		});
-		tcs.Task.Wait();
+		}
+		else
+		{
+			var tcs = new TaskCompletionSource();
+			GLib.Idle.Add(() =>
+			{
+				func();
+				tcs.SetResult();
+				return false;
+			});
+			tcs.Task.Wait();
+		}
 	}
 
 	public void GoBack() => RunOnGtkThread(() => _webview.GoBack());
