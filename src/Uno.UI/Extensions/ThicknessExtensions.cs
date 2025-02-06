@@ -16,7 +16,7 @@ namespace Uno.UI.Extensions
 		public static bool IsUniform(this Thickness thickness)
 			=> thickness.Left == thickness.Top && thickness.Left == thickness.Right && thickness.Left == thickness.Bottom;
 
-		public static Thickness Minus(this Thickness x, Thickness y) // Minus ==> There is a (not implemented) Substract on struct in mono!
+		public static Thickness Minus(this Thickness x, Thickness y) // Minus ==> There is a (not implemented) Subtract on struct in mono!
 			=> new Thickness(x.Left - y.Left, x.Top - y.Top, x.Right - y.Right, x.Bottom - y.Bottom);
 
 		public static double Horizontal(this Thickness thickness)

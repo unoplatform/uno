@@ -13,10 +13,10 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 //      Since the size of OccupancyMap can be Infinite, OccupancyBlock is used to 
 //      allocate block of Memory
 //
-//      OccupncyMap always arrange items vertically(row), whether user sets 
+//      OccupancyMap always arrange items vertically(row), whether user sets 
 //      Orientation=Vertical or Horizontal. OccupancyMap's public APIs take care of
 //      providing correct Orientation. Similarly OccupancyBlock has fixed rows while
-//      it is gorwing on Column direction
+//      it is growing on Column direction
 //      Both classes are nested inside the VariableSizedWrapGrid class
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -357,7 +357,7 @@ partial class VariableSizedWrapGrid
 			}
 		}
 
-		// This method gothrough the grid from current Item Index and file the next availalbe position which can
+		// This method go through the grid from current Item Index and file the next available position which can
 		// fit the RowSpan and ColumnSpan
 		private void FindNextAvailableRectInternal(
 			int rowSpan,

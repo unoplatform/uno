@@ -152,7 +152,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			--------------------------------------------------------------
 			*/
 
-			// Every column execpt the first takes this ammount of space to fit on screen.
+			// Every column except the first takes this amount of space to fit on screen.
 			var widthNeededForExtraColumn = ColumnSpacing + maxItemWidth;
 			// The number of columns from data and api ignoring available space
 			var requestedColumnCount = Math.Min(MaxColumns, childCount);

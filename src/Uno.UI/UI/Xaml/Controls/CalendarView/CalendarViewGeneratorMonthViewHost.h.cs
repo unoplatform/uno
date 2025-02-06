@@ -30,13 +30,13 @@ namespace Microsoft.UI.Xaml.Controls
 		//public:
 		//CalendarViewGeneratorMonthViewHost();
 
-		//// ITreeBuuilder interface
+		//// ITreeBuilder interface
 		//IFACEMETHOD(get_IsRegisteredForCallbacks)(out BOOLEAN pValue) override;
 		//IFACEMETHOD(put_IsRegisteredForCallbacks)( bool value) override;
 		//IFACEMETHOD(IsBuildTreeSuspended)(out BOOLEAN pReturnValue) override;
 		//IFACEMETHOD(BuildTree)(out BOOLEAN pWorkLeft) override;
 		//IFACEMETHOD(ShutDownDeferredWork)() override;
-		//// End ITreeBuuilder interface
+		//// End ITreeBuilder interface
 
 
 		// IFACEMETHOD(SetupContainerContentChangingAfterPrepare)(

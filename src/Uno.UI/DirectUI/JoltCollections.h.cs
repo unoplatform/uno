@@ -1014,7 +1014,7 @@ namespace DirectUI
 	//	};
 
 	//	// This exists because in codegen TextElementCollection used to be a separate
-	//	// entity from the stadnard PresentationFrameworkCollection. It serves no purpose
+	//	// entity from the standard PresentationFrameworkCollection. It serves no purpose
 	//	// otherwise.
 	//	template <class T>
 	//	class TextElementCollection : public PresentationFrameworkCollection<T> { };
@@ -1410,7 +1410,7 @@ namespace DirectUI
 		{
 			this.CheckThread();
 
-			// Wow! The old implmentation used to clip "index" to the actual size, possibly writing
+			// Wow! The old implementation used to clip "index" to the actual size, possibly writing
 			// to one-beyond the end. This is bad bad bad. Let's fail instead of writing to random memory
 			if (index < this.m_vector.Count)
 			{

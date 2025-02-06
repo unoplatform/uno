@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	// UNO Docs:
-	// In WinUI 2.6. RadioMenuFlyoutItem derives publically from MenuFlyoutItem, but secretly from ToggleMenuFlyoutItem.
+	// In WinUI 2.6. RadioMenuFlyoutItem derives publicly from MenuFlyoutItem, but secretly from ToggleMenuFlyoutItem.
 	// Since we can't do that in C#, the important functionality are in ToggleMenuFlyoutItem, we derive from it.
 	public partial class RadioMenuFlyoutItem : ToggleMenuFlyoutItem
 	{

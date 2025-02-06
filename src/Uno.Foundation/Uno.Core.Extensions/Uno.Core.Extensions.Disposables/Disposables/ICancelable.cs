@@ -19,7 +19,7 @@ using System;
 namespace Uno.Disposables
 {
 	/// <summary>
-	/// Disposable resource with dipsosal state tracking.
+	/// Disposable resource with disposal state tracking.
 	/// </summary>
 	internal interface ICancelable : IDisposable
 	{
