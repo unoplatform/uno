@@ -11,7 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11NativeElementHostingExtension
 {
-	private static readonly string SampleVideoLink = Path.Combine(Package.Current.InstalledPath, @"Assets\Videos\Getting_Started_with_Uno_Platform_for_Figma.mp4");
+	private static readonly string SampleVideoLink = Path.Combine(Package.Current.InstalledPath, "Assets", "Videos", "Getting_Started_with_Uno_Platform_for_Figma.mp4");
 
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
