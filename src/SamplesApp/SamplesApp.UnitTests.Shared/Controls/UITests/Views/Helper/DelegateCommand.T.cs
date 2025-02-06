@@ -1,6 +1,6 @@
 ﻿#if WINAPPSDK
 using System;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;

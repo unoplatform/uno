@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
@@ -163,13 +163,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			m_animatingElements.Add(elementInfo);
 			if (m_animatingElements.Count == 1)
 			{
-				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+				Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
 			}
 		}
 
 		private void OnRendering(object snd, object args)
 		{
-			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+			Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
 
 			using var resetState = Disposable.Create(ResetState);
 

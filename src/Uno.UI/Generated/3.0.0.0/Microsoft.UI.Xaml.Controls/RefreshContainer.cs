@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RefreshContainer : global::Microsoft.UI.Xaml.Controls.ContentControl
+	public partial class RefreshContainer : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property Visualizer
 		// Skipping already declared property PullDirection

@@ -7,7 +7,7 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatformProvider
 {

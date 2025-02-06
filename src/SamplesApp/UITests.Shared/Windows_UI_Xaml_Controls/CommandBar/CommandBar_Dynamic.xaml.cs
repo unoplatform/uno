@@ -6,13 +6,13 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
@@ -24,16 +24,16 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 			this.InitializeComponent();
 
 			cbVisibility.ItemsSource = Visibilities;
-			cbVisibility.SelectedItem = Microsoft.UI.Xaml.Visibility.Visible;
+			cbVisibility.SelectedItem = Windows.UI.Xaml.Visibility.Visible;
 
 			CommandVisibility.ItemsSource = Visibilities;
-			CommandVisibility.SelectedItem = Microsoft.UI.Xaml.Visibility.Visible;
+			CommandVisibility.SelectedItem = Windows.UI.Xaml.Visibility.Visible;
 
 			BackgroundColor.ItemsSource = Colors;
-			BackgroundColor.SelectedItem = Microsoft.UI.Colors.Red;
+			BackgroundColor.SelectedItem = Windows.UI.Colors.Red;
 
 			ForegroundColor.ItemsSource = Colors;
-			ForegroundColor.SelectedItem = Microsoft.UI.Colors.Black;
+			ForegroundColor.SelectedItem = Windows.UI.Colors.Black;
 
 			CommandIsEnabled.ItemsSource = Booleans;
 			CommandIsEnabled.SelectedItem = true;
@@ -41,11 +41,11 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 
 		public Windows.UI.Color[] Colors = new[]
 		{
-			Microsoft.UI.Colors.Black,
-			Microsoft.UI.Colors.White,
-			Microsoft.UI.Colors.Red,
-			Microsoft.UI.Colors.Green,
-			Microsoft.UI.Colors.Blue,
+			Windows.UI.Colors.Black,
+			Windows.UI.Colors.White,
+			Windows.UI.Colors.Red,
+			Windows.UI.Colors.Green,
+			Windows.UI.Colors.Blue,
 		};
 
 		public bool[] Booleans = new[]
@@ -54,10 +54,10 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 			false,
 		};
 
-		public Microsoft.UI.Xaml.Visibility[] Visibilities = new[]
+		public Windows.UI.Xaml.Visibility[] Visibilities = new[]
 		{
-			Microsoft.UI.Xaml.Visibility.Visible,
-			Microsoft.UI.Xaml.Visibility.Collapsed,
+			Windows.UI.Xaml.Visibility.Visible,
+			Windows.UI.Xaml.Visibility.Collapsed,
 		};
 	}
 }

@@ -14,8 +14,8 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno;

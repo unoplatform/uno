@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Xaml;
 
-namespace Microsoft.UI.Xaml.Markup.Reader
+namespace Windows.UI.Xaml.Markup.Reader
 {
 #if DEBUG
 	[DebuggerDisplay("Type: {Type.Name}")]

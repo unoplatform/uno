@@ -5,9 +5,9 @@ using System.Reflection.Metadata;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
-[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.Frame), typeof(Microsoft.UI.Xaml.Controls.Frame.FrameElementMetadataUpdateHandler))]
+[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Windows.UI.Xaml.Controls.Frame), typeof(Windows.UI.Xaml.Controls.Frame.FrameElementMetadataUpdateHandler))]
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Frame
 {

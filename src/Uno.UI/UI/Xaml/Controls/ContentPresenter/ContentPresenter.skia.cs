@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {

@@ -147,7 +147,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		try
 		{
 			// Make sure WPF doesn't override our own SynchronizationContext.
-			if (Microsoft.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
+			if (Windows.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
 			{
 				SynchronizationContext.SetSynchronizationContext(syncContext);
 			}
@@ -156,7 +156,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 			// Is the pointer inside an element in the flyout layer? if so, raise in managed
 			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_host!);
-			var managedHitTestResult = Microsoft.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, Microsoft.UI.Xaml.Media.VisualTreeHelper.DefaultGetTestability, null);
+			var managedHitTestResult = Windows.UI.Xaml.Media.VisualTreeHelper.SearchDownForTopMostElementAt(eventArgs.CurrentPoint.Position, xamlRoot!.VisualTree.PopupRoot!, Windows.UI.Xaml.Media.VisualTreeHelper.DefaultGetTestability, null);
 			if (managedHitTestResult.element is { })
 			{
 				@event?.Invoke(this, eventArgs);

@@ -6,9 +6,9 @@ using System.Collections.Specialized;
 using System.Linq;
 
 #endif
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	public partial class InlineCollection : IList<Inline>, IEnumerable<Inline>
 	{

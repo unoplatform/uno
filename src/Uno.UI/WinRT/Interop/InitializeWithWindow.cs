@@ -13,7 +13,7 @@ public static class InitializeWithWindow
 		var windowId = new MUXWindowId((ulong)hwnd.ToInt64());
 
 		var appWindow = AppWindow.GetFromWindowId(windowId);
-		var window = Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow);
+		var window = Windows.UI.Xaml.Window.GetFromAppWindow(appWindow);
 
 		if (target is MessageDialog messageDialog)
 		{

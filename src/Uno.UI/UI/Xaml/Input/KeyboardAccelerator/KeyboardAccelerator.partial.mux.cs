@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using DirectUI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 partial class KeyboardAccelerator
 {

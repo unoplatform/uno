@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Page
 {

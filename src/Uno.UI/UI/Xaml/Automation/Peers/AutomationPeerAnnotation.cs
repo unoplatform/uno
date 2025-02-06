@@ -1,8 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference AutomationPeerAnnotation_Partial.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Represents a single UI automation annotation.

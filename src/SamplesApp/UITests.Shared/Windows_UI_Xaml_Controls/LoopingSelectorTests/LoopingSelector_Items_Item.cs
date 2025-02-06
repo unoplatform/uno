@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
 namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 {
@@ -11,8 +11,8 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 			set => SetValue(PrimaryTextProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(PrimaryText), typeof(string),
 				typeof(LoopingSelector_Items_Item),
 				new PropertyMetadata("default"));

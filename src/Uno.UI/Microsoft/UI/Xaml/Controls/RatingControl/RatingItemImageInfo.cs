@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RatingItemImageInfo.properties.cpp, tag winui3/release/1.5.3, commit 2a60e27c591846556fa9ec4d8f305afdf0f96dc1
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

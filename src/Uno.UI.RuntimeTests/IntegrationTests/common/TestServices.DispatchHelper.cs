@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 
 #if HAS_UNO_WINUI || WINDOWS_WINUI
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 using _Impl = Microsoft.UI.Dispatching.DispatcherQueue;
 using _Handler = Microsoft.UI.Dispatching.DispatcherQueueHandler;

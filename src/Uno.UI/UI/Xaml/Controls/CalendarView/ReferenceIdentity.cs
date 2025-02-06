@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal enum ReferenceIdentity
 	{

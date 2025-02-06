@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class CommandBarTemplateSettings : DependencyObject
 	{

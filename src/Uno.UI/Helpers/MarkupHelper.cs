@@ -9,8 +9,8 @@ using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Markup;
 using Windows.ApplicationModel.Resources;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers
 {

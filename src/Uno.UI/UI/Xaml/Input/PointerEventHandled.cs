@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public delegate void PointerEventHandler(
 		object sender,

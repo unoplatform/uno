@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 

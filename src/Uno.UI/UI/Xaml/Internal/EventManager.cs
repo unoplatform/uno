@@ -5,8 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core;

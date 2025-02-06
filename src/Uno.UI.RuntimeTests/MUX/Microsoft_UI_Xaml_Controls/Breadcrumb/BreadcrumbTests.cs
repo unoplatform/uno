@@ -9,11 +9,11 @@ using Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -26,7 +26,7 @@ using WEX.Logging.Interop;
 #else
 #endif
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                             xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
-                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                             xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
-                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>
@@ -434,7 +434,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                             xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
-                            xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
+                            xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
                                     <DataTemplate>

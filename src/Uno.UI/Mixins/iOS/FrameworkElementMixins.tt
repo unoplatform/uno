@@ -4,22 +4,22 @@
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
-		"Microsoft.UI.Xaml.Controls.NativeListViewBase",
-		"Microsoft.UI.Xaml.Controls.NativeScrollContentPresenter",
-		"Microsoft.UI.Xaml.Controls.MultilineTextBoxView",
-		"Microsoft.UI.Xaml.Controls.Picker",
-		"Microsoft.UI.Xaml.Controls.SinglelineTextBoxView"
+		"Windows.UI.Xaml.Controls.NativeListViewBase",
+		"Windows.UI.Xaml.Controls.NativeScrollContentPresenter",
+		"Windows.UI.Xaml.Controls.MultilineTextBoxView",
+		"Windows.UI.Xaml.Controls.Picker",
+		"Windows.UI.Xaml.Controls.SinglelineTextBoxView"
 	);
 #>
 
 #if __IOS__
 <# 
-	AddClass("Microsoft.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
-	AddClass("Microsoft.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "NativeScrollContentPresenter", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
 #>
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt"#>

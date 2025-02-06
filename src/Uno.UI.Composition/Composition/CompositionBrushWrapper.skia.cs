@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using SkiaSharp;
 using Windows.ApplicationModel.VoiceCommands;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal partial class CompositionBrushWrapper : CompositionBrush
 {
