@@ -1,25 +1,9 @@
 <Project>
 	<Target Name="UnoDumpTargetFrameworks">
-		<!--
-			This target is used to dump the target frameworks to a temporary file.
-			It is useful to determine all target frameworks used by all projects of a solution.
-		-->
-		<Message Text="&lt;TargetFrameworks&gt;$(TargetFramework);$(TargetFrameworks)&lt;/TargetFrameworks&gt;" Importance="High" />
-		<WriteLinesToFile
-			Condition="$(UnoDumpTargetFrameworksTargetFile) != ''"
-			File="$(UnoDumpTargetFrameworksTargetFile)"
-			Lines="$(TargetFramework);$(TargetFrameworks)"
-			Overwrite="false"
-			Encoding="Unicode"/>
+		<Message Text="This is not a Uno.SDK project, no TFM to dump." Importance="High" />
 	</Target>
 
 	<Target Name="UnoDumpRemoteControlAddIns">
-		<Message Text="&lt;RemoteControlAddIns&gt;@(UnoRemoteControlAddIns)&lt;/RemoteControlAddIns&gt;" Importance="High" />
-		<WriteLinesToFile
-			Condition="$(UnoDumpRemoteControlAddInsTargetFile) != ''"
-			File="$(UnoDumpRemoteControlAddInsTargetFile)"
-			Lines="@(UnoRemoteControlAddIns)"
-			Overwrite="false"
-			Encoding="Unicode"/>
+		<Message Text="This is not a Uno.SDK project, no add-in to dump." Importance="High" />
 	</Target>
 </Project>
