@@ -142,6 +142,7 @@
 
 	</Target>
 
+<<<<<<< HEAD
 	<Target Name="_UnoVSCleanupOtherTFMsForHR"
             Condition="
 				'$(IsImplicitlyTriggeredBuild)' == 'true'
@@ -179,6 +180,9 @@
 			Encoding="Unicode"/>
 	</Target>
 
+=======
+	
+>>>>>>> 36a0d9b107 (fix: Pack add-ins discovery tragets with the dev-server to be able to run them no matter the SDK sued by the project)
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 </Project>
