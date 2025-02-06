@@ -135,23 +135,23 @@ public class Given_Calendar
 	public void When_TwentyFourHour_Invalid_Hours()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = -1);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = 24);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = -1);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = 24);
 	}
 
 	[TestMethod]
 	public void When_TwentyFourHour_Invalid_Period()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 2);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 2);
 	}
 
 	[TestMethod]
 	public void When_TwelveHour_Invalid_Period()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 0);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 3);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 0);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 3);
 	}
 
 	[TestMethod]
@@ -171,10 +171,10 @@ public class Given_Calendar
 	public void When_TwelveHour_Invalid_Hours()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = 0);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = 0);
 		for (int hour = 13; hour <= 23; hour++)
 		{
-			Assert.ThrowsException<ArgumentException>(() => calendar.Hour = hour);
+			Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = hour);
 		}
 	}
 

@@ -120,7 +120,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		[TestMethod]
 		public async Task When_RepeatForever_ShouldLoop()
 		{
-			async void Do()
+			async Task Do()
 			{
 				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
 				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).

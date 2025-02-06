@@ -64,7 +64,7 @@
 	<PropertyGroup>
 		<!-- IMPORTANT!!! KEEP BOTH MSTest and MTP versions in sync -->
 		<!-- For a given MSTest version, go to https://www.nuget.org/packages/MSTest.TestAdapter/3.7.1#dependencies-body-tab -->
-		<!-- (replacing 3.7.1 in the url with the MSTest version in question) -->
+		<!-- (replacing the version in the url with the MSTest version in question) -->
 		<!-- And look for MTP version in there, and make sure MicrosoftTestingPlatformVersion is the same -->
 		<!-- Alternatively, migrate to MSTest.Sdk and let it handle the MTP versioning for you -->
 		<!-- In case of MSTest.Sdk, the TrxReport package will not be needed. It will be added automatically -->
