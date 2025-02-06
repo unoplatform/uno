@@ -11,6 +11,7 @@ using Uno.UI.Runtime.Skia.Gtk.UI;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using GtkApplication = Gtk.Application;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -36,6 +37,8 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		{
 			_current = this;
 			_appBuilder = appBuilder;
+
+			PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaGtk;
 		}
 
 		internal static GtkHost? Current => _current;
