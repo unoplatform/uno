@@ -142,6 +142,29 @@
 
 	</Target>
 
+	<Target Name="_UnoVSCleanupOtherTFMsForHR"
+            Condition="
+				'$(IsImplicitlyTriggeredBuild)' == 'true'
+				AND '$(BuildingInsideVisualStudio)'=='true'
+				AND ( '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' )
+				AND '$(UnoDisableVSCleanupOtherTFMsForHR)' != 'false'"
+            BeforeTargets="BeforeBuild">
+
+		<!-- This workaround is required for https://github.com/dotnet/maui/issues/27612 in Visual Studio -->
+
+        <ItemGroup>
+            <_HeadsToDelete Include="$(BaseIntermediateOutputPath)\**\$(AssemblyName).dll" Exclude="$(IntermediateOutputPath)\$(AssemblyName).dll" />
+        </ItemGroup>
+
+        <Message Importance="low" Text="Deleting intermediate assemblies for HR: @(_HeadsToDelete)" />
+
+        <Delete Files="@(_HeadsToDelete)" />
+
+        <ItemGroup>
+            <_HeadsToDelete Remove="@(_HeadsToDelete)" />
+        </ItemGroup>
+    </Target>
+
 	<Target Name="UnoDumpTargetFrameworks">
 		<!--
 			This target is used to dump the target frameworks to the output window.
