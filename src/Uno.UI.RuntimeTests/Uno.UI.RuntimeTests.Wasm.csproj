@@ -89,4 +89,6 @@
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<Import Project="ImageImport.props" />
 </Project>
