@@ -79,6 +79,7 @@ $projects =
 
     # 5.3 Blank with net9
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
     @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
