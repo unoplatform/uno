@@ -157,7 +157,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	{
 		AppType = appType;
 		_status = new StatusSink(this);
-		var loggedError = false;
+		var error = default(ConnectionError?);
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
 		// They should be considered as the default values and in any case they must take precedence over the assembly-provided values.
@@ -190,11 +190,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 			_serverAddresses = GetAddresses().ToArray();
 			if (_serverAddresses is { Length: 0 })
 			{
+				error = ConnectionError.EndpointWithoutPort;
 				this.Log().LogError(
 					"Some endpoint for uno's dev-server has been configured in your application, but all are invalid (port is missing?). "
 					+ "This can usually be fixed with a **rebuild** of your application. "
 					+ "If not, make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
-				loggedError = true;
 			}
 		}
 
@@ -212,15 +212,16 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		if (_serverAddresses is null or { Length: 0 })
 		{
-			if (!loggedError)
+			if (error is null)
 			{
+				error = ConnectionError.NoEndpoint;
 				this.Log().LogError(
 					"Failed to get any valid dev-server endpoint from the IDE."
 					+ "Make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
 			}
 
 			_connection = Task.FromResult<Connection?>(null);
-			_status.Report(ConnectionState.NoServer);
+			_status.Report(ConnectionState.NoServer, error);
 			return;
 		}
 
