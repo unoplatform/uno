@@ -307,6 +307,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// ListView to get a clicked container.
 			ClearValue(ItemsControl.IndexForItemContainerProperty);
 
+			Selector?.OnContainerRecycled(this);
 			base.PrepareForRecycle();
 		}
 
