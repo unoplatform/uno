@@ -21,6 +21,14 @@ namespace Windows.UI.Core
 		public IList<PointerPoint> GetIntermediatePoints()
 			=> new List<PointerPoint> { CurrentPoint };
 
+#nullable enable
+		/// <summary>
+		/// Gets the dispatch result of this event, if any.
+		/// This is defined by the InputManager if the event goes though it.
+		/// </summary>
+		internal object? DispatchResult { get; set; }
+#nullable restore
+
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"{CurrentPoint} | modifiers: {KeyModifiers}";
