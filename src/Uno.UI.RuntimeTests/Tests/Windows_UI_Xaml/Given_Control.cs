@@ -199,7 +199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var SUT = new OnApplyTemplateCounterControl
 			{
-				Style = new Style
+				Style = new Style(typeof(OnApplyTemplateCounterControl))
 				{
 					Setters =
 					{
