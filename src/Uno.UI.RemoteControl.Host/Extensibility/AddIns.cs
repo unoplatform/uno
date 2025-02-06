@@ -18,7 +18,7 @@ public class AddIns
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
 		// Note: We include the targets "on the fly" so if a project uses Microsoft.NET.Sdk instead of Uno.Sdk, we will still have the targets defined.
-		var targetsFile = Path.Combine(Assembly.GetExecutingAssembly().Location, "DevServer.Custom.Targets");
+		var targetsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "DevServer.Custom.Targets");
 
 		var tmp = Path.GetTempFileName();
 		var wd = Path.GetDirectoryName(solutionFile);
@@ -40,7 +40,7 @@ public class AddIns
 				}
 				else
 				{
-					result = ProcessHelper.RunProcess("dotnet", DumpTFM("diagnostics"), wd);
+					result = ProcessHelper.RunProcess("dotnet", DumpTFM("diagnostic"), wd);
 
 					_log.Log(LogLevel.Warning, msg);
 					_log.Log(LogLevel.Debug, result.output);
