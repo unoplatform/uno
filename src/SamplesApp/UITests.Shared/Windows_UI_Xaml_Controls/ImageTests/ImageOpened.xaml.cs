@@ -53,7 +53,9 @@ namespace Uno.UI.Samples.UITests.Image
 		private void Show(string text)
 		{
 			var dialog = new Windows.UI.Popups.MessageDialog(text);
+#if HAS_UNO
 			dialog.AssociatedWindow = App.MainWindow;
+#endif
 			_ = dialog.ShowAsync();
 		}
 	}
