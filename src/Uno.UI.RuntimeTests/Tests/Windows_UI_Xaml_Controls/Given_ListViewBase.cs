@@ -44,9 +44,6 @@ using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-#if __IOS__
-	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
-#endif
 	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
