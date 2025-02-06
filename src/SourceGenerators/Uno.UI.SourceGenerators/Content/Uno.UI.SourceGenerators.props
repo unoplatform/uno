@@ -330,21 +330,51 @@
 	</Target>
 
 	<Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
-		<ItemGroup>
-			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
-			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
-			<AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
-			<AdditionalFiles Include="@(UnoPage)" SourceItemGroup="Page" />
-			<AdditionalFiles Include="@(UnoApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
-			<AdditionalFiles Include="@(ProjectReference)" SourceItemGroup="ProjectReference" />
+    <PropertyGroup>
+      <_Pages>@(Page)</_Pages>
+      <_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
+      <_PRIResources>@(PRIResource)</_PRIResources>
+      <_UnoPages>@(UnoPage)</_UnoPages>
+      <_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
+      <_ProjectReferences>@(ProjectReference)</_ProjectReferences>
+      <_AdditionalFiles>@(AdditionalFiles)</_AdditionalFiles>
+    </PropertyGroup>
 
-			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
-			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
-			<AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
-		</ItemGroup>
+    <ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) == '' AND $(_Pages) != '' AND $(_AdditionalFiles) != '' AND $(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) == '' AND $(_ApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_AdditionalFiles) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_AdditionalFiles) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ProjectReference" Condition="$(_ProjectReferences) != '' AND $(_AdditionalFiles) != '' AND $(_ProjectReferences.Contains(%(AdditionalFiles.FullPath)))" />
+    </ItemGroup>
+
+    <ItemGroup Label="Reinclude by full path">
+      <_AdditionalFilesMetadata Include="@(AdditionalFiles)" />
+      <AdditionalFiles Remove="@(AdditionalFiles)" />
+      <AdditionalFiles Include="@(_AdditionalFilesMetadata->Metadata('FullPath'))" />
+    </ItemGroup>
+
+    <ItemGroup Label="Include new additional files">
+      <_ExistingAdditionalFiles Include="@(AdditionalFiles->Metadata('FullPath'))" />
+      <AdditionalFiles Include="@(Page->Metadata('FullPath'))" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(ApplicationDefinition->Metadata('FullPath'))" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(PRIResource->Metadata('FullPath'))" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(UnoPage->Metadata('FullPath'))" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(UnoApplicationDefinition->Metadata('FullPath'))" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(ProjectReference->Metadata('FullPath'))" SourceItemGroup="ProjectReference" Exclude="@(_ExistingAdditionalFiles)" />
+    </ItemGroup>
+
 	</Target>
 
-	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile" Condition="'$(ShouldRunGenerator)'=='true'">
+	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
+		<Message Importance="low"
+			Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
+			Text="Uno.UI is using Roslyn generators" />
+		<Message Importance="low"
+			Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
+			Text="Uno.UI is using Uno.SourceGenerators" />
+
 		<WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
 	</Target>
 
@@ -365,8 +395,8 @@
 	-->
 
 		<Warning
-		  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
-		  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
+			Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
+			Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
 	</Target>
 
 	<Target Name="_UnoUIValidateInvalidRoslynPath"
@@ -376,8 +406,8 @@
 	-->
 
 		<Warning
-		  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
-		  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
+			Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
+			Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
 	</Target>
 
 	<Target Name="Roslyn51768Workaround"
