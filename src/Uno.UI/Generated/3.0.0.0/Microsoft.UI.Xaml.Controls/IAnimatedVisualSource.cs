@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial interface IAnimatedVisualSource
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Microsoft.UI.Xaml.Controls.IAnimatedVisual TryCreateAnimatedVisual(global::Microsoft.UI.Composition.Compositor compositor, out object diagnostics);
 #endif
 	}

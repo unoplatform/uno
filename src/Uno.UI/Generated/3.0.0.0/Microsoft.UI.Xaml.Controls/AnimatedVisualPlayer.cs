@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PlaybackRate
 		// Skipping already declared property FallbackContent
 		// Skipping already declared property AutoPlay
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public object Diagnostics
 		{
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Duration
 		// Skipping already declared property IsAnimatedVisualLoaded
 		// Skipping already declared property IsPlaying
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.CompositionObject ProgressObject
 		{
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization AnimationOptimization
 		{
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared property AutoPlayProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DiagnosticsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PlaybackRateProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property StretchProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty AnimationOptimizationProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
