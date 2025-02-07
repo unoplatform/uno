@@ -131,6 +131,18 @@ public sealed partial class DiagnosticsOverlay
 		_location.X += _origin.HasFlag(PlacementOrigin.Right) ? -e.Delta.Translation.X : e.Delta.Translation.X;
 		_location.Y += _origin.HasFlag(PlacementOrigin.Bottom) ? -e.Delta.Translation.Y : e.Delta.Translation.Y;
 
+		if (e.IsInertial)
+		{
+			var area = GetSafeArea();
+			if (_location.X < 0 || _location.X > area.Width
+				|| _location.Y < 0 || _location.Y > area.Height)
+			{
+				e.Complete();
+
+				return;
+			}
+		}
+
 		ApplyLocation();
 	}
 
