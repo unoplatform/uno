@@ -801,9 +801,10 @@ namespace Microsoft.UI.Xaml
 				asyncResult.SetResult(result);
 			});
 
-			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
+			var coreDragDropManager = XamlRoot.GetCoreDragDropManager(XamlRoot);
+			coreDragDropManager.DragStarted(dragInfo);
 			// Synchronously fire DragEnter+DragOver without waiting for another "mouse tick". This matches WinUI.
-			CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessMoved(ptArgs);
+			coreDragDropManager.ProcessMoved(ptArgs);
 
 			var result = await asyncResult.Task;
 
@@ -1050,7 +1051,7 @@ namespace Microsoft.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
-					CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessMoved(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 				}
 			}
 
@@ -1082,7 +1083,7 @@ namespace Microsoft.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
-					CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessMoved(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 				}
 			}
 
@@ -1125,7 +1126,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 				if (isDragging)
 				{
-					CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessDropped(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessDropped(args);
 				}
 			}
 
@@ -1151,7 +1152,7 @@ namespace Microsoft.UI.Xaml
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
-				CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessMoved(args);
+				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 			}
 
 			return handledInManaged;
@@ -1186,7 +1187,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					CoreDragDropManager.GetOrCreateForWindowId(XamlRoot!.HostWindow!.AppWindow.Id).ProcessAborted(args.Pointer.PointerId);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessAborted(args.Pointer.PointerId);
 				}
 			}
 
