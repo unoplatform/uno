@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Uno.UI.Samples.Controls;
+using Uno.UI.Toolkit;
 
 namespace UITests.Windows_UI_Xaml.WindowTests
 {
@@ -38,12 +27,26 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 
 		private void GetMetricsClick()
 		{
-			AppWindowSize.Text = $"{_window.AppWindow.Size.Width} x {_window.AppWindow.Size.Height}";
-			AppWindowPosition.Text = $"{_window.AppWindow.Position.X}, {_window.AppWindow.Position.Y}";
-			AppWindowClientSize.Text = $"{_window.AppWindow.ClientSize.Width} x {_window.AppWindow.ClientSize.Height}";
-			WindowBounds.Text = $"{_window.Bounds.X}, {_window.Bounds.Y}, {_window.Bounds.Width}, {_window.Bounds.Height}";
-			XamlRootSize.Text = $"{XamlRoot.Size.Width} x {XamlRoot.Size.Height}";
-			TitleBarHeight.Text = $"{_window.AppWindow.TitleBar.Height}";
+			AppWindowSize.Text = GetSafe(() => $"{_window.AppWindow.Size.Width:F2} x {_window.AppWindow.Size.Height:F2}");
+			AppWindowPosition.Text = GetSafe(() => $"{_window.AppWindow.Position.X:F2}, {_window.AppWindow.Position.Y:F2}");
+			AppWindowClientSize.Text = GetSafe(() => $"{_window.AppWindow.ClientSize.Width:F2} x {_window.AppWindow.ClientSize.Height:F2}");
+			WindowBounds.Text = GetSafe(() => $"{_window.Bounds.X:F2}, {_window.Bounds.Y:F2}, {_window.Bounds.Width:F2}, {_window.Bounds.Height:F2}");
+			XamlRootSize.Text = GetSafe(() => $"{XamlRoot.Size.Width:F2} x {XamlRoot.Size.Height:F2}");
+			TitleBarHeight.Text = GetSafe(() => $"{_window.AppWindow.TitleBar.Height:F2}");
+			var padding = VisibleBoundsPadding.WindowPadding;
+			VisibleBoundsPaddingValue.Text = GetSafe(() => $"{padding.Left:F2}, {padding.Top:F2}, {padding.Right:F2}, {padding.Bottom:F2}");
+		}
+
+		private string GetSafe(Func<string> getter)
+		{
+			try
+			{
+				return getter();
+			}
+			catch (Exception)
+			{
+				return "N/A";
+			}
 		}
 	}
 }
