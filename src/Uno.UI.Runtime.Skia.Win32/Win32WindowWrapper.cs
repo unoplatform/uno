@@ -88,6 +88,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
+		// synchronously initialize Position and Size here before anyone reads their values
+		OnWindowSizeOrLocationChanged();
+
 		// an asynchronous call here is needed because we need to wait for the subscriptions in
 		// BaseWindowImplementation.InitializeNativeWindow to fire SizeChanged.
 		NativeDispatcher.Main.Enqueue(OnWindowSizeOrLocationChanged, NativeDispatcherPriority.High);
