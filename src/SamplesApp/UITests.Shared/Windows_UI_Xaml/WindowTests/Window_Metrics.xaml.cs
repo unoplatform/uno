@@ -27,14 +27,14 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 
 		private void GetMetricsClick()
 		{
-			AppWindowSize.Text = GetSafe(() => $"{_window.AppWindow.Size.Width:F2} x {_window.AppWindow.Size.Height:F2}");
-			AppWindowPosition.Text = GetSafe(() => $"{_window.AppWindow.Position.X:F2}, {_window.AppWindow.Position.Y:F2}");
-			AppWindowClientSize.Text = GetSafe(() => $"{_window.AppWindow.ClientSize.Width:F2} x {_window.AppWindow.ClientSize.Height:F2}");
-			WindowBounds.Text = GetSafe(() => $"{_window.Bounds.X:F2}, {_window.Bounds.Y:F2}, {_window.Bounds.Width:F2}, {_window.Bounds.Height:F2}");
-			XamlRootSize.Text = GetSafe(() => $"{XamlRoot.Size.Width:F2} x {XamlRoot.Size.Height:F2}");
-			TitleBarHeight.Text = GetSafe(() => $"{_window.AppWindow.TitleBar.Height:F2}");
+			AppWindowSize.Text = GetSafe(() => $"{_window.AppWindow.Size.Width:0.##} x {_window.AppWindow.Size.Height:0.##}");
+			AppWindowPosition.Text = GetSafe(() => $"{_window.AppWindow.Position.X:0.##}, {_window.AppWindow.Position.Y:0.##}");
+			AppWindowClientSize.Text = GetSafe(() => $"{_window.AppWindow.ClientSize.Width:0.##} x {_window.AppWindow.ClientSize.Height:0.##}");
+			WindowBounds.Text = GetSafe(() => $"{_window.Bounds.X:0.##}, {_window.Bounds.Y:0.##}, {_window.Bounds.Width:0.##}, {_window.Bounds.Height:0.##}");
+			XamlRootSize.Text = GetSafe(() => $"{XamlRoot.Size.Width:0.##} x {XamlRoot.Size.Height:0.##}");
+			TitleBarHeight.Text = GetSafe(() => $"{_window.AppWindow.TitleBar.Height:0.##}");
 			var padding = VisibleBoundsPadding.WindowPadding;
-			VisibleBoundsPaddingValue.Text = GetSafe(() => $"{padding.Left:F2}, {padding.Top:F2}, {padding.Right:F2}, {padding.Bottom:F2}");
+			VisibleBoundsPaddingValue.Text = GetSafe(() => $"{padding.Left:0.##}, {padding.Top:0.##}, {padding.Right:0.##}, {padding.Bottom:0.##}");
 		}
 
 		private string GetSafe(Func<string> getter)
