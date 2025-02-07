@@ -142,8 +142,6 @@
 
 	</Target>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	<Target Name="_UnoVSCleanupOtherTFMsForHR"
             Condition="
 				'$(IsImplicitlyTriggeredBuild)' == 'true'
@@ -167,8 +165,6 @@
         </ItemGroup>
     </Target>
 
-=======
->>>>>>> f980d05414 (fix: Fix invalid config when using Uno.SDK)
 	<Target Name="UnoDumpTargetFrameworks">
 		<!--
 			This target is used to dump the target frameworks to the output window.
@@ -183,12 +179,6 @@
 			Encoding="Unicode"/>
 	</Target>
 
-<<<<<<< HEAD
-=======
-	
->>>>>>> 36a0d9b107 (fix: Pack add-ins discovery tragets with the dev-server to be able to run them no matter the SDK sued by the project)
-=======
->>>>>>> f980d05414 (fix: Fix invalid config when using Uno.SDK)
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 </Project>
