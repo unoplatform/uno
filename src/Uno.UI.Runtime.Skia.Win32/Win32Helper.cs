@@ -133,7 +133,7 @@ internal static class Win32Helper
 
 		public void Dispose()
 		{
-			if (!PInvoke.wglMakeCurrent(_oldDc, _oldContext))
+			if (_oldDc != IntPtr.Zero && _oldContext != IntPtr.Zero && !PInvoke.wglMakeCurrent(_oldDc, _oldContext))
 			{
 				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
 			}
