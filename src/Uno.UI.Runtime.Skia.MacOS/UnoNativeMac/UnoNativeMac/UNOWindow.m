@@ -912,10 +912,14 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             NSTimeInterval ts = event.timestamp;
             
             data.frameId = (uint)(ts * 10.0);
+<<<<<<< HEAD
 
             NSDate *now = [[NSDate alloc] init];
             NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];
             data.timestamp = (uint64)(boot.timeIntervalSinceNow * 1000000);
+=======
+            data.timestamp = (uint64)(ts * 1000000.0);
+>>>>>>> 955fd44907 (fix(pointers): Fix invalid timestamp causing incredible inertia on macOS)
 
             handled = uno_get_window_mouse_event_callback()(self, &data);
 #if DEBUG_MOUSE // very noisy
