@@ -912,7 +912,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             NSTimeInterval ts = event.timestamp;
             
             data.frameId = (uint)(ts * 10.0);
-            data.timestamp = (uint64)(ts * 1000000);
+            data.timestamp = (uint64)(ts * 1000000.0);
 
             handled = uno_get_window_mouse_event_callback()(self, &data);
 #if DEBUG_MOUSE // very noisy
