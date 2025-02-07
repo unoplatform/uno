@@ -72,24 +72,24 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged()
 	{
-		var (windowSize, visibleBounds, trueVisibleBounds) = GetVisualBounds();
+		var (windowSize, visibleBounds) = GetVisualBounds();
 
 		Bounds = new Rect(default, windowSize);
 		VisibleBounds = visibleBounds;
 		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
 
-		if (_previousTrueVisibleBounds != trueVisibleBounds)
+		if (_previousTrueVisibleBounds != visibleBounds)
 		{
-			_previousTrueVisibleBounds = trueVisibleBounds;
+			_previousTrueVisibleBounds = visibleBounds;
 
 			// TODO: Adjust when multiple windows are supported on Android #13827
-			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
+			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(visibleBounds);
 		}
 	}
 
 	protected override void ShowCore() => RemovePreDrawListener();
 
-	private (Size windowSize, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
+	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
 		if (ContextHelper.Current is not Activity activity)
 		{
@@ -99,28 +99,44 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var windowInsets = GetWindowInsets(activity);
 
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+		Rect windowBounds;
+		Rect visibleBounds;
 
-		var opaqueInsetsTypes = insetsTypes;
-		if (IsStatusBarTranslucent())
+		if ((int)Android.OS.Build.VERSION.SdkInt < 35)
 		{
-			opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
+			var opaqueInsetsTypes = insetsTypes;
+			if (IsStatusBarTranslucent())
+			{
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
+			}
+			if (IsNavigationBarTranslucent())
+			{
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
+			}
+
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
+			var translucentInsets = insets.Minus(opaqueInsets);
+
+			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
+			windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
+
+			// The visible bounds is the windows bounds on which we remove also translucentInsets
+			visibleBounds = windowBounds.DeflateBy(translucentInsets);
 		}
-		if (IsNavigationBarTranslucent())
+		else
 		{
-			opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+
+			// Edge-to-edge is default on Android 15 and above
+			windowBounds = new Rect(default, GetDisplaySize());
+			visibleBounds = windowBounds.DeflateBy(insets);
 		}
 
-		var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-		var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
-		var translucentInsets = insets.Minus(opaqueInsets);
+		var windowBoundsLogical = windowBounds.PhysicalToLogicalPixels();
+		var visibleBoundsLogical = visibleBounds.PhysicalToLogicalPixels();
 
-		// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-		var windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
-
-		// The visible bounds is the windows bounds on which we remove also translucentInsets
-		var visibleBounds = windowBounds.DeflateBy(translucentInsets);
-
-		return (windowBounds.PhysicalToLogicalPixels().Size, visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
+		return (windowBoundsLogical.Size, visibleBoundsLogical);
 	}
 
 	private bool IsNavigationBarTranslucent()
