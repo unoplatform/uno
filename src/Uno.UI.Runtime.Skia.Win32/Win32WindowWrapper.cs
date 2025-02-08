@@ -104,6 +104,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
+		// synchronously initialize Position and Size here before anyone reads their values
+		OnWindowSizeOrLocationChanged();
+
 		// TODO: extending into titlebar
 	}
 
