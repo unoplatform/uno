@@ -123,6 +123,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 		NativeWindowWrapper = nativeWindow;
 		Window.AppWindow.SetNativeWindow(nativeWindow);
+		OnNativeSizeChanged(null, new Size(nativeWindow.Size.Width, nativeWindow.Size.Height));
 		SetVisibleBoundsFromNative();
 	}
 
