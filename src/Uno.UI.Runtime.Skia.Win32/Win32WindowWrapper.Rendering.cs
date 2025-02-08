@@ -20,6 +20,11 @@ internal partial class Win32WindowWrapper
 
 	private void Paint()
 	{
+		if (_rendererDisposed)
+		{
+			return;
+		}
+
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");
 
 		_renderer.StartPaint();

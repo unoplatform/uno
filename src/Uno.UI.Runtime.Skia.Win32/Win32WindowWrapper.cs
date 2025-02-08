@@ -48,6 +48,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private readonly ApplicationView _applicationView;
 	private readonly IRenderer _renderer;
 
+	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
 
@@ -283,6 +284,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		Win32Host.UnregisterWindow(_hwnd);
 		_renderer.Dispose();
+		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
 		XamlRootMap.Unregister(XamlRoot!);
 	}
