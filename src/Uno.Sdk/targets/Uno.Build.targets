@@ -146,7 +146,7 @@
             Condition="
 				'$(IsImplicitlyTriggeredBuild)' == 'true'
 				AND '$(BuildingInsideVisualStudio)'=='true'
-				AND ( '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' )
+				AND ( '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' )
 				AND '$(UnoDisableVSCleanupOtherTFMsForHR)' != 'false'"
             BeforeTargets="BeforeBuild">
 
