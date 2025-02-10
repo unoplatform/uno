@@ -2,7 +2,6 @@
 // Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 // #define WRITE_EXPECTED
-#define WRITE_EXPECTED
 #endif
 
 using System.Collections.Immutable;
