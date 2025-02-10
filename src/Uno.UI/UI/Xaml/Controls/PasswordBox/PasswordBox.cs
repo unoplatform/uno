@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static global::Microsoft.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(PasswordRevealMode),
-				typeof(bool),
+				typeof(PasswordRevealMode),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: PasswordRevealMode.Peek,

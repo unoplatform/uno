@@ -440,6 +440,11 @@ namespace SampleControl.Presentation
 			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 		}
 
+		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
+		{
+			await SetSelectedSample(ct, content.ControlType.FullName);
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
@@ -632,13 +637,16 @@ namespace SampleControl.Presentation
 			});
 		}
 
-		public void TryOpenSample()
+		public bool TryOpenSingleSearchResult()
 		{
 			if (FilteredSamples is { } samples
 				&& samples.Count is 1)
 			{
 				SelectedSearchSample = samples[0];
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -803,7 +811,8 @@ namespace SampleControl.Presentation
 				SampleContents = SelectedCategory
 					.SamplesContent
 					.Safe()
-					.OrderBy(s => s.IsFavorite)
+					.OrderByDescending(s => s.IsFavorite)
+					.ThenBy(s => s.ControlName)
 					.ToList();
 			}
 		}
@@ -850,6 +859,7 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
+			OnSelectedCategoryChanged();
 			UpdateFavorites();
 		}
 

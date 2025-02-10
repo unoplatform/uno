@@ -321,7 +321,6 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
-		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
 
 		if (!_inSelectInternal)

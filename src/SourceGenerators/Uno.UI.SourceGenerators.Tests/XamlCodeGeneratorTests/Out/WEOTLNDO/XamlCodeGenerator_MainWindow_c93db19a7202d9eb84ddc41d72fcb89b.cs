@@ -58,8 +58,8 @@ namespace TestRepro
 			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Class TestRepro.MainWindow
-			var Closed_Window_Closed_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-			/* second level */ __p1.Closed += (Window_Closed_sender,Window_Closed_args) => (Closed_Window_Closed_That.Target as global::TestRepro.MainWindow)?.Window_Closed(Window_Closed_sender,Window_Closed_args);
+			var Closed_Handler = new __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow.ApplyMethod_1_Closed_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
+			/* second level */ __p1.Closed += Closed_Handler.Invoke;
 			}
 			))
 			;
@@ -71,6 +71,19 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_TestReproMainWindow
+		{
+				public class ApplyMethod_1_Closed_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				{
+					public void Invoke(object sender, global::Microsoft.UI.Xaml.WindowEventArgs args)
+					{
+						(target.Target as global::TestRepro.MainWindow)?.Window_Closed(sender, args);
+					}
+				}
+
+		}
 	}
 }
 namespace MyProject

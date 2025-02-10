@@ -644,6 +644,7 @@ public partial class EntryPoint : IDisposable
 			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
 			_globalJsonObserver?.Dispose();
+			_debuggerObserver?.Dispose();
 			_infoBarFactory?.Dispose();
 			_unoMenuCommand?.Dispose();
 		}

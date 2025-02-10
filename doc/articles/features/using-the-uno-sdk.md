@@ -131,7 +131,46 @@ Here are the supported properties:
 
 Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
 
-If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
+```xml
+<!-- .csproj file -->
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+   
+   ...
+
+    <UnoFeatures>
+        Material;
+        Dsp;
+        Hosting;
+        Toolkit;
+        Logging;
+        MVUX;
+        Configuration;
+        Http;
+        Serialization;
+        Localization;
+        Navigation;
+        ThemeService;
+        Mvvm;
+    </UnoFeatures>
+      <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
+      <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
+      <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
+  </PropertyGroup>    
+</Project>
+```
+
+In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+## Disabling Implicit Uno Packages
+
+If you wish to disable Implicit package usage, add the following:
+
+```xml
+<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+```
+
+to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.

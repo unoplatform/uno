@@ -21,15 +21,11 @@ This tutorial will guide you through using Hot Design to create a simple counter
 > Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
 >
 > [!IMPORTANT]
-> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+> **Hot Design™** is currently in beta. Sign up to the [waitlist](https://platform.uno/waitlist/) to get early access and be among the first to try it out!
 >
-> [!IMPORTANT]
-> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
->
-> [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
->
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
+> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization.
+> - Hot Design does not support C# Markup and is only available with XAML. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
 
 ## Set Up Your Environment for Hot Design
 
@@ -37,6 +33,9 @@ This tutorial will guide you through using Hot Design to create a simple counter
 > If you're new to developing with Uno Platform, start by [setting up your environment](xref:Uno.GetStarted). Once your environment is ready, proceed directly to the next section, **Creating the Counter Application**.
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk). Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
@@ -116,7 +115,7 @@ First, we need to add the image file to the application. Download this [SVG imag
 
 ## Run the app
 
-Before you run the application, switch the target platform to **Desktop** (net8.0-desktop) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
+Before you run the application, switch the target platform to **Desktop** (`net9.0-desktop`) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
 
 - [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022#debug-the-app)
 - [VS Code](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
@@ -127,13 +126,10 @@ Before you run the application, switch the target platform to **Desktop** (net8.
 - [Rider](xref:Uno.GettingStarted.CreateAnApp.Rider#debug-the-app)
 
 > [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
 >
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
->
-> [!IMPORTANT]
-> If you're using Visual Studio, you can choose to start it with or without debugging.  
-> If you're using VS Code or Rider, start the app **without the debugger**.
+> - If you're using Visual Studio, you can choose to start it with or without debugging.  
+> - If you're using VS Code or Rider, start the app **without the debugger**.
+> - **Hot Design** is now available on all platforms in beta, with the **Desktop** platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization.
 
 Now, let's run the app.
 

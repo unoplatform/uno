@@ -115,7 +115,8 @@
 	"Haptics",
 	"autoplay",
 	"Xcodes",
-	"Raygun"
+	"Raygun",
+	"waitlist"
   ],
   "ignoreWords": [
 	"ADAL",

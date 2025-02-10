@@ -119,6 +119,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
+#if __WASM__
+					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
+#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
