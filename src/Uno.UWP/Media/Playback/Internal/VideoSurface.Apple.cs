@@ -15,15 +15,6 @@ namespace Uno.Media.Playback
 {
 	public class VideoSurface : _View, IVideoSurface
 	{
-#if __MACOS__
-		public VideoSurface()
-		{
-			var layer = new CALayer();
-			this.Layer = layer;
-			this.WantsLayer = true;
-		}
-#endif
-
 #if __APPLE_UIKIT__
 		public override void LayoutSubviews()
 		{

@@ -2,12 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CoreGraphics;
-#if __APPLE_UIKIT__
 using _UIImage = UIKit.UIImage;
-#elif __MACOS__
-using _UIImage = AppKit.NSImage;
-using AppKit;
-#endif
 using Uno.Diagnostics.Eventing;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;

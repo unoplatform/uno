@@ -236,15 +236,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__APPLE_UIKIT__ // Disabled due to #10791
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[TestMethod]
 		public Task When_Switch_Theme_Fluent() => When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
 
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[TestMethod]
 		public async Task When_Switch_Theme_Uwp()
 		{
@@ -329,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				toolTip.IsOpen = false;
 			}
 		}
-#if HAS_UNO && !__MACOS__
+#if HAS_UNO
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Currently fails on Android and iOS")]
 #endif

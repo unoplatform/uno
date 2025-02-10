@@ -10,9 +10,6 @@ using ViewGroup = Android.Views.ViewGroup;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif

@@ -1,4 +1,4 @@
-#if !(__APPLE_UIKIT__ || __ANDROID__ || __MACOS__ || __TVOS__)
+#if !(__APPLE_UIKIT__ || __ANDROID__ || __TVOS__)
 #nullable enable
 using System;
 using System.Reflection;

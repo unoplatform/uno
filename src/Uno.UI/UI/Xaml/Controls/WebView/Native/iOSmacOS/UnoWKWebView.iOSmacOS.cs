@@ -19,14 +19,12 @@ using System.Globalization;
 using Windows.UI.Core;
 using Uno.UI;
 
-#if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
 #endif
 
 #if __APPLE_UIKIT__
 using UIKit;
-#else
-using AppKit;
 #endif
 
 #pragma warning disable CA1422 // TODO Uno: Deprecated APIs in iOS 17
@@ -34,9 +32,6 @@ using AppKit;
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
-#if __MACOS__
-	, IHasSizeThatFits
-#endif
 {
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
@@ -95,15 +90,6 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 #endif
 	}
-
-#if __MACOS__
-	public CGSize SizeThatFits(CGSize availableSize)
-	{
-		var height = Math.Min(availableSize.Height, FittingSize.Height);
-		var width = Math.Min(availableSize.Width, FittingSize.Width);
-		return new CGSize(width, height);
-	}
-#endif
 
 	public string DocumentTitle => Title!;
 
@@ -546,12 +532,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 
 	public
-#if !__MACOS__ && !__MACCATALYST__
+#if !__MACCATALYST__
 	async
 #endif
 	Task LaunchMailto(CancellationToken ct, string? subject = null, string? body = null, string[]? to = null, string[]? cc = null, string[]? bcc = null)
 	{
-#if !__MACOS__ && !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 		if (!MFMailComposeViewController.CanSendMail)
 		{
 			return;

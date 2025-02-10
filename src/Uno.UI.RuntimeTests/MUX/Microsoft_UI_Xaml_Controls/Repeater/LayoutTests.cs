@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()
@@ -230,9 +230,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __APPLE_UIKIT__
 		[Ignore("UNO: Test does not pass yet with Uno (causes infinite layout cycle) https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public void ValidateStackLayoutDisabledVirtualizationWithItemsRepeater()
 		{

@@ -10,16 +10,8 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
-
-#if __APPLE_UIKIT__
 using _Color = UIKit.UIColor;
 using _Image = UIKit.UIImage;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-using _Color = AppKit.NSColor;
-using _Image = AppKit.NSImage;
-#endif
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
@@ -74,10 +66,6 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.CornerRadius);
 		if (!newState.Equals(_currentState) || forceUpdate)
 		{
-#if __MACOS__
-			_owner.WantsLayer = true;
-#endif
-
 			_layerDisposable.Disposable = null;
 			_layerDisposable.Disposable = InnerCreateLayer(_owner, _owner.Layer, newState, out var updatedBoundsPath);
 

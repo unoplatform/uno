@@ -125,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
 				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
 				const int TimeResolutionScaling =
-#if !DEBUG && (__ANDROID__ || __MACOS__)
+#if !DEBUG && (__ANDROID__)
 				5;
 #else
 					1;

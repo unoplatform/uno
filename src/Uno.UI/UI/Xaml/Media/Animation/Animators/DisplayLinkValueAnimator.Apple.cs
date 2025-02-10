@@ -64,27 +64,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-#if __MACOS__
-		private void ScheduleTimer()
-		{
-			if (_timer?.IsValid == true) return;
-			UnscheduleTimer();
-			_timer = NSTimer.CreateRepeatingScheduledTimer(0.001, OnTimerTick);
-		}
-
-		private void UnscheduleTimer()
-		{
-			_timer?.Invalidate();
-			_timer?.Dispose();
-			_timer = null;
-		}
-
-		private void OnTimerTick(NSTimer obj)
-		{
-			OnFrame();
-		}
-#endif
-
 		/// <summary>
 		/// Precalculates the frame values.
 		/// </summary>

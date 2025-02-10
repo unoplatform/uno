@@ -101,9 +101,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	[TestClass]
 	[RunsOnUIThread]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public partial class Given_ListViewBase // test cases
 	{
 		[TestMethod]
@@ -4502,16 +4499,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#endif
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#endif
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_TabView() => When_SelectionChanged_Item_Is_BroughtIntoView<TabView>();
 
 		public async Task When_SelectionChanged_Item_Is_BroughtIntoView<T>() where T : FrameworkElement, new()
@@ -4558,9 +4549,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#elif __ANDROID__ || __APPLE_UIKIT__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("This test is for managed ListViewBase.")]
 #endif
 		public async Task When_ScrollIntoView_No_Virtualization()
@@ -4585,11 +4574,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#else
 		[Ignore("https://github.com/unoplatform/uno/issues/16246")]
-#endif
 		public async Task When_ScrollIntoView_Containers_With_Varying_Heights()
 		{
 			var random = new Random(42);

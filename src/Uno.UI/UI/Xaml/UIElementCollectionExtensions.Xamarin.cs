@@ -6,8 +6,6 @@ using Microsoft.UI.Xaml.Media;
 using _View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls

@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
 		public async Task Check_Border_Margin(bool useCustomControl)
@@ -282,9 +282,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
 
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -334,10 +331,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			//Same colors but with the addition of a White background color underneath
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
-
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
 
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
@@ -403,10 +396,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string red = "#FFFF0000";
 
-#if __MACOS__
-			Assert.Inconclusive(); //MACOS interprets colors differently
-#endif
-
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -445,10 +434,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Border_CornerRadius_Content_Clipping()
 		{
 			const string blue = "#FF0000FF";
-
-#if __MACOS__
-			Assert.Inconclusive(); //MACOS interprets colors differently
-#endif
 
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
@@ -554,9 +539,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
 #if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
@@ -710,9 +692,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently flaky on macOS, part of #9282 epic")]
-#endif
 		public async Task Border_CornerRadius_GradientBrush()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

@@ -63,8 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 #if __SKIA__
 			_strategy = CompositorScrollStrategy.Instance;
-#elif __MACOS__
-			_strategy = TransformScrollStrategy.Instance;
 #endif
 
 			_strategy.Initialize(this);

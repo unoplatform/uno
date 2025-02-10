@@ -6,7 +6,6 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
-#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 using _Event = UIKit.UIEvent;
@@ -14,15 +13,6 @@ using _Touch = UIKit.UITouch;
 using _Application = UIKit.UIApplication;
 using _Window = UIKit.UIWindow;
 using _ScrollView = UIKit.UIScrollView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-using _Event = AppKit.NSEvent;
-using _Touch = AppKit.NSTouch;
-using _Application = AppKit.NSApplication;
-using _Window = AppKit.NSWindow;
-using _ScrollView = AppKit.NSScrollView;
-#endif
 
 namespace Uno.UI.Extensions
 {
@@ -30,22 +20,9 @@ namespace Uno.UI.Extensions
 	{
 		public static bool IsTouchInView(this _Event evt, _View view)
 		{
-#if __MACOS__
-			var screenLocation = _Application.SharedApplication.KeyWindow.ContentView.ConvertPointFromView(evt.LocationInWindow, null);
-
-			var window = _Application.SharedApplication.KeyWindow;
-			var bounds = GetBounds(window, view);
-
-			return screenLocation.X >= bounds.X
-				&& screenLocation.Y >= bounds.Y
-				&& screenLocation.X < bounds.Right
-				&& screenLocation.Y < bounds.Bottom;
-#else
 			return evt?.AllTouches?.AnyObject is _Touch touch && touch.IsTouchInView(view);
-#endif
 		}
 
-#if !__MACOS__
 		internal static bool IsTouchInView(this _Touch touch, _View view)
 		{
 			var window = _Application.SharedApplication.KeyWindow;
@@ -74,7 +51,6 @@ namespace Uno.UI.Extensions
 
 			return null;
 		}
-#endif
 
 		/// <summary>
 		/// Determines the bounds of the provided view, including the <see cref="UIElement.Clip"/>, using the window coordinate system.
@@ -94,11 +70,7 @@ namespace Uno.UI.Extensions
 				}
 				else
 				{
-#if __MACOS__
-					var viewOnScreen = view.ConvertRectToView(view.Bounds, window.ContentView);
-#else
 					var viewOnScreen = view.ConvertRectToView(view.Bounds, window);
-#endif
 					var element = view as FrameworkElement;
 
 					if (element?.Clip != null)

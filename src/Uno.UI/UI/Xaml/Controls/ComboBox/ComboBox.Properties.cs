@@ -11,7 +11,7 @@ partial class ComboBox
 	/// Gets or sets content that is shown below the control. The content should provide guidance about the input expected by the control.
 	/// </summary>
 	public
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 			object Description

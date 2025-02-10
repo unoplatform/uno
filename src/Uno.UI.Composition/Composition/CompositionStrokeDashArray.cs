@@ -4,7 +4,7 @@ using Uno;
 
 namespace Microsoft.UI.Composition;
 
-[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__MACOS__")]
+[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__")]
 public partial class CompositionStrokeDashArray : CompositionObject, IList<float>, IEnumerable<float>
 {
 	private readonly List<float> _list;

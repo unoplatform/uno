@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -16,16 +16,9 @@ using System.Diagnostics;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
-#elif __MACOS__
-using AppKit;
-using NativePath = CoreGraphics.CGPath;
-using ObjCRuntime;
-using NativeSingle = System.Runtime.InteropServices.NFloat;
-
 #elif __ANDROID__
 using NativePath = Android.Graphics.Path;
 using NativeSingle = System.Double;
-
 #endif
 
 namespace Microsoft.UI.Xaml.Shapes;
@@ -229,7 +222,7 @@ partial class Shape
 			renderOrigin.y -= renderOverflow.y / 2.0;
 		}
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		// Finally render the shape in a Layer
 		var renderTransform = new CoreGraphics.CGAffineTransform(
 			(nfloat)renderScale.x, 0,

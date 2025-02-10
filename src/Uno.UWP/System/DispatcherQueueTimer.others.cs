@@ -1,4 +1,4 @@
-﻿#if !__IOS__ && !__TVOS__ && !__MACOS__ && !__ANDROID__
+﻿#if !__IOS__ && !__TVOS__ && !__ANDROID__
 using System;
 using System.Threading;
 using Uno.UI.Dispatching;

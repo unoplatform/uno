@@ -37,16 +37,6 @@ using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
 using ObjCRuntime;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using CoreGraphics;
-using _Size = Windows.Foundation.Size;
-using Point = Windows.Foundation.Point;
-using ObjCRuntime;
 #elif __WASM__
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -135,7 +125,7 @@ namespace Microsoft.UI.Xaml
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
@@ -224,8 +214,6 @@ namespace Microsoft.UI.Xaml
 
 #elif __APPLE_UIKIT__
 					view.SetNeedsLayout();
-#elif __MACOS__
-					view.NeedsLayout = true;
 #endif
 					break;
 
@@ -312,7 +300,7 @@ namespace Microsoft.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
 #elif __ANDROID__
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
@@ -327,34 +315,6 @@ namespace Microsoft.UI.Xaml
 			return default(CGSize);
 #endif
 		}
-
-#if __MACOS__
-		public static CGSize SizeThatFits(this View element, _Size availableSize)
-		{
-			switch (element)
-			{
-				case NSControl nsControl:
-					return nsControl.SizeThatFits(availableSize);
-
-				case FrameworkElement fe:
-					{
-						fe.XamlMeasure(availableSize);
-						var desiredSize = fe.DesiredSize;
-						return new CGSize(desiredSize.Width, desiredSize.Height);
-					}
-
-				case IHasSizeThatFits scp:
-					return scp.SizeThatFits(availableSize);
-
-				case View nsview:
-					return nsview.FittingSize;
-
-				default:
-					throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-		}
-
-#endif
 
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
 		{

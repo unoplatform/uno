@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __MACOS__ || __SKIA__
+﻿#if __APPLE_UIKIT__ || __SKIA__
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;
@@ -19,9 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	public class When_Shape
 	{
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Shape_Stretch_None()
 		{
 			var topLevelGrid = new Grid();

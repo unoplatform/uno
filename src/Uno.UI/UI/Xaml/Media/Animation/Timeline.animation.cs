@@ -348,7 +348,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// There are two types of fill behaviors:
 				if (FillBehavior == FillBehavior.HoldEnd) // HoldEnd: Keep displaying the last frame
 				{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 					// iOS && macOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
 					// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
 					//		 it from application code. Instead we should set the value using a lower precedence
@@ -402,7 +402,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// value in order to support deactivation scenarios.
 				State = TimelineState.Stopped;
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 				_startingValue = null;
 
 				// On Android, AnimationEnd is always called after AnimationCancel. We don't unset _startingValue yet to be able to calculate

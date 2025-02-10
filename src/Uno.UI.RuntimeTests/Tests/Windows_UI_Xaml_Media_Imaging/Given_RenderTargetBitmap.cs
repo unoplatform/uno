@@ -30,9 +30,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if __WASM__
 		[Ignore("Not implemented yet.")]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 #if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS: https://github.com/unoplatform/uno/issues/9080")]
 #endif
@@ -91,8 +88,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[TestMethod]
 #if __WASM__
 		[Ignore("Not implemented yet.")]
-#elif __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_Render_Then_CanRenderOnCanvas()
 		{
@@ -138,8 +133,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[TestMethod]
 #if __WASM__
 		[Ignore("Not implemented yet.")]
-#elif __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_RenderNotOpaqueContent_Then_ImageNotOpaque()
 		{

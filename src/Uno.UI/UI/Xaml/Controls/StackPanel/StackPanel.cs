@@ -13,8 +13,6 @@ using Microsoft.UI.Xaml.Media;
 using Android.Views;
 #elif __APPLE_UIKIT__
 using View = UIKit.UIView;
-#elif __MACOS__
-using View = AppKit.NSView;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif

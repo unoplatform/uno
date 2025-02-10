@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __SKIA__ || __WASM__ || __TVOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __SKIA__ || __WASM__ || __TVOS__
 		private static void OnContentChanged()
 		{
 			_contentChanged?.Invoke(null, null);

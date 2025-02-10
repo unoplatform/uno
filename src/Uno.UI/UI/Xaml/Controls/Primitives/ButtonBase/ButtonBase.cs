@@ -15,8 +15,6 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
-#elif __MACOS__
-using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else

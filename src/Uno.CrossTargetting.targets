@@ -28,11 +28,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 
-		<None Include="**\*.macOS.cs" Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs" Condition="!$(IsMacOS)" />
-		<Compile Remove="**\*.macOS.cs" Condition="!$(IsMacOS)" />
-
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 
 		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
 		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
@@ -107,11 +104,6 @@
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
 		<DefineConstants>$(DefineConstants);__APPLE_UIKIT__</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(IsMacOS)">
-		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>10.15</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">

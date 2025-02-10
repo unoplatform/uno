@@ -9,14 +9,8 @@ using Microsoft.UI.Xaml.Media;
 using CoreGraphics;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
-
-#if __APPLE_UIKIT__
 using UIKit;
 using _Image = UIKit.UIImage;
-#elif __MACOS__
-using AppKit;
-using _Image = AppKit.NSImage;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

@@ -1,4 +1,4 @@
-﻿#if UNO_REFERENCE_API || __MACOS__
+﻿#if UNO_REFERENCE_API
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using System;
@@ -82,7 +82,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !__MACOS__
 		public void ScrollIntoView(object item) => ScrollIntoView(item, ScrollIntoViewAlignment.Default);
 
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
@@ -142,7 +141,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-#endif
 	}
 }
 #endif

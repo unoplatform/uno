@@ -30,9 +30,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 #endif
 
-#if __MACOS__
-using AppKit;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -40,9 +38,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]

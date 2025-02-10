@@ -144,11 +144,6 @@ namespace Microsoft.UI.Xaml.Automation
 			{
 				view.AccessibilityIdentifier = (string)args.NewValue;
 			}
-#elif __MACOS__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AppKit.NSView view)
-			{
-				view.AccessibilityIdentifier = (string)args.NewValue;
-			}
 #elif __ANDROID__
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is Android.Views.View view)
 			{

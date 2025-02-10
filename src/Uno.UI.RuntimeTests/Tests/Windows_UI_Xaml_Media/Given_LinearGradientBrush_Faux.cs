@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __APPLE_UIKIT__ || __MACOS__
+﻿#if __WASM__ || __APPLE_UIKIT__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ public class Given_LinearGradientBrush_Faux
 	}
 #endif
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 	[TestMethod]
 	public void When_CanApplyToBorder_iOS_No_Transform()
 	{

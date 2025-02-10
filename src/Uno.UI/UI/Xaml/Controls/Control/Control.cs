@@ -24,12 +24,6 @@ using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using AppKit;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -116,8 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 			this.Enabled = newValue;
 #elif __APPLE_UIKIT__
 			UserInteractionEnabled = (bool)args.NewValue;
-#elif __MACOS__
-			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
 #endif
 
 			IsEnabledChanged?.Invoke(this, args);
@@ -296,7 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();

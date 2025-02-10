@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Media;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Windows.UI.Xaml.Controls

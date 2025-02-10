@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
 					newPlayer.SourceChanged += presenter.OnSourceChanged;
 
-#if __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
+#if __APPLE_UIKIT__ || __ANDROID__
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
 #endif
 

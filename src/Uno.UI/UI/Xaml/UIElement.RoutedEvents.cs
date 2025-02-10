@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
 
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public event PointerEventHandler PointerWheelChanged
 		{
@@ -431,21 +431,13 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if __MACOS__
-		public new event KeyEventHandler KeyDown
-#else
 		public event KeyEventHandler KeyDown
-#endif
 		{
 			add => AddHandler(KeyDownEvent, value, false);
 			remove => RemoveHandler(KeyDownEvent, value);
 		}
 
-#if __MACOS__
-		public new event KeyEventHandler KeyUp
-#else
 		public event KeyEventHandler KeyUp
-#endif
 		{
 			add => AddHandler(KeyUpEvent, value, false);
 			remove => RemoveHandler(KeyUpEvent, value);

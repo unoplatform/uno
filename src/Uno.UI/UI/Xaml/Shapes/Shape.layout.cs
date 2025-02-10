@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __APPLE_UIKIT__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
+#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__ || __WASM__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -13,11 +13,6 @@ using Windows.Phone.Media.Devices;
 using System.Diagnostics;
 
 #if __APPLE_UIKIT__
-using NativePath = CoreGraphics.CGPath;
-using ObjCRuntime;
-using NativeSingle = System.Runtime.InteropServices.NFloat;
-#elif __MACOS__
-using AppKit;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;

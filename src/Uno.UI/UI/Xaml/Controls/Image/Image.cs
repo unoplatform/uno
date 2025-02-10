@@ -446,7 +446,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
 			{
 #if __ANDROID__

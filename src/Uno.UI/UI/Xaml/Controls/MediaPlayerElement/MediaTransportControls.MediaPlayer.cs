@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
 				m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
 				if (
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 					!m_isInScrubMode &&
 #endif
 					m_tpMediaPositionSlider is not null)

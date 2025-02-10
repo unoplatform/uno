@@ -14,7 +14,7 @@ using SKMatrix = SkiaSharp.SKMatrix;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
-#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __MACOS__ || __ANDROID__)
+#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 #else
@@ -23,7 +23,7 @@ using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
 #endif
 #else
 using SkiaSharp.Views.UWP;
-#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __MACOS__ || __ANDROID__)
+#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
 #else

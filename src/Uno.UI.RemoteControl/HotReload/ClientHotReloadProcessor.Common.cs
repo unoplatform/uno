@@ -20,8 +20,6 @@ using Microsoft.UI.Xaml.Media;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #elif __ANDROID__
 using Uno.UI;
 #endif

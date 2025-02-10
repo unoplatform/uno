@@ -25,15 +25,10 @@ namespace Microsoft.UI.Xaml
 		{
 			_inputManager = inputManager;
 
-#if __MACOS__
-			// Dependency injection not currently supported on macOS
-			_hostExtension = new MacOSDragDropExtension(this);
-#else
 			if (ApiExtensibility.CreateInstance<IDragDropExtension>(this, out var extension))
 			{
 				_hostExtension = extension;
 			}
-#endif
 		}
 
 		internal ContentRoot ContentRoot => _inputManager.ContentRoot;

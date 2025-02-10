@@ -13,8 +13,6 @@ using Uno.Foundation.Logging;
 using _View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -101,7 +99,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			transform.View = View; // Animation support
 #endif
 			transform.Changed += OnChildTransformChanged;
@@ -109,7 +107,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildRemoved(Transform transform)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			transform.View = null; // Animation support
 #endif
 			transform.Changed -= OnChildTransformChanged;
@@ -151,7 +149,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		internal override _View View
 		{
 			get => base.View;

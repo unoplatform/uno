@@ -1,4 +1,4 @@
-﻿#if UNO_REFERENCE_API || __MACOS__
+﻿#if UNO_REFERENCE_API
 using Uno.UI.Controls;
 using System;
 using System.Collections;

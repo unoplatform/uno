@@ -12,9 +12,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	{
 		[TestMethod]
 		[Description("Verifies that the TextBlock representing the Chevron glyph uses the correct font")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[RunsOnUIThread]
 		public async Task VerifyFontFamilyForChevron()
 		{

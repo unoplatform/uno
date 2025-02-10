@@ -3,9 +3,6 @@
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
 #endif
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -22,9 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			var navView = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView()

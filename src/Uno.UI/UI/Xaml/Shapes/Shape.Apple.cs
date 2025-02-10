@@ -11,13 +11,7 @@ using Uno.UI.UI.Xaml.Media;
 using static System.Double;
 using ObjCRuntime;
 using Uno.UI.Xaml.Media;
-
-#if __APPLE_UIKIT__
 using _Color = UIKit.UIColor;
-#elif __MACOS__
-using AppKit;
-using _Color = AppKit.NSColor;
-#endif
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -28,12 +22,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public Shape()
 		{
 			// Background color is black by default, if and only if overriding Draw(CGRect rect).
-#if __APPLE_UIKIT__
 			base.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
-#elif __MACOS__
-			base.WantsLayer = true;
-			base.Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
-#endif
 		}
 
 		private CGRect GetPathBoundingBox(CGPath path) => path.PathBoundingBox;

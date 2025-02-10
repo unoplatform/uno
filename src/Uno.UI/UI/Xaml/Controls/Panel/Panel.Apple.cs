@@ -6,15 +6,8 @@ using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
 using CoreGraphics;
 using Microsoft.UI.Xaml.Media;
-
-
-#if __APPLE_UIKIT__
 using UIKit;
 using __View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using __View = AppKit.NSView;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -41,7 +34,6 @@ partial class Panel
 		UpdateBorder();
 	}
 
-#if __APPLE_UIKIT__
 	public override void SubviewAdded(__View uiview)
 	{
 		base.SubviewAdded(uiview);
@@ -52,18 +44,6 @@ partial class Panel
 			OnChildAdded(element);
 		}
 	}
-#else
-	public override void DidAddSubview(__View nsView)
-	{
-		base.DidAddSubview(nsView);
-
-		var element = nsView as IFrameworkElement;
-		if (element != null)
-		{
-			OnChildAdded(element);
-		}
-	}
-#endif
 
 	public bool HitTestOutsideFrame
 	{
@@ -71,15 +51,9 @@ partial class Panel
 		set;
 	}
 
-#if __APPLE_UIKIT__
 	// All touches that are on this view (and not its subviews) are ignored
 	public override __View HitTest(CGPoint point, UIEvent uievent)
 	{
 		return HitTestOutsideFrame ? this.HitTestOutsideFrame(point, uievent) : base.HitTest(point, uievent);
 	}
-#else
-	// All touches that are on this view (and not its subviews) are ignored
-	public override __View HitTest(CGPoint point) =>
-		HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
-#endif
 }

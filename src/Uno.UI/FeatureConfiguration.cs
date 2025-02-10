@@ -137,7 +137,7 @@ namespace Uno.UI
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// opt-in for iOS/Android/macOS
 #else
 				= true;
@@ -177,7 +177,7 @@ namespace Uno.UI
 		public static class Font
 		{
 			private static string _symbolsFont =
-#if __WASM__ || __MACOS__ || __APPLE_UIKIT__
+#if __WASM__ || __APPLE_UIKIT__
 				"Symbols";
 #else
 				"ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";

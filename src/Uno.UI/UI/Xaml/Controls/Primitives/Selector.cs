@@ -203,8 +203,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 #if __APPLE_UIKIT__ || __ANDROID__
 					lvb.InstantScrollToIndex(newIndex);
-#elif __MACOS__
-					// not implemented
 #else
 					lvb.ScrollIntoView(selectedItem);
 #endif

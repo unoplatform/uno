@@ -9,12 +9,8 @@ using AuthenticationServices;
 using Foundation;
 using Windows.UI.Core;
 using Uno.Extensions;
-#if __MACOS__
-using AppKit;
-#else
 using UIKit;
 using SafariServices;
-#endif
 
 namespace Uno.AuthenticationBroker
 {

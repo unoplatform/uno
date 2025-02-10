@@ -12,14 +12,9 @@ using Foundation;
 using CoreGraphics;
 using ObjCRuntime;
 
-#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 using Microsoft.UI.Xaml;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-#endif
 
 namespace Uno.UI
 {

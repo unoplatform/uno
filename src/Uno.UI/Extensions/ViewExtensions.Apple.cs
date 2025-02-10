@@ -5,16 +5,8 @@ using Microsoft.UI.Xaml;
 using System;
 using Uno.UI.Controls;
 
-
-
-#if __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-#endif
-
 
 namespace Uno.UI
 {

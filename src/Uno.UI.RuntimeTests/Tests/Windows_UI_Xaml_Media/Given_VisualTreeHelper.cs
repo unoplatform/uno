@@ -64,9 +64,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #if !WINAPPSDK // Testing internal Uno methods
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Nested_In_Native_View()
 		{
 			var page = new Native_View_Page();
@@ -102,9 +99,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[RunsOnUIThread]
 #if !UNO_HAS_MANAGED_POINTERS
 		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_HitTestTranslatedElement()
 		{
@@ -150,9 +144,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #if !UNO_HAS_MANAGED_POINTERS
 		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ElementStub_Not_Counted()
 		{
 			var SUT = new xLoad_Visibility();
@@ -167,9 +158,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[RunsOnUIThread]
 #if !UNO_HAS_MANAGED_POINTERS
 		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_HitTestScaledElement()
 		{

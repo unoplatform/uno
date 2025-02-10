@@ -8,8 +8,6 @@ using Uno.UI;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives

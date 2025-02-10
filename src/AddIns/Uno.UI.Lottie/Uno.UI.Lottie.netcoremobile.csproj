@@ -60,10 +60,6 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMacOS)">
-		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
-	</ItemGroup>
-
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_CleanupReferences" BeforeTargets="CoreCompile">

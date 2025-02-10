@@ -70,13 +70,6 @@ namespace Microsoft.UI.Xaml.Media
 				(_, __) => Apply(state))
 					.DisposeWith(compositeDisposable);
 
-#if __MACOS__
-			this.RegisterDisposablePropertyChangedCallback(
-				BackgroundSourceProperty,
-				(_, __) => Apply(state))
-					.DisposeWith(compositeDisposable);
-#endif
-
 			Apply(state);
 
 			Disposable.Create(() => state.ApplyDisposable.Disposable = null)

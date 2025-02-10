@@ -273,10 +273,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		}
 
-		private
-#if !__MACOS__
-		async
-#endif
+		private async
 #if __SKIA__
 		void
 #else
@@ -284,7 +281,6 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		GenerateScreenshots()
 		{
-#if !__MACOS__
 			_root.Visibility = Visibility.Collapsed;
 
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
@@ -327,10 +323,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			_root.Visibility = Visibility.Visible;
 			_testZone.Child = null;
-#elif !__SKIA__
-			return Task.CompletedTask;
-#endif
 		}
+
 		public string RunTests(string testNames)
 		{
 			TestResult = "";

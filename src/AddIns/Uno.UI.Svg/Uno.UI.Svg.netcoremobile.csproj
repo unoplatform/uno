@@ -52,10 +52,6 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMacOS)">
-		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>

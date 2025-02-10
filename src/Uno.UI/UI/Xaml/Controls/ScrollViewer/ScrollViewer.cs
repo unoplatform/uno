@@ -35,9 +35,6 @@ using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using View = AppKit.NSView;
-using AppKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -951,7 +948,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !UNO_REFERENCE_API && !__MACOS__ && !IS_UNIT_TESTS
+#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
 			new
 #endif
 			void Add(View view)
@@ -1735,7 +1732,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if __CROSSRUNTIME__ || __MACOS__
+#if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
 
 		[NotImplemented]

@@ -42,11 +42,6 @@ using Microsoft.UI.Xaml.Controls;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using AppKit;
-using Windows.UI.Core;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
@@ -257,7 +252,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__MACOS__ && !__SKIA__
+#if !__ANDROID__ && !__SKIA__
 		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
@@ -548,15 +543,13 @@ namespace Microsoft.UI.Xaml
 		[JSImport("globalThis.eval")]
 		private static partial string Eval(string js);
 
-#if __MACOS__ || __SKIA__
+#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-#if __SKIA__
 			if (!string.IsNullOrEmpty(_argumentsOverride))
 			{
 				return _argumentsOverride;
 			}
-#endif
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{

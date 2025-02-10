@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-
-#if __APPLE_UIKIT__
 using _UIImage = UIKit.UIImage;
 using _UIImageView = UIKit.UIImageView;
-#elif __MACOS__
-using _UIImage = AppKit.NSImage;
-using _UIImageView = AppKit.NSImageView;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

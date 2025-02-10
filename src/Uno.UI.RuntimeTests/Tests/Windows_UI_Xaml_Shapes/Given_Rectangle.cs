@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __MACOS__ || __SKIA__ || WINAPPSDK
+﻿#if __APPLE_UIKIT__ || __SKIA__ || WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

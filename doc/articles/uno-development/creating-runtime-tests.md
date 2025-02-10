@@ -59,8 +59,6 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif

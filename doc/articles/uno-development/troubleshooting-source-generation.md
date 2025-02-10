@@ -122,7 +122,6 @@ If ever the need arises to view the generated source code of a *failing* CI buil
 
 1. In your local branch, locate the one of build yaml files (located in the root Uno folder):
      - `.azure-devops-android-tests.yml`
-     - `.azure-devops-macos.yml`
      - `.azure-devops-wasm-uitests.yml`
 
 2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:

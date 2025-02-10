@@ -3,12 +3,7 @@ using System.Runtime.InteropServices;
 using CoreGraphics;
 using Windows.UI;
 
-#if __APPLE_UIKIT__
 using _UIImage = UIKit.UIImage;
-#elif __MACOS__
-using _UIImage = AppKit.NSImage;
-using AppKit;
-#endif
 
 namespace Uno.UI.Extensions
 {

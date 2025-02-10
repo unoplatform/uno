@@ -23,7 +23,7 @@ using Microsoft.UI.Dispatching;
 using Windows.System;
 #endif
 
-#if __SKIA__ || __MACOS__
+#if __SKIA__
 using System.CommandLine;
 #endif
 
@@ -172,7 +172,7 @@ partial class App
 
 	private bool HandleAutoScreenshots(string args)
 	{
-#if __SKIA__ || __MACOS__
+#if __SKIA__
 		if (string.IsNullOrEmpty(args))
 		{
 			return false;
