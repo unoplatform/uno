@@ -6,6 +6,7 @@ using Android.Views;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -119,7 +120,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			var translucentInsets = insets.Minus(opaqueInsets);
 
 			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-			windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
+			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
 
 			// The visible bounds is the windows bounds on which we remove also translucentInsets
 			visibleBounds = windowBounds.DeflateBy(translucentInsets);
@@ -128,9 +129,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
 
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Insets: {insets}");
+			}
+
 			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetDisplaySize());
+			windowBounds = new Rect(default, GetWindowSize());
 			visibleBounds = windowBounds.DeflateBy(insets);
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"WindowBounds: {windowBounds}, VisibleBounds {visibleBounds}");
 		}
 
 		var windowBoundsLogical = windowBounds.PhysicalToLogicalPixels();
@@ -167,7 +178,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return null;
 	}
 
-	private Size GetDisplaySize()
+	private Size GetWindowSize()
 	{
 		if (ContextHelper.Current is not Activity activity)
 		{
@@ -183,13 +194,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 		else
 		{
-			SetDisplaySizeLegacy();
-		}
-
-		return displaySize;
-
-		void SetDisplaySizeLegacy()
-		{
 			using var realMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
@@ -200,6 +204,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 			displaySize = new Size(realMetrics.WidthPixels, realMetrics.HeightPixels);
 		}
+
+		return displaySize;
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()
