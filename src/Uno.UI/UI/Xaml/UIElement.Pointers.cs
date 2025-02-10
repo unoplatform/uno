@@ -812,13 +812,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private void OnDropCompleted(CoreDragInfo info, DataPackageOperation result)
-		{
 			// Note: originalSource = this => DropCompleted is not actually a routed event, the original source is always the sender
-			if (result is not DataPackageOperation.None)
-			{
-				SafeRaiseEvent(DropCompletedEvent, new DropCompletedEventArgs(this, info, result));
-			}
-		}
+			=> SafeRaiseEvent(DropCompletedEvent, new DropCompletedEventArgs(this, info, result));
 
 		/// <summary>
 		/// Provides ability to a control to fulfill the data that is going to be shared, by drag-and-drop for instance.
