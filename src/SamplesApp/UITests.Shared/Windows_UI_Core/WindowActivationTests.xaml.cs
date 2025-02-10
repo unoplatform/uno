@@ -26,7 +26,7 @@ using XamlWindow = Microsoft.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Core
 {
-	[SampleControlInfo("Windows.UI.Core", controlName: "Application/Window lifecycle events", viewModelType: typeof(WindowActivationViewModel), isManualTest: true)]
+	[Sample("Windowing", "Application", Name = "Application/Window lifecycle events", ViewModelType = typeof(WindowActivationViewModel), IsManualTest = true)]
 	public sealed partial class WindowActivationTests : Page
 	{
 		public WindowActivationTests()
