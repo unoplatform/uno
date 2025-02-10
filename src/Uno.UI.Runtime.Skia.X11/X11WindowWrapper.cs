@@ -4,7 +4,6 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.Core;
-using Windows.UI.Core.Preview;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -24,9 +23,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_xamlRoot = xamlRoot;
 
 		_host = new X11XamlRootHost(this, window, xamlRoot, UpdatePositionAndSize, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
-
-		// synchronously initialize Position and Size here before anyone reads their values
-		UpdatePositionAndSize(updatePositionSize: true, raiseNativeSizeChanged: false);
+		UpdatePositionAndSize(); // set initial values
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
 	}
@@ -48,16 +45,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	}
 
 	public override object NativeWindow => new X11NativeWindow(_host.RootX11Window.Window);
-
-	private void RaiseNativeSizeChanged(Size newWindowSize)
-	{
-		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-			? root.RasterizationScale
-			: 1;
-		newWindowSize = new Size(newWindowSize.Width / scale, newWindowSize.Height / scale);
-		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
-	}
 
 	internal protected override void Activate()
 	{
@@ -168,9 +155,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XLib.XSync(display, false);
 	}
 
-	private void UpdatePositionAndSize() => UpdatePositionAndSize(true, true);
-
-	private void UpdatePositionAndSize(bool updatePositionSize, bool raiseNativeSizeChanged)
+	private void UpdatePositionAndSize()
 	{
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
@@ -189,18 +174,18 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XWindowAttributes windowAttrs = default;
 		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
 		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
-		if (updatePositionSize)
-		{
-			Position = new PointInt32 { X = rootx, Y = rooty };
-			Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
-		}
+
+		Position = new PointInt32 { X = rootx, Y = rooty };
+		Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
 
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
-		if (raiseNativeSizeChanged)
-		{
-			RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
-		}
+
+		var scale = _xamlRoot.RasterizationScale;
+		var newWindowSize = new Size(windowAttrs2.width / scale, windowAttrs2.height / scale);
+		Bounds = new Rect(default, newWindowSize);
+		VisibleBounds = new Rect(default, newWindowSize);
+
 		// copy the root window dimensions to the top window
 		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);
 	}
