@@ -1,11 +1,8 @@
 ﻿#nullable enable
 
+using System;
 using Microsoft.CodeAnalysis;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator
-{
-	internal record BackingFieldDefinition(string GlobalizedTypeName, string Name, Accessibility Accessibility);
+namespace Uno.UI.SourceGenerators.XamlGenerator;
 
-	internal record EventHandlerBackingFieldDefinition(string GlobalizedTypeName, string Name, Accessibility Accessibility, string ComponentName)
-		: BackingFieldDefinition(GlobalizedTypeName, Name, Accessibility);
-}
+internal record BackingFieldDefinition(string GlobalizedTypeName, string Name, Accessibility Accessibility);

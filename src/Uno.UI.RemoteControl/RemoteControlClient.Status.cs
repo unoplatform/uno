@@ -21,6 +21,7 @@ public partial class RemoteControlClient
 	{
 		private readonly RemoteControlClient _owner;
 		private ConnectionState _state = ConnectionState.Idle;
+		private ConnectionError? _error;
 
 		public StatusSink(RemoteControlClient owner)
 		{
@@ -31,7 +32,7 @@ public partial class RemoteControlClient
 		}
 
 		public RemoteControlStatus BuildStatus()
-			=> new(_state, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
+			=> new(_state, _error, _isVersionValid, (_keepAliveState, _roundTrip), _missingRequiredProcessors, (_invalidFrames, _invalidFrameTypes));
 
 		private void NotifyStatusChanged()
 			=> _owner.StatusChanged?.Invoke(_owner, BuildStatus());
@@ -45,9 +46,10 @@ public partial class RemoteControlClient
 				_ => ConnectionState.Connected,
 			});
 
-		public void Report(ConnectionState state)
+		public void Report(ConnectionState state, ConnectionError? error = null)
 		{
 			_state = state;
+			_error = error;
 			NotifyStatusChanged();
 		}
 		#endregion

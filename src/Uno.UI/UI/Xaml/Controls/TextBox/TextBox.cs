@@ -1344,6 +1344,10 @@ namespace Microsoft.UI.Xaml.Controls
 				length = textLength - start;
 			}
 
+#if __SKIA__
+			_pendingSelection = null;
+#endif
+
 			if (SelectionStart == start && SelectionLength == length)
 			{
 				return;

@@ -112,10 +112,7 @@
 	<Style x:Key="Icon_Chevron"
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
-		<Setter Property="Foreground"
-				Value="{StaticResource Color07Brush}" />
-		<Setter Property="Width"
-				Value="5" />
+		<Setter Property="Width" Value="5" />
 		<Setter Property="VerticalAlignment"
 				Value="Center" />
 		<Setter Property="Template">

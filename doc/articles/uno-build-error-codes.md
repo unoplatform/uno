@@ -131,7 +131,7 @@ See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Ride
 
 ### UNOB0015: The desktop TargetFramework must be placed first
 
-In Visual Studio 17.12 or later, when both mobile (`-ios`, `-android`, `-maccatalyst`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
+In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`, `-maccatalyst`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
 
 If `-desktop` is not first, the following message will appear:
 
@@ -139,7 +139,7 @@ If `-desktop` is not first, the following message will appear:
 The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)' and command 'WSL2'.
 ```
 
-To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework.
+To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework, or upgrade to Visual Studio 17.13 (when a stable release will be available).
 
 The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
 
