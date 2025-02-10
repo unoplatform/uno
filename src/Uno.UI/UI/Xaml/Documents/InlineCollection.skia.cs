@@ -521,7 +521,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: gbColor.R,
 							green: gbColor.G,
 							blue: gbColor.B,
-							alpha: (byte)(gbColor.A * session.Filters.Opacity));
+							alpha: (byte)(gbColor.A * session.Opacity));
 					}
 					else if (inline.Foreground is XamlCompositionBrushBase xcbb)
 					{
@@ -530,7 +530,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: gbColor.R,
 							green: gbColor.G,
 							blue: gbColor.B,
-							alpha: (byte)(gbColor.A * session.Filters.Opacity));
+							alpha: (byte)(gbColor.A * session.Opacity));
 					}
 
 					// TODO: Consider using a stackalloc for small values of GlyphsLength.
