@@ -20,11 +20,6 @@ using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-#if !DEBUG && WRITE_EXPECTED
-#error Cannot commit with #define WRITE_EXPECTED
-#endif
-
-
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
 {
 	public record struct XamlFile(string FileName, string Contents);
