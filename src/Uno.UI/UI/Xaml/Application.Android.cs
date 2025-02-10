@@ -8,6 +8,8 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.ViewManagement;
+using Colors = Microsoft.UI.Colors;
 
 namespace Microsoft.UI.Xaml;
 
@@ -28,4 +30,13 @@ public partial class Application
 	/// See - https://stackoverflow.com/a/3987733/732221
 	/// </remarks>
 	private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(5);
+
+	partial void ApplySystemOverlaysTheming()
+	{
+		var requestedTheme = InternalRequestedTheme;
+
+		StatusBar.GetForCurrentView().ForegroundColor = requestedTheme == ApplicationTheme.Dark
+			? Colors.White
+			: Colors.Black;
+	}
 }
