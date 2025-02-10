@@ -29,6 +29,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
 	{
+		Instance ??= this;
 		_nativeWindow = new();
 
 		_mainController = new RootViewController();
@@ -46,6 +47,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
 	}
+
+	public static NativeWindowWrapper? Instance { get; private set; }
 
 	public override AppleUIKitWindow NativeWindow => _nativeWindow;
 
@@ -146,8 +149,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
-
-	public UIElement? RootElement => throw new NotImplementedException();
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
