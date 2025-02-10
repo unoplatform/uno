@@ -4005,7 +4005,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 		}
-		
+
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
