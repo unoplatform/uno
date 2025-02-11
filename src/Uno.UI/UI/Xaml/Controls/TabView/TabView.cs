@@ -28,7 +28,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
 using DirectUI;
 using Microsoft.UI.Input;
@@ -2391,6 +2391,7 @@ public partial class TabView : Control
 
 		if (m_inputNonClientPointerSource is not { } && windowId.Value != 0)
 		{
+			// UNO TODO: Port this properly from WinUI, returns new InputNonClientPointerSource
 			m_inputNonClientPointerSource = InputNonClientPointerSource.GetForWindowId(windowId);
 		}
 
@@ -2403,6 +2404,7 @@ public partial class TabView : Control
 
 		if (m_appWindowCoordinateConverter is not { } && windowId.Value != 0)
 		{
+			// UNO TODO: Port this properly from WinUI, returns new ContentCoordinateConverter
 			m_appWindowCoordinateConverter = ContentCoordinateConverter.CreateForWindowId(windowId);
 		}
 
@@ -2460,9 +2462,9 @@ public partial class TabView : Control
 		nonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, captionRegions.ToArray());
 	}
 
-	private WindowId GetAppWindowId()
+	private Microsoft.UI.WindowId GetAppWindowId()
 	{
-		WindowId appWindowId = default;
+		Microsoft.UI.WindowId appWindowId = default;
 
 		if (XamlRoot is { } xamlRoot)
 		{
