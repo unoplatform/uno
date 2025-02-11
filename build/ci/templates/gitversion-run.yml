@@ -39,7 +39,6 @@ steps:
       echo "##vso[task.setvariable variable=NBGV_VersionSourceCommitId]$(NBGV_GitCommitId)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_GitCommitIdShort]$(NBGV_GitCommitIdShort)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_GitCommitDate]$(NBGV_GitCommitDate)" >> $outputFile
-      echo "##vso[task.setvariable variable=NBGV_GitCommitAuthorDate]$(NBGV_GitCommitAuthorDate)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_VersionHeight]$(NBGV_VersionHeight)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_VersionHeightOffset]$(NBGV_VersionHeightOffset)" >> $outputFile
       echo "##vso[task.setvariable variable=NBGV_BuildingRef]$(NBGV_BuildingRef)" >> $outputFile
