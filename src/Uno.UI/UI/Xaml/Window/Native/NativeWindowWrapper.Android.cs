@@ -103,6 +103,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		Rect windowBounds;
 		Rect visibleBounds;
 
+		var decorView = activity.Window.DecorView;
+		var fitsSystemWindows = decorView.FitsSystemWindows;
+
 		if ((int)Android.OS.Build.VERSION.SdkInt < 35)
 		{
 			var opaqueInsetsTypes = insetsTypes;
@@ -134,9 +137,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetWindowSize());
-			visibleBounds = windowBounds.DeflateBy(insets);
+			if (fitsSystemWindows)
+			{
+				// The window bounds are the same as the display size, as the system insets are already taken into account by the layout
+				windowBounds = new Rect(default, GetWindowSize().Subtract(insets));
+				visibleBounds = windowBounds;
+			}
+			else
+			{
+				// Edge-to-edge is default on Android 15 and above
+				windowBounds = new Rect(default, GetWindowSize());
+				visibleBounds = windowBounds.DeflateBy(insets);
+			}
+
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
