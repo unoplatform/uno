@@ -2,7 +2,10 @@
 // Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 // #define WRITE_EXPECTED
-#define WRITE_EXPECTED
+#endif
+
+#if IS_CI && WRITE_EXPECTED
+#error "WRITE_EXPECTED should not be defined!"
 #endif
 
 using System.Collections.Immutable;
@@ -16,11 +19,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
-
-#if !DEBUG && WRITE_EXPECTED
-#error Cannot commit with #define WRITE_EXPECTED
-#endif
-
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
 {
