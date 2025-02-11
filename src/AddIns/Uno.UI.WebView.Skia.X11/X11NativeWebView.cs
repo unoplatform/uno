@@ -324,17 +324,18 @@ public class X11NativeWebView : INativeWebView
 				{
 					if (Uri.TryCreate(_webview.Uri, UriKind.Absolute, out var uri))
 					{
-						var tcs = new TaskCompletionSource<bool>();
 						_presenter.DispatcherQueue.TryEnqueue(() =>
 						{
 							_coreWebView.RaiseNavigationStarting(uri, out var cancel);
-							tcs.SetResult(cancel);
+							if (cancel)
+							{
+								GLib.Idle.Add(() =>
+								{
+									_webview.StopLoading();
+									return false;
+								});
+							}
 						});
-						var cancel = tcs.Task.Result;
-						if (cancel)
-						{
-							_webview.StopLoading();
-						}
 					}
 				}
 				break;
