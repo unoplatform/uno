@@ -3,6 +3,7 @@
 // MUX Reference: TabViewItemAutomationPeer.cpp, commit 9349a0fbc
 
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 
