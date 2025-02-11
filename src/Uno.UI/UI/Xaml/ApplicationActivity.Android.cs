@@ -70,6 +70,8 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnAttachedToWindow();
 
+			StatusBar.GetForCurrentView().UpdateSystemUiVisibility();
+
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
