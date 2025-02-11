@@ -25,30 +25,27 @@
 		</ItemGroup>
 	</Target>
 
-	<Choose>
-		<When Condition="'$(IsUnoHead)' == 'True'">
-
-			<!--
-				This section is an extract of
-				 - https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
-				 - https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/HarfBuzzSharp.NativeAssets.WebAssembly/buildTransitive/HarfBuzzSharp.targets#L5
-				
-				In order to support a two-layered rendering mode.
-			-->
+	<Target	Name="_AdjustSkiaSharpDependency" BeforeTargets="BeforeBuild">
+		<!--
+			This section is an extract of
+			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
+			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/HarfBuzzSharp.NativeAssets.WebAssembly/buildTransitive/HarfBuzzSharp.targets#L5
 			
-			<ItemGroup>
-				<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
-				<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
-			</ItemGroup>
+			In order to support a two-layered rendering mode.
+		-->
 
-			<ItemGroup>
-				<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
-				<WasmShellEmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
+		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
+			<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
+			<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
+		</ItemGroup>
 
-				<!-- Enable GLCtx when threading is available -->
-				<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" KeepDuplicates="false" />
-			</ItemGroup>
-		</When>
-	</Choose>
+		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
+			<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
+			<WasmShellEmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
 
+			<!-- Enable GLCtx when threading is available -->
+			<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" KeepDuplicates="false" />
+		</ItemGroup>
+	</Target>
+	
 </Project>
