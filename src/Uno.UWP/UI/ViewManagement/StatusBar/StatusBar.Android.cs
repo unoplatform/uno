@@ -143,7 +143,7 @@ namespace Windows.UI.ViewManagement
 						}
 					}
 
-					// A bit confusingly, "appearance light" refers to light theme, so in dark foreground is used!
+					// A bit confusingly, "appearance light" refers to light theme, so dark foreground is used!
 					insetsController.AppearanceLightStatusBars = _foregroundType == StatusBarForegroundType.Dark;
 				}
 			}

@@ -10,6 +10,7 @@ using Windows.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Colors = Microsoft.UI.Colors;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -33,10 +34,11 @@ public partial class Application
 
 	partial void ApplySystemOverlaysTheming()
 	{
-		var requestedTheme = InternalRequestedTheme;
-
-		StatusBar.GetForCurrentView().ForegroundColor = requestedTheme == ApplicationTheme.Dark
-			? Colors.White
-			: Colors.Black;
+		// This is needed only due to the fact that currently Instance accessor creates the wrapper
+		// eagerly - which could then happen too early. Will no longer be needed when un-singletoned.
+		if (InitializationComplete)
+		{
+			NativeWindowWrapper.Instance.ApplySystemOverlaysTheming();
+		}
 	}
 }
