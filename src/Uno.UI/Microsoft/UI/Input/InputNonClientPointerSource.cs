@@ -14,13 +14,8 @@ public partial class InputNonClientPointerSource
 		return new InputNonClientPointerSource();
 	}
 
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientPointerEventArgs> PointerEntered;
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientPointerEventArgs> PointerExited;
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientPointerEventArgs> PointerMoved;
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientPointerEventArgs> PointerPressed;
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientPointerEventArgs> PointerReleased;
-	public event TypedEventHandler<InputNonClientPointerSource, NonClientRegionsChangedEventArgs> RegionsChanged;
 	public event TypedEventHandler<InputNonClientPointerSource, EnteredMoveSizeEventArgs> EnteredMoveSize;
 	public event TypedEventHandler<InputNonClientPointerSource, EnteringMoveSizeEventArgs> EnteringMoveSize;
 	public event TypedEventHandler<InputNonClientPointerSource, ExitedMoveSizeEventArgs> ExitedMoveSize;
+	public event TypedEventHandler<InputNonClientPointerSource, WindowRectChangingEventArgs> WindowRectChanging;
 }
