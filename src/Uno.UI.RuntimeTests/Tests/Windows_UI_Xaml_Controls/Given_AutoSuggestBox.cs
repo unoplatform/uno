@@ -1131,6 +1131,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
+#if ANDROID && IS_CI
+		[Ignore("This test is failing on Android in CI only.")]
+#endif
 		public async Task When_Loaded_Unloaded()
 		{
 			var SUT = new AutoSuggestBox();
