@@ -4,6 +4,9 @@
 
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
