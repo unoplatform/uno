@@ -3,14 +3,12 @@ using Android.App;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -78,6 +76,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		Bounds = new Rect(default, windowSize);
 		VisibleBounds = visibleBounds;
 		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
+		ApplySystemOverlaysTheming();
 
 		if (_previousTrueVisibleBounds != visibleBounds)
 		{
@@ -88,7 +87,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	protected override void ShowCore() => RemovePreDrawListener();
+	protected override void ShowCore()
+	{
+		ApplySystemOverlaysTheming();
+		RemovePreDrawListener();
+	}
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
@@ -102,6 +105,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 		Rect windowBounds;
 		Rect visibleBounds;
+
+		var decorView = activity.Window.DecorView;
+		var fitsSystemWindows = decorView.FitsSystemWindows;
 
 		if ((int)Android.OS.Build.VERSION.SdkInt < 35)
 		{
@@ -134,9 +140,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				this.Log().LogDebug($"Insets: {insets}");
 			}
 
-			// Edge-to-edge is default on Android 15 and above
-			windowBounds = new Rect(default, GetWindowSize());
-			visibleBounds = windowBounds.DeflateBy(insets);
+			if (fitsSystemWindows)
+			{
+				// The window bounds are the same as the display size, as the system insets are already taken into account by the layout
+				windowBounds = new Rect(default, GetWindowSize().Subtract(insets));
+				visibleBounds = windowBounds;
+			}
+			else
+			{
+				// Edge-to-edge is default on Android 15 and above
+				windowBounds = new Rect(default, GetWindowSize());
+				visibleBounds = windowBounds.DeflateBy(insets);
+			}
+
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -176,6 +192,25 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 
 		return null;
+	}
+
+	internal void ApplySystemOverlaysTheming()
+	{
+		if ((int)Android.OS.Build.VERSION.SdkInt >= 35)
+		{
+			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
+			if ((ContextHelper.TryGetCurrent(out var context)) &&
+				context is Activity activity &&
+				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+			{
+				var requestedTheme = Microsoft.UI.Xaml.Application.Current.RequestedTheme;
+
+				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+
+				// "appearance light" refers to status bar set to light theme == dark foreground
+				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+			}
+		}
 	}
 
 	private Size GetWindowSize()
