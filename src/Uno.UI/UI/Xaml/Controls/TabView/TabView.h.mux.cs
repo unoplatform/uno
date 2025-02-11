@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.UI.Content;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
@@ -81,7 +82,11 @@ public partial class TabView
 
 	private string m_tabCloseButtonTooltipText;
 
-	private new Size m_previousAvailableSize; // TODO:MZ: Avoid new here
+#if HAS_UNO_WINUI
+	private new Size m_previousAvailableSize;  // TODO:MZ: Avoid new here
+#else
+	private Size m_previousAvailableSize;
+#endif
 
 	private bool m_isItemBeingDragged;
 	private bool m_isItemDraggedOver;

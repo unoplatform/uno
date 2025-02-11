@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Windows.Input;
+using Microsoft.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -210,9 +211,9 @@ public partial class TabView
 	/// Gets or sets a selection object that changes the DataTemplate to apply for content,
 	/// based on processing information about the content item or its container at run time.
 	/// </summary>
-	public DataTemplateSelector TabItemTemplateSelector
+	public Microsoft.UI.Xaml.Controls.DataTemplateSelector TabItemTemplateSelector
 	{
-		get => (DataTemplateSelector)GetValue(TabItemTemplateSelectorProperty);
+		get => (Microsoft.UI.Xaml.Controls.DataTemplateSelector)GetValue(TabItemTemplateSelectorProperty);
 		set => SetValue(TabItemTemplateSelectorProperty, value);
 	}
 
@@ -220,7 +221,7 @@ public partial class TabView
 	/// Identifies the TabItemTemplateSelector dependency property.
 	/// </summary>
 	public static DependencyProperty TabItemTemplateSelectorProperty { get; } =
-		DependencyProperty.Register(nameof(TabItemTemplateSelector), typeof(DataTemplateSelector), typeof(TabView), new FrameworkPropertyMetadata(null));
+		DependencyProperty.Register(nameof(TabItemTemplateSelector), typeof(Microsoft.UI.Xaml.Controls.DataTemplateSelector), typeof(TabView), new FrameworkPropertyMetadata(null));
 
 	/// <summary>
 	/// Gets or sets the content that is shown to the right of the tab strip.
@@ -345,7 +346,7 @@ public partial class TabView
 	/// <summary>
 	/// Occurs when the currently selected tab changes.
 	/// </summary>
-	public event SelectionChangedEventHandler SelectionChanged;
+	public event Microsoft.UI.Xaml.Controls.SelectionChangedEventHandler SelectionChanged;
 
 	/// <summary>
 	/// Raised when the user attempts to close a Tab via clicking the x-to-close button, CTRL+F4, or mousewheel.
