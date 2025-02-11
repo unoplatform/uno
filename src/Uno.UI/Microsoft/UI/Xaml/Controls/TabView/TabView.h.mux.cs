@@ -14,6 +14,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Graphics;
+using Microsoft.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -82,11 +83,7 @@ public partial class TabView
 
 	private string m_tabCloseButtonTooltipText;
 
-#if HAS_UNO_WINUI
 	private new Size m_previousAvailableSize;  // TODO:MZ: Avoid new here
-#else
-	private Size m_previousAvailableSize;
-#endif
 
 	private bool m_isItemBeingDragged;
 	private bool m_isItemDraggedOver;
@@ -113,7 +110,7 @@ public partial class TabView
 
 	private List<(RectInt32, TabView)> m_tabViewBoundsTuples = new();
 
-	private WindowId m_lastAppWindowId;
+	private Microsoft.UI.WindowId m_lastAppWindowId;
 	private InputNonClientPointerSource m_inputNonClientPointerSource;
 	private ContentCoordinateConverter m_appWindowCoordinateConverter;
 
