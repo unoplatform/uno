@@ -199,8 +199,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		if ((int)Android.OS.Build.VERSION.SdkInt >= 35)
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
-			if ((ContextHelper.Current is Activity activity) &&
-			activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+			if ((ContextHelper.TryGetCurrent(out var context)) &&
+				context is Activity activity &&
+				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
 			{
 				var requestedTheme = Microsoft.UI.Xaml.Application.Current.RequestedTheme;
 
