@@ -184,6 +184,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnSelectionChanged()
 			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
 
+		private static SKPaint _spareSelectionFoundPaint = new SKPaint();
+
 		partial void SetupInlines()
 		{
 			_inlines.SelectionFound += t =>
@@ -191,12 +193,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var canvas = t.canvas;
 				var rect = t.rect;
 
-				using (SkiaHelper.GetTempSKPaint(out var paint))
-				{
-					paint.Color = SelectionHighlightColor.Color.ToSKColor();
-					paint.Style = SKPaintStyle.Fill;
-					canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
-				}
+				var paint = _spareSelectionFoundPaint;
+
+				paint.Reset();
+
+				paint.Color = SelectionHighlightColor.Color.ToSKColor();
+				paint.Style = SKPaintStyle.Fill;
+
+				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
 			};
 
 			_inlines.RenderSelection = IsTextSelectionEnabled;

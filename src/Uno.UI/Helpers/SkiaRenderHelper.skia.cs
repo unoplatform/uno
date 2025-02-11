@@ -51,6 +51,8 @@ internal static class SkiaRenderHelper
 		return negativePath;
 	}
 
+	private static SKPath _sparePreClipPath = new SKPath();
+
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn.
@@ -87,12 +89,13 @@ internal static class SkiaRenderHelper
 				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
 
 				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
-				using (SkiaHelper.GetTempSKPath(out var preClip))
+				var preClip = _sparePreClipPath;
+
+				preClip.Rewind();
+
+				if (visual.GetPrePaintingClipping(preClip))
 				{
-					if (visual.GetPrePaintingClipping(preClip))
-					{
-						finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
-					}
+					finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
 				}
 
 				finalVisualPath.Transform(canvas.TotalMatrix);
