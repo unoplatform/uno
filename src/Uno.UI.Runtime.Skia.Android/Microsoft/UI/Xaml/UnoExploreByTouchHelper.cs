@@ -49,6 +49,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override int GetVirtualViewAt(float x, float y)
 	{
+		if (_host.RootElement is null)
+		{
+			return ExploreByTouchHelper.HostId;
+		}
 		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), _host.RootElement.XamlRoot);
 		element ??= _host.RootElement;
 		try

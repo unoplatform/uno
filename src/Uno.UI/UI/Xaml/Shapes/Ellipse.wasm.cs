@@ -1,6 +1,8 @@
-﻿using Uno.Extensions;
+﻿using System;
+using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -17,16 +19,18 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			var cx = shapeSize.Width / 2;
 			var cy = shapeSize.Height / 2;
-
 			var halfStrokeThickness = ActualStrokeThickness / 2;
 
-			_mainSvgElement.SetAttribute(
-				("cx", cx.ToStringInvariant()),
-				("cy", cy.ToStringInvariant()),
-				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
-				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
+			WindowManagerInterop.SetSvgEllipseAttributes(_mainSvgElement.HtmlId, cx, cy, cx - halfStrokeThickness, cy - halfStrokeThickness);
 
 			return finalSize;
 		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+#if DEBUG
+			throw new InvalidOperationException("Elipse doesnt use GetBBox. Should the impl change in the future, add key-gen and invalidation mechanism.");
+#else
+			null;
+#endif
 	}
 }

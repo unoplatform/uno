@@ -30,7 +30,7 @@ using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Foundation;
 #endif
 
@@ -44,7 +44,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-#if __IOS__
+#if __APPLE_UIKIT__
 	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
 #endif
 	public partial class Given_ListViewBase // resources
@@ -101,9 +101,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	[TestClass]
 	[RunsOnUIThread]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public partial class Given_ListViewBase // test cases
 	{
 		[TestMethod]
@@ -166,7 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Unlike other platforms, MaterializedContainers are removed immediately upon removal, and are not created on insertion until re-measure.")]
 #endif
 		public async Task ContainerIndicesAreUpdated_OnRemoveAndAdd()
@@ -564,7 +561,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(list.SelectedIndex, 0);
+			Assert.AreEqual(0, list.SelectedIndex);
 			Assert.AreEqual(list.SelectedItem, child1);
 		}
 
@@ -610,6 +607,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(list.SelectedItems[1], child3);
 		}
 
+		[TestMethod]
 		public async Task NoItemSelectedMultiple()
 		{
 			var child1 = new ListViewItem
@@ -644,7 +642,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(list.SelectedItems.Count, 0);
+			Assert.AreEqual(0, list.SelectedItems.Count);
 		}
 
 		[TestMethod]
@@ -683,12 +681,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 
-			Assert.AreEqual(list.SelectedIndex, -1);
+			Assert.AreEqual(-1, list.SelectedIndex);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("The test can't find MultiSelectSquare")]
 #endif
 		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
@@ -903,8 +901,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -964,8 +962,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1045,8 +1043,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1123,8 +1121,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1175,8 +1173,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1233,8 +1231,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
-				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1436,8 +1434,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ItemsSource = source;
 			SUT.SelectedValuePath = "Key";
 
-			Assert.AreEqual(null, SUT.SelectedValue);
-			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.IsNull(SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
 			SUT.SelectedValue = 1;
@@ -1450,8 +1448,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Set invalid
 			SUT.SelectedValue = 4;
 
-			Assert.AreEqual(null, SUT.SelectedValue);
-			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.IsNull(SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 		}
 
@@ -1467,8 +1465,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			SUT.ItemsSource = source;
 
-			Assert.AreEqual(null, SUT.SelectedValue);
-			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.IsNull(SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 
 			SUT.SelectedValue = "Two";
@@ -1479,8 +1477,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectedValue = "Eleventy";
 
-			Assert.AreEqual(null, SUT.SelectedValue);
-			Assert.AreEqual(null, SUT.SelectedItem);
+			Assert.IsNull(SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedItem);
 			Assert.AreEqual(-1, SUT.SelectedIndex);
 		}
 
@@ -1530,7 +1528,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
@@ -1574,7 +1572,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
@@ -1619,7 +1617,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
@@ -1679,7 +1677,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #elif __WASM__
 		[Ignore("Flaky in CI.")]
@@ -2082,7 +2080,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -2143,7 +2141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -2199,7 +2197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -2431,7 +2429,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
 
 				// Test removed container/index/item
-				Assert.AreEqual(null, list.ContainerFromItem(removedItem));
+				Assert.IsNull(list.ContainerFromItem(removedItem));
 				// In UWP, the Item is returned even though it is already removed
 				// This is a weird behavior and doesn't seem too useful anyway, so we currently
 				// ignore it
@@ -2546,8 +2544,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, list.IndexFromContainer(items[0]));
 
 				// Test old container/index/item
-				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
-				Assert.AreEqual(null, list.ItemFromContainer(oldItem));
+				Assert.IsNull(list.ContainerFromItem(oldItem));
+				Assert.IsNull(list.ItemFromContainer(oldItem));
 				Assert.AreEqual(-1, list.IndexFromContainer(oldItem));
 
 				// Test new container/index/item
@@ -2604,8 +2602,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				using var _ = new AssertionScope();
 
 				// Test container/index/item from old source
-				Assert.AreEqual(null, list.ContainerFromItem(items[1]));
-				Assert.AreEqual(null, list.ItemFromContainer(items[1]));
+				Assert.IsNull(list.ContainerFromItem(items[1]));
+				Assert.IsNull(list.ItemFromContainer(items[1]));
 				Assert.AreEqual(-1, list.IndexFromContainer(items[1]));
 
 				// Test container/index/item from new source
@@ -2687,7 +2685,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, list.IndexFromContainer(container0));
 
 				// Test removed container/index/item
-				Assert.AreEqual(null, list.ContainerFromItem(removedItem));
+				Assert.IsNull(list.ContainerFromItem(removedItem));
 
 				// Test container/index/item right after removed
 				var container1 = (ListViewItem)list.ContainerFromItem(items[1]);
@@ -2807,8 +2805,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, list.IndexFromContainer(container0));
 
 				// Test old container/index/item
-				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
-				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
+				Assert.IsNull(list.ContainerFromItem(oldItem));
+				Assert.IsNull(list.ItemFromContainer(oldContainer));
 				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
 #if HAS_UNO
@@ -2877,8 +2875,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				using var _ = new AssertionScope();
 
 				// Test container/index/item from old source
-				Assert.AreEqual(null, list.ContainerFromItem(oldItem));
-				Assert.AreEqual(null, list.ItemFromContainer(oldContainer));
+				Assert.IsNull(list.ContainerFromItem(oldItem));
+				Assert.IsNull(list.ItemFromContainer(oldContainer));
 				Assert.AreEqual(-1, list.IndexFromContainer(oldContainer));
 
 				// Test container/index/item from new source
@@ -2916,17 +2914,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem);
 			var text1 = container1.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text1);
-			Assert.AreEqual(text1.Text, "Selectable A");
+			Assert.AreEqual("Selectable A", text1.Text);
 
 			var container2 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(1) as ListViewItem);
 			var text2 = container2.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text2);
-			Assert.AreEqual(text2.Text, "Selectable B");
+			Assert.AreEqual("Selectable B", text2.Text);
 
 			var container3 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(2) as ListViewItem);
 			var text3 = container3.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text3);
-			Assert.AreEqual(text3.Text, "Selectable C");
+			Assert.AreEqual("Selectable C", text3.Text);
 		}
 
 		[TestMethod]
@@ -3005,7 +3003,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 			Assert.AreEqual(-1, list.SelectedIndex);
-			Assert.AreEqual(null, list.SelectedItem);
+			Assert.IsNull(list.SelectedItem);
 		}
 
 		[TestMethod]
@@ -3035,7 +3033,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.AreEqual(list.SelectedItem, "Item_1");
 				Assert.AreEqual(list.SelectedValue, "Item_1");
-				Assert.AreEqual(model.SelectedIndex, 1);
+				Assert.AreEqual(1, model.SelectedIndex);
 				Assert.AreEqual(model.SelectedItem, "Item_1");
 				Assert.AreEqual(model.SelectedValue, "Item_1");
 			};
@@ -3858,7 +3856,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			);
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		public async Task When_Smooth_Scrolling()
 		{
@@ -3892,7 +3890,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Reverse()
 #if __ANDROID__
 				.Select(x => (x as ListViewItem)?.Content as int?)
-#elif __IOS__
+#elif __APPLE_UIKIT__
 				.Select(x => ((x as ListViewBaseInternalContainer)?.Content as ListViewItem)?.Content as int?)
 #endif
 				.ToArray();
@@ -3921,7 +3919,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var vsg = vsgs?.FirstOrDefault(x => x.Name == "MultiSelectStates");
 
 			Assert.IsNotNull(vsg, "VisualStateGroup[Name=MultiSelectStates] was not found.");
-			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
+			Assert.AreEqual("MultiSelectEnabled", vsg.CurrentState?.Name);
 		}
 
 #if HAS_UNO
@@ -3953,12 +3951,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(mscfe, "MultiSelectCheck was not found.");
 			Assert.IsNotNull(vsgMultiSelectStates, "VisualStateGroup[Name=MultiSelectStates] was not found.");
 			Assert.IsNotNull(vsgCommonStates, "VisualStateGroup[Name=CommonStates] was not found.");
-			Assert.AreEqual(vsgMultiSelectStates.CurrentState?.Name, "MultiSelectEnabled");
-			Assert.AreNotEqual(vsgCommonStates.CurrentState?.Name, "Selected");
-			Assert.AreEqual(mscfe.Opacity, 0);
+			Assert.AreEqual("MultiSelectEnabled", vsgMultiSelectStates.CurrentState?.Name);
+			Assert.AreNotEqual("Selected", vsgCommonStates.CurrentState?.Name);
+			Assert.AreEqual(0, mscfe.Opacity);
 			lvi0.IsSelected = true;
-			Assert.AreEqual(vsgCommonStates.CurrentState?.Name, "Selected");
-			Assert.AreEqual(mscfe.Opacity, 1);
+			Assert.AreEqual("Selected", vsgCommonStates.CurrentState?.Name);
+			Assert.AreEqual(1, mscfe.Opacity);
 		}
 #endif
 
@@ -3995,7 +3993,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var children =
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 				sut is ListView lv
 					? lv.NativePanel.EnumerateChildren()
 					: sut.ItemsPanelRoot.Children;
@@ -4007,7 +4005,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			bool IsVisible(object x) => x is UIElement uie
 				? uie.Visibility == Visibility.Visible
-#if __IOS__
+#if __APPLE_UIKIT__
 				: !(x as UIKit.UIView)?.Hidden ?? false;
 #else
 				: false;
@@ -4015,7 +4013,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
@@ -4377,7 +4375,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
 				}
 
-				Assert.AreEqual(true, seenNewTextBlock);
+				Assert.IsTrue(seenNewTextBlock);
 			}
 		}
 
@@ -4453,7 +4451,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_HeaderDataContext_Cleared_FromNavigation()
@@ -4501,16 +4499,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#endif
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#endif
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_TabView() => When_SelectionChanged_Item_Is_BroughtIntoView<TabView>();
 
 		public async Task When_SelectionChanged_Item_Is_BroughtIntoView<T>() where T : FrameworkElement, new()
@@ -4557,9 +4549,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#elif __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("This test is for managed ListViewBase.")]
 #endif
 		public async Task When_ScrollIntoView_No_Virtualization()
@@ -4584,11 +4574,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#else
 		[Ignore("https://github.com/unoplatform/uno/issues/16246")]
-#endif
 		public async Task When_ScrollIntoView_Containers_With_Varying_Heights()
 		{
 			var random = new Random(42);
@@ -4957,7 +4943,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			protected override DataTemplate SelectTemplateCore(object item)
 			{
 				if (
-#if __IOS__
+#if __APPLE_UIKIT__
 				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
 				item != null &&
 #endif
@@ -5171,7 +5157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			return list
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()
@@ -5192,7 +5178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()
 				.ToArray();
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			return list
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()

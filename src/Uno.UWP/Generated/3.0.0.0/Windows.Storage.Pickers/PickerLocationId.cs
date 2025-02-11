@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum PickerLocationId
 	{
 		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary

@@ -16,12 +16,13 @@
 		<ApplicationId>uno.platform.samplesdev</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">osx-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvos-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
+		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</InvariantGlobalization>
 		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
 
 		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
@@ -92,6 +93,34 @@
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
 				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />			
 			</ItemGroup>
+		</When>
+
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
+				<PackageReference Include="SkiaSharp.NativeAssets.tvOS" />
+				<PackageReference Include="harfbuzzsharp.nativeassets.tvos" />
+			</ItemGroup>
+
+			<PropertyGroup>
+				<SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+				
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+			</PropertyGroup>
+
+			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
+
+				<CodesignKey>iPhone Distribution</CodesignKey>
+				<RuntimeIdentifier>tvos-arm64</RuntimeIdentifier>
+				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
+			</PropertyGroup>
+			
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
+			</PropertyGroup>
 		</When>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst'">
@@ -174,13 +203,6 @@
 				<AndroidEnvironment Include="Android\environment.conf" />
 			</ItemGroup>
 		</When>
-
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='macos'">
-			<ItemGroup>
-				<PackageReference Include="SkiaSharp.NativeAssets.macos" />
-				<PackageReference Include="System.CommandLine" />
-			</ItemGroup>
-		</When>
 	</Choose>
 
 	<PropertyGroup>
@@ -228,7 +250,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="MacOS\" />
 		<Folder Include="Properties\" />
 	</ItemGroup>
 

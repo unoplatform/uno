@@ -7,7 +7,7 @@ public partial class RevealBrush : XamlCompositionBrushBase
 
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.UI.Color Color
 	{
 		get
@@ -20,7 +20,7 @@ public partial class RevealBrush : XamlCompositionBrushBase
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty ColorProperty { get; } =
 	Microsoft.UI.Xaml.DependencyProperty.Register(
 		nameof(Color), typeof(global::Windows.UI.Color),

@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using MUXWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -20,6 +21,7 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 {
 	private const uint DefaultFramebuffer = 0;
 
+	private UIElement? _rootElement;
 	private EGLDisplay? _eglDisplay;
 	private EGLContext? _glContext;
 	private EGLSurface? _eglWindowSurface;
@@ -30,16 +32,15 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 
 	public event EventHandler<SKSurface>? PaintSurface;
 
-	internal UIElement RootElement { get; }
+	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
 
 	internal static UnoSKCanvasView? Instance { get; private set; }
 
-	public UnoSKCanvasView(Context context, UIElement rootElement) : base(context)
+	public UnoSKCanvasView(Context context) : base(context)
 	{
 		Instance = this;
-		RootElement = rootElement;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);

@@ -6,7 +6,7 @@ using Uno.UI.Extensions;
 using System;
 
 #if WINAPPSDK
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using Uno.UI.Controls;
 #else

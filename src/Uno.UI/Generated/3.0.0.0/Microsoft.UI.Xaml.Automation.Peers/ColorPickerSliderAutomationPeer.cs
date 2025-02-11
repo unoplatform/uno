@@ -3,11 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ColorPickerSliderAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SliderAutomationPeer
 	{
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider)
 	}
 }

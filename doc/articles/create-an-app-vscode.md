@@ -32,14 +32,21 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 > [!IMPORTANT]
 > Apple targets are automatically disabled under Linux.
 
-Next, open the project using Visual Studio Code:
+Next, open the project using Visual Studio Code.
 
-* In the terminal type the following:
+* Let's assume your project is named `MyApp` and is located inside a `Projects` folder:
+
+  * **Using the Terminal**
+    Ensure you are at the **parent folder** (`Projects`) level, then run:
 
     ```bash
     code ./MyApp
     ```
 
+  * **Using Visual Studio Code**
+    1. Open **Visual Studio Code**.
+    2. Go to **File > Open Folder**.
+    3. Navigate to the `Projects` folder and select the `MyApp` folder.
 * Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
 * Once the solution has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.csproj` to load the project instead.
 

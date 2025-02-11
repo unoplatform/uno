@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Input;
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #else
 using View = Microsoft.UI.Xaml.FrameworkElement;
@@ -1115,7 +1115,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (container != null)
 				{
 					var item = GetDisplayItemFromIndexPath(unoIndexPath);
-#if __IOS__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
+#if __APPLE_UIKIT__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
 					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
 					{
 						// If items are using different templates, we should go through the native replace operation, to use a container

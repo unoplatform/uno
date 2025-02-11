@@ -13,6 +13,26 @@ declare namespace Windows.ApplicationModel.Core {
         static initializeExports(): Promise<void>;
     }
 }
+interface Clipboard {
+    writeText(newClipText: string): Promise<void>;
+    readText(): Promise<string>;
+}
+interface NavigatorClipboard {
+    readonly clipboard?: Clipboard;
+}
+interface Navigator extends NavigatorClipboard {
+}
+declare namespace Uno.Utils {
+    class Clipboard {
+        private static dispatchContentChanged;
+        private static dispatchGetContent;
+        static startContentChanged(): void;
+        static stopContentChanged(): void;
+        static setText(text: string): string;
+        static getText(): Promise<string>;
+        private static onClipboardChanged;
+    }
+}
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
     class MidiDeviceClassProvider {
         static findDevices(findInputDevices: boolean): string;
@@ -428,7 +448,7 @@ declare namespace Windows.System {
         * @param url URL to load
         * @returns "True" or "False", depending on whether a new window could be opened or not
         */
-        open(url: string): string;
+        static open(url: string): string;
     }
 }
 declare class BatteryManager {

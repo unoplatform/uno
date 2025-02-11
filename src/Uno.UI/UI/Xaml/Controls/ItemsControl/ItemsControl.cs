@@ -24,14 +24,10 @@ using System.Diagnostics.CodeAnalysis;
 #if __ANDROID__
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 using _ViewGroup = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-using _ViewGroup = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;

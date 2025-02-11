@@ -1718,7 +1718,7 @@ public partial class NavigationView : ContentControl
 										var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
 										footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
 									}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
 #else
 									return footerItemsRepeater.ActualHeight + footerItemsRepeaterTopBottomMargin;
@@ -1736,7 +1736,7 @@ public partial class NavigationView : ContentControl
 											var paneFooterMargin = paneFooter.Margin;
 											paneFooterTopBottomMargin = paneFooterMargin.Top + paneFooterMargin.Bottom;
 										}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 										return paneFooter.DesiredSize.Height + paneFooterTopBottomMargin;
 #else
 										return paneFooter.ActualHeight + paneFooterTopBottomMargin;
@@ -1760,7 +1760,7 @@ public partial class NavigationView : ContentControl
 										var menuItemsMargin = menuItems.Margin;
 										menuItemsTopBottomMargin = menuItemsMargin.Top + menuItemsMargin.Bottom;
 									}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return menuItems.DesiredSize.Height + menuItemsTopBottomMargin;
 #else
 									return menuItems.ActualHeight + menuItemsTopBottomMargin;

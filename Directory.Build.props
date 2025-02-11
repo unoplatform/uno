@@ -21,11 +21,14 @@
 		<NetCurrent>net9.0</NetCurrent>
 		<NetPrevious>net8.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.0;$(NetCurrent)-maccatalyst18.0;$(NetCurrent)-macos15.0</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-macos14.0</NetPreviousNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.0;$(NetCurrent)-maccatalyst18.0;$(NetCurrent)-tvos18.0</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-tvos17.0</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
+
+		<NetPreviousWinAppSDK>$(NetPrevious)-windows10.0.19041.0</NetPreviousWinAppSDK>
+		<NetCurrentWinAppSDK>$(NetCurrent)-windows10.0.19041.0</NetCurrentWinAppSDK>
 
 		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
 		<NetAndroidPreviousAndCurrent>$(NetPrevious)-android;$(NetCurrent)-android</NetAndroidPreviousAndCurrent>
@@ -33,6 +36,7 @@
 		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
 		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
 		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
+		<NetWinAppSDKPreviousAndCurrent>$(NetPreviousWinAppSDK);$(NetCurrentWinAppSDK)</NetWinAppSDKPreviousAndCurrent>
 		<NetUnitTests>$(NetPrevious)</NetUnitTests>
 
 		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>

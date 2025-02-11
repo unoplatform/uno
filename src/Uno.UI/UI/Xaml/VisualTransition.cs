@@ -18,8 +18,9 @@ namespace Microsoft.UI.Xaml
 		/// optionally fill <see cref="Storyboard"/>.
 		/// </summary>
 		internal Action LazyBuilder { get; set; }
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		internal bool? FromLegacyTemplate { get; set; }
-
+#endif
 		public VisualTransition()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
@@ -51,12 +52,16 @@ namespace Microsoft.UI.Xaml
 				LazyBuilder = null;
 				try
 				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
+#endif
 					builder.Invoke();
 				}
 				finally
 				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 					TemplatedParentScope.PopScope();
+#endif
 				}
 
 				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
@@ -89,7 +94,7 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// The code was moved here to override the LogLevel.
 		/// </remarks>
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Duration GeneratedDuration
 		{
 			get

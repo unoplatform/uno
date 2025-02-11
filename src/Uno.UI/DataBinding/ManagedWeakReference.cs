@@ -6,7 +6,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 #if __ANDROID__
 using INativeObject = Android.Runtime.IJavaObject;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using INativeObject = ObjCRuntime.INativeObject;
 #endif
 
@@ -152,7 +152,7 @@ namespace Uno.UI.DataBinding
 
 	}
 
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 #if IS_UNIT_TESTS
 	public
 #else

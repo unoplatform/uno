@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 
-			_paint.ColorFilter = session.Filters.OpacityColorFilter;
+			_paint.ColorFilter = session.OpacityColorFilter;
 
 			if (Brush is CompositionEffectBrush { HasBackdropBrushInput: true })
 			{

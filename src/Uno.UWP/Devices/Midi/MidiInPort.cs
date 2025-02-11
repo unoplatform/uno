@@ -1,4 +1,4 @@
-﻿#if !IS_UNIT_TESTS && !__SKIA__ && !__NETSTD_REFERENCE__
+﻿#if !IS_UNIT_TESTS && !__SKIA__ && !__NETSTD_REFERENCE__ && !__TVOS__
 using System;
 
 using Uno.Devices.Enumeration.Internal;

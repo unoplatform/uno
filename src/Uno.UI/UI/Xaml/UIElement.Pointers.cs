@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		/// <summary>
 		/// Validates that this element is able to manage pointer events.
 		/// If this element is only the shadow of a ghost native view that was instantiated for marshalling purposes by Xamarin,
@@ -873,7 +873,7 @@ namespace Microsoft.UI.Xaml
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
 #else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
@@ -893,7 +893,7 @@ namespace Microsoft.UI.Xaml
 					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #else
-#if __IOS__
+#if __APPLE_UIKIT__
 					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
 					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
 					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
@@ -1226,20 +1226,38 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var originalPending = _pendingRaisedEvent;
+
 			try
 			{
-				_pendingRaisedEvent = (this, evt, args);
-
-				return RaiseEvent(evt, args, ctx);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				/// <remarks>
+				/// This method runs in a separate method in order to workaround for the following issue:
+				/// https://github.com/dotnet/runtime/issues/111281
+				/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+				/// </remarks>
+				bool InnerRaiseEvent(
+					RoutedEvent evt,
+					PointerRoutedEventArgs args,
+					BubblingContext ctx,
+					ref (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) pendingRaisedEvent)
 				{
-					this.Log().Error($"Failed to raise '{evt.Name}': {e}");
+					try
+					{
+						_pendingRaisedEvent = (this, evt, args);
+
+						return RaiseEvent(evt, args, ctx);
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Failed to raise '{evt.Name}': {e}");
+						}
+
+						return false;
+					}
 				}
 
-				return false;
+				return InnerRaiseEvent(evt, args, ctx, ref _pendingRaisedEvent);
 			}
 			finally
 			{

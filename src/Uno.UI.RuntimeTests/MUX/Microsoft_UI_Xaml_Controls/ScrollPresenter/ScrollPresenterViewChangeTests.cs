@@ -1320,6 +1320,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
+	[TestMethod]
 	[TestProperty("Description", "Requests a non-animated offsets change before loading scrollPresenter.")]
 	public async Task SetOffsetsBeforeLoading()
 	{

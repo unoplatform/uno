@@ -81,10 +81,6 @@ platform/ios 🍎:
   - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
 
 platform/macos 🍏:
-  - '**/*.macOS.cs'
-  - '**/*.iOSmacOS.cs'
-  - '**/*.Apple.cs'
-  - '**/*.Xamarin.cs'
   - src/Uno.UI.Runtime.Skia.MacOS/*
   - src/Uno.UI.Runtime.Skia.MacOS/**/*
 

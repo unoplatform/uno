@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || __SKIA__
+﻿#if __SKIA__
 using System;
 using Uno.Helpers;
 using Windows.Foundation;

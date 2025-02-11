@@ -45,7 +45,7 @@ public partial class SvgImageSource : ImageSource
 
 	private void Initialize()
 	{
-#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
+#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__
 		InitSvgProvider();
 #endif
 		InitPartial();

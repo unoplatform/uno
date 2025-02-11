@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Helpers;
@@ -202,7 +203,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<PaintingSession, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -232,7 +233,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		_factory.CreateInstance(this,
+						  surface,
+						  canvas,
+						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
+						  opacity: 1.0f,
+						  out var session);
+
+		using (session)
 		{
 			Render(session, postRenderAction);
 		}
@@ -245,13 +253,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
 	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<PaintingSession, Visual>? postRenderAction)
+	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
 			? new string(' ', depth * 2)
 			: string.Empty;
-		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Filters.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
+		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
 		if (this is { Opacity: 0 } or { IsVisible: false })
@@ -259,7 +267,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using (var session = CreateLocalSession(in parentSession))
+		CreateLocalSession(in parentSession, out var session);
+
+		using (session)
 		{
 			var canvas = session.Canvas;
 
@@ -276,12 +286,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
-			Paint(session);
+			Paint(in session);
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
 #endif
 
-			postRenderAction?.Invoke(session, this);
+			postRenderAction?.Invoke(canvas, this);
 
 			if (GetPostPaintingClipping() is { } postClip)
 			{
@@ -341,19 +351,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
-	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
+	private void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
 	{
-		var surface = parentSession.Surface;
 		var canvas = parentSession.Canvas;
-		var rootTransform = parentSession.RootTransform;
-		// We try to keep the filter ref as long as possible in order to share the same filter.OpacityColorFilter
-		var filters = Opacity is 1.0f
-			? parentSession.Filters
-			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
 
-		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
+		ref var rootTransform = ref parentSession.RootTransform;
 
-		if (rootTransform.IsIdentity)
+		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		_factory.CreateInstance(this, parentSession.Surface, canvas, ref rootTransform, opacity, out session);
+
+		if (Unsafe.IsNullRef(ref rootTransform))
 		{
 			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
 		}
@@ -361,8 +369,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
 		}
-
-		return session;
 	}
 
 	[Flags]

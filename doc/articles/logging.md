@@ -54,7 +54,7 @@ The standard Uno template configures logging in the **App.xaml.cs** file.
         {
     #if __WASM__
             builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-    #elif __IOS__
+    #elif __IOS__ || __TVOS__
             builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
     #elif NETFX_CORE
             builder.AddDebug();

@@ -932,7 +932,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		}
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 	[TestProperty("Description", "Validates the order and priority of accelerator operations.")]
 	public async Task ValidateOrderOfAcceleratorOperations()
 	{
@@ -3316,10 +3316,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	}
 
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
 		const string rootPanelXaml =

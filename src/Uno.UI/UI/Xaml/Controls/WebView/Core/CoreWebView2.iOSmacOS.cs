@@ -6,7 +6,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Controls;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 #else

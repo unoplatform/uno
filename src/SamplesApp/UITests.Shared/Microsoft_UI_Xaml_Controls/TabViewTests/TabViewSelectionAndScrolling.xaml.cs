@@ -59,7 +59,7 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 		{
 			yield return $"LTRB={v.Left},{v.Top},{v.Right},{v.Bottom}";
 		}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 		if (x is UIKit.UIView view && view.Superview is { })
 		{
 			var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);

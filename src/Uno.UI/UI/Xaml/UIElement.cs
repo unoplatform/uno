@@ -38,7 +38,7 @@ using Uno.UI.Xaml.Core.Scaling;
 using System.Diagnostics.CodeAnalysis;
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -47,6 +47,9 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private protected static bool _traceLayoutCycle;
+#if !__SKIA__
+		private bool _warnedAboutTranslation;
+#endif
 
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
@@ -265,17 +268,26 @@ namespace Microsoft.UI.Xaml
 				if (_translation != value)
 				{
 					_translation = value;
+
+#if !__SKIA__
+					if (!_warnedAboutTranslation &&
+						(_translation.X != 0 || _translation.Y != 0))
+					{
+						_warnedAboutTranslation = true;
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().LogWarning("Translation supports only Z-axis on this target.");
+						}
+					}
+#endif
+
 					UpdateShadow();
 					InvalidateArrange();
 				}
 			}
 		}
 
-		public
-#if __MACOS__
-			new
-#endif
-			Shadow Shadow
+		public Shadow Shadow
 		{
 			get => (Shadow)GetValue(ShadowProperty);
 			set => SetValue(ShadowProperty, value);
@@ -631,7 +643,6 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ApplyElementCustomTransform(ref Matrix3x2 matrix)
 		{
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (this is ScrollViewer sv)
 			{
 				// Scroll offsets are handled at the SCP level using the IsScrollPort
@@ -649,7 +660,6 @@ namespace Microsoft.UI.Xaml
 				matrix.M31 -= (float)ScrollOffsets.X;
 				matrix.M32 -= (float)ScrollOffsets.Y;
 			}
-#endif
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -666,7 +676,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
+#if !__APPLE_UIKIT__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -803,7 +813,7 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
+#if __APPLE_UIKIT__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);
 			root.Arrange(bounds);
 #elif __ANDROID__
@@ -1168,11 +1178,8 @@ namespace Microsoft.UI.Xaml
 			// Use a non-virtual version of the RequestLayout method, for performance.
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			SetNeedsLayout();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __MACOS__
-			base.NeedsLayout = true;
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #endif
 
@@ -1187,7 +1194,7 @@ namespace Microsoft.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 #endif
 		}
@@ -1461,15 +1468,15 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// The code was moved here to override the LogLevel.
 		/// </remarks>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);

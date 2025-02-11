@@ -421,10 +421,6 @@ namespace Windows.UI.Input
 
 				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
 				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
-#if __MACOS__
-				// correction for translateY being inverted (#4700)
-				translateY *= -1;
-#endif
 
 				double rotation;
 				float scale, expansion;
@@ -499,8 +495,8 @@ namespace Windows.UI.Input
 			{
 				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
 				// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
-				var elapsedTicks = _inertia?.Elapsed ?? (double)_currents.Timestamp - _lastPublishedState.timestamp;
-				var elapsedMs = elapsedTicks / TimeSpan.TicksPerMillisecond;
+				var elapsedMicroseconds = _inertia?.Elapsed ?? (_currents.Timestamp - _lastPublishedState.timestamp);
+				var elapsedMs = elapsedMicroseconds / 1000;
 
 				// With uno a single native event might produce multiple managed pointer events.
 				// In that case we would get an empty velocities ... which is often not relevant!
@@ -541,7 +537,7 @@ namespace Windows.UI.Input
 				if (_isDraggingEnable && _deviceType == PointerDeviceType.Touch)
 				{
 					_dragHoldTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-					_dragHoldTimer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
+					_dragHoldTimer.Interval = TimeSpan.FromMicroseconds(DragWithTouchMinDelayMicroseconds);
 					_dragHoldTimer.IsRepeating = false;
 					_dragHoldTimer.Tick += TouchDragMightStart;
 					_dragHoldTimer.Start();
@@ -565,7 +561,7 @@ namespace Windows.UI.Input
 			}
 
 			// For pen and mouse this only means down -> * moves out of tap range;
-			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
+			// For touch it means down -> * moves close to origin for DragWithTouchMinDelayMicroseconds -> * moves far from the origin 
 			private bool IsBeginningOfDragManipulation()
 			{
 				if (!_isDraggingEnable)
@@ -592,7 +588,7 @@ namespace Windows.UI.Input
 						// This means that this method is expected to be invoked on each move (until manipulation starts)
 						// in order to update the _isDraggingEnable state.
 
-						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
+						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayMicroseconds;
 						if (isInHoldPhase && isOutOfRange)
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation

@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 
 		}
 
-#if __IOS__ || __ANDROID__ || __WASM__
+#if __IOS__ || __TVOS__ || __ANDROID__ || __WASM__
 		internal AccelerometerReading(
 			double accelerationX,
 			double accelerationY,

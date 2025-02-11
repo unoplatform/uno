@@ -4,7 +4,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using static System.Double;
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 using ObjCRuntime;
 #endif
 

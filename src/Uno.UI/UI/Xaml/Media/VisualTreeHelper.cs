@@ -24,14 +24,10 @@ using System.Text;
 using Uno.Disposables;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 using _ViewGroup = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-using _ViewGroup = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
@@ -72,7 +68,7 @@ namespace Microsoft.UI.Xaml.Media
 
 				foreach (var child in subtree.GetChildren())
 				{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 					// On Wasm and Skia, child is always UIElement.
 					if (child is not UIElement uiElement)
 					{
@@ -152,23 +148,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void AddView(_ViewGroup parent, _View child, int index)
 		{
-#if __MACOS__
-			if (index == 0)
-			{
-				if (parent.Subviews.Length == 0)
-				{
-					parent.AddSubview(child);
-				}
-				else
-				{
-					parent.AddSubview(child, NSWindowOrderingMode.Below, null);
-				}
-			}
-			else
-			{
-				parent.AddSubview(child, NSWindowOrderingMode.Above, parent.Subviews[index - 1]);
-			}
-#elif __IOS__
+#if __APPLE_UIKIT__
 			parent.InsertSubview(child, index);
 #elif __ANDROID__
 			parent.AddView(child, index);
@@ -190,7 +170,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void AddView(_ViewGroup parent, _View child)
 		{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 			parent.AddSubview(child);
 #elif __ANDROID__
 			parent.AddView(child);
@@ -201,7 +181,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void RemoveView(_ViewGroup parent, _View child)
 		{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 			child.RemoveFromSuperview();
 #elif __ANDROID__
 			parent.RemoveView(child);
@@ -399,7 +379,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.AddView(child);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__
 			view.AddSubview(child);
 #elif __CROSSRUNTIME__
 			view.AddChild(child);
@@ -421,7 +401,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.RemoveView(child);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__
 			if (child.Superview == view)
 			{
 				child.RemoveFromSuperview();
@@ -442,7 +422,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.RemoveAllViews();
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__
 			var children = view.ChildrenShadow;
 			children.ForEach(v => v.RemoveFromSuperview());
 #elif __CROSSRUNTIME__
@@ -816,7 +796,7 @@ namespace Microsoft.UI.Xaml.Media
 				? GetManagedVisualChildren(elt)
 				: Enumerable.Empty<UIElement>();
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		/// <summary>
 		/// Gets all immediate UIElement children of this <paramref name="view"/>. If any immediate subviews are native, it will descend into
 		/// them depth-first until it finds a UIElement, and return those UIElements.
@@ -846,7 +826,7 @@ namespace Microsoft.UI.Xaml.Media
 			=> view._children;
 #endif
 
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __ANDROID__ || IS_UNIT_TESTS
 		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
 			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
 #else
@@ -854,7 +834,7 @@ namespace Microsoft.UI.Xaml.Media
 			=> view._children.GetReverseEnumerator();
 #endif
 
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __ANDROID__ || IS_UNIT_TESTS
 		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
 			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
 #else

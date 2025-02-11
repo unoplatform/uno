@@ -131,7 +131,7 @@ partial class InputManager
 					// Raise the event to the target
 					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerDown(args);
-#if __IOS__
+#if __APPLE_UIKIT__
 					// Also as the FlyoutPopupPanel is being removed from the UI tree, we won't get any ProcessPointerUp, so we are forcefully causing it here.
 					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerUp(args);
@@ -163,7 +163,7 @@ partial class InputManager
 				return;
 			}
 
-#if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
+#if __ANDROID__ || __APPLE_UIKIT__ // Not needed on WASM as we do have native support of the exit event
 			// On iOS we use the RootVisual to raise the UWP-only exit event (in managed only)
 			// Note: This is useless for managed pointers where the Exit is raised properly
 

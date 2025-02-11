@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -75,12 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>
 		public
-#if __IOS__
+#if __APPLE_UIKIT__
 			new
 #endif
 			event TextControlPasteEventHandler Paste;
@@ -124,7 +124,11 @@ namespace Microsoft.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 
 #if __SKIA__
-			ActualThemeChanged += (_, _) => TextBoxView?.DisplayBlock.InvalidateInlines(false);
+			ActualThemeChanged += (_, _) =>
+			{
+				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				TextBoxView?.UpdateTheme();
+			};
 			_timer.Tick += TimerOnTick;
 			EnsureHistory();
 #endif
@@ -148,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
@@ -332,7 +336,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
-				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+				GetBindingExpression(TextProperty) is
+				{
+					ParentBinding:
+					{
+						IsXBind: false, // NOTE: we UpdateSource in OnTextChanged only when the binding is not an x:Bind. WinUI's generated code for x:Bind contains a simple LostFocus subscription and waits for the next LostFocus even when not focused, unlike regular Bindings.
+						UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus
+					}
+				} bindingExpression)
 			{
 				bindingExpression.UpdateSource(Text);
 			}
@@ -420,10 +431,12 @@ namespace Microsoft.UI.Xaml.Controls
 					_pendingSelection = (start, end - start);
 				}
 			}
-			else if (_isSkiaTextBox)
+			else if (_isSkiaTextBox && !DeviceTargetHelper.IsUIKit())
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
+				// On UIKit targets we use invisible overlay and replacing newlines would break the sync between
+				// the native input and the managed representation.
 				baseString = RemoveLF(baseString);
 			}
 #else
@@ -463,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Description DependencyProperty
 
 		public
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		object Description
@@ -753,8 +766,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFlowDirectionChangedPartial();
 #endif
 
-#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -762,8 +775,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -998,7 +1011,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
-			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			if (newValue == FocusState.Unfocused)
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
@@ -1331,6 +1344,10 @@ namespace Microsoft.UI.Xaml.Controls
 				length = textLength - start;
 			}
 
+#if __SKIA__
+			_pendingSelection = null;
+#endif
+
 			if (SelectionStart == start && SelectionLength == length)
 			{
 				return;
@@ -1404,7 +1421,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 #endif
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 				RaisePaste(new TextControlPasteEventArgs());
 #endif
 			});

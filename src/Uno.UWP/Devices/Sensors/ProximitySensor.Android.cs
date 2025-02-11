@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors;
 
 public partial class ProximitySensor
 {
-	private readonly StartStopEventWrapper<TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>> _readingChangedWrapper;
+	private readonly StartStopTypedEventWrapper<ProximitySensor, ProximitySensorReadingChangedEventArgs> _readingChangedWrapper;
 
 	private Sensor? _sensor;
 	private ProximitySensorListener? _listener;
@@ -95,7 +95,7 @@ public partial class ProximitySensor
 
 	internal void OnReadingChanged(ProximitySensorReading reading)
 	{
-		_readingChangedWrapper.Event?.Invoke(this, new(reading));
+		_readingChangedWrapper.Invoke(this, new(reading));
 	}
 
 	private sealed class ProximitySensorListener : Java.Lang.Object, ISensorEventListener, IDisposable

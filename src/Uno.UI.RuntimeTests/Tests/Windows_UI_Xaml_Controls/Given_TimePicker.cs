@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -200,7 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)associatedFlyout;
@@ -242,7 +243,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
@@ -252,7 +253,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
@@ -288,10 +289,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedStyle, nativeTimePicker.OverrideUserInterfaceStyle);
 		}
 #endif
-	}
+#if __IOS__ || __ANDROID__
+		[TestMethod]
+		public async Task When_Time_Uninitialized_Should_Display_Current_Time()
+		{
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+			timePicker.Time = new TimeSpan(NativeTimePickerFlyout.DEFAULT_TIME_TICKS);
 
-	class MyContext
-	{
-		public object StartTime => null;
+			var expectedCurrentTime = GetCurrentTime();
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(NativeTimePickerFlyout));
+
+#if __ANDROID__
+			var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
+
+			var dialog = nativeFlyout.GetNativeDialog();
+
+			var decorView = dialog.Window?.DecorView;
+			var timePickerView = FindTimePicker(decorView);
+
+			var displayedHour = timePickerView.GetHourCompat();
+			var displayedMinute = timePickerView.GetMinuteCompat();
+
+			Assert.AreEqual(expectedCurrentTime.Hours, displayedHour, "Hours should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Minutes, displayedMinute, "Minutes should match the current time.");
+#elif __IOS__
+			var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
+
+			var timeSelector = nativeFlyout.GetTimeSelector();
+			var displayedTime = timeSelector.Time;
+
+			Assert.AreEqual(expectedCurrentTime.Hours, displayedTime.Hours, "Hours should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Minutes, displayedTime.Minutes, "Minutes should match the current time.");
+#endif
+		}
+
+		private TimeSpan GetCurrentTime()
+		{
+			var calendar = new global::Windows.Globalization.Calendar();
+			calendar.SetToNow();
+			var now = calendar.GetDateTime();
+			return new TimeSpan(now.Hour, now.Minute, now.Second);
+		}
+#if __ANDROID__
+		private Android.Widget.TimePicker FindTimePicker(Android.Views.View root)
+		{
+			if (root is Android.Widget.TimePicker picker)
+			{
+				return picker;
+			}
+
+			if (root is not Android.Views.ViewGroup viewGroup)
+			{
+				return null;
+			}
+
+			for (var i = 0; i < viewGroup.ChildCount; i++)
+			{
+				var child = viewGroup.GetChildAt(i);
+				var result = FindTimePicker(child);
+				if (result != null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+#endif
+#endif
+
+		class MyContext
+		{
+			public object StartTime => null;
+		}
 	}
 }

@@ -23,7 +23,7 @@ partial class App
 	public XmlnsDefinition[] GetXmlnsDefinitions() => throw new NotImplementedException();
 
 	public
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 	new
 #endif
 		void Dispose() => IsDisposed = true;

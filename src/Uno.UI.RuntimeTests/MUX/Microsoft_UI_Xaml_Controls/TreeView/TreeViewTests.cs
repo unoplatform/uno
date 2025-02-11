@@ -262,7 +262,8 @@ namespace MUXControlsTestApp
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//[TestMethod] Disabled with issue number #1775 (WinUI issue)
+		[TestMethod] // Disabled with issue number #1775 (WinUI issue)
+		[Ignore]
 		public void TreeViewInheritanceTest()
 		{
 			StackPanel stackPanel = new StackPanel();
@@ -383,10 +384,7 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
@@ -528,10 +526,7 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewPendingSelectedNodesTest()
@@ -577,10 +572,7 @@ namespace MUXControlsTestApp
 		//}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewSelectionChangedSingleMode()

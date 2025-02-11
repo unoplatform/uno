@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RadioButtonAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ToggleButtonAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider

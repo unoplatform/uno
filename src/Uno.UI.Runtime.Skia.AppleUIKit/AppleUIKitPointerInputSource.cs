@@ -168,7 +168,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		};
 
 		var frameId = PointerHelpers.ToFrameId(touch.Timestamp);
-		var timestamp = PointerHelpers.ToTimeStamp(touch.Timestamp);
+		var timestamp = PointerHelpers.ToTimestamp(touch.Timestamp);
 		var pointerPoint = new PointerPoint(
 			frameId,
 			timestamp,

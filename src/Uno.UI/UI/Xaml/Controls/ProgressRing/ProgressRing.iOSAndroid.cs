@@ -1,6 +1,6 @@
-﻿#if __IOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__
 using Microsoft.UI.Xaml.Media;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using Uno.UI;

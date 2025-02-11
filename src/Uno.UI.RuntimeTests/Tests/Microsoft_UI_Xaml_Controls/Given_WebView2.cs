@@ -26,13 +26,12 @@ using _View = UIKit.UIView;
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 #if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
-[TestClass]
 [RunsOnUIThread]
 // only SkiaMacOS right now
-[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf | RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaIslands)]
+[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView2
 {
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
 #if __IOS__
 	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
 #endif
@@ -179,8 +178,7 @@ public class Given_WebView2
 	}
 #endif
 
-#if !__IOS__ // Temporarily disabled due to #11997
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -205,7 +203,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -236,7 +234,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -262,7 +260,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -330,7 +328,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
@@ -355,7 +353,6 @@ public class Given_WebView2
 
 		await TestHelper.RetryAssert(Do, 3);
 	}
-#endif
 
 #if __IOS__
 	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]

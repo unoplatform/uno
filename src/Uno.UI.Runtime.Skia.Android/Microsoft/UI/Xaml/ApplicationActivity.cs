@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
+			SimpleOrientationSensor.GetDefault()!.OrientationChanged += OnSensorOrientationChanged;
 		}
 
 		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
@@ -250,7 +250,7 @@ namespace Microsoft.UI.Xaml
 
 				_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
 
-				_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
+				_skCanvasView = new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);

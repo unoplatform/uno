@@ -7,12 +7,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 using UIKit;
-#elif __MACOS__
-using CoreGraphics;
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;

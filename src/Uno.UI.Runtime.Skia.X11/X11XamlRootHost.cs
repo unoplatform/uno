@@ -25,18 +25,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private const int DefaultColorDepth = 32;
 	private const int FallbackColorDepth = 24;
 
+	// Note For KeyPress/KeyRelease: subscribing on the top window prevents key inputs from hitting when the pointer
+	// is outside the window. https://github.com/unoplatform/uno/issues/19310
 	private const IntPtr RootEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.StructureNotifyMask |
 		(IntPtr)EventMask.VisibilityChangeMask |
+		(IntPtr)EventMask.KeyPressMask |
+		(IntPtr)EventMask.KeyReleaseMask |
 		(IntPtr)EventMask.NoEventMask;
 	private const IntPtr TopEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.ButtonPressMask |
 		(IntPtr)EventMask.ButtonReleaseMask |
 		(IntPtr)EventMask.PointerMotionMask |
-		(IntPtr)EventMask.KeyPressMask |
-		(IntPtr)EventMask.KeyReleaseMask |
 		(IntPtr)EventMask.EnterWindowMask |
 		(IntPtr)EventMask.LeaveWindowMask |
 		(IntPtr)EventMask.FocusChangeMask |
@@ -73,8 +75,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly ApplicationView _applicationView;
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
-	private readonly CompositeDisposable _disposables = new();
-	private readonly XamlRoot _xamlRoot;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
 
@@ -82,15 +82,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
 
-	private bool _renderDirty = true;
-	private readonly DispatcherTimer _renderTimer;
+	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
+	private readonly DispatcherTimer _renderTimer = new DispatcherTimer();
+	private long _lastRenderTime;
+	private int _renderScheduled;
+
+	private readonly DispatcherTimer _configureTimer = new DispatcherTimer();
+	private long _lastConfigureTime;
+	private int _configureScheduled;
 
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
 
 	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
-		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
 
@@ -99,30 +105,27 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_visibilityCallback = visibilityCallback;
 		_configureCallback = configureCallback;
 
-		_renderTimer = new DispatcherTimer();
-		_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate); // we're on the UI thread
-		_renderTimer.Tick += (sender, o) =>
-		{
-			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
-			{
-				_configureCallback();
-			}
+		_closed = new TaskCompletionSource();
+		Closed = _closed.Task;
 
-			if (_renderDirty)
-			{
-				_renderDirty = false;
-				_renderer?.Render();
-			}
+		_renderTimer.Tick += (_, _) =>
+		{
+			_renderTimer.Stop();
+			_renderScheduled = 0;
+			_renderer?.Render();
 		};
-		_renderTimer.Start();
+
+		_configureTimer.Tick += (_, _) =>
+		{
+			_configureTimer.Stop();
+			_configureScheduled = 0;
+			_configureCallback();
+		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
-
-		_closed = new TaskCompletionSource();
-		Closed = _closed.Task;
 
 		Initialize();
 
@@ -131,6 +134,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// the X11Window is "initialized".
 		_windowToHost[winUIWindow] = this;
 		X11Manager.XamlRootMap.Register(xamlRoot, this);
+
+		UpdateWindowPropertiesFromPackage();
+		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
+
+		// only start listening to events after we're done setting everything up
+		InitializeX11EventsThread();
+
+		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
+		UpdateRendererBackground();
 
 		Closed.ContinueWith(_ =>
 		{
@@ -141,16 +153,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+				windowBackgroundDisposable.Dispose();
 			}
 		});
-
-		UpdateWindowPropertiesFromPackage();
-		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
-
-		// only start listening to events after we're done setting everything up
-		InitializeX11EventsThread();
-
-		RegisterForBackgroundColor();
 	}
 
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
@@ -449,7 +454,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		var _1 = XLib.XSync(display, false);
+		_ = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
@@ -539,9 +544,56 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
-	void IXamlRootHost.InvalidateRender() => _renderDirty = true;
-
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	// running XConfigureEvent and rendering callbacks on a timer is necessary to avoid freezing in certain situations
+	// where we get spammed with these events. Most notably, when resizing a window by dragging an edge, we'll get spammed
+	// with XConfigureEvents.
+	void IXamlRootHost.InvalidateRender()
+	{
+		if (Interlocked.Exchange(ref _renderScheduled, 1) == 0)
+		{
+			// Don't use ticks, which seem to mess things up for some reason
+			var now = _stopwatch.ElapsedMilliseconds;
+			var delta = now - Interlocked.Exchange(ref _lastRenderTime, now);
+			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
+			{
+				QueueAction(this, () =>
+				{
+					_renderScheduled = 0;
+					_renderer?.Render();
+				});
+			}
+			else
+			{
+				_renderTimer.Interval = TimeSpan.FromTicks(delta);
+				_renderTimer.Start();
+			}
+		}
+	}
+
+	private void RaiseConfigureCallback()
+	{
+		if (Interlocked.Exchange(ref _configureScheduled, 1) == 0)
+		{
+			// Don't use ticks, which seem to mess things up for some reason
+			var now = _stopwatch.ElapsedMilliseconds;
+			var delta = now - Interlocked.Exchange(ref _lastConfigureTime, now);
+			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
+			{
+				QueueAction(this, () =>
+				{
+					_configureScheduled = 0;
+					_configureCallback();
+				});
+			}
+			else
+			{
+				_configureTimer.Interval = TimeSpan.FromTicks(delta);
+				_configureTimer.Start();
+			}
+		}
+	}
 
 	public unsafe void AttachSubWindow(IntPtr window)
 	{
@@ -596,13 +648,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_ = XLib.XFlush(RootX11Window.Display);
 			}
 		}
-	}
-
-	private void RegisterForBackgroundColor()
-	{
-		UpdateRendererBackground();
-
-		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
 	}
 
 	private void UpdateRendererBackground()

@@ -9,7 +9,7 @@ using Uno.Foundation.Logging;
 using System.Linq;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
 using Android.Views;
@@ -108,7 +108,7 @@ partial class PopupPanel
 		return finalSize;
 	}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	/// <summary>
 	/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
 	/// included in the visual tree.
@@ -118,7 +118,7 @@ partial class PopupPanel
 
 	private Rect GetAnchorRect(Popup popup)
 	{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		if (NativeAnchor is not null)
 		{
 			return NativeAnchor.GetBoundsRectRelativeTo(this);
@@ -185,7 +185,7 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
-#if !__IOS__
+#if !__APPLE_UIKIT__
 					desiredSize = visibleBounds.Size
 #else
 					// The mobile status bar should always remain visible.

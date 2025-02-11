@@ -39,7 +39,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
         @("Mobile", "-f:net8.0-ios", ""),
         @("Mobile", "-f:net8.0-maccatalyst", ""),
-        # @("Mobile", "-f:net8.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
         @("Wasm", "", ""),
         @("Skia.Gtk", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
@@ -88,7 +87,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-android", ""),
         @("Mobile", "-f:net8.0-ios", ""),
         @("Mobile", "-f:net8.0-maccatalyst", ""),
-        # @("Mobile", "-f:net8.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
         @("Wasm", "", ""),
         @("Server", "", ""),
         @("Skia.Gtk", "", ""),
@@ -329,6 +327,7 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0", $sdkFeatures), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", $sdkFeatures), @("macOS", "NetCore")),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-ios", $sdkFeatures), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
@@ -337,6 +336,9 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net9.0-windows10.0.19041"), @()),
 
     # 5.3 Library
     @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
@@ -351,7 +353,7 @@ $projects =
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     # 5.6 Wasm+Skia
-    # @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
+    # @(4, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),

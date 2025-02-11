@@ -27,9 +27,6 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
@@ -890,7 +887,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// type the string will cause the string comparison fails.
 				// Uno Specific: Those BiDi characters are not emitted by Uno
 				// VERIFY_IS_TRUE(dateText.Text == "‎1‎/‎1‎/‎2003");
-				Assert.IsTrue(dateText.Text is "01/01/2003");
+				Assert.AreEqual("01/01/2003", dateText.Text);
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 1);
 				VERIFY_DATES_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date2.UniversalTime());

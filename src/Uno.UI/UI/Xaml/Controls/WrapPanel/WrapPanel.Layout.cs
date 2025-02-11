@@ -15,18 +15,12 @@ using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using ViewGroup = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using ViewGroup = AppKit.NSView;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif

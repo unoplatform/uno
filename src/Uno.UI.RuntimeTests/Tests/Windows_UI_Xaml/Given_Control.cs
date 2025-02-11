@@ -244,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
-			Assert.AreEqual(false, control.ApplyTemplate());
+			Assert.IsFalse(control.ApplyTemplate());
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
@@ -254,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
-			Assert.AreEqual(true, control.ApplyTemplate());
+			Assert.IsTrue(control.ApplyTemplate());
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);
@@ -286,7 +286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);
-			Assert.AreEqual(false, control.ApplyTemplate());
+			Assert.IsFalse(control.ApplyTemplate());
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);
@@ -352,7 +352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			SUT.InvalidateMeasure();
 			SUT.UpdateLayout();
 #endif

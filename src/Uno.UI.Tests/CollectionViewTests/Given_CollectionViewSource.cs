@@ -50,7 +50,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 			var view = source.View;
 
 			Assert.AreEqual(0, view.Count);
-			Assert.AreEqual(null, view.CurrentItem);
+			Assert.IsNull(view.CurrentItem);
 			Assert.AreEqual(0, view.CurrentPosition); //Not -1
 		}
 
@@ -307,10 +307,9 @@ namespace Uno.UI.Tests.CollectionViewTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_IsSynchronizedWithCurrentItem_Is_True()
 		{
-			new ListView() { IsSynchronizedWithCurrentItem = true };
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListView() { IsSynchronizedWithCurrentItem = true });
 		}
 	}
 }

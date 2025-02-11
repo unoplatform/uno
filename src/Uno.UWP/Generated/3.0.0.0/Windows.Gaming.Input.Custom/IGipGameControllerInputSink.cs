@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input.Custom
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IGipGameControllerInputSink : global::Windows.Gaming.Input.Custom.IGameControllerInputSink
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void OnKeyReceived(ulong timestamp, byte keyCode, bool isPressed);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void OnMessageReceived(ulong timestamp, global::Windows.Gaming.Input.Custom.GipMessageClass messageClass, byte messageId, byte sequenceId, byte[] messageBuffer);
 #endif
 	}

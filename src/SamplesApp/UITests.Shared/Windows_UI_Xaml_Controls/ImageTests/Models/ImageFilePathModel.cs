@@ -20,7 +20,7 @@ using Uno.Foundation.Logging;
 using Microsoft.Extensions.Logging;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using CoreGraphics;
 using _Bitmap = UIKit.UIImage;
@@ -89,12 +89,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		}
 
 		private
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if HAS_UNO && !__WASM__ && !__SKIA__
 			async
 #endif
 			Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if HAS_UNO && !__WASM__ && !__SKIA__
 			var bitmap = CreateBitmap();
 
 			_log.Warn(bitmap.ToString());
@@ -140,7 +140,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 				}
 			}
 		}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 		private _Bitmap CreateBitmap()
 		{
 			UIGraphics.BeginImageContext(ImageSize);

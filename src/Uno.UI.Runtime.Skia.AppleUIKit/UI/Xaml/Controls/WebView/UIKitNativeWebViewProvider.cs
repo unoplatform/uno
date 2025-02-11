@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿#if !__TVOS__
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 
@@ -26,3 +27,4 @@ internal sealed class UIKitNativeWebViewProvider : INativeWebViewProvider
 		return content;
 	}
 }
+#endif

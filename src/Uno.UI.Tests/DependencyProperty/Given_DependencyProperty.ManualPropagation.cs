@@ -33,11 +33,6 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
 		}
 
-		public void TestInitialize()
-		{
-
-		}
-
 		[TestMethod]
 		public void When_IsAutoPropertyInheritance_Disabled()
 		{

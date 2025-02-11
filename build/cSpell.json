@@ -28,6 +28,7 @@
 	"devs",
 	"dbus",
 	"Dismissable",
+	"dmgbuild",
 	"Docfx",
 	"ellipsize",
 	"Entra",
@@ -114,7 +115,8 @@
 	"Haptics",
 	"autoplay",
 	"Xcodes",
-	"Raygun"
+	"Raygun",
+	"waitlist"
   ],
   "ignoreWords": [
 	"ADAL",

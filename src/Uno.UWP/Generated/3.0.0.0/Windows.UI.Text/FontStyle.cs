@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum FontStyle
 	{
 		// Skipping already declared field Windows.UI.Text.FontStyle.Normal

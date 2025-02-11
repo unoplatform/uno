@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
+					using var fillPaintDisposable = GetTempFillPaint(session.OpacityColorFilter, out var fillPaint);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -53,6 +53,11 @@ namespace Microsoft.UI.Composition
 					if (fill is CompositionBrushWrapper wrapper)
 					{
 						fill = wrapper.WrappedBrush;
+					}
+
+					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
+					{
+						fillPaint.PathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 					}
 
 					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
@@ -72,14 +77,25 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
-					using var strokePaintDisposable = GetTempStrokePaint(session.Filters.OpacityColorFilter, out var strokePaint);
+					using var fillPaintDisposable = GetTempFillPaint(session.OpacityColorFilter, out var fillPaint);
+					using var strokePaintDisposable = GetTempStrokePaint(session.OpacityColorFilter, out var strokePaint);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
+					}
+
+					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
+					{
+						var pathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
+						if (strokePaint.PathEffect is SKPathEffect effect)
+						{
+							pathEffect = SKPathEffect.CreateSum(effect, pathEffect);
+						}
+
+						strokePaint.PathEffect = pathEffect;
 					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.

@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public class Given_xBind
 {
 	[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 	[Ignore("Fails on iOS")]
 #endif
 	public async Task When_xBind_With_Cast()

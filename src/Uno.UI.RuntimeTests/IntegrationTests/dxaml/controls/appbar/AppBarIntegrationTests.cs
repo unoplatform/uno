@@ -32,9 +32,6 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class AppBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]

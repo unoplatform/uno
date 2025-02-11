@@ -22,7 +22,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
-	private SinglelineInvisibleTextBoxDelegate? _delegate;
+	private bool _settingTextFromManaged;
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -32,6 +32,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		}
 
 		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
+		Alpha = 0;
 
 		Initialize();
 	}
@@ -41,7 +42,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
 		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
 
-		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
+		Delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
 		{
 			IsKeyboardHiddenOnEnter = true
 		};
@@ -57,7 +58,9 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	public override void PasteAndSearch(NSObject? sender) => HandlePaste(() => base.PasteAndSearch(sender));
 
+#if !__TVOS__
 	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+#endif
 
 	private void HandlePaste(Action baseAction)
 	{
@@ -93,13 +96,29 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	private void OnTextChanged()
 	{
+		if (_settingTextFromManaged)
+		{
+			return;
+		}
+
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
 			textBoxView.ProcessNativeTextInput(Text);
 		}
 	}
 
-	public void SetTextNative(string text) => Text = text;
+	public void SetTextNative(string text)
+	{
+		try
+		{
+			_settingTextFromManaged = true;
+			Text = text;
+		}
+		finally
+		{
+			_settingTextFromManaged = false;
+		}
+	}
 
 	private void StartEditing()
 	{
@@ -142,29 +161,17 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	public void Select(int start, int length)
 		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 
-	/// <summary>
-	/// Workaround for https://github.com/unoplatform/uno/issues/9430
-	/// </summary>
-	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-	static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
-
-	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-	static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
-
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
 	{
-		get
-		{
-			return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
-		}
+		get => NativeTextSelection.GetSelectedTextRange(SuperHandle);
 		set
 		{
 			var textBoxView = TextBoxViewExtension;
 
 			if (textBoxView != null && SelectedTextRange != value)
 			{
-				void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				textBoxView.Owner.TextBox?.OnSelectionChanged();
 			}
 		}

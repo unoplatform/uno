@@ -1,4 +1,4 @@
-﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,16 +8,11 @@ using Uno.Foundation.Logging;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls

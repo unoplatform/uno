@@ -1,10 +1,34 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmMacImageTest: ''
   vmLinuxImage: ''
+  vmLinuxPool: ''
+  xCodeRootTest: ''
+  xCodeRootBuild: ''
   poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
+
+  # Runtime Test Groups
+  IOS_RUNTIME_TEST_GROUP_COUNT: 8
+  IOS_RUNTIME_TESTS_GROUPS:
+  - key: '0'
+    value: '01'
+  - key: '1'
+    value: '02'
+  - key: '2'
+    value: '03'
+  - key: '3'
+    value: '04'
+  - key: '4'
+    value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
   snapshotGroups:
     - 0
@@ -105,6 +129,94 @@ jobs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
       ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-ios-skia-build
+      ArtifactType: Container
+
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: skia-samples-app-binlog
+      ArtifactType: Container
+
+
+- job: Skia_Tests_Build_Apple
+  displayName: 'Build Apple Skia Samples App UI Tests'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
+  dependsOn: skia_package_macos_native_build
+
+  pool:
+    vmImage: ${{ parameters.vmMacImage }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-mobile-install-mac.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-ios --tfm net9.0-maccatalyst'
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  # iOS
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRootBuild }}
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
+      $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
+    displayName: Build iOS Skia Head
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-ios-skia-build
+      ArtifactType: Container
+
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -572,3 +684,31 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+##
+## iOS Skia
+##
+
+##
+## Runtime tests
+##
+- ${{ each RuntimeTestGroup in parameters.IOS_RUNTIME_TESTS_GROUPS }}:
+  - template: .azure-devops-ios-tests-run.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+      JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Skia iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobTimeoutInMinutes: 90
+      vmImage: ${{ parameters.vmMacImageTest }}
+      SamplesAppArtifactName: 'uitests-ios-skia-build'
+      UITEST_SNAPSHOTS_ONLY: false
+      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_AUTOMATED_GROUP: RuntimeTests
+      UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.IOS_RUNTIME_TEST_GROUP_COUNT }}
+      UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
+      UITEST_VARIANT: 'skia'
+      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - Skia_Tests_Build_Apple

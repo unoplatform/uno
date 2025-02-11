@@ -125,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
 				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
 				const int TimeResolutionScaling =
-#if !DEBUG && (__ANDROID__ || __MACOS__)
+#if !DEBUG && (__ANDROID__)
 				5;
 #else
 					1;
@@ -322,8 +322,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			translate.Y = 312.0;
 			var afterValue = translate.Y;
 
-			Assert.AreEqual(beforeValue, 100.0, "before: Should be animated to 100");
-			Assert.AreEqual(afterValue, 312.0, "after: Should be set to 312");
+			Assert.AreEqual(100.0, beforeValue, "before: Should be animated to 100");
+			Assert.AreEqual(312.0, afterValue, "after: Should be set to 312");
 		}
 
 #if __ANDROID__

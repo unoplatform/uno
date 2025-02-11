@@ -6,7 +6,7 @@
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
 		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<IsPackable>false</IsPackable>
-
+		<OutputType>Exe</OutputType>
 		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
 
 		<!-- To be able to get newer versions of Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest -->
@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />

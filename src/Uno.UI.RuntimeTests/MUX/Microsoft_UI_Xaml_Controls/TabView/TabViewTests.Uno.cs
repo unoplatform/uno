@@ -13,11 +13,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	{
 #if HAS_UNO
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task VerifyItemsAreCreatedOnlyOnce()
 		{

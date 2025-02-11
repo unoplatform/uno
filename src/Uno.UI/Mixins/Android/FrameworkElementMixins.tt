@@ -9,6 +9,7 @@
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
+		"true",
 		"Microsoft.UI.Xaml.Controls.NativeListViewBase",
 		"Microsoft.UI.Xaml.Controls.NativePagedView",
 		"Microsoft.UI.Xaml.Controls.NativeScrollContentPresenter",

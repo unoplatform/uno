@@ -58,7 +58,7 @@ namespace Uno.UI.Tasks.Assets
 
 			switch (TargetPlatform)
 			{
-				case "ios":
+				case "uikit":
 					resourceToTargetPath = resource => iOSResourceConverter.Convert(resource, DefaultLanguage);
 					pathEncoder = p => p;
 					break;

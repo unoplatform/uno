@@ -38,9 +38,6 @@ namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]
 	[RequiresFullWindow]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class CommandBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
@@ -294,7 +291,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
 #endif
 		public async Task DoesCloseOnSecondaryCommandSelection()
@@ -581,9 +578,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that resizing the AppBar after opening and closing causes its width to properly get updated.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task CanResizeCommandBarAfterOpeningAndClosing()
 		{
 			TestCleanupWrapper cleanup;
@@ -1041,11 +1035,8 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates the CommandBar behavior for arrow key presses.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Keyboard nav not supported")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task ValidateArrowKeys()
 		{
@@ -1750,9 +1741,6 @@ namespace Windows.UI.Tests.Enterprise
 #if __ANDROID__
 		[Ignore("CommandBar popup measure glitch with fullscreen")]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task ValidateCommandBarOpensInsideLayoutBounds()
 		{
 			TestCleanupWrapper cleanup;
@@ -2015,7 +2003,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that a minimal closed command bar with only secondary commands is visible.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
 #endif
 		public async Task ValidateClosedMinimalCommandBarWithSecondaryCommandsOnlyIsVisible()
@@ -2202,7 +2190,7 @@ namespace Windows.UI.Tests.Enterprise
 			double expectedMenuWidth_Touch = 0;
 			double expectedMenuWidth_NonTouch = 0;
 			//double expectedMenuItemHeight_Touch = 40;
-#if __IOS__
+#if __APPLE_UIKIT__
 			double expectedMenuItemHeight_NonTouch = 31;
 #elif __SKIA__
 			double expectedMenuItemHeight_NonTouch = 30;
@@ -2310,7 +2298,7 @@ namespace Windows.UI.Tests.Enterprise
 			await CloseCommandBar(cmdBar);
 
 			// Open via Keyboard (Keyboard not supported on Android)
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 			await OpenCommandBar(cmdBar, OpenMethod.Keyboard);
 			await RunOnUIThread(() =>
 			{
@@ -2426,9 +2414,6 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 #if __ANDROID__
 		[Ignore("Unstable on android https://github.com/unoplatform/uno/issues/9080")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task MoveItemsBetweenPrimaryAndSecondaryCommands()
 		{
@@ -2581,7 +2566,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : WindowHelper.CurrentTestWindow!.Bounds.Width;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			await RunOnUIThread(() =>
 			{
 				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
@@ -2653,7 +2638,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that setting DefaultLayoutPosition on the CommandBar propagates down to AppBarButtons and AppBarToggleButtons.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
 #endif
 		public async Task ValidateDefaultLayoutPositionPropagates()
@@ -4670,9 +4655,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that setting IsChecked on an AppBarToggleButton programatically will still result in the same visual effect")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task ValidateAppBarToggleButtonIsCheckedProgramatically()
 		{
 			TestCleanupWrapper cleanup;

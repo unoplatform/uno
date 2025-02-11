@@ -14,10 +14,8 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -132,7 +130,7 @@ internal partial class PopupPanel : Panel
 
 			if (!isFlyoutManagedDatePicker &&
 				Popup.PlacementTarget is not null
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 				|| NativeAnchor is not null
 #endif
 				)
@@ -180,7 +178,7 @@ internal partial class PopupPanel : Panel
 			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
 			// MenuFlyout so, for now, we restrict to to only Android
 			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
-#if !__IOS__
+#if !__APPLE_UIKIT__
 			var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,

@@ -63,7 +63,7 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Layout engine on ios needs actual layout pass")]
 #endif
 		public void When_Child_Has_Fixed_Size_Smaller_than_Parent()
@@ -96,7 +96,7 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Layout engine on ios needs actual layout pass")]
 #endif
 		public void When_Child_Is_Stretch()
@@ -122,7 +122,7 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if IS_UNIT_TESTS || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
+#if IS_UNIT_TESTS || __APPLE_UIKIT__ || __ANDROID__ // Broken on Android for now
 		[Ignore("Layout engine is incomplete on IS_UNIT_TESTS for arrange, ios & macOS needs actual layout pass")]
 #endif
 		public void When_Top_Align_Nested_With_Margin()

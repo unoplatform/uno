@@ -106,7 +106,7 @@ Uno Platform allows you to use the same feature on multiple platforms. However, 
 
 Not all scales are supported on all platforms:
 
-| Scale | WinUI       | iOS/MacCatalyst | Android |
+| Scale | WinUI       | iOS/MacCatalyst/tvOS | Android |
 |-------|:-----------:|:---------------:|:-------:|
 | `100` | scale-100   | @1x             | mdpi    |
 | `125` | scale-125   | N/A             | N/A     |
@@ -227,6 +227,6 @@ private void ConfigureUniversalImageLoader()
 }
 ```
 
-## iOS/MacCatalyst: referencing bundle images
+## iOS/MacCatalyst/tvOS: referencing bundle images
 
-On iOS/MacCatalyst, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.
+On iOS/MacCatalyst/tvOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.

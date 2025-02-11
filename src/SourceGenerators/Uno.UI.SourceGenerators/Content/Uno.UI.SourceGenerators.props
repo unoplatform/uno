@@ -16,11 +16,15 @@
 		<_IsIOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</_IsIOS>
 		<_IsIOS Condition="'$(_IsIOS)' == ''">false</_IsIOS>
 
+		<_IsTvOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsTvOS>
+		<_IsTvOS Condition="'$(_IsTvOS)' == ''">false</_IsTvOS>
+
 		<_IsNetStdRef Condition="'$(_IsUnitTests)'!='true' AND ('$(TargetFramework)'=='net9.0' OR '$(TargetFramework)'=='net8.0')">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia' OR '$(UnoRuntimeIdentifier)'=='WebAssembly'">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(_IsNetStdRef)' == ''">false</_IsNetStdRef>
 
 		<XamarinProjectType Condition="$(_IsIOS)">ios</XamarinProjectType>
+		<XamarinProjectType Condition="$(_IsTvOS)">tvos</XamarinProjectType>
 		<XamarinProjectType Condition="$(_IsAndroid)">android</XamarinProjectType>
 
 		<!-- Not checking for UnoWinRTRuntimeIdentifier as we want wasm to be applicable to DOM Wasm only (aka Wasm native) -->
@@ -35,6 +39,9 @@
 
 		<_IsIOSSkia Condition="$(_IsIOS) AND '$(XamarinProjectType)'=='skia'">true</_IsIOSSkia>
 		<_IsIOSSkia Condition="'$(_IsIOSSkia)' == ''">false</_IsIOSSkia>
+
+		<_IsTvOSSkia Condition="$(_IsTvOS) AND '$(XamarinProjectType)'=='skia'">true</_IsTvOSSkia>
+		<_IsTvOSSkia Condition="'$(_IsTvOSSkia)' == ''">false</_IsTvOSSkia>
 
 		<_IsWasmSkia Condition="'$(UnoWinRTRuntimeIdentifier)'=='WebAssembly' AND '$(XamarinProjectType)'=='skia'">true</_IsWasmSkia>
 		<_IsWasmSkia Condition="'$(_IsWasmSkia)' == ''">false</_IsWasmSkia>
@@ -79,6 +86,7 @@
 		<CompilerVisibleProperty Include="SolutionName" />
 		<CompilerVisibleProperty Include="VSIDEResolvedNonMSBuildProjectOutputs" />
 		<CompilerVisibleProperty Include="DevEnvDir" />
+		<CompilerVisibleProperty Include="MSBuildVersion" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
@@ -86,7 +94,9 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="UnoRemoteControlConfigCookie" />
-		<CompilerVisibleProperty Include="UnoEnCLogPath" />
+		<CompilerVisibleProperty Include="UnoHotReloadDiagnosticsLogPath" />
+		<CompilerVisibleProperty Include="AppendRuntimeIdentifierToOutputPath" />
+		<CompilerVisibleProperty Include="OutputPath" />
 		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
@@ -167,6 +177,11 @@
 		<IncludeXamlNamespaces Condition="!$(_IsIOSSkia)" Include="not_iosskia" />
 		<ExcludeXamlNamespaces Condition="!$(_IsIOSSkia)" Include="iosskia" />
 
+		<IncludeXamlNamespaces Condition="$(_IsTvOSSkia)" Include="tvosskia" />
+		<ExcludeXamlNamespaces Condition="$(_IsTvOSSkia)" Include="not_tvosskia" />
+		<IncludeXamlNamespaces Condition="!$(_IsTvOSSkia)" Include="not_tvosskia" />
+		<ExcludeXamlNamespaces Condition="!$(_IsTvOSSkia)" Include="tvosskia" />
+
 		<IncludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="wasmskia" />
 		<ExcludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="not_wasmskia" />
 		<IncludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="not_wasmskia" />
@@ -195,6 +210,7 @@
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-105 // Ignore duplicate namespaces" />
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-1591 // Ignore missing XML comment warnings" />
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS8669 // Ignore annotation for nullable reference types" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS9113 // Parameter is unread" />
 	</ItemGroup>
 
 	<!--Default UI automation member mappings-->

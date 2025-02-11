@@ -11,7 +11,7 @@ partial class WinRTFeatureConfiguration
 		{
 #if __ANDROID__
 			InterpretMouseLeftLongPressAsRightTap = _defaultInterpretMouseLeftLongPressAsRightTap;
-#elif __IOS__
+#elif __IOS__ || __TVOS__
 			InterpretForceTouchAsRightTap = _defaultInterpretForceTouchAsRightTap;
 #endif
 		}
@@ -28,7 +28,7 @@ partial class WinRTFeatureConfiguration
 		[DefaultValue(_defaultInterpretMouseLeftLongPressAsRightTap)]
 		public static bool InterpretMouseLeftLongPressAsRightTap { get; set; } = _defaultInterpretMouseLeftLongPressAsRightTap;
 #endif
-#if __IOS__
+#if __IOS__ || __TVOS__
 		private const bool _defaultInterpretForceTouchAsRightTap = true;
 		/// <summary>
 		/// Determines if force touch (a.k.a. 3D touch) should be interpreted as a right tap.

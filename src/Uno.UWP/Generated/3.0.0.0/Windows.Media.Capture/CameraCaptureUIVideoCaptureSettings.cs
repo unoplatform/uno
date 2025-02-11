@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CameraCaptureUIVideoCaptureSettings
 	{
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
 		{
 			get
@@ -22,8 +22,8 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public float MaxDurationInSeconds
 		{
 			get
@@ -37,8 +37,8 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Skipping already declared property Format
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool AllowTrimming
 		{
 			get

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Uno.UI.Controls
 {
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	/// <summary>
 	/// An ItemsStackPanel implementation which doesn't rely on high-level native list controls.
 	/// </summary>
@@ -17,7 +17,7 @@ namespace Uno.UI.Controls
 	{
 		ManagedVirtualizingPanelLayout _layout;
 
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		internal bool ShouldInterceptInvalidate { get; set; }
 #endif
 
@@ -114,7 +114,7 @@ namespace Uno.UI.Controls
 
 		#endregion
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		public override void SetSuperviewNeedsLayout()
 		{
 			if (ShouldInterceptInvalidate)

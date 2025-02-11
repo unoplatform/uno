@@ -282,13 +282,14 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+				var windowTitle = $"{message} | {SampleChooserViewModel.DefaultAppTitle}";
 #if HAS_UNO_WINUI || WINAPPSDK
 				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
 				{
-					window.Title = message;
+					window.Title = windowTitle;
 				}
 #else
-				_applicationView.Title = message;
+				_applicationView.Title = windowTitle;
 #endif
 			}
 
@@ -803,6 +804,23 @@ namespace Uno.UI.Samples.Tests
 								});
 							}
 
+#if HAS_UNO // Test scaling override is currently supported only on Uno Platform targets
+							if (test.RequiresScaling is not null)
+							{
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+								{
+									Private.Infrastructure.TestServices.WindowHelper.SetTestScaling(test.RequiresScaling.Value);
+								});
+								cleanupActions.Add(async () =>
+								{
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+									{
+										Private.Infrastructure.TestServices.WindowHelper.UnsetTestScaling();
+									});
+								});
+							}
+#endif
+
 							await GeneralInitAsync();
 
 							object returnValue = null;
@@ -1187,6 +1205,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			var testClasses =
 				from type in types
+				where type?.GetCustomAttributes<ConditionalTestClassAttribute>().SingleOrDefault()?.ShouldRun() ?? true
 				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				orderby type.Name
 				select type;

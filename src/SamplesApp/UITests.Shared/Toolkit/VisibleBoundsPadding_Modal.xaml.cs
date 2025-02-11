@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -32,7 +32,7 @@ namespace UITests.Toolkit
 
 		private void CloseModalClick(object sender, RoutedEventArgs e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			UIApplication.SharedApplication.KeyWindow.RootViewController.DismissModalViewController(animated: false);
 #endif
 		}

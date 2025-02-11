@@ -131,7 +131,46 @@ Here are the supported properties:
 
 Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
 
-If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
+```xml
+<!-- .csproj file -->
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+   
+   ...
+
+    <UnoFeatures>
+        Material;
+        Dsp;
+        Hosting;
+        Toolkit;
+        Logging;
+        MVUX;
+        Configuration;
+        Http;
+        Serialization;
+        Localization;
+        Navigation;
+        ThemeService;
+        Mvvm;
+    </UnoFeatures>
+      <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
+      <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
+      <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
+  </PropertyGroup>    
+</Project>
+```
+
+In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+## Disabling Implicit Uno Packages
+
+If you wish to disable Implicit package usage, add the following:
+
+```xml
+<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+```
+
+to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
@@ -146,6 +185,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | iOS | 14.2 |
 | macOS | 10.14 |
 | MacCatalyst | 14.0 |
+| tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
@@ -165,6 +205,11 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
       <PropertyGroup>
         <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
@@ -237,12 +282,9 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.wasm.cs`
 - `*.skia.cs`
 - `*.reference.cs`
-- `*.iOS.cs`(iOS & MacCatalyst)
+- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS & MacCatalyst)
 - `*.tvOS.cs`(tvOS)
-- `*.UIKit.cs`(iOS & MacCatalyst & tvOS)
-- `*.macOS.cs` (MacOS not MacCatalyst)
-- `*.iOSmacOS.cs` (iOS, MacCatalyst, & MacOS)
-- `*.Apple.cs` (iOS, MacCatalyst, tvOS & MacOS)
+- `*.UIKit.cs`, `*.Apple.cs` (iOS & Mac Catalyst & tvOS)
 - `*.Android.cs`
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.

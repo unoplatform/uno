@@ -12,16 +12,15 @@ using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
 using Private.Infrastructure;
+
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+using Uno.UI.Helpers;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 	public class Given_MessageDialog
 	{
 		[TestMethod]
@@ -107,11 +106,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			await WindowHelper.WaitForIdle();
 
-#if __IOS__ //in iOS we want to force calling in a different thread than UI
-			await Task.Run(() => asyncOperation.Cancel());
-#else
-			asyncOperation.Cancel();
+#if HAS_UNO
+			if (DeviceTargetHelper.IsUIKit())
+			{
+				//in iOS we want to force calling in a different thread than UI
+				await Task.Run(() => asyncOperation.Cancel());
+			}
+			else
 #endif
+			{
+				asyncOperation.Cancel();
+			}
 
 			await WindowHelper.WaitForIdle();
 

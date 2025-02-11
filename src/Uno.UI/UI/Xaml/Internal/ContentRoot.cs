@@ -74,6 +74,7 @@ internal partial class ContentRoot
 		_contentRootEventListener = new ContentRootEventListener(this);
 		FocusManager = new FocusManager(this);
 
+		// TODO Uno: CompositionTarget is not created here in WinUI.
 		CompositionTarget = new CompositionTarget(this);
 		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;

@@ -109,7 +109,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Temporarily disabled for bug 18866003
+		[TestMethod] // Temporarily disabled for bug 18866003
+		[Ignore]
 		public async Task ValidateItemsRepeaterScrollHostScenario()
 		{
 			var realizationRects = new List<Rect>();
@@ -854,7 +855,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Temporarily disabled for bug 18866003
+		[TestMethod] // Temporarily disabled for bug 18866003
+		[Ignore]
 		public async Task ValidateLoadUnload()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))

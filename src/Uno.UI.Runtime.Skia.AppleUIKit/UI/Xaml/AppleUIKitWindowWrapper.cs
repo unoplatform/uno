@@ -22,8 +22,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private AppleUIKitWindow _nativeWindow;
 
 	private RootViewController _mainController;
-	private NSObject? _orientationRegistration;
 	private readonly DisplayInformation _displayInformation;
+#if !__TVOS__
+	private NSObject? _orientationRegistration;
+#endif
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
 	{
@@ -76,6 +78,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void ObserveOrientationAndSize()
 	{
+#if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications
 			.ObserveDidChangeStatusBarOrientation(
@@ -87,13 +90,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			.ObserveDidChangeStatusBarFrame(
 				(sender, args) => RaiseNativeSizeChanged()
 			);
+#endif
 
-		// TODO: MZ: Fix this
-		//_nativeWindow.FrameChanged +=
-		//	() => RaiseNativeSizeChanged();
+		_nativeWindow.FrameChanged +=
+			() => RaiseNativeSizeChanged();
 
-		//_mainController.VisibleBoundsChanged +=
-		//	() => RaiseNativeSizeChanged();
+		_mainController.VisibleBoundsChanged +=
+			() => RaiseNativeSizeChanged();
 
 		var statusBar = StatusBar.GetForCurrentView();
 		statusBar.Showing += (o, e) => RaiseNativeSizeChanged();
@@ -117,6 +120,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				? keyWindow.SafeAreaInsets
 				: UIEdgeInsets.Zero;
 
+#if !__TVOS__
 		// Not respecting its own documentation. https://developer.apple.com/documentation/uikit/uiview/2891103-safeareainsets?language=objc
 		// iOS returns all zeros for SafeAreaInsets on non-iPhones and iOS11. (ignoring nav bars or status bars)
 		// So we need to update the top inset depending of the status bar visibility on other devices
@@ -125,6 +129,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				? 0
 				: UIApplication.SharedApplication.StatusBarFrame.Size.Height;
 #pragma warning restore CA1422 // Validate platform compatibility
+#else
+		var statusBarHeight = 0;
+#endif
 
 		inset.Top = (nfloat)Math.Max(inset.Top, statusBarHeight);
 
@@ -144,10 +151,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
+#if !__TVOS__
 		CoreDispatcher.CheckThreadAccess();
 #pragma warning disable CA1422 // Validate platform compatibility
 		UIApplication.SharedApplication.StatusBarHidden = true;
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 #pragma warning restore CA1422 // Validate platform compatibility
+#else
+		return Disposable.Empty;
+#endif
 	}
 }

@@ -363,7 +363,7 @@ public sealed partial class DiagnosticsOverlay : Control
 			_notificationPresenter.Tapped -= OnNotificationTapped;
 		}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		if (_toolbar is not null)
 		{
 			_toolbar.SizeChanged += OnToolBarSizeChanged;
@@ -390,7 +390,7 @@ public sealed partial class DiagnosticsOverlay : Control
 			RelativePlacement.SetAnchor(_notificationPresenter, _toolbar);
 			_notificationPresenter.Tapped += OnNotificationTapped;
 		}
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		if (_toolbar is not null)
 		{
 			_toolbar.SizeChanged += OnToolBarSizeChanged;

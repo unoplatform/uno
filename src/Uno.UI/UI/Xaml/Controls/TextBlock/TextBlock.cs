@@ -30,7 +30,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -119,6 +119,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
+#if __WASM__
+					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
+#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -273,7 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if __IOS__
+#if __APPLE_UIKIT__
 			new
 #endif
 			string Text
@@ -323,7 +326,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		/// <summary>
 		/// Supported font families: http://iosfonts.com/
 		/// </summary>
@@ -522,7 +525,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -531,7 +534,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -750,8 +753,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
 		{
@@ -774,8 +777,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextTrimmedProperty { get; } = DependencyProperty.Register(
 			nameof(IsTextTrimmed),
@@ -783,8 +786,8 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(TextBlock),
 			new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextTrimmed
 		{
@@ -832,7 +835,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
 #endif
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		/// <summary>
 		/// Gets the inlines which affect the typography of the TextBlock.
 		/// </summary>

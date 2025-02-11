@@ -25,10 +25,8 @@ using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -101,11 +99,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			mouse.MoveBy(0, 1);
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(dragStartingCount, 0);
+			Assert.AreEqual(0, dragStartingCount);
 
 			mouse.MoveBy(0, 15); // move out of the tvi
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(dragStartingCount, 1);
+			Assert.AreEqual(1, dragStartingCount);
 		}
 #endif
 
@@ -113,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Scrolled_IsExpanded_Should_Be_Preserved(bool bindIsExpanded)
@@ -196,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_TreeViewItem_Collapsed_Children_Removed_From_Tree()
@@ -422,7 +420,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		[TestMethod]
@@ -504,9 +502,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SubList_Of_Last_Item_Cleared()
 		{
 			var initial_Depth_0 = 0;
@@ -546,7 +541,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		[DataRow("1", false)]
@@ -608,7 +603,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		[DataRow("1")]
@@ -659,7 +654,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		public async Task When_SelectedItem_NotExpandedToExpanded()
@@ -703,8 +698,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// assert: before expanding
 			Assert.AreEqual(targetItem, tvm.SelectedItem, "[collapsed]invalid tvm.SelectedItem");
 			Assert.AreEqual(targetItem, SUT.SelectedItem, "[collapsed]invalid SUT.SelectedItem");
-			Assert.AreEqual(null, SUT.SelectedNode, "[collapsed]invalid SUT.SelectedNode should be null");
-			Assert.AreEqual(null, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem)), "[collapsed]selected node should not exist yet");
+			Assert.IsNull(SUT.SelectedNode, "[collapsed]invalid SUT.SelectedNode should be null");
+			Assert.IsNull(SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem)), "[collapsed]selected node should not exist yet");
 
 			// expand the ancestry from top-down
 			for (int i = 1; i < targetItem.Label.Length; i++)
@@ -726,7 +721,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		public async Task When_IsSelectedItem_NotExpandedToExpanded()
@@ -768,10 +763,10 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await UITestHelper.Load(setup);
 
 			// assert: before expanding
-			Assert.AreEqual(null, tvm.SelectedItem, "[collapsed]invalid tvm.SelectedItem");
-			Assert.AreEqual(null, SUT.SelectedItem, "[collapsed]invalid SUT.SelectedItem");
-			Assert.AreEqual(null, SUT.SelectedNode, "[collapsed]invalid SUT.SelectedNode should be null");
-			Assert.AreEqual(null, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem)), "[collapsed]selected node should not exist yet");
+			Assert.IsNull(tvm.SelectedItem, "[collapsed]invalid tvm.SelectedItem");
+			Assert.IsNull(SUT.SelectedItem, "[collapsed]invalid SUT.SelectedItem");
+			Assert.IsNull(SUT.SelectedNode, "[collapsed]invalid SUT.SelectedNode should be null");
+			Assert.IsNull(SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem)), "[collapsed]selected node should not exist yet");
 
 			// expand the ancestry from top-down
 			for (int i = 1; i < targetItem.Label.Length; i++)
@@ -793,7 +788,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		public async Task When_SelectedItem_ParentCollapsed()
@@ -866,7 +861,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("failing due to #16216; selection offset correction happens too late on ios")]
 #endif
 		public async Task When_IsSelectedItem_ParentCollapsed()

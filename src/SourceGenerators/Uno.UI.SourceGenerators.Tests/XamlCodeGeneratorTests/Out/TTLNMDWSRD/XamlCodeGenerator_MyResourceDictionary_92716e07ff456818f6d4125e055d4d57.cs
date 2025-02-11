@@ -26,10 +26,8 @@ using MyProject;
 using _View = Microsoft.UI.Xaml.UIElement;
 #elif __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif

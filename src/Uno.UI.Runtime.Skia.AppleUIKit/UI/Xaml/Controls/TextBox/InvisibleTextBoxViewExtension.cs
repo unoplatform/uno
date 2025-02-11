@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using UIKit;
-using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -41,6 +40,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 
 		EnsureTextBoxView(textBox);
+		SetSoftKeyboardTheme();
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
 		_textBoxView.BecomeFirstResponder();
@@ -86,15 +86,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
-			try
-			{
-				//_textBoxView.SuspendSelectionChange();
-				_textBoxView.Text = text;
-			}
-			finally
-			{
-				//_textBoxView.ResumeSelectionChange();
-			}
+			_textBoxView.SetTextNative(text);
 		}
 	}
 
@@ -140,7 +132,50 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	public void UpdateProperties() { }
+	public void UpdateProperties()
+	{
+		if (_textBoxView is null || _owner.TextBox is not { } textBox)
+		{
+			return;
+		}
+
+		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(textBox.InputScope);
+		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(textBox.InputScope);
+
+		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
+		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
+
+		_textBoxView.ReturnKeyType = textBox.InputScope == InputScopes.Search ? UIReturnKeyType.Search : UIReturnKeyType.Default;
+
+		if (textBox.IsSpellCheckEnabled)
+		{
+			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
+		}
+
+		_textBoxView.SecureTextEntry = textBox is PasswordBox;
+		SetSoftKeyboardTheme();
+	}
+
+	private void SetSoftKeyboardTheme()
+	{
+		if (_owner.TextBox is not { } textBox || _textBoxView is null)
+		{
+			return;
+		}
+
+		if (textBox.ActualTheme == ElementTheme.Default)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Default;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Light)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Light;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Dark)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Dark;
+		}
+	}
 
 	[MemberNotNull(nameof(_textBoxView))]
 	private void EnsureTextBoxView(TextBox textBox)
@@ -152,6 +187,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = CreateNativeView(textBox);
+			UpdateProperties();
 			SetNativeText(inputText ?? string.Empty);
 		}
 	}
@@ -184,11 +220,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (_textBoxView.Text != text)
 		{
-			_textBoxView.Text = text;
+			_textBoxView.SetTextNative(text);
 		}
 	}
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => new SinglelineInvisibleTextBoxView(this);
+	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
+		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
 	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{

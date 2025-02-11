@@ -33,10 +33,8 @@ using Uno.Extensions;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 #endif
 
@@ -47,26 +45,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_TextBox
 	{
 		[TestMethod]
-		[DataRow(UpdateSourceTrigger.Default)]
-		[DataRow(UpdateSourceTrigger.PropertyChanged)]
-		[DataRow(UpdateSourceTrigger.Explicit)]
-		[DataRow(UpdateSourceTrigger.LostFocus)]
-		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger)
+		[DataRow(UpdateSourceTrigger.Default, false)]
+		[DataRow(UpdateSourceTrigger.PropertyChanged, false)]
+		[DataRow(UpdateSourceTrigger.Explicit, false)]
+		[DataRow(UpdateSourceTrigger.LostFocus, false)]
+		[DataRow(UpdateSourceTrigger.Default, true)]
+		[DataRow(UpdateSourceTrigger.LostFocus, true)]
+		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger, bool xBind)
 		{
 			var SUT = new When_TwoWay_Text_Binding();
-			var tb = trigger switch
+			var tb = (trigger, xBind) switch
 			{
-				UpdateSourceTrigger.Default => SUT.tbTwoWay_triggerDefault,
-				UpdateSourceTrigger.PropertyChanged => SUT.tbTwoWay_triggerPropertyChanged,
-				UpdateSourceTrigger.Explicit => SUT.tbTwoWay_triggerExplicit,
-				UpdateSourceTrigger.LostFocus => SUT.tbTwoWay_triggerLostFocus,
+				(UpdateSourceTrigger.Default, false) => SUT.tbTwoWay_triggerDefault,
+				(UpdateSourceTrigger.PropertyChanged, false) => SUT.tbTwoWay_triggerPropertyChanged,
+				(UpdateSourceTrigger.Explicit, false) => SUT.tbTwoWay_triggerExplicit,
+				(UpdateSourceTrigger.LostFocus, false) => SUT.tbTwoWay_triggerLostFocus,
+				(UpdateSourceTrigger.Default, true) => SUT.tbTwoWay_triggerDefault_xBind,
+				(UpdateSourceTrigger.LostFocus, true) => SUT.tbTwoWay_triggerLostFocus_xBind,
 				_ => throw new Exception("Should not happen."),
 			};
 			var expectedSetCount = 0;
 
 			await UITestHelper.Load(SUT);
 
-			var vm = (When_TwoWay_Text_Binding.VM)tb.DataContext;
+			var vm = xBind ? SUT.VMForXBind : (When_TwoWay_Text_Binding.VM)tb.DataContext;
 
 			Assert.AreNotEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
@@ -75,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Change text while not focused
 			tb.Text = "Hello";
-			if (trigger != UpdateSourceTrigger.Explicit)
+			if (trigger is UpdateSourceTrigger.PropertyChanged || (trigger is not UpdateSourceTrigger.Explicit && !xBind))
 			{
 				expectedSetCount++;
 			}
@@ -243,9 +245,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -270,9 +269,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -297,9 +293,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -323,13 +316,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectionStart_Set()
 		{
 			var textBox = new TextBox
@@ -364,13 +354,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
 		{
 			var textBox = new TextBox
@@ -542,9 +529,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_EndOfText()
 		{
 			var textBox = new TextBox
@@ -564,9 +548,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_MiddleOfText()
 		{
 			var textBox = new TextBox
@@ -587,9 +568,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_AllTextToEmpty()
 		{
 			var textBox = new TextBox
@@ -788,9 +766,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ReadOnly_Toggled_Repeatedly()
 		{
 			var textBox = new TextBox
@@ -860,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __IOS__
+#if __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Fails on Skia and iOS")]
 		// On iOS, the failure is: AssertFailedException: Expected value to be greater than 1199.0, but found 1199.0.
 		// Since the number is large, it looks like the TextBox is taking the full height.
@@ -893,10 +868,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
-#if __MACOS__
-		[Ignore("Paste is not implemented on MacOS")]
-#endif
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste()
 		{
 #if __SKIA__
@@ -920,7 +892,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(pasteCount, 1);
+			Assert.AreEqual(1, pasteCount);
 		}
 
 		[TestMethod]
@@ -1094,21 +1066,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			mouse.MoveTo(clickPosition2);
-			Assert.IsTrue(list.Count == 0);
+			Assert.AreEqual(0, list.Count);
 			mouse.Press(clickPosition2);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(list.Count == 1);
+			Assert.AreEqual(1, list.Count);
 			Assert.AreEqual("Second", list[0]);
 
 			mouse.MoveTo(clickPosition1);
-			Assert.IsTrue(list.Count == 1);
+			Assert.AreEqual(1, list.Count);
 			mouse.Press(clickPosition1);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(list.Count == 2);
+			Assert.AreEqual(2, list.Count);
 			Assert.AreEqual("First", list[1]);
 
 			FocusManager.GotFocus -= FocusManager_GotFocus;

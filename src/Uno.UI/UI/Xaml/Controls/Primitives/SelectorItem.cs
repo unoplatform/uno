@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -321,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			UpdateVisualStates(true);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		private bool _pressedOverride;
 		private new bool IsPointerPressed => _pressedOverride || base.IsPointerPressed;
 
@@ -427,7 +427,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private IDisposable InterceptSetNeedsLayout()
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bool match(UIView view) => view is ListViewBaseInternalContainer || view is Selector;
 			var cell = this.FindFirstParent<UIView>(predicate: match);
 			return (cell as ListViewBaseInternalContainer)?.InterceptSetNeedsLayout();

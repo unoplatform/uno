@@ -11,16 +11,23 @@ using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal class NativeTimePickerFlyout : TimePickerFlyout
+partial class NativeTimePickerFlyout : TimePickerFlyout
 {
 	private bool _programmaticallyDismissed;
 	private UnoTimePickerDialog _dialog;
 	private TimeSpan _initialTime;
 
 	internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
+	internal UnoTimePickerDialog GetNativeDialog() => _dialog;
+
 
 	internal protected override void Open()
 	{
+		if (Time.Ticks == DEFAULT_TIME_TICKS)
+		{
+			Time = GetCurrentTime();
+		}
+
 		SaveInitialTime();
 
 		ShowTimePicker();
@@ -29,6 +36,7 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 	}
 
 	private void SaveInitialTime() => _initialTime = Time;
+
 
 	private void SaveTime(TimeSpan time)
 	{
@@ -64,7 +72,7 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 
 	private void ShowTimePicker()
 	{
-		var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
+		var time = _initialTime.RoundToNextMinuteInterval(MinuteIncrement);
 		var listener = new OnSetTimeListener((view, hourOfDay, minute) => AdjustAndSaveTime(hourOfDay, minute));
 
 		var themeResourceId = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Light ?

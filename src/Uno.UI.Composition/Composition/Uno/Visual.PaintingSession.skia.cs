@@ -2,13 +2,14 @@ using System;
 using System.Numerics;
 using SkiaSharp;
 using Uno.UI.Composition;
+
 namespace Microsoft.UI.Composition;
 
 public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		PaintingSession CreateInstance(in Visual visual, in SKSurface surface, in SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform);
+		void CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session);
 	}
 
 	/// <summary>
@@ -18,35 +19,44 @@ public partial class Visual
 	/// Accessing Surface.Canvas is slow due to SkiaSharp interop.
 	/// Avoid using .Surface.Canvas and use .Canvas right away.
 	/// </remarks>
-	internal readonly struct PaintingSession : IDisposable
+	internal readonly ref struct PaintingSession
 	{
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			PaintingSession IPrivateSessionFactory.CreateInstance(in Visual visual, in SKSurface surface, in SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session)
 			{
-				return new PaintingSession(visual, surface, canvas, filters, rootTransform);
+				session = new PaintingSession(visual, surface, canvas, ref rootTransform, opacity);
 			}
 		}
 
-		private readonly int _saveCount;
-
-		private PaintingSession(Visual visual, SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 rootTransform)
+		private PaintingSession(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity)
 		{
-			_saveCount = visual.ShadowState is { } shadow ? canvas.SaveLayer(shadow.Paint) : canvas.Save();
 			Surface = surface;
 			Canvas = canvas;
-			Filters = filters;
-			RootTransform = rootTransform;
+			RootTransform = ref rootTransform;
+			Opacity = opacity;
+
+			_saveCount = visual.ShadowState is { } shadow ? canvas.SaveLayer(shadow.Paint) : canvas.Save();
 		}
 
-		public SKSurface Surface { get; }
-		public SKCanvas Canvas { get; }
-		public DrawingFilters Filters { get; }
+		public void Dispose() => Canvas.RestoreToCount(_saveCount);
+
+		public readonly SKSurface Surface;
+
+		public readonly SKCanvas Canvas;
 
 		/// <summary>The transform matrix to the root visual of this drawing session (which isn't necessarily the identity matrix due to scaling (DPI) and/or RenderTargetBitmap.</summary>
-		public Matrix4x4 RootTransform { get; }
+		public readonly ref Matrix4x4 RootTransform;
 
-		public void Dispose() => Canvas.RestoreToCount(_saveCount);
+		public readonly float Opacity;
+
+		public SKColorFilter OpacityColorFilter => Opacity == 1.0f ?
+			null :
+			_opacityToColorFilter[(byte)(0xFF * Opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * Opacity)), SKBlendMode.Modulate);
+
+		private static readonly SKColorFilter[] _opacityToColorFilter = new SKColorFilter[256];
+
+		private readonly int _saveCount;
 	}
 }

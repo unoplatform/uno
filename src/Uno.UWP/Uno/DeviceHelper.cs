@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Uno
+﻿namespace Uno
 {
 	internal static class DeviceHelper
 	{

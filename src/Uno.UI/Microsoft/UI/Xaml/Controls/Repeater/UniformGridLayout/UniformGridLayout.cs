@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// UniformGridLayout.cpp, commit 1c07867
+// UniformGridLayout.cpp, commit 3f3e328
 
 using System;
 using System.Collections.Specialized;
@@ -139,17 +139,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var gridState = GetAsGridState(context.LayoutState);
 				var lastExtent = gridState.FlowAlgorithm().LastExtent;
 				uint itemsPerLine = GetItemsPerLine(availableSize, context);
-				double majorSize = (itemsCount / itemsPerLine) * (double)(GetMajorSizeWithSpacing(context));
+				double majorSize = GetMajorSize(itemsCount, itemsPerLine, GetMajorItemSizeWithSpacing(context));
 				double realizationWindowStartWithinExtent =
-					(double)(MajorStart(realizationRect) - MajorStart(lastExtent));
-				if ((realizationWindowStartWithinExtent + MajorSize(realizationRect)) >= 0 &
+					MajorStart(realizationRect) - MajorStart(lastExtent);
+				if ((realizationWindowStartWithinExtent + MajorSize(realizationRect)) >= 0.0f &
 					realizationWindowStartWithinExtent <= majorSize)
 				{
 					double offset = Math.Max(0.0f, MajorStart(realizationRect) - MajorStart(lastExtent));
-					int anchorRowIndex = (int)(offset / GetMajorSizeWithSpacing(context));
+					int anchorLineIndex = (int)(offset / GetMajorItemSizeWithSpacing(context));
 
-					anchorIndex = (int)Math.Max(0, Math.Min(itemsCount - 1, anchorRowIndex * itemsPerLine));
-					bounds = GetLayoutRectForDataIndex(availableSize, (uint)anchorIndex, lastExtent, context);
+					anchorIndex = (int)Math.Max(0, Math.Min(itemsCount - 1, anchorLineIndex * itemsPerLine));
+					bounds = GetLayoutRectForDataIndex(availableSize, anchorIndex, lastExtent, context);
 				}
 			}
 
@@ -165,23 +165,28 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			Size availableSize,
 			VirtualizingLayoutContext context)
 		{
-			int index = -1;
-			double offset = double.NaN;
 			int count = context.ItemCount;
 			if (targetIndex >= 0 & targetIndex < count)
 			{
-				uint itemsPerLine = GetItemsPerLine(availableSize, context);
-				var indexOfFirstInLine = (targetIndex / itemsPerLine) * itemsPerLine;
-				index = (int)indexOfFirstInLine;
-				var state = GetAsGridState(context.LayoutState);
-				offset = MajorStart(GetLayoutRectForDataIndex(availableSize, (uint)index,
-					state.FlowAlgorithm().LastExtent, context));
+				// The anchor index returned is NOT the first index in the targetIndex's line. It is the targetIndex
+				// itself, in order to stay consistent with the ElementManager::DiscardElementsOutsideWindow method
+				// which keeps a single element prior to the realization window. If the first index in the targetIndex's
+				// line were used as the anchor, it would be discarded and re-recreated in an infinite loop.
+				var gridState = GetAsGridState(context.LayoutState);
+				double offset = MajorStart(GetLayoutRectForDataIndex(availableSize, targetIndex,
+					gridState.FlowAlgorithm().LastExtent, context));
+
+				return new FlowLayoutAnchorInfo
+				(
+					targetIndex,
+					offset
+				);
 			}
 
 			return new FlowLayoutAnchorInfo
 			(
-				index,
-				offset
+				-1,
+				double.NaN
 			);
 		}
 
@@ -200,16 +205,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			var extent = new Rect();
 
 			// Constants
-			uint itemsCount = (uint)context.ItemCount;
-			var availableSizeMinor = Minor(availableSize);
+			int itemsCount = context.ItemCount;
+			double availableSizeMinor = Minor(availableSize);
 
 			uint itemsPerLine =
 				Math.Min( // note use of uint s
 					Math.Max(1u, availableSizeMinor.IsFinite()
-						? (uint)((availableSizeMinor + MinItemSpacing()) / GetMinorSizeWithSpacing(context))
-						: itemsCount),
+						? (uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context))
+						: (uint)itemsCount),
 					Math.Max(1u, m_maximumRowsOrColumns));
-			float lineSize = GetMajorSizeWithSpacing(context);
+			float lineSize = GetMajorItemSizeWithSpacing(context);
 
 			if (itemsCount > 0)
 			{
@@ -217,8 +222,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				SetMinorSize(ref extent,
 					availableSizeMinor.IsFinite() && m_itemsStretch == UniformGridLayoutItemsStretch.Fill
 						? availableSizeMinor
-						: Math.Max(0.0f, itemsPerLine * GetMinorSizeWithSpacing(context) - (float)(MinItemSpacing())));
-				SetMajorSize(ref extent, Math.Max(0.0f, (itemsCount / itemsPerLine) * lineSize - (float)(LineSpacing())));
+						: Math.Max(0.0f, itemsPerLine * GetMinorItemSizeWithSpacing(context) - (float)(MinItemSpacing())));
+				SetMajorSize(ref extent, GetMajorSize(itemsCount, itemsPerLine, lineSize));
 
 				if (firstRealized is { })
 				{
@@ -226,9 +231,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 					SetMajorStart(ref extent, MajorStart(firstRealizedLayoutBounds) -
 										 (firstRealizedItemIndex / itemsPerLine) * lineSize);
-					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
+					var remainingItemsOnLastRealizedLine = Math.Min(itemsCount - lastRealizedItemIndex - 1, (int)(itemsPerLine - ((lastRealizedItemIndex + 1) % itemsPerLine)));
+					int remainingItems = itemsCount - lastRealizedItemIndex - 1 - remainingItemsOnLastRealizedLine;
+					float remainingItemsMajorSize = GetMajorSize(remainingItems, itemsPerLine, lineSize);
 					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) +
-										(remainingItems / itemsPerLine) * lineSize);
+						(remainingItemsMajorSize > 0.0f ? ((float)LineSpacing() +
+						remainingItemsMajorSize) : 0.0f));
 				}
 				else
 				{
@@ -319,14 +327,36 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private uint GetItemsPerLine(Size availableSize, VirtualizingLayoutContext context)
 		{
-			uint itemsPerLine = Math.Min( // note use of unsigned ints
-				Math.Max(1u, (uint)((Minor(availableSize) + MinItemSpacing()) / GetMinorSizeWithSpacing(context))),
-				Math.Max(1u, m_maximumRowsOrColumns));
+			double availableSizeMinor = Minor(availableSize);
+			uint maximumRowsOrColumns = Math.Max(1u, m_maximumRowsOrColumns);
 
-			return itemsPerLine;
+			if (availableSizeMinor.IsFinite())
+			{
+				return Math.Min(
+					(uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context)),
+					maximumRowsOrColumns);
+			}
+
+			return maximumRowsOrColumns;
 		}
 
-		float GetMinorSizeWithSpacing(VirtualizingLayoutContext context)
+		float GetMajorSize(int itemsCount, uint itemsPerLine, float majorItemSizeWithSpacing)
+		{
+			_Tracing.MUX_ASSERT(itemsPerLine > 0);
+
+			int fullLinesCount = itemsCount / (int)itemsPerLine;
+			int partialLineCount = (itemsCount % itemsPerLine) == 0 ? 0 : 1;
+			int totalLinesCount = fullLinesCount + partialLineCount;
+
+			if (totalLinesCount > 0)
+			{
+				return totalLinesCount * majorItemSizeWithSpacing - (float)(LineSpacing());
+			}
+
+			return 0.0f;
+		}
+
+		float GetMinorItemSizeWithSpacing(VirtualizingLayoutContext context)
 		{
 			var minItemSpacing = MinItemSpacing();
 			var gridState = GetAsGridState(context.LayoutState);
@@ -335,7 +365,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				: (float)(gridState.EffectiveItemHeight() + minItemSpacing);
 		}
 
-		float GetMajorSizeWithSpacing(VirtualizingLayoutContext context)
+		float GetMajorItemSizeWithSpacing(VirtualizingLayoutContext context)
 		{
 			var lineSpacing = LineSpacing();
 			var gridState = GetAsGridState(context.LayoutState);
@@ -346,18 +376,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		Rect GetLayoutRectForDataIndex(
 			Size availableSize,
-			uint index,
+			int index,
 			Rect lastExtent,
 			VirtualizingLayoutContext context)
 		{
 			uint itemsPerLine = GetItemsPerLine(availableSize, context);
-			uint rowIndex = index / itemsPerLine;
-			uint indexInRow = index - (rowIndex * itemsPerLine);
+			int lineIndex = index / (int)itemsPerLine;
+			int indexInLine = index - (lineIndex * (int)itemsPerLine);
 
 			var gridState = GetAsGridState(context.LayoutState);
 			Rect bounds = MinorMajorRect(
-				indexInRow * GetMinorSizeWithSpacing(context) + MinorStart(lastExtent),
-				rowIndex * GetMajorSizeWithSpacing(context) + MajorStart(lastExtent),
+				indexInLine * GetMinorItemSizeWithSpacing(context) + MinorStart(lastExtent),
+				lineIndex * GetMajorItemSizeWithSpacing(context) + MajorStart(lastExtent),
 				ScrollOrientation == ScrollOrientation.Vertical
 					? (float)(gridState.EffectiveItemWidth())
 					: (float)(gridState.EffectiveItemHeight()),

@@ -36,6 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__SKIA__
 		[Ignore("TODO: Fix on other platforms")]
 #endif
+		[RequiresScaling(1f)]
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
@@ -80,9 +81,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
 		}
 
-#if !__IOS__ // Currently fails on iOS
-		[TestMethod]
+#if __APPLE_UIKIT__
+		[Ignore("Currently fails on iOS")]
 #endif
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Fixed_Height_And_Stretch_Uniform()
 		{
@@ -196,9 +198,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_Transitive_Asset_Loaded()
 		{
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
@@ -215,9 +214,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
 #if __SKIA__
@@ -243,9 +239,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_Explicit_BitmapImage_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -259,9 +252,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -275,9 +265,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_Relative_Rooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -292,9 +279,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_AbsoluteLocal()
 		{
 			ImageControls.When_Image SUT = new();
@@ -308,9 +292,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
-#endif
 		public async Task When_AbsoluteMain()
 		{
 			ImageControls.When_Image SUT = new();
@@ -325,9 +306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Randomly fails on macOS")]
-#endif
 		public async Task When_Image_Is_Loaded_From_URL()
 		{
 			string decoded_url = "https://uno-assets.platform.uno/tests/images/image with spaces.jpg";
@@ -344,9 +322,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Image_Source_Nullify()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -401,7 +376,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
-#if IS_UNIT_TESTS || __MACOS__ || __SKIA__ || __IOS__
+#if IS_UNIT_TESTS || __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
@@ -588,6 +563,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 		public async Task When_Png_Should_Have_High_Quality()
 		{
 			var image = new Image() { Width = 100, Height = 100 };
@@ -636,9 +612,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Exif_Rotated_MsAppx()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -651,9 +624,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Exif_Rotated_MsAppx_Unequal_Dimensions()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -680,9 +650,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Exif_Rotated_MsAppData()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -715,9 +682,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Exif_Rotated_From_Stream()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

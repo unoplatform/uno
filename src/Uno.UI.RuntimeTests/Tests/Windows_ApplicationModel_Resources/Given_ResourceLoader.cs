@@ -159,7 +159,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.")]
 #endif
 		public void When_MissingLocalizedResource_FallbackOnDefault()

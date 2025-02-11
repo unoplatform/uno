@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotImplementedException();
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		public override UIImage ToNativeImage()
 		{
 			throw new NotImplementedException();

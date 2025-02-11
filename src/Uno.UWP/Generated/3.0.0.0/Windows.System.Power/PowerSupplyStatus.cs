@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum PowerSupplyStatus
 	{
 		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.NotPresent

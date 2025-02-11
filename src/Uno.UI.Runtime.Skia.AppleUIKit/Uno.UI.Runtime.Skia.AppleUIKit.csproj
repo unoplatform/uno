@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks> <!-- TODO Add tvOS -->
+		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-tvos</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -27,13 +27,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.iOSmacOS.cs" Link="Controls\BringIntoViewMode.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.iOS.cs" Link="Controls\IRotationAwareViewController.iOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\LocalWKUIDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.ErrorMap.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.ErrorMap.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\WebViewNavigationDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.iOSmacOS.cs" />
+		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.Apple.cs" Link="Controls\BringIntoViewMode.Apple.cs" />
+		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.UIKit.cs" Link="Controls\IRotationAwareViewController.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(IsTvOS)">
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\LocalWKUIDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.ErrorMap.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.ErrorMap.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\WebViewNavigationDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.Apple.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

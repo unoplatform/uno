@@ -20,12 +20,12 @@ using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
 using System.Collections.Immutable;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
-[TestClass]
 // Hot reload tests are only available on Skia desktop targets
-[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.SkiaDesktop)]
+[ConditionalTestClass(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;

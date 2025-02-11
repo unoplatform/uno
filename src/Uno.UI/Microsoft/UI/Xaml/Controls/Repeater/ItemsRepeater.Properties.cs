@@ -49,7 +49,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				propertyChangedCallback: OnPropertyChanged
 			));
 
-#if __ANDROID__ || __MACOS__
+#if __ANDROID__
 		public new Layout Layout
 #else
 		public Layout Layout
@@ -64,11 +64,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
 			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
 
-#if __MACOS__
-		public new ElementAnimator Animator
-#else
 		public ElementAnimator Animator
-#endif
 		{
 			get => (ElementAnimator)GetValue(AnimatorProperty);
 			set => SetValue(AnimatorProperty, value);

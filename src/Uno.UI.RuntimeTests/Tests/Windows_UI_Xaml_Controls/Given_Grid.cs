@@ -40,9 +40,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(-20, 20, 0, 60, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 40, 130, 260, 110, 40, 30, 120, 120, 40, 130, 120, 110, 180, 140, 120)]
 		[DataRow(20, -20, 70, 0, 0, 0, 90, 20, 110, 0, 30, 20, 160, 0, 90, 20, 0, 0, 90, 300, 110, 0, 30, 160, 160, 0, 90, 160, 110, 140, 140, 160)]
 		[DataRow(-20, -20, 0, 0, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 0, 130, 300, 110, 0, 30, 160, 120, 0, 130, 160, 110, 140, 140, 160)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Has_ColumnSpacing(double columnSpacing,
 			double rowSpacing,
 			double gridDesiredWidthExpected, double gridDesiredHeightExpected,
@@ -149,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(new Size(gridDesiredWidthExpected, gridDesiredHeightExpected), desiredSize);
 
-#if !__ANDROID__ && !__IOS__ // These assertions fail on Android/iOS because layout slots aren't set the same way as UWP
+#if !__ANDROID__ && !__APPLE_UIKIT__ // These assertions fail on Android/iOS because layout slots aren't set the same way as UWP
 				var layoutRect0Actual = LayoutInformation.GetLayoutSlot(SUT.Children[0] as FrameworkElement);
 				var layoutRect0Expected = new Rect(child0LeftExpected, child0TopExpected, child0WidthExpected, child0HeightExpected);
 				Assert.AreEqual(layoutRect0Expected, layoutRect0Actual);
@@ -229,9 +226,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_ColumnDefinition_Width_Changed()
 		{
 			var outerShell = new Grid { Width = 290, Height = 220 };
@@ -327,7 +321,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			SUT.InvalidateMeasure();
 			SUT.UpdateLayout();
 #endif
@@ -525,9 +519,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Child_Added_Measure_And_Visible_Arrange()
 		{
 			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
@@ -546,7 +537,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(SUT);
 			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
 
-#if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
+#if !__ANDROID__ && !__APPLE_UIKIT__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
 			Assert.AreEqual(27, SUT.ActualHeight);
 			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
@@ -554,7 +545,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+		[RequiresScaling(1f)]
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif
 		public async Task When_Negative_Margin_Should_Not_Clip()
@@ -618,7 +610,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+		[RequiresScaling(1f)]
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif
 		public async Task When_RenderTransform_Ensure_Correct_Clipping()

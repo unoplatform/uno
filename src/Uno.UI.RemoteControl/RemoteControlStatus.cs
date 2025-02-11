@@ -7,6 +7,7 @@ namespace Uno.UI.RemoteControl;
 
 public record RemoteControlStatus(
 	RemoteControlStatus.ConnectionState State,
+	RemoteControlStatus.ConnectionError? Error,
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
@@ -151,6 +152,25 @@ public record RemoteControlStatus(
 		/// Connection has been established once but lost since then and cannot be restored for now but will be retried later.
 		/// </summary>
 		Disconnected
+	}
+
+	public enum ConnectionError
+	{
+		/// <summary>
+		/// There is no <see cref="ServerEndpointAttribute"/> configured in the application assembly.
+		/// This is usually because the application was built in release.
+		/// </summary>
+		NoEndpoint,
+
+		/// <summary>
+		/// Found some <see cref="ServerEndpointAttribute"/> but none of them have a port number configured.
+		/// This is usually either:
+		///		1. Application was not built in the IDE
+		///		2. Uno's extension has not been installed in the IDE
+		///		3. Uno's extension has not been loaded yet by the IDE (machine is slow, request for the user to wait before relaunching the application using F5)
+		///		4. Uno's extension ís out-dated and needs to be updated (code or rider)
+		/// </summary>
+		EndpointWithoutPort,
 	}
 
 	public enum Classification

@@ -8,7 +8,7 @@ using UIKit;
 using Microsoft.UI.Xaml;
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;
@@ -16,15 +16,6 @@ using _Responder = UIKit.UIResponder;
 using _Color = UIKit.UIColor;
 using _Event = UIKit.UIEvent;
 using System.Security.Principal;
-#elif __MACOS__
-using Foundation;
-using AppKit;
-using CoreGraphics;
-using _View = AppKit.NSView;
-using _Controller = AppKit.NSViewController;
-using _Responder = AppKit.NSResponder;
-using _Color = AppKit.NSColor;
-using _Event = AppKit.NSEvent;
 #endif
 
 namespace UIKit;

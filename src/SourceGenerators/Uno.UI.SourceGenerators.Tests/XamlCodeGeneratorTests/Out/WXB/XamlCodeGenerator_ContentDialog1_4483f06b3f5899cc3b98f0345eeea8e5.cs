@@ -26,10 +26,8 @@ using MyProject;
 using _View = Microsoft.UI.Xaml.UIElement;
 #elif __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -54,19 +52,19 @@ namespace TestRepro
 			PrimaryButtonText = global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid("TestProject/Resources", "XuidGeneratorErrorUid/PrimaryButtonText");
 			
 			this
-			.GenericApply(((c0) => 
+			.ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5_XamlApply((ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-				// Source 0\ContentDialog1.xaml (Line 1:2)
-				
-				// WARNING Property c0.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}ContentDialog, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\ContentDialog1.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}ContentDialog, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c1) => 
+			.ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5_XamlApply((ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-				// Class TestRepro.XuidGeneratorError
-				global::Uno.UI.Helpers.MarkupHelper.SetXUid(c1, "XuidGeneratorErrorUid");
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5);
-				c1.CreationComplete();
+			// Class TestRepro.XuidGeneratorError
+			global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "XuidGeneratorErrorUid");
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -80,5 +78,12 @@ namespace MyProject
 {
 	static class ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5XamlApplyExtensions
 	{
+		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.ContentDialog instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.ContentDialog ContentDialog1_4483f06b3f5899cc3b98f0345eeea8e5_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentDialog instance, XamlApplyHandler0 handler)
+		{
+			handler(instance);
+			return instance;
+		}
 	}
 }

@@ -177,7 +177,11 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
+      vmMacImageTest: '$(macOSVMImage_UITests)'
       poolName: '$(windowsScaledPool)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
@@ -191,22 +195,15 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmMacImageTest: '$(macOSVMImage_UITests)'
       vmLinuxImage: '$(linuxVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
       poolName: '$(windowsScaledPool)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
-- stage: macos_tests
-  displayName: Tests - macOS
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-macos.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      xCodeRoot: '$(xCodeRoot)'
-  
 - stage: android_tests
   displayName: Tests - Android
   dependsOn:
@@ -253,7 +250,6 @@ stages:
     - wasm_tests
     - ios_tests
     - android_tests
-    - macos_tests
     - skia_tests_winui
 
   jobs:

@@ -7,14 +7,9 @@ using System.Linq;
 using static System.Math;
 using Uno.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using Path = UIKit.UIBezierPath;
-using ObjCRuntime;
-#elif __MACOS__
-using AppKit;
-using Path = AppKit.NSBezierPath;
-using CoreGraphics;
 using ObjCRuntime;
 #elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
@@ -41,7 +36,7 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 			bezierPath.MoveTo(startPoint);
 #elif __ANDROID__
 			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
@@ -54,10 +49,8 @@ namespace Uno.Media
 
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddLineTo(point);
-#elif __MACOS__
-			bezierPath.LineTo(point);
 #elif __ANDROID__
 			bezierPath.LineTo((float)point.X, (float)point.Y);
 #elif __SKIA__
@@ -69,10 +62,8 @@ namespace Uno.Media
 
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddCurveToPoint(point3, point1, point2);
-#elif __MACOS__
-			bezierPath.CurveTo(point3, point1, point2);
 #elif __ANDROID__
 			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #elif __SKIA__
@@ -83,17 +74,8 @@ namespace Uno.Media
 
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddQuadCurveToPoint(point2, point1);
-#elif __MACOS__
-			// Convert a Quadratic Curve to cubic curve to draw it.
-			// https://stackoverflow.com/a/52569210/1771254
-			var startPoint = bezierPath.CurrentPoint;
-			var endPoint = point1;
-
-			var controlPoint1 = new CGPoint(startPoint.X + ((point2.X - startPoint.X) * 2.0 / 3.0), startPoint.Y + (point2.Y - startPoint.Y) * 2.0 / 3.0);
-			var controlPoint2 = new CGPoint(endPoint.X + ((point2.X - endPoint.X) * 2.0 / 3.0), endPoint.Y + (point2.Y - endPoint.Y) * 2.0 / 3.0);
-			bezierPath.CurveTo(point1, controlPoint1, controlPoint2);
 #elif __ANDROID__
 			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #elif __SKIA__
@@ -119,7 +101,7 @@ namespace Uno.Media
 			var endAngle = Atan2(endPoint.Y - center.Y, endPoint.X - center.X);
 			var circle = new Rect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddArc(
 				center,
 				(nfloat)radius,
@@ -127,22 +109,6 @@ namespace Uno.Media
 				(nfloat)endAngle,
 				sweepDirection == SweepDirection.Clockwise
 			);
-
-#elif __MACOS__
-			//Ugly workaround. check if all vars are defined
-			if (!double.IsNaN(radius) && !double.IsNaN(startAngle) && !double.IsNaN(endAngle))
-			{
-				//Convert to degrees in a 0 =< x =< 360 deg range
-				startAngle = MathEx.ToDegreeNormalized(startAngle);
-				endAngle = MathEx.ToDegreeNormalized(endAngle);
-				bezierPath.AppendPathWithArc(center,
-										 (nfloat)radius,
-										 (nfloat)startAngle,
-										 (nfloat)endAngle);
-
-				//Move to startPoint. To prevent segment being drawn to the startPoint from the end of the arc
-				bezierPath.MoveTo(startPoint);
-			}
 #elif __ANDROID__
 			var sweepAngle = endAngle - startAngle;
 
@@ -243,7 +209,7 @@ namespace Uno.Media
 			{
 				if (closed)
 				{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 					bezierPath.ClosePath();
 #elif __ANDROID__
 					bezierPath.Close();

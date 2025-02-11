@@ -18,10 +18,8 @@ using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -201,7 +199,7 @@ public class Given_FrameworkTemplatePool
 			Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
 			Assert.IsTrue(vm.Editors.All(e => e.IsChecked));
 			Assert.IsTrue(vm.Editors.All(e => e.IsOn));
-			Assert.IsTrue(!string.IsNullOrEmpty(textBox.Text));
+			Assert.IsFalse(string.IsNullOrEmpty(textBox.Text));
 			Assert.IsTrue(checkBox.IsChecked);
 			Assert.IsTrue(toggleSwitch.IsOn);
 			Assert.AreEqual(vm.CurrentEditor.IsChecked, checkBox.IsChecked);

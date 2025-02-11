@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-android</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -29,6 +29,7 @@
 		<Compile Include="..\Uno.UI\ActivityHelper.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />

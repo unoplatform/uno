@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Uno.UI.Extensions;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 
 namespace Microsoft.UI.Xaml.Controls
 {

@@ -120,9 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Attached_To_Border_Check_Placement()
 		{
 			var (flyout, content) = CreateFlyout();
@@ -165,9 +162,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Attached_To_TextBlock_Check_Placement()
 		{
 			var (flyout, content) = CreateFlyout();
@@ -217,9 +211,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, HorizontalPosition.BeyondLeft, VerticalPosition.BottomFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, HorizontalPosition.BeyondRight, VerticalPosition.TopFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, HorizontalPosition.BeyondRight, VerticalPosition.BottomFlush)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Check_Placement_All(
 			FlyoutPlacementMode placementMode,
 			HorizontalPosition horizontalPosition,
@@ -274,9 +265,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, HorizontalPosition.BeyondLeft, VerticalPosition.BottomFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, HorizontalPosition.BeyondRight, VerticalPosition.TopFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, HorizontalPosition.BeyondRight, VerticalPosition.BottomFlush)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Check_Placement_All_WithPosition(
 			FlyoutPlacementMode placementMode,
 			HorizontalPosition horizontalPosition,
@@ -321,12 +309,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaIOS)]
 #if __ANDROID__
 		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
@@ -418,9 +403,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(FlyoutPlacementMode.LeftEdgeAlignedBottom, HorizontalPosition.BeyondLeft, VerticalPosition.BottomFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedTop, HorizontalPosition.BeyondRight, VerticalPosition.TopFlush)]
 		[DataRow(FlyoutPlacementMode.RightEdgeAlignedBottom, HorizontalPosition.BeyondRight, VerticalPosition.BottomFlush)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Check_Placement_All_MenuFlyout(
 			FlyoutPlacementMode placementMode,
 			HorizontalPosition horizontalPosition,
@@ -466,7 +448,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if HAS_UNO && !__MACOS__ // For macOS, see https://github.com/unoplatform/uno/issues/626 
+#if HAS_UNO // For macOS, see https://github.com/unoplatform/uno/issues/626 
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Test_Flyout_Binding()
@@ -600,14 +582,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutButton.XamlRoot)[0];
 
-			Assert.AreEqual(popup.Visibility, Visibility.Visible);
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreNotEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// The visibility of the popup remains on, but it's closed.
-			Assert.AreEqual(popup.Visibility, Visibility.Visible);
+			Assert.AreEqual(Visibility.Visible, popup.Visibility);
 			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			TestServices.WindowHelper.WindowContent = null;
@@ -679,9 +661,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void When_Hide_Always_Closing()
 		{
 			Flyout flyout = new Flyout();
@@ -694,9 +673,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Opening_Canceled()
 		{
 
@@ -733,9 +709,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Opening_And_Closing_Canceled()
 		{
 			Flyout flyout = new Flyout();
@@ -779,9 +752,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Opening_And_Closing_Nested_Flyouts()
 		{
 			var flyout1 = new Flyout();
@@ -939,9 +909,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Opening_And_Closing_Nested_Flyouts_Not_Open()
 		{
 			var flyout1 = new Flyout();
@@ -1006,11 +973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#else
 		[Ignore("Fails")]
-#endif
 		public async Task When_Opening_And_Closing_Nested_Flyouts_Canceled()
 		{
 			var flyout1 = new Flyout();
@@ -1130,9 +1093,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		//#if HAS_UNO
 		//		[TestMethod]
 		//		[RunsOnUIThread]
-		//#if __MACOS__
-		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
-		//#endif
 		//		public async Task When_Window_Unfocused()
 		//		{
 		//			var flyout1 = new Flyout();
@@ -1225,9 +1185,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		//		[TestMethod]
 		//		[RunsOnUIThread]
-		//#if __MACOS__
-		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
-		//#endif
 		//		public async Task When_Window_Unfocused_Canceled()
 		//		{
 		//			var flyout1 = new Flyout();
@@ -1330,9 +1287,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		//		[TestMethod]
 		//		[RunsOnUIThread]
-		//#if __MACOS__
-		//		[Ignore("Currently fails on macOS, part of #9282 epic")]
-		//#endif
 		//		public async Task When_Window_Unfocused_Nested_Flyouts()
 		//		{
 		//			var flyout1 = new Flyout();
@@ -1526,9 +1480,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Flyout_Popup_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1557,9 +1508,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_AttachedFlyout_Popup_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1632,7 +1580,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Native_DatePickerFlyout_Placement()

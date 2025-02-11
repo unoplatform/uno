@@ -170,6 +170,12 @@ public partial class TextBox
 		TextBoxView?.UpdateFont();
 	}
 
+	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
 	partial void OnFlowDirectionChangedPartial()
@@ -187,7 +193,6 @@ public partial class TextBox
 			sv.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
 		}
 	}
-
 
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 	{
@@ -263,7 +268,7 @@ public partial class TextBox
 							var transform = displayBlock.TransformToVisual(null);
 							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 							{
-								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)));
+								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)), XamlRoot);
 								if (args.endCaret)
 								{
 									endThumbCaretVisible = true;
@@ -316,7 +321,6 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
-		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
 
 		if (!_inSelectInternal)
@@ -1034,7 +1038,7 @@ public partial class TextBox
 			i += chunk.length;
 		}
 
-		return (i, 0);
+		return _cachedChunks.chunks.Count > 0 ? _cachedChunks.chunks[^1] : (0, 0);
 	}
 
 	private void GenerateChunks()
@@ -1440,12 +1444,13 @@ public partial class TextBox
 
 		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
-		public void ShowAt(Point p)
+		public void ShowAt(Point p, XamlRoot xamlRoot)
 		{
 			_popup ??= new Popup
 			{
 				Child = this,
-				IsLightDismissEnabled = false
+				IsLightDismissEnabled = false,
+				XamlRoot = xamlRoot
 			};
 
 			_popup.HorizontalOffset = p.X;

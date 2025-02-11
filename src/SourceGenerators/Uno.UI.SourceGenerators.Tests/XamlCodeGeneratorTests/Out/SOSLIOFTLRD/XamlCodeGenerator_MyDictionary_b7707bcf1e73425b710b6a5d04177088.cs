@@ -26,10 +26,8 @@ using MyProject;
 using _View = Microsoft.UI.Xaml.UIElement;
 #elif __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -48,6 +46,11 @@ namespace TestNamespace
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(this, "OriginalSourceLocation", "file:///C:/Project/0/MyDictionary.xaml#L1:2");
 		}
 
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_TestNamespaceTestClass
+		{
+		}
 	}
 }
 namespace MyProject
@@ -60,9 +63,9 @@ namespace MyProject
 		private const string __baseUri_prefix_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
+		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		internal string __MyDictionary_b7707bcf1e73425b710b6a5d04177088_checksum() => "0006bfa967d7b0e0bdb0aa951326268f007434d5";
-		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		internal sealed class ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
@@ -74,7 +77,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = (global::Uno.UI.IXamlResourceDictionaryProvider)global::Uno.UI.Helpers.TypeMappings.CreateInstance<ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088>();
+						__that = new ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088();
 					}
 
 					return __that;
@@ -118,4 +121,9 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
+	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_MyDictionaryRD
+	{
+	}
 }

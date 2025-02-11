@@ -18,10 +18,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #elif __ANDROID__
 using Uno.UI;
 #endif
@@ -72,6 +70,31 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
+#if __IOS__ || __ANDROID__
+#if __IOS__
+			else if (instance is UIView nativeView)
+#elif __ANDROID__
+			else if (instance is global::Android.Views.ViewGroup nativeView)
+#endif
+			{
+				// Enumerate through native instances, such as NativeFramePresenter
+
+				var idx = 0;
+				foreach (var nativeChild in nativeView.EnumerateChildren())
+				{
+					var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+					var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
+					var inner = EnumerateHotReloadInstances(nativeChild, predicate, $"{instanceKey}_[{idx}]");
+
+					idx++;
+
+					await foreach (var validElement in inner)
+					{
+						yield return validElement;
+					}
+				}
+			}
+#endif
 		}
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)

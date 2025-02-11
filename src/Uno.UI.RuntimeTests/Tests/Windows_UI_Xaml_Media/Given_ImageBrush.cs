@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	{
 		[DataRow(Stretch.Fill, false)]
 		[DataRow(Stretch.Fill, true)]
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.UniformToFill, false)]
 #endif
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow(Stretch.None, false)]
 		[DataRow(Stretch.None, true)]
 #endif
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		// See https://github.com/unoplatform/uno/issues/9080
 		[DataRow(Stretch.Uniform, false)]
 #endif
@@ -86,7 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				float BorderOffset =
 #if __SKIA__
 					useRectangle ? 4 : 7;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 					6;
 #else
 					3;

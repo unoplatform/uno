@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.Email
 	{
 		public static IAsyncAction ShowComposeNewEmailAsync(EmailMessage message)
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// Use platform-specific implementation where supported
 			return ShowComposeNewEmailInternalAsync(message).AsAsyncAction();
 #else

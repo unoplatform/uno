@@ -21,6 +21,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public const int MaxFluentResourcesVersion = 2;
 
+		public const string UnknownContent = "_UnknownContent";
+		public const string PositionalParameters = "_PositionalParameters";
+
+		public static class Xmlnses
+		{
+			/// <summary>
+			/// <code>xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"</code>
+			/// </summary>
+			public const string Default = PresentationXamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"</code>
+			/// </summary>
+			public const string X = XamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"</code>
+			/// </summary>
+			public const string MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+		}
+
 		public static class Namespaces
 		{
 			public const string Base = BaseXamlNamespace;

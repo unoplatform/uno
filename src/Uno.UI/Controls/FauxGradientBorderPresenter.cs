@@ -22,13 +22,13 @@ namespace Uno.UI.Controls;
 /// </remarks>
 public partial class FauxGradientBorderPresenter : ContentPresenter
 {
-#if __WASM__ || __IOS__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__
 	private readonly Border _displayBorder;
 #endif
 
 	public FauxGradientBorderPresenter()
 	{
-#if __WASM__ || __IOS__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__
 		HorizontalContentAlignment = HorizontalAlignment.Stretch;
 		VerticalContentAlignment = VerticalAlignment.Stretch;
 		Content = _displayBorder = new Border();
@@ -94,7 +94,7 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 
 	private void OnBorderChanged()
 	{
-#if __WASM__ || __IOS__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__
 		var requestedThickness = RequestedBorderThickness;
 		var requestedBorderBrush = RequestedBorderBrush;
 		var requestedCornerRadius = RequestedCornerRadius;

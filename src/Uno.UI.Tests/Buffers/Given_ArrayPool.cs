@@ -16,10 +16,6 @@ namespace Uno.UI.Tests.Buffers
 	{
 		private List<Action> _cleanup = new();
 
-		public void Init()
-		{
-		}
-
 		[TestCleanup]
 		public void Cleanup()
 		{

@@ -188,7 +188,7 @@ public partial class Given_InteractionTracker
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_UserInteraction()
 	{
 		var border = new Border()
@@ -224,7 +224,7 @@ public partial class Given_InteractionTracker
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		var finger = injector.GetFinger();
-		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 100, position.Top + 50));
+		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 100, position.Top + 50), stepOffsetInMilliseconds: 0);
 
 		string logs = await WaitTrackerLogs(tracker);
 		var helper = new TrackerAssertHelper(logs);

@@ -581,9 +581,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Assert.AreEqual(dayTextBlock.Text, expectedDayString);
-				Assert.AreEqual(monthTextBlock.Text, expectedMonthString);
-				Assert.AreEqual(yearTextBlock.Text, expectedYearString);
+				Assert.AreEqual(expectedDayString, dayTextBlock.Text);
+				Assert.AreEqual(expectedMonthString, monthTextBlock.Text);
+				Assert.AreEqual(expectedYearString, yearTextBlock.Text);
 			});
 
 			// Verify that we can update the properties of DatePicker
@@ -604,9 +604,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Assert.AreEqual(dayTextBlock.Text, expectedDayString);
-				Assert.AreEqual(monthTextBlock.Text, expectedMonthString);
-				Assert.AreEqual(yearTextBlock.Text, expectedYearString);
+				Assert.AreEqual(expectedDayString, dayTextBlock.Text);
+				Assert.AreEqual(expectedMonthString, monthTextBlock.Text);
+				Assert.AreEqual(expectedYearString, yearTextBlock.Text);
 			});
 		}
 
@@ -659,8 +659,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Collapsed);
-				Assert.IsFalse(flyoutButtonContentGrid.ColumnDefinitions.IndexOf(dayColumn) == 0);
+				Assert.AreEqual(Visibility.Collapsed, dayTextBlock.Visibility);
+				Assert.AreNotEqual(0, flyoutButtonContentGrid.ColumnDefinitions.IndexOf(dayColumn));
 
 				datePicker.DayVisible = true;
 				datePicker.MonthVisible = false;
@@ -668,11 +668,11 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Assert.IsTrue(dayTextBlock.Visibility == Visibility.Visible);
-				Assert.IsTrue(flyoutButtonContentGrid.ColumnDefinitions.IndexOf(dayColumn) == 0);
+				Assert.AreEqual(Visibility.Visible, dayTextBlock.Visibility);
+				Assert.AreEqual(0, flyoutButtonContentGrid.ColumnDefinitions.IndexOf(dayColumn));
 
-				Assert.IsTrue(monthTextBlock.Visibility == Visibility.Collapsed);
-				Assert.IsFalse(flyoutButtonContentGrid.ColumnDefinitions.IndexOf(monthColumn) == 0);
+				Assert.AreEqual(Visibility.Collapsed, monthTextBlock.Visibility);
+				Assert.AreNotEqual(0, flyoutButtonContentGrid.ColumnDefinitions.IndexOf(monthColumn));
 
 				datePicker.MonthVisible = true;
 				datePicker.YearVisible = false;
@@ -680,11 +680,11 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Assert.IsTrue(monthTextBlock.Visibility == Visibility.Visible);
-				Assert.IsTrue(flyoutButtonContentGrid.ColumnDefinitions.IndexOf(monthColumn) == 0);
+				Assert.AreEqual(Visibility.Visible, monthTextBlock.Visibility);
+				Assert.AreEqual(0, flyoutButtonContentGrid.ColumnDefinitions.IndexOf(monthColumn));
 
-				Assert.IsTrue(yearTextBlock.Visibility == Visibility.Collapsed);
-				Assert.IsFalse(flyoutButtonContentGrid.ColumnDefinitions.IndexOf(yearColumn) == 0);
+				Assert.AreEqual(Visibility.Collapsed, yearTextBlock.Visibility);
+				Assert.AreNotEqual(0, flyoutButtonContentGrid.ColumnDefinitions.IndexOf(yearColumn));
 			});
 		}
 
@@ -770,13 +770,13 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
 				// The DatePicker itself should remain in LTR flow direction.
-				Assert.AreEqual(datePicker.FlowDirection, FlowDirection.LeftToRight);
-				Assert.AreEqual(flyoutPopup.FlowDirection, FlowDirection.RightToLeft);
-				Assert.AreEqual(datepickerFlyoutPresenter.FlowDirection, FlowDirection.RightToLeft);
-				Assert.AreEqual(button.FlowDirection, FlowDirection.RightToLeft);
+				Assert.AreEqual(FlowDirection.LeftToRight, datePicker.FlowDirection);
+				Assert.AreEqual(FlowDirection.RightToLeft, flyoutPopup.FlowDirection);
+				Assert.AreEqual(FlowDirection.RightToLeft, datepickerFlyoutPresenter.FlowDirection);
+				Assert.AreEqual(FlowDirection.RightToLeft, button.FlowDirection);
 
 				// The flyout presenter should be the same width as the datepicker.
-				Assert.IsTrue(datepickerFlyoutPresenter.ActualWidth == datePicker.ActualWidth);
+				Assert.AreEqual(datePicker.ActualWidth, datepickerFlyoutPresenter.ActualWidth);
 
 				// For a Popup with RTL flowdirection, HorizontalOffset represents the Popup's RIGHT most edge from the LEFT most edge of the screen.
 				// For a DatePickerFlyout, we expect its right-most edge to line up with the right-most edge of the DatePicker.
@@ -1150,7 +1150,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 					this.Log().InfoFormat("Expected placeholder: \"{0}\"", expectedPlaceholder);
 					this.Log().InfoFormat("Actual text: \"{0}\"", textBlock.Text);
 
-					Assert.IsTrue(string.CompareOrdinal(expectedPlaceholder, textBlock.Text) == 0);
+					Assert.AreEqual(0, string.CompareOrdinal(expectedPlaceholder, textBlock.Text));
 				}
 				;
 
@@ -1173,7 +1173,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 					this.Log().InfoFormat("Placeholder: \"{0}\"", placeholder);
 					this.Log().InfoFormat("Actual text: \"{0}\"", textBlock.Text);
 
-					Assert.IsTrue(string.CompareOrdinal(placeholder, textBlock.Text) != 0);
+					Assert.AreNotEqual(0, string.CompareOrdinal(placeholder, textBlock.Text));
 				}
 				;
 

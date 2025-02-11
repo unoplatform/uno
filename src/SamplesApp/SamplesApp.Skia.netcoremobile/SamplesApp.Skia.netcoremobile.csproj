@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios,$(NetPrevious)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-tvos</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
@@ -13,10 +13,11 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<ApplicationId>uno.platform.samplesdev</ApplicationId>
+		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
@@ -39,8 +40,14 @@
 
 		<!-- Temporarily disabled due to uno-private #647 -->
 		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
+		
+		<!-- We need all the intermediate assemblies -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
+
+		<!-- Required in CI to avoid dependency issues -->
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -146,6 +153,53 @@
 			</ItemGroup>
 		</When>
 
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">
+			<ItemGroup>
+				<!--<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />-->
+				<PackageReference Include="SkiaSharp" />
+				<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+			</ItemGroup>
+
+			<PropertyGroup>
+				<MtouchUseLlvm>true</MtouchUseLlvm>
+				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+
+				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
+				<MtouchUseLlvm>false</MtouchUseLlvm>
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
+				<!-- END Workaround -->
+
+				<CodesignProvision>Uno Dev Samples</CodesignProvision>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14686 -->
+				<_LibMonoLinkMode>Static</_LibMonoLinkMode>
+				<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
+			</PropertyGroup>
+
+			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
+
+				<CodesignKey>iPhone Distribution</CodesignKey>
+				<RuntimeIdentifier>tvos-arm64</RuntimeIdentifier>
+				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
+			</PropertyGroup>
+
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
+			</PropertyGroup>
+
+			<ItemGroup>
+				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="tvOS\Resources\WebContent\css\site.css" />
+				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="tvOS\Resources\WebContent\index.html" />
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="tvOS\Resources\WebContent\js\site.js" />
+			</ItemGroup>
+		</When>
+
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
 			<PropertyGroup>
 				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
@@ -186,7 +240,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='ios'">
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' or ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='ios' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='tvos')">
 			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
 			<Version>5.56.0</Version>
 		</PackageReference>
@@ -228,7 +282,7 @@
 
 	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+		<Exec Command="git rev-list --count HEAD">
 			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 

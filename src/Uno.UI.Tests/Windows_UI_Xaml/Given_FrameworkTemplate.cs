@@ -116,7 +116,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Template = template;
 			Assert.AreEqual(1, templateCreatedCount);
 			Assert.AreEqual(2, flagValues.Count);
-			Assert.AreEqual(flagValues[1], false);
+			Assert.IsFalse(flagValues[1]);
 		}
 
 		[TestMethod]

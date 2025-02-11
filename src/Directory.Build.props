@@ -11,6 +11,9 @@
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
 
+		<!-- Enable the MSTest runner, this is an opt-in feature when not using MSTest.Sdk -->
+		<EnableMSTestRunner>true</EnableMSTestRunner>
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -205,7 +208,6 @@
 		<IsTvOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='tvos'">true</IsTvOS>
 
 		<IsMacOS>false</IsMacOS>
-		<IsMacOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='macos'">true</IsMacOS>
 
 		<IsCatalyst>false</IsCatalyst>
 		<IsCatalyst Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='maccatalyst'">true</IsCatalyst>
@@ -217,7 +219,7 @@
 		<IsAppleUIKit Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsAppleUIKit>
 
 		<IsApple>false</IsApple>
-		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS) or $(IsMacOS)">true</IsApple>
+		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsApple>
 
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
@@ -225,7 +227,7 @@
 
 	<PropertyGroup>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+		<UnoDisableNetAnalyzers Condition="$(MSBuildProjectName.Contains('Test'))">true</UnoDisableNetAnalyzers>
 		<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>

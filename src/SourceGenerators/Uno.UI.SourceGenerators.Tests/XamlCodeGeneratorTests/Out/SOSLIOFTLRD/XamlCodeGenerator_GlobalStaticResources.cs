@@ -4,6 +4,7 @@ namespace MyProject
 	/// <summary>
 	/// Contains all the static resources defined for the application
 	/// </summary>
+	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 	public sealed partial class GlobalStaticResources
 	{
 		static bool _initialized;

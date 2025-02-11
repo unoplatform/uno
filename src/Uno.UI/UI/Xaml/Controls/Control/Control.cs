@@ -18,18 +18,12 @@ using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using AppKit;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -114,10 +108,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var newValue = (bool)args.NewValue;
 			base.SetNativeIsEnabled(newValue);
 			this.Enabled = newValue;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			UserInteractionEnabled = (bool)args.NewValue;
-#elif __MACOS__
-			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
 #endif
 
 			IsEnabledChanged?.Invoke(this, args);
@@ -296,7 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
@@ -1285,7 +1277,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
 #endif
 

@@ -137,7 +137,7 @@ namespace Uno.UI
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// opt-in for iOS/Android/macOS
 #else
 				= true;
@@ -177,10 +177,10 @@ namespace Uno.UI
 		public static class Font
 		{
 			private static string _symbolsFont =
-#if __WASM__ || __MACOS__ || __IOS__
+#if __WASM__ || __APPLE_UIKIT__
 				"Symbols";
 #else
-				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+				"ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 
 			/// <summary>
@@ -210,7 +210,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
@@ -253,7 +253,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
 			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
@@ -358,7 +358,7 @@ namespace Uno.UI
 			/// </summary>
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			/// <summary>
 			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
 			/// </summary>
@@ -740,7 +740,7 @@ namespace Uno.UI
 
 		public static class DatePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
@@ -753,7 +753,7 @@ namespace Uno.UI
 
 		public static class TimePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
 			/// </summary>
@@ -783,7 +783,7 @@ namespace Uno.UI
 
 		public static class CommandBar
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
 			/// </summary>
@@ -877,6 +877,34 @@ namespace Uno.UI
 			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
 
 			public static bool WaitIndefinitelyInEventTester { get; set; }
+		}
+
+		public static class Shape
+		{
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
+			/// </summary>
+			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
+			public static bool WasmDelayUpdateUntilFirstArrange { get; set; } = true;
+
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native getBBox() result will be cached.
+			/// </summary>
+			public static bool WasmCacheBBoxCalculationResult { get; set; } = true;
+
+			internal const int WasmDefaultBBoxCacheSize = 64;
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
+			/// </summary>
+#if __WASM__
+			public static int WasmBBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+#else
+			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
+#endif
 		}
 	}
 }

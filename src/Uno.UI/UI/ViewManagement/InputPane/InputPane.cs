@@ -50,7 +50,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[NotImplemented]
 #endif
 		public bool TryShow()

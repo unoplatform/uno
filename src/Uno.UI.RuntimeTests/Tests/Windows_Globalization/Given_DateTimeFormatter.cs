@@ -79,6 +79,8 @@ public class Given_DateTimeFormatter
 	{
 		var expectedResults = new Dictionary<string, string>
 		{
+			{ "day", "27" },
+			{ "year", "2024" },
 			{ "{day.integer}/{month.integer}/{year.full}", "27/6/2024" },
 			{ "{month.full} {year.full}", "June 2024" },
 			{ "{month.full} {day.integer}", "June 27" },
@@ -104,19 +106,18 @@ public class Given_DateTimeFormatter
 		}
 	}
 
-	// TODO(DT): Currently is throwing unexpected results on WinUI as well, can't compare the expected results
-	/* [TestMethod]
+	[TestMethod]
 	public void When_FormattingTimeVariants_ShouldProduceExpectedFormats()
 	{
 		var expectedResults = new Dictionary<string, string>
 		{
 			{ "{hour.integer}:{minute.integer}", "14:30" },
-			{ "{hour.integer}:{minute.integer}:{second.integer}", "14:30:00" },
+			{ "{hour.integer}:{minute.integer}:{second.integer(2)}", "14:30:00" },
 			{ "{hour.integer}:{minute.integer} {period.abbreviated(2)}", "2:30 PM" },
-			{ "{hour.integer}:{minute.integer}:{second.integer} {period.abbreviated(2)}", "2:30:00 PM" },
-			{ "{minute.integer}:{second.integer}", "30:00" },
+			{ "{hour.integer}:{minute.integer}:{second.integer} {period.abbreviated(2)}", "2:30:0 PM" },
+			{ "{minute.integer}:{second.integer}", "30:0" },
 			{ "{second.integer}", "0" },
-			{ "{hour.integer}:{minute.integer}:{second.integer} UTC", "14:30:00 UTC" }
+			{ "{hour.integer}:{minute.integer}:{second.integer(2)} UTC", "14:30:00 UTC" }
 		};
 
 		foreach (var kvp in expectedResults)
@@ -124,11 +125,12 @@ public class Given_DateTimeFormatter
 			var template = kvp.Key;
 			var expected = kvp.Value;
 
-			var formatter = new DateTimeFormatter(template);
-			var formattedTime = formatter.Format(_testDate);
+			var clock = template.Contains("period") ? ClockIdentifiers.TwelveHour : ClockIdentifiers.TwentyFourHour;
+
+			var formatter = new DateTimeFormatter(template, ["en-US"], "US", CalendarIdentifiers.Gregorian, clock);
+			var formattedTime = formatter.Format(new DateTime(2024, 6, 17, 14, 30, 0));
 
 			Assert.AreEqual(expected, formattedTime, $"Mismatch for template: {template}");
-			Console.WriteLine($"Template: {template}, Result: {formattedTime}");
 		}
-	}*/
+	}
 }

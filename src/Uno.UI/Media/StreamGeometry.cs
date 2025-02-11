@@ -6,19 +6,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using Path = UIKit.UIBezierPath;
-using ObjCRuntime;
-#elif __MACOS__
-using AppKit;
-using CoreGraphics;
-using UIImage = AppKit.NSImage;
-using UIColor = AppKit.NSColor;
-using UIGraphics = AppKit.NSGraphics;
-using Path = AppKit.NSBezierPath;
 using ObjCRuntime;
 #elif __ANDROID__
 using Android.Graphics;
@@ -58,7 +50,7 @@ namespace Uno.Media
 		}
 #endif
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 		public override UIImage ToNativeImage()
 		{
 			return (bezierPath == null) ? null : ToNativeImage(bezierPath.Bounds.Size);
@@ -116,7 +108,6 @@ namespace Uno.Media
 
 			UIImage image;
 
-#if __IOS__
 			UIGraphics.BeginImageContextWithOptions(targetSize, false, 0);
 			using (var context = UIGraphics.GetCurrentContext())
 			{
@@ -131,10 +122,6 @@ namespace Uno.Media
 				image = UIGraphics.GetImageFromCurrentImageContext();
 				UIGraphics.EndImageContext();
 			}
-#elif __MACOS__
-			// macOS TODO
-			image = null;
-#endif
 
 			return image;
 		}

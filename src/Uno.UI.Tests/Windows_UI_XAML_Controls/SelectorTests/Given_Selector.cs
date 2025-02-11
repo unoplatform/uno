@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual(2, SUT.SelectedValue);
 
 			SUT.SelectedIndex = -1;
-			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedValue);
 		}
 
 		[TestMethod]
@@ -43,7 +43,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual("2", SUT.SelectedValue);
 
 			SUT.SelectedIndex = -1;
-			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedValue);
 		}
 
 		[TestMethod]
@@ -120,7 +120,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.AreEqual("22", SUT.SelectedValue);
 
 			SUT.SelectedIndex = -1;
-			Assert.AreEqual(null, SUT.SelectedValue);
+			Assert.IsNull(SUT.SelectedValue);
 		}
 
 		[TestMethod]

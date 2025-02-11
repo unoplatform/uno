@@ -38,15 +38,10 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 using Microsoft.UI.Xaml.Controls;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using AppKit;
-using Windows.UI.Core;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
@@ -64,6 +59,7 @@ namespace Microsoft.UI.Xaml
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
+		private ResourceDictionary _resources = new ResourceDictionary();
 
 		static Application()
 		{
@@ -216,7 +212,15 @@ namespace Microsoft.UI.Xaml
 			SetRequestedTheme(theme);
 		}
 
-		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
+		public ResourceDictionary Resources
+		{
+			get => _resources;
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
+		}
 
 #pragma warning disable CS0067 // The event is never used
 		/// <summary>
@@ -248,8 +252,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !__ANDROID__ && !__SKIA__
+		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -410,7 +414,7 @@ namespace Microsoft.UI.Xaml
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -421,7 +425,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
@@ -539,15 +543,13 @@ namespace Microsoft.UI.Xaml
 		[JSImport("globalThis.eval")]
 		private static partial string Eval(string js);
 
-#if __MACOS__ || __SKIA__
+#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-#if __SKIA__
 			if (!string.IsNullOrEmpty(_argumentsOverride))
 			{
 				return _argumentsOverride;
 			}
-#endif
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{

@@ -2,6 +2,7 @@
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -9,15 +10,7 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var points = Points;
-			if (points == null)
-			{
-				_mainSvgElement.RemoveAttribute("points");
-			}
-			else
-			{
-				_mainSvgElement.SetAttribute("points", points.ToCssString());
-			}
+			WindowManagerInterop.SetSvgPolyPoints(_mainSvgElement.HtmlId, Points?.Flatten());
 
 			return MeasureAbsoluteShape(availableSize, this);
 		}
@@ -27,5 +20,22 @@ namespace Microsoft.UI.Xaml.Shapes
 			UpdateRender();
 			return ArrangeAbsoluteShape(finalSize, this);
 		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (_bboxCacheKey != null && (
+				args.Property == PointsProperty
+			))
+			{
+				_bboxCacheKey = null;
+			}
+		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+			Points is { } points
+				? ("polygone:" + string.Join(',', points.Flatten()))
+				: null;
 	}
 }

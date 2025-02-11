@@ -1,9 +1,12 @@
-﻿// Uncomment the following line to write expected files to disk
+﻿#if DEBUG
+// Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 // #define WRITE_EXPECTED
+#endif
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators;
@@ -12,6 +15,11 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
+
+#if !DEBUG && WRITE_EXPECTED
+#error Cannot commit with #define WRITE_EXPECTED
+#endif
+
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
 {
@@ -107,7 +115,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+				ReferenceAssemblies = _Dotnet.Current.ReferenceAssemblies;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
@@ -323,7 +331,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 				};
 
 				var unoUIBase = Path.Combine(
-					Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+					Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 					"..",
 					"..",
 					"..",
