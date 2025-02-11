@@ -30,7 +30,7 @@ public interface ISvgProvider
 	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
 
 #if __SKIA__
-	SKPicture? TryGetLoadedDataAsPictureAsync();
+	SKPicture? TryGetLoadedDataAsPictureAsync() => default;
 #endif
 
 	void Unload();
