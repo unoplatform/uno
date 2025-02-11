@@ -213,10 +213,10 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
     
     $globalJsonfilePath = $_.FullName;
 
-    Write-Host "Updated $globalJsonfilePath with $env:GITVERSION_SemVer"
+    Write-Host "Updated $globalJsonfilePath with $env:NBGV_SemVer2"
 
     $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:GITVERSION_SemVer
+    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:NBGV_SemVer2
     $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
 }
 

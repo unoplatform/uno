@@ -37,6 +37,6 @@ jobs:
   - script: |
       git config user.email "info@platform.uno"
       git config user.name "Uno DevOps"
-      git tag $(GitVersion.MajorMinorPatch)
-      git push origin $(GitVersion.MajorMinorPatch)
+      git tag $(NBGV_SimpleVersion)
+      git push origin $(NBGV_SimpleVersion)
     displayName: "Tag and push to GitHub"
