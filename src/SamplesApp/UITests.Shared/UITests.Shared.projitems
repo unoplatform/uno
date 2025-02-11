@@ -1370,6 +1370,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\WindowTests\Window_Metrics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\XamlRoot\XamlRoot_Properties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2385,7 +2389,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPictureLateBindingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>    
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6541,6 +6545,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\WindowTests\Window_SetBackground.xaml.cs">
       <DependentUpon>Window_SetBackground.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\WindowTests\Window_Metrics.xaml.cs">
+      <DependentUpon>Window_Metrics.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\XamlRoot\XamlRoot_Properties.xaml.cs">
       <DependentUpon>XamlRoot_Properties.xaml</DependentUpon>
     </Compile>
@@ -7199,7 +7206,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPictureLateBindingPage.xaml.cs">
       <DependentUpon>PersonPictureLateBindingPage.xaml</DependentUpon>
-    </Compile>    
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
     </Compile>
