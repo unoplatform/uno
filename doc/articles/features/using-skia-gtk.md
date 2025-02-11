@@ -5,7 +5,7 @@ uid: Uno.Skia.Gtk
 # Using the Skia+GTK head
 
 > [!IMPORTANT]
-> The Skia+Gtk support is being retired as of Uno Platform 5.2. The package will continue to be available until further notice and the latest apps should be moving to the [Skia Desktop support](xref:Uno.Skia.Desktop).
+> The Skia+Gtk support is being retired as of Uno Platform 5.2 and removed since Uno Platform 6.0. The package will continue to be available until further notice and the latest apps should be moving to the [Skia Desktop support](xref:Uno.Skia.Desktop).
 
 Uno supports running applications using Gtk+3 shell, using a Skia backend rendering. Gtk3+ is used to create a shell for the application to be used on various operating systems, such as Linux, Windows, and macOS.
 
