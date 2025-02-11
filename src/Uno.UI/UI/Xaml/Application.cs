@@ -444,10 +444,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void OnRequestedThemeChanged()
 		{
-			if (InitializationComplete)
-			{
-				ApplySystemOverlaysTheming();
-			}
+			ApplySystemOverlaysTheming();
 			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
 
