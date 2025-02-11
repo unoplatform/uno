@@ -10,6 +10,7 @@ using Windows.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 using Colors = Microsoft.UI.Colors;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -31,12 +32,5 @@ public partial class Application
 	/// </remarks>
 	private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(5);
 
-	partial void ApplySystemOverlaysTheming()
-	{
-		var requestedTheme = InternalRequestedTheme;
-
-		StatusBar.GetForCurrentView().ForegroundColor = requestedTheme == ApplicationTheme.Dark
-			? Colors.White
-			: Colors.Black;
-	}
+	partial void ApplySystemOverlaysTheming() => NativeWindowWrapper.Instance?.ApplySystemOverlaysTheming();
 }
