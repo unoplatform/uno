@@ -32,5 +32,13 @@ public partial class Application
 	/// </remarks>
 	private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(5);
 
-	partial void ApplySystemOverlaysTheming() => NativeWindowWrapper.Instance?.ApplySystemOverlaysTheming();
+	partial void ApplySystemOverlaysTheming()
+	{
+		// This is needed only due to the fact that currently Instance accessor creates the wrapper
+		// eagerly - which could then happen too early. Will no longer be needed when un-singletoned.
+		if (InitializationComplete)
+		{
+			NativeWindowWrapper.Instance.ApplySystemOverlaysTheming();
+		}
+	}
 }
