@@ -907,9 +907,10 @@ namespace Uno.UI
 #if __ANDROID__
 		public static class AndroidSettings
 		{
-			private static bool _isEdgeToEdgeEnabled =
 #if NET9_0_OR_GREATER
-				true;
+			private static bool _isEdgeToEdgeEnabled = true;
+#else
+			private static bool _isEdgeToEdgeEnabled;
 #endif
 
 			/// <summary>
