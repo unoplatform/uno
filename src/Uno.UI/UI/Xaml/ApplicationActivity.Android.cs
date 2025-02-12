@@ -26,6 +26,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using DirectUI;
 using Uno.UI.Xaml.Input;
+using AndroidX.Activity;
 
 
 namespace Microsoft.UI.Xaml
@@ -241,6 +242,11 @@ namespace Microsoft.UI.Xaml
 			if (Uno.CompositionConfiguration.UseCompositorThread)
 			{
 				Uno.UI.Composition.CompositorThread.Start(this);
+			}
+
+			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+			{
+				EdgeToEdge.Enable(this);
 			}
 
 			base.OnCreate(bundle);

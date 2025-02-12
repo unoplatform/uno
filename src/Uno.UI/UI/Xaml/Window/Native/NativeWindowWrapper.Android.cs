@@ -109,7 +109,20 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var decorView = activity.Window.DecorView;
 		var fitsSystemWindows = decorView.FitsSystemWindows;
 
-		if ((int)Android.OS.Build.VERSION.SdkInt < 35)
+		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+		{
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Insets: {insets}");
+			}
+
+			// Edge-to-edge is default on Android 15 and above
+			windowBounds = new Rect(default, GetWindowSize());
+			visibleBounds = windowBounds.DeflateBy(insets);
+		}
+		else
 		{
 			var opaqueInsetsTypes = insetsTypes;
 			if (IsStatusBarTranslucent())
@@ -130,29 +143,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 			// The visible bounds is the windows bounds on which we remove also translucentInsets
 			visibleBounds = windowBounds.DeflateBy(translucentInsets);
-		}
-		else
-		{
-			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"Insets: {insets}");
-			}
-
-			if (fitsSystemWindows)
-			{
-				// The window bounds are the same as the display size, as the system insets are already taken into account by the layout
-				windowBounds = new Rect(default, GetWindowSize().Subtract(insets));
-				visibleBounds = windowBounds;
-			}
-			else
-			{
-				// Edge-to-edge is default on Android 15 and above
-				windowBounds = new Rect(default, GetWindowSize());
-				visibleBounds = windowBounds.DeflateBy(insets);
-			}
-
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -196,7 +186,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void ApplySystemOverlaysTheming()
 	{
-		if ((int)Android.OS.Build.VERSION.SdkInt >= 35)
+		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
 			if ((ContextHelper.TryGetCurrent(out var context)) &&
