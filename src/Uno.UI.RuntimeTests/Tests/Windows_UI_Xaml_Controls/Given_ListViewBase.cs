@@ -4786,6 +4786,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[SamplesApp.UITests.UnoWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("This test is only for managed scrollers.")]
+#endif
+		public async Task When_ListView_Unloaded_Loaded_Scroll_Position()
+		{
+			var SUT = new ListView
+			{
+				ItemsSource = Enumerable.Range(0, 20).Select(i => i.ToString()).ToList(),
+				Height = 200
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			var sv = SUT.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
+			sv.ScrollToVerticalOffset(300);
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(300, sv.VerticalOffset);
+
+			await UITestHelper.Load(new Button());
+			await UITestHelper.Load(SUT, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			Assert.AreEqual(300, sv.VerticalOffset);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __ANDROID__
 		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
 #endif
