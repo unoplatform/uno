@@ -32,8 +32,11 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 			AppWindowPosition.Text = GetSafe(() => $"{_window.AppWindow.Position.X:0.##}, {_window.AppWindow.Position.Y:0.##}");
 			AppWindowClientSize.Text = GetSafe(() => $"{_window.AppWindow.ClientSize.Width:0.##} x {_window.AppWindow.ClientSize.Height:0.##}");
 			TitleBarHeight.Text = GetSafe(() => $"{_window.AppWindow.TitleBar.Height:0.##}");
+			var visibleBounds = XamlRoot.VisualTree.VisibleBounds;
+			VisualTreeVisibleBounds.Text = GetSafe(() => $"X: {visibleBounds.X:0.##}, Y: {visibleBounds.Y:0.##}, Width: {visibleBounds.Width:0.##}, Height: {visibleBounds.Height:0.##}");
 #endif
-			WindowBounds.Text = GetSafe(() => $"{_window.Bounds.X:0.##}, {_window.Bounds.Y:0.##}, {_window.Bounds.Width:0.##}, {_window.Bounds.Height:0.##}");
+			var windowBounds = _window.Bounds;
+			WindowBounds.Text = GetSafe(() => $"X: {windowBounds.X:0.##}, Y: {windowBounds.Y:0.##}, Width: {windowBounds.Width:0.##}, Height: {windowBounds.Height:0.##}");
 			XamlRootSize.Text = GetSafe(() => $"{XamlRoot.Size.Width:0.##} x {XamlRoot.Size.Height:0.##}");
 			var padding = VisibleBoundsPadding.WindowPadding;
 			VisibleBoundsPaddingValue.Text = GetSafe(() => $"{padding.Left:0.##}, {padding.Top:0.##}, {padding.Right:0.##}, {padding.Bottom:0.##}");

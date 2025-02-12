@@ -214,6 +214,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	private void SetVisibleBoundsFromNative()
 	{
 		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper?.VisibleBounds ?? default);
+		XamlRoot?.VisualTree?.OnVisibleBoundChanged();
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
