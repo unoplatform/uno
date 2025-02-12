@@ -21,7 +21,7 @@ partial class SvgImageSource
 			{
 				var imageData = task.Result;
 				if (imageData is { Kind: ImageDataKind.ByteArray, ByteArray: not null } &&
-					_svgProvider?.TryGetLoadedDataAsPictureAsync() is { } picture)
+					_svgProvider?.TryGetLoadedDataAsPictureAsync() is SKPicture picture)
 				{
 					var sourceSize = _svgProvider.SourceSize;
 					return ImageData.FromCompositionSurface(new SkiaCompositionSurface(SKImage.FromPicture(picture, new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height))));

@@ -2006,7 +2006,7 @@
 		</Properties>
 
 		<Methods>
-			<Member fullName="SkiaSharp.SKPicture Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets." />
+			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
 		</Methods>
 	</IgnoreSet>
 
