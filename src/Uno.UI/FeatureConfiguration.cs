@@ -910,8 +910,6 @@ namespace Uno.UI
 			private static bool _isEdgeToEdgeEnabled =
 #if NET9_0_OR_GREATER
 				true;
-#else
-				false;
 #endif
 
 			/// <summary>
