@@ -128,3 +128,15 @@ On Skia Desktop targets, it is possible to override the default `ApplicationData
 The method `NSObjectExtensions.ValidateDispose` is deprecated in Uno 5.x and will be removed in the next major release.
 
 In order for calls to fail on uses of this method, set the `Uno.UI.FeatureConfiguration.UIElement.FailOnNSObjectExtensionsValidateDispose` flag to `true`.
+
+## Android Settings
+
+### `IsEdgeToEdgeEnabled`
+
+This flag controls the [edge-to-edge UI behavior](https://developer.android.com/develop/ui/views/layout/edge-to-edge) on Android. When set to `true` it makes the system UI (status bar and navigation bar) transparent, and lets the application expand below these overlays. To ensure all UI is still accessible for the user, proper safe area padding/margin needs to be applied. To achieve this, use the [`SafeArea` control in Uno Toolkit](xref:Toolkit.Controls.SafeArea). The default value is `true` for apps targeting .NET 9 or targeting Android SDK 35 and newer, defaults to `false` otherwise. For apps targeting SDK 35+ and running on Android 15 and newer, edge-to-edge is always enforced by the OS, so it cannot be disabled.
+
+```csharp
+#if __ANDROID__
+var isEdgeToEdge = FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
+#endif
+```
