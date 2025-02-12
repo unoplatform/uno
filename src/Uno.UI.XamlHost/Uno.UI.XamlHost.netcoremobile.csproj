@@ -29,7 +29,6 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 	</ItemGroup>
 
 	<ItemGroup>
