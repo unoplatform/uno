@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal readonly struct ExpressionAnimationToken
 {

@@ -3,8 +3,8 @@
 using System;
 using DirectUI;
 using Microsoft.UI.Content;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;

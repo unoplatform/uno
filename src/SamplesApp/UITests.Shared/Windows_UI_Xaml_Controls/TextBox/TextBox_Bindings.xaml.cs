@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
@@ -15,7 +15,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 
 	}
 
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	internal class TextBox_Bindings_Context : INotifyPropertyChanged
 	{
 		private string _text;

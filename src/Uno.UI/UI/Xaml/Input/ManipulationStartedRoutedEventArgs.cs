@@ -9,7 +9,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class ManipulationStartedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{

@@ -106,11 +106,11 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 		{
 			if (key.StartsWith("UI.Xaml.DragDrop.", StringComparison.Ordinal))
 			{
-				key = key.Replace("UI.Xaml.DragDrop", "Microsoft.UI.Xaml.DragView");
+				key = key.Replace("UI.Xaml.DragDrop", "Windows.UI.Xaml.DragView");
 			}
 			else if (key.StartsWith("UI.Xaml.", StringComparison.Ordinal))
 			{
-				key = key.Replace("UI.Xaml", "Microsoft.UI.Xaml");
+				key = key.Replace("UI.Xaml", "Windows.UI.Xaml");
 			}
 
 			return LinkerHintsHelpers.GetPropertyAvailableName(_suffixRegex.Replace(key, string.Empty));

@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using Common;
-using Microsoft.UI.Composition.Interactions;
+using Windows.UI.Composition.Interactions;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;

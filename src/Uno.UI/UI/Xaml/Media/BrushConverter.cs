@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class BrushConverter : TypeConverter
 	{

@@ -3,10 +3,10 @@ using System.Linq;
 using Android.Graphics;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Shape
 	{

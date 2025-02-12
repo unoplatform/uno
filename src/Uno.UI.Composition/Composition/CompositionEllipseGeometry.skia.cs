@@ -3,7 +3,7 @@
 using System.Windows.Input;
 using Windows.Graphics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionEllipseGeometry : CompositionGeometry
 	{

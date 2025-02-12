@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TabViewItem : global::Microsoft.UI.Xaml.Controls.ListViewItem
+	public partial class TabViewItem : global::Windows.UI.Xaml.Controls.ListViewItem
 	{
 		// Skipping already declared property IsClosable
 		// Skipping already declared property IconSource

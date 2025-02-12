@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Private.Infrastructure;
 
@@ -12,7 +12,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
 	public partial class DelayedImagePresenter : ContentControl
 	{
-		private Microsoft.UI.Xaml.Controls.Image _image;
+		private Windows.UI.Xaml.Controls.Image _image;
 		private TextBlock _waitingText;
 
 		private readonly SerialDisposable _loadingSubscription = new SerialDisposable();
@@ -85,7 +85,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		{
 			base.OnApplyTemplate();
 
-			_image = GetTemplateChild("Image") as Microsoft.UI.Xaml.Controls.Image;
+			_image = GetTemplateChild("Image") as Windows.UI.Xaml.Controls.Image;
 			_waitingText = GetTemplateChild("WaitingText") as TextBlock;
 		}
 

@@ -6,14 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Silk.NET.Core.Contexts;
 using Uno.Extensions;
 using Uno.Logging;
-using Window = Microsoft.UI.Xaml.Window;
+using Window = Windows.UI.Xaml.Window;
 
 #if !UNO_UWP_BUILD
 using Microsoft.UI.Dispatching;

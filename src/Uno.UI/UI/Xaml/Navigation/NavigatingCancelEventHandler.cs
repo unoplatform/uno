@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Navigation;
+namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Represents the method to use as the Page.OnNavigatingFrom callback override.
