@@ -66,7 +66,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 
 		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
+
+			//  Both TranslucentStatus and LayoutNoLimits are false when EdgeToEdge is set (default mode in net9).
+			|| FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
 	}
 
 	internal void RaiseNativeSizeChanged()
