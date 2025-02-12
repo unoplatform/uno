@@ -10,7 +10,7 @@ public class App : Application
 
 #if DEBUG
 #pragma warning disable UNO0008
-        MainWindow.EnableHotReload();
+        MainWindow.UseStudio();
 #pragma warning restore UNO0008
 #endif
 
