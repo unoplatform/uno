@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryBranch>$(GITVERSION_BranchName)</RepositoryBranch>
-		<RepositoryCommit>$(GitVersion_Sha)</RepositoryCommit>
+		<RepositoryBranch>$(NBGV_BuildingRef)</RepositoryBranch>
+		<RepositoryCommit>$(NBGV_GitCommitId)</RepositoryCommit>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 		<Authors>Uno Platform</Authors>

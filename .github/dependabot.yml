@@ -61,9 +61,6 @@ updates:
   - dependency-name: docfx.console
     versions:
     - ">= 2.45.a, < 2.46"
-  - dependency-name: GitVersionTask
-    versions:
-    - ">= 5.0.a, < 5.1"
   - dependency-name: cef.redist.x64
     versions:
     - "> 3.3396.1786"

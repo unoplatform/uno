@@ -48,13 +48,13 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
     displayName: Preparing assets
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building package binaries
 
   - task: MSBuild@1
@@ -63,7 +63,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -77,7 +77,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(GITVERSION.SemVer) /p:InformationalVersion=$(GITVERSION.InformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest-netcoremobile /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest-netcoremobile /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

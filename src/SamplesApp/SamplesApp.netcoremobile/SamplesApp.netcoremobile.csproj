@@ -262,7 +262,7 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(NBGV_AssemblyInformationalVersion)'!=''">
 
 		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
 			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
@@ -273,7 +273,7 @@
 
 			<ApplicationDisplayVersion>$([System.DateTime]::Now.ToString(`yyMMddHHmm`)).$(_VersionCode)</ApplicationDisplayVersion>
 			<ApplicationVersion>$(_VersionCode)</ApplicationVersion>
-			<InformationalVersion>$(GITVERSION_InformationalVersion)</InformationalVersion>
+			<InformationalVersion>$(NBGV_AssemblyInformationalVersion)</InformationalVersion>
 		</PropertyGroup>
 
 	</Target>
