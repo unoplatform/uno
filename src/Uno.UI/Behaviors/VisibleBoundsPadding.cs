@@ -261,6 +261,10 @@ namespace Uno.UI.Toolkit
 
 				Thickness visibilityPadding;
 
+				var feContent = (FrameworkElement)window.Content;
+				this.Log().LogDebug($"VisibleBounds.UpdatePadding Window.Bounds: {window.Bounds}, XamlRoot.Bounds: {window!.Content!.XamlRoot!.Bounds}, Content size: {feContent.ActualWidth}x{feContent.ActualHeight}");
+				this.Log().LogDebug($"VisibleBounds.UpdatePadding WindowPadding: {WindowPadding}");
+
 				if (WindowPadding.Left != 0
 					|| WindowPadding.Right != 0
 					|| WindowPadding.Top != 0
@@ -274,12 +278,15 @@ namespace Uno.UI.Toolkit
 					// Using relativeTo: null instead of Window.Current.Content since there are cases when the current UIElement
 					// may be outside the bounds of the current Window content, for example, when the element is hosted in a modal window.
 					var controlBounds = GetRelativeBounds(fixedControl, relativeTo: null);
+					this.Log().LogDebug($"VisibleBounds.UpdatePadding ControlBounds: {controlBounds}");
 
 					visibilityPadding = CalculateVisibilityPadding(OffsetVisibleBounds, controlBounds);
+					this.Log().LogDebug($"VisibleBounds.UpdatePadding VisibilityPadding: {visibilityPadding}");
 
 					if (scrollAncestor != null)
 					{
 						visibilityPadding = AdjustScrollablePadding(visibilityPadding, scrollAncestor);
+						this.Log().LogDebug($"VisibleBounds.UpdatePadding Adjusted VisibilityPadding: {visibilityPadding}");
 					}
 				}
 				else

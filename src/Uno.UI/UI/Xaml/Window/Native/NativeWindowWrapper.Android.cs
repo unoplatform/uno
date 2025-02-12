@@ -58,17 +58,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeClosed() => RaiseClosing();
 
-	internal bool IsStatusBarTranslucent()
-	{
-		if (!(ContextHelper.Current is Activity activity))
-		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
-		}
-
-		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
-	}
-
 	internal void RaiseNativeSizeChanged()
 	{
 		var (windowSize, visibleBounds) = GetVisualBounds();
@@ -108,6 +97,26 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		var decorView = activity.Window.DecorView;
 		var fitsSystemWindows = decorView.FitsSystemWindows;
+		var controller = WindowCompat.GetInsetsController(activity.Window, decorView);
+
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"FitsSystemWindows: {fitsSystemWindows}");
+		}
+
+		// Log everything in windowInsets
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"WindowInsets.HasInsets: {windowInsets.HasInsets}");
+			this.Log().LogDebug($"WindowInsets.HasSystemBars: {windowInsets.IsConsumed}");
+		}
+
+		// Controller logging
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"InsetsController.SystemBarsBehavior: {controller.SystemBarsBehavior}");
+		}
 
 		if ((int)Android.OS.Build.VERSION.SdkInt < 35)
 		{
@@ -124,6 +133,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
 			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
 			var translucentInsets = insets.Minus(opaqueInsets);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Insets: {insets}, OpaqueInsets {opaqueInsets}, TranslucentInsets {translucentInsets}");
+			}
 
 			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
 			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
@@ -166,6 +180,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return (windowBoundsLogical.Size, visibleBoundsLogical);
 	}
 
+	internal bool IsStatusBarTranslucent()
+	{
+		if (!(ContextHelper.Current is Activity activity))
+		{
+			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
+		}
+
+		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
+			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
+			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutInScreen);
+	}
+
 	private bool IsNavigationBarTranslucent()
 	{
 		if (!(ContextHelper.Current is Activity activity))
@@ -175,7 +201,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		var flags = activity.Window.Attributes.Flags;
 		return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
-			|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+			|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
+			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutInScreen);
 	}
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)

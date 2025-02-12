@@ -486,7 +486,8 @@ namespace SamplesApp
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
-
+				builder.AddFilter("Uno.UI.Xaml.Controls", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.Toolkit", LogLevel.Debug);
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
 
