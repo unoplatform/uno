@@ -11,37 +11,45 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-    <StackPanel>
-        <CheckBox x:Name="ExtendsIntoTitleBarCheckBox" IsChecked="False" />
-        <Button Click="{x:Bind GetMetricsClick}">Get metrics</Button>
+	<StackPanel>
+		<CheckBox x:Name="ExtendsIntoTitleBarCheckBox" IsChecked="False" />
+		<Button Click="{x:Bind GetMetricsClick}">Get metrics</Button>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="AppWindow.Size:" />
             <Run x:Name="AppWindowSize" />
-        </TextBlock>
+		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="AppWindow.Position:" />
             <Run x:Name="AppWindowPosition" />
-        </TextBlock>
+		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="AppWindow.ClientSize:" />
             <Run x:Name="AppWindowClientSize" />
-        </TextBlock>
+		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="Window.Bounds:" />
             <Run x:Name="WindowBounds" />
-        </TextBlock>
+		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="XamlRoot.Size:" />
             <Run x:Name="XamlRootSize" />
-        </TextBlock>
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap">
+			<Run Text="VisualTree.Bounds" />
+			<Run x:Name="VisualTreeBounds" />
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap">
+			<Run Text="VisualTree.VisibleBounds" />
+			<Run x:Name="VisualTreeVisibleBounds" />
+		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
             <Run Text="TitleBar.Height:" />
             <Run x:Name="TitleBarHeight" />
-        </TextBlock>
-        <TextBlock TextWrapping="Wrap">
+		</TextBlock>
+		<TextBlock TextWrapping="Wrap">
             <Run Text="VisibleBoundsPadding:" />
             <Run x:Name="VisibleBoundsPaddingValue" />
-        </TextBlock>
+		</TextBlock>
 
 		<Grid x:Name="PaddedGrid" ui:VisibleBoundsPadding.PaddingMask="All"></Grid>
 	</StackPanel>
