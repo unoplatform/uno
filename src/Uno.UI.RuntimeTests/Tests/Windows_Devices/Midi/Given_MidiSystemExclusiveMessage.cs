@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 		[TestMethod]
 		public void When_RawData_Empty()
 		{
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => new MidiSystemExclusiveMessage(Array.Empty<byte>().ToBuffer()));
 		}
 

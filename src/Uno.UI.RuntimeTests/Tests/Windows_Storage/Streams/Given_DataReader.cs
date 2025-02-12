@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public void When_FromBuffer_Argument_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(() => DataReader.FromBuffer(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => DataReader.FromBuffer(null));
 		}
 
 		[TestMethod]

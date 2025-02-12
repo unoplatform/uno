@@ -35,7 +35,7 @@ public class Given_GeometryData
 	[DataRow("F M0 0")]
 	public void When_GeometryData_ParseData_Invalid(string rawdata)
 	{
-		Assert.ThrowsException<XamlParseException>(() =>
+		Assert.ThrowsExactly<XamlParseException>(() =>
 			GeometryData.ParseData(rawdata)
 		);
 	}

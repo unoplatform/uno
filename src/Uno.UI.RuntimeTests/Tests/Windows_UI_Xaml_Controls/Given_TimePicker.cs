@@ -42,9 +42,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var timePicker = new TimePicker();
 			timePicker.MinuteIncrement = 17;
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = 60);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = 60);
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = -1);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = -1);
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
 		}
 
