@@ -300,7 +300,7 @@
 	},
 	{
 	  "group": "Toolkit",
-	  "version": "6.3.0-dev.6",
+	  "version": "6.4.1",
 	  "packages": [
 		"Uno.Toolkit.WinUI",
 		"Uno.Toolkit.WinUI.Cupertino",
