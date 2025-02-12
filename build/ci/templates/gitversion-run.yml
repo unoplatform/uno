@@ -12,12 +12,12 @@ steps:
 
   - pwsh: |
       $InformationalVersion="$(NBGV_SemVer2)+$(NBGV_GitCommitId)-$(NBGV_BuildingRef)".Replace("refs/heads/","").Replace("/","-")
-      echo "##vso[task.setvariable variable=NBGV_InformationalVersion;]$InformationalVersion"
-      echo "##vso[task.setvariable variable=NBGV_InformationalVersion;isOutput=true;]$InformationalVersion"
+      echo "##vso[task.setvariable variable=NBGV_AssemblyInformationalVersion;]$InformationalVersion"
+      echo "##vso[task.setvariable variable=NBGV_AssemblyInformationalVersion;isOutput=true;]$InformationalVersion"
       echo "Informational Version: $InformationalVersion"
 
     displayName: Generate Informational Version
-    name: NBGV_InformationalVersion
+    name: NBGV_AssemblyInformationalVersion
 
   - powershell: | 
       $outputFile="$(System.artifactsdirectory)/git_variables"
