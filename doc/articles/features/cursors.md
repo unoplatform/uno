@@ -4,15 +4,18 @@ uid: Uno.Features.Cursors
 
 # Using pointer cursors
 
-You can change the pointer cursor in your application at runtime on WebAssembly, macOS, or Skia Desktop by setting the `CoreWindow.PointerCursor` property:
+You can change the pointer cursor when the pointer hovers certain elements in your application at runtime on WebAssembly, macOS, or Skia Desktop by subclassing a `UIElement` and setting its protected `ProtectedCursor` property. Alternatively, a workaround with reflection is possible and avoids the need to create custom `UIElement`s:
 
 ```csharp
-var handCursorType = Windows.UI.Core.CoreCursorType.Hand;
-var cursor = new Windows.UI.Core.CoreCursor(handCursorType, 0);
-CoreWindow.GetForCurrentThread().PointerCursor = cursor;
+public static void ChangeCursor(this UIElement uiElement, InputCursor cursor)
+{
+  typeof(UIElement).GetProperty(nameof(ProtectedCursor), BindingFlags.NonPublic | BindingFlags.Instance).SetValue(element, cursor);
+}
 ```
 
-Note that you must perform this action on the UI thread.
+Note that you must perform this action on the UI thread. For more details on how to use `ProtectedCursor`, follow this [discussion](https://github.com/microsoft/WindowsAppSDK/discussions/1816).
+
+Note that the legacy `CoreWindow.PointerCursor` API is no longer supported.
 
 ## Changing the default cursor for button-based controls on WASM
 
