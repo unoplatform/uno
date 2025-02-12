@@ -32,7 +32,6 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 			AppWindowPosition.Text = GetSafe(() => $"{_window.AppWindow.Position.X:0.##}, {_window.AppWindow.Position.Y:0.##}");
 			AppWindowClientSize.Text = GetSafe(() => $"{_window.AppWindow.ClientSize.Width:0.##} x {_window.AppWindow.ClientSize.Height:0.##}");
 			TitleBarHeight.Text = GetSafe(() => $"{_window.AppWindow.TitleBar.Height:0.##}");
-			VisualTreeBounds.Text = GetSafe(() => $"{XamlRoot.VisualTree.VisibleBounds}");
 			VisualTreeVisibleBounds.Text = GetSafe(() => $"{XamlRoot.VisualTree.VisibleBounds}");
 #endif
 			WindowBounds.Text = GetSafe(() => $"{_window.Bounds.X:0.##}, {_window.Bounds.Y:0.##}, {_window.Bounds.Width:0.##}, {_window.Bounds.Height:0.##}");

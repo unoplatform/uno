@@ -35,10 +35,6 @@
             <Run x:Name="XamlRootSize" />
 		</TextBlock>
 		<TextBlock TextWrapping="Wrap">
-			<Run Text="VisualTree.Bounds" />
-			<Run x:Name="VisualTreeBounds" />
-		</TextBlock>
-		<TextBlock TextWrapping="Wrap">
 			<Run Text="VisualTree.VisibleBounds" />
 			<Run x:Name="VisualTreeVisibleBounds" />
 		</TextBlock>
