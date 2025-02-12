@@ -52,7 +52,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	protected Window Window { get; }
 
-	protected INativeWindowWrapper? NativeWindowWrapper { get; private set; }
+	public INativeWindowWrapper? NativeWindowWrapper { get; private set; }
 
 	public abstract CoreWindow? CoreWindow { get; }
 

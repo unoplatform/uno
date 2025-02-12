@@ -3,3 +3,5 @@ M:Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(System.String,System.Typ
 P:Microsoft.UI.Xaml.Window.Current;Window.Current is null in WinUI - try using XamlRoot instead, CurrentSafe if necessary.
 P:Microsoft.UI.Xaml.Window.CoreWindow;Window.CoreWindow is null in WinUI - try using XamlRoot instead, CoreWindowSafe if necessary.
 P:Microsoft.UI.Xaml.Window.Dispatcher;Window.Dispatcher is null in WinUI - try using DispatcherQueue instead.
+P:Microsoft.UI.Xaml.ApplicationActivity.Instance;In multi-window scenarios there may be multiple application activities.
+P:Uno.UI.ContextHelper.Current;Avoid whenever possible, does not make sense in multiwindow scenarios.

@@ -26,6 +26,8 @@ internal interface IWindowImplementation
 
 	object? NativeWindow { get; }
 
+	INativeWindowWrapper? NativeWindowWrapper { get; }
+
 	event WindowActivatedEventHandler? Activated;
 
 	event TypedEventHandler<object, WindowEventArgs>? Closed;
