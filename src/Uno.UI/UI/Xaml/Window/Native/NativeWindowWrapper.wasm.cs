@@ -8,7 +8,7 @@ using static __Uno.UI.Xaml.Controls.NativeWindowWrapper;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class NativeWindowWrapper : NativeWindowWrapperBase
+internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
