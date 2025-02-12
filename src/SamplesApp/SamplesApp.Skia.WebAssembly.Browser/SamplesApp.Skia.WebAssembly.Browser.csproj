@@ -30,6 +30,8 @@
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
 		<WasmBuildNative>true</WasmBuildNative>
+
+		<UnoDisableAdjustSkiaSharpDependency>true</UnoDisableAdjustSkiaSharpDependency>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
