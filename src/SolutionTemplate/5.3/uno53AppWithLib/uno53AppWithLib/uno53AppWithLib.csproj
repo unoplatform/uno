@@ -92,8 +92,8 @@
         <_AssetsToValidate Include="$(OutputPath)wwwroot\..\web.config" />
 
         <!-- Validate json files handling -->
-        <_AssetsToValidate Include="$(OutputPath)wwwroot\test_root_asset.json" />
-        <_AssetsToValidate Include="$(OutputPath)wwwroot\test_root_asset_not_included.json" MustNotExist="true" />
+        <_AssetsToValidate Include="$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\test_root_asset.json" />
+        <_AssetsToValidate Include="$(OutputPath)wwwroot\$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />
 
         <!-- 
           Transitive library asset are not included in the output folder, as they're referenced 
