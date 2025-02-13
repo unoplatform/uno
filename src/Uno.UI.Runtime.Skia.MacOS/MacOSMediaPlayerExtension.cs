@@ -52,10 +52,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 
 	~MacOSMediaPlayerExtension()
 	{
-		lock (_instances)
-		{
-			_instances.Remove(_player!);
-		}
+		Dispose(false);
 	}
 
 	internal static MacOSMediaPlayerExtension? GetByMediaPlayer(MediaPlayer mediaPlayer)
@@ -133,7 +130,27 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 
 	public bool? IsVideo => NativeUno.uno_mediaplayer_is_video(_nativePlayer);
 
-	public void Dispose() => NotImplemented(); // TODO
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected virtual void Dispose(bool disposing)
+	{
+		if (_player is null)
+		{
+			return;
+		}
+		if (disposing)
+		{
+			lock (_instances)
+			{
+				_instances.Remove(_player);
+			}
+			_player = null!;
+		}
+	}
 
 	public void Initialize()
 	{
@@ -276,7 +293,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 			{
 				this.Log().Debug(ex.ToString());
 			}
-			// OnMediaFailed(ex);
+			Events?.RaiseMediaFailed(MediaPlayerError.Unknown, ex?.Message, ex);
 		}
 	}
 

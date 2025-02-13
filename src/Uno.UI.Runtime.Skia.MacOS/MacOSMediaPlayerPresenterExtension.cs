@@ -8,6 +8,7 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 using Uno.Foundation.Extensibility;
@@ -37,6 +38,14 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 		var native = new MacOSNativeElement()
 		{
 			NativeHandle = _nativeView
+		};
+		native.Unloaded += (_, _) =>
+		{
+			if (_playerExtension is { })
+			{
+				_playerExtension.Dispose();
+				_playerExtension = null;
+			}
 		};
 
 		var cp = new ContentPresenter() { Content = native };
