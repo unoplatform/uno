@@ -25,8 +25,8 @@
 		</ItemGroup>
 	</Target>
 
-	<Target	Name="_AdjustSkiaSharpDependency"
-			BeforeTargets="BeforeBuild"
+	<Target	Name="_UnoAdjustSkiaSharpDependency"
+			BeforeTargets="AssignTargetPaths"
 			Condition=" '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
 		<!--
 			This section is an extract of
@@ -37,8 +37,8 @@
 		-->
 
 		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
-			<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
-			<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
+			<WasmShellNativeFileReference Include="@(SkiaSharpStaticLibrary)" Visible="false" />
+			<WasmShellNativeFileReference Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
 		</ItemGroup>
 
 		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
@@ -49,5 +49,5 @@
 			<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" KeepDuplicates="false" />
 		</ItemGroup>
 	</Target>
-	
+
 </Project>
