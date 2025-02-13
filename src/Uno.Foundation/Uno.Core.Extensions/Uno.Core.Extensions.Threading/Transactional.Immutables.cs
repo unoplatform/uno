@@ -375,7 +375,7 @@ namespace Uno
 
 		/// <summary>
 		/// Transactionally get or add an item to an ImmutableDictionary.  The factory is called to create the item when required.
-		/// The factory is called to udpate, and may be invoked multiple times.
+		/// The factory is called to update, and may be invoked multiple times.
 		/// </summary>
 		public static TValue UpdateItem<TKey, TValue>(
 			ref ImmutableDictionary<TKey, TValue> dictionary,
@@ -404,7 +404,7 @@ namespace Uno
 
 		/// <summary>
 		/// Transactionally update an item of an ImmutableDictionary.
-		/// The factory is called to udpate, and may be invoked multiple times.
+		/// The factory is called to update, and may be invoked multiple times.
 		/// </summary>
 		public static TValue UpdateItem<TKey, TValue>(
 			ref ImmutableSortedDictionary<TKey, TValue> dictionary,

@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			public const int NotRunning = 0;
 			public const int Running = 1;
 			public const int Paused = 2;
-			public const int Ended = int.MaxValue; // a.k.a. Stoped / Disposed : This Scheduler can run frames only once!
+			public const int Ended = int.MaxValue; // a.k.a. Stopped / Disposed : This Scheduler can run frames only once!
 		}
 
 		public enum EndReason

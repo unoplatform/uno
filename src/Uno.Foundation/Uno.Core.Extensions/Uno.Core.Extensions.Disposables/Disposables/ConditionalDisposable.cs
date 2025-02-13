@@ -56,7 +56,7 @@ namespace Uno.Disposables
 
 			lock (_list)
 			{
-				// The _registrations member is used to associate the target instane to the
+				// The _registrations member is used to associate the target instance to the
 				// current disposable instance. This way, when the target instance gets collected
 				// the ConditionalWeakTable will make the "list" instance collectable, as well as
 				// its content, making this instance collectable.

@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set { SetValue(TopLevelVisiblityProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for TopLevelVisiblity.  This enables animation, styling, binding, etc...
+		// Using a DependencyProperty as the backing store for TopLevelVisibility.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty TopLevelVisiblityProperty =
 			DependencyProperty.Register("TopLevelVisiblity", typeof(bool), typeof(Binding_xLoad_Event), new PropertyMetadata(false));
 

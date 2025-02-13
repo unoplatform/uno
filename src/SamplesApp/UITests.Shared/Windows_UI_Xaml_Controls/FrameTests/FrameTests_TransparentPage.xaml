@@ -10,8 +10,8 @@
 
 	<Grid BorderBrush="DarkGray" BorderThickness="5" x:Name="RootOfTransparentPage">
 		<!--
-			This page intentonnaly left completely blank without event a TextBlock,
-			so we can test if pointer are passing throug it (like they should, event if BG=Transparent !)
+			This page intentionally left completely blank without event a TextBlock,
+			so we can test if pointer are passing through it (like they should, event if BG=Transparent !)
 		--> 
 	</Grid>
 </Page>

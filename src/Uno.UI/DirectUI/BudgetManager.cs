@@ -53,7 +53,7 @@ namespace DirectUI
 			//{
 			//	// hardware that doesn't understand QPC?? Very unlikely, but in this case, let's not crash
 			//	// and just return that no time has elapsed. This will trigger people relying on budget to see that they
-			//	// have a lot of budget and atleast not have them encounter a situation where they do not get to perform
+			//	// have a lot of budget and at least not have them encounter a situation where they do not get to perform
 			//	// certain work.
 			//	returnValue = 0;
 			//}

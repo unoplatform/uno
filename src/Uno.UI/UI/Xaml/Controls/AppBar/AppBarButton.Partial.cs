@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 	{
 		// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
-		// Animate the width to NaN if width is not overrided and right-aligned labels and no LabelOnRightStyle.
+		// Animate the width to NaN if width is not overridden and right-aligned labels and no LabelOnRightStyle.
 		Storyboard? m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
 		bool m_isWithToggleButtons;
@@ -386,7 +386,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool shouldHaveLabelOnRightStyleSet = effectiveLabelPosition == CommandBarDefaultLabelPosition.Right && !useOverflowStyle;
 
 			// Apply/UnApply auto width animation if needed
-			// only play auto width animation when the width is not overrided by local/animation setting
+			// only play auto width animation when the width is not overridden by local/animation setting
 			// and when LabelOnRightStyle is not set. LabelOnRightStyle take high priority than animation.
 			if (shouldHaveLabelOnRightStyleSet
 				&& !this.IsDependencyPropertyLocallySet(WidthProperty))

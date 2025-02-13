@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 	internal class VirtualizingPanelGenerator
 	{
 		/// <summary>
-		/// Maxmimum number of cached items per DataTemplate group.
+		/// Maximum number of cached items per DataTemplate group.
 		/// </summary>
 		private const int MaxCacheLimit = 1024;
 

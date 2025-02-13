@@ -65,7 +65,7 @@ namespace Windows.Web.Http
 		public DateTimeOffset? Expires { get; set; }
 
 		/// <summary>
-		/// Rreturns a string that matches a Set-Cookie HTTP header suitable for including on a request message.
+		/// Returns a string that matches a Set-Cookie HTTP header suitable for including on a request message.
 		/// </summary>
 		/// <returns>A string that represents the current object.</returns>
 		public override string ToString()
