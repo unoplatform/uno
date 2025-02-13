@@ -273,13 +273,14 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
 
 - `*.crossruntime.cs` (WASM, Skia, or Reference)
-- `*.wasm.cs`
-- `*.skia.cs`
-- `*.reference.cs`
+- `*.wasm.cs` (WebAssembly)
+- `*.skia.cs` (Skia)
+- `*.reference.cs` (Reference only)
 - `*.iOS.cs`(iOS & MacCatalyst)
 - `*.macOS.cs` (MacOS not MacCatalyst)
 - `*.iOSmacOS.cs` (iOS, MacCatalyst, & MacOS)
-- `*.Android.cs`
+- `*.Android.cs` (Android)
+- `*.WinAppSDK.cs` (Windows App SDK)
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 
