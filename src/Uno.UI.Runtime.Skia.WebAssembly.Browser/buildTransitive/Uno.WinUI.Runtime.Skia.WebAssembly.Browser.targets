@@ -25,7 +25,9 @@
 		</ItemGroup>
 	</Target>
 
-	<Target	Name="_AdjustSkiaSharpDependency" BeforeTargets="BeforeBuild" Condition=" '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
+	<Target	Name="_AdjustSkiaSharpDependency"
+			BeforeTargets="BeforeBuild"
+			Condition=" '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
 		<!--
 			This section is an extract of
 			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
