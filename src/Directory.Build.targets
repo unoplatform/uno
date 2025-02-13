@@ -72,8 +72,11 @@
 		<MicrosoftTestingPlatformVersion>1.5.1</MicrosoftTestingPlatformVersion>
 
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
-		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
-		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
+
+		<!-- SkiaSharp is no longer supporting SkiaSharp.Views.Uno, so there is no 3.x of this particular package. -->
+		<SkiaSharpViewsUnoVersion>$(SkiaSharpVersion)</SkiaSharpViewsUnoVersion>
+
+		<SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.4.1</SkiaSharpVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -115,7 +118,7 @@
 		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpViewsUnoVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
 		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
@@ -126,11 +129,11 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
-		
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
+
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />

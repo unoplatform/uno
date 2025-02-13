@@ -65,7 +65,9 @@ public class Given_AcrylicBrush
 		using var filter = SKImageFilter.CreateBlur(30.0f, 30.0f, SKImageFilter.CreateImage(image));
 
 		paint.IsAntialias = true;
+#pragma warning disable CS0618 // Type or member is obsolete
 		paint.FilterQuality = SKFilterQuality.High;
+#pragma warning restore CS0618 // Type or member is obsolete
 		paint.ImageFilter = filter;
 		canvas.DrawPaint(paint);
 
