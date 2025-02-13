@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace SkiaSharp;
@@ -8,44 +9,28 @@ internal static class UnoSkiaApi
 	private const string SKIA = "libSkiaSharp";
 	private const string SKIA_Apple = "@rpath/libSkiaSharp.framework/libSkiaSharp";
 
-	[DllImport(SKIA_Apple, CallingConvention = CallingConvention.Cdecl, EntryPoint = nameof(sk_textblob_builder_alloc_run_pos))]
-	unsafe internal static extern void sk_textblob_builder_alloc_run_pos_apple(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer);
-
-	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl, EntryPoint = nameof(sk_textblob_builder_alloc_run_pos))]
-	unsafe internal static extern void sk_textblob_builder_alloc_run_pos_others(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer);
-
-	internal unsafe static void sk_textblob_builder_alloc_run_pos(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer)
+	static UnoSkiaApi()
 	{
-		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS())
-		{
-			sk_textblob_builder_alloc_run_pos_apple(builder, font, count, bounds, runbuffer);
-		}
-		else
-		{
-			sk_textblob_builder_alloc_run_pos_others(builder, font, count, bounds, runbuffer);
-		}
+		NativeLibrary.SetDllImportResolver(typeof(UnoSkiaApi).Assembly, DllImportResolver);
 	}
 
-	[DllImport(SKIA_Apple, CallingConvention = CallingConvention.Cdecl, EntryPoint = nameof(sk_rrect_set_rect_radii))]
-	unsafe internal static extern void sk_rrect_set_rect_radii_apple(IntPtr rrect, SKRect* rect, SKPoint* radii);
-
-	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl, EntryPoint = nameof(sk_rrect_set_rect_radii))]
-	unsafe internal static extern void sk_rrect_set_rect_radii_others(IntPtr rrect, SKRect* rect, SKPoint* radii);
-
-	/// <summary>
-	/// We use this instead of the equivalent SKRoundRect.SetRectRadii because it takes an array with a
-	/// length of _exactly_ 4. If we rent the SKPoint array to reduce allocations, we're not guaranteed to
-	/// get the exact length we need.
-	/// </summary>
-	internal unsafe static void sk_rrect_set_rect_radii(IntPtr rrect, SKRect* rect, SKPoint* radii)
+	private static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
-		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS())
+		if (libraryName == SKIA && (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS()))
 		{
-			sk_rrect_set_rect_radii_apple(rrect, rect, radii);
+			return NativeLibrary.Load(SKIA_Apple, assembly, searchPath);
 		}
-		else
-		{
-			sk_rrect_set_rect_radii_others(rrect, rect, radii);
-		}
+
+		// Fallback to the default DllImportResolver
+		return IntPtr.Zero;
 	}
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern unsafe void sk_canvas_set_matrix(IntPtr canvas, SKMatrix* matrix);
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern unsafe void sk_rrect_set_rect_radii(IntPtr rrect, SKRect* rect, SKPoint* radii);
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern unsafe void sk_textblob_builder_alloc_run_pos(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer);
 }
