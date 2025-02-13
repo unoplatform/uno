@@ -26,12 +26,10 @@
 		<InvariantGlobalization>false</InvariantGlobalization>
 
 		<!-- Include all satellite	assemblies -->
-		<!--<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>-->
+		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
 		<WasmBuildNative>true</WasmBuildNative>
-
-		<UnoDisableAdjustSkiaSharpDependency>true</UnoDisableAdjustSkiaSharpDependency>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
