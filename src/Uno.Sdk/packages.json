@@ -74,7 +74,7 @@
 	},
 	{
 	  "group": "sdkextras",
-	  "version": "5.6.1",
+	  "version": "5.5-dev.26",
 	  "packages": [
 		"Uno.Sdk.Extras"
 	  ]
@@ -181,81 +181,81 @@
 	},
 	{
 	  "group": "AndroidMaterial",
-	  "version": "1.11.0.3",
+	  "version": "1.12.0.2",
 	  "packages": [
-		"Xamarin.Google.Android.Material"
+	    "Xamarin.Google.Android.Material"
 	  ]
 	},
 	{
 	  "group": "AndroidXLegacySupportV4",
 	  "version": "1.0.0.23",
 	  "packages": [
-		"Xamarin.AndroidX.Legacy.Support.V4"
+	    "Xamarin.AndroidX.Legacy.Support.V4"
 	  ]
 	},
 	{
 	  "group": "AndroidXAppCompat",
-	  "version": "1.7.0.3",
+	  "version": "1.7.0.5",
 	  "packages": [
-		"Xamarin.AndroidX.AppCompat"
+	    "Xamarin.AndroidX.AppCompat"
 	  ]
 	},
 	{
 	  "group": "AndroidXRecyclerView",
-	  "version": "1.3.2.8",
+	  "version": "1.3.2.10",
 	  "packages": [
-		"Xamarin.AndroidX.RecyclerView"
+	    "Xamarin.AndroidX.RecyclerView"
 	  ]
 	},
 	{
 	  "group": "AndroidXActivity",
-	  "version": "1.9.2.1",
+	  "version": "1.9.3.2",
 	  "packages": [
-		"Xamarin.AndroidX.Activity"
+	    "Xamarin.AndroidX.Activity"
 	  ]
 	},
 	{
 	  "group": "AndroidXBrowser",
-	  "version": "1.8.0.6",
+	  "version": "1.8.0.8",
 	  "packages": [
-		"Xamarin.AndroidX.Browser"
+	    "Xamarin.AndroidX.Browser"
 	  ]
 	},
 	{
 	  "group": "AndroidXSwipeRefreshLayout",
 	  "version": "1.1.0.24",
 	  "packages": [
-		"Xamarin.AndroidX.SwipeRefreshLayout"
+	    "Xamarin.AndroidX.SwipeRefreshLayout"
 	  ]
 	},
 	{
 	  "group": "AndroidXNavigation",
-	  "version": "2.8.0.1",
+	  "version": "2.8.5.1",
 	  "packages": [
-		"Xamarin.AndroidX.Navigation.UI",
-		"Xamarin.AndroidX.Navigation.Fragment",
-		"Xamarin.AndroidX.Navigation.Runtime",
-		"Xamarin.AndroidX.Navigation.Common"
+	    "Xamarin.AndroidX.Navigation.UI",
+	    "Xamarin.AndroidX.Navigation.Fragment",
+	    "Xamarin.AndroidX.Navigation.Runtime",
+	    "Xamarin.AndroidX.Navigation.Common"
 	  ]
 	},
 	{
 	  "group": "AndroidXCollection",
-	  "version": "1.4.4",
+	  "version": "1.4.5.2",
 	  "packages": [
-		"Xamarin.AndroidX.Collection",
-		"Xamarin.AndroidX.Collection.Ktx"
+	    "Xamarin.AndroidX.Collection",
+	    "Xamarin.AndroidX.Collection.Ktx"
 	  ]
 	},
 	{
 	  "group": "Maui",
 	  "version": "8.0.100",
 	  "packages": [
-		"Microsoft.Maui.Controls",
-		"Microsoft.Maui.Controls.Compatibility",
-		"Microsoft.Maui.Graphics"
+	    "Microsoft.Maui.Controls",
+	    "Microsoft.Maui.Controls.Compatibility",
+	    "Microsoft.Maui.Graphics"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.22"
+	    "net9.0": "9.0.40"
 	  }
 	},
 	{
