@@ -22,13 +22,13 @@ To light-up the Uno Islands feature, we need to reference several Uno Platform N
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.5.0" />
-    <PackageReference Include="Uno.WinUI.DevServer" Version="4.5.0-dev.453" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.5.0-dev.453" />
-    <PackageReference Include="Uno.WinUI.XamlHost" Version="4.5.0-dev.453" />
-    <PackageReference Include="Uno.WinUI.XamlHost.Skia.Wpf" Version="4.5.0-dev.453" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
+    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="5.6.33" />
+    <PackageReference Include="Uno.WinUI.DevServer" Version="5.6.33" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.6.33" />
+    <PackageReference Include="Uno.WinUI.XamlHost" Version="5.6.33" />
+    <PackageReference Include="Uno.WinUI.XamlHost.Skia.Wpf" Version="5.6.33" />
 </ItemGroup>
 <ItemGroup>
     <UpToDateCheckInput Include="..\UnoIslandsSampleApp.Shared\**\*.xaml" />
