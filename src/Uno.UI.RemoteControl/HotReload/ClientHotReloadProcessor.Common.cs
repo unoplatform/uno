@@ -106,6 +106,28 @@ namespace Uno.UI.RemoteControl.HotReload
 				_log.Trace($"Swapping view {newView.GetType()}");
 			}
 
+			//#if !WINUI
+			//			var parent = oldView.GetVisualTreeParent();
+			//#else
+			//			var parent = VisualTreeHelper.GetParent(oldView);
+			//#endif
+
+			//			var parentContentControl = parent as ContentControl ?? parent?.FindFirstParent<ContentControl>();
+			//			if (_log.IsEnabled(LogLevel.Trace))
+			//			{
+			//				_log.Trace($"Parent of '{oldView.GetDebugName()}' is '{parent?.GetDebugName()}', it's parent content control is '{parentContentControl?.GetDebugName()}'.");
+			//			}
+
+			//#if !HAS_UNO
+			//			var parentDataContext = (parentContentControl as FrameworkElement)?.DataContext;
+			//			var oldDataContext = oldView.DataContext;
+			//#endif
+			//			if (parentContentControl?.Content == oldView)
+			//			{
+			//				parentContentControl.Content = newView;
+			//			}
+
+
 #if !WINUI
 			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
@@ -127,15 +149,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				// In the case of Page, swapping the actual page is not supported, so we
 				// need to swap the content of the page instead. This can happen if the Frame
 				// is using a native presenter which does not use the `Frame.Content` property.
-
-				// Clear any local context, so that the new page can inherit the value coming
-				// from the parent Frame. It may happen if the old page set it explicitly.
-
-#if !WINUI
-				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-#else
-				oldPage.ClearValue(Page.DataContextProperty);
-#endif
 
 				oldPage.Content = newPage;
 #if !WINUI
