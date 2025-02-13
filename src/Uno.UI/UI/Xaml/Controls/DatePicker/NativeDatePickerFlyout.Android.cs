@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
-			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
+			if (date == DatePicker.NullDateSentinelValue)
 			{
 				var temp = new global::Windows.Globalization.Calendar();
 				var calendar = new global::Windows.Globalization.Calendar(
