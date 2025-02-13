@@ -929,5 +929,15 @@ namespace Uno.UI
 			}
 		}
 #endif
+
+		public static class NavigationView
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
+			/// </summary>
+			public static bool EnableUno19516Workaround { get; set; } = true;
+#endif
+		}
 	}
 }
