@@ -23,6 +23,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Controls;
 using System.Globalization;
 #endif
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Samples.Controls
 {
@@ -36,6 +37,8 @@ namespace Uno.UI.Samples.Controls
 			this.InitializeComponent();
 		}
 
+		public UIElement TitleBarElement => TitleBarGrid;
+		
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			Assert.IsNotNull(XamlRoot, "XamlRoot was not initialized before measure");
