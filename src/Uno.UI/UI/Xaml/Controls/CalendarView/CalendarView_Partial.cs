@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// 1. display Date if it is requested, if it is not requested, then
 		// 2. Today, if Today is not in given min/max range, then
 		// 3. the closest date to Today (i.e. the coerced date of Today)
-		DateTime m_lastDisplayedDate;
+		internal DateTime m_lastDisplayedDate;
 
 		DateTime m_today;
 		// m_minDate and m_maxDate are effective min/max dates, which could be different
