@@ -38,6 +38,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
 
+		internal DateTimeOffset NativeDialogDate => _dialog.DatePicker.DateTime;
+
 		protected internal override void Open()
 		{
 			var date = Date;
