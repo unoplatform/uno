@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		[TestMethod]
 		public void When_Uri_Is_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => AppDataUriEvaluator.ToPath(null));
 		}
 
@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("ms-appx:///local/test.txt");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -36,7 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("local/test.txt", UriKind.Relative);
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -45,7 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("ms-appdata:");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -54,7 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("ms-appdata:///");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -93,7 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("ms-appdata:///roamingfolder/");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -112,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri($"ms-appdata:///space/file.png");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -147,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			var packageName = Package.Current.Id.Name;
 			var uri = new Uri($"ms-appdata://{packageName}abcd/local/file.png");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 
@@ -195,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var uri = new Uri("ms-appdata:///local/../hello/logo.png");
 
-			Assert.ThrowsException<ArgumentOutOfRangeException>(
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(
 				() => AppDataUriEvaluator.ToPath(uri));
 		}
 

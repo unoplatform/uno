@@ -172,7 +172,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void When_MaxWidth_NaN()
 		{
-			Assert.ThrowsException<ArgumentException>(() => new ContentControl
+			Assert.ThrowsExactly<ArgumentException>(() => new ContentControl
 			{
 				MaxWidth = double.NaN,
 				MaxHeight = double.NaN,

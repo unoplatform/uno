@@ -39,6 +39,6 @@ public class Given_DependencyObjectCollection
 	[TestMethod]
 	public void When_Indexer_Get_NegativeIndex()
 	{
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new DependencyObjectCollection()[-1]);
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new DependencyObjectCollection()[-1]);
 	}
 }
