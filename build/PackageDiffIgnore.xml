@@ -1989,6 +1989,27 @@
 		</Methods>
 	</IgnoreSet>
 
+	<IgnoreSet baseVersion="5.6">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
+		</Methods>
+	</IgnoreSet>
+
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
