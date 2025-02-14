@@ -1,11 +1,12 @@
 {
 	"$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-	"version": "6.0-dev.{height}",
+	"version": "6.0-feature.skia-everywhere.{height}",
 	"nuGetPackageVersion": {
 		"semVer": 2.0
 	},
 	"publicReleaseRefSpec": [
 		"^refs/heads/master$",
+		"^refs/heads/feature/.*$",
 		"^refs/heads/release/stable/\\d+(?:\\.\\d+)?$"
 	],
 	"cloudBuild": {
