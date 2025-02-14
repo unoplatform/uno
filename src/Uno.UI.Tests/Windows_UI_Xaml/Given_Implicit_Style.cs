@@ -10,9 +10,9 @@ using Uno.UI.Tests.App.Views;
 using Uno.UI.Tests.App.Xaml;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Tests.ViewLibrary;
 using Uno.UI.Tests.Helpers;
 
@@ -37,7 +37,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
 
-			Assert.AreEqual(Microsoft.UI.Colors.LightGoldenrodYellow, (control.TestCheckBox.Foreground as SolidColorBrush).Color);
+			Assert.AreEqual(Windows.UI.Colors.LightGoldenrodYellow, (control.TestCheckBox.Foreground as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
@@ -211,65 +211,65 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				.GetProperty("DefaultStyleKey", BindingFlags.NonPublic | BindingFlags.Instance);
 #endif
 
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ContentDialog>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ContentDialog>();
 #if !NETFX_CORE
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.DatePickerSelector>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.TimePickerSelector>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.DatePickerSelector>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.TimePickerSelector>();
 #endif
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.FlyoutPresenter>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ContentControl>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.HyperlinkButton>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ComboBox>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ComboBoxItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ListViewItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.GridViewItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.TimePicker>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.SplitView>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ListView>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.GridView>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ScrollViewer>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.AppBarToggleButton>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.AppBarSeparator>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ListViewHeaderItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.GridViewHeaderItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.FlipViewItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.PivotItem>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.FlyoutPresenter>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ContentControl>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.HyperlinkButton>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ComboBox>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ComboBoxItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ListViewItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.GridViewItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.TimePicker>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.SplitView>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ListView>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.GridView>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ScrollViewer>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.AppBarToggleButton>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.AppBarSeparator>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ListViewHeaderItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.GridViewHeaderItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.FlipViewItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.PivotItem>(isString: true);
 #if !NETFX_CORE //Calling new PivotHeaderItem() on Windows throws an exception(!)
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem>();
 #endif
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.AutoSuggestBox>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.AutoSuggestBox>();
 #if !HAS_UNO_WINUI
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MediaPlayerElement>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MediaTransportControls>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MediaPlayerElement>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MediaTransportControls>();
 #endif
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Button>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.CheckBox>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ToggleSwitch>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Slider>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.ProgressBar>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.TextBox>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Pivot>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.CommandBar>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.AppBarButton>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Frame>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Button>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.CheckBox>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ToggleSwitch>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Slider>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.ProgressBar>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.TextBox>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Pivot>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.CommandBar>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.AppBarButton>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Frame>();
 			AssertDefaultStyleKey<Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.NavigationView>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.NavigationViewItem>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.NavigationViewItemHeader>(isString: true);
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MenuFlyoutPresenter>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MenuFlyoutItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.MenuFlyoutSubItem>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.NavigationView>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.NavigationViewItem>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.NavigationViewItemHeader>(isString: true);
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.NavigationViewItemSeparator>(isString: true);
 
 			AssertDefaultStyleKey<ItemsControl>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Primitives.Thumb>();
-			AssertDefaultStyleKey<Microsoft.UI.Xaml.Controls.Primitives.ToggleButton>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Primitives.Thumb>();
+			AssertDefaultStyleKey<Windows.UI.Xaml.Controls.Primitives.ToggleButton>();
 			AssertDefaultStyleKey<RadioButton>();
 
 			AssertDefaultStyleKeyFactory<Control>(factory: () => new SubControl());
-			AssertDefaultStyleKeyFactory<Microsoft.UI.Xaml.Controls.Primitives.ButtonBase>(factory: () => new SubButtonBase());
-			AssertDefaultStyleKeyFactory<Microsoft.UI.Xaml.Controls.Primitives.RangeBase>(factory: () => new SubRangeBase());
+			AssertDefaultStyleKeyFactory<Windows.UI.Xaml.Controls.Primitives.ButtonBase>(factory: () => new SubButtonBase());
+			AssertDefaultStyleKeyFactory<Windows.UI.Xaml.Controls.Primitives.RangeBase>(factory: () => new SubRangeBase());
 			AssertDefaultStyleKeyFactory<NavigationViewItem>(isString: true, factory: () => new SubNavigationViewItem());
 
 			void AssertDefaultStyleKey<TControl>(bool isString = false) where TControl : Control, new()
@@ -302,8 +302,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		public partial class SubControl : Control { }
-		public partial class SubButtonBase : Microsoft.UI.Xaml.Controls.Primitives.ButtonBase { }
-		public partial class SubRangeBase : Microsoft.UI.Xaml.Controls.Primitives.RangeBase { }
+		public partial class SubButtonBase : Windows.UI.Xaml.Controls.Primitives.ButtonBase { }
+		public partial class SubRangeBase : Windows.UI.Xaml.Controls.Primitives.RangeBase { }
 		public partial class SubNavigationViewItem : NavigationViewItem { }
 
 	}

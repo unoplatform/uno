@@ -11,7 +11,7 @@
 			<x:Double x:Key="CommandBarOverflowMaxWidth">480</x:Double>
 			<x:Double x:Key="CommandBarOverflowMaxHeight">198</x:Double>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="CommandBarBackground"
 							ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="CommandBarForeground"
@@ -21,7 +21,7 @@
 			<StaticResource x:Key="CommandBarEllipsisIconForegroundDisabled"
 							ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBarOverflowPresenter -->
 			<StaticResource x:Key="CommandBarOverflowPresenterBackground"
 							ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="CommandBarOverflowPresenterBorderBrush"
@@ -50,7 +50,7 @@
 			<x:Double x:Key="CommandBarOverflowMaxWidth">480</x:Double>
 			<x:Double x:Key="CommandBarOverflowMaxHeight">198</x:Double>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="CommandBarBackground"
 							ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="CommandBarForeground"
@@ -60,7 +60,7 @@
 			<StaticResource x:Key="CommandBarEllipsisIconForegroundDisabled"
 							ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBarOverflowPresenter -->
 			<StaticResource x:Key="CommandBarOverflowPresenterBackground"
 							ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
 			<StaticResource x:Key="CommandBarOverflowPresenterBorderBrush"
@@ -90,7 +90,7 @@
 			<x:Double x:Key="CommandBarOverflowMaxWidth">480</x:Double>
 			<x:Double x:Key="CommandBarOverflowMaxHeight">198</x:Double>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="CommandBarBackground"
 							ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="CommandBarForeground"
@@ -100,7 +100,7 @@
 			<StaticResource x:Key="CommandBarEllipsisIconForegroundDisabled"
 							ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter -->
+			<!-- Resources for Windows.UI.Xaml.Controls.CommandBarOverflowPresenter -->
 			<StaticResource x:Key="CommandBarOverflowPresenterBackground"
 							ResourceKey="SystemControlTransientBackgroundBrush" />
 			<StaticResource x:Key="CommandBarOverflowPresenterBorderBrush"
@@ -126,7 +126,7 @@
 	<Thickness x:Key="CommandBarOverflowPresenterMargin">0,4,0,4</Thickness>
 	<Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
 
-	<!-- Ellipsis button style for use in Microsoft.UI.Xaml.Controls.AppBar and Microsoft.UI.Xaml.Controls.CommandBar -->
+	<!-- Ellipsis button style for use in Windows.UI.Xaml.Controls.AppBar and Windows.UI.Xaml.Controls.CommandBar -->
 	<Style x:Key="XamlDefaultCommandBar_EllipsisButton"
 		   TargetType="Button">
 		<Setter Property="Background"

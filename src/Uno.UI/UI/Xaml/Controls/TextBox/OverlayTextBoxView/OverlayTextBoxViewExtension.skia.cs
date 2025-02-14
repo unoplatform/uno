@@ -4,11 +4,11 @@ using System;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
-using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
+using MuxTextBox = Windows.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 

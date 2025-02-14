@@ -10,7 +10,7 @@ using System.Linq;
 using Uno;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot
 {

@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+﻿using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 
 	public partial class FrameworkElement : UIElement, IFrameworkElement

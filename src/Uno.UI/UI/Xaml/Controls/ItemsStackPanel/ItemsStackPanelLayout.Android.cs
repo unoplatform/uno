@@ -5,9 +5,9 @@ using System.Text;
 using AndroidX.RecyclerView.Widget;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsStackPanel"/> behaviour.

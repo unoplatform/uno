@@ -3,7 +3,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Uno.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -277,7 +277,7 @@ namespace Uno.UI.Controls.Legacy
 
 		private void OnItemClick(object sender, ItemClickEventArgs args)
 		{
-			ItemClick?.Invoke(this, new Microsoft.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = BindableAdapter.GetRawItem(args.Position) });
+			ItemClick?.Invoke(this, new Windows.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = BindableAdapter.GetRawItem(args.Position) });
 
 			HandleItemSelection(args);
 		}

@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Devices.Geolocation;
 
-namespace Microsoft.UI.Xaml.Controls.Maps
+namespace Windows.UI.Xaml.Controls.Maps
 {
 #if !__IOS__ && !__ANDROID__
 	[NotImplemented]
@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 		public MapCustomExperience CustomExperience
 		{
 			get => throw new global::System.NotImplementedException("The member MapCustomExperience MapControl.CustomExperience is not implemented in Uno.");
-			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "MapCustomExperience MapControl.CustomExperience");
+			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "MapCustomExperience MapControl.CustomExperience");
 		}
 		public bool BusinessLandmarksVisible
 		{
@@ -207,182 +207,182 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			set => this.SetValue(RegionProperty, value);
 		}
 		public static DependencyProperty CenterProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Center", typeof(Geopoint),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(new Geopoint(new BasicGeoposition())));
 		public static DependencyProperty ChildrenProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Children", typeof(IList<DependencyObject>),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(IList<DependencyObject>)));
 		public static DependencyProperty ColorSchemeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"ColorScheme", typeof(MapColorScheme),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapColorScheme)));
 		public static DependencyProperty DesiredPitchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"DesiredPitch", typeof(double),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(double)));
 		public static DependencyProperty HeadingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Heading", typeof(double),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(double)));
 		public static DependencyProperty LandmarksVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"LandmarksVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty LocationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Location", typeof(Geopoint),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(Geopoint)));
 		public static DependencyProperty MapElementsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"MapElements", typeof(IList<MapElement>),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(IList<MapElement>)));
 		public static DependencyProperty MapServiceTokenProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"MapServiceToken", typeof(string),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(string)));
 		public static DependencyProperty NormalizedAnchorPointProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"NormalizedAnchorPoint", typeof(global::Windows.Foundation.Point),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		public static DependencyProperty PedestrianFeaturesVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PedestrianFeaturesVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty PitchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Pitch", typeof(double),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(double)));
 		public static DependencyProperty RoutesProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Routes", typeof(IList<MapRouteView>),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(IList<MapRouteView>)));
 		public static DependencyProperty StyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Style", typeof(MapStyle),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapStyle)));
 		public static DependencyProperty TileSourcesProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TileSources", typeof(IList<MapTileSource>),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(IList<MapTileSource>)));
 		public static DependencyProperty TrafficFlowVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TrafficFlowVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty TransformOriginProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TransformOrigin", typeof(global::Windows.Foundation.Point),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		public static DependencyProperty WatermarkModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"WatermarkMode", typeof(MapWatermarkMode),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapWatermarkMode)));
 		public static DependencyProperty ZoomLevelProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"ZoomLevel", typeof(double),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(double)));
 		public static DependencyProperty LoadingStatusProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"LoadingStatus", typeof(MapLoadingStatus),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapLoadingStatus)));
 		public static DependencyProperty BusinessLandmarksVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"BusinessLandmarksVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty Is3DSupportedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Is3DSupported", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty PanInteractionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"PanInteractionMode", typeof(MapPanInteractionMode),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapPanInteractionMode)));
 		public static DependencyProperty RotateInteractionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"RotateInteractionMode", typeof(MapInteractionMode),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapInteractionMode)));
 		public static DependencyProperty TiltInteractionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TiltInteractionMode", typeof(MapInteractionMode),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapInteractionMode)));
 		public static DependencyProperty TransitFeaturesVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TransitFeaturesVisible", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty ZoomInteractionModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"ZoomInteractionMode", typeof(MapInteractionMode),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapInteractionMode)));
 		public static DependencyProperty IsStreetsideSupportedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsStreetsideSupported", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty SceneProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Scene", typeof(MapScene),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapScene)));
 		public static DependencyProperty BusinessLandmarksEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"BusinessLandmarksEnabled", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty TransitFeaturesEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"TransitFeaturesEnabled", typeof(bool),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(bool)));
 		public static DependencyProperty MapProjectionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"MapProjection", typeof(MapProjection),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapProjection)));
 		public static DependencyProperty StyleSheetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"StyleSheet", typeof(MapStyleSheet),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(MapStyleSheet)));
 		public static DependencyProperty ViewPaddingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"ViewPadding", typeof(Thickness),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(Thickness)));
 		public static DependencyProperty LayersProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Layers", typeof(IList<MapLayer>),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(IList<MapLayer>)));
 		public static DependencyProperty RegionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
+		Windows.UI.Xaml.DependencyProperty.Register(
 			"Region", typeof(string),
 			typeof(MapControl),
 			new FrameworkPropertyMetadata(default(string)));
@@ -424,27 +424,27 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 		}
 		public void StartContinuousRotate(double rateInDegreesPerSecond)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousRotate(double rateInDegreesPerSecond)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousRotate(double rateInDegreesPerSecond)");
 		}
 		public void StopContinuousRotate()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousRotate()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousRotate()");
 		}
 		public void StartContinuousTilt(double rateInDegreesPerSecond)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousTilt(double rateInDegreesPerSecond)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousTilt(double rateInDegreesPerSecond)");
 		}
 		public void StopContinuousTilt()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousTilt()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousTilt()");
 		}
 		public void StartContinuousZoom(double rateOfChangePerSecond)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousZoom(double rateOfChangePerSecond)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousZoom(double rateOfChangePerSecond)");
 		}
 		public void StopContinuousZoom()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousZoom()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousZoom()");
 		}
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRotateAsync(double degrees)
 		{
@@ -497,11 +497,11 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 		}
 		public void StartContinuousPan(double horizontalPixelsPerSecond, double verticalPixelsPerSecond)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousPan(double horizontalPixelsPerSecond, double verticalPixelsPerSecond)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StartContinuousPan(double horizontalPixelsPerSecond, double verticalPixelsPerSecond)");
 		}
 		public void StopContinuousPan()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousPan()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "void MapControl.StopContinuousPan()");
 		}
 		public global::Windows.Foundation.IAsyncOperation<bool> TryPanAsync(double horizontalPixels, double verticalPixels)
 		{
@@ -542,12 +542,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.HeadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.HeadingChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.HeadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.HeadingChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, object> LoadingStatusChanged
@@ -555,12 +555,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.LoadingStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.LoadingStatusChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.LoadingStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.LoadingStatusChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapInputEventArgs> MapDoubleTapped
@@ -568,12 +568,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapDoubleTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapDoubleTapped");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapDoubleTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapDoubleTapped");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapInputEventArgs> MapHolding
@@ -581,12 +581,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapHolding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapHolding");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapHolding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapHolding");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapInputEventArgs> MapTapped
@@ -594,12 +594,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapTapped");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapInputEventArgs> MapControl.MapTapped");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, object> PitchChanged
@@ -607,12 +607,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.PitchChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.PitchChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.PitchChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.PitchChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, object> TransformOriginChanged
@@ -620,12 +620,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.TransformOriginChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.TransformOriginChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.TransformOriginChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, object> MapControl.TransformOriginChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, object> ZoomLevelChanged;
@@ -634,12 +634,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangedEventArgs> MapControl.ActualCameraChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangedEventArgs> MapControl.ActualCameraChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangedEventArgs> MapControl.ActualCameraChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangedEventArgs> MapControl.ActualCameraChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapActualCameraChangingEventArgs> ActualCameraChanging
@@ -647,12 +647,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangingEventArgs> MapControl.ActualCameraChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangingEventArgs> MapControl.ActualCameraChanging");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangingEventArgs> MapControl.ActualCameraChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapActualCameraChangingEventArgs> MapControl.ActualCameraChanging");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapCustomExperienceChangedEventArgs> CustomExperienceChanged
@@ -660,12 +660,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapCustomExperienceChangedEventArgs> MapControl.CustomExperienceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapCustomExperienceChangedEventArgs> MapControl.CustomExperienceChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapCustomExperienceChangedEventArgs> MapControl.CustomExperienceChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapCustomExperienceChangedEventArgs> MapControl.CustomExperienceChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapElementClickEventArgs> MapElementClick
@@ -673,12 +673,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementClickEventArgs> MapControl.MapElementClick");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementClickEventArgs> MapControl.MapElementClick");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementClickEventArgs> MapControl.MapElementClick");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementClickEventArgs> MapControl.MapElementClick");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapElementPointerEnteredEventArgs> MapElementPointerEntered
@@ -686,12 +686,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerEnteredEventArgs> MapControl.MapElementPointerEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerEnteredEventArgs> MapControl.MapElementPointerEntered");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerEnteredEventArgs> MapControl.MapElementPointerEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerEnteredEventArgs> MapControl.MapElementPointerEntered");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapElementPointerExitedEventArgs> MapElementPointerExited
@@ -699,12 +699,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerExitedEventArgs> MapControl.MapElementPointerExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerExitedEventArgs> MapControl.MapElementPointerExited");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerExitedEventArgs> MapControl.MapElementPointerExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapElementPointerExitedEventArgs> MapControl.MapElementPointerExited");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapTargetCameraChangedEventArgs> TargetCameraChanged
@@ -712,12 +712,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapTargetCameraChangedEventArgs> MapControl.TargetCameraChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapTargetCameraChangedEventArgs> MapControl.TargetCameraChanged");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapTargetCameraChangedEventArgs> MapControl.TargetCameraChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapTargetCameraChangedEventArgs> MapControl.TargetCameraChanged");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapRightTappedEventArgs> MapRightTapped
@@ -725,12 +725,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapControl.MapRightTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapControl.MapRightTapped");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapControl.MapRightTapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapControl.MapRightTapped");
 			}
 		}
 		public event global::Windows.Foundation.TypedEventHandler<MapControl, MapContextRequestedEventArgs> MapContextRequested
@@ -738,12 +738,12 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 			[global::Uno.NotImplemented]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapContextRequestedEventArgs> MapControl.MapContextRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapContextRequestedEventArgs> MapControl.MapContextRequested");
 			}
 			[global::Uno.NotImplemented]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapContextRequestedEventArgs> MapControl.MapContextRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapControl", "event TypedEventHandler<MapControl, MapContextRequestedEventArgs> MapControl.MapContextRequested");
 			}
 		}
 

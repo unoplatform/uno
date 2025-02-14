@@ -75,7 +75,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				// No more pending work, unhook from rendering event since being hooked up will case wux to try to 
 				// call the event at 60 frames per second
 				m_renderingToken = false;
-				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+				Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
 				RepeaterTestHooks.NotifyBuildTreeCompleted();
 			}
 
@@ -87,7 +87,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			if (!m_renderingToken)
 			{
-				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+				Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
 				m_renderingToken = true;
 			}
 		}

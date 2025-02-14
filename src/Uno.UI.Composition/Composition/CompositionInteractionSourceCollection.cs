@@ -1,8 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 public partial class CompositionInteractionSourceCollection : CompositionObject, IEnumerable<ICompositionInteractionSource>
 {

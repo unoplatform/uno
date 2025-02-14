@@ -1,5 +1,5 @@
-using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+﻿using Windows.UI.Core;
+using Windows.UI.Xaml;
 
 using Uno.Foundation.Logging;
 

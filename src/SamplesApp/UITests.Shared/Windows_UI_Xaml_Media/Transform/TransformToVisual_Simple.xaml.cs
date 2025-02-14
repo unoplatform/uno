@@ -1,5 +1,5 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
@@ -17,7 +17,7 @@ namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 			var transform = TargetView.TransformToVisual(EnclosingView);
 			var targetY = transform.TransformPoint(new Point(0, 0)).Y;
 			var tracker = TrackerView;
-			Microsoft.UI.Xaml.Controls.Canvas.SetTop(tracker, targetY);
+			Windows.UI.Xaml.Controls.Canvas.SetTop(tracker, targetY);
 		}
 	}
 }

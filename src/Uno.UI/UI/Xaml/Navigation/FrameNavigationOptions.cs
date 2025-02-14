@@ -1,10 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\dxaml\lib\winrtgeneratedclasses\FrameNavigationOptions.g.h, tag winui3/release/1.5-stable, commit 98a60c8f30
 
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Navigation;
+namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Represents options for a frame navigation, including whether it is recorded in the navigation stack and what transition animation is used.

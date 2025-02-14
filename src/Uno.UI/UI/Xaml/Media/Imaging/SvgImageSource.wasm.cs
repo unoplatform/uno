@@ -8,12 +8,12 @@ using Windows.Graphics.Display;
 using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using static Microsoft.UI.Xaml.Media.Imaging.BitmapImage;
+using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
 using Uno.UI.Xaml.Media;
 using Uno.Helpers;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{

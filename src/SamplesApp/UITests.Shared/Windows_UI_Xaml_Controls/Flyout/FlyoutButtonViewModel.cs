@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {

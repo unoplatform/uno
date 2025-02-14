@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 

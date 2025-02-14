@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -96,14 +96,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await UITestHelper.Load(page);
 
 			var foreground = (SolidColorBrush)page.GridTextBlock.Foreground;
-			Assert.AreEqual(Microsoft.UI.Colors.Red, foreground.Color);
+			Assert.AreEqual(Windows.UI.Colors.Red, foreground.Color);
 
 			page.ShowPopup();
 
 			await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
 
 			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
-			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
+			Assert.AreEqual(Windows.UI.Colors.Red, popupForeground.Color);
 		}
 	}
 }

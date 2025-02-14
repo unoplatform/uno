@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	public partial interface IMarkupExtensionOverrides
 	{

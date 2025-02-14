@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -11,8 +11,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UITests.Windows_Storage
@@ -27,7 +27,7 @@ namespace UITests.Windows_Storage
 			this.DataContextChanged += DataContextChangedHandler;
 		}
 
-		private void DataContextChangedHandler(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataContextChangedHandler(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			var newViewModel = args.NewValue as NativeStorageRuntimeTestsViewModel;
 			ViewModel = newViewModel;

@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;

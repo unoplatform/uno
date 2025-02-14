@@ -22,7 +22,7 @@ namespace MUXControlsTestApp
 		{
 			if ((args.InvokedItem as string) == "Apps")
 			{
-				CollapsedItem.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+				CollapsedItem.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
 				NavView.SelectedItem = CollapsedItem;
 			}
