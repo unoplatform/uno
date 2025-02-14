@@ -697,7 +697,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Update the visual states when the Visibility property is changed.
 		/// </summary>
-		private void OnVisibilityChanged()
+		private protected override void OnVisibilityChanged()
 		{
 			var visibility = Visibility;
 			if (visibility != Visibility.Visible)
