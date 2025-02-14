@@ -4,15 +4,15 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel HorizontalAlignment="Left">
 		<CheckBox Margin="0,24"
-                 VerticalContentAlignment="Center"
                  Content="CheckBox with the missing vertical alignment" />
-
-        <CheckBox Margin="0,24">
+		
+		<CheckBox Margin="0,24">
 			<TextBlock
 					Margin="0,4,0,0"
 					Text="Checkbox with a TextBlock with a custom margin" />
@@ -69,24 +69,25 @@
 						OnContent="Allow" />
 					<Button
 						Content="Help"
+						Click="ShowTip"
 						Margin="0,4,0,0" />
-					<TeachingTip
+					<muxc:TeachingTip
 						x:Name="ToggleThemeTeachingTip3"
 						Title="What is a non-approved OEMs?"
 						PreferredPlacement="LeftBottom"
 						Target="{x:Bind Toggle}">
-						<TeachingTip.HeroContent>
+						<muxc:TeachingTip.HeroContent>
 							<Image
 								Margin="24"
 								Source="/Assets/Images/vehicule.png" />
-						</TeachingTip.HeroContent>
-						<TeachingTip.Content>
+						</muxc:TeachingTip.HeroContent>
+						<muxc:TeachingTip.Content>
 							<TextBlock
 								Margin="0,16,0,0"
 								Text="Explanation here"
 								TextWrapping="WrapWholeWords" />
-						</TeachingTip.Content>
-					</TeachingTip>
+						</muxc:TeachingTip.Content>
+					</muxc:TeachingTip>
 
 					<TextBlock
 						Margin="0,16,0,0"
@@ -139,8 +140,8 @@
 					Grid.Column="2">
 					<CheckBox
 						Checked="ToggleButton_OnChecked"
+						Unchecked="ToggleButton_OnUnChecked"
 						Content="Is debug mode enabled" />
-
 					<TextBlock
 						Margin="0,12,0,0"
 						Style="{StaticResource PropertyHeaderTextBlockStyle}"

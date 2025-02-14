@@ -18,5 +18,16 @@ public sealed partial class FontAlignmentTests : Page
 		var check = (CheckBox)sender;
 		MyRadioButtons.IsEnabled = check.IsChecked.Value;
 	}
+
+	private void ToggleButton_OnUnChecked(object sender, RoutedEventArgs e)
+	{
+		var check = (CheckBox)sender;
+		MyRadioButtons.IsEnabled = check.IsChecked.Value;
+	}
+
+	private void ShowTip(object sender, RoutedEventArgs e)
+	{
+		ToggleThemeTeachingTip3.IsOpen = true;
+	}
 }
 
