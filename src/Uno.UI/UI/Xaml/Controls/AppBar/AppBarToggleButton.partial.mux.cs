@@ -26,20 +26,8 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, IAppBarButtonHelpersProvider
+public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 {
-	DependencyProperty IAppBarButtonHelpersProvider.GetIsCompactDependencyProperty() => IsCompactProperty;
-
-	DependencyProperty IAppBarButtonHelpersProvider.GetUseOverflowStyleDependencyProperty() => UseOverflowStyleProperty;
-
-	DependencyProperty IAppBarButtonHelpersProvider.GetLabelPositionDependencyProperty() => LabelPositionProperty;
-
-	DependencyProperty IAppBarButtonHelpersProvider.GetLabelDependencyProperty() => LabelProperty;
-
-	DependencyProperty IAppBarButtonHelpersProvider.GetIconDependencyProperty() => IconProperty;
-
-	DependencyProperty IAppBarButtonHelpersProvider.GetKeyboardAcceleratorTextDependencyProperty() => KeyboardAcceleratorTextOverrideProperty;
-
 	/// <summary>
 	/// Initializes a new instance of the AppBarToggleButton class.
 	/// </summary>
