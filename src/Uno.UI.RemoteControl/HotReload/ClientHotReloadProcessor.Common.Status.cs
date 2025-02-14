@@ -215,7 +215,7 @@ public partial class ClientHotReloadProcessor
 		{
 			return Types
 				.Select(GetFriendlyName)
-				.Where(name => name is { Length: > 0 } and not "HRException")
+				.Where(name => name is { Length: > 0 } and not "HotReloadException")
 				.Distinct()
 				.ToArray()!;
 
