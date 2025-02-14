@@ -503,8 +503,13 @@ id timeObserver;
 
 @synthesize visible;
 
+// UNONativeElement
+
 - (void)detach {
-    // nothing needed
+#if DEBUG
+    NSLog(@"detach mediaplayer %p", self);
+#endif
+    [self removeFromSuperview];
 }
 
 - (void)layout {
