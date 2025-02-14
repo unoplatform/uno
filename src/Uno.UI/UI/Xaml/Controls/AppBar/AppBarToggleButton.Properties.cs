@@ -89,8 +89,8 @@ partial class AppBarToggleButton
 	/// </summary>
 	public string KeyboardAcceleratorTextOverride
 	{
-		get => AppBarButtonHelpers.GetKeyboardAcceleratorText(this);
-		set => AppBarButtonHelpers.PutKeyboardAcceleratorText(this, value);
+		get => AppBarButtonHelpers<AppBarToggleButton>.GetKeyboardAcceleratorText(this);
+		set => AppBarButtonHelpers<AppBarToggleButton>.PutKeyboardAcceleratorText(this, value);
 	}
 
 	/// <summary>
