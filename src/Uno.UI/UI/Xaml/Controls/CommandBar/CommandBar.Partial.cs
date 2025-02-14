@@ -1865,11 +1865,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						desiredSize = elementAsAppBarButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarButton);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						desiredSize = elementAsAppBarToggleButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarToggleButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarToggleButton);
 					}
 
 					desiredWidth = desiredSize.Width;
@@ -3262,7 +3262,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			return focusState;
 		}
 
-		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen, bool closeOnDelay)
+		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen = null, bool closeOnDelay = false)
 		{
 			var primaryCommands = PrimaryCommands;
 			var secondaryCommands = SecondaryCommands;

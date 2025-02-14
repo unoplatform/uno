@@ -27,15 +27,8 @@ using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner, IAppBarButtonHelpersProvider
+partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 {
-	DependencyProperty IAppBarButtonHelpersProvider.GetIsCompactDependencyProperty() => IsCompactProperty;
-	DependencyProperty IAppBarButtonHelpersProvider.GetUseOverflowStyleDependencyProperty() => UseOverflowStyleProperty;
-	DependencyProperty IAppBarButtonHelpersProvider.GetLabelPositionDependencyProperty() => LabelPositionProperty;
-	DependencyProperty IAppBarButtonHelpersProvider.GetLabelDependencyProperty() => LabelProperty;
-	DependencyProperty IAppBarButtonHelpersProvider.GetIconDependencyProperty() => IconProperty;
-	DependencyProperty IAppBarButtonHelpersProvider.GetKeyboardAcceleratorTextDependencyProperty() => KeyboardAcceleratorTextOverrideProperty;
-
 	/// <summary>
 	/// Initializes a new instance of the AppBarButton class.
 	/// </summary>
