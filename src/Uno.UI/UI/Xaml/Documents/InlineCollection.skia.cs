@@ -587,7 +587,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 					HandleSelection(lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas);
 
-					RenderText(lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y, baselineOffsetY, paint);
+					RenderText(lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
 
 					// START decorations
 					var decorations = inline.TextDecorations;
@@ -696,7 +696,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		private void RenderText(int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, float baselineOffsetY, SKPaint paint)
+		private void RenderText(int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, SKPaint paint)
 		{
 			if (!RenderSelection || _selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 			{
@@ -705,8 +705,13 @@ namespace Microsoft.UI.Xaml.Documents
 					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
 					positions.CopyTo(run1.GetPositionSpan(segmentSpan.GlyphsLength));
 					glyphs.CopyTo(run1.GetGlyphSpan(segmentSpan.GlyphsLength));
-					using var textBlob = _textBlobBuilder.Build();
-					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+
+					// Roughly equivalent to:
+					//   using var textBlob = _textBlobBuilder.Build();
+					//   canvas.DrawText(textBlob, 0f, y, paint);
+					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 				}
 			}
 			else
@@ -752,8 +757,9 @@ namespace Microsoft.UI.Xaml.Documents
 					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
 					positions.Slice(0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
 					glyphs.Slice(0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
-					using var textBlob1 = _textBlobBuilder.Build();
-					canvas.DrawText(textBlob1, 0, y + baselineOffsetY, paint);
+					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 				}
 
 				if (endOfSelection - startOfSelection > 0) // selection
@@ -761,10 +767,11 @@ namespace Microsoft.UI.Xaml.Documents
 					var run2 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, endOfSelection - startOfSelection);
 					positions.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
 					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
-					using var textBlob2 = _textBlobBuilder.Build();
 					var color = paint.Color;
 					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
-					canvas.DrawText(textBlob2, 0, y + baselineOffsetY, paint);
+					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 					paint.Color = color;
 				}
 
@@ -773,8 +780,9 @@ namespace Microsoft.UI.Xaml.Documents
 					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
 					positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
 					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
-					using var textBlob3 = _textBlobBuilder.Build();
-					canvas.DrawText(textBlob3, 0, y + baselineOffsetY, paint);
+					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 				}
 			}
 		}
