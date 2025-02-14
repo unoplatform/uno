@@ -54,7 +54,9 @@
 			this._bootTime = Date.now() - performance.now();
 			this._source = manageSource;
 
-			BrowserPointerInputSource._exports.OnInitialized(manageSource, this._bootTime);
+			var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+			BrowserPointerInputSource._exports.OnInitialized(manageSource, this._bootTime, userAgent);
 			this.subscribePointerEvents(); // Subscribe only after the managed initialization is done
 		}
 

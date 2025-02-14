@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls;
-using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
 
 namespace Uno.UI
@@ -906,5 +904,31 @@ namespace Uno.UI
 			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
 #endif
 		}
+
+#if __ANDROID__
+		public static class AndroidSettings
+		{
+#if NET9_0_OR_GREATER
+			private static bool _isEdgeToEdgeEnabled = true;
+#else
+			private static bool _isEdgeToEdgeEnabled;
+#endif
+
+			/// <summary>
+			/// Gets or sets a value indicating whether the app should use the "edge-to-edge" experience
+			/// <see href="https://developer.android.com/develop/ui/views/layout/edge-to-edge" />.
+			/// When enabled, the system UI becomes transparent and the app's UI flows behind it.
+			/// Use Uno Toolkit SafeArea to accomodate for it.
+			/// This flag has no effect on Android 15 and newer, where the edge-to-edge experience
+			/// is enforced by the OS.
+			/// </summary>
+			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
+			public static bool IsEdgeToEdgeEnabled
+			{
+				get => (int)Android.OS.Build.VERSION.SdkInt >= 35 || _isEdgeToEdgeEnabled;
+				set => _isEdgeToEdgeEnabled = value;
+			}
+		}
+#endif
 	}
 }
