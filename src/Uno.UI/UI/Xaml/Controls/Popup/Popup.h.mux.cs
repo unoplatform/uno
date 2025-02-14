@@ -10,6 +10,8 @@ public partial class Popup
 {
 	private bool m_fIsLightDismiss;
 
+	internal bool IsFlyout => AssociatedFlyout is not null;
+
 	internal override bool IsFocusable =>
 		m_fIsLightDismiss &&
 		IsVisible() &&

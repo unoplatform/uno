@@ -23,7 +23,7 @@ namespace DirectUI
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
-		private KeyboardCapabilities _keyboardCapabilities;
+		private KeyboardCapabilities? _keyboardCapabilities;
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
 

@@ -20,6 +20,7 @@ using System.ComponentModel;
 using Uno.UI.Xaml.Input;
 using System.Windows.Input;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -217,20 +218,10 @@ internal static class AppBarButtonHelpers<TButton>
 				string toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
 				// format is %s (%s)
-				WCHAR buffer[1024];
-				IFCEXPECT_RETURN(swprintf_s(
-					buffer, ARRAYSIZE(buffer),
-					toolTipFormatString.GetRawBuffer(nullptr),
-					labelText.GetRawBuffer(nullptr),
-					keyboardAcceleratorText.GetRawBuffer(nullptr)) >= 0);
+				// Uno specific: The format string is "C++ style" format string, using StringUtil.
+				var toolTipString = StringUtil.FormatString(toolTipFormatString, labelText, keyboardAcceleratorText);
 
-				wrl_wrappers::HString toolTipString;
-				IFC_RETURN(toolTipString.Set(buffer));
-
-				ctl::ComPtr<IInspectable> boxedToolTipString;
-				IFC_RETURN(PropertyValue::CreateFromString(toolTipString.Get(), &boxedToolTipString));
-
-				button.SetValue(ToolTipService.ToolTipProperty, boxedToolTipString);
+				button.SetValue(ToolTipService.ToolTipProperty, toolTipString);
 			}
 			else
 			{
@@ -244,7 +235,7 @@ internal static class AppBarButtonHelpers<TButton>
 		}
 	}
 
-	private static Size GetKeyboardAcceleratorTextDesiredSize(TButton button)
+	internal static Size GetKeyboardAcceleratorTextDesiredSize(TButton button)
 	{
 		Size desiredSize = default;
 

@@ -21,8 +21,6 @@ using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
-
-
 #if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
@@ -2205,6 +2203,20 @@ namespace Microsoft.UI.Xaml
 			{
 				return !object.ReferenceEquals(previousValue, newValue);
 			}
+		}
+
+		internal bool HasLocalOrModifierValue(DependencyProperty dp)
+		{
+			var precedence = GetCurrentHighestValuePrecedence(dp);
+
+			// TODO Uno Specific: The check is a bit different in WinUI, but should have the same effect.
+			bool hasLocalValue = !(
+				precedence == DependencyPropertyValuePrecedences.DefaultValue ||
+				precedence == DependencyPropertyValuePrecedences.DefaultStyle ||
+				precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
+				precedence == DependencyPropertyValuePrecedences.ImplicitStyle);
+
+			return hasLocalValue;
 		}
 
 		private void OnParentChanged(object? previousParent, object? value)
