@@ -147,8 +147,8 @@ public class Given_CalendarDatePicker
 
 		await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).Count > 0);
 		var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).First();
-		var child = popup.Child;
-		var calendarView = VisualTreeUtils.FindVisualChildByType<CalendarView>(child);
+		var child = (FlyoutPresenter)popup.Child;
+		var calendarView = (CalendarView)child.Content;
 		Assert.AreEqual(now.Day, calendarView.m_lastDisplayedDate.Day);
 		Assert.AreEqual(now.Month, calendarView.m_lastDisplayedDate.Month);
 		Assert.AreEqual(now.Year, calendarView.m_lastDisplayedDate.Year);
