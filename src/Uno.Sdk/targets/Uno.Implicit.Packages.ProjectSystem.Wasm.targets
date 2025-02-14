@@ -32,7 +32,19 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.WebAssembly" ProjectSystem="true" />
+
+		<!-- Include Wasm+DOM runtime only when requested or if the Wasm+Skia renderer is disabled -->
+		<_UnoProjectSystemPackageReference 
+			Include="Uno.WinUI.Runtime.WebAssembly"
+			ProjectSystem="true"
+			Condition="
+				$(UnoFeatures.Contains(';webassemblydomrenderer;')) 
+				OR (
+					!$(UnoFeatures.Contains(';webassemblyskiarenderer;'))
+					AND '$(IsUnoHead)' == 'true'
+				)
+			" />
+
 	</ItemGroup>
 	
 </Project>

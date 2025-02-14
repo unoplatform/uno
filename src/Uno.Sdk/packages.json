@@ -37,7 +37,7 @@
 		"Uno.Wasm.Bootstrap.Server"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.0-dev.309"
+		"net9.0": "9.0.13"
 	  }
 	},
 	{
@@ -92,7 +92,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.0.160",
+		"version": "1.6-dev.21",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -118,14 +118,14 @@
 	},
 	{
 	  "group": "WinAppSdk",
-	  "version": "1.6.240923002",
+	  "version": "1.6.250108002",
 	  "packages": [
 		"Microsoft.WindowsAppSDK"
 	  ]
 	},
 	{
 	  "group": "WinAppSdkBuildTools",
-	  "version": "10.0.22621.3233",
+	  "version": "10.0.26100.1742",
 	  "packages": [
 		"Microsoft.Windows.SDK.BuildTools"
 	  ]
@@ -272,7 +272,7 @@
 	},
 	{
 	  "group": "Extensions",
-	  "version": "5.2.0-dev.20",
+	  "version": "5.3-dev.120",
 	  "packages": [
 		"Uno.Extensions.Authentication.WinUI",
 		"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -300,7 +300,7 @@
 	},
 	{
 	  "group": "Toolkit",
-	  "version": "6.3.0-dev.6",
+	  "version": "6.4.1",
 	  "packages": [
 		"Uno.Toolkit.WinUI",
 		"Uno.Toolkit.WinUI.Cupertino",
