@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.MUX.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -129,5 +131,28 @@ public class Given_CalendarDatePicker
 			}
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_Default_Flyout_Date()
+	{
+		var now = DateTimeOffset.UtcNow;
+		var datePicker = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+
+		TestServices.WindowHelper.WindowContent = datePicker;
+
+		await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+		datePicker.IsCalendarOpen = true;
+
+		await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).Count > 0);
+		var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).First();
+		var child = popup.Child;
+		var calendarView = VisualTreeUtils.FindVisualChildByType<CalendarView>(child);
+		Assert.AreEqual(now.Day, calendarView.m_lastDisplayedDate.Day);
+		Assert.AreEqual(now.Month, calendarView.m_lastDisplayedDate.Month);
+		Assert.AreEqual(now.Year, calendarView.m_lastDisplayedDate.Year);
+	}
+#endif
 }
 #endif
