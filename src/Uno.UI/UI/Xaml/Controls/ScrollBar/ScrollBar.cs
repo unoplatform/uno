@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// We don't want to show the initial fade-out of the mouse/panning indicators.
 		bool m_suspendVisualStateUpdates = true; // = true: Visual state update are disabled until the template has been applied at least once!
 
-		// Value indicating how far the ScrollBar has beeen dragged.
+		// Value indicating how far the ScrollBar has been dragged.
 		double m_dragValue;
 
 		// Template parts for the horizontal and vertical templates

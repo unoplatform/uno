@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __WASM__ || __SKIA__
 			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
-			//OnApplyTemplate() is comming too late when using bindings
+			//OnApplyTemplate() is coming too late when using bindings
 			UpdateItems(null);
 #endif
 

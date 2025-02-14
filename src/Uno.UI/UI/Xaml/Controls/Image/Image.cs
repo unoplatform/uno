@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					case Stretch.Uniform:
 						// If sourceSize is empty, aspect ratio is undefined so we return 0.
-						// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+						// Since aspect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
 						// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
 						desiredSize.Width = knownWidth;
 						desiredSize.Height = sourceSize == default(Size) ? 0 : Math.Ceiling((knownWidth / aspectRatio) * 2) / 2;
@@ -392,7 +392,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					case Stretch.Uniform:
 						//If sourceSize is empty, aspect ratio is undefined so we return 0
-						// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
+						// Since aspect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
 						// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
 						desiredSize.Width = sourceSize == default(Size) ? 0 : Math.Ceiling(knownHeight * aspectRatio * 2) / 2;
 						desiredSize.Height = knownHeight;

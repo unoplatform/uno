@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private protected override double EaseInCore(double normalizedTime)
 		{
 			// The math below is complicated because we have a few requirements to get the correct look for bounce:
-			//  1) The bounces should be symetrical
+			//  1) The bounces should be symmetrical
 			//  2) Bounciness should control both the amplitude and the period of the bounces
 			//  3) Bounces should control the number of bounces without including the final half bounce to get you back to 1.0
 			//
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// Constants
 			double bounces = Math.Max(0.0, (double)Bounces);
 			double bounciness = Bounciness;
-			// Clamp the bounciness so we dont hit a divide by zero
+			// Clamp the bounciness so we don't hit a divide by zero
 			if (bounciness < 1.0 || bounciness.IsOne())
 			{
 				// Make it just over one.  In practice, this will look like 1.0 but avoid divide by zeros.

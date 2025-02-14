@@ -125,7 +125,7 @@
                             </muxc:SwipeControl>
                         </ListViewItem>
 
-                        <!-- Testing executing, swipe to revealin one item (less than the threshold of 100px), and executing -->
+                        <!-- Testing executing, swipe to reveal in one item (less than the threshold of 100px), and executing -->
                         <ListViewItem AutomationProperties.Name="SwipeControl2" Height="40">
                             <muxc:SwipeControl x:Name="sc2" LeftItems="{StaticResource OneRevealItem}" RightItems="{StaticResource ExecuteItemsHorizontal}">
                                 <TextBlock Text="SwipeControl 2" VerticalAlignment="Center"/>

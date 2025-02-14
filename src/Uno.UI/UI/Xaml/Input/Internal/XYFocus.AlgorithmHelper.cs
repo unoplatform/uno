@@ -128,28 +128,28 @@ namespace Uno.UI.Xaml.Input
 		}
 
 		/// <summary>
-		/// Checks if the navigation direciton is left.
+		/// Checks if the navigation direction is left.
 		/// </summary>
 		/// <param name="direction">Direction.</param>
 		/// <returns>Ture if left.</returns>
 		internal static bool IsLeft(FocusNavigationDirection direction) => direction == FocusNavigationDirection.Left;
 
 		/// <summary>
-		/// Checks if the navigation direciton is right.
+		/// Checks if the navigation direction is right.
 		/// </summary>
 		/// <param name="direction">Direction.</param>
 		/// <returns>Ture if right.</returns>
 		internal static bool IsRight(FocusNavigationDirection direction) => direction == FocusNavigationDirection.Right;
 
 		/// <summary>
-		/// Checks if the navigation direciton is up.
+		/// Checks if the navigation direction is up.
 		/// </summary>
 		/// <param name="direction">Direction.</param>
 		/// <returns>Ture if up.</returns>
 		internal static bool IsUp(FocusNavigationDirection direction) => direction == FocusNavigationDirection.Up;
 
 		/// <summary>
-		/// Checks if the navigation direciton is down.
+		/// Checks if the navigation direction is down.
 		/// </summary>
 		/// <param name="direction">Direction.</param>
 		/// <returns>Ture if down.</returns>

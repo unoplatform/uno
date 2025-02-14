@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly DragStartingEventArgs? _inner;
 
-		public DragItemsStartingEventArgs()  // Part of the public API. DO NOT USE internaly
+		public DragItemsStartingEventArgs()  // Part of the public API. DO NOT USE internally
 		{
 			Data = new DataPackage();
 			Items = new List<object>();

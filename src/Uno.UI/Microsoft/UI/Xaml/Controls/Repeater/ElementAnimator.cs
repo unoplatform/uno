@@ -178,15 +178,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				switch (elementInfo.Trigger)
 				{
 					case AnimationTrigger.Show:
-						// Call into the derivied class's StartShowAnimation override
+						// Call into the derived class's StartShowAnimation override
 						StartShowAnimation(elementInfo.Element, elementInfo.Context);
 						break;
 					case AnimationTrigger.Hide:
-						// Call into the derivied class's StartHideAnimation override
+						// Call into the derived class's StartHideAnimation override
 						StartHideAnimation(elementInfo.Element, elementInfo.Context);
 						break;
 					case AnimationTrigger.BoundsChange:
-						// Call into the derivied class's StartBoundsChangeAnimation override
+						// Call into the derived class's StartBoundsChangeAnimation override
 						StartBoundsChangeAnimation(
 							elementInfo.Element,
 							elementInfo.Context,

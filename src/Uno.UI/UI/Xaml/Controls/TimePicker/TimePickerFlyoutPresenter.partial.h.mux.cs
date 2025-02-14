@@ -90,7 +90,7 @@ partial class TimePickerFlyoutPresenter
 	// source as our properties change.
 	private LoopingSelector? _tpHourPicker;
 
-	// Reference to MinutePicler Selector. We need this as we will change its item
+	// Reference to MinutePicker Selector. We need this as we will change its item
 	// source as our properties change.
 	private LoopingSelector? _tpMinutePicker;
 

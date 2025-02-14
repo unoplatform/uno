@@ -158,7 +158,7 @@ internal static partial class ItemIndexRangeHelper // ItemIndexRangeHelper.h
 	//            _In_ int currentRangeIndex,
 	//            _Inout_ std::vector<Range>& removedRanges);
 
-	//        // a helper if the deselected range is interesecting with the current range from the front or end
+	//        // a helper if the deselected range is intersecting with the current range from the front or end
 	//        void DeselectRangeIntersectionHelper(
 	//            _In_ int firstIndex,
 	//            _In_ unsigned int length,
@@ -720,7 +720,7 @@ partial class ItemIndexRangeHelper // ItemIndexRangeHelper.cpp
 	//	removedRanges.push_back(Range(firstIndex, length));
 	//}
 
-	//// a helper if the deselected range is interesecting with the current range from the front or end
+	//// a helper if the deselected range is intersecting with the current range from the front or end
 	//void ItemIndexRangeHelper::RangeSelection::DeselectRangeIntersectionHelper(
 	//	_In_ int firstIndex,
 	//	_In_ unsigned int length,

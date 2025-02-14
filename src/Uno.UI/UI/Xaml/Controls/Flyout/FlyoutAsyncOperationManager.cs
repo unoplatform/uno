@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					AssertCompleteOperationPreconditions();
 
-					//		// nulls out m_spCurrentOperation. This is important in the case of rentrancy;
+					//		// nulls out m_spCurrentOperation. This is important in the case of reentrancy;
 					//		// the consumer's CompleteOperation handler may trigger another call to Start,
 					//		// in which case we want Start to be able to return a deferred operation
 					//		// rather than failing.

@@ -35,7 +35,7 @@ namespace Uno.Extensions
 		/// </summary>
 		/// <param name="func">Func to lock</param>
 		/// <param name="mode">Mode to use for locking</param>
-		/// <returns>A FuncAsync which cannot have nmultiple instance running at a same time</returns>
+		/// <returns>A FuncAsync which cannot have multiple instance running at a same time</returns>
 		public static FuncAsync<TResult> LockInvocation<TResult>(this FuncAsync<TResult> func, InvocationLockingMode mode = InvocationLockingMode.Share)
 		{
 			// Note: Do not use TaskCompletionSource, for strange reasons it cause app crashes on iOS (on SetException).
@@ -97,7 +97,7 @@ namespace Uno.Extensions
 		/// </summary>
 		/// <param name="func">Func to lock</param>
 		/// <param name="mode">Mode to use for locking FOR A SAME PARAMETER</param>
-		/// <returns>A FuncAsync which cannot have nmultiple instance running at a same time</returns>
+		/// <returns>A FuncAsync which cannot have multiple instance running at a same time</returns>
 		public static FuncAsync<TParam, TResult> LockInvocation<TParam, TResult>(this FuncAsync<TParam, TResult> func, InvocationLockingMode mode = InvocationLockingMode.Share)
 			where TParam : class
 		{
