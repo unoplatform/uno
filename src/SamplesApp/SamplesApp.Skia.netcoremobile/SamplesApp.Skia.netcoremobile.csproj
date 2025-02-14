@@ -45,7 +45,7 @@
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
-		
+
 		<!-- Required in CI to avoid dependency issues -->
 		<PreBuildUnoUITasks Condition="'$(CI_Build)'!=''">true</PreBuildUnoUITasks>
 	</PropertyGroup>
