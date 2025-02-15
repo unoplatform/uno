@@ -39,14 +39,6 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 		{
 			NativeHandle = _nativeView
 		};
-		native.Unloaded += (_, _) =>
-		{
-			if (_playerExtension is { })
-			{
-				_playerExtension.Dispose();
-				_playerExtension = null;
-			}
-		};
 
 		var cp = new ContentPresenter() { Content = native };
 		_presenter.Child = cp;

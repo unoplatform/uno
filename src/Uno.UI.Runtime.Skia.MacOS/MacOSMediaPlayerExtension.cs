@@ -23,7 +23,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 {
 	private const string MsAppXScheme = "ms-appx";
-	private static Dictionary<MediaPlayer, MacOSMediaPlayerExtension> _instances = new();
+	private static readonly ConditionalWeakTable<MediaPlayer, MacOSMediaPlayerExtension> _instances = new();
 	private MediaPlayer _player;
 	internal nint _nativePlayer;
 	internal MacOSMediaPlayerPresenterExtension? _presenter;
@@ -46,7 +46,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 
 		lock (_instances)
 		{
-			_instances[_player] = this;
+			_instances.TryAdd(_player, this);
 		}
 	}
 
