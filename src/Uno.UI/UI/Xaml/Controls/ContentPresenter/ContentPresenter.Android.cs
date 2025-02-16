@@ -4,7 +4,7 @@ using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -17,7 +17,7 @@ using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {

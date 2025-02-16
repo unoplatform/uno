@@ -3,19 +3,19 @@ using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Graphics;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class BindableButtonEx : BindableButton, DependencyObject
 	{

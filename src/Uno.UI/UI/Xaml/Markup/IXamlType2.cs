@@ -1,5 +1,5 @@
 ﻿#if !HAS_UNO_WINUI
-namespace Microsoft.UI.Xaml.Markup;
+namespace Windows.UI.Xaml.Markup;
 
 /// <summary>
 /// Provides the means to report XAML-type system specifics about XAML types. Using this interface contract,

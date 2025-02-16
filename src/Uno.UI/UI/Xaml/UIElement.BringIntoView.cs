@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {

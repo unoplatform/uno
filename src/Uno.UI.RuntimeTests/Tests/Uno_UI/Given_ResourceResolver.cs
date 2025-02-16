@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Extensions;

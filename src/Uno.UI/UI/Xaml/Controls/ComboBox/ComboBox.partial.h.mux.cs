@@ -6,12 +6,12 @@
 
 using System;
 using DirectUI;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ComboBox
 {

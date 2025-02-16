@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class UIElement
 {

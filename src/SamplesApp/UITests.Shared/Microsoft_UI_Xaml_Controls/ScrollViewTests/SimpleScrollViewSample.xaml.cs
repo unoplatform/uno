@@ -1,5 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ScrollViewTests;
@@ -13,7 +13,7 @@ public sealed partial class SimpleScrollViewSample : Page
 
 		this.Loaded += (_, _) =>
 		{
-			scrollView.ScrollPresenter.Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow);
+			scrollView.ScrollPresenter.Background = new SolidColorBrush(Windows.UI.Colors.Yellow);
 		};
 	}
 }

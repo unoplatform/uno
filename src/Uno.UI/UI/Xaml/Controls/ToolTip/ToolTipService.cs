@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
 using Windows.System;
@@ -12,7 +12,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a service that provides static methods to display a ToolTip.

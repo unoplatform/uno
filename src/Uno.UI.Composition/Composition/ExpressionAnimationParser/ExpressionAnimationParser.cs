@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 // Mostly inspired from Minsk (https://github.com/terrajobst/minsk/)
 
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal sealed class ExpressionAnimationParser
 {

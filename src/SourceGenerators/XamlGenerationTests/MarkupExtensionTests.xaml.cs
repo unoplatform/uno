@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
 // using System.Windows.Markup; // <-- will cause MarkupWithArgsExtension to fail
-// ^ as it would instead inherits from System.Windows.Markup rather than Microsoft.UI.Xaml.Markup
+// ^ as it would instead inherits from System.Windows.Markup rather than Windows.UI.Xaml.Markup
 
 namespace XamlGenerationTests
 {

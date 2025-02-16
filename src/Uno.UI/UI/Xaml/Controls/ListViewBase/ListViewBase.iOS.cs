@@ -7,15 +7,15 @@ using System.Windows.Input;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.Extensions;
 using System.Collections.Specialized;
 using Uno.Disposables;
 
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{

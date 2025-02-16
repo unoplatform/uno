@@ -1,6 +1,6 @@
 ﻿//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,12 +14,12 @@ using CoreGraphics;
 using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
 
 #if USE_CUSTOM_LAYOUT_ATTRIBUTES
-using _LayoutAttributes = Microsoft.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+using _LayoutAttributes = Windows.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
 #else
 using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsStackPanel"/> behaviour.

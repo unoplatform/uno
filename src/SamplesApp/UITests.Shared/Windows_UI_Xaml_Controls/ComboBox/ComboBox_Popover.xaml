@@ -16,7 +16,7 @@
 
   <UserControl.Resources>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBox -->
+	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
 	<not_win:Style x:Key="iPadComboBoxStyle"
 				   TargetType="ComboBox">
 	  <not_win:Setter Property="ItemContainerStyle"

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 
@@ -14,7 +14,7 @@ using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class TextBox
 {
