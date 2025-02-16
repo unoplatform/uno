@@ -1,0 +1,9 @@
+{
+  "name": "Uno Platform Samples App",
+  "description": "Sample app for Uno Platform development",
+  "lang": "en-US",
+  "start_url": "/",
+  "display_override": [
+	  "window-controls-overlay"
+  ]
+}
