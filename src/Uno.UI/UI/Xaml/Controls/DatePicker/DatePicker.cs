@@ -2269,7 +2269,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/* static */
 
-		private static DateTimeOffset NullDateSentinelValue { get; } =
+		internal static DateTimeOffset NullDateSentinelValue { get; } =
 			default(WindowsFoundationDateTime);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)
