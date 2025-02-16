@@ -273,4 +273,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public void Destroy() { }
 
 	public void Hide() { }
+
+#if __IOS__ || __MACOS__
+	public abstract Size GetWindowSize();
+#endif
 }
