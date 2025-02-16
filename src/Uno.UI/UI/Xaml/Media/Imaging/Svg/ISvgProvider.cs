@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
+#if __SKIA__
+using SkiaSharp;
+#endif
+
 namespace Uno.UI.Xaml.Media.Imaging.Svg;
 
 /// <summary>
@@ -24,6 +28,9 @@ public interface ISvgProvider
 	event EventHandler? SourceLoaded;
 
 	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
+
+	/// <returns>An SKPicture on Skia, otherwise null.</returns>
+	object? TryGetLoadedDataAsPictureAsync() => default;
 
 	void Unload();
 }
