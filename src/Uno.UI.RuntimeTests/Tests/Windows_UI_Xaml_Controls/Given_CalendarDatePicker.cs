@@ -127,8 +127,6 @@ public class Given_CalendarDatePicker
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 
 #if HAS_UNO
 	[TestMethod]
@@ -151,8 +149,5 @@ public class Given_CalendarDatePicker
 		Assert.AreEqual(now.Month, calendarView.m_lastDisplayedDate.Month);
 		Assert.AreEqual(now.Year, calendarView.m_lastDisplayedDate.Year);
 	}
-#endif
-}
->>>>>>> 37ab0ec97e (test: Validate default date picker flyout dates)
 #endif
 }
