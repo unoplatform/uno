@@ -150,4 +150,5 @@ public class Given_CalendarDatePicker
 		Assert.AreEqual(now.Year, calendarView.m_lastDisplayedDate.Year);
 	}
 #endif
+#endif
 }
