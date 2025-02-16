@@ -1,55 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference MenuBarItem.cpp, tag winui3/release/1.4.2
+
+using System;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-
-using AutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AutomationPeer;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Microsoft.UI.Input;
+using Uno;
+using AutomationPeer = Windows.UI.Xaml.Automation.Peers.AutomationPeer;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuBarItem : Control
 	{
-		private readonly SerialDisposable _registrations = new SerialDisposable();
-
-		private MenuBar m_menuBar;
-		private MenuBarItemFlyout m_flyout;
 		private Button m_button;
+		private MenuBarItemFlyout m_flyout;
+		private WeakReference<DependencyObject> m_passThroughElement = new WeakReference<DependencyObject>(null);
+		private WeakReference<MenuBar> m_menuBar;
 		private bool m_isFlyoutOpen;
 
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
-		private DependencyObject m_passThroughElement;
-#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value null
+		private SerialDisposable m_presenterKeyDownRevoker = new SerialDisposable();
+		private SerialDisposable m_flyoutClosedRevoker = new SerialDisposable();
+		private SerialDisposable m_flyoutOpeningRevoker = new SerialDisposable();
+		private SerialDisposable m_pointerEnteredRevoker = new SerialDisposable();
+		private SerialDisposable m_accessKeyInvokedRevoker = new SerialDisposable();
 
-		private CompositeDisposable _activeDisposables;
+		private IDisposable m_onMenuBarItemPointerPressedRevoker;
+		private IDisposable m_onMenuBarItemKeyDownRevoker;
+
+		private IDisposable m_pressedRevoker;
+		private IDisposable m_pointerOverRevoker;
+
 
 		public MenuBarItem()
 		{
 			DefaultStyleKey = typeof(MenuBarItem);
 
-			var observableVector = new ObservableVector<MenuFlyoutItemBase>();
-
+			var items = new ObservableVector<MenuFlyoutItemBase>();
+			var observableVector = items as IObservableVector<MenuFlyoutItemBase>;
 			observableVector.VectorChanged += OnItemsVectorChanged;
-
 			SetValue(ItemsProperty, observableVector);
 
-			Loaded += MenuBarItem_Loaded;
-		}
-
-		private void MenuBarItem_Loaded(object sender, RoutedEventArgs e)
-		{
-			SynchronizeMenuBar();
+			// Uno Specific: make sure to only subscribe to events while loaded
+			Loaded += (_, _) => OnApplyTemplate();
+			Unloaded += (_, _) => DetachEventHandlers();
 		}
 
 		// IUIElement / IUIElementOverridesHelper
@@ -63,30 +70,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			m_button = GetTemplateChild("ContentButton") as Button;
 
+			var menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
+			if (menuBar is { })
+			{
+				m_menuBar = new WeakReference<MenuBar>(menuBar);
+				// Ask parent MenuBar for its root to enable pass through
+				menuBar.RequestPassThroughElement(this);
+			}
+
 			PopulateContent();
+			DetachEventHandlers();
 			AttachEventHandlers();
-
-			SynchronizeMenuBar();
-		}
-
-		private void SynchronizeMenuBar()
-			=> m_menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
-
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			SetFlyoutDataContext();
-		}
-
-		private void SetFlyoutDataContext()
-		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-			m_flyout?.SetValue(
-				MenuFlyout.DataContextProperty,
-				this.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
 		}
 
 		private void PopulateContent()
@@ -101,72 +95,97 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			flyout.Placement = FlyoutPlacementMode.Bottom;
 
-			if (m_passThroughElement != null)
+			if (m_passThroughElement?.TryGetTarget(out var passThroughElement) ?? false)
 			{
-				flyout.OverlayInputPassThroughElement = m_passThroughElement;
+				flyout.OverlayInputPassThroughElement = passThroughElement;
 			}
-
 			m_flyout = flyout;
 
-			if (m_button != null)
+			if (m_button is { } button)
 			{
-				m_button.IsAccessKeyScope = true;
-				m_button.ContextFlyout = flyout;
+				button.IsAccessKeyScope = true;
+				button.ContextFlyout = flyout;
 			}
+
+			// Uno specific
+			SetFlyoutDataContext();
+		}
+
+		// Uno specific
+		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnDataContextChanged(e);
 
 			SetFlyoutDataContext();
 		}
 
+		// Uno-specific
+		private void SetFlyoutDataContext()
+		{
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
+			m_flyout?.SetValue(
+				MenuFlyout.DataContextProperty,
+				this.DataContext,
+				precedence: DependencyPropertyValuePrecedences.Inheritance
+			);
+		}
+
 		private void AttachEventHandlers()
 		{
-			_registrations.Disposable = null;
-
-			_activeDisposables = new CompositeDisposable();
-
 			if (m_button != null)
 			{
-				_activeDisposables.Add(m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged));
-				_activeDisposables.Add(m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged));
+				m_pressedRevoker = m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
+				m_pointerOverRevoker = m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
 			}
+
+			m_onMenuBarItemPointerPressedRevoker = new DisposableAction(() => RemoveHandler(PointerPressedEvent, (PointerEventHandler)OnMenuBarItemPointerPressed));
+			AddHandler(
+				PointerPressedEvent,
+				(PointerEventHandler)OnMenuBarItemPointerPressed,
+				true /*handledEventsToo*/
+			);
+
+			m_onMenuBarItemKeyDownRevoker = new DisposableAction(() => RemoveHandler(KeyDownEvent, (KeyEventHandler)OnMenuBarItemKeyDown));
+			AddHandler(
+				KeyDownEvent,
+				(KeyEventHandler)OnMenuBarItemKeyDown,
+				true /*handledEventsToo*/
+			);
 
 			if (m_flyout != null)
 			{
+				m_flyoutClosedRevoker.Disposable = new DisposableAction(() => m_flyout.Closed -= OnFlyoutClosed);
 				m_flyout.Closed += OnFlyoutClosed;
+				m_flyoutOpeningRevoker.Disposable = new DisposableAction(() => m_flyout.Opening -= OnFlyoutOpening);
 				m_flyout.Opening += OnFlyoutOpening;
-
-				_activeDisposables.Add(() =>
-				{
-					m_flyout.Closed -= OnFlyoutClosed;
-					m_flyout.Opening -= OnFlyoutOpening;
-				});
 			}
 
+			m_pointerEnteredRevoker.Disposable = new DisposableAction(() => PointerEntered -= OnMenuBarItemPointerEntered);
 			PointerEntered += OnMenuBarItemPointerEntered;
-			_activeDisposables.Add(() => PointerEntered -= OnMenuBarItemPointerEntered);
 
-			var pointerPressHandler = new PointerEventHandler(OnMenuBarItemPointerPressed);
-			AddHandler(UIElement.PointerPressedEvent, pointerPressHandler, true);
-			var keyDownHandler = new KeyEventHandler(OnMenuBarItemKeyDown);
-			AddHandler(UIElement.KeyDownEvent, keyDownHandler, true);
-
-			_activeDisposables.Add(() =>
-			{
-				RemoveHandler(UIElement.PointerPressedEvent, pointerPressHandler);
-				RemoveHandler(UIElement.KeyDownEvent, keyDownHandler);
-			});
-
+			m_accessKeyInvokedRevoker.Disposable = new DisposableAction(() => AccessKeyInvoked -= OnMenuBarItemAccessKeyInvoked);
 			AccessKeyInvoked += OnMenuBarItemAccessKeyInvoked;
-			_activeDisposables.Add(() => AccessKeyInvoked -= OnMenuBarItemAccessKeyInvoked);
+		}
 
-			_registrations.Disposable = _activeDisposables;
+		private void DetachEventHandlers()
+		{
+			m_pressedRevoker?.Dispose();
+			m_pointerOverRevoker?.Dispose();
+
+			m_flyoutClosedRevoker.Dispose();
+			m_flyoutOpeningRevoker.Dispose();
+
+			m_onMenuBarItemPointerPressedRevoker?.Dispose();
+			m_onMenuBarItemKeyDownRevoker?.Dispose();
 		}
 
 		// Event Handlers
 		private void OnMenuBarItemPointerEntered(object sender, PointerRoutedEventArgs args)
 		{
-			if (m_menuBar != null)
+			if (m_menuBar.TryGetTarget(out var menuBar))
 			{
-				if (m_menuBar.IsFlyoutOpen)
+				var flyoutOpen = menuBar.IsFlyoutOpen;
+				if (flyoutOpen)
 				{
 					ShowMenuFlyout();
 				}
@@ -175,9 +194,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnMenuBarItemPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			if (m_menuBar != null)
+			if (m_menuBar.TryGetTarget(out var menuBar))
 			{
-				if (!m_menuBar.IsFlyoutOpen)
+				var flyoutOpen = menuBar.IsFlyoutOpen;
+				if (!flyoutOpen)
 				{
 					ShowMenuFlyout();
 				}
@@ -186,6 +206,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnMenuBarItemKeyDown(object sender, KeyRoutedEventArgs args)
 		{
+			var isAltDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+
 			var key = args.Key;
 			if (key == VirtualKey.Down
 				|| key == VirtualKey.Enter
@@ -193,10 +215,43 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			{
 				ShowMenuFlyout();
 			}
+			else if (key == VirtualKey.Right)
+			{
+				if (FlowDirection == FlowDirection.RightToLeft)
+				{
+					MoveFocusTo(FlyoutLocation.Left);
+				}
+				else
+				{
+					MoveFocusTo(FlyoutLocation.Right);
+				}
+				args.Handled = true;
+			}
+			else if (key == VirtualKey.Left)
+			{
+				if (FlowDirection == FlowDirection.RightToLeft)
+				{
+					MoveFocusTo(FlyoutLocation.Right);
+				}
+				else
+				{
+					MoveFocusTo(FlyoutLocation.Left);
+				}
+				args.Handled = true;
+			}
 		}
 
 		private void OnPresenterKeyDown(object sender, KeyRoutedEventArgs args)
 		{
+			// If the event came from a MenuFlyoutSubItem it means right/left arrow will open it, so we should not handle them to not override default behaviour
+			if (args.OriginalSource is MenuFlyoutSubItem subitem)
+			{
+				if (subitem.Items[0] is { })
+				{
+					return;
+				}
+			}
+
 			var key = args.Key;
 			if (key == VirtualKey.Right)
 			{
@@ -224,16 +279,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private void OnItemsVectorChanged(IObservableVector<MenuFlyoutItemBase> sender, IVectorChangedEventArgs e)
 		{
-			if (m_flyout != null)
+			if (m_flyout is { } flyout)
 			{
 				var index = e.Index;
 				switch (e.CollectionChange)
 				{
 					case CollectionChange.ItemInserted:
-						m_flyout.Items.Insert((int)index, Items[(int)index]);
+						flyout.Items.Insert((int)index, Items[(int)index]);
 						break;
 					case CollectionChange.ItemRemoved:
-						m_flyout.Items.RemoveAt((int)index);
+						flyout.Items.RemoveAt((int)index);
 						break;
 					default:
 						break;
@@ -250,13 +305,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		// Menu Flyout actions
 		internal void ShowMenuFlyout()
 		{
-			if (m_button != null)
+			if (Items.Count != 0)
 			{
-				var width = m_button.ActualWidth;
-				var height = m_button.ActualHeight;
-
-				if (SharedHelpers.IsFlyoutShowOptionsAvailable())
+				if (m_button != null)
 				{
+					var width = m_button.ActualWidth;
+					var height = m_button.ActualHeight;
+
 					// Sets an exclusion rect over the button that generates the flyout so that even if the menu opens upwards
 					// (which is the default in touch mode) it doesn't cover the menu bar button.
 					FlyoutShowOptions options = new FlyoutShowOptions();
@@ -264,20 +319,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					options.Placement = FlyoutPlacementMode.Bottom;
 					options.ExclusionRect = new Rect(0, 0, width, height);
 					m_flyout.ShowAt(m_button, options);
-				}
-				else
-				{
-					m_flyout.ShowAt(m_button, new Point(0, height));
-				}
 
-				if (m_flyout?.m_presenter != null)
-				{
+					// Attach keyboard event handler
+					m_presenterKeyDownRevoker.Disposable = new DisposableAction(() => m_flyout.m_presenter.KeyDown -= OnPresenterKeyDown);
 					m_flyout.m_presenter.KeyDown += OnPresenterKeyDown;
-
-					_activeDisposables.Add(() =>
-					{
-						m_flyout.m_presenter.KeyDown -= OnPresenterKeyDown;
-					});
 				}
 			}
 		}
@@ -287,29 +332,43 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			m_flyout.Hide();
 		}
 
-		void OpenFlyoutFrom(FlyoutLocation location)
+		private void OpenFlyoutFrom(FlyoutLocation location)
 		{
-			if (m_menuBar != null)
+			if (m_menuBar.TryGetTarget(out var menuBar))
 			{
-				int index = m_menuBar.Items.IndexOf(this);
+				var index = menuBar.Items.IndexOf(this);
 				CloseMenuFlyout();
 				if (location == FlyoutLocation.Left)
 				{
-					m_menuBar.Items[((index - 1) + m_menuBar.Items.Count) % m_menuBar.Items.Count].ShowMenuFlyout();
+					menuBar.Items[((index - 1) + menuBar.Items.Count) % menuBar.Items.Count].ShowMenuFlyout();
 				}
 				else
 				{
-					m_menuBar.Items[(index + 1) % m_menuBar.Items.Count].ShowMenuFlyout();
+					menuBar.Items[(index + 1) % menuBar.Items.Count].ShowMenuFlyout();
 				}
 			}
 		}
 
-#if false
-		void AddPassThroughElement(DependencyObject element)
+		private void MoveFocusTo(FlyoutLocation location)
 		{
-			m_passThroughElement = element;
+			if (m_menuBar.TryGetTarget(out var menuBar))
+			{
+				var index = menuBar.Items.IndexOf(this);
+				if (location == FlyoutLocation.Left)
+				{
+					menuBar.Items[((index - 1) + menuBar.Items.Count) % menuBar.Items.Count].Focus(FocusState.Programmatic);
+				}
+				else
+				{
+					menuBar.Items[(index + 1) % menuBar.Items.Count].Focus(FocusState.Programmatic);
+				}
+			}
 		}
-#endif
+
+		internal void AddPassThroughElement(DependencyObject element)
+		{
+			m_passThroughElement = new WeakReference<DependencyObject>(element);
+		}
 
 		public bool IsFlyoutOpen()
 		{
@@ -329,56 +388,59 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		// Menu Flyout Events
-		void OnFlyoutClosed(object sender, object args)
+		private void OnFlyoutClosed(object sender, object args)
 		{
 			m_isFlyoutOpen = false;
 
-			if (m_menuBar != null)
+			if (m_menuBar.TryGetTarget(out var menuBar))
 			{
-				m_menuBar.IsFlyoutOpen = false;
+				menuBar.IsFlyoutOpen = false;
 			}
 
 			UpdateVisualStates();
 		}
 
-		void OnFlyoutOpening(object sender, object args)
+		private void OnFlyoutOpening(object sender, object args)
 		{
 			Focus(FocusState.Pointer);
 
 			m_isFlyoutOpen = true;
 
-			if (m_menuBar != null)
+			if (m_menuBar.TryGetTarget(out var menuBar))
 			{
-				m_menuBar.IsFlyoutOpen = true;
+				menuBar.IsFlyoutOpen = true;
 			}
 
 			UpdateVisualStates();
 		}
 
-		void OnVisualPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		private void OnVisualPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			UpdateVisualStates();
 		}
 
-		void UpdateVisualStates()
+		private void UpdateVisualStates()
 		{
-			if (m_button != null)
+			if (m_button is { } button)
 			{
-				if (m_isFlyoutOpen)
-				{
-					VisualStateManager.GoToState(this, "Selected", false);
-				}
-				else if (m_button.IsPressed)
+				if (button.IsPressed)
 				{
 					VisualStateManager.GoToState(this, "Pressed", false);
 				}
-				else if (m_button.IsPointerOver)
+				else if (button.IsPointerOver)
 				{
 					VisualStateManager.GoToState(this, "PointerOver", false);
 				}
 				else
 				{
-					VisualStateManager.GoToState(this, "Normal", false);
+					if (m_isFlyoutOpen)
+					{
+						VisualStateManager.GoToState(this, "Selected", false);
+					}
+					else
+					{
+						VisualStateManager.GoToState(this, "Normal", false);
+					}
 				}
 			}
 		}
