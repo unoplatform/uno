@@ -46,7 +46,7 @@ internal class AsyncOperation<TResult> : IAsyncOperation<TResult>, IAsyncOperati
 		{
 			_status = value;
 
-			// Note: No need to check if the 'value' is a final state, the 'Sarted' state is set in ctor,
+			// Note: No need to check if the 'value' is a final state, the 'Started' state is set in ctor,
 			//		 i.e. before the '_onCompleted' is being set.
 			_onCompleted?.Invoke(this, value);
 		}

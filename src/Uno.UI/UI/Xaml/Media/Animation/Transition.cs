@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// Called from the ChildTransistions Property of a Panel
-		/// Attaches to the Completed event - Keeps the starting RenderTansform on the FrameworkElement and restores it;
+		/// Attaches to the Completed event - Keeps the starting RenderTransform on the FrameworkElement and restores it;
 		/// </summary>
 		/// <param name="storyboard">The Panel may run several Transitions on the same Storyboard</param>
 		/// <param name="element">FrameworkElement to Animate</param>

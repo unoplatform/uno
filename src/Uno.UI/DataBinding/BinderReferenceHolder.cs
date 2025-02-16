@@ -169,7 +169,7 @@ namespace Uno.UI.DataBinding
 		public static T[] GetInactiveChildInstancesOfType<T>() => GetInactiveChildViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
 
 		/// <summary>
-		/// Retreives statistics about the live instances.
+		/// Retrieves statistics about the live instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetReferenceStats()
 		{

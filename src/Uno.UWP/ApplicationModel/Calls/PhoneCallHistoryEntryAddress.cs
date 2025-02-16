@@ -16,7 +16,7 @@ public partial class PhoneCallHistoryEntryAddress
 	/// <summary>
 	/// Creates a new PhoneCallHistoryEntryAddress object with an initial address.
 	/// </summary>
-	/// <param name="rawAddress">The address to initiailize to the RawAddress property.</param>
+	/// <param name="rawAddress">The address to initialize to the RawAddress property.</param>
 	/// <param name="rawAddressKind">The type of address represented by rawAddress.</param>
 	public PhoneCallHistoryEntryAddress(string rawAddress, PhoneCallHistoryEntryRawAddressKind rawAddressKind)
 	{

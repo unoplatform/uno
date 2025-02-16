@@ -18,7 +18,7 @@ public static class UriExtensions
 	internal static Uri TrimEndUriSlash(this Uri uri) => new(uri.OriginalString.TrimEnd("/"));
 
 	/// <summary>
-	/// Get extension of the traget file of the uri.
+	/// Get extension of the target file of the uri.
 	/// </summary>
 	/// <param name="uri"></param>
 	/// <returns></returns>

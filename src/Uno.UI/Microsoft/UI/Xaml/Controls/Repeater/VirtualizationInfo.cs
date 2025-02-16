@@ -56,7 +56,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		// Pinned means that the element is protected from getting cleared by layout.
 		// A pinned element may still get cleared by a collection change.
-		// IsPinned == true doesn't necessarly mean that the element is currently
+		// IsPinned == true doesn't necessarily mean that the element is currently
 		// owned by the PinnedPool, only that its ownership may be transferred to the
 		// PinnedPool if it gets cleared by layout.
 		public bool IsPinned => m_pinCounter > 0u;

@@ -293,7 +293,7 @@ namespace Microsoft.UI.Xaml.Controls
 		CColumnDefinitionCollection m_pColumns; // Effective column collection.
 
 		// This is a temporary storage that is released after arrange.
-		// Note the ScopeExit in ArrangeOveride
+		// Note the ScopeExit in ArrangeOverride
 		DefinitionBase[] m_ppTempDefinitions; // Temporary definitions storage.
 		Xuint m_cTempDefinitions; // Size in elements of temporary definitions storage
 

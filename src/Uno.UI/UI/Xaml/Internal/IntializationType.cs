@@ -8,7 +8,7 @@ namespace Uno.UI.Xaml.Core
 	{
 		/// <summary>
 		/// This initialization type  is used when
-		/// none of the other explict types
+		/// none of the other explicit types
 		/// make sense. In a practical sense this is
 		/// for initialization of non-main view in
 		/// foreground apps.

@@ -40,7 +40,7 @@
                  - CommonTests.MenuItemKeyboardInvokeTest()
                  - SelectionTests.MenuItemAutomationSelectionTest()
                  
-                 The reason is that on RS2, the ScollViewer handles arrow keys and thus scrolls the NavigationView pane instead of moving focus.
+                 The reason is that on RS2, the ScrollViewer handles arrow keys and thus scrolls the NavigationView pane instead of moving focus.
                  This is not an issue with the current page setup as all NavView items fit the page without the need to scroll it. Adding more items,
                  however, will push these items off-screen leading the ScrollViewer to scroll the pane instead of moving focus. As a result, the above
                  mentioned tests will fail. -->

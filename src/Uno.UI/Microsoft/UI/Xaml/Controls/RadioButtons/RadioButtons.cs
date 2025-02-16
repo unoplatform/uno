@@ -409,7 +409,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				// Calling Select updates the checked state on the radio button being selected
 				// and the radio button being unselected, as well as updates the SelectedIndex
 				// and SelectedItem DP. All of these things would cause Select to be called so
-				// we'll prevent reentrency with this m_currentlySelecting boolean.
+				// we'll prevent reentrancy with this m_currentlySelecting boolean.
 				try
 				{
 					m_currentlySelecting = true;

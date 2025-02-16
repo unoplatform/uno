@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			CalendarLayoutStrategy spCalendarLayoutStrategy;
 
-			// Initalize the base class first.
+			// Initialize the base class first.
 			// base.Initialize();
 			base_Initialize();
 
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (m_type != CalendarPanelType.Invalid)
 			{
 				// for secondary panel, we don't care about the biggest item size, because this type means
-				// we have an explict dimensions set, in this case we'll always honor the dimensions.
+				// we have an explicit dimensions set, in this case we'll always honor the dimensions.
 				if (m_type != CalendarPanelType.Secondary && !m_isBiggestItemSizeDetermined)
 				{
 					CalendarViewGeneratorHost spOwner;
@@ -502,7 +502,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 					if (!canPanelShowFullScope)
 					{
-						// We have not enough space, remove the customize function to default regular snap point behaivor.
+						// We have not enough space, remove the customize function to default regular snap point behavior.
 						SetSnapPointFilterFunction(null);
 					}
 					else

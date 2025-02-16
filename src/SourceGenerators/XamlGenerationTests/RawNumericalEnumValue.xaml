@@ -31,7 +31,7 @@
 		<StackPanel Orientation="0   " />
 		<StackPanel Orientation="   0   " />
 		
-		<!-- space or digit sperator are illegal however -->
+		<!-- space or digit seperator are illegal however -->
 		<void:RawNumericalEnumValueTest SomeEnumProperty="3 1 2" />
 		<void:RawNumericalEnumValueTest SomeEnumProperty="3_1_2" />
 
