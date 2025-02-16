@@ -25,14 +25,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			/// </summary>
 			partial void OnFrame()
 			{
-				if (!_owner.GetIsHardwareAnimated())
-				{
-					SetValue(_animator.AnimatedValue);
-				}
-				else
-				{
-					_owner.SetValueBypassPropagation(_animator.AnimatedValue);
-				}
+				SetValue(_animator.AnimatedValue);
 			}
 
 			private bool ReportEachFrame() => true;
