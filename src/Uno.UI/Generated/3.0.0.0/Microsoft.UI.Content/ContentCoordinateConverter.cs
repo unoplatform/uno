@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentCoordinateConverter
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal ContentCoordinateConverter()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.RectInt32 ConvertLocalToScreen(global::Windows.Foundation.Rect localRect)
@@ -60,13 +55,6 @@ namespace Microsoft.UI.Content
 		public global::Windows.Foundation.Rect ConvertScreenToLocal(global::Windows.Graphics.RectInt32 screenRect)
 		{
 			throw new global::System.NotImplementedException("The member Rect ContentCoordinateConverter.ConvertScreenToLocal(RectInt32 screenRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20ContentCoordinateConverter.ConvertScreenToLocal%28RectInt32%20screenRect%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Content.ContentCoordinateConverter CreateForWindowId(global::Microsoft.UI.WindowId windowId)
-		{
-			throw new global::System.NotImplementedException("The member ContentCoordinateConverter ContentCoordinateConverter.CreateForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20ContentCoordinateConverter.CreateForWindowId%28WindowId%20windowId%29");
 		}
 #endif
 	}
