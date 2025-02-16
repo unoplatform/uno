@@ -235,7 +235,7 @@
 			"type": "nuget-version"
 		},
 		"MicrosoftLoggingVersion": {
-			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
+			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging.Console to use.",
 			"type": "nuget-version"
 		},
 		"WinAppSdkVersion": {
