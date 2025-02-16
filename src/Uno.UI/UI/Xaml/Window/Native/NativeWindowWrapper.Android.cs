@@ -4,6 +4,7 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using AndroidX.Core.View;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -13,19 +14,19 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
+using MUXWindow = Microsoft.UI.Xaml.Window;
+using AndroidWindow = Android.Views.Window;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 
 	private Rect _previousTrueVisibleBounds;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
 	{
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
@@ -36,8 +37,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
-
-	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;

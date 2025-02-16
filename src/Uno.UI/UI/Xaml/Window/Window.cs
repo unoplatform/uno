@@ -218,6 +218,8 @@ partial class Window
 
 	internal object? NativeWindow => _windowImplementation.NativeWindow;
 
+	internal INativeWindowWrapper NativeWindowWrapper => _windowImplementation.NativeWindowWrapper;
+
 	/// <summary>
 	/// This is run when Application.Current is set and the UI framework is ready to construct
 	/// visual elements (this is important for eample for Andorid where trying to construct
