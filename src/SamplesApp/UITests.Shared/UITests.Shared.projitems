@@ -910,6 +910,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)windows_ui_input\pointerstests\TextBox_Pointer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\SetProtectedCursor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6207,6 +6211,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\ScrollViewer_PointerMoved.xaml.cs">
       <DependentUpon>ScrollViewer_PointerMoved.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)windows_ui_input\pointerstests\TextBox_Pointer.xaml.cs">
+      <DependentUpon>TextBox_Pointer.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\SetProtectedCursor.xaml.cs">
       <DependentUpon>SetProtectedCursor.xaml</DependentUpon>
