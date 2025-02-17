@@ -418,7 +418,7 @@ public partial class Slider
 			{
 				bool wasCaptured = false;
 
-				wasCaptured = (sender as UIElement)?.CapturePointer(pointer) ?? false;
+				wasCaptured = (sender as UIElement)?.CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventOSSteal) is PointerCaptureResult.Added;
 				if (wasCaptured)
 				{
 					_capturedPointerId = pointer.PointerId;

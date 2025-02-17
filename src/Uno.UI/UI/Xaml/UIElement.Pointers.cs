@@ -1467,7 +1467,7 @@ namespace Microsoft.UI.Xaml
 			return Capture(pointer, PointerCaptureKind.Explicit, PointerCaptureOptions.None, _pendingRaisedEvent.args) is PointerCaptureResult.Added;
 		}
 
-		private protected PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind = PointerCaptureKind.Explicit, PointerCaptureOptions options = PointerCaptureOptions.None)
+		internal PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind = PointerCaptureKind.Explicit, PointerCaptureOptions options = PointerCaptureOptions.None)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
