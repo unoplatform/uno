@@ -130,13 +130,13 @@ jobs:
       ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net8.0-android -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)\build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\build-skia-android.binlog
     displayName: Build Skia Android Head
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net8.0-android/publish
-      Contents: 'uno.platform.unosampleapp-Signed.apk'
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android/publish
+      Contents: 'uno.platform.samplesapp.skia-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
       OverWrite: false
@@ -761,7 +761,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       Android_9.0_RuntimeTests_1_net8:
@@ -771,7 +771,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       Android_9.0_RuntimeTests_2_net8:
@@ -781,7 +781,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       Android_9.0_RuntimeTests_3_net8:
@@ -791,7 +791,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 3
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
       Android_9.0_RuntimeTests_4_net8:
@@ -801,7 +801,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 4
         UITEST_RUNTIME_TEST_GROUP_COUNT: 5
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-        TARGETPLATFORM_NAME: net8
+        TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
   steps:
