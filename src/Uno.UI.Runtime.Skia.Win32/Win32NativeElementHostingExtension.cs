@@ -24,6 +24,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
+	private SKPath _tempPath = new();
 	private Rect _lastArrangeRect;
 
 	private HWND Hwnd
@@ -83,23 +84,21 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 			_lastClipPath.AddPath(path);
 		}
 
-		using var _1 = SkiaHelper.GetTempSKPath(out var arrangePath);
-		using var _2 = SkiaHelper.GetTempSKPath(out var intersectionPath);
+		_tempPath.Rewind();
+		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
+		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
+		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 
-		arrangePath.AddRect(_lastArrangeRect.ToSKRect());
-		path.Op(arrangePath, SKPathOp.Intersect, intersectionPath);
-		intersectionPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
-
-		Debug.Assert(intersectionPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
+		Debug.Assert(_tempPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
 		GpPath* gpPath = null;
-		var status = PInvoke.GdipCreatePath(intersectionPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
+		var status = PInvoke.GdipCreatePath(_tempPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
 		if (status != Status.Ok)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.GdipCreatePath)} failed: {status}");
 			return;
 		}
 
-		var iter = intersectionPath.CreateIterator(forceClose: true);
+		var iter = _tempPath.CreateIterator(forceClose: true);
 		SKPathVerb verb = default;
 		var points = stackalloc SKPoint[4];
 		var pointSpan = new Span<SKPoint>(points, 4);
