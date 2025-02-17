@@ -21,7 +21,7 @@ using DispatcherQueue = Windows.System.DispatcherQueue;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class Application : IApplicationEvents
+	partial class Application
 	{
 		private static bool _startInvoked;
 
@@ -36,13 +36,13 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			_current = this;
-			SetCurrentLanguage();
-
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			_current = this;
+			SetCurrentLanguage();
 
 			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
@@ -98,15 +98,13 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static partial void StartPartial()
 		{
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
 				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
-
-			callback(new ApplicationInitializationCallbackParams());
 
 			// Force a schedule to let the dotnet exports be initialized properly
 			DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
@@ -129,9 +127,5 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
-	}
-
-	internal interface IApplicationEvents
-	{
 	}
 }

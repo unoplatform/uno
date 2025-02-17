@@ -14,17 +14,12 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class Application
+partial class Application
 {
 	partial void InitializePartial()
 	{
 		InitializeSystemTheme();
 		PermissionsHelper.Initialize();
-	}
-
-	static partial void StartPartial(ApplicationInitializationCallback callback)
-	{
-		callback(new ApplicationInitializationCallbackParams());
 	}
 
 	/// <remarks>

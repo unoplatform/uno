@@ -16,7 +16,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class Application
+partial class Application
 {
 	public override void PerformActionForShortcutItem(
 		UIApplication application,
