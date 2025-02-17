@@ -146,7 +146,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					{
 						var projectDir = Path.GetDirectoryName(project.FilePath);
 						ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
-						
+
 						var paths = project
 							.Documents
 							.Select(d => d.FilePath)
