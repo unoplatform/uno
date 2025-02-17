@@ -209,7 +209,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (e.Pointer.Type != PointerDeviceType.Touch)
+			if (e.Pointer.Type != PointerDeviceType.Touch
+				|| (PointerCapture.TryGet(e.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventOSSteal)))
 			{
 				e.Mode = ManipulationModes.None;
 				return;

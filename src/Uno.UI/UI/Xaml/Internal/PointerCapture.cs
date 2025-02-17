@@ -84,6 +84,8 @@ internal partial class PointerCapture
 
 	public IEnumerable<PointerCaptureTarget> Targets => _targets.Values;
 
+	public PointerCaptureOptions Options => _currentOptions;
+
 	internal bool IsTarget(UIElement element, PointerCaptureKind kinds)
 		=> _targets.TryGetValue(element, out var target)
 			&& (target.Kind & kinds) != PointerCaptureKind.None;
