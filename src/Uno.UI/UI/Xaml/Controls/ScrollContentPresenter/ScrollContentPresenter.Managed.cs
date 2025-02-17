@@ -1,10 +1,11 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Uno.Disposables;
-
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -271,8 +272,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Set(disableAnimation: true, isIntermediate: false);
 
-			Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
-			this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
+			if (!e.IsInertial)
+			{
+				// If inertial the pointer as already been captured, and the LastPointerEvent can now be a new one!
+				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+				this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
+			}
 		}
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
