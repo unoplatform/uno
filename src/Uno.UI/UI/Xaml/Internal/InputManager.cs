@@ -22,10 +22,6 @@ internal partial class InputManager : IInputInjectorTarget
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
-
-#if ANDROID // for some reason, moving InitDragAndDrop to Initialize breaks Android in CI
-		InitDragAndDrop();
-#endif
 	}
 
 	partial void ConstructKeyboardManager();
@@ -39,9 +35,7 @@ internal partial class InputManager : IInputInjectorTarget
 	{
 		InitializeKeyboard(host);
 		InitializePointers(host);
-#if !ANDROID
 		InitDragAndDrop();
-#endif
 	}
 
 	partial void InitializeKeyboard(object host);
