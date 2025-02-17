@@ -282,7 +282,7 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.wasm.cs` (WebAssembly)
 - `*.skia.cs` (Skia)
 - `*.reference.cs` (Reference only)
-- `*.iOS.cs, `*.iOSmacOS.cs` (iOS & MacCatalyst)
+- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS & MacCatalyst)
 - `*.tvOS.cs`(tvOS)
 - `*.UIKit.cs`, `*.Apple.cs` (iOS & Mac Catalyst & tvOS)
 - `*.Android.cs` (Android)
