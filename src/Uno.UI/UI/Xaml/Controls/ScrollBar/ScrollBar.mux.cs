@@ -30,7 +30,7 @@ public partial class ScrollBar
 		m_blockIndicators = false;
 		m_isUsingActualSizeAsExtent = false;
 
-#if HAS_UNO && !__SKIA__ && !__WASM__ // Uno specific: Performance optimization, see ScrollBar.uno.cs. Not needed on WASM and Skia targets.
+#if HAS_UNO && !__SKIA__ // Uno specific: Performance optimization, see ScrollBar.uno.cs. Not needed on Skia target.
 		if (_fixedOrientation is Orientation fixedOrientation)
 		{
 			IsFixedOrientation = true;

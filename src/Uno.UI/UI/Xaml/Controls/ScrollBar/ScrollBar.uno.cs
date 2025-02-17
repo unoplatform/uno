@@ -57,11 +57,11 @@ partial class ScrollBar
 	}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-		private static void OnLayoutUpdated(
-			object pSender,
-			object pArgs)
-		{
-			(pSender as ScrollBar)?.UpdateTrackLayout();
-		}
+	private static void OnLayoutUpdated(
+		object pSender,
+		object pArgs)
+	{
+		(pSender as ScrollBar)?.UpdateTrackLayout();
+	}
 #endif
 }
