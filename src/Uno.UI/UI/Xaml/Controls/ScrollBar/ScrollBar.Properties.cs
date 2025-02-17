@@ -64,4 +64,8 @@ public partial class ScrollBar
 	/// Occurs one or more times as content scrolls in a ScrollBar when the user moves the Thumb by using the mouse.
 	/// </summary>
 	public event ScrollEventHandler Scroll;
+
+	internal event Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventHandler ThumbDragStarted;
+
+	internal event Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventHandler ThumbDragCompleted;
 }
