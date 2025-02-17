@@ -35,7 +35,7 @@ using NativeMethods = __Microsoft.UI.Xaml.Application.NativeMethods;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class Application
+	partial class Application
 	{
 		private static bool _startInvoked;
 
@@ -84,27 +84,15 @@ namespace Microsoft.UI.Xaml
 
 		static async partial void StartPartial(ApplicationInitializationCallback callback)
 		{
-			try
-			{
-				_startInvoked = true;
+			_startInvoked = true;
 
-				SynchronizationContext.SetSynchronizationContext(
-					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
-				);
+			SynchronizationContext.SetSynchronizationContext(
+				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
+			);
 
-				await WindowManagerInterop.InitAsync();
+			await WindowManagerInterop.InitAsync();
 
-				global::Windows.Storage.ApplicationData.Init();
-
-				callback(new ApplicationInitializationCallbackParams());
-			}
-			catch (Exception exception)
-			{
-				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Application).Log().LogError("Application initialization failed.", exception);
-				}
-			}
+			global::Windows.Storage.ApplicationData.Init();
 		}
 
 		private void Initialize()
