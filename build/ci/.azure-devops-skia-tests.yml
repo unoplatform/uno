@@ -823,7 +823,7 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - bash: |
-      $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
     displayName: Run Android Tests
 
