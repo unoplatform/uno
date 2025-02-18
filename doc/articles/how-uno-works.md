@@ -8,7 +8,7 @@ How does Uno Platform make the same application code run on all platforms?
 
 ## On Windows
 
-On Windows (the `net8.0-windows10` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
+On Windows (the `net9.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
 
 The rest of this article discusses how the Uno.UI tooling allows WinUI-compatible XAML and/or C# applications to run on non-Windows platforms.
 
