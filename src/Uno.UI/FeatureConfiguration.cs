@@ -905,7 +905,7 @@ namespace Uno.UI
 #endif
 		}
 
-#if __ANDROID__
+#if __ANDROID__ || UNO_REFERENCE_API
 		public static class AndroidSettings
 		{
 #if NET9_0_OR_GREATER
@@ -925,7 +925,11 @@ namespace Uno.UI
 			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
 			public static bool IsEdgeToEdgeEnabled
 			{
-				get => (int)Android.OS.Build.VERSION.SdkInt >= 35 || _isEdgeToEdgeEnabled;
+#if __ANDROID__
+				get => _isEdgeToEdgeEnabled || (int)Android.OS.Build.VERSION.SdkInt >= 35;
+#else
+				get => _isEdgeToEdgeEnabled;
+#endif
 				set => _isEdgeToEdgeEnabled = value;
 			}
 		}
