@@ -29,7 +29,7 @@
       https://aka.platform.uno/singleproject-features
     -->
     <UnoFeatures>
-      WebAssemblySkiaRenderer;
+      SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
 

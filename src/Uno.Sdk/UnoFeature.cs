@@ -90,16 +90,10 @@ public enum UnoFeature
 	Skia,
 
 	[UnoArea(UnoArea.Core)]
-	WebAssemblySkiaRenderer,
+	SkiaRenderer,
 
 	[UnoArea(UnoArea.Core)]
-	WebAssemblyDOMRenderer,
-
-	[UnoArea(UnoArea.Core)]
-	AndroidSkiaRenderer,
-
-	[UnoArea(UnoArea.Core)]
-	AppleUIKitSkiaRenderer,
+	NativeRenderer,
 
 	[UnoArea(UnoArea.Core)]
 	Lottie,
