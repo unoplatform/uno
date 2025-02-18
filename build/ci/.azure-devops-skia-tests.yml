@@ -823,6 +823,7 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
     displayName: Run Android Tests
