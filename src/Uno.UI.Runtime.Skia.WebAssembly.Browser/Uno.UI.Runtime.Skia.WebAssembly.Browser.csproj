@@ -16,6 +16,9 @@
 		<Description>This package provides the platform support for Skia / Linux framebuffer in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
+		<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
+		<NoWarn>$(NoWarn);NU5123</NoWarn>
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.WebAssembly.Browser</PackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.WebAssembly.Browser</RootNamespace>

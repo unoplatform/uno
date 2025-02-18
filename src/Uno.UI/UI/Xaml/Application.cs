@@ -445,7 +445,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
 
-		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+		internal void OnRequestedThemeChanged()
+		{
+			ApplySystemOverlaysTheming();
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+		}
+
+		partial void ApplySystemOverlaysTheming();
 
 		private void UpdateRootElementBackground()
 		{
