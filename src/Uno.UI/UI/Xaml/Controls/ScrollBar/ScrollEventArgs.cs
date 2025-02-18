@@ -20,5 +20,5 @@ public partial class ScrollEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	/// <summary>
 	/// Gets a ScrollEventType describing the event.
 	/// </summary>
-	public ScrollEventType ScrollEventType { get; internal set;	}
+	public ScrollEventType ScrollEventType { get; internal set; }
 }
