@@ -42,7 +42,7 @@ public partial class FlyoutBase
 	{
 		if (XamlRoot?.HostWindow is { } window)
 		{
-			_popup.PopupPanel.Frame = new CGRect(CGPoint.Empty, window.NativeWindowWrapper.GetWindowSize());
+			_popup.PopupPanel.Frame = new CGRect(CGPoint.Empty, window.NativeWrapper.GetWindowSize());
 		}
 	}
 }

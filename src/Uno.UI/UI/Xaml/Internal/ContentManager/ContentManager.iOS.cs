@@ -11,7 +11,7 @@ partial class ContentManager
 {
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
 	{
-		if (window.NativeWindowWrapper is not NativeWindowWrapper nativeWindowWrapper)
+		if (window.NativeWrapper is not NativeWindowWrapper nativeWindowWrapper)
 		{
 			throw new InvalidOperationException("The window must be initialized before attaching the root element.");
 		}
