@@ -92,7 +92,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return id;
 	}
 
-	protected override void GetVisibleVirtualViews(IList<Integer> virtualViewIds)
+	protected override void GetVisibleVirtualViews(IList<Integer>? virtualViewIds)
 	{
 		var focusManager = VisualTree.GetFocusManagerForElement(_host.RootElement);
 		if (focusManager == null)
@@ -102,6 +102,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				this.Log().LogWarning("A focus manager couldn't be found to get virtual views.");
 			}
 
+			return;
+		}
+
+		if (virtualViewIds is null)
+		{
 			return;
 		}
 
@@ -131,7 +136,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
-	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle arguments)
+	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle? arguments)
 	{
 		// TODO: What about non-UIElements? e.g, Hyperlinks?
 		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
