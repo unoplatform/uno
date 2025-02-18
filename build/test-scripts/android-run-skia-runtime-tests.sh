@@ -26,11 +26,8 @@ fi
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-# This block allows to override the Android SDK
-# disabled until hosted agents move to macOS 11
-#
 export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
-export CMDLINETOOLS=commandlinetools-linux-11076708_latest.zip
+export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip # works on Linux instances as well, somehow
 
 if [[ ! -d $ANDROID_HOME ]];
 then
