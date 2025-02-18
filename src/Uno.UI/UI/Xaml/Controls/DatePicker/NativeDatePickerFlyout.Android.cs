@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected internal override void Open()
 		{
-			WindowsFoundationDateTime date = Date;
+			var date = Date;
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
