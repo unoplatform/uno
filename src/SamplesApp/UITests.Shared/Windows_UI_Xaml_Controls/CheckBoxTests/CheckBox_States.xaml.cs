@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.CheckBoxTests
 {
-	[Sample("CheckBox")]
+	[Sample("Buttons")]
 	public sealed partial class CheckBox_States : Page
 	{
 		public CheckBox_States()

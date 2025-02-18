@@ -655,7 +655,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNotNull(si);
 
 			var tb = si.FindFirstChild<TextBlock>();
-			Assert.AreEqual("item 0", tb?.Text);
+			Assert.IsNotNull(tb);
+			Assert.AreEqual("item 0", tb.Text);
 		}
 
 		[TestMethod]

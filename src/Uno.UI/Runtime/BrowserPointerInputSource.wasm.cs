@@ -15,6 +15,7 @@ using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal 
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using System.Runtime.InteropServices;
 using Windows.System;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime;
 
@@ -28,7 +29,9 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
 	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
 
+	// TODO: Verify the boot time unit (ms or ticks)
 	private ulong _bootTime;
+	private bool _isIOs;
 	private bool _isOver;
 	private PointerPoint? _lastPoint;
 	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);
@@ -55,11 +58,22 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static partial void Initialize([JSMarshalAs<JSType.Any>] object inputSource);
 
 	[JSExport]
-	private static void OnInitialized([JSMarshalAs<JSType.Any>] object inputSource, double bootTime)
+	private static void OnInitialized([JSMarshalAs<JSType.Any>] object inputSource, double bootTime, string userAgent)
 	{
-		((BrowserPointerInputSource)inputSource)._bootTime = (ulong)bootTime;
+		if (inputSource is BrowserPointerInputSource that)
+		{
+			that._bootTime = (ulong)bootTime;
 
-		_logTrace?.Trace("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+			// Note: OperatingSystem.IsIOS() is false
+			that._isIOs = userAgent.Contains("iPhone", StringComparison.OrdinalIgnoreCase)
+				|| userAgent.Contains("iPad", StringComparison.OrdinalIgnoreCase);
+
+			_logTrace?.Trace("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+		}
+		else if (_log.IsEnabled(LogLevel.Error))
+		{
+			_log.Error("Requested init using an invalid source.");
+		}
 	}
 
 	[JSExport]
@@ -121,6 +135,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				case HtmlPointerEvent.pointerleave:
 					that._isOver = false;
 					that.PointerExited?.Invoke(that, args);
+					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
 					break;
 
 				case HtmlPointerEvent.pointerdown:
@@ -130,7 +145,13 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				case HtmlPointerEvent.pointerup:
 					//case HtmlPointerEvent.lostpointercapture: // if pointer is captured, we don't get a up, just a capture lost (with skia for wasm)
 					that.PointerReleased?.Invoke(that, args);
-					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
+					if (that._isIOs && args is { CurrentPoint.PointerDeviceType: PointerDeviceType.Touch, DispatchResult: UIElement.PointerEventDispatchResult { VisualTreeAltered: true } })
+					{
+						// On iOS, when the element under the pointer is removed, the browser won't send any pointer leave event.
+
+						args.DispatchResult = null; // To be clean only, the value is not used in the leave case.
+						goto case HtmlPointerEvent.pointerleave;
+					}
 					break;
 
 				case HtmlPointerEvent.pointermove:
@@ -321,7 +342,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		=> (uint)(timestamp % uint.MaxValue);
 
 	private ulong ToTimeStamp(double timestamp)
-		=> _bootTime + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
+		=> _bootTime + (ulong)(timestamp * 1000);
 
 	private static PointerUpdateKind ToUpdateKind(HtmlPointerButtonUpdate update, PointerPointProperties props)
 		=> update switch

@@ -48,36 +48,36 @@ Here are the supported features:
 
 | Feature              | Description                                                                                                                                                                                                                                |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
-| `GooglePlay`         | Adds a reference to [Uno.WinUI.GooglePlay](https://www.nuget.org/packages/Uno.WinUI.GooglePlay). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).  |
-| `MediaElement`       | Adds native references where needed to use [MediaElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaelement).                                                                                                |
-| `CSharpMarkup`       | Adds support for [C# Markup](xref:Uno.Extensions.Markup.Overview).                                                                                                                                                                         |
-| `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
 | `Authentication`     | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for Custom [Authentication](xref:Uno.Extensions.Authentication.Overview).                                                                                                 |
 | `AuthenticationMsal` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using [Microsoft.Identity.Client](xref:Uno.Extensions.Authentication.HowToMsalAuthentication).          |
 | `AuthenticationOidc` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using a custom [Oidc](xref:Uno.Extensions.Authentication.HowToOidcAuthentication) client.               |
 | `Configuration`      | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Configuration](xref:Uno.Extensions.Configuration.Overview).                                                                                                          |
+| `CSharpMarkup`       | Adds support for [C# Markup](xref:Uno.Extensions.Markup.Overview).                                                                                                                                                                         |
+| `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
+| `Dsp`                | Adds support for the [Uno.Dsp.Tasks packages](https://www.nuget.org/packages?q=uno.dsp.tasks).                                                                                                                                             |
+| `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
+| `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
+| `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
+| `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) including the use of [Refit](xref:Uno.Extensions.Http.Overview#refit) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                       |
 | `Localization`       | Adds support for [Localization](xref:Uno.Extensions.Localization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                           |
 | `Logging`            | Adds support for [Logging](xref:Uno.Extensions.Logging.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
-| `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
-| `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview).                                                                                                                                                                                |
-| `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
-| `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
-| `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
-| `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                              |
-| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
-| `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
-| `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
-| `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
-| `Dsp`                | Adds support for the [Uno.Dsp.Tasks packages](https://www.nuget.org/packages?q=uno.dsp.tasks).                                                                                                                                             |
-| `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
-| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `GLCanvas`               | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                           |
-| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
+| `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
+| `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
+| `MediaElement`       | Adds native references where needed to use [MediaElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaelement).                                                                                                |
+| `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
+| `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview).                                                                                                                                                                                |
+| `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
+| `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
+| `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
+| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
+| `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
+| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |                                                                                                                                                                    |
 
 ## Implicit Packages
 
@@ -132,7 +132,46 @@ Here are the supported properties:
 
 Those properties can be set from `Directory.Build.props` or may be set in the `csproj` file for your project.
 
-If you wish to disable Implicit package usage, add `<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>` to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
+```xml
+<!-- .csproj file -->
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+   
+   ...
+
+    <UnoFeatures>
+        Material;
+        Dsp;
+        Hosting;
+        Toolkit;
+        Logging;
+        MVUX;
+        Configuration;
+        Http;
+        Serialization;
+        Localization;
+        Navigation;
+        ThemeService;
+        Mvvm;
+    </UnoFeatures>
+      <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
+      <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
+      <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>
+  </PropertyGroup>    
+</Project>
+```
+
+In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+## Disabling Implicit Uno Packages
+
+If you wish to disable Implicit package usage, add the following:
+
+```xml
+<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+```
+
+to your `Directory.Build.props` file or `csproj` file. You will be then able to manually add the NuGet packages for your project.
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
@@ -235,15 +274,30 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
 
 - `*.crossruntime.cs` (WASM, Skia, or Reference)
-- `*.wasm.cs`
-- `*.skia.cs`
-- `*.reference.cs`
+- `*.wasm.cs` (WebAssembly)
+- `*.skia.cs` (Skia)
+- `*.reference.cs` (Reference only)
 - `*.iOS.cs`(iOS & MacCatalyst)
 - `*.macOS.cs` (MacOS not MacCatalyst)
 - `*.iOSmacOS.cs` (iOS, MacCatalyst, & MacOS)
-- `*.Android.cs`
+- `*.Android.cs` (Android)
+- `*.WinAppSDK.cs` (Windows App SDK)
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
+
+> [!TIP]
+> When you need to exclude specific files from a particular target framework (such as WebAssembly), you can use a custom MSBuild target:
+>
+> ```xml
+> <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
+>         <None Remove="Page.xaml"/>
+>         <Page Remove="Page.xaml"/>
+>     </ItemGroup>
+> </Target>
+> ```
+>
+> This approach allows you to selectively remove pages from specific target frameworks while maintaining them in others.
 
 ## Apple Privacy Manifest Support
 

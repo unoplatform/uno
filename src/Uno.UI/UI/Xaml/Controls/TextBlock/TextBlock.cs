@@ -40,6 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private IDisposable _foregroundBrushChangedSubscription;
 
 #if !__WASM__
 		// Used for text selection which is handled natively
@@ -117,6 +118,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
+#if __WASM__
+					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
+#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -485,7 +489,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private void Subscribe(Brush oldValue, Brush newValue)
 		{
 			var newOnInvalidateRender = _foregroundChanged ?? (() => OnForegroundChanged());
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, newOnInvalidateRender);
+
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, newOnInvalidateRender);
 		}
 
 		private void OnForegroundChanged()

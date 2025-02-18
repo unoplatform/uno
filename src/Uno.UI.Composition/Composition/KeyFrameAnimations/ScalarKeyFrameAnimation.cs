@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Uno;
 
 namespace Microsoft.UI.Composition;
@@ -10,7 +12,7 @@ namespace Microsoft.UI.Composition;
 public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 {
 #if !__IOS__
-	private readonly SortedDictionary<float, float> _keyFrames = new();
+	private readonly SortedDictionary<float, AnimationKeyFrame<float>> _keyFrames = new();
 #endif
 
 	internal ScalarKeyFrameAnimation(Compositor compositor) : base(compositor)
@@ -21,23 +23,36 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
 	public void InsertKeyFrame(float normalizedProgressKey, float value)
-		=> _keyFrames[normalizedProgressKey] = value;
+		=> InsertKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
-	[NotImplemented]
 	public void InsertKeyFrame(float normalizedProgressKey, float value, CompositionEasingFunction easingFunction)
-		=> InsertKeyFrame(normalizedProgressKey, value);
+		=> _keyFrames[normalizedProgressKey] = new() { Value = value, EasingFunction = easingFunction };
 
 
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		base.Start(propertyName, subPropertyName, compositionObject);
+
 		if (!_keyFrames.TryGetValue(0, out var startValue))
 		{
-			startValue = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
+			startValue = new()
+			{
+				Value = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString()),
+				EasingFunction = Compositor.GetDefaultEasingFunction()
+			};
 		}
 
-		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, _keyFrames[1.0f], Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue;
+		if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+		{
+			finalValue = _keyFrames.Values.LastOrDefault(startValue);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		static float Lerp(AnimationKeyFrame<float> value1, AnimationKeyFrame<float> value2, float amount)
+			=> float.Lerp(value1.Value, value2.Value, value2.EasingFunction.Ease(amount));
+
+		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
+		return startValue.Value;
 	}
 #endif
 }

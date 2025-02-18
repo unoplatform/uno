@@ -2,23 +2,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Uno.Extensions;
-using Uno.UI;
-using Uno.UI.Helpers.Xaml;
-using Uno.UI.Xaml;
-using Uno.Xaml;
+using Windows.Foundation.Metadata;
+using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
-using Windows.UI.Text;
-using Windows.Foundation.Metadata;
-using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Resources;
-using System.Diagnostics.CodeAnalysis;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers.Xaml;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Markup;
+using Uno.Xaml;
+
+using Color = Windows.UI.Color;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -30,6 +33,10 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Normal flow of operations")]
 	internal partial class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
@@ -94,6 +101,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object? rootInstance,
 			object? component = null,
 			TemplateMaterializationSettings? settings = null,
+			MemberInitializationContext? memberContext = null,
 			bool createInstanceFromXClass = false)
 		{
 			if (control == null)
@@ -101,16 +109,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				return null;
 			}
 
-			if (
-				control.Type.Name == "NullExtension"
-				&& control.Type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-			)
+			if (control.Type.PreferredXamlNamespace == XamlConstants.Xmlnses.X &&
+				control.Type.Name == "NullExtension")
 			{
 				return null;
 			}
-
-			var type = TypeResolver.FindType(control.Type);
-			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace);
 
 			void TrySetContextualProperties(object? instance, XamlObjectDefinition control)
 			{
@@ -128,7 +131,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 			}
 
-			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
+			if (createInstanceFromXClass && TypeResolver.FindTypeByXClass(control) is { } classType)
 			{
 				var created = Activator.CreateInstance(classType);
 				TrySetContextualProperties(created, control);
@@ -136,16 +139,52 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				return created;
 			}
 
+			var type = TypeResolver.FindType(control.Type);
+#if false
+			// This region is a failed attempt at "-Extension" resolution priority. It is disabled because we still don't understand the exact behavior.
+
+			// The order of lookup is to look for the Extension-suffixed class name first and then look for the class name without the Extension suffix.
+			// -- https://learn.microsoft.com/en-us/dotnet/desktop/xaml-services/markup-extensions-overview#defining-the-support-type-for-a-custom-markup-extension
+			// This rule is quite complicated..:
+			// ScenarioA. Given (Sanity,SanityExtension) defined:
+			//		{Sanity}->SanityExtension, {SanityExtension}->SanityExtension
+			// ScenarioB. Given (Sanity,SanityExtension,SanityExtensionExtension) defined:
+			//		{Sanity}->SanityExtension, {SanityExtension}->SanityExtension, {SanityExtensionExtension}->SanityExtensionExtension
+			// ScenarioC. Given (SanityExtensionExtension) defined:
+			//		{SanityExtension}->SanityExtensionExtension
+			// ScenarioD. Given (SanityExtension,SanityExtensionExtension) defined:
+			//		{SanityExtension}->SanityExtensionExtension, {SanityExtensionExtension}->SanityExtensionExtension
+			// ^ And, it doesnt explain why {SanityExtension} resolves to different things between scenario B and D...
+			if (type?.Is<MarkupExtension>() == true && !control.Type.Name.EndsWith("Extension", StringComparison.Ordinal))
+			{
+				// prefer $"{name}Extension" match if we dont already have this suffix
+				if (TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension") is { } extensionType &&
+					extensionType.Is<MarkupExtension>())
+				{
+					type = extensionType;
+				}
+			}
+#endif
 			if (type == null)
 			{
-				throw new InvalidOperationException($"Unable to find type {control.Type}");
+				// If we can match a $"{name}Extension" class and it extends from MarkupExtension, that is also a valid match.
+				// This shortcut syntax is not limited for {Markup} markup declaration syntax, but also works on <Markup> xaml-node declaration. (verified on WinAppSdk)
+				// note: On windows, the custom markup type MUST BE ALREADY used/referenced in the xaml once, in order for XamlReader to work with it, otherwise it will throws:
+				//		Microsoft.UI.Xaml.Markup.XamlParseException: 'The text associated with this error code could not be found.
+				//		The type 'Sanity' was not found. [Line: 1 Position: 9]'
+				if (TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension") is { } extensionType &&
+					extensionType.Is<MarkupExtension>())
+				{
+					type = extensionType;
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unable to find type {control.Type}. If the linker is enabled, more info at https://aka.platform.uno/linker-configuration");
+				}
 			}
 
-			var unknownContent = control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault();
-			var unknownContentValue = unknownContent?.Value;
+			var unknownContent = control.Members.Where(m => m.Member.Name == XamlConstants.UnknownContent).FirstOrDefault();
 			var initializationMember = control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault();
-
-			var isBrush = type == typeof(Media.Brush);
 
 			if (type.Is<FrameworkTemplate>())
 			{
@@ -161,28 +200,53 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				return created;
 			}
+			else if (type.Is<MarkupExtension>())
+			{
+				var instance = Activator.CreateInstance(type) as MarkupExtension ??
+					throw new InvalidCastException($"Can not cast from '{type.FullName}' to '{nameof(MarkupExtension)}'.");
+
+				foreach (var member in control.Members)
+				{
+					ProcessNamedMember(control, instance, member, rootInstance ?? instance, settings);
+				}
+
+				var provider = new XamlServiceProviderContext
+				{
+					TargetObject = memberContext?.Target,
+					TargetProperty = memberContext?.Property is { } pi
+						? new ProvideValueTargetProperty
+						{
+							DeclaringType = pi.DeclaringType,
+							Name = pi.Name,
+							Type = pi.PropertyType,
+						}
+						: null,
+					RootObject = rootInstance,
+				};
+
+				var value = ((IMarkupExtensionOverrides)instance).ProvideValue(provider);
+
+				// It seems WinUI will generally throw: "Failed to assign to property '{fullname of dp}'"
+				// like for returning true(bool) to a string dp. So there is no conversion needed here.
+				// We can just let the caller to throw when invalid assignment eventually occurs.
+
+				return value;
+			}
 			else if (type.Is<ResourceDictionary>())
 			{
-				var contentOwner = unknownContent;
+				var instance = Activator.CreateInstance(type) as ResourceDictionary ??
+					throw new InvalidCastException($"Can not cast from '{type.FullName}' to '{nameof(ResourceDictionary)}'.");
 
-				if (Activator.CreateInstance(type) is ResourceDictionary rd)
+				foreach (var member in control.Members.Where(m => m != unknownContent))
 				{
-					foreach (var member in control.Members.Where(m => m != unknownContent))
-					{
-						ProcessNamedMember(control, rd, member, rd, settings: null);
-					}
-
-					if (unknownContent is { })
-					{
-						ProcessResourceDictionaryContent(rd, unknownContent, rootInstance);
-					}
-
-					return rd;
+					ProcessNamedMember(control, instance, member, instance, settings: null);
 				}
-				else
+				if (unknownContent is { })
 				{
-					throw new InvalidCastException();
+					ProcessResourceDictionaryContent(instance, unknownContent, rootInstance);
 				}
+
+				return instance;
 			}
 			else if (type.IsPrimitive && initializationMember?.Value is string primitiveValue)
 			{
@@ -192,15 +256,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
-			else if (type == typeof(Media.Geometry) && unknownContentValue is string geometryStringValue)
+			else if (type == typeof(Media.Geometry) && unknownContent?.Value is string geometryStringValue)
 			{
 				var generated = Uno.Media.Parsers.ParseGeometry(geometryStringValue);
 
 				return (Media.Geometry)generated;
 			}
-			else if (
-				_genericConvertibles.Contains(type)
-				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
+			else if (_genericConvertibles.Contains(type) && unknownContent?.Value is string otherContentValue)
 			{
 				return XamlBindingHelper.ConvertValue(type, otherContentValue);
 			}
@@ -209,18 +271,18 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				var instance = component ?? Activator.CreateInstance(type)!;
 				rootInstance ??= instance;
 
-				var instanceAsFrameworkElement = instance as FrameworkElement;
-				if (instanceAsFrameworkElement is { })
+				var instanceAsFE = instance as FrameworkElement;
+				if (instanceAsFE is { })
 				{
-					instanceAsFrameworkElement.IsParsing = true;
-					TrySetContextualProperties(instanceAsFrameworkElement, control);
+					instanceAsFE.IsParsing = true;
+					TrySetContextualProperties(instanceAsFE, control);
 				}
 
 				IDisposable? TryProcessStyle()
 				{
 					if (instance is Style style)
 					{
-						if (control.Members.FirstOrDefault(m => m.Member.Name == "TargetType") is XamlMemberDefinition targetTypeDefinition)
+						if (control.Members.FirstOrDefault(m => m.Member.Name == "TargetType") is { } targetTypeDefinition)
 						{
 							if (BuildLiteralValue(targetTypeDefinition) is Type targetType)
 							{
@@ -243,7 +305,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					return null;
 				}
-
 				using (TryProcessStyle())
 				{
 					foreach (var member in control.Members)
@@ -252,7 +313,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 				}
 
-				instanceAsFrameworkElement?.CreationComplete();
+				instanceAsFE?.CreationComplete();
 
 				return instance;
 			}
@@ -314,26 +375,29 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object rootInstance,
 			TemplateMaterializationSettings? settings)
 		{
+			var isAttached = TypeResolver.IsAttachedProperty(member);
+			var isNestedChildNode = IsNestedChildNode(member);
+
 			// Exclude attached properties, must be set in the extended apply section.
 			// If there is no type attached, this can be a binding.
 			if (TypeResolver.IsType(control.Type, member.Member.DeclaringType)
-				&& !TypeResolver.IsAttachedProperty(member)
-				|| member.Member.Name == "_UnknownContent"
+				&& !isAttached
+				|| isNestedChildNode
 			// && FindEventType(member.Member) == null
 			)
 			{
 				if (instance is TextBlock textBlock)
 				{
-					ProcessTextBlock(control, textBlock, member, rootInstance);
+					ProcessTextBlock(control, textBlock, member, rootInstance, settings);
 				}
-				else if (instance is Documents.Span span && member.Member.Name == "_UnknownContent")
+				else if (instance is Documents.Span span && isNestedChildNode)
 				{
 					ProcessSpan(control, span, member, rootInstance);
 				}
 				// WinUI assigned ContentProperty syntax
 				else if (
 					instance is ColumnDefinition columnDefinition &&
-					member.Member.Name == "_UnknownContent" &&
+					isNestedChildNode &&
 					member.Value is string columnDefinitionContent &&
 					!string.IsNullOrWhiteSpace(columnDefinitionContent))
 				{
@@ -341,17 +405,17 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 				else if (
 					instance is RowDefinition rowDefinition &&
-					member.Member.Name == "_UnknownContent" &&
+					isNestedChildNode &&
 					member.Value is string rowDefinitionContent &&
 					!string.IsNullOrWhiteSpace(rowDefinitionContent))
 				{
 					rowDefinition.Height = GridLength.ParseGridLength(rowDefinitionContent.Trim()).FirstOrDefault();
 				}
-				else if (member.Member.Name == "_UnknownContent"
+				else if (isNestedChildNode
 					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
 					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
 				{
-					AddCollectionItems(instance, member.Objects, rootInstance, settings);
+					AddCollectionItems(instance, member.Objects, rootInstance, settings, null);
 				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
@@ -430,7 +494,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					// throw new InvalidOperationException($"The Property {member.Member.Name} does not exist on {member.Member.DeclaringType}");
 				}
 			}
-			else if (TypeResolver.IsAttachedProperty(member))
+			else if (isAttached)
 			{
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
@@ -558,28 +622,51 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member, object rootInstance)
+		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member, object rootInstance, TemplateMaterializationSettings? settings)
 		{
-			if (member.Objects.Any())
+			if (IsBlankBaseMember(member))
 			{
-				if (IsMarkupExtension(member))
+			}
+			else if (IsNestedChildNode(member) || member.Member.Name == nameof(TextBlock.Inlines))
+			{
+				foreach (var node in member.Objects)
 				{
-					ProcessMemberMarkupExtension(instance, rootInstance, member, null);
-				}
-				else
-				{
-					foreach (var node in member.Objects)
+					var value = LoadObject(node, rootInstance);
+
+					if ((TypeResolver.FindType(node.Type) ?? TypeResolver.FindType(node.Type.PreferredXamlNamespace, node.Type.Name + "Extension"))?.Is<MarkupExtension>() == true)
 					{
-						if (LoadObject(node, rootInstance) is Inline inline)
-						{
-							instance.Inlines.Add(inline);
-						}
+						// WinUI will actually throw an exception for markup that returns `string` or `Run` here:
+						// > XamlParseException: The text associated with this error code could not be found.
+						// > Run -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines' because the type 'Microsoft.UI.Xaml.Documents.Run' cannot be assigned to the type 'Microsoft.UI.Xaml.Documents.InlineCollection'. [Line: 22 Position: 8]'
+						// > string -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines'. [Line: 20 Position: 7]'
+						throw new XamlParseException(value is Inline
+							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
+							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."
+						);
+					}
+					if (value is Inline inline)
+					{
+						instance.Inlines.Add(inline);
 					}
 				}
 			}
 			else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+				if (member.Objects.Count == 0)
+				{
+					GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildLiteralValue(member, propertyInfo.PropertyType) });
+				}
+				else
+				{
+					if (IsMarkupExtension(member))
+					{
+						ProcessMemberMarkupExtension(instance, rootInstance, member, propertyInfo);
+					}
+					else
+					{
+						ProcessMemberElements(instance, member, propertyInfo, rootInstance, settings);
+					}
+				}
 			}
 		}
 
@@ -639,7 +726,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var collection = BuildInstance();
 
-				AddCollectionItems(collection, member.Objects, rootInstance, settings);
+				AddCollectionItems(collection, member.Objects, rootInstance, settings, null);
 
 				instance.SetValue(property, collection);
 			}
@@ -746,7 +833,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					&& TypeResolver.IsNewableType(propertyInfo.PropertyType))
 				{
 					var collection = Activator.CreateInstance(propertyInfo.PropertyType);
-					AddCollectionItems(collection!, member.Objects, rootInstance, settings);
+					AddCollectionItems(collection!, member.Objects, rootInstance, settings, new(instance, propertyInfo));
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
@@ -767,7 +854,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							AddCollectionItems(propertyInstance, member.Objects, rootInstance, settings);
+							AddCollectionItems(propertyInstance, member.Objects, rootInstance, settings, new(instance, propertyInfo));
 						}
 					}
 					else
@@ -782,10 +869,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[]
-				{
-					LoadObject(member.Objects.First(), rootInstance: rootInstance, settings: settings)
-				});
+				GetPropertySetter(propertyInfo).Invoke(instance, [LoadObject(
+					member.Objects.First(),
+					rootInstance: rootInstance,
+					settings: settings,
+					memberContext: new(instance, propertyInfo))
+				]);
 			}
 		}
 
@@ -1157,13 +1246,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object collectionInstance,
 			IEnumerable<XamlObjectDefinition> nonBindingObjects,
 			object rootInstance,
-			TemplateMaterializationSettings? settings)
+			TemplateMaterializationSettings? settings,
+			MemberInitializationContext? memberContext)
 		{
 			var collectionType = collectionInstance.GetType();
 
 			foreach (var child in nonBindingObjects)
 			{
-				var item = LoadObject(child, rootInstance: rootInstance, settings: settings);
+				var item = LoadObject(child, rootInstance: rootInstance, settings: settings, memberContext: memberContext);
 				var itemType = item?.GetType() ?? typeof(object);
 
 				var addMethodInfo =
@@ -1341,6 +1431,19 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		private static bool IsBlankBaseMember(XamlMemberDefinition member) =>
+			member.Member.Name == "base" &&
+			member.Objects.Count == 0 &&
+			member.Value as string == string.Empty;
+
+		/// <summary>
+		/// Check if the member is a nested child node (implicit [ContentProperty] value(s)).
+		/// </summary>
+		/// <remarks>
+		/// This will return false for member child node (member property).
+		/// </remarks>
+		private static bool IsNestedChildNode(XamlMemberDefinition member) => member.Member.Name == XamlConstants.UnknownContent;
+
 		private class EventHandlerWrapper
 		{
 			private readonly object _instance;
@@ -1362,6 +1465,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				_method.Invoke(_instance, Array.Empty<object>());
 			}
 		}
+
+		private record MemberInitializationContext(object Target, PropertyInfo Property);
 
 		[GeneratedRegex(@"(\(.*?\))")]
 		private static partial Regex AttachedPropertyMatching();

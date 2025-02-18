@@ -1,9 +1,16 @@
-﻿// Uncomment the following line to write expected files to disk
+﻿#if DEBUG
+// Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
-//#define WRITE_EXPECTED
+// #define WRITE_EXPECTED
+#endif
+
+#if IS_CI && WRITE_EXPECTED
+#error "WRITE_EXPECTED should not be defined!"
+#endif
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators;
@@ -16,6 +23,8 @@ using Uno.UI.SourceGenerators.XamlGenerator;
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
 {
 	public record struct XamlFile(string FileName, string Contents);
+
+	public record struct ResourceFile(string Locale, string FileName, string Contents);
 
 	public class TestSetup
 	{
@@ -66,6 +75,11 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			{
 			}
 
+			public Test(XamlFile[] xamlFiles, ResourceFile[] resourceFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: base(xamlFiles, resourceFiles, testFilePath, ShortName(testMethodName))
+			{
+			}
+
 			private static string ShortName(string name)
 				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
 		}
@@ -77,6 +91,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private const string TestOutputFolderName = "Out";
 
 			private readonly XamlFile[] _xamlFiles;
+			private readonly ResourceFile[] _resourceFiles;
 
 			public bool EnableFuzzyMatching { get; set; } = true;
 			public bool DisableBuildReferences { get; set; }
@@ -88,12 +103,18 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			}
 
 			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
+				: this(xamlFiles, [], testFilePath, testMethodName)
+			{
+			}
+
+			protected TestBase(XamlFile[] xamlFiles, ResourceFile[] resourceFiles, string testFilePath, string testMethodName)
 			{
 				_xamlFiles = xamlFiles;
+				_resourceFiles = resourceFiles;
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+				ReferenceAssemblies = _Dotnet.Current.ReferenceAssemblies;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
@@ -111,6 +132,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				}
 				else if (ReferenceAssemblies.Packages.Any(p =>
 					p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase) ||
+					p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase) ||
 					p.Id.StartsWith("Microsoft.MacCatalyst.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
 					includeXamlNamespaces = "ios,not_android,not_wasm,not_macos,not_skia,not_netstdref";
@@ -170,6 +192,14 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 ");
 					TestState.AdditionalFiles.Add(($"C:/Project/0/{xamlFile.FileName}", xamlFile.Contents));
+				}
+
+				foreach (var resourceFile in _resourceFiles)
+				{
+					globalConfigBuilder.Append($@"[C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}]
+build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
+");
+					TestState.AdditionalFiles.Add(($"C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", resourceFile.Contents));
 				}
 
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
@@ -289,13 +319,18 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 #endif
 
 				var availableTargets = new[] {
+					// On CI the test assemblies set must be first, as it contains all
+					// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
+					Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
 					Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
 					Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-					Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
+					Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
+					Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
+					Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
 				};
 
 				var unoUIBase = Path.Combine(
-					Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+					Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 					"..",
 					"..",
 					"..",

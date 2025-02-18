@@ -44,7 +44,8 @@ public static class TypeMappings
 	/// </summary>
 	/// <param name="instanceType">This is the type that may have been replaced</param>
 	/// <returns>If instanceType has been replaced, then the replacement type, otherwise the instanceType</returns>
-	public static Type GetReplacementType(this Type instanceType)
+	public static Type GetReplacementType(
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] this Type instanceType)
 	{
 		// Two scenarios:
 		// 1. The instance type is a mapped type, in which case we need to get the original type
@@ -58,6 +59,7 @@ public static class TypeMappings
 	/// </summary>
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <returns>An new instance for the original type</returns>
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 

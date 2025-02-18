@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
@@ -10,6 +11,9 @@ internal class SizeConverter : TypeConverter
 {
 #if NETSTANDARD
 	private static readonly char[] _commaArray = new[] { ',' };
+#endif
+#if !NETSTANDARD
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Size))]
 #endif
 	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 	{
@@ -23,6 +27,9 @@ internal class SizeConverter : TypeConverter
 		return base.CanConvertFrom(context, sourceType);
 	}
 
+#if !NETSTANDARD
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Size))]
+#endif
 	public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 	{
 		var stringValue = value as string;

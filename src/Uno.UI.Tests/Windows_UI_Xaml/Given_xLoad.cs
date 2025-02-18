@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
 
-			Assert.AreEqual(7, stubs.Count());
+			Assert.AreEqual(8, stubs.Count());
 		}
 
 		[TestMethod]
@@ -76,11 +76,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNull(SUT.border7);
 
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
 			SUT.DataContext = true;
-
-			Assert.IsNotNull(SUT.border7);
+			Assert.IsNull(SUT.border7);
 
 			var border = SUT.FindName("border7");
+			Assert.IsNotNull(SUT.border7);
 			Assert.AreEqual(SUT.border7, border);
 		}
 
@@ -96,12 +97,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.IsNull(SUT.border8);
 
+			// Changing the visibility DOES NOT materialize the lazily-loaded element.
 			SUT.MyVisibility = true;
 			SUT.Measure(new Size(42, 42));
 
-			Assert.IsNotNull(SUT.border8);
+			Assert.IsNull(SUT.border8);
 
 			var border1 = SUT.FindName("border8");
+			Assert.IsNotNull(SUT.border8);
 			Assert.AreEqual(SUT.border8, border1);
 		}
 
@@ -179,11 +182,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
 			Assert.AreEqual(0, stubs.Count());
 
-			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground?.ToString());
+			Assert.IsNotNull(tb02.Foreground);
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground.ToString());
 
 			var tb01 = SUT.FindName("tb01") as TextBlock;
 
-			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb01.Foreground?.ToString());
+			Assert.IsNotNull(tb01.Foreground);
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb01.Foreground.ToString());
 		}
 	}
 }

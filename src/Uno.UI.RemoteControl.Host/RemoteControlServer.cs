@@ -94,8 +94,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
 								}
 
-								using var fs = File.Open(relPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-								return context.LoadFromStream(fs);
+								return TryLoadAssemblyFromPath(context, relPath);
 							}
 						}
 					}
@@ -132,6 +131,37 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		}
 	}
 
+	private static Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
+	{
+		// Load the assembly using the full path to avoid duplicates related
+		// relative paths pointing to the same file.
+		asmPath = Path.GetFullPath(asmPath);
+
+		// Try loading the assembly multiple times, using a try catch and a loop with a sleep
+		// to avoid issues with the assembly being locked by another process.
+		int tries = 10;
+		do
+		{
+			try
+			{
+				return context.LoadFromAssemblyPath(asmPath);
+			}
+			catch (Exception exc)
+			{
+				if (context.Log().IsEnabled(LogLevel.Trace))
+				{
+					context.Log().LogTrace("Failed to load assembly {asmPath} : {exc}", asmPath, exc);
+				}
+			}
+
+			Thread.Sleep(100);
+		}
+		while (tries-- > 0);
+
+		// Try without exception handling to report the original exception
+		return context.LoadFromAssemblyPath(asmPath);
+	}
+
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
@@ -146,46 +176,56 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 		while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 		{
-			if (frame.Scope == "RemoteControlServer")
+			try
 			{
-				if (frame.Name == ProcessorsDiscovery.Name)
+				if (frame.Scope == "RemoteControlServer")
 				{
-					await ProcessDiscoveryFrame(frame);
-					continue;
-				}
-
-				if (frame.Name == KeepAliveMessage.Name)
-				{
-					await ProcessPingFrame(frame);
-					continue;
-				}
-			}
-
-			if (_processors.TryGetValue(frame.Scope, out var processor))
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
-				}
-
-				try
-				{
-					DevServerDiagnostics.Current = DiagnosticsSink.Instance;
-					await processor.ProcessFrame(frame);
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (frame.Name == ProcessorsDiscovery.Name)
 					{
-						this.Log().LogError(e, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						await ProcessDiscoveryFrame(frame);
+						continue;
+					}
+
+					if (frame.Name == KeepAliveMessage.Name)
+					{
+						await ProcessPingFrame(frame);
+						continue;
+					}
+				}
+
+				if (_processors.TryGetValue(frame.Scope, out var processor))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
+					}
+
+					try
+					{
+						DevServerDiagnostics.Current = DiagnosticsSink.Instance;
+						await processor.ProcessFrame(frame);
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError(e, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						}
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 					}
 				}
 			}
-			else
+			catch (Exception error)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+					this.Log().LogError(error, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 				}
 			}
 		}
@@ -277,8 +317,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				{
 					_resolveAssemblyLocations[msg.AppInstanceId] = msg.BasePath;
 
-					using var fs = File.Open(msg.BasePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-					assemblies.Add((msg.BasePath, assemblyLoadContext.LoadFromStream(fs)));
+					assemblies.Add((msg.BasePath, TryLoadAssemblyFromPath(assemblyLoadContext, msg.BasePath)));
 				}
 				catch (Exception exc)
 				{

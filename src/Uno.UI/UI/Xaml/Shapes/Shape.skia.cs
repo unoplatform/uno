@@ -11,6 +11,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		private readonly CompositionSpriteShape _shape;
 		private readonly CompositionPathGeometry _geometry;
 
+		private protected CompositionSpriteShape SpriteShape => _shape;
+
 		public Shape()
 		{
 			var visual = Visual;
@@ -26,11 +28,11 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.Geometry.TightBounds.ToRect();
+			=> path.TightBounds.ToRect();
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
-		private protected void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected virtual void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is null)
 			{

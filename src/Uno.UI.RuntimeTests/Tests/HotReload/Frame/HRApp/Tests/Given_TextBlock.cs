@@ -121,7 +121,15 @@ public class Given_TextBlock : BaseTestClass
 			true)
 			.WithExtendedTimeouts(); // Required for CI
 		
-		await hr.UpdateFileAsync(req, ct);
+		try
+		{
+			await hr.UpdateFileAsync(req, ct);
+		}
+		finally
+		{
+			// Make sure to undo to not impact other tests!
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
+		}
 	}
 
 	// Another version of the test above, but pausing the TypeMapping before calling the file update

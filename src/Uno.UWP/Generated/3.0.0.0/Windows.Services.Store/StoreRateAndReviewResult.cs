@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class StoreRateAndReviewResult
 	{
-#if false
-		internal StoreRateAndReviewResult()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception StoreRateAndReviewResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreRateAndReviewResult.ExtendedError");
-			}
-		}
-#endif
+		// Skipping already declared property ExtendedError
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string ExtendedJsonData
@@ -33,16 +19,7 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Services.Store.StoreRateAndReviewStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StoreRateAndReviewStatus StoreRateAndReviewResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreRateAndReviewStatus%20StoreRateAndReviewResult.Status");
-			}
-		}
-#endif
+		// Skipping already declared property Status
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool WasUpdated

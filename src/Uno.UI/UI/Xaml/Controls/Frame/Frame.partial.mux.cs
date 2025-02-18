@@ -4,11 +4,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -47,6 +49,18 @@ partial class Frame
 		//// CheckThread();
 
 		base.OnApplyTemplate();
+
+#if HAS_UNO && (__ANDROID__ || __IOS__)
+		// It is not possible to use the WinUI behavior with a NativeFramePresenter.
+		// We have two such presenters - on internal in Uno, another in Uno.Toolkit.
+		if (_useWinUIBehavior && this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.Ordinal) == true)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("WinUI Frame behavior is not compatible with NativeFramePresenter. Set the Frame.Style to '{StaticResource XamlDefaultFrame}' instead.");
+			}
+		}
+#endif
 
 		if (m_tpNext is not null)
 		{
@@ -287,6 +301,7 @@ partial class Frame
 			catch
 			{
 				pCanNavigate = false;
+				throw;
 			}
 		Cleanup:
 			;
@@ -571,6 +586,8 @@ partial class Frame
 			{
 				Content = oldObject;
 			}
+
+			throw;
 		}
 	}
 
@@ -689,6 +706,7 @@ partial class Frame
 		//TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "normal flow of operations")]
 	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled)
 	{
 		if (descriptor is null)

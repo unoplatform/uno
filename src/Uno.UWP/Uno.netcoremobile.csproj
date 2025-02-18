@@ -33,13 +33,19 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
+		<Compile Include="..\Uno.UI\UI\Colors.cs" />
+		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
+		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
 	</ItemGroup>
 
 </Project>

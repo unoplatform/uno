@@ -12,7 +12,6 @@ typedef void (*system_theme_change_fn_ptr)(void);
 system_theme_change_fn_ptr uno_get_system_theme_change_callback(void);
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p);
 uint32 uno_get_system_theme(void);
-NSTimeInterval uno_get_system_uptime(void);
 
 bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
@@ -22,6 +21,7 @@ void uno_application_set_badge(const char *badge);
 void uno_application_set_icon(const char *path);
 bool uno_application_open_url(const char *url);
 bool uno_application_query_url_support(const char *url);
+bool uno_application_is_bundled(void);
 
 typedef bool (*application_can_exit_fn_ptr)(void);
 application_can_exit_fn_ptr uno_get_application_can_exit_callback(void);

@@ -865,6 +865,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
         memset(&data, 0, sizeof(struct MouseEventData));
         data.eventType = mouse;
         data.inContact = inContact;
+        data.mods = get_modifiers(event.modifierFlags);
         if ([self getPositionFrom:event x:&data.x y:&data.y]) {
 #if false
             // check subtype for most mouse events
@@ -910,12 +911,8 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             // other
             NSTimeInterval ts = event.timestamp;
             
-            // The precision of the frameId is 10 frame per ms ... which should be enough
-            data.frameId = (uint)(ts * 1000.0 * 10.0);
-
-            NSDate *now = [[NSDate alloc] init];
-            NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];
-            data.timestamp = (uint64)(boot.timeIntervalSinceNow * 1000000);
+            data.frameId = (uint)(ts * 10.0);
+            data.timestamp = (uint64)(ts * 1000000.0);
 
             handled = uno_get_window_mouse_event_callback()(self, &data);
 #if DEBUG_MOUSE // very noisy

@@ -19,6 +19,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -610,6 +611,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __WASM__
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		public async Task When_Changing_Text_Through_Inlines()
+		{
+			var SUT = new TextBlock { Text = "Initial Text" };
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
+			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
+
+			SUT.Inlines.Clear();
+			SUT.Inlines.Add(new Run { Text = "Updated Text" });
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
+
+			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
+		}
+#endif
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -893,7 +912,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
 
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
-			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
 #endif
 
@@ -1144,6 +1163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
+			var delayToAvoidDoubleTap = 600;
 			var SUT = new TextBlock
 			{
 				Text = "FirstLine\r\n Second",
@@ -1165,7 +1185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
@@ -1180,7 +1200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();

@@ -79,9 +79,13 @@ $projects =
 
     # 5.3 Blank with net9
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
-    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
+    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
+
+    # 5.3 Uno App with Library reference
+    @(3, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
@@ -91,10 +95,19 @@ $projects =
     ##
     ## When adding new template versions, create them in a separate version named folder
     ## using all the specific features that can be impacted by the use of the Uno.SDK
+
+    # Empty marker to allow new tests lines to end with a comma
+    @()
 );
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
+    # Skip the end marker to help for new tests authoring
+    if ($projects[$i].Length -eq 0)
+    {
+        continue
+    }
+
     $projectTestGroup=$projects[$i][0];
     $projectPath=$projects[$i][1];
     $projectParameters=$projects[$i][2];

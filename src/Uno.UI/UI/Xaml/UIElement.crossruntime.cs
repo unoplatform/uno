@@ -102,11 +102,6 @@ namespace Microsoft.UI.Xaml
 		{
 			child.Shutdown();
 
-			if (!child._isFrameworkElement)
-			{
-				return;
-			}
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
 			child.Leave(leaveParams);

@@ -26,8 +26,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[]? _watchers;
-		private CompositeDisposable? _watcherEventsDisposable;
 		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
@@ -206,6 +204,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// </summary>
 		private class HotReloadServerOperation
 		{
+			public readonly static int DefaultAutoRetryIfNoChangesAttempts = 3;
+
+			public readonly static TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
+
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
 
@@ -219,7 +221,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private ImmutableHashSet<string> _filePaths;
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
+
+			// In VS we forcefully request to VS to hot-reload application, but in some cases the changes are not detected by VS and it returns a NoChanges result.
+			// In such cases we can retry the hot-reload request to VS to let it process the file updates.
 			private int _noChangesRetry;
+			private TimeSpan _noChangesRetryDelay = DefaultAutoRetryIfNoChangesDelay;
 
 			public long Id { get; } = Interlocked.Increment(ref _count);
 
@@ -294,8 +300,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// <summary>
 			/// Configure a simple auto-retry strategy if no changes are detected.
 			/// </summary>
-			public void EnableAutoRetryIfNoChanges()
-				=> _noChangesRetry = 1;
+			public void EnableAutoRetryIfNoChanges(int? attempts, TimeSpan? delay)
+			{
+				_noChangesRetry = attempts ?? DefaultAutoRetryIfNoChangesAttempts;
+				_noChangesRetryDelay = delay ?? DefaultAutoRetryIfNoChangesDelay;
+			}
 
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
@@ -322,10 +331,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				if (_result is -1
 					&& result is HotReloadServerResult.NoChanges
-					&& Interlocked.Decrement(ref _noChangesRetry) >= 0
-					&& await _owner.RequestHotReloadToIde(Id))
+					&& Interlocked.Decrement(ref _noChangesRetry) >= 0)
 				{
-					return;
+					if (_noChangesRetryDelay is { TotalMilliseconds: > 0 })
+					{
+						await Task.Delay(_noChangesRetryDelay);
+					}
+
+					if (await _owner.RequestHotReloadToIde(Id))
+					{
+						return;
+					}
 				}
 
 				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
@@ -379,68 +395,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Base project path: {configureServer.ProjectPath}");
-				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
 
-			if (!InitializeMetadataUpdater(configureServer))
+			if (InitializeMetadataUpdater(configureServer))
 			{
-				// We are relying on IDE (or XAML only), we won't have any other hot-reload initialization steps.
+				this.Log().LogDebug($"Metadata updater initialized");
+			}
+			else
+			{
+				// We are relying on IDE, we won't have any other hot-reload initialization steps.
 				_ = Notify(HotReloadEvent.Ready);
+				this.Log().LogDebug("Metadata updater **NOT** initialized.");
 			}
-
-			_watchers = configureServer.XamlPaths
-				.Select(p => new FileSystemWatcher
-				{
-					Path = p,
-					Filter = "*.*",
-					NotifyFilter = NotifyFilters.LastWrite |
-						NotifyFilters.Attributes |
-						NotifyFilters.Size |
-						NotifyFilters.CreationTime |
-						NotifyFilters.FileName,
-					EnableRaisingEvents = true,
-					IncludeSubdirectories = false
-				})
-				.ToArray();
-
-			_watcherEventsDisposable = new CompositeDisposable();
-
-			foreach (var watcher in _watchers)
-			{
-				var disposable = ToObservable(watcher).Subscribe(
-					filePaths =>
-					{
-						var files = filePaths
-							.Distinct()
-							.Where(f =>
-								Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)
-								|| Path.GetExtension(f).Equals(".cs", StringComparison.OrdinalIgnoreCase));
-
-						foreach (var file in files)
-						{
-							OnSourceFileChanged(file);
-						}
-					},
-					e => Console.WriteLine($"Error {e}"));
-
-				_watcherEventsDisposable.Add(disposable);
-			}
-
-			void OnSourceFileChanged(string fullPath)
-				=> Task.Run(async () =>
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"File {fullPath} changed");
-					}
-
-					await _remoteControlServer.SendFrame(
-						new FileReload
-						{
-							Content = File.ReadAllText(fullPath),
-							FilePath = fullPath
-						});
-				});
 		}
 		#endregion
 
@@ -463,7 +429,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
-					hotReload.EnableAutoRetryIfNoChanges();
+					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
 					await RequestHotReloadToIde(hotReload.Id);
 				}
 
@@ -579,7 +545,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
 					{
-						await Task.Delay(500);
+						if ((message.ForceHotReloadDelay ?? HotReloadServerOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
+						{
+							await Task.Delay(delay);
+						}
+
 						tcs.TrySetResult();
 					}
 				};
@@ -621,16 +591,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
-			_watcherEventsDisposable?.Dispose();
-
-			if (_watchers != null)
-			{
-				foreach (var watcher in _watchers)
-				{
-					watcher.Dispose();
-				}
-			}
-
 			_solutionWatcherEventsDisposable?.Dispose();
 			if (_solutionWatchers != null)
 			{
@@ -644,39 +604,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<IList<string>> ToObservable(params FileSystemWatcher[] watchers)
-			=> Observable.Defer(() =>
-			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
-
-				var subject = new Subject<string>();
-
-				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
-
-				foreach (var watcher in watchers)
-				{
-					watcher.Changed += changed;
-					watcher.Created += changed;
-					watcher.Renamed += renamed;
-				}
-
-				return subject
-					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
-					.Finally(() =>
-					{
-						foreach (var watcher in watchers)
-						{
-							watcher.Changed -= changed;
-							watcher.Created -= changed;
-							watcher.Renamed -= renamed;
-						}
-					});
-			});
-
 		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{

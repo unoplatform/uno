@@ -19,7 +19,7 @@ internal static partial class XamlHelper
 	/// <summary>
 	/// Matches any tag without xmlns prefix.
 	/// </summary>
-	[GeneratedRegex(@"<\w+[ />]")]
+	[GeneratedRegex(@"<\w+[\s/>]")]
 	private static partial Regex NonXmlnsTagRegex();
 
 	private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>

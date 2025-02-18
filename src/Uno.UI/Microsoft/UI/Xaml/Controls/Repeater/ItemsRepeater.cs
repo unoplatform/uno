@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ItemsRepeater.cpp, commit 1cf9f1c
+// ItemsRepeater.cpp, commit 3f3e328
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -95,17 +95,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		// Value is different from null only while we are on the OnItemsSourceChanged call stack.
 		NotifyCollectionChangedEventArgs m_processingItemsSourceChange;
 
-		Size m_lastAvailableSize;
 		bool m_isLayoutInProgress;
-		// The value of _layoutOrigin is expected to be set by the layout
+		// The value of m_layoutOrigin is expected to be set by the layout
 		// when it gets measured. It should not be used outside of measure.
 		Point m_layoutOrigin;
 
 		// Loaded events fire on the first tick after an element is put into the tree 
 		// while unloaded is posted on the UI tree and may be processed out of sync with subsequent loaded
 		// events. We keep these counters to detect out-of-sync unloaded events and take action to rectify.
-		int _loadedCounter;
-		int _unloadedCounter;
+		int m_loadedCounter;
+		int m_unloadedCounter;
 
 		// Used to avoid layout cycles with StackLayout layouts where variable sized children prevent
 		// the ItemsRepeater's layout to settle.
@@ -122,6 +121,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		// Solution: Have flag that is only true when DataTemplate exists but it is empty.
 		bool m_isItemTemplateEmpty;
 
+		// Tracks the global scale factor so that children can be re-measured when
+		// it changes, for example when moving the app to another screen.
+		double m_layoutRoundFactor;
 
 		public ItemsRepeater()
 		{
@@ -269,7 +271,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 
 			m_viewportManager.SetLayoutExtent(extent);
-			m_lastAvailableSize = availableSize;
 			return desiredSize;
 		}
 
@@ -618,19 +619,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				m_viewportManager.ResetScrollers();
 			}
 
-			++_loadedCounter;
+			++m_loadedCounter;
 
 #if HAS_UNO
 			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
 			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				layout.MeasureInvalidated += InvalidateMeasureForLayout;
-				layout.ArrangeInvalidated += InvalidateArrangeForLayout;
-				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					layout.MeasureInvalidated -= InvalidateMeasureForLayout;
-					layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
-				});
+				InvalidateMeasure();
+
+				var disposables = new CompositeDisposable();
+				layout.RegisterMeasureInvalidated(InvalidateMeasureForLayout).DisposeWith(disposables);
+				layout.RegisterArrangeInvalidated(InvalidateArrangeForLayout).DisposeWith(disposables);
+				_layoutSubscriptionsRevoker.Disposable = disposables;
 			}
 
 			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
@@ -647,7 +647,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void OnUnloaded(object sender, RoutedEventArgs args)
 		{
 			_stackLayoutMeasureCounter = 0u;
-			++_unloadedCounter;
+			++m_unloadedCounter;
 
 #if !HAS_UNO // Avoids leak and useless as we are not validating such count in the loaded
 			// Only reset the scrollers if this unload event is in-sync.
@@ -853,14 +853,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (newValue != null)
 			{
+				_layoutSubscriptionsRevoker.Disposable = null;
+
 				newValue.InitializeForContext(GetLayoutContext());
-				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
-				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
-				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
-					newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
-				});
+
+				var disposables = new CompositeDisposable();
+				newValue.RegisterMeasureInvalidated(InvalidateMeasureForLayout).DisposeWith(disposables);
+				newValue.RegisterArrangeInvalidated(InvalidateArrangeForLayout).DisposeWith(disposables);
+				_layoutSubscriptionsRevoker.Disposable = disposables;
 			}
 
 			bool isVirtualizingLayout = newValue is VirtualizingLayout;
@@ -924,12 +924,71 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		void InvalidateMeasureForLayout(Layout sender, object args)
 		{
+			if (UseLayoutRounding)
+			{
+				if (XamlRoot is { } xamlRoot)
+
+				{
+					double layoutRoundFactor = xamlRoot.RasterizationScale;
+
+					if (layoutRoundFactor != m_layoutRoundFactor)
+					{
+						if (m_layoutRoundFactor != 0.0)
+						{
+							// Invoke InvalidateMeasure for all children owned by the layout so that they
+							// get re-measured using the new global scale factor.
+							// Otherwise they keep using their old DesiredSize based on the old factor
+							// which may be slightly different.
+							// This could have unwanted effects, like StackLayoutState::m_areElementsMeasuredRegular
+							// being incorrectly set to False in the StackLayout case.
+							InvalidateChildrenMeasure();
+						}
+
+						// ItemsRepeater has its own m_layoutRoundFactor field to avoid:
+						//  - the need for a new public ItemsRepeater API,
+						//  - the need for an internal ItemsRepeater/Layout communication.
+						m_layoutRoundFactor = layoutRoundFactor;
+					}
+				}
+				else
+				{
+					m_layoutRoundFactor = 0.0;
+				}
+			}
+			else
+			{
+				m_layoutRoundFactor = 0.0;
+			}
+
 			InvalidateMeasure();
 		}
 
 		void InvalidateArrangeForLayout(Layout sender, object args)
 		{
 			InvalidateArrange();
+		}
+
+		void InvalidateChildrenMeasure()
+		{
+			//ITEMSREPEATER_TRACE_INFO(*this, TRACE_MSG_METH, METH_NAME, this);
+
+			var children = Children;
+			var childrenCount = children.Count;
+
+			for (var childIndex = 0; childIndex < childrenCount; childIndex++)
+			{
+				if (children[childIndex] is { } element)
+				{
+					if (GetVirtualizationInfo(element) is { } virtInfo)
+
+					{
+						if (virtInfo.Owner == ElementOwner.Layout)
+						{
+							element.InvalidateMeasure();
+						}
+					}
+				}
+			}
 		}
 
 		private VirtualizingLayoutContext GetLayoutContext()

@@ -128,7 +128,7 @@ namespace Uno.UI.Tests.TextBoxTests
 		public void When_Multi_Line_Text_And_Not_AcceptsReturn()
 		{
 			var textBox = new TextBox();
-			Assert.AreEqual(false, textBox.AcceptsReturn);
+			Assert.IsFalse(textBox.AcceptsReturn);
 			textBox.Text = "Hello\nWorld";
 			Assert.AreEqual("Hello", textBox.Text);
 

@@ -218,7 +218,7 @@ public partial class TemplatedParentTests // tests
 		await ItemsControl_HeaderFooter_NoTP(sut, sut);
 	}
 
-	public async Task ItemsControl_HeaderFooter_NoTP(FrameworkElement setup, ItemsControl sut)
+	private async Task ItemsControl_HeaderFooter_NoTP(FrameworkElement setup, ItemsControl sut)
 	{
 		await UITestHelper.Load(setup, x => x.IsLoaded);
 
@@ -288,6 +288,69 @@ public partial class TemplatedParentTests // tests
 		12			Grid#ContentElement // TP=ContentControl#SUT, TV=<null>
 		""";
 		VerifyTree(expectations, setup, checkVSG: true);
+	}
+
+	[TestMethod]
+	public Task LateTemplateSwapping_NonContentControl() => LateTemplateSwapping<TextBox>();
+
+	[TestMethod]
+	public Task LateTemplateSwapping_ContentControl() => LateTemplateSwapping<ContentControl>();
+
+	public async Task LateTemplateSwapping<TControl>() where TControl : Control, new()
+	{
+		var templateA = XamlHelper.LoadXaml<ControlTemplate>("""
+			<ControlTemplate>
+				<Grid x:Name="RootA" Width="150" Height="50" Background="SkyBlue">
+					<TextBlock>Template A</TextBlock>
+				</Grid>
+			</ControlTemplate>
+		""");
+		var templateB = XamlHelper.LoadXaml<ControlTemplate>("""
+			<ControlTemplate>
+				<Grid x:Name="RootB" Width="150" Height="50" Background="Pink">
+					<TextBlock>Template B</TextBlock>
+				</Grid>
+			</ControlTemplate>
+		""");
+
+		var sut = new TControl();
+
+		sut.Template = templateA;
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		sut.FindFirstDescendantOrThrow<Grid>("RootA");
+
+		sut.Template = templateB;
+		await UITestHelper.WaitForIdle();
+		sut.FindFirstDescendantOrThrow<Grid>("RootB");
+	}
+
+	[TestMethod]
+	public async Task Uno19264_Test()
+	{
+		var setup = new Uno19264();
+		await UITestHelper.Load(setup);
+
+		// force lazily load element to load, and wait until done
+		var lazy = setup.HostButton.FindName("LazyContentControl") as ContentControl ?? throw new Exception("failed to ContentControl#LazyContentControl");
+		await UITestHelper.WaitForLoaded(lazy, x => x.IsLoaded);
+
+		/* var tree = setup.TreeGraph();
+		Uno19264 // TP=null, DC=null, Content=Button
+			Button // TP=null, DC=null, Content=String
+				StackPanel // TP=Button, DC=null
+					TextBlock // TP=Button, DC=null, Text=String
+					ContentControl#LazyContentControl // TP=Button, DC=null, Content=ContentPresenter
+						ContentPresenter // TP=ContentControl#LazyContentControl, DC=null, Content=ContentPresenter, Content.bind=[Path=Content, TemplatedParent]
+							ContentPresenter#LazyDescendant // TP=Button, DC=String, Content=String, Content.bind=[Path=Content, TemplatedParent]
+								ImplicitTextBlock // TP=ContentPresenter, DC=String, Text=String, Text.bind=[Path=Content, TemplatedParent]
+					TextBlock // TP=Button, DC=null, Text=String
+		 */
+
+		Assert.AreEqual(setup.HostButton, GetTemplatedParentCompat(lazy), "The lazy element didnt receive the correct templated-parent.");
+
+		var descendent = setup.FindFirstDescendantOrThrow<ContentPresenter>("LazyDescendant");
+		Assert.AreEqual(setup.HostButton, GetTemplatedParentCompat(descendent), "The lazy descendant didnt receive the correct templated-parent.");
+		Assert.AreEqual(setup.HostButton.Content, descendent.Content, "The lazy descendant didnt have its template-binding applied correctly");
 	}
 }
 public partial class TemplatedParentTests // helper methods

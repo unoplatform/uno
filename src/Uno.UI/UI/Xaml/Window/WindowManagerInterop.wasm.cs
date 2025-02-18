@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml;
 
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Controls;
+using System.Xml.Linq;
+using Microsoft.UI.Composition.Interactions;
 
 namespace Uno.UI.Xaml
 {
@@ -135,36 +137,6 @@ namespace Uno.UI.Xaml
 		internal static void SetStyleString(IntPtr htmlId, string name, string value)
 		{
 			NativeMethods.SetStyleString(htmlId, name, value);
-		}
-
-		#endregion
-
-		#region SetRectanglePosition
-
-		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
-		{
-			var parms = new WindowManagerSetSvgElementRectParams
-			{
-				HtmlId = htmlId,
-				X = rect.X,
-				Y = rect.Y,
-				Width = rect.Width,
-				Height = rect.Height,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setSvgElementRect", parms);
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		private struct WindowManagerSetSvgElementRectParams
-		{
-			public double X;
-			public double Y;
-			public double Width;
-			public double Height;
-
-			public IntPtr HtmlId;
 		}
 
 		#endregion
@@ -417,29 +389,49 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		#region SetElementFill
+		#region SetShapeStyles...
 
-		internal static void SetElementFill(IntPtr htmlId, Color color)
-		{
-			var colorAsInteger = color.ToCssInteger();
+		// error SYSLIB1072: Type uint is not supported by source-generated JavaScript interop.
+		// ^ we can't use uint here for color, so int will do.
 
-			var parms = new WindowManagerSetElementFillParams()
-			{
-				HtmlId = htmlId,
-				Color = colorAsInteger,
-			};
+		internal static void SetShapeFillStyle(IntPtr htmlId, int? color, IntPtr? paintRef) => NativeMethods.SetShapeFillStyle(htmlId, color, paintRef);
 
-			TSInteropMarshaller.InvokeJS("Uno:setElementFillNative", parms);
-		}
+		internal static void SetShapeStrokeStyle(IntPtr htmlId, int? color, IntPtr? paintRef) => NativeMethods.SetShapeStrokeStyle(htmlId, color, paintRef);
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerSetElementFillParams
-		{
-			public IntPtr HtmlId;
+		internal static void SetShapeStrokeWidthStyle(IntPtr htmlId, double strokeWidth) => NativeMethods.SetShapeStrokeWidthStyle(htmlId, strokeWidth);
 
-			public uint Color;
-		}
+		internal static void SetShapeStrokeDashArrayStyle(IntPtr htmlId, double[] strokeDashArray) => NativeMethods.SetShapeStrokeDashArrayStyle(htmlId, strokeDashArray);
+
+		internal static void SetShapeStylesFast1(IntPtr htmlId, int? fillColor, IntPtr? fillPaintRef, int? strokeColor, IntPtr? strokePaintRef) =>
+			NativeMethods.SetShapeStylesFast1(htmlId, fillColor, fillPaintRef, strokeColor, strokePaintRef);
+
+		internal static void SetShapeStylesFast2(
+			IntPtr htmlId,
+			int? fillColor, IntPtr? fillPaintRef,
+			int? strokeColor, IntPtr? strokePaintRef, double strokeWidth, double[] strokeDashArray) =>
+			NativeMethods.SetShapeStylesFast2(htmlId, fillColor, fillPaintRef, strokeColor, strokePaintRef, strokeWidth, strokeDashArray);
+
+		#endregion
+
+		#region SetSvgProperties...
+		internal static void SetSvgFillRule(IntPtr htmlId, bool nonzero) =>
+			NativeMethods.SetSvgFillRule(htmlId, nonzero);
+
+		internal static void SetSvgEllipseAttributes(IntPtr htmlId, double cx, double cy, double rx, double ry) =>
+			NativeMethods.SetSvgEllipseAttributes(htmlId, cx, cy, rx, ry);
+
+		internal static void SetSvgLineAttributes(IntPtr htmlId, double x1, double x2, double y1, double y2) =>
+			NativeMethods.SetSvgLineAttributes(htmlId, x1, x2, y1, y2);
+
+		internal static void SetSvgPathAttributes(IntPtr htmlId, bool nonzero, string data) =>
+			NativeMethods.SetSvgPathAttributes(htmlId, nonzero, data);
+
+		internal static void SetSvgPolyPoints(IntPtr htmlId, double[] points) =>
+			NativeMethods.SetSvgPolyPoints(htmlId, points);
+
+		internal static void SetSvgRectangleAttributes(IntPtr htmlId, double x, double y, double width, double height, double rx, double ry) =>
+			NativeMethods.SetSvgRectangleAttributes(htmlId, x, y, width, height, rx, ry);
+
 		#endregion
 
 		#region RemoveView
@@ -517,14 +509,8 @@ namespace Uno.UI.Xaml
 
 		internal static Rect GetBBox(IntPtr htmlId)
 		{
-			var parms = new WindowManagerGetBBoxParams
-			{
-				HtmlId = htmlId
-			};
-
-			var ret = (WindowManagerGetBBoxReturn)TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, typeof(WindowManagerGetBBoxReturn));
-
-			return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
+			var ret = NativeMethods.GetBBox(htmlId);
+			return new Rect(ret[0], ret[1], ret[2], ret[3]);
 		}
 
 		[TSInteropMessage]
@@ -767,9 +753,15 @@ namespace Uno.UI.Xaml
 			var htmlId = NativeMethods.GetElementInCoordinate(point.X, point.Y);
 			return UIElement.GetElementFromHandle(htmlId);
 		}
+	}
 
+	partial class WindowManagerInterop
+	{
 		internal static partial class NativeMethods
 		{
+			private const string StaticThis = "globalThis.Uno.UI.WindowManager";
+			private const string InstancedThis = "globalThis.Uno.UI.WindowManager.current";
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
 			internal static partial void ArrangeElement(
 				IntPtr htmlId,
@@ -890,6 +882,48 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setUnsetCssClasses")]
 			internal static partial void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getBBox")]
+			internal static partial double[] GetBBox(IntPtr htmlId);
+
+			[JSImport($"{InstancedThis}.setShapeFillStyle")]
+			internal static partial void SetShapeFillStyle(IntPtr htmlId, int? color, IntPtr? paintRef);
+
+			[JSImport($"{InstancedThis}.setShapeStrokeStyle")]
+			internal static partial void SetShapeStrokeStyle(IntPtr htmlId, int? color, IntPtr? paintRef);
+
+			[JSImport($"{InstancedThis}.setShapeStrokeWidthStyle")]
+			internal static partial void SetShapeStrokeWidthStyle(IntPtr htmlId, double strokeWidth);
+
+			[JSImport($"{InstancedThis}.setShapeStrokeDashArrayStyle")]
+			internal static partial void SetShapeStrokeDashArrayStyle(IntPtr htmlId, double[] strokeDashArray);
+
+			[JSImport($"{InstancedThis}.setShapeStylesFast1")]
+			internal static partial void SetShapeStylesFast1(IntPtr htmlId, int? fillColor, IntPtr? fillPaintRef, int? strokeColor, IntPtr? strokePaintRef);
+
+			[JSImport($"{InstancedThis}.setShapeStylesFast2")]
+			internal static partial void SetShapeStylesFast2(
+				IntPtr htmlId,
+				int? fillColor, IntPtr? fillPaintRef,
+				int? strokeColor, IntPtr? strokePaintRef, double strokeWidth, double[] strokeDashArray);
+
+			[JSImport($"{InstancedThis}.setSvgFillRule")]
+			internal static partial void SetSvgFillRule(IntPtr htmlId, bool nonzero);
+
+			[JSImport($"{InstancedThis}.setSvgEllipseAttributes")]
+			internal static partial void SetSvgEllipseAttributes(IntPtr htmlId, double cx, double cy, double rx, double ry);
+
+			[JSImport($"{InstancedThis}.setSvgLineAttributes")]
+			internal static partial void SetSvgLineAttributes(IntPtr htmlId, double x1, double x2, double y1, double y2);
+
+			[JSImport($"{InstancedThis}.setSvgPathAttributes")]
+			internal static partial void SetSvgPathAttributes(IntPtr htmlId, bool nonzero, System.String data);
+
+			[JSImport($"{InstancedThis}.setSvgPolyPoints")]
+			internal static partial void SetSvgPolyPoints(IntPtr htmlId, double[] points);
+
+			[JSImport($"{InstancedThis}.setSvgRectangleAttributes")]
+			internal static partial void SetSvgRectangleAttributes(IntPtr htmlId, double x, double y, double width, double height, double rx, double ry);
 		}
 	}
 }

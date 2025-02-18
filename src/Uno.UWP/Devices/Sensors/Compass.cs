@@ -1,4 +1,8 @@
 #if __IOS__ || __ANDROID__ || __WASM__
+#nullable enable
+
+using System;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
@@ -9,74 +13,38 @@ namespace Windows.Devices.Sensors;
 /// </summary>
 public partial class Compass
 {
-	private readonly static object _syncLock = new();
+	private readonly static Lazy<Compass?> _instance = new Lazy<Compass?>(() => TryCreateInstance());
 
-	private static Compass _instance;
-	private static bool _initializationAttempted;
-
-	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
+	private readonly StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs> _readingChangedWrapper;
 
 	/// <summary>
 	/// Hides the public parameterless constructor
 	/// </summary>
 	private Compass()
 	{
+		_readingChangedWrapper = new StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs>(
+			() => StartReadingChanged(),
+			() => StopReadingChanged());
 	}
 
 	/// <summary>
 	/// Returns the default compass.
 	/// </summary>
 	/// <returns>The default compass or null if no integrated compasses are found.</returns>
-	public static Compass GetDefault()
-	{
-		if (_initializationAttempted)
-		{
-			return _instance;
-		}
-		lock (_syncLock)
-		{
-			if (!_initializationAttempted)
-			{
-				_instance = TryCreateInstance();
-				_initializationAttempted = true;
-			}
-			return _instance;
-		}
-	}
+	public static Compass? GetDefault() => _instance.Value;
 
 	/// <summary>
 	/// Occurs each time the compass reports a new sensor reading.
 	/// </summary>
 	public event TypedEventHandler<Compass, CompassReadingChangedEventArgs> ReadingChanged
 	{
-		add
-		{
-			lock (_syncLock)
-			{
-				var isFirstSubscriber = _readingChanged == null;
-				_readingChanged += value;
-				if (isFirstSubscriber)
-				{
-					StartReadingChanged();
-				}
-			}
-		}
-		remove
-		{
-			lock (_syncLock)
-			{
-				_readingChanged -= value;
-				if (_readingChanged == null)
-				{
-					StopReadingChanged();
-				}
-			}
-		}
+		add => _readingChangedWrapper.AddHandler(value);
+		remove => _readingChangedWrapper.RemoveHandler(value);
 	}
 
 	private void OnReadingChanged(CompassReading reading)
 	{
-		_readingChanged?.Invoke(this, new CompassReadingChangedEventArgs(reading));
+		_readingChangedWrapper.Invoke(this, new CompassReadingChangedEventArgs(reading));
 	}
 }
 #endif

@@ -172,7 +172,9 @@ namespace Microsoft.UI.Xaml
 				{
 					_previousClip = rect;
 
+#pragma warning disable CS0618 // deprecated members
 					ViewCompat.SetClipBounds(this, null);
+#pragma warning restore CS0618 // deprecated members
 				}
 
 				return;
@@ -187,7 +189,9 @@ namespace Microsoft.UI.Xaml
 				physicalRect.Height += fra.Height;
 			}
 
+#pragma warning disable CS0618 // deprecated members
 			ViewCompat.SetClipBounds(this, physicalRect);
+#pragma warning restore CS0618 // deprecated members
 
 			if (FeatureConfiguration.UIElement.UseLegacyClipping)
 			{

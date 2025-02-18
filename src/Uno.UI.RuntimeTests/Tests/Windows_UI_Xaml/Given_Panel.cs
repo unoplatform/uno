@@ -63,8 +63,8 @@ public class Given_Panel
 		Assert.IsTrue(Math.Abs(parent.ActualSize.Y - lv.ActualSize.Y) < 1);
 
 		// MeasureOverride should be returning the default Size(0,0)
-		Assert.AreEqual(lv.DesiredSize.Width, 0);
-		Assert.AreEqual(lv.DesiredSize.Height, 0);
+		Assert.AreEqual(0, lv.DesiredSize.Width);
+		Assert.AreEqual(0, lv.DesiredSize.Height);
 
 		for (var i = 0; i < 4; i++)
 		{

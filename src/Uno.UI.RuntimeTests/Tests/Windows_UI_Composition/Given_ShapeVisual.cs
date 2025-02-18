@@ -5,6 +5,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
@@ -13,10 +15,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [RunsOnUIThread]
 public class Given_ShapeVisual
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[RequiresFullWindow]
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/18752")]
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		// runtime test version of the ShapeVisualClipping sample
@@ -73,16 +76,27 @@ public class Given_ShapeVisual
 						{
 							Width = 500,
 							Height = 500,
-							Source = new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}")
+							Source = new BitmapImage(new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}"))
 						};
 
+						var imageOpened = false;
+						referenceImage.ImageOpened += (s, e) => imageOpened = true;
+
 						await UITestHelper.Load(referenceImage);
+						await TestServices.WindowHelper.WaitFor(() => imageOpened);
 						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
-						await ImageAssert.AreEqualAsync(screenShot1, screenShot2);
+						// there can be a very small _bit_ difference when drawing with metal on macOS
+						if (OperatingSystem.IsMacOS())
+						{
+							await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
+						}
+						else
+						{
+							await ImageAssert.AreEqualAsync(screenShot1, screenShot2);
+						}
 					}
 				}
 			}
 		}
 	}
-#endif
 }

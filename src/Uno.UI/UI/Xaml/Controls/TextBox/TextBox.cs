@@ -62,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Action _selectionHighlightColorChanged;
 		private Action _foregroundBrushChanged;
+		private IDisposable _selectionHighlightBrushChangedSubscription;
+		private IDisposable _foregroundBrushChangedSubscription;
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -169,6 +171,10 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
 					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 				}
+
+#if __WASM__
+				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
+#endif
 #endif
 			}
 		}
@@ -322,7 +328,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
-				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+				GetBindingExpression(TextProperty) is
+				{
+					ParentBinding:
+					{
+						IsXBind: false, // NOTE: we UpdateSource in OnTextChanged only when the binding is not an x:Bind. WinUI's generated code for x:Bind contains a simple LostFocus subscription and waits for the next LostFocus even when not focused, unlike regular Bindings.
+						UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus
+					}
+				} bindingExpression)
 			{
 				bindingExpression.UpdateSource(Text);
 			}
@@ -523,7 +536,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -573,7 +587,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
 			newBrush ??= DefaultBrushes.SelectionHighlightColor;
-			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+
+			_selectionHighlightBrushChangedSubscription?.Dispose();
+			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
@@ -985,7 +1001,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
-			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			if (newValue == FocusState.Unfocused)
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
@@ -1292,6 +1308,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				length = textLength - start;
 			}
+
+#if __SKIA__
+			_pendingSelection = null;
+#endif
 
 			if (SelectionStart == start && SelectionLength == length)
 			{

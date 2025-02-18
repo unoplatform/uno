@@ -78,10 +78,11 @@ public partial struct InjectedInputPointerInfo
 			properties.IsBarrelButtonPressed = properties.IsRightButtonPressed;
 		}
 
+		var timestampInMicroseconds = state.Timestamp + TimeOffsetInMilliseconds * 1000;
 		var location = new Point(PixelLocation.PositionX, PixelLocation.PositionY);
 		var point = new PointerPoint(
 			state.FrameId + (uint)PerformanceCount,
-			state.Timestamp + (ulong)(TimeOffsetInMilliseconds * TimeSpan.TicksPerMillisecond),
+			timestampInMicroseconds,
 			PointerDevice.For(state.Type),
 			isNew ? PointerId : state.PointerId,
 			location,

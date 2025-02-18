@@ -73,6 +73,8 @@ namespace Microsoft.UI.Xaml
 
 		private bool _defaultStyleApplied;
 
+		private ResourceDictionary _resources;
+
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 
 		private string _baseUriFromParser;
@@ -249,7 +251,6 @@ namespace Microsoft.UI.Xaml
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -260,8 +261,20 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get; set;
+			get => _resources ??= new ResourceDictionary();
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
 		}
+
+		/// <summary>
+		/// Tries getting the ResourceDictionary without initializing it.
+		/// </summary>
+		/// <returns>A ResourceDictionary instance or null</returns>
+		internal Microsoft.UI.Xaml.ResourceDictionary TryGetResources()
+			=> _resources;
 
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -956,7 +969,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings(updateReason);
+			TryGetResources()?.UpdateThemeBindings(updateReason);
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
@@ -1064,7 +1077,9 @@ namespace Microsoft.UI.Xaml
 			return GetFirstChild() is not null;
 		}
 
-		private UIElement/*?*/ GetFirstChild()
+		internal UIElement GetFirstChildNoAddRef() => GetFirstChild();
+
+		internal virtual UIElement/*?*/ GetFirstChild()
 		{
 #if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
 			if (GetChildren() is { Count: > 0 } children)

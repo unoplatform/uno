@@ -363,7 +363,7 @@ public class Given_Parser
 				}
 			},
 			DisableBuildReferences = true,
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("SkiaSharp.Views.Uno.WinUI", "3.0.0-preview.3.1")]),
+			ReferenceAssemblies = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("SkiaSharp.Views.Uno.WinUI", "3.0.0-preview.3.1")]),
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -411,7 +411,7 @@ public class Given_Parser
 				}
 			},
 			DisableBuildReferences = true,
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.WinUI", "5.3.114")]),
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage("5.3.114"),
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

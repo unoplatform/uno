@@ -86,6 +86,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Hot Design
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
       topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
@@ -268,7 +270,16 @@
         - name: Overview
           href: xref:uno.publishing.overview
         - name: Publishing for Desktop
-          href: xref:uno.publishing.desktop
+          topicHref: xref:uno.publishing.desktop
+          items:
+            - name: Publishing Your App for Desktop
+              href: xref:uno.publishing.desktop
+            - name: Publishing Your App for macOS
+              href: xref:uno.publishing.desktop.macos
+            - name: Publishing Your App for macOS - Advanced Topics
+              href: xref:uno.publishing.desktop.macos.advanced
+            - name: Publishing Your App for Linux
+              href: xref:uno.publishing.desktop.linux
         - name: Publishing for WebAssembly
           href: xref:uno.publishing.webassembly
         - name: Publishing for Windows App SDK
@@ -410,6 +421,26 @@
       href: xref:Uno.Overview.WhyUno
     - name: FAQ
       href: xref:Uno.Development.FAQ
+
+- name: Studio
+  items:
+    - name: Overview
+      href: xref:Uno.Platform.Studio.Overview
+    - name: Hot Reload
+      href: xref:Uno.Platform.Studio.HotReload.Overview
+    - name: Hot Design
+      href: xref:Uno.HotDesign.Overview
+      items:
+      - name: Overview
+        href: xref:Uno.HotDesign.Overview
+      - name: Getting Started with Hot Design
+        href: xref:Uno.HotDesign.GetStarted.Guide
+      - name: Counter Tutorial
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+    - name: Design-to-Code
+      href: external/figma-docs/toc.yml
+    - name: Feedback
+      href: xref:Uno.Platform.Studio.Feedback
 
 - name: Reference
   items:
@@ -588,6 +619,8 @@
         href: features/windows-system-power.md
       - name: Bluetooth
         href: features/bluetoothdevice.md
+      - name: Capture (Camera)
+        href: features/windows-media-capture.md
       - name: Clipboard
         href: features/clipboard.md
       - name: Compass
@@ -672,10 +705,6 @@
 - name: Toolkit
   #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
-  
-- name: Figma
-  #topicHref: xref:Uno.Figma.GetStarted
-  href: external/figma-docs/toc.yml
 
 - name: Tooling
   items:

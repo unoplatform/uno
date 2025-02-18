@@ -129,44 +129,56 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				ResourceResolver.PushNewScope(_xamlScope);
-				localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
-
-				if (_flattenedSetters != null)
+				/// <remarks>
+				/// This method runs in a separate method in order to workaround for the following issue:
+				/// https://github.com/dotnet/runtime/issues/111281
+				/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+				/// </remarks>
+				IDisposable? InnerApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 				{
-					for (var i = 0; i < _flattenedSetters.Length; i++)
+					IDisposable? localPrecedenceDisposable;
+					ResourceResolver.PushNewScope(_xamlScope);
+					localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
+
+					if (_flattenedSetters != null)
 					{
-						try
+						for (var i = 0; i < _flattenedSetters.Length; i++)
 						{
-							if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
+							try
 							{
-								using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
-									adjustedSetter.ApplyTo(o);
+									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+									{
+										adjustedSetter.ApplyTo(o);
+									}
+								}
+								else
+								{
+									_flattenedSetters[i].ApplyTo(o);
 								}
 							}
-							else
+							catch (Exception ex)
 							{
-								_flattenedSetters[i].ApplyTo(o);
-							}
-						}
-						catch (Exception ex)
-						{
-							// This empty catch is to keep parity with WinUI's IGNOREHR in
-							// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().LogDebug($"An exception occurred while applying style setter. {ex}");
+								// This empty catch is to keep parity with WinUI's IGNOREHR in
+								// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
+								if (this.Log().IsEnabled(LogLevel.Debug))
+								{
+									this.Log().LogDebug($"An exception occurred while applying style setter. {ex}");
+								}
 							}
 						}
 					}
+
+					localPrecedenceDisposable?.Dispose();
+					localPrecedenceDisposable = null;
+
+					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
+					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+					return localPrecedenceDisposable;
 				}
 
-				localPrecedenceDisposable?.Dispose();
-				localPrecedenceDisposable = null;
-
-				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+				localPrecedenceDisposable = InnerApplyTo(o, precedence);
 			}
 			finally
 			{

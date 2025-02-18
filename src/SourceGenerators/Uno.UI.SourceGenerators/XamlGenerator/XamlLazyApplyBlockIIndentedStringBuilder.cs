@@ -17,17 +17,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool _applyOpened;
 		private readonly string _closureName;
 		private readonly IIndentedStringBuilder _source;
+		private readonly IndentedStringBuilder _inner = new();
 		private IDisposable? _applyDisposable;
 		private readonly string? _applyPrefix;
 		private readonly string? _delegateType;
 		private readonly IDisposable? _parentDisposable;
 		private readonly bool _exposeContext;
+		private readonly Action<string> _onRegisterApplyMethodBody;
+		private readonly string _exposeContextMethod;
+		private readonly string _appliedType;
+		private readonly string _topLevelType;
+
+		public string? MethodName => _exposeContext ? _exposeContextMethod : null;
 
 		public XamlLazyApplyBlockIIndentedStringBuilder(
 			IIndentedStringBuilder source,
-			string closureName, string? applyPrefix,
+			string closureName,
+			string? applyPrefix,
 			string? delegateType,
 			bool exposeContext,
+			Action<string> onRegisterApplyMethodBody,
+			string appliedType,
+			string topLevelType,
+			string exposeContextMethod,
 			IDisposable? parentDisposable = null)
 		{
 			_closureName = closureName;
@@ -36,6 +48,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_delegateType = delegateType;
 			_parentDisposable = parentDisposable;
 			_exposeContext = exposeContext;
+			_onRegisterApplyMethodBody = onRegisterApplyMethodBody;
+			_exposeContextMethod = exposeContextMethod;
+			_appliedType = appliedType;
+			_topLevelType = topLevelType;
 		}
 
 		private void TryWriteApply()
@@ -44,7 +60,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_applyOpened = true;
 
-				IDisposable blockDisposable;
+				_inner.Indent(_source.CurrentLevel);
+
+				IDisposable? blockDisposable;
 
 				var delegateString = !_delegateType.IsNullOrEmpty() ? "(" + _delegateType + ")" : "";
 
@@ -55,7 +73,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else if (_exposeContext)
 				{
 					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
-					blockDisposable = _source.BlockInvariant(".GenericApply(__that, __nameScope, {1}(({0}, __that, __nameScope) => ", _closureName, delegateString);
+					_source.AppendIndented($".GenericApply(__that, __nameScope, ({_exposeContextMethod}");
+
+					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {_closureName}, {_topLevelType} __that, global::Microsoft.UI.Xaml.NameScope __nameScope)");
 				}
 				else
 				{
@@ -64,65 +84,75 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				_applyDisposable = new DisposableAction(() =>
 				{
-					blockDisposable.Dispose();
+					if (_applyPrefix != null || !_exposeContext)
+					{
+						_source.Append(_inner.ToString());
+						blockDisposable.Dispose();
+					}
+					else if (_exposeContext)
+					{
+						blockDisposable.Dispose();
+						_onRegisterApplyMethodBody(_inner.ToString());
+					}
+
 					_source.AppendLineIndented("))");
 				});
 			}
 		}
-		public int CurrentLevel => _source.CurrentLevel;
+		public int CurrentLevel => _inner.CurrentLevel;
 
 		public void Append(string text)
 		{
 			TryWriteApply();
-			_source.Append(text);
+			_inner.Append(text);
 		}
 
 		public void AppendLine()
 		{
 			TryWriteApply();
-			_source.AppendLine();
+			_inner.AppendLine();
 		}
 
 		public void AppendMultiLineIndented(string text)
 		{
 			TryWriteApply();
-			_source.AppendMultiLineIndented(text);
+			_inner.AppendMultiLineIndented(text);
 		}
 
 		public IDisposable Block(IFormatProvider formatProvider, string pattern, params object[] parameters)
 		{
 			TryWriteApply();
-			return _source.Block(formatProvider, pattern, parameters);
+			return _inner.Block(formatProvider, pattern, parameters);
 		}
 
 		public IDisposable Block(int count = 1)
 		{
 			TryWriteApply();
-			return _source.Block(count);
+			return _inner.Block(count);
 		}
 
 		public IDisposable Indent(int count = 1)
 		{
 			TryWriteApply();
-			return _source.Indent(count);
+			return _inner.Indent(count);
 		}
 
 		public void AppendIndented(string text)
 		{
 			TryWriteApply();
-			_source.AppendIndented(text);
+			_inner.AppendIndented(text);
 		}
 
 		public void AppendIndented(ReadOnlySpan<char> text)
 		{
 			TryWriteApply();
-			_source.AppendIndented(text);
+			_inner.AppendIndented(text);
 		}
 
 		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
 		{
 			TryWriteApply();
-			_source.AppendFormatIndented(formatProvider, text, replacements);
+			_inner.AppendFormatIndented(formatProvider, text, replacements);
 		}
 
 		public void Dispose()
@@ -131,7 +161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_parentDisposable?.Dispose();
 		}
 
-		public override string ToString() => _source.ToString();
+		public override string ToString() => _inner.ToString();
 	}
 
 }

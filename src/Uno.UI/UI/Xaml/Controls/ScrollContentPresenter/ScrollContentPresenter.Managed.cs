@@ -3,7 +3,8 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Uno.UI.Xaml;
+using Uno.Disposables;
+
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -56,6 +57,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private object RealContent => Content;
 
+		private readonly SerialDisposable _eventSubscriptions = new();
+
 		partial void InitializePartial()
 		{
 #if __SKIA__
@@ -71,6 +74,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void HookScrollEvents(ScrollViewer sv)
 		{
+			UnhookScrollEvents(sv);
+
 			// Note: the way WinUI does scrolling is very different, and doesn't use
 			// PointerWheelChanged changes, etc.
 			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
@@ -87,16 +92,21 @@ namespace Microsoft.UI.Xaml.Controls
 			ManipulationStarted += TouchScrollStarted;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
+
+			_eventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				sv.PointerWheelChanged -= PointerWheelScroll;
+
+				ManipulationStarting -= PrepareTouchScroll;
+				ManipulationStarted -= TouchScrollStarted;
+				ManipulationDelta -= UpdateTouchScroll;
+				ManipulationCompleted -= CompleteTouchScroll;
+			});
 		}
 
 		private void UnhookScrollEvents(ScrollViewer sv)
 		{
-			sv.PointerWheelChanged -= PointerWheelScroll;
-
-			ManipulationStarting -= PrepareTouchScroll;
-			ManipulationStarted -= TouchScrollStarted;
-			ManipulationDelta -= UpdateTouchScroll;
-			ManipulationCompleted -= CompleteTouchScroll;
+			_eventSubscriptions.Disposable = null;
 		}
 
 		private protected override void OnLoaded()
@@ -205,6 +215,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				e.Mode = ManipulationModes.None;
 				return;
+			}
+
+			if (Scroller?.IsScrollInertiaEnabled is true)
+			{
+				e.Mode |= ManipulationModes.TranslateInertia;
 			}
 
 			if (!CanVerticallyScroll || ExtentHeight <= 0)

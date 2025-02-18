@@ -17,6 +17,7 @@ env:
 
 jobs:
   build:
+    if: github.repository == 'unoplatform/uno'
     name: update-uwp-branch
     runs-on: windows-latest
     steps:

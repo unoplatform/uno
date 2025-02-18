@@ -214,6 +214,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	private void SetVisibleBoundsFromNative()
 	{
 		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper?.VisibleBounds ?? default);
+		XamlRoot?.VisualTree?.OnVisibleBoundChanged();
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
@@ -269,7 +270,10 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
-		KeyboardStateTracker.Reset();
+		if (!FeatureConfiguration.DebugOptions.PreventKeyboardStateTrackerFromResettingOnWindowActivationChange)
+		{
+			KeyboardStateTracker.Reset();
+		}
 	}
 
 	public bool Close()

@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 	[TestClass]
 	public class Given_ImplementedRoutedEventsGenerator
 	{
-		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Net.Net80.AddPackages(
+		private static readonly ReferenceAssemblies s_defaultWithUno = _Dotnet.Current.ReferenceAssemblies.AddPackages(
 			ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118")));
 
 		private async Task TestGeneratorAsync(string inputSource, params GeneratedFile[] generatedFiles)

@@ -328,7 +328,7 @@
 					</Rectangle.Stroke>
 				</Rectangle>
 			</StackPanel>
-			<TextBlock FontSize="15">Text with Radial/Linear gradient as foreground brush (fallback=green)</TextBlock>
+			<TextBlock FontSize="15">Text with Radial/Linear gradient as foreground brush (fallback=red)</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
 					<TextBlock.Foreground>

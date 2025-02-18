@@ -61,6 +61,7 @@ namespace Microsoft.UI.Xaml
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
+		private ResourceDictionary _resources = new ResourceDictionary();
 
 		static Application()
 		{
@@ -208,7 +209,15 @@ namespace Microsoft.UI.Xaml
 			SetRequestedTheme(theme);
 		}
 
-		public ResourceDictionary Resources { get; set; } = new ResourceDictionary();
+		public ResourceDictionary Resources
+		{
+			get => _resources;
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
+		}
 
 #pragma warning disable CS0067 // The event is never used
 		/// <summary>
@@ -433,7 +442,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
 
-		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+		internal void OnRequestedThemeChanged()
+		{
+			ApplySystemOverlaysTheming();
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+		}
+
+		partial void ApplySystemOverlaysTheming();
 
 		private void UpdateRootElementBackground()
 		{
