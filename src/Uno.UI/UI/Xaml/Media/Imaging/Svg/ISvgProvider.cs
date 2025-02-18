@@ -5,10 +5,6 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
-#if __SKIA__
-using SkiaSharp;
-#endif
-
 namespace Uno.UI.Xaml.Media.Imaging.Svg;
 
 /// <summary>
