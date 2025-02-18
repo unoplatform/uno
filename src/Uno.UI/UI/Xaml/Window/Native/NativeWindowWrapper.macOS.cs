@@ -90,7 +90,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		_window.MakeKeyAndOrderFront(NSApplication.SharedApplication);
 	}
 
-	internal Size GetWindowSize()
+	public override Size GetWindowSize()
 	{
 		var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
