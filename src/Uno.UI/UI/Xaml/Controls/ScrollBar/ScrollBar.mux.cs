@@ -30,14 +30,6 @@ public partial class ScrollBar
 		m_blockIndicators = false;
 		m_isUsingActualSizeAsExtent = false;
 
-#if HAS_UNO && !__SKIA__ // Uno specific: Performance optimization, see ScrollBar.uno.cs. Not needed on Skia target.
-		if (_fixedOrientation is Orientation fixedOrientation)
-		{
-			IsFixedOrientation = true;
-			Orientation = fixedOrientation;
-		}
-#endif
-
 		Initialize();
 	}
 
@@ -136,157 +128,151 @@ public partial class ScrollBar
 			base.OnApplyTemplate();
 
 			// Get the parts
-			if (!IsFixedOrientation || Orientation == Orientation.Horizontal) // Uno Specific: Performance optimization - only load half of the template if orientation is fixed.
+			spElementHorizontalTemplate = GetTemplateChildHelper<FrameworkElement>("HorizontalRoot");
+			m_tpElementHorizontalTemplate = spElementHorizontalTemplate;
+			spElementHorizontalLargeIncrease = GetTemplateChildHelper<RepeatButton>("HorizontalLargeIncrease");
+			m_tpElementHorizontalLargeIncrease = spElementHorizontalLargeIncrease;
+			if (m_tpElementHorizontalLargeIncrease != null)
 			{
-				spElementHorizontalTemplate = GetTemplateChildHelper<FrameworkElement>("HorizontalRoot");
-				m_tpElementHorizontalTemplate = spElementHorizontalTemplate;
-				spElementHorizontalLargeIncrease = GetTemplateChildHelper<RepeatButton>("HorizontalLargeIncrease");
-				m_tpElementHorizontalLargeIncrease = spElementHorizontalLargeIncrease;
-				if (m_tpElementHorizontalLargeIncrease != null)
-				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeIncrease);
+				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeIncrease);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
-						AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
-					}
+				if (strAutomationName == null)
+				{
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
+					AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
 				}
-				spElementHorizontalSmallIncrease = GetTemplateChildHelper<RepeatButton>("HorizontalSmallIncrease");
-				m_tpElementHorizontalSmallIncrease = spElementHorizontalSmallIncrease;
-				if (m_tpElementHorizontalSmallIncrease != null)
+			}
+			spElementHorizontalSmallIncrease = GetTemplateChildHelper<RepeatButton>("HorizontalSmallIncrease");
+			m_tpElementHorizontalSmallIncrease = spElementHorizontalSmallIncrease;
+			if (m_tpElementHorizontalSmallIncrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallIncrease);
+
+				if (strAutomationName == null)
 				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallIncrease);
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
+					AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
-						AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
-
-					}
 				}
-				spElementHorizontalLargeDecrease = GetTemplateChildHelper<RepeatButton>("HorizontalLargeDecrease");
-				m_tpElementHorizontalLargeDecrease = spElementHorizontalLargeDecrease;
-				if (m_tpElementHorizontalLargeDecrease != null)
+			}
+			spElementHorizontalLargeDecrease = GetTemplateChildHelper<RepeatButton>("HorizontalLargeDecrease");
+			m_tpElementHorizontalLargeDecrease = spElementHorizontalLargeDecrease;
+			if (m_tpElementHorizontalLargeDecrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeDecrease);
+
+				if (strAutomationName == null)
 				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeDecrease);
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
+					AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
-						AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
-
-					}
 				}
-				spElementHorizontalSmallDecrease = GetTemplateChildHelper<RepeatButton>("HorizontalSmallDecrease");
-				m_tpElementHorizontalSmallDecrease = spElementHorizontalSmallDecrease;
-				if (m_tpElementHorizontalSmallDecrease != null)
+			}
+			spElementHorizontalSmallDecrease = GetTemplateChildHelper<RepeatButton>("HorizontalSmallDecrease");
+			m_tpElementHorizontalSmallDecrease = spElementHorizontalSmallDecrease;
+			if (m_tpElementHorizontalSmallDecrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallDecrease);
+
+				if (strAutomationName == null)
 				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallDecrease);
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
+					AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
-						AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
-
-					}
 				}
-				spElementHorizontalThumb = GetTemplateChildHelper<Thumb>("HorizontalThumb");
-				m_tpElementHorizontalThumb = spElementHorizontalThumb;
-				if (m_tpElementHorizontalThumb != null)
+			}
+			spElementHorizontalThumb = GetTemplateChildHelper<Thumb>("HorizontalThumb");
+			m_tpElementHorizontalThumb = spElementHorizontalThumb;
+			if (m_tpElementHorizontalThumb != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalThumb);
+
+				if (strAutomationName == null)
 				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalThumb);
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
+					AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
-						AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
-
-					}
 				}
 			}
 
-			if (!IsFixedOrientation || Orientation == Orientation.Vertical) // Uno Specific: Performance optimization - only load half of the template if orientation is fixed.
+			spElementVerticalTemplate = GetTemplateChildHelper<FrameworkElement>("VerticalRoot");
+			m_tpElementVerticalTemplate = spElementVerticalTemplate;
+
+			spElementVerticalLargeIncrease = GetTemplateChildHelper<RepeatButton>("VerticalLargeIncrease");
+			m_tpElementVerticalLargeIncrease = spElementVerticalLargeIncrease;
+			if (m_tpElementVerticalLargeIncrease != null)
 			{
-				spElementVerticalTemplate = GetTemplateChildHelper<FrameworkElement>("VerticalRoot");
-				m_tpElementVerticalTemplate = spElementVerticalTemplate;
+				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeIncrease);
 
-				spElementVerticalLargeIncrease = GetTemplateChildHelper<RepeatButton>("VerticalLargeIncrease");
-				m_tpElementVerticalLargeIncrease = spElementVerticalLargeIncrease;
-				if (m_tpElementVerticalLargeIncrease != null)
+				if (strAutomationName == null)
 				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeIncrease);
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
+					AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
 
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
-						AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
-
-					}
 				}
-
-				spElementVerticalSmallIncrease = GetTemplateChildHelper<RepeatButton>("VerticalSmallIncrease");
-				m_tpElementVerticalSmallIncrease = spElementVerticalSmallIncrease;
-				if (m_tpElementVerticalSmallIncrease != null)
-				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallIncrease);
-
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
-						AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
-
-					}
-				}
-				spElementVerticalLargeDecrease = GetTemplateChildHelper<RepeatButton>("VerticalLargeDecrease");
-				m_tpElementVerticalLargeDecrease = spElementVerticalLargeDecrease;
-				if (m_tpElementVerticalLargeDecrease != null)
-				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeDecrease);
-
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
-						AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
-
-					}
-				}
-				spElementVerticalSmallDecrease = GetTemplateChildHelper<RepeatButton>("VerticalSmallDecrease");
-				m_tpElementVerticalSmallDecrease = spElementVerticalSmallDecrease;
-				if (m_tpElementVerticalSmallDecrease != null)
-				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallDecrease);
-
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
-						AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
-
-					}
-				}
-				spElementVerticalThumb = GetTemplateChildHelper<Thumb>("VerticalThumb");
-				m_tpElementVerticalThumb = spElementVerticalThumb;
-				if (m_tpElementVerticalThumb != null)
-				{
-					strAutomationName = AutomationProperties.GetName(m_tpElementVerticalThumb);
-
-					if (strAutomationName == null)
-					{
-						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
-						AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);
-
-					}
-				}
-
-				spElementHorizontalPanningRoot = GetTemplateChildHelper<FrameworkElement>("HorizontalPanningRoot");
-				m_tpElementHorizontalPanningRoot = spElementHorizontalPanningRoot;
-				spElementHorizontalPanningThumb = GetTemplateChildHelper<FrameworkElement>("HorizontalPanningThumb");
-				m_tpElementHorizontalPanningThumb = spElementHorizontalPanningThumb;
-				spElementVerticalPanningRoot = GetTemplateChildHelper<FrameworkElement>("VerticalPanningRoot");
-				m_tpElementVerticalPanningRoot = spElementVerticalPanningRoot;
-				spElementVerticalPanningThumb = GetTemplateChildHelper<FrameworkElement>("VerticalPanningThumb");
-				m_tpElementVerticalPanningThumb = spElementVerticalPanningThumb;
 			}
+
+			spElementVerticalSmallIncrease = GetTemplateChildHelper<RepeatButton>("VerticalSmallIncrease");
+			m_tpElementVerticalSmallIncrease = spElementVerticalSmallIncrease;
+			if (m_tpElementVerticalSmallIncrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallIncrease);
+
+				if (strAutomationName == null)
+				{
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
+					AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
+
+				}
+			}
+			spElementVerticalLargeDecrease = GetTemplateChildHelper<RepeatButton>("VerticalLargeDecrease");
+			m_tpElementVerticalLargeDecrease = spElementVerticalLargeDecrease;
+			if (m_tpElementVerticalLargeDecrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeDecrease);
+
+				if (strAutomationName == null)
+				{
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
+					AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
+
+				}
+			}
+			spElementVerticalSmallDecrease = GetTemplateChildHelper<RepeatButton>("VerticalSmallDecrease");
+			m_tpElementVerticalSmallDecrease = spElementVerticalSmallDecrease;
+			if (m_tpElementVerticalSmallDecrease != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallDecrease);
+
+				if (strAutomationName == null)
+				{
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
+					AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
+
+				}
+			}
+			spElementVerticalThumb = GetTemplateChildHelper<Thumb>("VerticalThumb");
+			m_tpElementVerticalThumb = spElementVerticalThumb;
+			if (m_tpElementVerticalThumb != null)
+			{
+				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalThumb);
+
+				if (strAutomationName == null)
+				{
+					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
+					AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);
+
+				}
+			}
+
+			spElementHorizontalPanningRoot = GetTemplateChildHelper<FrameworkElement>("HorizontalPanningRoot");
+			m_tpElementHorizontalPanningRoot = spElementHorizontalPanningRoot;
+			spElementHorizontalPanningThumb = GetTemplateChildHelper<FrameworkElement>("HorizontalPanningThumb");
+			m_tpElementHorizontalPanningThumb = spElementHorizontalPanningThumb;
+			spElementVerticalPanningRoot = GetTemplateChildHelper<FrameworkElement>("VerticalPanningRoot");
+			m_tpElementVerticalPanningRoot = spElementVerticalPanningRoot;
+			spElementVerticalPanningThumb = GetTemplateChildHelper<FrameworkElement>("VerticalPanningThumb");
+			m_tpElementVerticalPanningThumb = spElementVerticalPanningThumb;
 
 			// Attach the event handlers
 			AttachEvents();
@@ -582,8 +568,6 @@ public partial class ScrollBar
 		}
 
 		// Uno Specific: Performance optimization - only load half of the template if orientation is fixed.
-		var prefix = IsFixedOrientation && HasFixedVisualStates() ? $"{Orientation}_" : "";
-
 		base.ChangeVisualState(bUseTransitions);
 
 		var scrollingIndicator = IndicatorMode;
@@ -591,38 +575,38 @@ public partial class ScrollBar
 		bool isSuccessful;
 		if (!isEnabled)
 		{
-			VisualStateManager.GoToState(this, prefix + "Disabled", bUseTransitions);
+			VisualStateManager.GoToState(this, "Disabled", bUseTransitions);
 		}
 		else if (m_isPointerOver)
 		{
-			isSuccessful = VisualStateManager.GoToState(this, prefix + "PointerOver", bUseTransitions);
+			isSuccessful = VisualStateManager.GoToState(this, "PointerOver", bUseTransitions);
 			//Default to Normal if PointerOver state isn't available.
 			if (!isSuccessful)
 			{
-				VisualStateManager.GoToState(this, prefix + "Normal", bUseTransitions);
+				VisualStateManager.GoToState(this, "Normal", bUseTransitions);
 			}
 		}
 		else
 		{
-			VisualStateManager.GoToState(this, prefix + "Normal", bUseTransitions);
+			VisualStateManager.GoToState(this, "Normal", bUseTransitions);
 		}
 
 		if (!m_blockIndicators && (!IsConscious() || scrollingIndicator == ScrollingIndicatorMode.MouseIndicator))
 		{
-			VisualStateManager.GoToState(this, prefix + "MouseIndicator", bUseTransitions);
+			VisualStateManager.GoToState(this, "MouseIndicator", bUseTransitions);
 		}
 		else if (!m_blockIndicators && scrollingIndicator == ScrollingIndicatorMode.TouchIndicator)
 		{
-			isSuccessful = VisualStateManager.GoToState(this, prefix + "TouchIndicator", bUseTransitions);
+			isSuccessful = VisualStateManager.GoToState(this, "TouchIndicator", bUseTransitions);
 			//Default to MouseActiveState if Panning state isn't available.
 			if (!isSuccessful)
 			{
-				VisualStateManager.GoToState(this, prefix + "MouseIndicator", bUseTransitions);
+				VisualStateManager.GoToState(this, "MouseIndicator", bUseTransitions);
 			}
 		}
 		else
 		{
-			VisualStateManager.GoToState(this, prefix + "NoIndicator", bUseTransitions);
+			VisualStateManager.GoToState(this, "NoIndicator", bUseTransitions);
 		}
 
 		// Expanded/Collapsed States were added in RS3 and ExpandedWithoutAnimation/CollapsedWithoutAnimation states
@@ -634,7 +618,7 @@ public partial class ScrollBar
 		// animations are enabled. When animations are disabled, the framework does not run transitions.
 		if (!IsConscious())
 		{
-			VisualStateManager.GoToState(this, prefix + (isEnabled ? "Expanded" : "Collapsed"), true /* useTransitions */);
+			VisualStateManager.GoToState(this, (isEnabled ? "Expanded" : "Collapsed"), true /* useTransitions */);
 		}
 		else
 		{
@@ -644,22 +628,22 @@ public partial class ScrollBar
 			{
 				if (!animate)
 				{
-					isSuccessful = VisualStateManager.GoToState(this, prefix + "ExpandedWithoutAnimation", true /* useTransitions */);
+					isSuccessful = VisualStateManager.GoToState(this, "ExpandedWithoutAnimation", true /* useTransitions */);
 				}
 				if (!isSuccessful)
 				{
-					VisualStateManager.GoToState(this, prefix + "Expanded", true /* useTransitions */);
+					VisualStateManager.GoToState(this, "Expanded", true /* useTransitions */);
 				}
 			}
 			else
 			{
 				if (!animate)
 				{
-					isSuccessful = VisualStateManager.GoToState(this, prefix + "CollapsedWithoutAnimation", true /* useTransitions */);
+					isSuccessful = VisualStateManager.GoToState(this, "CollapsedWithoutAnimation", true /* useTransitions */);
 				}
 				if (!isSuccessful)
 				{
-					VisualStateManager.GoToState(this, prefix + "Collapsed", true /* useTransitions */);
+					VisualStateManager.GoToState(this, "Collapsed", true /* useTransitions */);
 				}
 			}
 		}
