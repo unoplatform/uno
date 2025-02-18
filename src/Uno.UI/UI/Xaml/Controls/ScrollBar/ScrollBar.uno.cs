@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Uno.Disposables;
+using static Uno.UI.FeatureConfiguration;
+
 
 #if HAS_UNO_WINUI
 #else
@@ -42,8 +44,8 @@ partial class ScrollBar
 	{
 		if (_hasFixedVisualStates is null)
 		{
-			var groups = VisualStateManager.GetVisualStateGroups(this);
-			if (groups.FirstOrDefault(g => g.Name == "OrientationStates") is { } commonStates)
+			var groups = VisualStateManager.GetVisualStateGroups(this.GetTemplateRoot());
+			if (groups.FirstOrDefault(g => g.Name == "CommonStates") is { } commonStates)
 			{
 				_hasFixedVisualStates = commonStates.States?.Any(s => s.Name == "Vertical_Normal") ?? false;
 			}

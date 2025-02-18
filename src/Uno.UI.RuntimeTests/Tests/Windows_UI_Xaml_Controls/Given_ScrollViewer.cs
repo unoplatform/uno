@@ -39,7 +39,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			_testsResources = new TestsResources();
 		}
 
-#if __SKIA__ || __WASM__
+#if HAS_UNO && !__SKIA__
+		[TestMethod]
+		public async Task When_HasFixedVisualStates()
+		{
+			// Non-Skia targets currently use the "fixed" template for ScrollBar
+			// to avoid loading both horizontal and vertical elements unnecessarily.
+			var sut = new ScrollViewer
+			{
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Disabled,
+				Height = 100,
+				Width = 100,
+				Content = new Border { Height = 200, Width = 50 }
+			};
+			WindowHelper.WindowContent = sut;
+
+			await WindowHelper.WaitForLoaded(sut);
+
+			// We make sure that we really loaded the right template
+			var scrollBar = VisualTreeUtils.FindVisualChildByType<ScrollBar>(sut);
+			Assert.IsTrue(scrollBar.HasFixedVisualStates());
+		}
+#endif
+
+#if __WASM__
 		[TestMethod]
 		public async Task When_CreateVerticalScroller_Then_DoNotLoadAllTemplate()
 		{
