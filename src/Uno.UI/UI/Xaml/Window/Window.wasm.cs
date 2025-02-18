@@ -8,5 +8,5 @@ partial class Window
 {
 	[JSExport]
 	[Preserve]
-	internal static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
+	internal static void Resize(double width, double height) => Uno.UI.Xaml.Controls.NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
 }
