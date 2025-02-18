@@ -148,11 +148,15 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
+#if !__CROSSRUNTIME__
 				fe.Loaded += OnOwnerElementLoaded;
+#endif
 				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
+#if !__CROSSRUNTIME__
 					fe.Loaded -= OnOwnerElementLoaded;
+#endif
 					fe.Unloaded -= OnOwnerElementUnloaded;
 				});
 			}
@@ -169,7 +173,7 @@ namespace Microsoft.UI.Xaml
 			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
 		}
 
-		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
+		internal void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
 		{
 			if (_pendingOnOwnerElementChanged)
 			{

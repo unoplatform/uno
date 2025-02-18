@@ -214,13 +214,15 @@ namespace Microsoft.UI.Xaml
 		{
 			ApplyTemplate(out addedVisuals);
 
-			//if (auto visualTree = VisualTree::GetForElementNoRef(pControl))
-			// {
-			//	// Create VisualState StateTriggers and perform evaulation to determine initial state,
-			//	// if we're in the visual tree (since we need it to get our qualifier context).
-			//	// If we're not in the visual tree, we'll do this when we enter it.
-			//	IFC(CVisualStateManager2::InitializeStateTriggers(this));
-			//}
+			var pControl = this as Control;
+
+			if (VisualTree.GetForElement(pControl) is { } visualTree)
+			{
+				// Create VisualState StateTriggers and perform evaulation to determine initial state,
+				// if we're in the visual tree (since we need it to get our qualifier context).
+				// If we're not in the visual tree, we'll do this when we enter it.
+				VisualStateManager.InitializeStateTriggers(pControl);
+			}
 
 			//var control = this as Control;
 
