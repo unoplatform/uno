@@ -99,12 +99,22 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 
 	protected override bool DispatchHoverEvent(MotionEvent? e)
 	{
+		if (e is null)
+		{
+			return base.DispatchHoverEvent(e);
+		}
+
 		return ExploreByTouchHelper.DispatchHoverEvent(e) ||
 			base.DispatchHoverEvent(e);
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
 	{
+		if (e is null)
+		{
+			return base.DispatchKeyEvent(e);
+		}
+
 		return ExploreByTouchHelper.DispatchKeyEvent(e) ||
 			base.DispatchKeyEvent(e);
 	}

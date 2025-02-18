@@ -26,6 +26,9 @@ internal static class UnoSkiaApi
 	}
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern void sk_canvas_draw_text_blob(IntPtr canvas, IntPtr textBlob, float x, float y, IntPtr paint);
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
 	internal static extern unsafe void sk_canvas_set_matrix(IntPtr canvas, SKMatrix* matrix);
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
@@ -33,4 +36,10 @@ internal static class UnoSkiaApi
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
 	internal static extern unsafe void sk_textblob_builder_alloc_run_pos(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer);
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern IntPtr sk_textblob_builder_make(IntPtr builder);
+
+	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
+	internal static extern void sk_textblob_unref(IntPtr textBlob);
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -364,7 +363,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-#if __APPLE_UIKIT__
+#if __ANDROID__ || __APPLE_UIKIT__
+		[TestMethod]
+		public async Task When_Default_Flyout_Date_Native()
+		{
+			var now = DateTimeOffset.UtcNow;
+			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			datePicker.UseNativeStyle = true;
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout));
+
+			var datePickerFlyout = (NativeDatePickerFlyout)associatedFlyout;
+
+			try
+			{
+				Assert.AreEqual(DatePicker.NullDateSentinelValue, datePickerFlyout.Date);
+				Assert.AreEqual(now.Day, datePickerFlyout.NativeDialogDate.Day);
+				Assert.AreEqual(now.Month, datePickerFlyout.NativeDialogDate.Month);
+				Assert.AreEqual(now.Year, datePickerFlyout.NativeDialogDate.Year);
+			}
+			finally
+			{
+				datePickerFlyout.Close();
+			}
+		}
+#endif
+
+#if __IOS__
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()

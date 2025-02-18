@@ -79,23 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
-			_textChangedDisposable?.Dispose();
-			_textBoxLoadedDisposable?.Dispose();
-			if (_textBox is { })
-			{
-				_textBox.TextChanged += OnTextBoxTextChanged;
-				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
-
-				if (_textBox.IsLoaded)
-				{
-					UpdateQueryButton();
-				}
-				else
-				{
-					_textBox.Loaded += OnTextBoxLoaded;
-					_textBoxLoadedDisposable = Disposable.Create(() => _textBox.Loaded -= OnTextBoxLoaded);
-				}
-			}
+			RegisterTextEvents();
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
@@ -103,6 +87,26 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				RegisterEvents();
+			}
+		}
+
+		private void RegisterTextEvents()
+		{
+			_textChangedDisposable?.Dispose();
+			_textBoxLoadedDisposable?.Dispose();
+			if (_textBox is { })
+			{
+				_textBox.TextChanged += OnTextBoxTextChanged;
+				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
+
+
+				_textBox.Loaded += OnTextBoxLoaded;
+				_textBoxLoadedDisposable = Disposable.Create(() => _textBox.Loaded -= OnTextBoxLoaded);
+
+				if (_textBox.IsLoaded)
+				{
+					UpdateQueryButton();
+				}
 			}
 		}
 
@@ -311,6 +315,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Closed += OnPopupClosed;
 				_popup.Opened += OnPopupOpened;
 			}
+
+			RegisterTextEvents();
 
 			SizeChanged += OnSizeChanged;
 		}

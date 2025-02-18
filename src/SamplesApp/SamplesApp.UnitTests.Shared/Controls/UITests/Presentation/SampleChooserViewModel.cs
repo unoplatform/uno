@@ -633,7 +633,7 @@ namespace SampleControl.Presentation
 
 				// Order the results by showing the "start with" results
 				// followed by results that "contain" the search term
-				return starts.Concat(contains).Distinct().ToList();
+				return starts.Concat(contains).OrderBy(s => s.ControlName).Distinct().ToList();
 			});
 		}
 
