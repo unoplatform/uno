@@ -125,7 +125,7 @@ Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`]
 
 ## Future improvement
 
-- Support for Skia Desktop `net8.0-desktop`
+- Support for Skia Desktop `net9.0-desktop`
 - React to audio focus changes (pause/stop playback or reduce audio volume)
 - Subtitles support
 - Languages support

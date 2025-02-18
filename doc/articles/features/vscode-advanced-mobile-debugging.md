@@ -168,7 +168,7 @@ See [VS Code documentation](https://code.visualstudio.com/docs/editor/tasks) for
     "/property:GenerateFullPaths=true",
     "/consoleloggerparameters:NoSummary",
     // specify the target platform - since there's more than one inside the mobile.csproj
-    "/property:TargetFramework=net8.0-maccatalyst",
+    "/property:TargetFramework=net9.0-maccatalyst",
     "/property:RuntimeIdentifier=maccatalyst-arm64",
     "/property:Configuration=Debug",
     // this is to workaround both an OmniSharp limitation and a dotnet issue #21877
