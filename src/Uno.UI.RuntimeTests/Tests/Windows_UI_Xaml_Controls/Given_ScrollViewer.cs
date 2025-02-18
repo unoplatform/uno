@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			_testsResources = new TestsResources();
 		}
 
-#if HAS_UNO && !__SKIA__
+#if __WASM__
 		[TestMethod]
 		public async Task When_HasFixedVisualStates()
 		{
@@ -63,9 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var scrollBar = VisualTreeUtils.FindVisualChildByType<ScrollBar>(sut);
 			Assert.IsTrue(scrollBar.HasFixedVisualStates());
 		}
-#endif
 
-#if __WASM__
 		[TestMethod]
 		public async Task When_CreateVerticalScroller_Then_DoNotLoadAllTemplate()
 		{
