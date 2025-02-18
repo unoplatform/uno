@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -104,6 +105,8 @@ public partial class Frame : ContentControl
 
 	private bool NavigateLegacy(Type sourcePageType, object parameter) => Navigate(sourcePageType, parameter, null);
 
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 	private bool NavigateWithTransitionInfoLegacy(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
 	{
 		var entry = new PageStackEntry(sourcePageType.GetReplacementType(), parameter, infoOverride);
@@ -137,20 +140,28 @@ public partial class Frame : ContentControl
 
 		try
 		{
-			_isNavigating = true;
-
-			return InnerNavigateUnsafe(entry, mode);
-		}
-		catch (Exception exception)
-		{
-			NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
-
-			if (NavigationFailed == null)
+			bool InternalNavigate(PageStackEntry entry, NavigationMode mode)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+				try
+				{
+					_isNavigating = true;
+
+					return InnerNavigateUnsafe(entry, mode);
+				}
+				catch (Exception exception)
+				{
+					NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
+
+					if (NavigationFailed == null)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+					}
+
+					throw;
+				}
 			}
 
-			return false;
+			return InternalNavigate(entry, mode);
 		}
 		finally
 		{

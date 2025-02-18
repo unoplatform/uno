@@ -92,15 +92,15 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			flyout.ShowAt(flyoutOwner);
 
-			Assert.AreEqual(false, SUT.AllowFocusOnInteraction);
-			Assert.AreEqual(true, SUT.AllowFocusWhenDisabled);
+			Assert.IsFalse(SUT.AllowFocusOnInteraction);
+			Assert.IsTrue(SUT.AllowFocusWhenDisabled);
 
 			// Change values
 			flyout.AllowFocusOnInteraction = true;
 			flyout.AllowFocusWhenDisabled = false;
 
-			Assert.AreEqual(true, SUT.AllowFocusOnInteraction);
-			Assert.AreEqual(false, SUT.AllowFocusWhenDisabled);
+			Assert.IsTrue(SUT.AllowFocusOnInteraction);
+			Assert.IsFalse(SUT.AllowFocusWhenDisabled);
 		}
 
 		[TestMethod]
@@ -141,15 +141,15 @@ namespace Uno.UI.Tests.FlyoutTests
 			var popupPanel = flyout.GetPopupPanel();
 			var SUT = popupPanel.Popup;
 
-			Assert.AreEqual(false, SUT.AllowFocusOnInteraction);
-			Assert.AreEqual(true, SUT.AllowFocusWhenDisabled);
+			Assert.IsFalse(SUT.AllowFocusOnInteraction);
+			Assert.IsTrue(SUT.AllowFocusWhenDisabled);
 
 			// Change values
 			flyout.AllowFocusOnInteraction = true;
 			flyout.AllowFocusWhenDisabled = false;
 
-			Assert.AreEqual(true, SUT.AllowFocusOnInteraction);
-			Assert.AreEqual(false, SUT.AllowFocusWhenDisabled);
+			Assert.IsTrue(SUT.AllowFocusOnInteraction);
+			Assert.IsFalse(SUT.AllowFocusWhenDisabled);
 		}
 
 		[TestMethod]

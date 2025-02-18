@@ -59,61 +59,61 @@ namespace TestRepro
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 11:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						/* _isTopLevelDictionary:False */
-						__that._component_0 = c0;
-						c0.SetBinding(
-							global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
-							{
-								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
-							}
-								.BindingApply(___b =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
-						);
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						c0.CreationComplete();
+					/* _isTopLevelDictionary:False */
+					__that._component_0 = __p1;
+					__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
+						new Microsoft.UI.Xaml.Data.Binding()
+						{
+							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
+						}
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
+					);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
 					}
 					))
 					,
 				}
 			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(c1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c1.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c2) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property c2.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c3) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Class TestRepro.MainPage
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c3.CreationComplete();
+			// Class TestRepro.MainPage
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.Update();
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.Update();
+			this.Bindings.UpdateResources();
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.TextBox _component_0
 		{
 			get
@@ -163,7 +163,7 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
@@ -185,6 +185,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

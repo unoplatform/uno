@@ -235,8 +235,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var materialized4 = (SolidColorBrush)copy[TestBrush];
 
 				// validation
-				Assert.AreEqual(false, ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
-				Assert.AreEqual(false, ReferenceEquals(materialized3, materialized4)); // ^same
+				Assert.IsFalse(ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
+				Assert.IsFalse(ReferenceEquals(materialized3, materialized4)); // ^same
 				Assert.AreNotEqual(materialized2Color, materialized4.Color); // check the theme change is actually applied (otherwise it would void the next check)
 				Assert.AreEqual(materialized3.Color, materialized4.Color); // check the theme change is propagated to the source res-dict
 			}
@@ -245,6 +245,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// clean up
 				ResourceDictionary.SetActiveTheme(theme);
 			}
+		}
+
+		[TestMethod]
+		public void When_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+			resourceDictionary["Key1"] = "Value1";
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			m1["Key1"] = "Value1";
+
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.ThemeDictionaries["Light"] = m1;
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
 		}
 #endif
 	}

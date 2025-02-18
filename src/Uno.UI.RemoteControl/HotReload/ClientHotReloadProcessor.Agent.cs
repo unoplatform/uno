@@ -79,7 +79,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			//var targetFramework = GetMSBuildProperty("TargetFramework");
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial;
+			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
 			var isSkia = unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
 			var isWasm = unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
 
@@ -90,24 +90,16 @@ namespace Uno.UI.RemoteControl.HotReload
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isSkia)
 
 				// Mono Debugger under VS Win already handles metadata updates
-				// Mono Debugger under VS Code prevents metadata based hot reload
+				// Mono Debugger under VS Code & Rider prevents metadata based hot reload
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isWasm)
-
-				// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
-				//
-				//||
-				//(
-				//	buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
-				//	&& (
-				//		// As of VS 17.8, when the debugger is not attached, mobile targets can use
-				//		// DevServer's hotreload workspace, as visual studio does not enable it on its own.
-				//		(!Debugger.IsAttached
-				//			&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))))
-				;
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsAndroid())
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsIOS());
 
 			var vsEnabled = isForcedMetadata
 				|| (buildingInsideVisualStudio && isSkia)
-				|| (buildingInsideVisualStudio && isWasm);
+				|| (buildingInsideVisualStudio && isWasm)
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsAndroid())
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsIOS());
 
 			_supportsMetadataUpdates = devServerEnabled || vsEnabled;
 			_serverMetadataUpdatesEnabled = devServerEnabled;

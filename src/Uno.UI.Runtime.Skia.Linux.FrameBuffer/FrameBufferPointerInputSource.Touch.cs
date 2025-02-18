@@ -83,9 +83,10 @@ unsafe internal partial class FrameBufferPointerInputSource
 
 			properties.IsLeftButtonPressed = rawEventType != LIBINPUT_EVENT_TOUCH_UP && rawEventType != LIBINPUT_EVENT_TOUCH_CANCEL;
 
+			var timestampInMicroseconds = timestamp;
 			var pointerPoint = new Windows.UI.Input.PointerPoint(
 				frameId: (uint)timestamp, // UNO TODO: How should set the frame, timestamp may overflow.
-				timestamp: timestamp * TimeSpan.TicksPerMicrosecond,
+				timestamp: timestampInMicroseconds,
 				device: PointerDevice.For(PointerDeviceType.Touch),
 				pointerId: pointerId,
 				rawPosition: currentPosition,

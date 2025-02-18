@@ -21,8 +21,20 @@ internal class HotReloadWorkspace
 {
 	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<WatchHotReloadService.Update> MetadataUpdates);
 
+#if NET7_0
 	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters";
 	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes";
+#elif NET8_0
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+#elif NET9_0
+	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/mono/mono/component/hot_reload.c#L3330
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
+#else
+#error This runtime is not supported yet, find the caps in the .NET runtime's sources
+#endif
 
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
@@ -63,66 +75,122 @@ internal class HotReloadWorkspace
 		}
 	}
 
-	public void SetSourceFile(string project, string fileName, string content)
+	public void UpdateSourceFile(string projectName, string fileName, string? content)
 	{
-		if (_sourceFiles.TryGetValue(project, out var files))
+		var basePath = Path.Combine(_baseWorkFolder, projectName);
+		var filePath = Path.Combine(basePath, fileName);
+
+		if (_currentSolution is null)
 		{
-			files[fileName] = content;
+			if (content is null)
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(basePath);
+			for (var i = 2; i >= 0; i--)
+			{
+				try
+				{
+					File.WriteAllText(filePath, content, Encoding.UTF8);
+					break;
+				}
+				catch (IOException) when (i is not 0)
+				{
+					Task.Delay(100).Wait();
+				}
+			}
+
+			if (_sourceFiles.TryGetValue(projectName, out var files))
+			{
+				files[fileName] = content;
+			}
+			else
+			{
+				_sourceFiles[projectName] = new()
+				{
+					[fileName] = content
+				};
+			}
 		}
 		else
 		{
-			_sourceFiles[project] = new()
+			var project = _currentSolution.Projects.FirstOrDefault(p => p.Name == projectName);
+			if (project is null)
 			{
-				[fileName] = content
+				throw new InvalidOperationException($"Project {projectName} not found in the current solution");
+			}
+
+			var doc = project.Documents.FirstOrDefault(d => d.FilePath == filePath);
+			_currentSolution = (doc, content) switch
+			{
+				(null, not null) => _currentSolution.AddDocument(
+					DocumentId.CreateNewId(project.Id),
+					fileName,
+					CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
+					filePath: Path.Combine(_baseWorkFolder, projectName, fileName)
+				),
+
+				(not null, not null) => _currentSolution.WithDocumentText(doc.Id, CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText()),
+
+				(not null, null) => _currentSolution.RemoveDocument(doc.Id),
+
+				_ => _currentSolution
 			};
-		}
-		var basePath = Path.Combine(_baseWorkFolder, project);
-		var filePath = Path.Combine(basePath, fileName);
-		Directory.CreateDirectory(basePath);
-		File.WriteAllText(filePath, content, Encoding.UTF8);
-
-		if (_currentSolution is not null)
-		{
-			var documents = _currentSolution
-				.Projects
-				.SelectMany(p => p.Documents)
-				.First(d => d.FilePath == filePath);
-
-			_currentSolution = _currentSolution.WithDocumentText(
-				documents.Id,
-				CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText());
 		}
 	}
 
-	public void SetAdditionalFile(string project, string fileName, string content)
+	public void UpdateAdditionalFile(string projectName, string fileName, string? content)
 	{
-		if (_additionalFiles.TryGetValue(project, out var files))
+		var basePath = Path.Combine(_baseWorkFolder, projectName);
+		var filePath = Path.Combine(basePath, fileName);
+
+		if (_currentSolution is null)
 		{
-			files[fileName] = content;
+			if (content is null)
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(basePath);
+			File.WriteAllText(filePath, content, Encoding.UTF8);
+
+			if (_additionalFiles.TryGetValue(projectName, out var files))
+			{
+				files[fileName] = content;
+			}
+			else
+			{
+				_additionalFiles[projectName] = new()
+				{
+					[fileName] = content
+				};
+			}
 		}
 		else
 		{
-			_additionalFiles[project] = new()
+			var project = _currentSolution.Projects.FirstOrDefault(p => p.Name == projectName);
+			if (project is null)
 			{
-				[fileName] = content
+				throw new InvalidOperationException($"Project {projectName} not found in the current solution");
+			}
+
+			var doc = project.AdditionalDocuments.FirstOrDefault(d => d.FilePath == filePath);
+			_currentSolution = (doc, content) switch
+			{
+				(null, not null) => _currentSolution.AddAdditionalDocument(
+					DocumentId.CreateNewId(project.Id),
+					fileName,
+					CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
+					filePath: Path.Combine(_baseWorkFolder, projectName, fileName)
+				),
+
+				(not null, not null) => _currentSolution.WithAdditionalDocumentText(doc.Id, CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText()),
+
+				(not null, null) => _currentSolution.RemoveAdditionalDocument(doc.Id),
+
+				_ => _currentSolution
 			};
-		}
-
-		var basePath = Path.Combine(_baseWorkFolder, project);
-		Directory.CreateDirectory(basePath);
-		var filePath = Path.Combine(basePath, fileName);
-		File.WriteAllText(filePath, content, Encoding.UTF8);
-
-		if (_currentSolution is not null)
-		{
-			var documents = _currentSolution
-				.Projects
-				.SelectMany(p => p.AdditionalDocuments)
-				.First(d => d.FilePath == filePath);
-
-			_currentSolution = _currentSolution.WithAdditionalDocumentText(
-				documents.Id,
-				CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText());
 		}
 	}
 
@@ -148,29 +216,29 @@ internal class HotReloadWorkspace
 		var frameworkReferences = BuildFrameworkReferences();
 		var references = BuildUnoReferences().Concat(frameworkReferences);
 
-		var generatorReference = new MyGeneratorReference(
-			ImmutableArray.Create<ISourceGenerator>(new XamlGenerator.XamlCodeGenerator()));
+		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator()]);
 
 		FillProjectsFromFiles();
 
 		foreach (var projectName in EnumerateProjects())
 		{
 			var projectInfo = ProjectInfo.Create(
-							ProjectId.CreateNewId(),
-							VersionStamp.Default,
-							name: projectName,
-							assemblyName: projectName,
-							language: LanguageNames.CSharp,
-							filePath: Path.Combine(_baseWorkFolder, projectName + ".csproj"),
-							outputFilePath: _baseWorkFolder,
-							metadataReferences: references,
-							compilationOptions: new CSharpCompilationOptions(
-								OutputKind.DynamicallyLinkedLibrary,
-								optimizationLevel: OptimizationLevel.Debug,
-								allowUnsafe: true,
-								nullableContextOptions: NullableContextOptions.Enable,
-								assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default),
-							analyzerReferences: new[] { generatorReference });
+				ProjectId.CreateNewId(),
+				VersionStamp.Default,
+				name: projectName,
+				assemblyName: projectName,
+				language: LanguageNames.CSharp,
+				filePath: Path.Combine(_baseWorkFolder, projectName + ".csproj"),
+				outputFilePath: _baseWorkFolder,
+				metadataReferences: references,
+				compilationOptions: new CSharpCompilationOptions(
+						OutputKind.DynamicallyLinkedLibrary,
+						optimizationLevel: OptimizationLevel.Debug,
+						allowUnsafe: true,
+						nullableContextOptions: NullableContextOptions.Enable,
+						assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default)
+					.WithSpecificDiagnosticOptions([new("CS1701", ReportDiagnostic.Suppress)]), // Assuming assembly reference 'System.ObjectModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' used by 'Uno.UI' matches identity 'System.ObjectModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' of 'System.ObjectModel', you may need to supply runtime policy, expected
+				analyzerReferences: [generatorReference]);
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(
@@ -190,6 +258,18 @@ internal class HotReloadWorkspace
 
 			currentSolution = project.Solution;
 
+			// Build the analyzer document additional data information
+			var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
+
+			// For now, there is no need to customize these for each test.
+			var globalConfigBuilder = new StringBuilder($"""
+				is_global = true
+				build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
+				build_property.RootNamespace = {project.Name}
+				build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
+				build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
+
+				""");
 			if (_sourceFiles.TryGetValue(projectName, out var sourceFiles))
 			{
 				foreach (var (fileName, content) in sourceFiles)
@@ -217,37 +297,21 @@ internal class HotReloadWorkspace
 						filePath: Path.Combine(_baseWorkFolder, project.Name, fileName));
 				}
 
-				if (additionalFiles.Any())
+				foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
 				{
-					// Build the analyzer document additional data information
-					var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
-
-					// For now, there is no need to customize these for each test.
-					var globalConfigBuilder = new StringBuilder($"""
-						is_global = true
-						build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
-						build_property.RootNamespace = {project.Name}
-						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
-						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
-						
-						"""); ;
-
-					foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
-					{
-						globalConfigBuilder.Append($"""
-							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
-							build_metadata.AdditionalFiles.SourceItemGroup = Page
-							""");
-					}
-
-					currentSolution = currentSolution.AddAnalyzerConfigDocument(
-						analyzerDocumentId,
-						name: ".globalconfig",
-						filePath: "/.globalconfig",
-						text: SourceText.From(globalConfigBuilder.ToString())
-					); ;
+					globalConfigBuilder.Append($"""
+						[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
+						build_metadata.AdditionalFiles.SourceItemGroup = Page
+						""");
 				}
 			}
+
+			currentSolution = currentSolution.AddAnalyzerConfigDocument(
+				analyzerDocumentId,
+				name: ".globalconfig",
+				filePath: "/.globalconfig",
+				text: SourceText.From(globalConfigBuilder.ToString())
+			);
 
 			workspace.TryApplyChanges(currentSolution);
 		}
@@ -371,13 +435,18 @@ internal class HotReloadWorkspace
 #endif
 
 		var availableTargets = new[] {
+			// On CI the test assemblies set must be first, as it contains all
+			// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
+			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
+			Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
 		};
 
 		var unoUIBase = Path.Combine(
-			Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 			"..",
 			"..",
 			"..",

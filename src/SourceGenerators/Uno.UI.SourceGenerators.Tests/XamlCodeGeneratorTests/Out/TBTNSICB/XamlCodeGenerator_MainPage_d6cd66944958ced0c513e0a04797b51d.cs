@@ -62,10 +62,10 @@ namespace TestRepro
 						FontSize = 30d,
 						// Source 0\MainPage.xaml (Line 12:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						c0.CreationComplete();
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
 					}
 					))
 					,
@@ -73,58 +73,58 @@ namespace TestRepro
 					{
 						// Source 0\MainPage.xaml (Line 13:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(c1 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 					{
-						c1.SetBinding(
-							"DataContext",
-							new Microsoft.UI.Xaml.Data.Binding()
-							{
-								Path = @"PreviewDropViewModel",
-							}
-						);
+					__p1.SetBinding(
+						"DataContext",
+						new Microsoft.UI.Xaml.Data.Binding()
+						{
+							Path = @"PreviewDropViewModel",
+						}
+					);
 					}
 					))
 					,
 				}
 			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(c2 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c2.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c3) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property c3.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c4) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = c4;
-				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c4, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c4, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c4.CreationComplete();
+			/* _isTopLevelDictionary:False */
+			__that._component_0 = __p1;
+			// Class TestRepro.MainPage
+			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
 			get
@@ -173,7 +173,7 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
@@ -202,6 +202,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

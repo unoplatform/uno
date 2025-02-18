@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,37 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObjectCollection<T> : DependencyObjectCollectionBase, IList<T>, IEnumerable<T>, IEnumerable, IObservableVector<T>
 		where T : DependencyObject
 	{
-		public event VectorChangedEventHandler<T> VectorChanged;
+		private object _vectorChangedHandlersLock = new();
+
+		// Explicit handlers list to avoid the cost of generic multicast
+		// delegates handling on mono's AOT.
+		private List<VectorChangedEventHandler<T>> _vectorChangedHandlers;
+
+		public event VectorChangedEventHandler<T> VectorChanged
+		{
+			add
+			{
+				lock (_vectorChangedHandlersLock)
+				{
+					(_vectorChangedHandlers ??= new()).Add(value);
+				}
+			}
+
+			remove
+			{
+				lock (_vectorChangedHandlersLock)
+				{
+					var list = _vectorChangedHandlers ??= new();
+
+					var lastIndex = list.LastIndexOf(value);
+
+					if (lastIndex != -1)
+					{
+						list.RemoveAt(lastIndex);
+					}
+				}
+			}
+		}
 
 		private readonly List<T> _list = new List<T>();
 
@@ -96,7 +127,7 @@ namespace Microsoft.UI.Xaml
 
 		public T this[int index]
 		{
-			get => _list[index];
+			get => index < _list.Count ? _list[index] : default;
 			set
 			{
 				ValidateItem(value);
@@ -205,7 +236,63 @@ namespace Microsoft.UI.Xaml
 			=> _list.GetEnumerator();
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
-			=> VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
+		{
+			// Gets an executable list that does not need to be locked
+			int GetInvocationList(out VectorChangedEventHandler<T> single, out VectorChangedEventHandler<T>[] array)
+			{
+				lock (_vectorChangedHandlersLock)
+				{
+					if (_vectorChangedHandlers is { Count: > 0 })
+					{
+						if (_vectorChangedHandlers.Count == 1)
+						{
+							single = _vectorChangedHandlers[0];
+							array = null;
+							return 1;
+						}
+						else
+						{
+							single = null;
+
+							array = ArrayPool<VectorChangedEventHandler<T>>.Shared.Rent(_vectorChangedHandlers.Count);
+							_vectorChangedHandlers.CopyTo(array, 0);
+
+							return _vectorChangedHandlers.Count;
+						}
+					}
+				}
+
+				single = null;
+				array = null;
+				return 0;
+			}
+
+			var count = GetInvocationList(out var single, out var array);
+
+			if (count > 0)
+			{
+				var args = new VectorChangedEventArgs(change, (uint)index);
+
+				if (count == 1)
+				{
+					single.Invoke(this, args);
+				}
+				else
+				{
+					for (int i = 0; i < count; i++)
+					{
+						ref var handler = ref array[i];
+						handler.Invoke(this, args);
+
+						// Clear the handle immediately, so we don't
+						// call ArrayPool.Return with clear.
+						handler = null;
+					}
+
+					ArrayPool<VectorChangedEventHandler<T>>.Shared.Return(array);
+				}
+			}
+		}
 
 		private protected virtual void OnAdded(T d)
 		{

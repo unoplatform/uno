@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
@@ -19,7 +22,6 @@ using Windows.System;
 #endif
 
 #if WINAPPSDK
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 #else
 using Uno.Foundation.Extensibility;
@@ -40,14 +42,17 @@ namespace Uno.WinUI.Graphics3DGL;
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
-	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
-	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper> _xamlRootToWrapper = new();
+	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper?> _xamlRootToWrapper = new();
+
+	private static readonly (int major, int minor) _minVersion = (3, 0);
 
 	private readonly Func<Window>? _getWindowFunc;
 
-	// valid if and only if _loadedAtleastOnce and OpenGL is available on the running platform
+	private bool _changingGlInitialized;
+
+	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
-	// These are valid if and only if IsLoaded
+	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
 	private GL? _gl;
 	private WriteableBitmap? _backBuffer;
 	private FrameBufferDetails? _details;
@@ -88,8 +93,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
-	/// <param name="width">The width of the backing framebuffer.</param>
-	/// <param name="height">The height of the backing framebuffer.</param>
 	/// <param name="getWindowFunc">A function that returns the Window object that this element belongs to. This parameter is only used on WinUI. On Uno Platform, it can be set to null.</param>
 #if WINAPPSDK
 	protected GLCanvasElement(Func<Window> getWindowFunc)
@@ -109,7 +112,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		SizeChanged += (_, _) => UpdateFramebuffer();
 	}
 
-	private static INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
+	private static unsafe INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
 	{
 		try
 		{
@@ -119,14 +122,66 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 				nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
 #else
-				if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out nativeOpenGlWrapper))
+				if (!ApiExtensibility.CreateInstance(xamlRoot, out nativeOpenGlWrapper))
 				{
-					throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+					if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(GLCanvasElement).Log().Error($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+					}
+
+					_xamlRootToWrapper[xamlRoot] = null;
+					return null;
 				}
 #endif
 
+				var abort = false;
+				using (nativeOpenGlWrapper.MakeCurrent())
+				{
+					var glGetString = (delegate* unmanaged[Cdecl]<GLEnum, byte*>)nativeOpenGlWrapper.GetProcAddress("glGetString");
+
+					var glVersionBytePtr = glGetString(GLEnum.Version);
+					var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr);
+
+					if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Information))
+					{
+						typeof(GLCanvasElement).Log().Info($"{nameof(GLCanvasElement)} created an OpenGL context with a version string = '{glVersionString}'.");
+					}
+
+					if (glVersionString?.Contains("ANGLE", StringComparison.Ordinal) ?? false)
+					{
+						if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(GLCanvasElement).Log().Warn($"{nameof(GLCanvasElement)} is using an ANGLE implementation, ignoring minimum version checks.");
+						}
+					}
+					else
+					{
+						var glGetIntegerv = (delegate* unmanaged[Cdecl]<GLEnum, int*, void>)nativeOpenGlWrapper.GetProcAddress("glGetIntegerv");
+						int major, minor;
+						glGetIntegerv(GLEnum.MajorVersion, &major);
+						glGetIntegerv(GLEnum.MinorVersion, &minor);
+
+						if (major < _minVersion.major || (major == _minVersion.major && minor < _minVersion.minor))
+						{
+							if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
+							{
+								typeof(GLCanvasElement).Log().Error($"{nameof(GLCanvasElement)} requires at least {_minVersion.major}.{_minVersion.minor}, but found {major}.{minor}.");
+							}
+
+							abort = true;
+						}
+					}
+				}
+
+				if (abort)
+				{
+					nativeOpenGlWrapper.Dispose();
+					nativeOpenGlWrapper = null;
+				}
+
 				_xamlRootToWrapper.Add(xamlRoot, nativeOpenGlWrapper);
 			}
+
 			return nativeOpenGlWrapper;
 		}
 		catch (Exception e)
@@ -151,8 +206,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			}
 			if (_xamlRootToWrapper.Remove(XamlRoot!, out var wrapper))
 			{
-				using var _ = wrapper.MakeCurrent();
-				wrapper.Dispose();
+				using var makeCurrentDisposable = wrapper?.MakeCurrent();
+				wrapper?.Dispose();
 			}
 		});
 	}
@@ -169,18 +224,54 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
+	public static DependencyProperty IsGLInitializedProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsGLInitialized),
+			typeof(bool?),
+			typeof(GLCanvasElement),
+			new PropertyMetadata(null, (PropertyChangedCallback)((dO, _) =>
+			{
+				var @this = (GLCanvasElement)dO;
+				if (!@this._changingGlInitialized)
+				{
+					throw new InvalidOperationException($"{nameof(GLCanvasElement)}.{nameof(IsGLInitializedProperty)} is read-only.");
+				}
+
+				// We should have arrived here from set_IsGLInitialized, so we could put this line at the end of the
+				// setter. Instead, we set it to false here to prevent users from calling SetValue.IsGLInitializedProperty
+				// _inside_ a call to GLCanvasElement.set_IsGLInitialized. This way, if a user intercepts this
+				// change (e.g. with SubscribeToPropertyChanged) and attempts to make a nested SetValue call, we still
+				// explode in their face.
+				@this._changingGlInitialized = false;
+			})));
+
+	/// <summary>
+	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
+	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
+	/// </summary>
+	public bool? IsGLInitialized
+	{
+		get => (bool?)GetValue(IsGLInitializedProperty);
+		private set
+		{
+			_changingGlInitialized = true;
+			SetValue(IsGLInitializedProperty, value);
+		}
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
 		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
 		if (_nativeOpenGlWrapper is null)
 		{
+			IsGLInitialized = false;
 			return;
 		}
 
 		_gl = GL.GetApi(this);
 
-		using (_nativeOpenGlWrapper!.MakeCurrent())
+		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
 			Init(_gl);
@@ -200,10 +291,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		{
 			fe.Unloaded += OnClosed;
 		}
+
+		IsGLInitialized = true;
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
+		IsGLInitialized = null;
 		if (_nativeOpenGlWrapper is null)
 		{
 			return;
@@ -256,7 +350,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (!IsLoaded)
+		if (!IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -290,7 +384,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded)
+		if (!IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}

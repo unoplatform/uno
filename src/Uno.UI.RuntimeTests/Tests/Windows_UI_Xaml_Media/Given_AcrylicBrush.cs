@@ -17,10 +17,10 @@ using SkiaSharp;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
+#if __SKIA__
 [TestClass]
 public class Given_AcrylicBrush
 {
-#if __SKIA__ && HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Drawn()
@@ -109,5 +109,5 @@ public class Given_AcrylicBrush
 
 		return (expectedImg, actualImg);
 	}
-#endif
 }
+#endif

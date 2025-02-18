@@ -104,7 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await ControlHelper.DoClickUsingAP(page.SUT);
 #if !WINAPPSDK
-					Assert.AreEqual(false, flyout.UseNativePopup);
+					Assert.IsFalse(flyout.UseNativePopup);
 #endif
 					var flyoutItem = page.FirstFlyoutItem;
 
@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.ShowAt(button);
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual((flyout.Items[0] as MenuFlyoutItem)!.Text, "1");
+				Assert.AreEqual("1", (flyout.Items[0] as MenuFlyoutItem)!.Text);
 			}
 			finally
 			{

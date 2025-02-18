@@ -32,8 +32,14 @@ using Point = System.Drawing.Point;
 using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Toolkit.Extensions;
+using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Input;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -1560,6 +1566,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Translation X and Y axis is currently supported on Skia only")]
+#endif
+		public async Task When_Translation_On_Load()
+		{
+			var sut = new Rectangle()
+			{
+				Width = 100,
+				Height = 100,
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			};
+			var canvas = new Canvas();
+			canvas.Width = 200;
+			canvas.Height = 200;
+			canvas.Children.Add(sut);
+			TestServices.WindowHelper.WindowContent = canvas;
+			await TestServices.WindowHelper.WaitForLoaded(sut);
+			sut.Translation += new Vector3(100, 100, 128);
+			await TestServices.WindowHelper.WaitForIdle();
+			var bitmap = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.DoesNotHaveColorAt(bitmap, new Windows.Foundation.Point(50, 50), Microsoft.UI.Colors.Blue);
+			ImageAssert.HasColorAt(bitmap, new Windows.Foundation.Point(150, 150), Microsoft.UI.Colors.Blue);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1684,6 +1716,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18770")]
+		[DataRow(true)]
+		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_DragDrop_AcceptedOperation_None(bool setAcceptedOperation)
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Drag and drop doesn't work in Uno islands.");
+			}
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var dropCount = 0;
+			Rectangle source, target;
+			var sp = new StackPanel
+			{
+				(source = new Rectangle
+				{
+					Width = 100,
+					Height = 100,
+					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+					CanDrag = true
+				}),
+				(target = new Rectangle
+				{
+					Width = 100,
+					Height = 100,
+					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+					AllowDrop = true
+				})
+			};
+
+			target.Drop += (_, _) => dropCount++;
+			if (setAcceptedOperation)
+			{
+				target.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
+			}
+
+			await UITestHelper.Load(sp);
+
+			mouse.MoveTo(source.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+			for (int i = 1; i <= 10; i++)
+			{
+				mouse.MoveBy(0, (target.GetAbsoluteBoundsRect().GetMidY() - source.GetAbsoluteBoundsRect().GetMidY()) * 0.1);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setAcceptedOperation ? 1 : 0, dropCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[DataRow(true)]
 		[DataRow(false)]
 #if !HAS_INPUT_INJECTOR
@@ -1758,7 +1851,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, dragEnterCount);
-			Assert.AreEqual(1, dragOverCount);
+			Assert.AreEqual(2, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
 			mouse.Release();
@@ -1768,8 +1861,128 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			Assert.AreEqual(1, dragEnterCount);
-			Assert.AreEqual(2, dragOverCount);
+			Assert.AreEqual(3, dragOverCount);
 			Assert.AreEqual(waitAfterRelease ? 1 : 0, dropCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_DragEnter_Fires_Along_DragStarting()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Drag and drop doesn't work in Uno islands.");
+			}
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var rect = new Rectangle
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100,
+				CanDrag = true
+			};
+
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				Padding = new Thickness(10),
+				Child = rect,
+				AllowDrop = true
+			};
+
+			var dragStartingCount = 0;
+			var dragEnterCount = 0;
+			var dragOverCount = 0;
+
+			border.DragEnter += (_, _) => dragEnterCount++;
+			border.DragOver += (_, _) => dragOverCount++;
+			rect.DragStarting += (_, _) => dragStartingCount++;
+
+			await UITestHelper.Load(border);
+
+			mouse.MoveTo(rect.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Press();
+			await UITestHelper.WaitForIdle();
+			mouse.MoveBy(GestureRecognizer.TapMaxXDelta / 3, 0);
+			await UITestHelper.WaitForIdle();
+			mouse.MoveBy(GestureRecognizer.TapMaxXDelta / 3, 0);
+			await UITestHelper.WaitForIdle();
+			mouse.MoveBy(GestureRecognizer.TapMaxXDelta / 3, 0);
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(0, dragStartingCount);
+			Assert.AreEqual(0, dragEnterCount);
+			Assert.AreEqual(0, dragOverCount);
+
+			mouse.MoveBy(GestureRecognizer.TapMaxXDelta / 3, 0);
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(1, dragStartingCount);
+			Assert.AreEqual(1, dragEnterCount);
+			Assert.AreEqual(1, dragOverCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_CanDrag_Child_And_Parent(bool childCanDrag)
+		{
+			var child = new Rectangle
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.LightBlue),
+				Width = 100,
+				Height = 80,
+				CanDrag = childCanDrag
+			};
+			var parent = new Frame
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+				Width = 400,
+				Height = 300,
+				CanDrag = true,
+				Content = child
+			};
+
+			var parentDragStartingCount = 0;
+			var childDragStartingCount = 0;
+			parent.DragStarting += (_, _) => parentDragStartingCount++;
+			child.DragStarting += (_, _) => childDragStartingCount++;
+
+			await UITestHelper.Load(parent);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(child.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Press();
+			await UITestHelper.WaitForIdle();
+			mouse.MoveTo(child.GetAbsoluteBoundsRect().GetCenter() + new Windows.Foundation.Point(20, 0), steps: 10);
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			if (childCanDrag)
+			{
+				Assert.AreEqual(1, childDragStartingCount);
+				Assert.AreEqual(0, parentDragStartingCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, childDragStartingCount);
+				Assert.AreEqual(1, parentDragStartingCount);
+			}
 		}
 
 		#endregion

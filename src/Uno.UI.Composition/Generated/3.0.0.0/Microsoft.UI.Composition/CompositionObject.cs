@@ -46,7 +46,9 @@ namespace Microsoft.UI.Composition
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Properties.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimation(string, Microsoft.UI.Composition.CompositionAnimation)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimation(string, Microsoft.UI.Composition.CompositionAnimation, Microsoft.UI.Composition.AnimationController)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StopAnimation(string)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.TryGetAnimationController(string)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Comment.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Compositor.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.ImplicitAnimations.get
@@ -66,20 +68,6 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.DispatcherQueue.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.AnimationController TryGetAnimationController(string propertyName)
-		{
-			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationController%20CompositionObject.TryGetAnimationController%28string%20propertyName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartAnimation(string propertyName, global::Microsoft.UI.Composition.CompositionAnimation animation, global::Microsoft.UI.Composition.AnimationController animationController)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "void CompositionObject.StartAnimation(string propertyName, CompositionAnimation animation, AnimationController animationController)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void StartAnimationWithIAnimationObject(global::Microsoft.UI.Composition.IAnimationObject target, string propertyName, global::Microsoft.UI.Composition.CompositionAnimation animation)

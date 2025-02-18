@@ -35,6 +35,9 @@ internal class ProfilesObserver : IDisposable
 	private readonly Func<string?, string, Task> _onDebugProfileChanged;
 	private Func<Task> _onStartupProjectChanged;
 
+	private string? _lastActiveDebugProfile;
+	private string? _lastActiveDebugFramework;
+
 	private record FrameworkServices(object? ActiveDebugFrameworkServices, MethodInfo? SetActiveFrameworkMethod, MethodInfo? GetProjectFrameworksAsyncMethod);
 	private FrameworkServices? _projectFrameworkServices;
 
@@ -250,6 +253,17 @@ internal class ProfilesObserver : IDisposable
 			{
 				ruleSnapshot.Properties.TryGetValue("ActiveDebugProfile", out var activeDebugProfile);
 				ruleSnapshot.Properties.TryGetValue("ActiveDebugFramework", out var activeDebugFramework);
+
+				if (
+					_lastActiveDebugProfile == activeDebugProfile
+					&& _lastActiveDebugFramework == activeDebugFramework)
+				{
+					// Debounce ChangedAsync which may be invoked even if nothing changed.
+					return;
+				}
+
+				_lastActiveDebugProfile = activeDebugProfile;
+				_lastActiveDebugFramework = activeDebugFramework;
 
 				if (!string.IsNullOrEmpty(activeDebugProfile) && activeDebugProfile != _currentActiveDebugProfile)
 				{

@@ -120,24 +120,7 @@ namespace Uno.UI.Dispatching
 				}
 			}
 
-			if (action != null)
-			{
-				try
-				{
-					using (@this._synchronizationContexts[(int)@this._currentPriority].Apply())
-					{
-						action();
-					}
-				}
-				catch (Exception exception)
-				{
-					@this.Log().Error("NativeDispatcher unhandled exception", exception);
-				}
-			}
-			else if (@this.Rendering == null && @this.Log().IsEnabled(LogLevel.Debug))
-			{
-				@this.Log().Error("Dispatch queue is empty.");
-			}
+			RunAction(@this, action);
 
 			// Restore the priority to the default for native events
 			// (i.e. not dispatched by this running loop)
@@ -146,6 +129,33 @@ namespace Uno.UI.Dispatching
 			if (!didEnqueue && @this.Rendering != null)
 			{
 				@this.DispatchWakeUp();
+			}
+		}
+
+		/// <remarks>
+		/// This method runs in a separate method in order to workaround for the following issue:
+		/// https://github.com/dotnet/runtime/issues/111281
+		/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+		/// </remarks>
+		private static void RunAction(NativeDispatcher dispatcher, Action? action)
+		{
+			if (action != null)
+			{
+				try
+				{
+					using (dispatcher._synchronizationContexts[(int)dispatcher._currentPriority].Apply())
+					{
+						action();
+					}
+				}
+				catch (Exception exception)
+				{
+					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
+				}
+			}
+			else if (dispatcher.Rendering == null && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			{
+				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
 

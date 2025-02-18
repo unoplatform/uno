@@ -54,6 +54,10 @@ internal class MacOSWindowNative
 
 		NativeWindowReady?.Invoke(this, this);
 
+		if (NativeUno.uno_application_is_bundled())
+		{
+			Windows.Storage.StorageFile.ResourcePathBase = IOPath.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, "..", "Resources");
+		}
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}

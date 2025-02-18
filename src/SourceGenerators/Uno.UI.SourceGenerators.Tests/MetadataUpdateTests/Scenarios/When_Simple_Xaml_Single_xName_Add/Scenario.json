@@ -15,10 +15,8 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						{ "Id": "ENC0100" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		}

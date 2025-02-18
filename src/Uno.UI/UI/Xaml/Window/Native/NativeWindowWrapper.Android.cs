@@ -3,13 +3,12 @@ using Android.App;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -67,29 +66,37 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 
 		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
+
+			//  Both TranslucentStatus and LayoutNoLimits are false when EdgeToEdge is set (default mode in net9).
+			|| FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
 	}
 
 	internal void RaiseNativeSizeChanged()
 	{
-		var (windowSize, visibleBounds, trueVisibleBounds) = GetVisualBounds();
+		var (windowSize, visibleBounds) = GetVisualBounds();
 
 		Bounds = new Rect(default, windowSize);
 		VisibleBounds = visibleBounds;
 		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
+		ApplySystemOverlaysTheming();
 
-		if (_previousTrueVisibleBounds != trueVisibleBounds)
+		if (_previousTrueVisibleBounds != visibleBounds)
 		{
-			_previousTrueVisibleBounds = trueVisibleBounds;
+			_previousTrueVisibleBounds = visibleBounds;
 
 			// TODO: Adjust when multiple windows are supported on Android #13827
-			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
+			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(visibleBounds);
 		}
 	}
 
-	protected override void ShowCore() => RemovePreDrawListener();
+	protected override void ShowCore()
+	{
+		ApplySystemOverlaysTheming();
+		RemovePreDrawListener();
+	}
 
-	private (Size windowSize, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
+	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
 		if (ContextHelper.Current is not Activity activity)
 		{
@@ -99,28 +106,57 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var windowInsets = GetWindowInsets(activity);
 
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+		Rect windowBounds;
+		Rect visibleBounds;
 
-		var opaqueInsetsTypes = insetsTypes;
-		if (IsStatusBarTranslucent())
+		var decorView = activity.Window.DecorView;
+		var fitsSystemWindows = decorView.FitsSystemWindows;
+
+		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
-			opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Insets: {insets}");
+			}
+
+			// Edge-to-edge is default on Android 15 and above
+			windowBounds = new Rect(default, GetWindowSize());
+			visibleBounds = windowBounds.DeflateBy(insets);
 		}
-		if (IsNavigationBarTranslucent())
+		else
 		{
-			opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
+			var opaqueInsetsTypes = insetsTypes;
+			if (IsStatusBarTranslucent())
+			{
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
+			}
+			if (IsNavigationBarTranslucent())
+			{
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
+			}
+
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
+			var translucentInsets = insets.Minus(opaqueInsets);
+
+			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
+			windowBounds = new Rect(default, GetWindowSize().Subtract(opaqueInsets));
+
+			// The visible bounds is the windows bounds on which we remove also translucentInsets
+			visibleBounds = windowBounds.DeflateBy(translucentInsets);
 		}
 
-		var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
-		var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
-		var translucentInsets = insets.Minus(opaqueInsets);
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"WindowBounds: {windowBounds}, VisibleBounds {visibleBounds}");
+		}
 
-		// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-		var windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
+		var windowBoundsLogical = windowBounds.PhysicalToLogicalPixels();
+		var visibleBoundsLogical = visibleBounds.PhysicalToLogicalPixels();
 
-		// The visible bounds is the windows bounds on which we remove also translucentInsets
-		var visibleBounds = windowBounds.DeflateBy(translucentInsets);
-
-		return (windowBounds.PhysicalToLogicalPixels().Size, visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
+		return (windowBoundsLogical.Size, visibleBoundsLogical);
 	}
 
 	private bool IsNavigationBarTranslucent()
@@ -151,7 +187,26 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return null;
 	}
 
-	private Size GetDisplaySize()
+	internal void ApplySystemOverlaysTheming()
+	{
+		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+		{
+			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
+			if ((ContextHelper.TryGetCurrent(out var context)) &&
+				context is Activity activity &&
+				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+			{
+				var requestedTheme = Microsoft.UI.Xaml.Application.Current.RequestedTheme;
+
+				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+
+				// "appearance light" refers to status bar set to light theme == dark foreground
+				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+			}
+		}
+	}
+
+	private Size GetWindowSize()
 	{
 		if (ContextHelper.Current is not Activity activity)
 		{
@@ -167,13 +222,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 		else
 		{
-			SetDisplaySizeLegacy();
-		}
-
-		return displaySize;
-
-		void SetDisplaySizeLegacy()
-		{
 			using var realMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
@@ -184,6 +232,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 			displaySize = new Size(realMetrics.WidthPixels, realMetrics.HeightPixels);
 		}
+
+		return displaySize;
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()

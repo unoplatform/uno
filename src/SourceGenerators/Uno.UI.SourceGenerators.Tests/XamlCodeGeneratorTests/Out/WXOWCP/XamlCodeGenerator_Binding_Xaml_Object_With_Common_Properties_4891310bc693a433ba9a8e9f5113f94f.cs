@@ -69,71 +69,71 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						Tag = @"42",
 						// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 14:10)
 					}
-					.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						/* _isTopLevelDictionary:False */
-						__that._component_0 = c0;
-						__nameScope.RegisterName("topLevel", c0);
-						__that.topLevel = c0;
-						// FieldModifier public
-						c0.SetBinding(
-							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
-							{
-								Path = @"Tag",
-								ElementName = _topLevelSubject,
-								Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-								ConverterParameter = @"topLevel",
-								ConverterLanguage = "topLevel",
-								UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
-								TargetNullValue = @"TargetNullValue",
-								FallbackValue = @"FallbackValue",
-								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-								RelativeSource = new RelativeSource(RelativeSourceMode.None),
-								Source = @"Source",
-							}
-						);
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
-						c0.CreationComplete();
+					/* _isTopLevelDictionary:False */
+					__that._component_0 = __p1;
+					__nameScope.RegisterName("topLevel", __p1);
+					__that.topLevel = __p1;
+					// FieldModifier public
+					__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+						new Microsoft.UI.Xaml.Data.Binding()
+						{
+							Path = @"Tag",
+							ElementName = _topLevelSubject,
+							Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+							ConverterParameter = @"topLevel",
+							ConverterLanguage = "topLevel",
+							UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
+							TargetNullValue = @"TargetNullValue",
+							FallbackValue = @"FallbackValue",
+							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+							RelativeSource = new RelativeSource(RelativeSourceMode.None),
+							Source = @"Source",
+						}
+					);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
+					__p1.CreationComplete();
 					}
 					))
 					,
 				}
 			}
-			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler1)(c1 => 
+			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
-				c1.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c2) => 
+			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
-				
-				// WARNING Property c2.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c3) => 
+			.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Class Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
-				c3.CreationComplete();
+			// Class Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Common_Properties_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
@@ -146,7 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				_topLevelSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 		{
 			get
@@ -195,7 +195,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
 			}
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.StopTracking()
 			{
@@ -217,6 +217,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

@@ -26,6 +26,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using DirectUI;
 using Uno.UI.Xaml.Input;
+using AndroidX.Activity;
 
 
 namespace Microsoft.UI.Xaml
@@ -69,6 +70,8 @@ namespace Microsoft.UI.Xaml
 		public override void OnAttachedToWindow()
 		{
 			base.OnAttachedToWindow();
+
+			StatusBar.GetForCurrentView().UpdateSystemUiVisibility();
 
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
@@ -239,6 +242,11 @@ namespace Microsoft.UI.Xaml
 			if (Uno.CompositionConfiguration.UseCompositorThread)
 			{
 				Uno.UI.Composition.CompositorThread.Start(this);
+			}
+
+			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+			{
+				EdgeToEdge.Enable(this);
 			}
 
 			base.OnCreate(bundle);

@@ -250,16 +250,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
 
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
-			try
-			{
-				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
-				var retrieved2 = rd["Blu"];
-				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
-			}
-			finally
-			{
-				Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
-			}
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			var retrieved2 = rd["Blu"];
+			Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 #endif
 		}
 
@@ -504,7 +497,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					fromEnumeration = kvp;
 				}
 			}
-			Assert.IsNotNull(fromEnumeration);
+
 			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
 		}
 
@@ -954,9 +947,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new ThemeResource_Named_ResourceDictionary_Override();
 			SUT.ForceLoaded();
 
-			Assert.AreEqual(Colors.Red, (SUT.border01.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Blue, (SUT.border02.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Green, (SUT.border03.Background as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(SUT.border01.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border02.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border03.Background, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)SUT.border01.Background).Color);
+			Assert.AreEqual(Colors.Blue, ((SolidColorBrush)SUT.border02.Background).Color);
+			Assert.AreEqual(Colors.Green, ((SolidColorBrush)SUT.border03.Background).Color);
 		}
 	}
 }

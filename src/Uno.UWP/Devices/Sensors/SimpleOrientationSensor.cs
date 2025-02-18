@@ -1,17 +1,18 @@
+#nullable enable
+
 using System;
 using Windows.UI.Core;
 using Windows.Foundation;
+using Uno.Helpers;
 
 namespace Windows.Devices.Sensors
 {
 	public partial class SimpleOrientationSensor
 	{
-		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
+		private readonly StartStopTypedEventWrapper<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChangedWrapper;
 
 		#region Static
-		private static SimpleOrientationSensor _instance;
-		private static bool _initialized;
-		private readonly static object _syncLock = new();
+		private readonly static Lazy<SimpleOrientationSensor?> _instance = new Lazy<SimpleOrientationSensor?>(() => TryCreateInstance());
 
 		/// <summary>
 		/// Gets the default simple orientation sensor.
@@ -19,26 +20,9 @@ namespace Windows.Devices.Sensors
 		/// <returns>
 		/// The default simple orientation sensor or null if no simple orientation sensors are found.
 		/// </returns>
-		public static SimpleOrientationSensor GetDefault()
-		{
-			if (_initialized)
-			{
-				return _instance;
-			}
+		public static SimpleOrientationSensor? GetDefault() => _instance.Value;
 
-			lock (_syncLock)
-			{
-				if (!_initialized)
-				{
-					_instance = TryCreateInstance();
-					_initialized = true;
-				}
-
-				return _instance;
-			}
-		}
-
-		private static partial SimpleOrientationSensor TryCreateInstance();
+		private static partial SimpleOrientationSensor? TryCreateInstance();
 		#endregion
 
 		partial void StartListeningOrientationChanged();
@@ -54,6 +38,10 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		private SimpleOrientationSensor()
 		{
+			_orientationChangedWrapper = new StartStopTypedEventWrapper<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs>(
+				() => StartListeningOrientationChanged(),
+				() => StopListeningOrientationChanged());
+
 			Initialize();
 		}
 
@@ -63,7 +51,7 @@ namespace Windows.Devices.Sensors
 		/// Gets the device identifier.
 		/// </summary>
 		[Uno.NotImplemented]
-		public string DeviceId { get; }
+		public string DeviceId { get; } = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the transformation that needs to be applied to sensor data. Transformations to be applied are tied to the display orientation with which to align the sensor data.
@@ -86,29 +74,8 @@ namespace Windows.Devices.Sensors
 #pragma warning disable CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used - Used only in Android and iOS.
 		public event TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> OrientationChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _orientationChanged is null;
-					_orientationChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartListeningOrientationChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_orientationChanged -= value;
-					if (_orientationChanged is null)
-					{
-						StopListeningOrientationChanged();
-					}
-				}
-			}
+			add => _orientationChangedWrapper.AddHandler(value);
+			remove => _orientationChangedWrapper.RemoveHandler(value);
 		}
 #pragma warning restore CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used
 
@@ -124,7 +91,7 @@ namespace Windows.Devices.Sensors
 					Orientation = orientation,
 					Timestamp = DateTimeOffset.Now,
 				};
-				_orientationChanged?.Invoke(this, args);
+				_orientationChangedWrapper.Invoke(this, args);
 			}
 		}
 

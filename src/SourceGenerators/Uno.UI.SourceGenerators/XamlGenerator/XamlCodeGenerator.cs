@@ -8,7 +8,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
-using Uno.UI.SourceGenerators.Telemetry;
+using Uno.DevTools.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml;
+using System.Globalization;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -308,7 +309,9 @@ namespace Uno.UI.Tests.BinderTests
 				if (value != null)
 				{
 					var result = (double)value;
-					return result.ToString("C");
+
+					// Required after mstest 3.3.6, which changes the default culture
+					return result.ToString("C", new CultureInfo("en-US"));
 				}
 				else
 				{

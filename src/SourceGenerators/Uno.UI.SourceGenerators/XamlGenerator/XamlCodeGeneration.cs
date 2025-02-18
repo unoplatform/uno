@@ -12,7 +12,7 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UI.SourceGenerators.Telemetry;
+using Uno.DevTools.Telemetry;
 using Uno.UI.Xaml;
 using System.Drawing;
 using __uno::Uno.Xaml;
@@ -98,6 +98,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ContentControlSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ContentPresenterSymbol { get; }
 		internal Lazy<INamedTypeSymbol> StringSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ObjectSymbol { get; }
@@ -267,6 +268,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AssemblyMetadataSymbol = GetOptionalSymbolAsLazy("System.Reflection.AssemblyMetadataAttribute");
 			ElementStubSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ElementStub);
 			SetterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Setter);
+			ContentControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentControl);
 			ContentPresenterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentPresenter);
 			FrameworkElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FrameworkElement);
 			UIElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UIElement);
@@ -680,7 +682,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("/// Contains all the static resources defined for the application");
 				writer.AppendLineIndented("/// </summary>");
 
-				if (_isDebug)
+				if (_isHotReloadEnabled)
 				{
 					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 				}

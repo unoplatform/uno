@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls;
-using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -503,6 +501,18 @@ namespace Uno.UI
 			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static bool IsJavaStringCachedEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines the maximum capacity of the Java string-cache.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static int JavaStringCachedCapacity { get; set; } = 1000;
 		}
 
 		public static class TextBox
@@ -841,6 +851,83 @@ namespace Uno.UI
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }
+
+			/// <summary>
+			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
+			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
+			/// set/got.
+			/// </summary>
+			public static bool ValidatePropertyOwnerOnReadWrite { get; set; } =
+#if DEBUG
+				true;
+#else
+				global::System.Diagnostics.Debugger.IsAttached;
+#endif
 		}
+
+		/// <summary>
+		/// This is for internal use to facilitate turning on/off certain logic that makes it easier/harder
+		/// to debug.
+		/// </summary>
+		internal static class DebugOptions
+		{
+			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
+
+			public static bool WaitIndefinitelyInEventTester { get; set; }
+		}
+
+		public static class Shape
+		{
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
+			/// </summary>
+			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
+			public static bool WasmDelayUpdateUntilFirstArrange { get; set; } = true;
+
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets whether native getBBox() result will be cached.
+			/// </summary>
+			public static bool WasmCacheBBoxCalculationResult { get; set; } = true;
+
+			internal const int WasmDefaultBBoxCacheSize = 64;
+			/// <summary>
+			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
+			/// </summary>
+#if __WASM__
+			public static int WasmBBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+#else
+			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
+#endif
+		}
+
+#if __ANDROID__
+		public static class AndroidSettings
+		{
+#if NET9_0_OR_GREATER
+			private static bool _isEdgeToEdgeEnabled = true;
+#else
+			private static bool _isEdgeToEdgeEnabled;
+#endif
+
+			/// <summary>
+			/// Gets or sets a value indicating whether the app should use the "edge-to-edge" experience
+			/// <see href="https://developer.android.com/develop/ui/views/layout/edge-to-edge" />.
+			/// When enabled, the system UI becomes transparent and the app's UI flows behind it.
+			/// Use Uno Toolkit SafeArea to accomodate for it.
+			/// This flag has no effect on Android 15 and newer, where the edge-to-edge experience
+			/// is enforced by the OS.
+			/// </summary>
+			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
+			public static bool IsEdgeToEdgeEnabled
+			{
+				get => (int)Android.OS.Build.VERSION.SdkInt >= 35 || _isEdgeToEdgeEnabled;
+				set => _isEdgeToEdgeEnabled = value;
+			}
+		}
+#endif
 	}
 }

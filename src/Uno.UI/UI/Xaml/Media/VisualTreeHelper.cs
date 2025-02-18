@@ -119,15 +119,15 @@ namespace Microsoft.UI.Xaml.Media
 			return (reference as _ViewGroup)?
 				.GetChildren()
 				.OfType<DependencyObject>()
+				.Where(c => c is not ElementStub)
 				.ElementAtOrDefault(childIndex);
 #else
 			return (reference as UIElement)?
 				.GetChildren()
+				.Where(c => c is not ElementStub)
 				.ElementAtOrDefault(childIndex);
 #endif
 		}
-
-		internal static _View GetViewGroupChild(_ViewGroup reference, int childIndex) => (reference as _ViewGroup)?.GetChildren().ElementAtOrDefault(childIndex);
 
 		public static int GetChildrenCount(DependencyObject reference)
 		{
@@ -135,11 +135,11 @@ namespace Microsoft.UI.Xaml.Media
 			return (reference as _ViewGroup)?
 				.GetChildren()
 				.OfType<DependencyObject>()
-				.Count() ?? 0;
+				.Count(c => c is not ElementStub) ?? 0;
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.Count ?? 0;
+				.Count(c => c is not ElementStub) ?? 0;
 #endif
 		}
 
@@ -268,6 +268,12 @@ namespace Microsoft.UI.Xaml.Media
 			if (realParent is null && reference is _ViewGroup uiElement)
 			{
 				return uiElement.GetVisualTreeParent() as DependencyObject;
+			}
+
+			if (realParent is PopupPanel)
+			{
+				// Skip the popup panel and go to PopupRoot instead.
+				realParent = GetParent(realParent);
 			}
 
 			return realParent;

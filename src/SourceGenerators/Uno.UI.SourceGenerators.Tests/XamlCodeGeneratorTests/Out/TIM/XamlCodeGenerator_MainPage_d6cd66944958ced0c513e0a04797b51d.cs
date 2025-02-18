@@ -59,22 +59,12 @@ namespace TestRepro
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 12:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						/* _isTopLevelDictionary:False */
-						__that._component_0 = c0;
-						__that.__0_Click_P1_Button_Click_Builder = (__owner) => 
-						{
-							var Click_P1_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.C1.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
-							{
-								(Click_P1_Button_Click_That.Target as global::TestRepro.MainPage)?.P1.Button_Click(_sender,_e);
-							}
-							;
-						}
-						;
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						c0.CreationComplete();
+					/* _isTopLevelDictionary:False */
+					__that._component_0 = __p1;
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
 					}
 					))
 					,
@@ -83,22 +73,12 @@ namespace TestRepro
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 13:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c1 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						/* _isTopLevelDictionary:False */
-						__that._component_1 = c1;
-						__that.__1_Click_P2_Button_Click_Builder = (__owner) => 
-						{
-							var Click_P2_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.ImplicitImpl.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
-							{
-								(Click_P2_Button_Click_That.Target as global::TestRepro.MainPage)?.P2.Button_Click(_sender,_e);
-							}
-							;
-						}
-						;
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						c1.CreationComplete();
+					/* _isTopLevelDictionary:False */
+					__that._component_1 = __p1;
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
 					}
 					))
 					,
@@ -107,69 +87,145 @@ namespace TestRepro
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 14:4)
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c2 => 
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						/* _isTopLevelDictionary:False */
-						__that._component_2 = c2;
-						__that.__2_Click_P3_Button_Click_Builder = (__owner) => 
-						{
-							var Click_P3_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.I.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
-							{
-								(Click_P3_Button_Click_That.Target as global::TestRepro.MainPage)?.P3.Button_Click(_sender,_e);
-							}
-							;
-						}
-						;
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						c2.CreationComplete();
+					/* _isTopLevelDictionary:False */
+					__that._component_2 = __p1;
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
 					}
 					))
 					,
 				}
 			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(c3 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c3.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c4) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property c4.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c5) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				/* _isTopLevelDictionary:False */
-				__that._component_3 = c5;
-				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c5, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c5, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c5.CreationComplete();
+			/* _isTopLevelDictionary:False */
+			__that._component_3 = __p1;
+			// Class TestRepro.MainPage
+			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.Update();
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __0_Click_P1_Button_Click_Builder;
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __1_Click_P2_Button_Click_Builder;
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __2_Click_P3_Button_Click_Builder;
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private bool __is__ApplyMethod_0_Click_Initialized ;
+		
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private void __ApplyMethod_0_Click_Initialize(bool init)
+			{
+				if (__is__ApplyMethod_0_Click_Initialized || _component_0 is null)
+				{
+					if (!init)
+					{
+						__is__ApplyMethod_0_Click_Initialized = false;
+						// Note: _component_0 will be collected, no needs to unsubscribe
+					}
+					
+					return;
+				}
+		
+				_component_0.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_0_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyMethod_0_Click_Initialized = true;
+			}
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private bool __is__ApplyMethod_1_Click_Initialized ;
+		
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private void __ApplyMethod_1_Click_Initialize(bool init)
+			{
+				if (__is__ApplyMethod_1_Click_Initialized || _component_1 is null)
+				{
+					if (!init)
+					{
+						__is__ApplyMethod_1_Click_Initialized = false;
+						// Note: _component_1 will be collected, no needs to unsubscribe
+					}
+					
+					return;
+				}
+		
+				_component_1.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_1_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyMethod_1_Click_Initialized = true;
+			}
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private bool __is__ApplyMethod_2_Click_Initialized ;
+		
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			private void __ApplyMethod_2_Click_Initialize(bool init)
+			{
+				if (__is__ApplyMethod_2_Click_Initialized || _component_2 is null)
+				{
+					if (!init)
+					{
+						__is__ApplyMethod_2_Click_Initialized = false;
+						// Note: _component_2 will be collected, no needs to unsubscribe
+					}
+					
+					return;
+				}
+		
+				_component_2.Click += new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.ApplyMethod_2_Click_Handler((this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference).Invoke;
+				__is__ApplyMethod_2_Click_Initialized = true;
+			}
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.Update();
+			this.Bindings.UpdateResources();
+		}
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
+		{
+				public class ApplyMethod_0_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				{
+					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+					{
+						(target.Target as global::TestRepro.MainPage)?.P1?.Button_Click(sender, e);
+					}
+				}
+
+				public class ApplyMethod_1_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				{
+					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+					{
+						(target.Target as global::TestRepro.MainPage)?.P2?.Button_Click(sender, e);
+					}
+				}
+
+				public class ApplyMethod_2_Click_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
+				{
+					public void Invoke(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+					{
+						(target.Target as global::TestRepro.MainPage)?.P3?.Button_Click(sender, e);
+					}
+				}
+
+		}
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Button _component_0
 		{
 			get
@@ -181,7 +237,7 @@ namespace TestRepro
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Button _component_1
 		{
 			get
@@ -193,7 +249,7 @@ namespace TestRepro
 				_component_1_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Button _component_2
 		{
 			get
@@ -205,7 +261,7 @@ namespace TestRepro
 				_component_2_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_3_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_3_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_3
 		{
 			get
@@ -251,40 +307,28 @@ namespace TestRepro
 			{
 				var owner = Owner;
 				owner._component_0.ApplyXBind();
-				owner.__0_Click_P1_Button_Click_Builder?.Invoke( owner._component_0);
-				owner.__0_Click_P1_Button_Click_Builder = null;
-				owner.__1_Click_P2_Button_Click_Builder?.Invoke( owner._component_1);
-				owner.__1_Click_P2_Button_Click_Builder = null;
-				owner.__2_Click_P3_Button_Click_Builder?.Invoke( owner._component_2);
-				owner.__2_Click_P3_Button_Click_Builder = null;
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_1.ApplyXBind();
-				owner.__0_Click_P1_Button_Click_Builder?.Invoke( owner._component_0);
-				owner.__0_Click_P1_Button_Click_Builder = null;
-				owner.__1_Click_P2_Button_Click_Builder?.Invoke( owner._component_1);
-				owner.__1_Click_P2_Button_Click_Builder = null;
-				owner.__2_Click_P3_Button_Click_Builder?.Invoke( owner._component_2);
-				owner.__2_Click_P3_Button_Click_Builder = null;
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_2.ApplyXBind();
-				owner.__0_Click_P1_Button_Click_Builder?.Invoke( owner._component_0);
-				owner.__0_Click_P1_Button_Click_Builder = null;
-				owner.__1_Click_P2_Button_Click_Builder?.Invoke( owner._component_1);
-				owner.__1_Click_P2_Button_Click_Builder = null;
-				owner.__2_Click_P3_Button_Click_Builder?.Invoke( owner._component_2);
-				owner.__2_Click_P3_Button_Click_Builder = null;
-				owner.__0_Click_P1_Button_Click_Builder?.Invoke( owner._component_0);
-				owner.__0_Click_P1_Button_Click_Builder = null;
-				owner.__1_Click_P2_Button_Click_Builder?.Invoke( owner._component_1);
-				owner.__1_Click_P2_Button_Click_Builder = null;
-				owner.__2_Click_P3_Button_Click_Builder?.Invoke( owner._component_2);
-				owner.__2_Click_P3_Button_Click_Builder = null;
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
+				owner.__ApplyMethod_0_Click_Initialize(true);
+				owner.__ApplyMethod_1_Click_Initialize(true);
+				owner.__ApplyMethod_2_Click_Initialize(true);
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
-				owner._component_1.UpdateResourceBindings(resourceContextProvider: null);
-				owner._component_2.UpdateResourceBindings(resourceContextProvider: null);
-				owner._component_3.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
+				owner._component_1.UpdateResourceBindings();
+				owner._component_2.UpdateResourceBindings();
+				owner._component_3.UpdateResourceBindings();
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
@@ -306,6 +350,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
