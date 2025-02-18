@@ -95,7 +95,6 @@
     <None Include="Skia.Linux.FrameBuffer\MyAppXamlTrim.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.WPF\App.xaml.cs" />
     <None Include="Skia.WPF\MainWindow.xaml.cs" />
-    <None Include="Skia.Gtk\Program.cs" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
     <None Include="Mobile\iOS\Main.iOS.cs" />
@@ -106,7 +105,6 @@
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj" />
     <None Include="Skia.WPF\MyAppXamlTrim.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Shared\App.xaml.cs" />
@@ -158,9 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Skia.WPF\SkiaWpf.netcore.vstemplate">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Skia.Gtk\SkiaGtk.netcore.vstemplate">
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Linux.FrameBuffer\SkiaLinuxFrameBuffer.netcore.vstemplate">
