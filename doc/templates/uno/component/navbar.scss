@@ -26,16 +26,15 @@
 #header-container {
   padding: 16px 32px;
   z-index: 9999;
-  background: #fff;
+  background: #eaf2f9;
 
   display: flex;
   position: fixed;
   width: 100%;
   min-height: 67px;
-  max-height: 67px;
+  max-height: 75px;
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
-
 
   &::after,
   &::before {
@@ -48,7 +47,6 @@
 
     @media (max-width: 1023px) {
       width: 100%;
-      // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
@@ -58,12 +56,10 @@
     }
   }
 
-
   #header-logo-container {
     width: 36px;
     vertical-align: middle;
     z-index: 9;
-
 
     img {
       width: 100%;
@@ -71,6 +67,16 @@
 
     @include media-breakpoint-up(lg) {
       min-width: 120px;
+    }
+  }
+
+  .navbar-collapse {
+
+  }
+
+  @media (max-width: 1600px) {
+    .navbar-collapse {
+      margin: 0 -30px !important;
     }
   }
 
@@ -89,8 +95,12 @@
       margin-top: 3px;
     }
 
+
+
+
     @media (max-width: 1023px) {
       display: block !important;
+
     }
   }
 
@@ -101,7 +111,7 @@
   nav {
     a {
       padding: 10px;
-      font-size: 13px;
+      font-size: 17px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
@@ -116,16 +126,47 @@
       }
 
       @include media-breakpoint-up(lg) {
-        font-size: 19px;
-        line-height: 17px;
-      }
-    }
+        font-size: 18px;
 
+      }
+
+      // Media queries for font size and padding adjustments
+
+
+
+      @media (min-width: 1024px) {
+        font-size: 14px !important;
+
+        padding: .4rem !important;
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px !important;
+
+        padding: .8rem !important;
+      }
+
+
+
+      @media (min-width: 1366px) {
+        font-size: 16px !important;
+
+        padding: 1.12rem !important;
+      }
+
+      @media (min-width: 1600px) {
+        font-size: 18px !important;
+
+        padding: 1.12rem 1.28rem !important;
+      }
+
+
+
+    }
     /**
      * Top level menu items
      */
     & > ul > li {
-
       @include media-breakpoint-up(lg) {
         margin: 0 4px;
         align-self: center;
@@ -133,18 +174,15 @@
       }
 
       @include media-breakpoint-up(navbar) {
-        margin: 0 16px;
-      }
 
+      }
       /**
        * menu-item-has-children means there is a submenu
        */
       &.menu-item-has-children {
-        // actual submenu
         position: relative;
 
         & > a {
-
           &::after {
             display: inline-block;
             text-rendering: auto;
@@ -216,7 +254,6 @@
               padding-bottom: 14px;
               width:100%
             }
-
           }
 
           a {
@@ -242,7 +279,6 @@
             }
           }
 
-          // sub-menu columns
           ul {
             @extend .visibility-opacity-transition;
             display: flex;
@@ -256,7 +292,6 @@
           }
         }
 
-        // shows the submenu
         &:hover > ul {
           visibility: visible;
           opacity: 1;
@@ -284,7 +319,6 @@
       &.row-menu > ul {
         flex-direction: row;
       }
-
     }
   }
 
@@ -295,12 +329,10 @@
       border-radius: 8px;
 
       margin-left: 0;
-      padding: 8px 32px;
 
-      font-size: 16px;
       line-height: 24px;
       font-weight: 700;
-      min-width: 125px;
+
       text-align: center;
       text-transform: none;
       color: $black;
@@ -310,18 +342,70 @@
       background-size: 100% 200%;
       background-position: left top;
       transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
+      padding: 1.2rem 2.5rem !important;
 
       &:hover {
         color: $white;
         background-position: bottom left;
       }
+
+      @media (min-width: 1024px) {
+        font-size: 14px;
+        padding: 1.2rem 2.1rem !important;
+      }
+
+
+
+    }
+  }
+
+  .custom-login-item {
+    a {
+      border: 2px solid rgba(21, 155, 255, 1);
+
+      width: 100% !important;
+      text-transform: none !important;
+      color: rgba(21, 155, 255, 1) !important;
+      border-radius: 13px;
+
+      padding: 1rem 1.6rem !important;
+
+      @media (max-width: 1023px) {
+        padding: 1.5rem 1.8rem !important;
+      }
+
+      @media (min-width: 1024px) {
+
+        margin-left: 0px !important;
+        padding: 1.2rem 1.6rem !important;
+      }
+
+      @media (min-width: 1280px) {
+
+        margin-left: 14px !important;
+
+      }
+
+      @media (min-width: 1366px) {
+
+        margin-left: 14px !important;
+
+      }
+
+      @media (min-width: 1600px) {
+
+        margin-left: 14px !important;
+        padding: 1rem 1.6rem !important;
+
+      }
+
+
     }
   }
 }
 
 #navbar {
   @media (max-width: 1023px) {
-
     overflow: auto !important;
 
     position: fixed;
@@ -329,7 +413,7 @@
     margin: 0;
     padding: 0;
 
-    padding-top: 67px;
+    padding-top: 40px;
     left: 0;
 
     text-align: left;
@@ -342,8 +426,8 @@
     &.collapse {
       height: 67px !important;
       display: none !important;
+      margin: 0 !important;
     }
-
 
     &.collapse.in {
       display: block !important;
@@ -360,12 +444,46 @@
         display: block;
         padding: 0;
 
-        &.get-started-btn {
-          position: absolute;
-          padding: 0 16px;
-          bottom: 10%;
+        &.get-started-btn,
+        &.custom-login-item {
+          display: flex;
+
           width: 100%;
+          margin-bottom: 10px;
+          margin-top: 20px
         }
+
+        &.get-started-btn, &.custom-login-item {
+          padding: 0 2rem;
+        }
+
+
+
+        &.get-started-btn a,
+        &.custom-login-item a {
+          font-size: 17px !important;
+          border-radius: 10px !important;
+        }
+        &.custom-login-item a {
+          font-size: 20px !important;
+          font-weight: 600;
+          width: 100% !important;
+
+        }
+        &.get-started-btn a {
+
+          font-weight: 700;
+          width: 100% !important;
+          text-align: left;
+
+        }
+
+        &.custom-login-item a {
+          border: 2px solid rgba(21, 155, 255, 1);
+          color: rgba(21, 155, 255, 1) !important;
+          background: transparent !important;
+        }
+
 
         &.menu-item-has-children {
           position: relative;
@@ -374,7 +492,6 @@
             position: relative;
             max-height: 0;
             padding: 0;
-
             overflow: hidden;
             transition: all .5s ease;
           }
@@ -389,7 +506,7 @@
 
       a {
         display: block;
-        padding: 10px 25px;
+        padding: 14px 25px;
       }
     }
   }
@@ -399,6 +516,12 @@
   position: fixed;
   top: 67px;
   width: 100%;
+
   z-index: 999;
-  background-color: #f8f8f8;
+  background: #f8f8f8;
+
+
+  @include media-breakpoint-up(lg) {
+
+  }
 }
