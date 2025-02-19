@@ -148,13 +148,13 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
-#if !__CROSSRUNTIME__
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				fe.Loaded += OnOwnerElementLoaded;
 #endif
 				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-#if !__CROSSRUNTIME__
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 					fe.Loaded -= OnOwnerElementLoaded;
 #endif
 					fe.Unloaded -= OnOwnerElementUnloaded;
