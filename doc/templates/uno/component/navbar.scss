@@ -36,7 +36,6 @@
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
 
-
   &::after,
   &::before {
     content: none;
@@ -48,7 +47,6 @@
 
     @media (max-width: 1023px) {
       width: 100%;
-      // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
@@ -58,12 +56,10 @@
     }
   }
 
-
   #header-logo-container {
     width: 36px;
     vertical-align: middle;
     z-index: 9;
-
 
     img {
       width: 100%;
@@ -119,13 +115,28 @@
         font-size: 19px;
         line-height: 17px;
       }
+
+      // Media queries for font size and padding adjustments
+      @media (min-width: 1024px) {
+        font-size: 14px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 19px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
     }
 
-    /**
-     * Top level menu items
-     */
     & > ul > li {
-
       @include media-breakpoint-up(lg) {
         margin: 0 4px;
         align-self: center;
@@ -136,15 +147,10 @@
         margin: 0 16px;
       }
 
-      /**
-       * menu-item-has-children means there is a submenu
-       */
       &.menu-item-has-children {
-        // actual submenu
         position: relative;
 
         & > a {
-
           &::after {
             display: inline-block;
             text-rendering: auto;
@@ -216,7 +222,6 @@
               padding-bottom: 14px;
               width:100%
             }
-
           }
 
           a {
@@ -242,7 +247,6 @@
             }
           }
 
-          // sub-menu columns
           ul {
             @extend .visibility-opacity-transition;
             display: flex;
@@ -256,15 +260,10 @@
           }
         }
 
-        // shows the submenu
         &:hover > ul {
           visibility: visible;
           opacity: 1;
 
-          /**
-           * This selector makes sure the submenu of a submenu appears under it
-           * instead of on hover. This is to displays submenus as columns.
-           */
           &:not([style*="display: none;"]) {
             .menu-item-has-children {
               ul {
@@ -276,15 +275,9 @@
         }
       }
 
-      /**
-       * row-menu : the row menu class puts the first element of the menu in a row
-       *            instead of a column (default). This makes it possible to have
-       *            multiple columns side by side by add the row-menu class in wordpress.
-       */
       &.row-menu > ul {
         flex-direction: row;
       }
-
     }
   }
 
@@ -321,7 +314,6 @@
 
 #navbar {
   @media (max-width: 1023px) {
-
     overflow: auto !important;
 
     position: fixed;
@@ -344,7 +336,6 @@
       display: none !important;
     }
 
-
     &.collapse.in {
       display: block !important;
       height: 100vh !important;
@@ -361,10 +352,28 @@
         padding: 0;
 
         &.get-started-btn {
-          position: absolute;
+          position: relative;
           padding: 0 16px;
-          bottom: 10%;
+          /*bottom: 10%;*/
           width: 100%;
+        }
+        &.custom-login-item {
+          display: flex;
+          margin: 2% auto;
+          width: 100%;
+        }
+
+        &.custom-login-item a{
+          font-size: 20px !important;
+          margin-left: 8px !important;
+          border-radius: 10px !important;
+          width: 90% !important;
+          margin: auto !important;
+          margin-left: auto;
+          line-height: 30px;
+          border: 2px solid rgba(21, 155, 255, 1);
+          text-transform: none !important;
+          color: rgba(21, 155, 255, 1) !important;
         }
 
         &.menu-item-has-children {
@@ -399,6 +408,13 @@
   position: fixed;
   top: 67px;
   width: 100%;
-  z-index: 999;
-  background-color: #f8f8f8;
+  left: 0;
+  z-index: 9;
+
+  background: $lightblue;
+  padding: 10px 0;
+
+  @include media-breakpoint-up(lg) {
+    display: none;
+  }
 }
