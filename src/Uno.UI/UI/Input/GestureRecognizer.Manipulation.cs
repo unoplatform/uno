@@ -258,6 +258,8 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started:
 					case ManipulationState.Inertia:
+						var isInertial = _state == ManipulationState.Inertia;
+
 						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
 
@@ -268,7 +270,7 @@ namespace Windows.UI.Input
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, isInertial, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Starting:

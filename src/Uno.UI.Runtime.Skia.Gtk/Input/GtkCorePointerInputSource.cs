@@ -183,7 +183,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		{
 			// The Ungrab mode event is triggered after clicking even when the pointer does not leave the window.
 			// This may need to be removed when we implement native pointer capture support properly.
-			if (args.Event.Mode != CrossingMode.Ungrab)
+			// The touch begin end are also not relevant as already handled by the touch event handler.
+			if (args.Event.Mode is not CrossingMode.Ungrab and not CrossingMode.TouchBegin and not CrossingMode.TouchEnd)
 			{
 				if (AsPointerArgs(o, args.Event) is { } ptArgs)
 				{
