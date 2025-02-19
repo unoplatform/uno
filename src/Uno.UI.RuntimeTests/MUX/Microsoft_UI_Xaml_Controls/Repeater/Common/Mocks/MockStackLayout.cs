@@ -4,8 +4,7 @@
 using System;
 using Windows.Foundation;
 
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
+using Windows/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 
