@@ -20,7 +20,7 @@ internal class GlobalJsonObserver
 	private readonly Action<string> _errorAction;
 	private readonly InfoBarFactory _infoBarFactory;
 	private FileSystemWatcher? _fileWatcher;
-	private readonly JsonSerializerOptions _readerOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
+	private readonly JsonSerializerOptions _readerOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
 	public GlobalJsonObserver(
 		AsyncPackage asyncPackage
@@ -90,7 +90,7 @@ internal class GlobalJsonObserver
 				}
 				catch (Exception ex)
 				{
-					_debugAction($"GlobalJsonObserver: Error reading global.json: {ex.Message}");
+					_errorAction($"GlobalJsonObserver: Error reading global.json: {ex.Message}");
 				}
 			};
 
