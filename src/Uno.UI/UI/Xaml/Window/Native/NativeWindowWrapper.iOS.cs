@@ -9,28 +9,32 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Graphics;
+using MUXWindow = Microsoft.UI.Xaml.Window;
+using NativeWindow = Uno.UI.Controls.Window;
+using Microsoft.UI.Xaml;
+using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase
+internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
-	private Uno.UI.Controls.Window _nativeWindow;
+	private NativeWindow _nativeWindow;
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
 	private readonly DisplayInformation _displayInformation;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
 	{
-		_nativeWindow = new Uno.UI.Controls.Window();
+		_nativeWindow = new NativeWindow();
 
-		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
 		ObserveOrientationAndSize();
+
+		SubscribeBackgroundNotifications();
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
@@ -41,9 +45,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		DispatchDpiChanged();
 	}
 
-	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
-
-	internal static NativeWindowWrapper Instance => _instance.Value;
+	public override NativeWindow NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -57,8 +59,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	internal RootViewController MainController => _mainController;
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
-
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing cancellation when multiwindow is supported #13847
 
@@ -99,16 +99,16 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		RaiseNativeSizeChanged();
 	}
 
-	internal Size GetWindowSize()
+	public override Size GetWindowSize()
 	{
 		var nativeFrame = NativeWindow?.Frame ?? CGRect.Empty;
 
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
+	private void SetVisibleBounds(UIWindow keyWindow, Size windowSize)
 	{
-		var windowBounds = new Windows.Foundation.Rect(default, windowSize);
+		var windowBounds = new Rect(default, windowSize);
 
 		var inset = UseSafeAreaInsets
 				? keyWindow.SafeAreaInsets
@@ -123,7 +123,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		inset.Top = (nfloat)Math.Max(inset.Top, statusBarHeight);
 
-		var newVisibleBounds = new Windows.Foundation.Rect(
+		var newVisibleBounds = new Rect(
 			x: windowBounds.Left + inset.Left,
 			y: windowBounds.Top + inset.Top,
 			width: windowBounds.Width - inset.Right - inset.Left,
@@ -141,4 +141,39 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		UIApplication.SharedApplication.StatusBarHidden = true;
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 	}
+
+	private void SubscribeBackgroundNotifications()
+	{
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+		}
+		else
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+		}
+	}
+
+	private void OnEnteredBackground(NSNotification notification)
+	{
+		OnNativeVisibilityChanged(false);
+
+		Application.Current.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
+	}
+
+	private void OnLeavingBackground(NSNotification notification)
+	{
+		Application.Current.RaiseResuming();
+		Application.Current.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+	}
+
+	private void OnActivated(NSNotification notification) => ActivationState = CoreWindowActivationState.CodeActivated;
+
+	private void OnDeactivated(NSNotification notification) => ActivationState = CoreWindowActivationState.Deactivated;
 }

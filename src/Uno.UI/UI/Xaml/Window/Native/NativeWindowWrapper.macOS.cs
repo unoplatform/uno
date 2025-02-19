@@ -20,7 +20,7 @@ using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase
+internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
@@ -90,7 +90,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_window.MakeKeyAndOrderFront(NSApplication.SharedApplication);
 	}
 
-	internal Size GetWindowSize()
+	public override Size GetWindowSize()
 	{
 		var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
