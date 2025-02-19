@@ -18,16 +18,16 @@
 		Condition="
 			$(_IsExecutable) == 'true' 
 			AND (
-				$(UnoFeatures.Contains(';NativeRenderer;'))
+				$(UnoFeatures.Contains(';nativerenderer;'))
 				OR (
-					!$(UnoFeatures.Contains(';NativeRenderer;'))
-					AND !$(UnoFeatures.Contains(';SkiaRenderer;'))
+					!$(UnoFeatures.Contains(';nativerenderer;'))
+					AND !$(UnoFeatures.Contains(';skiarenderer;'))
 				)
 			) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebAssembly" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';SkiaRenderer;')) ">
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
 	</ItemGroup>
 
@@ -38,9 +38,9 @@
 			Include="Uno.WinUI.Runtime.WebAssembly"
 			ProjectSystem="true"
 			Condition="
-				$(UnoFeatures.Contains(';NativeRenderer;')) 
+				$(UnoFeatures.Contains(';nativerenderer;')) 
 				OR (
-					!$(UnoFeatures.Contains(';SkiaRenderer;'))
+					!$(UnoFeatures.Contains(';skiarenderer;'))
 					AND '$(IsUnoHead)' == 'true'
 				)
 			" />

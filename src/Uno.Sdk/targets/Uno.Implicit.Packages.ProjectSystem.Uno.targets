@@ -17,7 +17,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" ($(IsBrowserWasm) != 'true' OR $(UnoFeatures.Contains(';SkiaRenderer;'))) AND '$(IsPackable)' != 'true'">
+	<ItemGroup Condition=" ($(IsBrowserWasm) != 'true' OR $(UnoFeatures.Contains(';skiarenderer;'))) AND '$(IsPackable)' != 'true'">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))  OR $(IsDesktop) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>
