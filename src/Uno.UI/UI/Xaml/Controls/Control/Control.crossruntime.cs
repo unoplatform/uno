@@ -16,6 +16,7 @@ public partial class Control
 
 	internal virtual bool IsDelegatingFocusToTemplateChild() => false;
 
+#if !__NETSTD_REFERENCE__
 	internal override void EnterImpl(EnterParams @params, int depth)
 	{
 		base.EnterImpl(@params, depth);
@@ -55,4 +56,5 @@ public partial class Control
 			VisualStateManager.InitializeStateTriggers(this, true /* forceUpdate */);
 		}
 	}
+#endif
 }
