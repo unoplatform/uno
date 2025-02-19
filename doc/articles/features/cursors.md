@@ -6,10 +6,10 @@ uid: Uno.Features.Cursors
 
 You can change the pointer cursor when the pointer hovers certain elements in your application at runtime on WebAssembly, macOS, or Skia Desktop by making a subclass of the `UIElement` of interest and setting its protected `ProtectedCursor` property, for example by adding a method in the the subclass.
 
-```
+```csharp
 public void ChangeCursor(InputCursor cursor)
 {
-	this.ProtectedCursor = cursor;
+    this.ProtectedCursor = cursor;
 }
 ```
 
