@@ -2149,12 +2149,16 @@ public partial class TabView : Control
 
 						// If the other tab view's app window is a different app window than the one being dragged, bring it to the front beneath the one being dragged.
 						var otherTabViewAppWindow = AppWindow.GetFromWindowId(otherTabView.XamlRoot.ContentIslandEnvironment.AppWindowId);
-						otherTabViewAppWindow?.MoveInZOrderAtTop();
+
+						//UNO TODO: Implement MoveInZOrderAtTop on AppWindow
+						//otherTabViewAppWindow?.MoveInZOrderAtTop();
 
 						m_tabViewContainingTabBeingDragged = otherTabView;
 						m_dragPositionOffset = default;
 						m_tabTearOutDraggingState = TabTearOutDraggingState.DraggingTabWithinTabView;
-						m_tabTearOutNewAppWindow.Hide();
+
+						//UNO TODO: Implement Hide on AppWindow
+						//m_tabTearOutNewAppWindow.Hide();
 
 						break;
 					}
@@ -2459,7 +2463,8 @@ public partial class TabView : Control
 			}
 		}
 
-		nonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, captionRegions.ToArray());
+		//UNO TODO: Implement SetRegionRects on InputNonClientPointerSource
+		//nonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, captionRegions.ToArray());
 	}
 
 	private Microsoft.UI.WindowId GetAppWindowId()
