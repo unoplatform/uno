@@ -26,7 +26,7 @@
 
 			<!-- net9.0-android30.0 -->
 			<group targetFramework="net9.0-android30.0">
-				<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
+				<dependency id="Xamarin.AndroidX.AppCompat" version="1.7.0.1" />
 				<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 				<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
 				<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
@@ -59,7 +59,7 @@
 
 			<!-- net8.0-android30.0 -->
 			<group targetFramework="net8.0-android30.0">
-				<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
+				<dependency id="Xamarin.AndroidX.AppCompat" version="1.7.0.1" />
 				<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 				<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
 				<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
