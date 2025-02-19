@@ -13,13 +13,13 @@ namespace Windows.UI.Input
 	public partial class ManipulationInertiaStartingEventArgs
 	{
 		internal ManipulationInertiaStartingEventArgs(
+			GestureRecognizer.Manipulation manipulation,
 			PointerIdentifier[] pointers,
 			Point position,
 			ManipulationDelta delta,
 			ManipulationDelta cumulative,
 			ManipulationVelocities velocities,
-			uint contactCount,
-			GestureRecognizer.Manipulation.InertiaProcessor processor)
+			uint contactCount)
 		{
 			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
@@ -30,8 +30,11 @@ namespace Windows.UI.Input
 			Cumulative = cumulative;
 			Velocities = velocities;
 			ContactCount = contactCount;
-			Processor = processor;
+
+			Manipulation = manipulation;
 		}
+
+		internal GestureRecognizer.Manipulation Manipulation { get; }
 
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
@@ -46,8 +49,6 @@ namespace Windows.UI.Input
 		public ManipulationDelta Cumulative { get; }
 		public ManipulationVelocities Velocities { get; }
 		public uint ContactCount { get; }
-
-		internal GestureRecognizer.Manipulation.InertiaProcessor Processor { get; }
 	}
 }
 #endif

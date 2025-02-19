@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml.Input
 			: base(source)
 		{
 			Container = container;
+			Manipulation = args.Manipulation;
 
 			_recognizer = recognizer;
 
@@ -31,6 +32,8 @@ namespace Microsoft.UI.Xaml.Input
 			Velocities = args.Velocities;
 			IsInertial = args.IsInertial;
 		}
+
+		internal GestureRecognizer.Manipulation Manipulation { get; }
 
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).

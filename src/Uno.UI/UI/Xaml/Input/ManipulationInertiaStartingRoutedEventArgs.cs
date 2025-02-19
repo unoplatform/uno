@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml.Input;
+﻿using System;
+using Uno.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -11,12 +12,16 @@ namespace Microsoft.UI.Xaml.Input
 {
 	public partial class ManipulationInertiaStartingRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
+		private readonly GestureRecognizer.Manipulation.InertiaProcessor _processor;
+
 		public ManipulationInertiaStartingRoutedEventArgs() { }
 
 		internal ManipulationInertiaStartingRoutedEventArgs(UIElement source, UIElement container, ManipulationInertiaStartingEventArgs args)
 			: base(source)
 		{
 			Container = container;
+			Manipulation = args.Manipulation;
+			_processor = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
@@ -24,10 +29,12 @@ namespace Microsoft.UI.Xaml.Input
 			Cumulative = args.Cumulative;
 			Velocities = args.Velocities;
 
-			TranslationBehavior = new InertiaTranslationBehavior(args.Processor);
-			RotationBehavior = new InertiaRotationBehavior(args.Processor);
-			ExpansionBehavior = new InertiaExpansionBehavior(args.Processor);
+			TranslationBehavior = new InertiaTranslationBehavior(_processor);
+			RotationBehavior = new InertiaRotationBehavior(_processor);
+			ExpansionBehavior = new InertiaExpansionBehavior(_processor);
 		}
+
+		internal GestureRecognizer.Manipulation Manipulation { get; }
 
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
@@ -48,5 +55,11 @@ namespace Microsoft.UI.Xaml.Input
 		public InertiaTranslationBehavior TranslationBehavior { get; set; } // Ctor is internal, so we don't support external set!
 		public InertiaRotationBehavior RotationBehavior { get; set; } // Ctor is internal, so we don't support external set!
 		public InertiaExpansionBehavior ExpansionBehavior { get; set; } // Ctor is internal, so we don't support external set!
+
+		internal TimeSpan Interval
+		{
+			get => _processor.Interval;
+			set => _processor.Interval = value;
+		}
 	}
 }

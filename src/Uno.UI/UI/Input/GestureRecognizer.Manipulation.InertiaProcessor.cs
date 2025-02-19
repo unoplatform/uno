@@ -88,10 +88,21 @@ namespace Windows.UI.Input
 				/// Depending of the platform, the timestamp provided by pointer events might not be absolute,
 				/// so it's preferable to not compare timestamp between pointers and inertia processor.
 				/// </remarks>
-				public double Elapsed => _timer.LastTickElapsed.TotalMicroseconds;
+				public TimeSpan Elapsed => _timer.LastTickElapsed;
 
-				public void Start()
+				/// <summary>
+				/// Gets or sets the interval between each tick of the inertia processor
+				/// </summary>
+				public TimeSpan Interval
 				{
+					get => _timer.Interval;
+					set => _timer.Interval = value;
+				}
+
+				private void CompleteConfiguration()
+				{
+					// Be aware this method will be invoked twice in case of GetNextCumulative().
+
 					// As of 2021-07-21, according to test, Displacement takes over Deceleration.
 					if (!IsNaN(DesiredDisplacement))
 					{
@@ -120,7 +131,11 @@ namespace Windows.UI.Input
 					{
 						DesiredExpansionDeceleration = .001;
 					}
+				}
 
+				public void Start()
+				{
+					CompleteConfiguration();
 					_timer.Start();
 				}
 
@@ -154,6 +169,21 @@ namespace Windows.UI.Input
 				/// </summary>
 				public ManipulationDelta GetCumulative()
 					=> _cumulative0.Add(_inertiaCumulative);
+
+				/// <summary>
+				/// Gets the **expected** next cumulative delta, including the manipulation cumulative when this processor was started
+				/// </summary>
+				/// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
+				/// <returns></returns>
+				public ManipulationDelta GetNextCumulative()
+				{
+					CompleteConfiguration(); // Make sure to compute desired values in case this method is being invoked during the OnManipulationInertiaStarting event
+
+					var dueIn = _timer.Interval; // We ignore the time spent since last tick as it's irrelevant for usage of this method
+					var inertiaCumulative = GetInertiaCumulative((_timer.LastTickElapsed + dueIn).TotalMilliseconds, _inertiaCumulative);
+
+					return _cumulative0.Add(inertiaCumulative);
+				}
 
 				private ManipulationDelta GetInertiaCumulative(double t, ManipulationDelta previousCumulative)
 				{

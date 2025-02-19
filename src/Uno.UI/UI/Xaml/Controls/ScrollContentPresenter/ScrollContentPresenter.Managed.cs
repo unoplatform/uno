@@ -1,4 +1,5 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+using System;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -21,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	{
 		private /*readonly - partial*/ IScrollStrategy _strategy;
+		private ScrollOptions? _touchInertiaOptions;
 
 		private bool _canHorizontallyScroll;
 		public bool CanHorizontallyScroll
@@ -88,8 +90,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Touch scroll support
 			// Note: Events are hooked on the SCP itself, not the ScrollViewer
 			ManipulationStarting += PrepareTouchScroll;
-			ManipulationStarted += TouchScrollStarted;
+			ManipulationStarted += StartTouchScroll;
 			ManipulationDelta += UpdateTouchScroll;
+			ManipulationInertiaStarting += StartInertialTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
 
 			_eventSubscriptions.Disposable = Disposable.Create(() =>
@@ -97,8 +100,9 @@ namespace Microsoft.UI.Xaml.Controls
 				sv.PointerWheelChanged -= PointerWheelScroll;
 
 				ManipulationStarting -= PrepareTouchScroll;
-				ManipulationStarted -= TouchScrollStarted;
+				ManipulationStarted -= StartTouchScroll;
 				ManipulationDelta -= UpdateTouchScroll;
+				ManipulationInertiaStarting -= StartInertialTouchScroll;
 				ManipulationCompleted -= CompleteTouchScroll;
 			});
 		}
@@ -131,14 +135,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (oldValue is UIElement oldElt)
 			{
-				_strategy.Update(oldElt, 0, 0, 1, disableAnimation: true);
+				_strategy.Update(oldElt, 0, 0, 1, new(DisableAnimation: true));
 			}
 
 			base.OnContentChanged(oldValue, newValue);
 
 			if (newValue is UIElement newElt)
 			{
-				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, disableAnimation: true);
+				_strategy.Update(newElt, HorizontalOffset, VerticalOffset, 1, new(DisableAnimation: true));
 			}
 		}
 
@@ -191,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Content is UIElement contentElt)
 			{
-				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, disableAnimation);
+				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, _touchInertiaOptions ?? new(disableAnimation));
 			}
 
 			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
@@ -238,7 +242,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void TouchScrollStarted(object sender, ManipulationStartedRoutedEventArgs e)
+		private void StartTouchScroll(object sender, ManipulationStartedRoutedEventArgs e)
 		{
 			if (e.Container != this)
 			{
@@ -261,11 +265,50 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			Set(
-				horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
-				verticalOffset: VerticalOffset - e.Delta.Translation.Y,
-				disableAnimation: true,
-				isIntermediate: true);
+
+			if (e is { IsInertial: true, Manipulation: { } manipulation }
+				&& manipulation.GetInertiaNextTick() is { } next)
+			{
+				// If inertial, we try to animate up to the next tick instead of applying current value synchronously
+				Set(
+					horizontalOffset: HorizontalOffset - next.Delta.Translation.X,
+					verticalOffset: VerticalOffset - next.Delta.Translation.Y,
+					disableAnimation: false,
+					isIntermediate: true);
+			}
+			else
+			{
+				Set(
+					horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
+					verticalOffset: VerticalOffset - e.Delta.Translation.Y,
+					disableAnimation: true,
+					isIntermediate: true);
+			}
+		}
+		private void StartInertialTouchScroll(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+		{
+			if (e.Container != this)
+			{
+				return;
+			}
+
+			// As we run animation by our own, we request to have pretty long delay between ticks to avoid too many updates.
+			e.Interval = TimeSpan.FromMilliseconds(100);
+
+			// Once the Interval is set, we try to begin animation up to the next (i.e. first) tick
+			if (e.Manipulation.GetInertiaNextTick() is { } next)
+			{
+				// First we configure custom scrolling options to match what we just configured on the processor
+				// Note: We configure animation to run a bit longer that a single tick to make sure to not have delay between animations
+				_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: TimeSpan.FromMilliseconds(105));
+
+				// Then we start the animation
+				Set(
+					horizontalOffset: HorizontalOffset - next.Delta.Translation.X,
+					verticalOffset: VerticalOffset - next.Delta.Translation.Y,
+					disableAnimation: false,
+					isIntermediate: true);
+			}
 		}
 
 		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -274,6 +317,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			_touchInertiaOptions = null;
 
 			Set(disableAnimation: true, isIntermediate: false);
 
