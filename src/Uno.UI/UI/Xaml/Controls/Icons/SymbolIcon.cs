@@ -92,7 +92,7 @@ public sealed partial class SymbolIcon : IconElement, IThemeChangeAware
 
 	private void SetSymbolText() => _textBlock.Text = ConvertSymbolValueToGlyph((int)Symbol).ToString();
 
-	private static char ConvertSymbolValueToGlyph(int symbolValue)
+	internal static char ConvertSymbolValueToGlyph(int symbolValue)
 	{
 		// Glyphs with prefixes ranging from E0- to E5- are marked as legacy to prevent unicode point collisions.
 		// Some font sets require more characters and may program them in this range, causing icons to show as "jarbled characters".
@@ -271,7 +271,9 @@ public sealed partial class SymbolIcon : IconElement, IThemeChangeAware
 			case 0xE117: return (char)(0xE895); // Sync
 			case 0xE1DF: return (char)(0xE8F7); // SyncFolder
 			case 0xE1CB: return (char)(0xE8EC); // Tag
-			case 0xE1D2: return (char)(0xF5F0); // Target
+			case 0xE1D2:
+				return (char)(0xE1D2
+			/*UNO TODO: Should be 0xF5F0, but it is missing in WINUI: https://github.com/microsoft/microsoft-ui-xaml/issues/10373*/); // Target
 			case 0xE1E8: return (char)(0xE907); // ThreeBars
 			case 0xE1E3: return (char)(0xE7C9); // TouchPointer
 			case 0xE12C: return (char)(0xE78A); // Trim
