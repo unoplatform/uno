@@ -35,7 +35,14 @@ public partial class FlyoutBase
 				NSViewResizingMask.MinYMargin |
 				NSViewResizingMask.MaxYMargin,
 #endif
-			Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
 		};
+	}
+
+	partial void UpdatePopupPanelSizePartial()
+	{
+		if (XamlRoot?.HostWindow is { } window)
+		{
+			_popup.PopupPanel.Frame = new CGRect(CGPoint.Empty, window.NativeWrapper.GetWindowSize());
+		}
 	}
 }

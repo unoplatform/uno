@@ -14,20 +14,20 @@ There are several options to publish your macOS application to your customers. T
 The most basic app bundle can be created with:
 
 ```bash
-dotnet publish -f net8.0-desktop -p:PackageFormat=app
+dotnet publish -f net9.0-desktop -p:PackageFormat=app
 ```
 
-However, this bundle would depend on the correct version of dotnet, `net8.0` in this case, to be installed on the Mac computer. In practice macOS end-users expect app bundles to be self-contained and not require anything extraneous to execute on their Mac computer.
+However, this bundle would depend on the correct version of dotnet, `net9.0` in this case, to be installed on the Mac computer. In practice macOS end-users expect app bundles to be self-contained and not require anything extraneous to execute on their Mac computer.
 
 You can create such a self-contained app bundle with:
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app
 ```
 
 Where `{{RID}}` is either `osx-x64` or `osx-arm64`.
 
-The resulting app bundle, which is a directory, will be located at `bin/Release/net8.0-desktop/{{RID}}/publish/{{APPNAME}}.app`.
+The resulting app bundle, which is a directory, will be located at `bin/Release/net9.0-desktop/{{RID}}/publish/{{APPNAME}}.app`.
 
 ### Code Signing
 
@@ -37,7 +37,7 @@ The resulting app bundle, which is a directory, will be located at `bin/Release/
 To ensure the integrity of the app bundle Apple requires you to digitally sign your code. The key difference to producing a signed app bundle is to add `-p:CodesignKey={{identity}}` to specify which identity should be used to produce the signature.
 
 ```bash
-dotnet publish -f net8.0-desktop -r osx-arm64 -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey={{identity}}
+dotnet publish -f net9.0-desktop -r osx-arm64 -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey={{identity}}
 ```
 
 You can use the special identity `-` to produce an ad-hoc signature. This basically tells macOS's [Gatekeeper](https://support.apple.com/en-us/102445) that the file is safe to use **locally**, however, it does not help distribute the app bundle.
@@ -67,13 +67,13 @@ To properly sign an app bundle for publishing you need to use the `"Developer ID
 Both
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey="Developer ID Application: John Appleby (XXXXXXXXXX)"
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey="Developer ID Application: John Appleby (XXXXXXXXXX)"
 ```
 
 and
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey=A148697E815F6090DE9698F8E2602773296E2689
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey=A148697E815F6090DE9698F8E2602773296E2689
 ```
 
 are functionally identical and will produce a signed app bundle.
@@ -89,7 +89,7 @@ You can easily create an installer package for your app bundle. This will produc
 From the CLI run:
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=pkg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}}
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=pkg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}}
 ```
 
 Where the following changes to the previous command are:
@@ -97,7 +97,7 @@ Where the following changes to the previous command are:
 - modifying `PackageFormat` to `pkg` to produce the package. This package will include the app bundle inside it, so the `CodesignKey` argument is still required;
 - adding `-p:PackageSigningKey={{installer_identity}}` to specify which identity should be used to sign the package. Unlike app bundles, signing requires a `Developer ID Installer: *` identity.
 
-The resulting installer will be located at `bin/Release/net8.0-desktop/{{RID}}/publish/{{APPNAME}}.pkg`.
+The resulting installer will be located at `bin/Release/net9.0-desktop/{{RID}}/publish/{{APPNAME}}.pkg`.
 
 > [!IMPORTANT]
 > The installer can behave weirdly locally (or on CI) since the app bundle name is known to macOS and it will try to update the application, where it was built or copied, instead of installing a copy of it under the `/Applications/` directory. Ensure you are testing your package installer on a different Mac or inside a clean virtual machine (VM).
@@ -134,7 +134,7 @@ To use them, specify `--keychain-profile "notarytool-credentials"`
 Once this (one-time) setup is done, you can notarize the disk image while building the app. From the CLI run:
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:PackageSigningKey={{installer_identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
 ```
 
 where
@@ -154,7 +154,7 @@ Another common way to distribute your macOS software is to create a disk image (
 To create a disk image from the CLI run:
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
 ```
 
 Where the following changes to the original command are
@@ -162,7 +162,7 @@ Where the following changes to the original command are
 - modifying `PackageFormat` to `dmg` to produce the disk image. This image will include the app bundle inside it, so the `CodesignKey` argument is still required;
 - adding `-p:DiskImageSigningKey={{identity}}` to specify which identity should be used to sign the package. Like app bundles, the signing step requires using a `Developer ID Application: *` identity.
 
-The resulting disk image will be located at `bin/Release/net8.0-desktop/{{RID}}/publish/{{APPNAME}}.dmg`.
+The resulting disk image will be located at `bin/Release/net9.0-desktop/{{RID}}/publish/{{APPNAME}}.dmg`.
 
 #### Notarize the disk image
 
@@ -196,7 +196,7 @@ To use them, specify `--keychain-profile "notarytool-credentials"`
 Once this (one-time) setup is done, you can notarize the disk image while building the app. From the CLI run:
 
 ```bash
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
+dotnet publish -f net9.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=dmg -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}} -p:UnoMacOSNotarizeKeychainProfile={{notarytool-credentials}} -bl
 ```
 
 where
@@ -218,3 +218,18 @@ An app bundle (.app) can be submitted to Apple's [App Store](https://www.apple.c
 
 > [!NOTE]
 > Notarization of the app bundle is **not** required as the Apple App Store will be taking care of your app binary distribution.
+
+## Troubleshooting
+
+### Apple Developer Account
+
+An active Apple Developer Account is **required** for code signing and notarization.
+
+An error, such as the one below, means that the Apple Developer Account is not active or the necessary agreements have not been signed.
+
+```text
+Uno.Sdk.Extras.Publish.MacOS.targets(75,3): error : Failed to submit tmpcZQgA4.zip to Apple's notarization service. Exit code: 1: Error: HTTP status code: 403. A required agreement is missing or has expired. This request requires an in-effect agreement that has not been signed or has expired. Ensure your team has signed the necessary legal agreements and that they are not expired.
+```
+
+Try logging into your [Apple Developer Account](https://developer.apple.com/account) to see if any action is required to activate your account.
+Once re-enabled, it might take a few minutes (for the update to propagate) before you can sign or notarize your app bundle.
