@@ -4,25 +4,14 @@ set -euo pipefail
 # echo commands
 set -x
 
-export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
-
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_APP_ID="uno.platform.samplesapp.skia"
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/$UNO_UITEST_APP_ID-Signed.apk
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$TARGETPLATFORM_NAME.txt
 
-mkdir -p $UNO_UITEST_SCREENSHOT_PATH
-
-if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ];
-then
-	# The test results file only contains the re-run marker and no
-	# other test to rerun. We can skip this run.
-	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
-	exit 0
-fi
+export LOGS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/android-skia-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
+mkdir -p $LOGS_PATH
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -97,7 +86,7 @@ then
 		-noaudio \
 		-no-boot-anim \
 		-prop ro.debuggable=1 \
-		> $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
+		> $LOGS_PATH/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
@@ -138,14 +127,12 @@ $ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.i
 # Set the timeout in seconds
 UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
-INTERVAL=15
 END_TIME=$((SECONDS+TIMEOUT))
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
 while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
-    # echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
-    sleep $INTERVAL
+    sleep 15
 
     # exit loop if the APP_PID is not running anymore
     if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
@@ -154,26 +141,12 @@ while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUT
     fi
 done
 
-$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
+$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $$UITEST_RUNTIME_AUTOSTART_RESULT_FILE || true
 
 ## Dump the emulator's system log
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
 
-if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
-	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
+if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILE does not exist (did nunit crash ?)"
+	exit 1
 fi
-
-## Export the failed tests list for reuse in a pipeline retry
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
-
-echo "Running NUnitTransformTool"
-
-## Fail the build when no test results could be read
-dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
-
-if [ $? -eq 0 ]; then
-	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
-fi
-
-popd
