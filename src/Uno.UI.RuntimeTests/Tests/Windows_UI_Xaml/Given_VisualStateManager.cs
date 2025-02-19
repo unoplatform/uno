@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_VisualStateManager
+public partial class Given_VisualStateManager
 {
 	[TestMethod]
 	public async Task When_Transition_Modifies_SubProperty_Of_Property_Set_By_Previous_State()
