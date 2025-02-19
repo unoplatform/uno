@@ -23,7 +23,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private static readonly StringComparer _pathsComparer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+		private static readonly StringComparer _pathsComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+		private static readonly StringComparison _pathsComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
 		private FileSystemWatcher[]? _solutionWatchers;
 		private IDisposable? _solutionWatcherEventsDisposable;
@@ -88,13 +89,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					// props/items in the context of the hot reload workspace.
 					properties["UnoIsHotReloadHost"] = "True";
 
-					// Set the RuntimeIdentifier as a temporary property so that we do not force the
-					// property as a read-only global property that would be transitively applied to
-					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
-					// which references a netstd2.0 library project)
+					// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
+					// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
+					// Note: This is required to get HR to work on Rider 2024.3 with Android
+					// Note 2: We remove both properties to make sure to use the default behavior
+					var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
+						&& bool.TryParse(appendStr, out var append)
+						&& append;
+					var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
+					properties.Remove("IntermediateOutputPath", out var intermediateOutputPath);
+
 					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
 					{
-						properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+						if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+						{
+							// Set the RuntimeIdentifier as a temporary property so that we do not force the
+							// property as a read-only global property that would be transitively applied to
+							// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+							// which references a netstd2.0 library project)
+							properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+						}
 					}
 
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
@@ -104,7 +118,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						properties,
 						CancellationToken.None);
 
-					ObserveSolutionPaths(result.Item1);
+					ObserveSolutionPaths(result.Item1, intermediateOutputPath, outputPath);
 
 					await _remoteControlServer.SendFrame(new HotReloadWorkspaceLoadResult { WorkspaceInitialized = true });
 					await Notify(HotReloadEvent.Ready);
@@ -124,16 +138,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			CancellationToken.None);
 		}
 
-		private void ObserveSolutionPaths(Solution solution)
+		private void ObserveSolutionPaths(Solution solution, params string?[] excludedDir)
 		{
 			var observedPaths =
 				solution.Projects
-					.SelectMany(p => p
-						.Documents
-						.Select(d => d.FilePath)
-						.Concat(p.AdditionalDocuments
-							.Select(d => d.FilePath)))
-					.Select(Path.GetDirectoryName)
+					.SelectMany(project =>
+					{
+						var projectDir = Path.GetDirectoryName(project.FilePath);
+						ImmutableArray<string> excludedProjectDir = [.. from dir in excludedDir where dir is not null select Path.Combine(projectDir!, dir).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)];
+
+						var paths = project
+							.Documents
+							.Select(d => d.FilePath)
+							.Concat(project.AdditionalDocuments.Select(d => d.FilePath))
+							.Select(Path.GetDirectoryName)
+							.Where(path => path is not null && !excludedProjectDir.Any(dir => path.StartsWith(dir, _pathsComparison)))
+							.Distinct()
+							.ToArray();
+
+						return paths;
+					})
 					.Distinct()
 					.ToArray();
 

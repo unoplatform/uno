@@ -33,7 +33,7 @@ sudo usermod --append --groups lxd $USER # In order for the current user to use 
 To generate a snap file, run the following:
 
 ```shell
-dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=snap
+dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=snap
 ```
 
 The generated snap file is located in the `bin/Release/netX.0-desktop/linux-[x64|arm64]/publish` folder.
@@ -51,6 +51,19 @@ If you wish, you can generate a default snap manifest and desktop file by runnin
 
 > [!NOTE]
 > .NET 9 publishing and cross-publishing are not supported as of Uno 5.5, we will support .NET 9 publishing soon.
+
+#### CI Restrictions
+
+When building in a CI environment, security restrictions may prevent LXD and Multipass from running properly.
+
+In such cases, and if your environment is built using single-use environments like Azure DevOps Hosted Agents, you can enable the Snap [destructive mode](https://snapcraft.io/docs/explanation-architectures#destructive-mode) with the following parameter to the `dotnet publish` command:
+
+```bash
+-p:UnoSnapcraftAdditionalParameters=--destructive-mode
+```
+
+> [!IMPORTANT]
+> Using this mode will make destructive changes to your environment, make sure that you will use this mode on a single-use virtual environment (e.g. Docker or Azure DevOps Hosted Agents).
 
 ### Publish your Snap Package
 

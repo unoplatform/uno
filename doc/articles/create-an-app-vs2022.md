@@ -55,14 +55,14 @@ To debug your Uno Platform **Desktop** target:
 - Directly on Windows:
   - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop)`
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-debug-windows.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the `MyApp (Desktop)` profile](Assets/quick-start/desktop-debug-windows.png)
 
   - Press `F5` to debug.
 
 - Using WSL with X11:
   - In the **Debug toolbar** drop-down, select the profile `MyApp (Desktop WSL2)`
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-desktop" framework](Assets/quick-start/net8-desktop-wsl2-debug-windows.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the `MyApp (Desktop WSL2)` profile](Assets/quick-start/desktop-wsl2-debug-windows.png)
 
   - Then press `F5` or the green arrow to start debugging the app
 
@@ -88,11 +88,11 @@ To run the ASP.NET Hosted **WebAssembly** (Server) head, if you've selected the 
 
 To run the **Windows** (WinAppSDK) head:
 
-- In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Unpackaged)**
+- In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Packaged)** or **MyApp (WinAppSDK Unpackaged)**
 
     ![Visual Studio - Select the WinappSDK profile](getting-started/wizard/assets/winappsdk-debugger-dropdown.png)
 
-- Press the `MyApp (WinAppSDK Unpackaged)` button to deploy the app
+- Press the `MyApp (WinAppSDK Packaged)` or `MyApp (WinAppSDK Unpackaged)` button to deploy the app
 - If you have not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
 > [!NOTE]
@@ -105,9 +105,9 @@ To debug for **iOS**:
 > [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://learn.microsoft.com/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
-- In the "Debug toolbar" drop-down, select framework `net8.0-ios`:
+- In the "Debug toolbar" drop-down, select framework `net9.0-ios`:
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-ios" framework](Assets/quick-start/net8-ios-debug.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net9.0-ios" framework](Assets/quick-start/ios-debug.png)
 
 - Select:
   - An active device, if your IDE is connected to a macOS Host
@@ -122,9 +122,9 @@ To debug for **iOS**:
 
 To debug the **Android** platform:
 
-- In the **Debug toolbar** drop-down, select framework `net8.0-android`
+- In the **Debug toolbar** drop-down, select framework `net9.0-android`
 
-    ![Visual Studio - "Debug toolbar" drop-down selecting the "net8.0-android" framework](Assets/quick-start/net8-android-debug.png)
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net9.0-android" framework](Assets/quick-start/android-debug.png)
 
 - Select an active device in the "Device" sub-menu
     > [!NOTE]

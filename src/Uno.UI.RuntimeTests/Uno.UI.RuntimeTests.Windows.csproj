@@ -12,8 +12,6 @@
 		
 		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
 		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
-
-		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -61,8 +59,8 @@
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
 
 		<!-- https://github.com/NuGet/Home/issues/7344 -->
 		<PackageReference Include="System.Private.Uri" Version="4.3.2" />

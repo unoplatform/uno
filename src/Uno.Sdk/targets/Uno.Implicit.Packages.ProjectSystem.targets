@@ -44,6 +44,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Foldable" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';googleplay;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.GooglePlay" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';csharpmarkup;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Markup" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Markup.Generators" ProjectSystem="true" />

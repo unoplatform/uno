@@ -322,12 +322,13 @@
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
 
 			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
+			<_UnoLinkerHintsOutputPath>$([System.IO.Path]::Combine($([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)')),'linkerhints'))</_UnoLinkerHintsOutputPath>
 		</PropertyGroup>
 
 		<LinkerHintGeneratorTask_v0
 			CurrentProjectPath="$(MSBuildProjectDirectory)"
-			AssemblyPath="$(IntermediateOutputPath)$(TargetFileName)"
-			OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
+			AssemblyPath="@(IntermediateAssembly)"
+			OutputPath="$(_UnoLinkerHintsOutputPath)"
 			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
 			TrimmerRootDescriptor="@(TrimmerRootDescriptor)"

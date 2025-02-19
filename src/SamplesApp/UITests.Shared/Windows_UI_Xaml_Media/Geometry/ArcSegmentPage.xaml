@@ -4,10 +4,11 @@
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:skia="http://uno.ui/skia"
 	  xmlns:android="http://uno.ui/android"
 	  xmlns:ios="http://uno.ui/ios"
 	  xmlns:wasm="http://uno.ui/wasm"
-	  mc:Ignorable="d android ios wasm"
+	  mc:Ignorable="d android ios wasm skia"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
 		<ControlTemplate x:Key="NoncircularPathTemplate">
@@ -44,6 +45,7 @@
 	<StackPanel>
 		<TextBlock Text="Non-circular ArcSegment:" />
 		<ContentControl win:Template="{StaticResource NoncircularPathTemplate}"
+		                skia:Template="{StaticResource NoncircularPathTemplate}"
 						wasm:Template="{StaticResource NoncircularPathTemplate}"
 						android:Template="{StaticResource PlatformUnsupportedTemplate}"
 						ios:Template="{StaticResource PlatformUnsupportedTemplate}" />

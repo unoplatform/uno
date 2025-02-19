@@ -57,6 +57,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private bool _isMaterializing;
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		private bool _fromLegacyTemplate;
+#endif
+
 		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
 		/// </summary>
@@ -116,6 +120,10 @@ namespace Microsoft.UI.Xaml
 			ContentBuilder = () => (View)methodInfo.Invoke(delegateTarget.Target, null);
 #else
 			ContentBuilder = contentBuilder;
+#endif
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+			_fromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
 #endif
 		}
 
@@ -193,19 +201,19 @@ namespace Microsoft.UI.Xaml
 				try
 				{
 					_isMaterializing = true;
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(GetTemplatedParent(), _fromLegacyTemplate);
+#endif
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-					// note: This can be safely removed, once moving away from legacy impl.
-					// In the new impl, the templated-parent would be immediately available
-					// before any binding is applied, so there is no need to force update.
-					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, GetTemplatedParent(), reapplyTemplateBindings: true);
-#endif
 
 					MaterializationChanged?.Invoke(this);
 				}
 				finally
 				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
 					_isMaterializing = false;
 				}
 			}

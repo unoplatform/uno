@@ -84,6 +84,8 @@ internal partial class VisualTree : IWeakReferenceProvider
 		}
 	}
 
+	internal event EventHandler? VisibleBoundsChanged;
+
 	internal Rect TrueVisibleBounds
 	{
 		get

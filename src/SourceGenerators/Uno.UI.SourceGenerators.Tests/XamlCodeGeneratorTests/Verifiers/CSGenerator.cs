@@ -4,6 +4,10 @@
 // #define WRITE_EXPECTED
 #endif
 
+#if IS_CI && WRITE_EXPECTED
+#error "WRITE_EXPECTED should not be defined!"
+#endif
+
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
