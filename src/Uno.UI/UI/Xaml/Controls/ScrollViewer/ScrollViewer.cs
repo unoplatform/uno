@@ -1250,6 +1250,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
+		internal bool ShouldSnap()
+			=> HorizontalSnapPointsType != SnapPointsType.None
+				|| VerticalSnapPointsType != SnapPointsType.None;
+
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
@@ -1272,10 +1276,9 @@ namespace Microsoft.UI.Xaml.Controls
 #if __APPLE_UIKIT__ || __ANDROID__
 					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
 #endif
-				)
+					)
 				{
-					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None)
+					if (ShouldSnap())
 					{
 						if (_snapPointsTimer == null)
 						{

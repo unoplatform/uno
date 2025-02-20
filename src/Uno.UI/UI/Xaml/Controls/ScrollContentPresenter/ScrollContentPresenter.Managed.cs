@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (Scroller?.IsScrollInertiaEnabled is true)
+			if (Scroller?.IsScrollInertiaEnabled is true && Scroller.ShouldSnap() is false)
 			{
 				e.Mode |= ManipulationModes.TranslateInertia;
 			}
