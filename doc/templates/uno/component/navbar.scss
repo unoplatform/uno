@@ -135,7 +135,9 @@
         padding: 0.2rem !important;
       }
     }
-
+    /**
+     * Top level menu items
+     */
     & > ul > li {
       @include media-breakpoint-up(lg) {
         margin: 0 4px;
@@ -146,7 +148,9 @@
       @include media-breakpoint-up(navbar) {
         margin: 0 16px;
       }
-
+      /**
+       * menu-item-has-children means there is a submenu
+       */
       &.menu-item-has-children {
         position: relative;
 
@@ -264,6 +268,10 @@
           visibility: visible;
           opacity: 1;
 
+          /**
+           * This selector makes sure the submenu of a submenu appears under it
+           * instead of on hover. This is to displays submenus as columns.
+           */
           &:not([style*="display: none;"]) {
             .menu-item-has-children {
               ul {
@@ -275,6 +283,11 @@
         }
       }
 
+      /**
+       * row-menu : the row menu class puts the first element of the menu in a row
+       *            instead of a column (default). This makes it possible to have
+       *            multiple columns side by side by add the row-menu class in wordpress.
+       */
       &.row-menu > ul {
         flex-direction: row;
       }
@@ -290,7 +303,7 @@
       margin-left: 0;
       padding: 8px 32px;
 
-      font-size: 16px;
+      /*font-size: 16px;*/
       line-height: 24px;
       font-weight: 700;
       min-width: 125px;
@@ -308,6 +321,22 @@
         color: $white;
         background-position: bottom left;
       }
+
+      @media (min-width: 1024px) {
+        font-size: 14px;
+
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px;
+
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 19px;
+
+      }
+
     }
   }
 }
@@ -351,29 +380,35 @@
         display: block;
         padding: 0;
 
-        &.get-started-btn {
-          position: relative;
-          padding: 0 16px;
-          /*bottom: 10%;*/
-          width: 100%;
-        }
+        &.get-started-btn,
         &.custom-login-item {
           display: flex;
-          margin: 2% auto;
+          justify-content: center;
+          align-items: center;
           width: 100%;
+          margin-bottom: 10px; // Espaciado entre botones
         }
 
-        &.custom-login-item a{
-          font-size: 20px !important;
-          margin-left: 8px !important;
-          border-radius: 10px !important;
+        &.get-started-btn a,
+        &.custom-login-item a {
+          font-size: 18px !important;
+          font-weight: 700;
           width: 90% !important;
-          margin: auto !important;
-          margin-left: auto;
-          line-height: 30px;
+          padding: 12px 25px !important;
+          text-align: center !important;
+          line-height: 30px !important;
+          border-radius: 10px !important;
+        }
+
+        &.custom-login-item a {
           border: 2px solid rgba(21, 155, 255, 1);
-          text-transform: none !important;
           color: rgba(21, 155, 255, 1) !important;
+          background: transparent !important;
+        }
+
+        &.get-started-btn a {
+          background: $turquoise;
+          color: $black !important;
         }
 
         &.menu-item-has-children {
@@ -383,7 +418,6 @@
             position: relative;
             max-height: 0;
             padding: 0;
-
             overflow: hidden;
             transition: all .5s ease;
           }
