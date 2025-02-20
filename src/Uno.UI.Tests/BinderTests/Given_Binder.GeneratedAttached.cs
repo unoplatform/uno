@@ -51,7 +51,7 @@ namespace Uno.UI.Tests.BinderTests
 			Binder_GeneratedAttached_Attached.SetMyValue(SUT, 42);
 			Assert.AreEqual(42, Binder_GeneratedAttached_Attached.GetMyValue(SUT));
 
-			SUT.SetValue(Binder_GeneratedAttached_Attached.MyValueProperty, 43, DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(Binder_GeneratedAttached_Attached.MyValueProperty, 43, DependencyPropertyValuePrecedences.DefaultStyle);
 			Assert.AreEqual(42, Binder_GeneratedAttached_Attached.GetMyValue(SUT));
 		}
 
@@ -65,7 +65,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, Binder_GeneratedAttached_Attached.GetMyValue2(SUT));
 			Assert.AreEqual(1, SUT.Value2ChangedCallback);
 
-			SUT.SetValue(Binder_GeneratedAttached_Attached.MyValue2Property, 43, DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(Binder_GeneratedAttached_Attached.MyValue2Property, 43, DependencyPropertyValuePrecedences.DefaultStyle);
 			Assert.AreEqual(42, Binder_GeneratedAttached_Attached.GetMyValue2(SUT));
 			Assert.AreEqual(1, SUT.Value2ChangedCallback);
 		}
