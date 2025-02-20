@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Private.Infrastructure;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -30,11 +32,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
 
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.RuntimeTests;
 using Uno.UI.Xaml;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -264,7 +264,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var headerBackground = Application.Current.Resources["TabViewItemHeaderBackground"] as Brush;
-				var tabContainer = tvi2.FindVisualChildByName("TabContainer") as Grid;
+				var tabContainer = tvi2.FindVisualChildByName("TabContainer") as MUXC.Grid;
 
 				// Verify that the TabViewItem we use for Background API testing is unselected.
 				Verify.IsFalse(tvi2.IsSelected, "TabViewItem should have been unselected");
@@ -312,18 +312,18 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// Verify headers
-				var headerContentPresenter1 = VisualTreeUtils.FindVisualChildByName(tvi0, "ContentPresenter") as ContentPresenter;
-				var headerContentPresenter2 = VisualTreeUtils.FindVisualChildByName(tvi1, "ContentPresenter") as ContentPresenter;
-				var headerContentPresenter3 = VisualTreeUtils.FindVisualChildByName(tvi2, "ContentPresenter") as ContentPresenter;
+				var headerContentPresenter1 = VisualTreeUtils.FindVisualChildByName(tvi0, "ContentPresenter") as MUXC.ContentPresenter;
+				var headerContentPresenter2 = VisualTreeUtils.FindVisualChildByName(tvi1, "ContentPresenter") as MUXC.ContentPresenter;
+				var headerContentPresenter3 = VisualTreeUtils.FindVisualChildByName(tvi2, "ContentPresenter") as MUXC.ContentPresenter;
 
 				Verify.AreEqual(null, headerContentPresenter1.Content, "tvi0's header should have been [null]");
 				Verify.AreEqual("", headerContentPresenter2.Content, "tvi1's header should have been the empty string");
 				Verify.AreEqual("tab2", headerContentPresenter3.Content, "tvi2's header should have been \"tab2\"");
 
 				// Verify ToolTips
-				var toolTip0 = ToolTipService.GetToolTip(tvi0) as ToolTip;
-				var toolTip1 = ToolTipService.GetToolTip(tvi1) as ToolTip;
-				var toolTip2 = ToolTipService.GetToolTip(tvi2) as ToolTip;
+				var toolTip0 = MUXC.ToolTipService.GetToolTip(tvi0) as MUXC.ToolTip;
+				var toolTip1 = MUXC.ToolTipService.GetToolTip(tvi1) as MUXC.ToolTip;
+				var toolTip2 = MUXC.ToolTipService.GetToolTip(tvi2) as MUXC.ToolTip;
 
 				bool testCondition = toolTip0.IsEnabled == false && toolTip0.Content == null;
 				Verify.IsTrue(testCondition, "tvi0's ToolTip should have been disabled with [null] as content");
@@ -363,8 +363,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var iconForeground = Application.Current.Resources["TabViewItemIconForeground"] as Brush;
 				var headerForeground = Application.Current.Resources["TabViewItemHeaderForeground"] as Brush;
 
-				var iconControl = tvi2.FindVisualChildByName("IconControl") as ContentControl;
-				var headerPresenter = tvi2.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+				var iconControl = tvi2.FindVisualChildByName("IconControl") as MUXC.ContentControl;
+				var headerPresenter = tvi2.FindVisualChildByName("ContentPresenter") as MUXC.ContentPresenter;
 
 				// Verify that the TabViewItem we use for Foreground API testing is unselected.
 				Verify.IsFalse(tvi2.IsSelected, "TabViewItem should have been unselected");
@@ -387,7 +387,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.IsTrue(ReferenceEquals(headerPresenter.Foreground, testBrush), "TabViewItem's header foreground brush should have been [testBrush]");
 
 				Log.Comment("Unset TabViewItem.Foreground to apply the theme resource brushes again.");
-				tvi2.ClearValue(Control.ForegroundProperty);
+				tvi2.ClearValue(MUXC.Control.ForegroundProperty);
 
 				Verify.IsTrue(ReferenceEquals(iconControl.Foreground, iconForeground), "TabViewItem's icon foreground brush should have been [TabViewItemIconForeground]");
 				Verify.IsTrue(ReferenceEquals(headerPresenter.Foreground, headerForeground), "TabViewItem's header foreground brush should have been [TabViewItemHeaderForeground]");
@@ -428,7 +428,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			var tabViewItem = new TabViewItem();
 
 			tabViewItem.Header = name;
-			tabViewItem.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = icon };
+			tabViewItem.IconSource = new SymbolIconSource() { Symbol = icon };
 			tabViewItem.IsClosable = closable;
 			tabViewItem.IsEnabled = enabled;
 
