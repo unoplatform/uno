@@ -30,6 +30,7 @@ using AndroidX.Core.Graphics;
 using Uno.UI.Helpers;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.Storage.Pickers;
+using AndroidX.Activity;
 
 
 namespace Microsoft.UI.Xaml
@@ -220,6 +221,11 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnCreate(Bundle? bundle)
 		{
+			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
+			{
+				EdgeToEdge.Enable(this);
+			}
+
 			base.OnCreate(bundle);
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
