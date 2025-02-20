@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Graphics;
 
 #pragma warning disable CS0067
 
@@ -23,6 +24,17 @@ public partial class InputNonClientPointerSource
 	{
 		// UNO TODO: Port InputNonClientPointerSource properly from WinUI
 		return new InputNonClientPointerSource();
+	}
+
+	/// <summary>
+	/// Gets the partition boundaries for each region of the specified type within the non-client area of a window.
+	/// </summary>
+	/// <param name="region">The region within the non-client area of a window.</param>
+	/// <returns>A collection of region boundaries.</returns>
+	public RectInt32[] GetRegionRects(NonClientRegionKind region)
+	{
+		// UNO TODO: Port InputNonClientPointerSource properly from WinUI
+		return Array.Empty<RectInt32>();
 	}
 
 	/// <summary>
