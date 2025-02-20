@@ -29,6 +29,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			set => m_specialElementDesiredSize = value;
 		}
 
+		internal double Uno_LastKnownAverageLineSize;
+
 		internal void InitializeForContext(VirtualizingLayoutContext context, IFlowLayoutAlgorithmDelegates callbacks)
 		{
 			m_flowAlgorithm.InitializeForContext(context, callbacks);

@@ -168,5 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Create ToggleMenuFlyoutItemAutomationPeer to represent the 
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new ToggleMenuFlyoutItemAutomationPeer(this);
+
+		internal override bool HasToggle() => true;
 	}
 }

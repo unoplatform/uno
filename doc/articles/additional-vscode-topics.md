@@ -5,7 +5,7 @@ uid: Uno.vscode.additional
 
 To get started on using VS Code, [head over to our guides](xref:Uno.GetStarted.vscode).
 
-You'll find in this page other topics about VS Code support, such as code snippets or how to upgrade an existing app to use VS Code.
+In this page, you'll find other topics about VS Code support, such as code snippets or how to upgrade an existing app to use VS Code.
 
 ## Explore other features
 
@@ -58,4 +58,5 @@ An existing application needs additional changes to be debugged properly.
 4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/tasks.json).
 
 ## Advanced debugging
+
 You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).

@@ -89,13 +89,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 				SUT.FindMeasuredSize(tb, new Size(50, 70))
 			);
 
-			Assert.AreEqual(
-				null,
+			Assert.IsNull(
 				SUT.FindMeasuredSize(tb, new Size(52, 70))
 			);
 
-			Assert.AreEqual(
-				null,
+			Assert.IsNull(
 				SUT.FindMeasuredSize(tb, new Size(500, 500))
 			);
 		}
@@ -124,13 +122,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.TextBlockTests
 				SUT.FindMeasuredSize(tb, new Size(50, 70))
 			);
 
-			Assert.AreEqual(
-				null,
+			Assert.IsNull(
 				SUT.FindMeasuredSize(tb, new Size(52, 70))
 			);
 
-			Assert.AreEqual(
-				null,
+			Assert.IsNull(
 				SUT.FindMeasuredSize(tb, new Size(500, 500))
 			);
 		}

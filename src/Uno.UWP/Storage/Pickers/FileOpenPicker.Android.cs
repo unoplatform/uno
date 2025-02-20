@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Uno.UI;
+using Uno.UI.Dispatching;
 
 namespace Windows.Storage.Pickers
 {
@@ -22,6 +22,7 @@ namespace Windows.Storage.Pickers
 		private const string AnyWildcard = "*/*";
 		private const string ImageWildcard = "image/*";
 		private const string VideoWildcard = "video/*";
+		private Action<Intent>? _intentAction;
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
@@ -29,6 +30,7 @@ namespace Windows.Storage.Pickers
 			{
 				return false;
 			}
+
 			if (resultCode == Result.Canceled)
 			{
 				_currentFileOpenPickerRequest.SetResult(null);
@@ -37,23 +39,53 @@ namespace Windows.Storage.Pickers
 			{
 				_currentFileOpenPickerRequest.SetResult(intent);
 			}
+
 			return true;
 		}
 
-		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
+		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
-			var files = await PickFilesAsync(false, token);
-			return files.Count == 0 ? null : files[0];
+			var tcs = new TaskCompletionSource<StorageFile?>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				try
+				{
+					var files = await PickFilesAsync(false, token);
+					var file = files.Count > 0 ? files[0] : null;
+
+					tcs.TrySetResult(file);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			return tcs.Task;
 		}
 
-		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
+		private Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
 		{
-			return await PickFilesAsync(true, token);
+			var tcs = new TaskCompletionSource<IReadOnlyList<StorageFile>>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				try
+				{
+					var files = await PickFilesAsync(true, token);
+					tcs.TrySetResult(files);
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetException(e);
+				}
+			});
+
+			return tcs.Task;
 		}
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			if (!(ContextHelper.Current is Activity appActivity))
+			if (ContextHelper.Current is not Activity appActivity)
 			{
 				throw new InvalidOperationException("Application activity is not yet set, API called too early.");
 			}
@@ -63,9 +95,24 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileOpenPicker requires Android KitKat (API level 19) or newer");
 			}
 
-			var action = Intent.ActionOpenDocument;
+			Intent GetIntent()
+			{
+				if (SuggestedStartLocation == PickerLocationId.VideosLibrary
+					|| SuggestedStartLocation == PickerLocationId.PicturesLibrary)
+				{
+					// For images and videos we want to use the ACTION_GET_CONTENT since this allows
+					// apps related to Photos and Videos to be suggested on the picker.
+					var intent = new Intent(Intent.ActionGetContent);
+					intent.AddCategory(Intent.CategoryOpenable);
 
-			var intent = new Intent(action);
+					return intent;
+				}
+
+				return new Intent(Intent.ActionOpenDocument);
+			}
+
+			var intent = GetIntent();
+
 			intent.PutExtra(Intent.ExtraAllowMultiple, multiple);
 
 			var settingName = string.Format(CultureInfo.InvariantCulture, StorageIdentifierFormatString, SettingsIdentifier);
@@ -87,23 +134,28 @@ namespace Windows.Storage.Pickers
 
 			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
 
-			appActivity.StartActivityForResult(intent, RequestCode);
+			_intentAction?.Invoke(intent);
+
+			var pickerIntent = Intent.CreateChooser(intent, "");
+
+			appActivity.StartActivityForResult(pickerIntent, RequestCode);
 
 			var resultIntent = await _currentFileOpenPickerRequest.Task;
 			_currentFileOpenPickerRequest = null;
 
-			if (resultIntent?.ClipData != null)
+			if (resultIntent?.ClipData is { } clipData)
 			{
-				List<StorageFile> files = new List<StorageFile>();
-				bool wasPath = false;
+				var files = new List<StorageFile>();
+				var wasPath = false;
 
-				for (var i = 0; i < resultIntent.ClipData.ItemCount; i++)
+				for (var i = 0; i < clipData.ItemCount; i++)
 				{
-					var item = resultIntent.ClipData.GetItemAt(i);
-					if (item?.Uri == null)
+					var item = clipData.GetItemAt(i);
+					if (item?.Uri is null)
 					{
 						continue;
 					}
+
 					var file = StorageFile.GetFromSafUri(item.Uri);
 					files.Add(file);
 
@@ -119,12 +171,13 @@ namespace Windows.Storage.Pickers
 				{   // if we have no path in any of files, remove setting - next call to Picker will not have InitialDir
 					ApplicationData.Current.LocalSettings.Values.Remove(settingName);
 				}
+
 				return new FilePickerSelectedFilesArray(files.ToArray());
 			}
-			else if (resultIntent?.Data != null)
+			else if (resultIntent?.Data is { } data)
 			{
-				var file = StorageFile.GetFromSafUri(resultIntent.Data);
-				return new FilePickerSelectedFilesArray(new[] { file });
+				var file = StorageFile.GetFromSafUri(data);
+				return new FilePickerSelectedFilesArray([file]);
 			}
 
 			return FilePickerSelectedFilesArray.Empty;
@@ -136,7 +189,6 @@ namespace Windows.Storage.Pickers
 			{
 				PickerLocationId.PicturesLibrary => ImageWildcard,
 				PickerLocationId.VideosLibrary => VideoWildcard,
-
 				_ => AnyWildcard,
 			};
 		}
@@ -215,5 +267,8 @@ namespace Windows.Storage.Pickers
 
 			return mimeTypes.ToArray();
 		}
+
+		internal void RegisterOnBeforeStartActivity(Action<Intent> intentAction)
+			=> _intentAction = intentAction;
 	}
 }

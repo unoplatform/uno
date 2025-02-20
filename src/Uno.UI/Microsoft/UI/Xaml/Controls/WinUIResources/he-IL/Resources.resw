@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME כבוי</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>לבן</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>אפור בהיר</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>אפור</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>אפור כהה</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>שחור</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>אלמוג</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>שושנה</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>כתום בהיר</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>חום-צהבהב</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>צהוב בהיר</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ירוק בהיר</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ירוק-ליים</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>תכלת</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>כחול-שמים</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>טורקיז בהיר</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>כחול חיוור</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>כחול בהיר</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>כחול-קרח</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>צדפה</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>סגול-לבנדר</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ורוד</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>אדום</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>כתום</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>חום</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>זהב</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>צהוב</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ירוק-זית</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ירוק</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ירוק מבריק</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>כחול-ירקרק</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>טורקיז</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>כחול</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>כחול-אפור</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>סגול-אינדיגו</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>סגול</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>אדום כהה</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>צהוב כהה</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ירוק כהה</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>כחול-ירקרק כהה</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>כחול כהה</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>סגול כהה</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>סגול-שזיף</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>סגור</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

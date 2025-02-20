@@ -15,7 +15,7 @@
 	<controls:SampleControl SampleDescription="AppBarToggleButton">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<ios:StackPanel >
+				<StackPanel>
 					<TextBlock Text="AppBarToggleButton with Text Content"/>
 					<AppBarToggleButton Content="Content - Text" Label="AppBarToggleButton - Label" Command="{Binding [SampleCommand]}" />
 					<TextBlock Text="AppBarToggleButton with Rectangle Content (Green Rectangle)"/>
@@ -24,8 +24,7 @@
 							<Rectangle Height="15" Width="25" Fill="Green"/>
 						</AppBarToggleButton.Content>
 					</AppBarToggleButton>
-				</ios:StackPanel>
-				<android:TextBlock Text="Not implemented for Android"/>
+				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>

@@ -34,11 +34,8 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace TestRepro
 {
-	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __checksum() => "346ee2c4a3294fdba50b4b5daaa042583c405e7a";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -46,12 +43,6 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
-			var __resourceLocator = new global::System.Uri("file:///C:/Project/0/MainPage.xaml");
-			if(global::Uno.UI.ApplicationHelper.IsLoadableComponent(__resourceLocator))
-			{
-				global::Microsoft.UI.Xaml.Application.LoadComponent(this, __resourceLocator);
-				return;
-			}
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
@@ -59,44 +50,65 @@ namespace TestRepro
 			typeof(global::Microsoft.UI.Xaml.Controls.TextBlock)
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style(typeof(global::Microsoft.UI.Xaml.Controls.TextBlock))
-				{
-					Setters = 
+			{
+				return 
+					new global::Microsoft.UI.Xaml.Style
 					{
-						new global::Microsoft.UI.Xaml.Setter(global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty, (Microsoft.UI.Xaml.Media.Brush)new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red)),
+						TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
+						// Source 0\MainPage.xaml (Line 7:6)
+						Setters = 
+						{
+							new global::Microsoft.UI.Xaml.Setter
+							{
+								Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
+								Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
+								// Source 0\MainPage.xaml (Line 8:8)
+							}
+							,
+						}
 					}
-				}
-				.GenericApply(__that, __nameScope, ((c0, __that, __nameScope) => 
-				{
-					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c0, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
-				}
-				))
+					.GenericApply(__that, __nameScope, (ApplyMethod_1					))
+				;
+			}
 			)
 			;
 			Resources[
 			"MyCustomButtonStyle"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style(typeof(global::Microsoft.UI.Xaml.Controls.Button))
-				{
-					Setters = 
+			{
+				return 
+					new global::Microsoft.UI.Xaml.Style
 					{
-						new global::Microsoft.UI.Xaml.Setter(global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty, (Microsoft.UI.Xaml.Media.Brush)new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure)),
+						TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+						// Source 0\MainPage.xaml (Line 10:6)
+						Setters = 
+						{
+							new global::Microsoft.UI.Xaml.Setter
+							{
+								Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
+								Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
+								// Source 0\MainPage.xaml (Line 11:8)
+							}
+							,
+						}
 					}
-				}
-				.GenericApply(__that, __nameScope, ((c1, __that, __nameScope) => 
-				{
-					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L10:6");
-				}
-				))
+					.GenericApply(__that, __nameScope, (ApplyMethod_4					))
+				;
+			}
 			)
 			;
 			Resources[
 			"MyItemTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
-				)			)
+			{
+				return 
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.SC0().Build(__owner)
+					)					.GenericApply(__that, __nameScope, (ApplyMethod_6					))
+				;
+			}
+			)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
@@ -104,38 +116,125 @@ namespace TestRepro
 			{
 				IsParsing = true,
 				Name = "TheListView",
-				HeaderTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1>()).Build(__owner)
-				)				,
+				HeaderTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 				new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.SC1().Build(__owner)
+				)				.GenericApply(__that, __nameScope, (ApplyMethod_7				))
+				,
 				// Source 0\MainPage.xaml (Line 40:4)
 			}
-			.GenericApply(__that, __nameScope, ((c2, __that, __nameScope) => 
-			{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = c2;
-				__nameScope.RegisterName("TheListView", c2);
-				__that.TheListView = c2;
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c2, global::Microsoft.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 40, 4);
-				c2.CreationComplete();
-			}
-			))
+			.GenericApply(__that, __nameScope, (ApplyMethod_8			))
 			;
 			
 			this
-			.GenericApply(__that, __nameScope, ((c3, __that, __nameScope) => 
+			.GenericApply(__that, __nameScope, (ApplyMethod_9			))
+			.GenericApply(__that, __nameScope, (ApplyMethod_10			))
+			;
+			OnInitializeCompleted();
+
+			Bindings = new MainPage_Bindings(this);
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+		}
+		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
+							private void ApplyMethod_1(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					{
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
+					}
+
+							private void ApplyMethod_4(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					{
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L10:6");
+					}
+
+							private void ApplyMethod_6(global::System.Object __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					{
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
+					}
+
+						private void ApplyMethod_7(global::System.Object __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+				{
+					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L42:8");
+				}
+
+					private void ApplyMethod_8(global::Microsoft.UI.Xaml.Controls.ListView __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+			{
+				/* _isTopLevelDictionary:False */
+				__that._component_0 = __p1;
+				__nameScope.RegisterName("TheListView", __p1);
+				__that.TheListView = __p1;
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 40, 4);
+				__p1.CreationComplete();
+			}
+
+					private void ApplyMethod_9(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 			{
 				// Source 0\MainPage.xaml (Line 1:2)
 				
-				// WARNING Property c3.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+				// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
-			))
-			.GenericApply(__that, __nameScope, ((c4, __that, __nameScope) => 
+
+											private void ApplyMethod_11(global::Microsoft.UI.Xaml.AdaptiveTrigger __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+									{
+										global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L24:12");
+									}
+
+									private void ApplyMethod_12(global::Microsoft.UI.Xaml.VisualState __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							{
+								__nameScope.RegisterName("WideState", __p1);
+								__that.WideState = __p1;
+								global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
+								{
+									__p1.Name = "WideState";
+									__p1.Setters.Add(
+										new global::Microsoft.UI.Xaml.Setter
+										{
+											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+											Value = @"Red",
+											// Source 0\MainPage.xaml (Line 27:12)
+										}
+									);
+									;
+								}
+								);
+								global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L22:8");
+							}
+
+											private void ApplyMethod_14(global::Microsoft.UI.Xaml.AdaptiveTrigger __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+									{
+										global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L32:12");
+									}
+
+									private void ApplyMethod_15(global::Microsoft.UI.Xaml.VisualState __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							{
+								__nameScope.RegisterName("NarrowState", __p1);
+								__that.NarrowState = __p1;
+								global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(__p1, () => 
+								{
+									__p1.Name = "NarrowState";
+									__p1.Setters.Add(
+										new global::Microsoft.UI.Xaml.Setter
+										{
+											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+											Value = @"Green",
+											// Source 0\MainPage.xaml (Line 35:12)
+										}
+									);
+									;
+								}
+								);
+								global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L30:8");
+							}
+
+					private void ApplyMethod_10(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 			{
 				/* _isTopLevelDictionary:False */
-				__that._component_1 = c4;
+				__that._component_1 = __p1;
 				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c4, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Microsoft.UI.Xaml.VisualStateManager.SetVisualStateGroups(c4, 
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Microsoft.UI.Xaml.VisualStateManager.SetVisualStateGroups(__p1, 
 				new[]
 				{
 					new global::Microsoft.UI.Xaml.VisualStateGroup
@@ -153,33 +252,13 @@ namespace TestRepro
 										MinWindowWidth = 641d,
 										// Source 0\MainPage.xaml (Line 24:12)
 									}
-									.GenericApply(__that, __nameScope, ((c5, __that, __nameScope) => 
-									{
-										global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c5, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L24:12");
-									}
-									))
+									.GenericApply(__that, __nameScope, (ApplyMethod_11									))
 									,
 								}
 								,
 								// Source 0\MainPage.xaml (Line 22:8)
 							}
-							.GenericApply(__that, __nameScope, ((c6, __that, __nameScope) => 
-							{
-								__nameScope.RegisterName("WideState", c6);
-								__that.WideState = c6;
-								global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(c6, () => 
-								{
-									c6.Name = "WideState";
-									c6.Setters.Add(
-										new global::Microsoft.UI.Xaml.Setter(new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"), 
-										@"Red")
-									);
-									;
-								}
-								);
-								global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c6, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L22:8");
-							}
-							))
+							.GenericApply(__that, __nameScope, (ApplyMethod_12							))
 							,
 							new global::Microsoft.UI.Xaml.VisualState
 							{
@@ -191,80 +270,23 @@ namespace TestRepro
 										MinWindowWidth = 0d,
 										// Source 0\MainPage.xaml (Line 32:12)
 									}
-									.GenericApply(__that, __nameScope, ((c7, __that, __nameScope) => 
-									{
-										global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c7, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L32:12");
-									}
-									))
+									.GenericApply(__that, __nameScope, (ApplyMethod_14									))
 									,
 								}
 								,
 								// Source 0\MainPage.xaml (Line 30:8)
 							}
-							.GenericApply(__that, __nameScope, ((c8, __that, __nameScope) => 
-							{
-								__nameScope.RegisterName("NarrowState", c8);
-								__that.NarrowState = c8;
-								global::Uno.UI.Helpers.MarkupHelper.SetVisualStateLazy(c8, () => 
-								{
-									c8.Name = "NarrowState";
-									c8.Setters.Add(
-										new global::Microsoft.UI.Xaml.Setter(new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"), 
-										@"Green")
-									);
-									;
-								}
-								);
-								global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c8, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L30:8");
-							}
-							))
+							.GenericApply(__that, __nameScope, (ApplyMethod_15							))
 							,
 						}
 					}
 					,				}
 				);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c4, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
-				c4.CreationComplete();
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
+				__p1.CreationComplete();
 			}
-			))
-			;
-			OnInitializeCompleted();
 
-			Bindings = ((IMainPage_Bindings)global::Uno.UI.Helpers.TypeMappings.CreateInstance<MainPage_Bindings>(this));
-			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, "owner", __that);
-			Loading += (s, e) => 
-			{
-				var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<global::TestRepro.MainPage>(s, "owner");
-				__that.Bindings.UpdateResources();
-			}
-			;
-		}
-		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
-			}
-			set
-			{
-				_TheListViewSubject.ElementInstance = value;
-			}
-		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.VisualState WideState
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
-			}
-			set
-			{
-				_WideStateSubject.ElementInstance = value;
-			}
-		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.VisualState NarrowState
 		{
 			get
@@ -276,150 +298,189 @@ namespace TestRepro
 				_NarrowStateSubject.ElementInstance = value;
 			}
 		}
-		internal interface I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
-			_View Build(object owner);
-		}
-		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private class _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 : I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
-		{
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			public _View Build(object __ResourceOwner_1)
+			get
 			{
+				return (global::Microsoft.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
+			}
+			set
+			{
+				_TheListViewSubject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.VisualState WideState
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
+			}
+			set
+			{
+				_WideStateSubject.ElementInstance = value;
+			}
+		}
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
+		{
+			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+			public class SC0
+			{
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				var __that = this;
-				__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.StackPanel
+				public _View Build(object __ResourceOwner_1)
 				{
-					IsParsing = true,
-					// Source 0\MainPage.xaml (Line 14:8)
-					Children = 
+					var __that = this;
+					this.__ResourceOwner_1 = __ResourceOwner_1;
+					this.__rootInstance = 
+					new global::Microsoft.UI.Xaml.Controls.StackPanel
 					{
-						new global::Microsoft.UI.Xaml.Controls.TextBlock
+						IsParsing = true,
+						// Source 0\MainPage.xaml (Line 14:8)
+						Children = 
 						{
-							IsParsing = true,
-							// Source 0\MainPage.xaml (Line 15:10)
+							new global::Microsoft.UI.Xaml.Controls.TextBlock
+							{
+								IsParsing = true,
+								// Source 0\MainPage.xaml (Line 15:10)
+							}
+							.GenericApply(__that, __nameScope, (ApplyMethod_17							))
+							,
+							new global::Microsoft.UI.Xaml.Controls.Button
+							{
+								IsParsing = true,
+								Content = @"DoSomething",
+								// Source 0\MainPage.xaml (Line 16:10)
+							}
+							.GenericApply(__that, __nameScope, (ApplyMethod_18							))
+							,
 						}
-						.GenericApply(__that, __nameScope, ((c9, __that, __nameScope) => 
+					}
+					.GenericApply(__that, __nameScope, (ApplyMethod_19					))
+					;
+					if (__rootInstance is FrameworkElement __fe)
+					{
+						__fe.Loading += __UpdateBindingsAndResources;
+					}
+					if (__rootInstance is DependencyObject d)
+					{
+						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 						{
-							c9.SetBinding(
-								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-								new Microsoft.UI.Xaml.Data.Binding()
-								{
-									Path = @"",
-								}
-							);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(c9, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 15, 10);
-							c9.CreationComplete();
+							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							__nameScope.Owner = d;
 						}
-						))
-						,
-						new global::Microsoft.UI.Xaml.Controls.Button
-						{
-							IsParsing = true,
-							Content = @"DoSomething",
-							// Source 0\MainPage.xaml (Line 16:10)
-						}
-						.GenericApply(__that, __nameScope, ((c10, __that, __nameScope) => 
-						{
-							/* _isTopLevelDictionary:False */
-							__that._component_0 = c10;
-							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c10, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(c10, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 16, 10);
-							c10.CreationComplete();
-						}
-						))
-						,
+						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					}
+					return __rootInstance;
+				}
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.Button _component_0
+				{
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+					}
+					set
+					{
+						_component_0_Holder.Instance = value;
 					}
 				}
-				.GenericApply(__that, __nameScope, ((c11, __that, __nameScope) => 
-				{
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c11, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
-					c11.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is FrameworkElement __fe) 
+				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
 					var owner = this;
-					__fe.Loading += delegate
+					_component_0.UpdateResourceBindings();
+				}
+											private void ApplyMethod_17(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							{
+								__p1.SetBinding(
+									global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+									new Microsoft.UI.Xaml.Data.Binding()
+									{
+										Path = @"",
+									}
+								);
+								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 15, 10);
+								__p1.CreationComplete();
+							}
+
+											private void ApplyMethod_18(global::Microsoft.UI.Xaml.Controls.Button __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							{
+								/* _isTopLevelDictionary:False */
+								__that._component_0 = __p1;
+								global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 16, 10);
+								__p1.CreationComplete();
+							}
+
+									private void ApplyMethod_19(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 					{
-						_component_0.UpdateResourceBindings();
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
+						__p1.CreationComplete();
 					}
-					;
-				}
-				if (__rootInstance is DependencyObject d)
+
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+				private class __MainPage_d6cd66944958ced0c513e0a04797b51d_MyProject__ResourcesSC0_TestReproMainPage
 				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
-					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
-					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
-				}
-				global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__rootInstance, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
-				return __rootInstance;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_0
-			{
-				get
-				{
-					return (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
-				}
-				set
-				{
-					_component_0_Holder.Instance = value;
 				}
 			}
-		}
-		internal interface I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1
-		{
-			_View Build(object owner);
-		}
-		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private class _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1 : I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1
-		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			public _View Build(object __ResourceOwner_1)
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+			public class SC1
 			{
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				var __that = this;
-				__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				public _View Build(object __ResourceOwner_1)
 				{
-					IsParsing = true,
-					Text = "Header",
-					// Source 0\MainPage.xaml (Line 43:10)
-				}
-				.GenericApply(__that, __nameScope, ((c12, __that, __nameScope) => 
-				{
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c12, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 43, 10);
-					c12.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is DependencyObject d)
-				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					var __that = this;
+					this.__ResourceOwner_1 = __ResourceOwner_1;
+					this.__rootInstance = 
+					new global::Microsoft.UI.Xaml.Controls.TextBlock
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						IsParsing = true,
+						Text = "Header",
+						// Source 0\MainPage.xaml (Line 43:10)
 					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					.GenericApply(__that, __nameScope, (ApplyMethod_20					))
+					;
+					if (__rootInstance is DependencyObject d)
+					{
+						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+						{
+							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							__nameScope.Owner = d;
+						}
+						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					}
+					return __rootInstance;
 				}
-				global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__rootInstance, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L42:8");
-				return __rootInstance;
+									private void ApplyMethod_20(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, SC1 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					{
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 43, 10);
+						__p1.CreationComplete();
+					}
+
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+				private class __MainPage_d6cd66944958ced0c513e0a04797b51d_MyProject__ResourcesSC1_TestReproMainPage
+				{
+				}
 			}
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
@@ -452,11 +513,11 @@ namespace TestRepro
 			void Update();
 			void UpdateResources();
 			void StopTracking();
+			void NotifyXLoad(string name);
 		}
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
 		#pragma warning restore 0169
-		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
@@ -469,6 +530,9 @@ namespace TestRepro
 			public MainPage_Bindings(global::TestRepro.MainPage owner)
 			{
 				Owner = owner;
+			}
+			void IMainPage_Bindings.NotifyXLoad(string name)
+			{
 			}
 			void IMainPage_Bindings.Initialize()
 			{

@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="using:Uno.UI.Samples.Styles.Controls">
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="../Application/Colors.xaml" />
@@ -38,7 +37,7 @@
 		<Setter Property="FontSize"
 				Value="26" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color03Brush}" />
+				Value="{ThemeResource TextFillColorPrimaryBrush}" />
 	</Style>
 
 	<Style x:Key="Typo02"
@@ -47,7 +46,7 @@
 		<Setter Property="FontSize"
 				Value="17" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color04Brush}" />
+				Value="{ThemeResource TextFillColorSecondaryBrush}" />
 	</Style>
 
 	<Style x:Key="Typo03"
@@ -56,7 +55,7 @@
 		<Setter Property="FontSize"
 				Value="17" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color03Brush}" />
+				Value="{ThemeResource TextFillColorPrimaryBrush}" />
 	</Style>
 
 	<Style x:Key="Typo04"
@@ -65,7 +64,7 @@
 		<Setter Property="FontSize"
 				Value="14" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 	</Style>
 	
 	<Style x:Key="Typo05"
@@ -74,7 +73,7 @@
 		<Setter Property="FontSize"
 				Value="14" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color03Brush}" />
+				Value="{ThemeResource TextFillColorPrimaryBrush}" />
 	</Style>
 
 	<Style x:Key="Typo06"

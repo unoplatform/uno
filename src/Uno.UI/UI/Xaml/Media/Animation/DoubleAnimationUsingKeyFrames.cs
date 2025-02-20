@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
@@ -12,7 +13,7 @@ using System.Diagnostics;
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
+	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private bool _wasBeginScheduled;
@@ -40,6 +41,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
+
 		internal override TimeSpan GetCalculatedDuration()
 		{
 			var duration = Duration;
@@ -59,6 +61,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Begin()
 		{
+			// It's important to keep this line here, and not
+			// inside the if (!_wasBeginScheduled)
+			// If Begin(), Stop(), Begin() are called successively in sequence,
+			// we want _wasRequestedToStop to be false.
+			_wasRequestedToStop = false;
+
 			if (!_wasBeginScheduled)
 			{
 				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
@@ -66,7 +74,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
 
 				_wasBeginScheduled = true;
-				_wasRequestedToStop = false;
 
 #if !IS_UNIT_TESTS
 #if __ANDROID__
@@ -373,5 +380,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

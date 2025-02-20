@@ -1,6 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ProgressBar.cpp, tag winui3/release/1.4.2
+
+#nullable enable
 
 using System;
 using Windows.Foundation;
@@ -36,6 +38,12 @@ public partial class ProgressBar : RangeBase
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ProgressBarAutomationPeer(this);
+  
+		private Grid? m_layoutRoot;
+		private Rectangle? m_determinateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator2;
+		private Size? m_previousMeasuredWidths;
 
 	protected override void OnApplyTemplate()
 	{
@@ -44,9 +52,18 @@ public partial class ProgressBar : RangeBase
 		// NOTE: Example of how named parts are loaded from the template. Important to remember that it's possible for
 		// any of them not to be found, since devs can replace the template with their own.
 
-		m_determinateProgressBarIndicator = GetTemplateChild(s_DeterminateProgressBarIndicatorName) as Rectangle;
-		m_indeterminateProgressBarIndicator = GetTemplateChild(s_IndeterminateProgressBarIndicatorName) as Rectangle;
-		m_indeterminateProgressBarIndicator2 = GetTemplateChild(s_IndeterminateProgressBarIndicator2Name) as Rectangle;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			// Uno-specific: TODO: Investigate why we need this. It's a quite very old workaround from 2020
+			// https://github.com/unoplatform/uno/commit/641bbc9483f33c64d5eddc474f069c07b79039ba
+			// So, maybe it's no longer needed.
+			// For now, we're sure it's no longer needed with enhanced lifecycle (actually, it's problematic if it exists there)
+			// Note: LayoutUpdated event isn't really tied to a specific element. It really means that some element in the visual tree had a layout update.
+			// So, this event subscription is wrong because it will cause the ProgressBar to transition to Updating visual state then back
+			// to a state based on its properties (e.g, Indeterminate) every time any element in the visual tree has a layout update.
+			// So it will cause some bad flickers in ProgressBar, and will also get us into a cycle in case there is a listener
+			// to CurrentStateChanged event where the listener does something that updates the layout.
+			LayoutUpdated += (snd, evt) => OnSizeChange();
+#endif
 
 		UpdateStates();
 	}
@@ -78,6 +95,17 @@ public partial class ProgressBar : RangeBase
 		if (dependencyobject is ProgressBar progressBar)
 		{
 			progressBar.UpdateStates();
+      
+#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
+			if (m_layoutRoot is not null &&
+				m_determinateProgressBarIndicator is not null &&
+				m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
+#endif
+			{
+				SetProgressBarIndicatorWidth();
+			}
+
+			UpdateWidthBasedTemplateSettings();
 		}
 	}
 

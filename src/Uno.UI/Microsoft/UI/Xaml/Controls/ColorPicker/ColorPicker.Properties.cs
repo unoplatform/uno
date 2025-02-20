@@ -1,6 +1,7 @@
-﻿using Windows.UI;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -306,6 +307,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					Orientation.Vertical,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
-		public event Windows.Foundation.TypedEventHandler<ColorPicker, ColorChangedEventArgs> ColorChanged;
+		public event TypedEventHandler<ColorPicker, ColorChangedEventArgs> ColorChanged;
 	}
 }

@@ -174,7 +174,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_UsingARoundingAlgorithmCore(value, RoundingAlgorithm.RoundUp, expected);
 		}
 
-		public void When_UsingARoundingAlgorithmCore(double value, RoundingAlgorithm roundingAlgorithm, double expected)
+		private void When_UsingARoundingAlgorithmCore(double value, RoundingAlgorithm roundingAlgorithm, double expected)
 		{
 			var sut = new IncrementNumberRounder();
 			sut.Increment = 0.25;

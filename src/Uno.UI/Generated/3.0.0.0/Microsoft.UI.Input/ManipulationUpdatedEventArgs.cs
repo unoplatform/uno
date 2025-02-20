@@ -13,8 +13,8 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property Velocities
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Velocities.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Delta.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Velocities.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Cumulative.get

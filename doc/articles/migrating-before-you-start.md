@@ -8,9 +8,9 @@ Before you start migrating a UWP-only application or library to be Uno compatibl
 
 The key questions to ask are:
 
- - what framework APIs is the code using?
- - what third-party dependencies does the code rely upon?
- - what general .NET functionality is used that may not be supported on specific platforms?
+- what framework APIs is the code using?
+- what third-party dependencies does the code rely upon?
+- what general .NET functionality is used that may not be supported on specific platforms?
 
 ## Controls and framework APIs
 
@@ -22,8 +22,8 @@ Once you migrate your code to Uno, unsupported API usages will be highlighted wi
 
 Look at the NuGet packages referenced by the code. For each package, ask:
 
- - is it supported on each platform you wish to target?
- - if not, is there an acceptable alternative?
+- is it supported on each platform you wish to target?
+- if not, is there an acceptable alternative?
 
 Third-party dependencies typically fall into one of a few categories:
 
@@ -41,7 +41,7 @@ Unfortunately, it's less easy to check if a platform-dependent package supports 
 
 ### Depends on UWP
 
-Libraries that depend on UWP itself, such as the [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular UWP libraries have already been retargeted to Uno; a partial list is given [here](https://github.com/unoplatform/Uno#uno-features).
+Libraries that depend on UWP itself, such as the [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular UWP libraries have already been retargeted to Uno; a partial list is given [here](https://github.com/unoplatform/Uno#uno-features).
 
 ## .NET runtime features
 
@@ -49,12 +49,10 @@ On certain target platforms, support for some .NET functionality is limited or u
 
 ### iOS
 
-.NET code must be Ahead-Of-Time (AOT) compiled to run on iOS, as a fundamental platform limitation. As a result, certain APIs that require runtime code generation (eg `System.Reflection.Emit`) will not work. This includes code that uses the `dynamic` keyword. See the [Xamarin.iOS documentation](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations) for more details.
+.NET code must be Ahead-Of-Time (AOT) compiled to run on iOS, as a fundamental platform limitation. As a result, certain APIs that require runtime code generation (eg `System.Reflection.Emit`) will not work. This includes code that uses the `dynamic` keyword. See the [Xamarin.iOS documentation](https://learn.microsoft.com/xamarin/ios/internals/limitations) for more details.
 
 ### WASM
 
 Currently, WebAssembly code in the browser executes on a single thread (much like JavaScript code in the browser). This limitation is expected to be lifted in the future, but for now, code that expects additional threads to be available may not function as expected.
 
 [This issue](https://github.com/unoplatform/uno/issues/2302) tracks support for multi-threading on WebAssembly in Uno Platform.
-
-Additionally, if you're using full AOT compilation on WASM, the same API restrictions will apply as for AOT compilation on iOS.

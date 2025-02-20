@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME-ΑΝΕΝΕΡΓO</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Λευκό</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ανοιχτό γκρι</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Γκρι</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Σκούρο γκρι</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Μαύρο</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Κοραλλί</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Τριανταφυλλί</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ανοιχτό πορτοκαλί</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Καφεκίτρινο</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Ανοιχτό κίτρινο</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Ανοιχτό πράσινο</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Λαχανί</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Θαλασσί</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Μπλε του ουρανού</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ανοιχτό τυρκουάζ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Παλ μπλε</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Ανοικτό μπλε</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ανοιχτό γαλάζιο</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Μυρτιά</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Λεβάντα</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Ροζ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Κόκκινο</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Πορτοκαλί</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Καφέ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Χρυσό</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Κίτρινο</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Πράσινο λαδί</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Πράσινο</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Φωτεινό πράσινο</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Πετρόλ</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Τυρκουάζ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Μπλε</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Μπλε-γκρι</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Λουλακί</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Μοβ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Σκούρο κόκκινο</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Σκούρο κίτρινο</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Σκούρο πράσινο</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Μπλε ραφ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Σκούρο μπλε</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Σκούρο μοβ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Δαμασκηνί</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Κλείσιμο</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

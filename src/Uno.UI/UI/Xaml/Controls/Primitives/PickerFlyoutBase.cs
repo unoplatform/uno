@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			element.SetValue(TitleProperty, value);
 		}
 
-		protected virtual void OnConfirmed() => throw new InvalidOperationException();
+		protected virtual void OnConfirmed() => Hide();
 
 		protected virtual bool ShouldShowConfirmationButtons() => throw new InvalidOperationException();
 

@@ -9,7 +9,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
 		<DefineConstants>$(DefineConstants);IS_UNO_UI_DISPATCHING_PROJECT</DefineConstants>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Dispatching</RootNamespace>
@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Generated\3.0.0.0\" />
+		<Folder Include="Generated\3.0.0.0\" />
 	</ItemGroup>
 
 </Project>

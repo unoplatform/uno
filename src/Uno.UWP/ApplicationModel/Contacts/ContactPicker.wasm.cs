@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.ApplicationModel.Contacts.Internal;
@@ -31,7 +32,7 @@ namespace Windows.ApplicationModel.Contacts
 				return Array.Empty<Contact>();
 			}
 
-			var contacts = JsonHelper.Deserialize<WasmContact[]>(pickResultJson);
+			var contacts = JsonHelper.Deserialize<WasmContact[]>(pickResultJson, PickerSerializationContext.Default);
 			return contacts.Where(c => c != null).Select(c => ContactFromContactInfo(c)).ToArray();
 		}
 
@@ -74,6 +75,13 @@ namespace Windows.ApplicationModel.Contacts
 			}
 
 			return contact;
+		}
+
+
+		[JsonSerializable(typeof(WasmContact[]))]
+		[JsonSerializable(typeof(WasmContact))]
+		internal partial class PickerSerializationContext : JsonSerializerContext
+		{
 		}
 	}
 }

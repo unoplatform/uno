@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetFontStyle(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-style");
 			}
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetFontWeight(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-weight");
 			}
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetFontFamily(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				ResetStyle("font-family");
 			}
@@ -97,9 +97,33 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void SetFontStretch(object localValue)
+		{
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				ResetStyle("font-stretch");
+			}
+			else
+			{
+				string cssStretch = (FontStretch)localValue switch
+				{
+					FontStretch.UltraCondensed => "ultra-condensed",
+					FontStretch.ExtraCondensed => "extra-condensed",
+					FontStretch.Condensed => "condensed",
+					FontStretch.SemiCondensed => "semi-condensed",
+					FontStretch.SemiExpanded => "semi-expanded",
+					FontStretch.Expanded => "expanded",
+					FontStretch.ExtraExpanded => "extra-expanded",
+					FontStretch.UltraExpanded => "ultra-expanded",
+					_ => "normal",
+				};
+				this.SetStyle("font-stretch", cssStretch);
+			}
+		}
+
 		internal void SetFontSize(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("font-size");
 			}
@@ -112,7 +136,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetMaxLines(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
 			}
@@ -154,10 +178,14 @@ namespace Microsoft.UI.Xaml
 					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
 				case GradientBrush gradient:
+					// background-size not supported for inlines (e.g, Run) because DesiredSize is always zero there.
+					// In fact, inlines shouldn't have DesiredSize in the first place as they are TextElement → DependencyObject
+					// They don't inherit from UIElement.
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
-						("background-clip", "text")
+						("background-clip", "text"),
+						("background-size", this is TextBlock ? $"{this.DesiredSize.Width}px" : "auto")
 					);
 					break;
 
@@ -220,7 +248,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetCharacterSpacing(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("letter-spacing");
 			}
@@ -233,7 +261,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetLineHeight(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("line-height");
 			}
@@ -253,7 +281,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTextAlignment(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("text-align");
 			}
@@ -284,7 +312,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTextWrappingAndTrimming(object textWrapping, object textTrimming)
 		{
-			if (textWrapping is UnsetValue)
+			if (textWrapping == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("white-space", "word-break", "text-overflow");
 			}
@@ -322,7 +350,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTextDecorations(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("text-decoration");
 			}
@@ -349,7 +377,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTextPadding(object localValue)
 		{
-			if (localValue is UnsetValue)
+			if (localValue == DependencyProperty.UnsetValue)
 			{
 				this.ResetStyle("padding");
 			}

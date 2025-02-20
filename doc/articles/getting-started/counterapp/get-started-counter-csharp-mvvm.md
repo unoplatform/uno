@@ -4,9 +4,9 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 
 # Counter App using C# Markup and MVVM
 
-[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)  
+[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM)  
 
-[!INCLUDE [Intro](include-intro.md)]
+[!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:
 
@@ -15,13 +15,13 @@ In this tutorial you will learn how to:
 - Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#. 
+To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#.
 
-[!INCLUDE [VS](include-create.md)]
+[!INCLUDE [VS](includes/include-create.md)]
 
-# [Visual Studio](#tab/vs)
+## [Visual Studio](#tab/vs)
 
-> [!NOTE] 
+> [!NOTE]
 > If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
 
 - Launch **Visual Studio** and click on **Create new project** on the Start Window. Alternatively, if you're already in Visual Studio, click **New, Project** from the **File** menu.
@@ -34,7 +34,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 At this point you'll enter the **Uno Platform Template Wizard**, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
 
-- Select **Blank** and click **Customize**
+- Select **Blank** in **Presets** selection
 
 - Select the **Presentation** tab and choose **MVVM**
 
@@ -44,16 +44,16 @@ Before completing the wizard, take a look through each of the sections and see w
 
 - Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a solution with a simple cross-platform project, named `Counter`, ready to run.
 
-# [Command Line](#tab/cli)
+## [Command Line](#tab/cli)
 
-> [!NOTE] 
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+> [!NOTE]
+> If you don't have the Uno Platform dotnet new templates installed, follow [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -preset blank -presentation mvvm -markup csharp -o Counter
 ```
 
@@ -61,7 +61,7 @@ This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -h
 ```
 
@@ -69,29 +69,29 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](include-solution.md)]
+[!INCLUDE [Counter Solution](includes/include-solution.md)]
 
 ![Counter Solution](Assets/counter-solution-csharp.png)
 
-[!INCLUDE [Main Window](include-mainwindow.md)]
+[!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
-[!INCLUDE [Main Page - C# Markup](include-mainpage-csharp.md)]
+[!INCLUDE [Main Page - C# Markup](includes/include-mainpage-csharp.md)]
 
-[!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-image-csharp.md)]
+[!INCLUDE [Main Page - Image](includes/include-image-csharp.md)]
 
-[!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-elements-csharp.md)]
+[!INCLUDE [Main Page - Other Elements](includes/include-elements-csharp.md)]
 
-[!INCLUDE [View Model](include-mvvm.md)]
+[!INCLUDE [View Model](includes/include-mvvm.md)]
 
 ## Data Binding
 
 Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
- - Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
+- Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
     this.DataContext(new MainViewModel(), (page, vm) => page
@@ -102,7 +102,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
     );
     ```
 
- - Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`MainViewModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
+- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`MainViewModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
     ```csharp
     new TextBlock()
@@ -111,7 +111,8 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .Text(() => vm.Count, txt => $"Counter: {txt}")
     ```
- - Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **`MainViewModel`**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
+
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **`MainViewModel`**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```csharp
     new TextBox()
@@ -119,10 +120,10 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        .Text(x => x.Bind(() => vm.Step).TwoWay())
+        .Text(x => x.Binding(() => vm.Step).TwoWay())
     ```
 
- - Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
+- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```csharp
     new Button()
@@ -132,11 +133,9 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
         .Content("Increment Counter by Step Size")
     ```
 
- - The final code for **MainPage.cs** should look like this:
+- The final code for **MainPage.cs** should look like this:
 
     ```csharp
-    namespace Counter;
-
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -158,7 +157,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
                                 .HorizontalAlignment(HorizontalAlignment.Center)
                                 .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
                                 .PlaceholderText("Step Size")
-                                .Text(x => x.Bind(() => vm.Step).TwoWay()),
+                                .Text(x => x.Binding(() => vm.Step).TwoWay()),
                             new TextBlock()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)
@@ -176,6 +175,6 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
     }
     ```
 
-[!INCLUDE [View Model](include-wrap.md)]
+[!INCLUDE [Wrap Up](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM).

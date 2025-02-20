@@ -45,7 +45,7 @@ internal partial class DisplayRegionHelper
 			ApplicationView view = null;
 			try
 			{
-				view = ApplicationView.GetForCurrentView();
+				view = ApplicationView.GetForCurrentViewSafe();
 			}
 			catch { }
 
@@ -90,7 +90,7 @@ internal partial class DisplayRegionHelper
 			// Instead of returning the actual window, find the SimulatedWindow element
 			UIElement window = null;
 
-			if (Window.Current.Content is FrameworkElement fe)
+			if (Window.CurrentSafe.Content is FrameworkElement fe)
 			{
 				window = SharedHelpers.FindInVisualTreeByName(fe, "SimulatedWindow");
 			}
@@ -99,7 +99,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.Current.Content;
+			return Window.CurrentSafe.Content;
 		}
 	}
 
@@ -120,7 +120,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.Current.Bounds;
+			return Window.CurrentSafe.Bounds;
 		}
 	}
 

@@ -8,9 +8,10 @@ uid: Uno.Contributing.xBind
 
 > Note that this section is based on observations of the behavior of `x:Bind`
 
-`x:Bind` markup extensions have originally been developed by Microsoft to provide enhanced Data Binding performance, where no reflection is needed to do so. Code is generated along with XAML files that contain controls and DataTemplates, in `.g.cs` and `.g.i.cs` files. 
+`x:Bind` markup extensions have originally been developed by Microsoft to provide enhanced Data Binding performance, where no reflection is needed to do so. Code is generated along with XAML files that contain controls and DataTemplates, in `.g.cs` and `.g.i.cs` files.
 
 Those bindings differ in multiple ways with standard `Binding` markup:
+
 - The default binding mode is `OneTime` (`OneWay` for `Binding`)
 - For top level controls the data context is the control itself
 - For `DataTemplate`, the data context is the `DataContext` of the root element
@@ -20,10 +21,12 @@ Those bindings differ in multiple ways with standard `Binding` markup:
 - Function parameters can be the update source of the whole function binding
 
 The creation of that generated code is performed in two passes:
+
 - The first pass where x:Bind markup is removed from an intermediate file, creating unique "connections"
 - The second pass creates a set of classes and interfaces within the top level class, or a hidden class for Data Templates.
 
 The generated code is accessible through a private member called `Bindings`, which offers the following interface:
+
 ```csharp
 private interface IXBindUserControl_Bindings
 {
@@ -32,6 +35,7 @@ private interface IXBindUserControl_Bindings
     void StopTracking();
 }
 ```
+
 The most commonly used member is `Update` which allows to refresh a `OneTime` binding to a newer value.
 
 ## Implementation in Uno Platform

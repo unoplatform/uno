@@ -429,25 +429,27 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
 			avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
-			return _uno_lastKnownAverageLineSize = avgLineSize;
+			flowState.Uno_LastKnownAverageLineSize = avgLineSize;
+
+			return avgLineSize;
 		}
 
 		#endregion
 
 		#region Uno workaround
-		private double _uno_lastKnownAverageLineSize;
-
 		/// <inheritdoc />
-		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
+		protected internal override bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
 		{
-			var elementSize = _uno_lastKnownAverageLineSize;
-			if (elementSize <= 0)
+			if (state is FlowLayoutState { Uno_LastKnownAverageLineSize: > 0 } flowState)
 			{
-				return base.IsSignificantViewportChange(oldViewport, newViewport);
+				var elementSize = flowState.Uno_LastKnownAverageLineSize;
+				return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
+					|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
 			}
-
-			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
-				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
+			else
+			{
+				return base.IsSignificantViewportChange(state, oldViewport, newViewport);
+			}
 		}
 		#endregion
 	}

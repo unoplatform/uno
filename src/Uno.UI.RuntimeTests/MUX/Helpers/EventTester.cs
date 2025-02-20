@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
+using MUXControlsTestApp.Utilities;
+using Uno.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
@@ -46,7 +48,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 		protected readonly String eventName;
 		protected readonly Delegate handlerInvocationDelegate;
 		private readonly List<Tuple<object, TEventArgs>> eventData;
-		private readonly AutoResetEvent resetEvent;
+		private readonly UnoAutoResetEvent resetEvent;
 		private readonly Action<object, TEventArgs> Action;
 		private Action<object> removeMethod;
 		private readonly EventTesterOptions options;
@@ -57,7 +59,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			this.eventName = eventName;
 			this.eventData = new List<Tuple<object, TEventArgs>>();
 			this.sender = sender;
-			this.resetEvent = new AutoResetEvent(false);
+			this.resetEvent = new UnoAutoResetEvent(false);
 			this.Action = action;
 			this.options = options;
 			if (setBVTflags)
@@ -88,14 +90,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 				this.AddEvent();
 			});
 
+#if !__WASM__
 			if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
 			{
-				this.CaptureWindowAsync("Before").Wait(this.Timeout);
+				this.CaptureWindowAsync("Before").Wait(this.DefaultTimeout);
 			}
 			if (this.options.HasFlag(EventTesterOptions.CaptureScreenBefore))
 			{
-				this.CaptureScreenAsync("Before").Wait(this.Timeout);
+				this.CaptureScreenAsync("Before").Wait(this.DefaultTimeout);
 			}
+#endif
 		}
 
 		protected EventTester(TSender sender, Type senderType, string eventName, Action<object, TEventArgs> action, EventTesterOptions options)
@@ -150,22 +154,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			return new RoutedEventTester<TEventArgs>(sender, eventName, action);
 		}
 
-		public TimeSpan DefaultTimeout = EventTesterConfig.Timeout;
-
-		private TimeSpan Timeout
-		{
-			get
-			{
-				if (Debugger.IsAttached)
-				{
-					return TimeSpan.FromMilliseconds(-1); // Wait indefinitely if debugger is attached.
-				}
-				else
-				{
-					return this.DefaultTimeout;
-				}
-			}
-		}
+		public TimeSpan DefaultTimeout =
+#if HAS_UNO
+			FeatureConfiguration.DebugOptions.WaitIndefinitelyInEventTester
+#else
+			Debugger.IsAttached
+#endif
+				? TimeSpan.FromMilliseconds(-1)
+				: EventTesterConfig.Timeout;
 
 		private TSender Sender
 		{
@@ -253,14 +249,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 		}
 
 
-		public bool Wait()
+		public async Task<bool> Wait()
 		{
-			return this.Wait(this.Timeout);
+			return await this.Wait(this.DefaultTimeout);
 		}
 
-		public bool Wait(TimeSpan timeout)
+		public async Task<bool> Wait(TimeSpan timeout)
 		{
-			var result = this.resetEvent.WaitOne(timeout);
+			var result = await this.resetEvent.WaitOne(timeout);
 			if (!result)
 			{
 				Verify.Fail($"Event '{eventName}' was not raised before timeout.");
@@ -273,9 +269,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			this.resetEvent.Reset();
 		}
 
-		public bool WaitForNoThrow(TimeSpan timeout)
+		public async Task<bool> WaitForNoThrow(TimeSpan timeout)
 		{
-			return this.resetEvent.WaitOne(timeout);
+			return await this.resetEvent.WaitOne(timeout);
 		}
 
 		private async Task CaptureScreenAsync(string prefix = "")
@@ -329,7 +325,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 
 		public async Task<bool> WaitAsync()
 		{
-			return await this.WaitAsync(this.Timeout);
+			return await this.WaitAsync(this.DefaultTimeout);
 		}
 
 		public async Task<bool> WaitAsync(TimeSpan timeout)
@@ -340,7 +336,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			var sw = Stopwatch.StartNew();
 
 			var result = false;
-			while (!(result = this.resetEvent.WaitOne(0)) && sw.Elapsed < timeout)
+			while (!(result = await this.resetEvent.WaitOne(0)) && sw.Elapsed < timeout)
 			{
 				Console.WriteLine("waiting...");
 				await Task.Delay(100);
@@ -352,7 +348,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			{
 				try
 				{
-					tcs.SetResult(this.WaitForNoThrow(timeout));
+					tcs.SetResult(await this.WaitForNoThrow(timeout));
 				}
 				catch
 				{
@@ -435,14 +431,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 					//	Log.Comment($"Disposing Event '{this.eventName}', executions count: {this.ExecuteCount}");
 					//}
 
+#if !__WASM__
 					if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
 					{
-						this.CaptureWindowAsync("After").Wait(this.Timeout);
+						this.CaptureWindowAsync("After").Wait(this.DefaultTimeout);
 					}
 					if (this.options.HasFlag(EventTesterOptions.CaptureScreenAfter))
 					{
-						this.CaptureScreenAsync("After").Wait(this.Timeout);
+						this.CaptureScreenAsync("After").Wait(this.DefaultTimeout);
 					}
+#endif
 
 					resetEvent.Dispose();
 					this.isDisposing = false;

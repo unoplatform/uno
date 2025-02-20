@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Uno.Foundation.Interop;
 using System.Text;
@@ -16,10 +15,11 @@ using Uno.Foundation.Runtime.WebAssembly.Interop;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using Uno.Foundation.Runtime.WebAssembly.Helpers;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.Foundation
 {
-	public static class WebAssemblyRuntime
+	public static partial class WebAssemblyRuntime
 	{
 		private static Dictionary<string, IntPtr> MethodMap = new Dictionary<string, IntPtr>();
 
@@ -44,7 +44,7 @@ namespace Uno.Foundation
 		{
 			if (!MethodMap.TryGetValue(methodName, out var methodId))
 			{
-				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out _, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+				MethodMap[methodName] = methodId = WebAssembly.Runtime.InvokeJSUnmarshalled(methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			}
 
 			return methodId;
@@ -130,22 +130,15 @@ namespace Uno.Foundation
 			exception = null;
 			var methodId = GetMethodId(functionIdentifier);
 
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exceptionMessage, null, methodId, arg0, IntPtr.Zero);
-
-			if (!string.IsNullOrEmpty(exceptionMessage))
+			try
 			{
-				if (_trace.IsEnabled)
-				{
-					_trace.WriteEvent(
-						TraceProvider.InvokeException,
-						new object[] { functionIdentifier, exceptionMessage }
-					);
-				}
-
-				exception = new Exception(exceptionMessage);
+				return WebAssembly.Runtime.InvokeJSUnmarshalled(null, methodId, arg0, IntPtr.Zero) != 0;
 			}
-
-			return res != IntPtr.Zero;
+			catch (Exception e)
+			{
+				exception = e;
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -182,22 +175,7 @@ namespace Uno.Foundation
 		{
 			var methodId = GetMethodId(functionIdentifier);
 
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, null, methodId, arg0, arg1);
-
-			if (exception != null)
-			{
-				if (_trace.IsEnabled)
-				{
-					_trace.WriteEvent(
-						TraceProvider.InvokeException,
-						new object[] { functionIdentifier, exception.ToString() }
-					);
-				}
-
-				throw new Exception(exception);
-			}
-
-			return res != IntPtr.Zero;
+			return WebAssembly.Runtime.InvokeJSUnmarshalled(null, methodId, arg0, arg1) != 0;
 		}
 
 #pragma warning disable CA2211
@@ -383,11 +361,13 @@ namespace Uno.Foundation
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void DispatchAsyncResult(long handle, string result)
+		[JSExport]
+		public static void DispatchAsyncResult([JSMarshalAs<JSType.Number>] long handle, string result)
 			=> RemoveAsyncTask(handle)?.TrySetResult(result);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void DispatchAsyncError(long handle, string error)
+		[JSExport]
+		public static void DispatchAsyncError([JSMarshalAs<JSType.Number>] long handle, string error)
 			=> RemoveAsyncTask(handle)?.TrySetException(new ApplicationException(error));
 
 		private static TaskCompletionSource<string>? RemoveAsyncTask(long handle)
@@ -407,7 +387,6 @@ namespace Uno.Foundation
 			return listener.task;
 		}
 
-		[Pure]
 		public static string EscapeJs(string s)
 		{
 			if (s == null)

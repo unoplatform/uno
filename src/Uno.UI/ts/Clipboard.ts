@@ -33,7 +33,9 @@ namespace Uno.Utils {
 			const nav = navigator as any;
 			if (nav.clipboard) {
 				// Use clipboard object when available
-				nav.clipboard.writeText(text);
+				nav.clipboard.writeText(text).catch((reason: any) => {
+					console.error(`Failed to write to clipboard: ${reason}`);
+				});
 				// Trigger change notification, as clipboard API does
 				// not execute "copy".
 				Clipboard.onClipboardChanged();
@@ -50,12 +52,17 @@ namespace Uno.Utils {
 			return "ok";
 		}
 
-		public static getText(): Promise<string> {			
+		public static getText(): Promise<string> {
+			// we return "" on failure instead of null to avoid crashing with an NRE if there
+			// are no try blocks in the stack frames above.
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {
-				return nav.clipboard.readText();				
+				return nav.clipboard.readText().catch(reason => {
+					console.error(`Failed to read from clipboard: ${reason}`);
+					return "";
+				});
 			}
-			return Promise.resolve(null)
+			return Promise.resolve("")
 		}
 
 		private static onClipboardChanged() {
@@ -63,9 +70,7 @@ namespace Uno.Utils {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
 				} else {
-					Clipboard.dispatchContentChanged = 
-						(<any>Module).mono_bind_static_method(
-							"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 			Clipboard.dispatchContentChanged();

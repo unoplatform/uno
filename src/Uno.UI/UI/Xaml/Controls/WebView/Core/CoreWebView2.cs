@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -83,10 +84,27 @@ public partial class CoreWebView2
 			throw new ArgumentNullException(nameof(folderPath));
 		}
 
-		_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+		}
+		else
+		{
+			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		}
 	}
 
-	public void ClearVirtualHostNameToFolderMapping(string hostName) => _hostToFolderMap.Remove(hostName);
+	public void ClearVirtualHostNameToFolderMapping(string hostName)
+	{
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.ClearVirtualHostNameToFolderMapping(hostName);
+		}
+		else
+		{
+			_hostToFolderMap.Remove(hostName);
+		}
+	}
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
@@ -137,7 +155,7 @@ public partial class CoreWebView2
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
 
-		//The nativate WebView already navigate to a blank page if no source is set.
+		//The native WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
 		UpdateFromInternalSource();
 		OnScrollEnabledChanged(_scrollEnabled);
@@ -147,6 +165,11 @@ public partial class CoreWebView2
 	{
 		_scrollEnabled = newValue;
 		_nativeWebView?.SetScrollingEnabled(newValue);
+	}
+
+	internal void OnDocumentTitleChanged()
+	{
+		DocumentTitleChanged?.Invoke(this, null);
 	}
 
 	internal void RaiseNavigationStarting(object navigationData, out bool cancel)
@@ -179,9 +202,13 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
 	{
-		Source = (uri ?? BlankUri).ToString();
+		if (shouldSetSource)
+		{
+			Source = (uri ?? BlankUri).ToString();
+		}
+
 		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 
@@ -203,7 +230,7 @@ public partial class CoreWebView2
 		else
 		{
 			_ = _owner.Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() => WebMessageReceived?.Invoke(this, new(message)));
 		}
 	}
@@ -253,8 +280,16 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(html);
 		}
-		else if (_processedSource is HttpRequestMessage httpRequestMessage)
+		else if (_processedSource is global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
+			var httpRequestMessage = new HttpRequestMessage()
+			{
+				RequestUri = requestMessage.RequestUri
+			};
+			foreach (var header in requestMessage.Headers)
+			{
+				httpRequestMessage.Headers.Add(header.Key, header.Value);
+			}
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 

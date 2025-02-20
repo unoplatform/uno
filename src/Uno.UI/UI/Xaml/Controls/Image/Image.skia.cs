@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -18,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SkiaCompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
-		private ImageData _pendingImageData;
+		private ImageData? _pendingImageData;
 
 		public Image()
 		{
@@ -28,7 +27,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
+			// We clear the old image first. We do NOT wait for the new image to load
+			// for it to replace the old one. This is what happens on WinUI.
 			_sourceDisposable.Disposable = null;
+			_lastMeasuredSize = default;
+			_imageSprite.Brush = null;
+			_currentSurface = null;
+			_pendingImageData = null;
+			InvalidateMeasure();
 
 			if (newValue is SvgImageSource svgImageSource)
 			{
@@ -38,13 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				InitializeImageSource(source);
 			}
-			else
-			{
-				// Null or unsupported source
-				_sourceDisposable.Disposable = null;
-				_imageSprite.Brush = null;
-				InvalidateMeasure();
-			}
 		}
 
 		private void InitializeSvgSource(SvgImageSource source)
@@ -52,10 +51,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_svgCanvas = source.GetCanvas();
 			AddChild(_svgCanvas);
 			source.SourceLoaded += OnSvgSourceLoaded;
+			source.OpenFailed += OnSvgSourceFailed;
 			_sourceDisposable.Disposable = Disposable.Create(() =>
 			{
 				RemoveChild(_svgCanvas);
 				source.SourceLoaded -= OnSvgSourceLoaded;
+				source.OpenFailed -= OnSvgSourceFailed;
 				_svgCanvas = null;
 			});
 		}
@@ -63,6 +64,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnSvgSourceLoaded(object sender, EventArgs args)
 		{
 			InvalidateMeasure();
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+		}
+
+		private void OnSvgSourceFailed(SvgImageSource sender, SvgImageSourceFailedEventArgs args)
+		{
+			InvalidateMeasure();
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Failed to load Svg source"));
 		}
 
 		private void InitializeImageSource(ImageSource source)
@@ -125,21 +133,35 @@ namespace Microsoft.UI.Xaml.Controls
 		private void TryProcessPendingSource()
 		{
 			var currentData = _pendingImageData;
-			_pendingImageData = new();
-			if (currentData.HasData)
+			_pendingImageData = null;
+			if (currentData is null)
 			{
-				_currentSurface = currentData.CompositionSurface;
+				// No image data is pending
+				return;
+			}
+
+			var processedData = currentData.Value;
+
+			if (processedData.HasData)
+			{
+				_currentSurface = processedData.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_surfaceBrush.UsePaintColorToColorSurface = MonochromeColor is not null;
 				_imageSprite.SetPaintColor(MonochromeColor);
 				_imageSprite.Brush = _surfaceBrush;
 				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			}
-			else if (currentData is { Kind: ImageDataKind.Error })
+			else if (processedData is { Kind: ImageDataKind.Empty })
+			{
+				// Ensure the previous content is unloaded
+				_currentSurface = null;
+				_imageSprite.Brush = null;
+			}
+			else if (processedData is { Kind: ImageDataKind.Error })
 			{
 				ImageFailed?.Invoke(this, new(
 					this,
-					currentData.Error?.Message ?? "Unknown error"));
+					processedData.Error?.Message ?? "Unknown error"));
 			}
 		}
 
@@ -150,32 +172,28 @@ namespace Microsoft.UI.Xaml.Controls
 				// Calculate the resulting space required on screen for the image;
 				var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
 
-				// Calculate the position of the image to follow stretch and alignment requirements
-				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
-
 				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} position:{finalPosition} finalSize:{finalSize}");
+					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize}, containerSize:{containerSize}, finalSize:{finalSize}");
 				}
 
 				if (Source is SvgImageSource)
 				{
-					_svgCanvas?.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
-					return finalSize;
+					_svgCanvas?.Arrange(new Rect(0, 0, roundedSize.X, roundedSize.Y));
+					return containerSize;
 				}
 				else
 				{
 					_imageSprite.Size = roundedSize;
-					_imageSprite.Offset = new Vector3((float)finalPosition.X, (float)finalPosition.Y, 0);
 
 					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / _currentSurface.Image.Width, _imageSprite.Size.Y / _currentSurface.Image.Height);
 
 					_surfaceBrush.TransformMatrix = transform;
 
 					// Image has no direct child that needs to be arranged explicitly
-					return finalSize;
+					return containerSize;
 				}
 			}
 			else

@@ -214,6 +214,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #else
 			_softwareCanvas = new();
 			_softwareCanvas.PaintSurface += OnSoftwareCanvas_PaintSurface;
+
+#if __IOS__
+			_softwareCanvas.Opaque = false;
+#endif
 			return _softwareCanvas;
 #endif
 		}

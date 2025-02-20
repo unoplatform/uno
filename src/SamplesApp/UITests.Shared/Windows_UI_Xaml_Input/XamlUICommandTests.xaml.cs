@@ -6,7 +6,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 #endif
 

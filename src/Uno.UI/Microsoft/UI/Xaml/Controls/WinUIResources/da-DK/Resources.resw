@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME slået fra</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Hvid</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Lysegrå</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grå</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Mørkegrå</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koral</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Lys orange</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sand</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Lysegul</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Pastelgrøn</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lime</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himmelblå</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Blegturkis</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blegblå</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Lyseblå</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Isblå</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Kornblå</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavendel</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rød</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brun</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gylden</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Gul</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivengrøn</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Grøn</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Knaldgrøn</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blågrøn</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkis</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blå</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blågrå</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Lilla</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Rødbrun</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Olivengul</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Mørkegrøn</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Dybblå</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Mørkeblå</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Mørklilla</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Blomme</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Luk</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

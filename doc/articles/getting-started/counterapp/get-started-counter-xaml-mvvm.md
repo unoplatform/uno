@@ -4,10 +4,9 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 # Counter App using XAML and MVVM
 
-[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)  
+[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM)  
 
-
-[!INCLUDE [Intro](include-intro.md)]
+[!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:
 
@@ -18,9 +17,9 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#.
 
-[!INCLUDE [VS](include-create.md)]
+[!INCLUDE [VS](includes/include-create.md)]
 
-# [Visual Studio](#tab/vs)
+## [Visual Studio](#tab/vs)
 
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
@@ -35,7 +34,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 At this point you'll enter the **Uno Platform Template Wizard**, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
 
-- Select **Blank** and click **Customize**
+- Select **Blank** in **Presets** selection
 
 - Select the **Presentation** tab and choose **MVVM**
 
@@ -45,16 +44,16 @@ Before completing the wizard, take a look through each of the sections and see w
 
 - Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a solution with a single cross-platform project, named `Counter`, ready to run.
 
-# [Command Line](#tab/cli)
+## [Command Line](#tab/cli)
 
 > [!NOTE]
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+> If you don't have the Uno Platform dotnet new templates installed, follow [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
 ```
 
@@ -62,7 +61,7 @@ This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -h
 ```
 
@@ -70,29 +69,29 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](include-solution.md)]
+[!INCLUDE [Counter Solution](includes/include-solution.md)]
 
 ![Counter Solution](Assets/counter-solution-xaml.png)
 
-[!INCLUDE [Main Window](include-mainwindow.md)]
+[!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
-[!INCLUDE [Main Page - XAML](include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - XAML](includes/include-mainpage-xaml.md)]
 
-[!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-image-xaml.md)]
+[!INCLUDE [Main Page - Image](includes/include-image-xaml.md)]
 
-[!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
 
-[!INCLUDE [View Model](include-mvvm.md)]
+[!INCLUDE [View Model](includes/include-mvvm.md)]
 
 ## Data Binding
 
 Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
+- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file, between the first `StackPanel` and the `Page` element.
 
     ```xml
     <Page.DataContext>
@@ -120,7 +119,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
+- Add a new **`Button`** with a  **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"
@@ -167,6 +166,6 @@ The final code for **MainPage.xaml** should look like this:
 </Page>
 ```
 
-[!INCLUDE [View Model](include-wrap.md)]
+[!INCLUDE [Wrap Up](includes/include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM).
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM).

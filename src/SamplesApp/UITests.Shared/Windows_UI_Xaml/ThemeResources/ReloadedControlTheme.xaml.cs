@@ -34,7 +34,7 @@ namespace UITests.Windows_UI_Xaml.ThemeResources
 
 			this.Loaded += (s, e) =>
 			{
-				var root = XamlWindow.Current.Content as FrameworkElement;
+				var root = XamlRoot?.Content as FrameworkElement;
 				var isDark = GetCurrentOsTheme() == ApplicationTheme.Dark;
 
 				DarkModeToggle.IsOn = isDark;

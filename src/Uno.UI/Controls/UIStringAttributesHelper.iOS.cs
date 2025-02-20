@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Documents;
 using UIKit;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -15,6 +16,7 @@ namespace Uno.UI
 			(
 				FontWeight fontWeight,
 				FontStyle fontStyle,
+				FontStretch fontStretch,
 				FontFamily fontFamily,
 				Brush foreground,
 				double fontSize,
@@ -35,6 +37,7 @@ namespace Uno.UI
 		internal static UIStringAttributes GetAttributes(
 			FontWeight fontWeight,
 			FontStyle fontStyle,
+			FontStretch fontStretch,
 			FontFamily fontFamily,
 			Brush foreground,
 			double fontSize,
@@ -43,12 +46,13 @@ namespace Uno.UI
 			TextDecorations textDecorations
 		)
 		{
-			return _getAttributes((fontWeight, fontStyle, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, textDecorations, UIFont.PreferredBody.FontDescriptor.FontAttributes.Size));
+			return _getAttributes((fontWeight, fontStyle, fontStretch, fontFamily, foreground, fontSize, characterSpacing, baseLineAlignment, textDecorations, UIFont.PreferredBody.FontDescriptor.FontAttributes.Size));
 		}
 
 		private static UIStringAttributes InternalGetAttributes((
 			FontWeight fontWeight,
 			FontStyle fontStyle,
+			FontStretch fontStretch,
 			FontFamily fontFamily,
 			Brush foreground,
 			double fontSize,
@@ -74,7 +78,7 @@ namespace Uno.UI
 				}
 			}
 
-			var font = UIFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
+			var font = FontHelper.TryGetFont(new((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontStretch), tuple.fontFamily, tuple.preferredBodyFontSize);
 			var attributes = new UIStringAttributes()
 			{
 				// TODO: Handle other brushes.

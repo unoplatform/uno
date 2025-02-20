@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME DESAKTIBATUTA</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Zuria</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gris argia</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grisa</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Gris iluna</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Beltza</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korala</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Arrosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Laranja argia</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Nabarra</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Hori argia</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Berde argia</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Lima</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Berde-urdina</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Zeru-urdina</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turkesa argia</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Urdin hitsa</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Urdin argia</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Izotz-urdina</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Inkonte-belarra</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Izpilikua</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Arrosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Gorria</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Laranja</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Marroia</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Urrea</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Horia</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Oliba-berdea</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Berdea</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Berde bizia</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Urdin berdexka</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkesa</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Urdina</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Urdin-grisa</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigoa</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Morea</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Gorri iluna</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Hori iluna</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Berde iluna</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Urdin berdexka iluna</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Urdin iluna</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>More iluna</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Aran-kolorea</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Itxi</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

@@ -18,10 +18,32 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
+		public bool IsScrollInertiaEnabled
+		{
+			get => (bool)GetValue(IsScrollInertiaEnabledProperty);
+			set => SetValue(IsScrollInertiaEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsScrollInertiaEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				nameof(IsScrollInertiaEnabled),
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+
+		public static bool GetIsScrollInertiaEnabled(DependencyObject element) =>
+			(bool)element.GetValue(IsScrollInertiaEnabledProperty);
+
+		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled) =>
+			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
+
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
+
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
 
 		#region Over scroll support
 		/// <summary>

@@ -28,5 +28,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		int MaxLines { get; }
 
 		void Invalidate(bool updateText);
+
+		string GetText();
 	}
 }

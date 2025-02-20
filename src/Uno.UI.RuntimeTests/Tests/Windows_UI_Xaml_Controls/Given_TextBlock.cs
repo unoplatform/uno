@@ -1,19 +1,29 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Windows.UI.Input.Preview.Injection;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
+using System.Drawing;
+using SamplesApp.UITests;
+using Uno.Disposables;
+using Uno.Extensions;
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
 
 #if __SKIA__
 using SkiaSharp;
@@ -26,6 +36,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+#if __ANDROID__
+		[Ignore("Visually looks good, but fails :(")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		[TestMethod]
+		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf")]
+		[DataRow((ushort)700, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf#Open Sans")]
+		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontStyle = style,
+				FontStretch = stretch,
+				FontWeight = new FontWeight(weight),
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf"),
+			};
+			var SUTContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = SUT
+			};
+
+			var expectedTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(ttfFile)
+			};
+			var expectedTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = expectedTB
+			};
+
+			var differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf";
+			if (ttfFile == differentTtf)
+			{
+				differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf";
+			}
+
+			var differentTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(differentTtf),
+			};
+			var differentTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = differentTB
+			};
+
+			var sp = new StackPanel()
+			{
+				Children =
+				{
+					SUTContainer,
+					expectedTBContainer,
+					differentTBContainer,
+				},
+			};
+
+			await UITestHelper.Load(sp);
+			var actual = await UITestHelper.ScreenShot(SUTContainer);
+			var expected = await UITestHelper.ScreenShot(expectedTBContainer);
+			var different = await UITestHelper.ScreenShot(differentTBContainer);
+			await ImageAssert.AreEqualAsync(actual, expected);
+			await ImageAssert.AreNotEqualAsync(actual, different);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
@@ -33,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -53,6 +148,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
+
+		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
+		// is different between the fallback font and OpenSans
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		public async Task Check_FontFallback_Shaping()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var familyName = skFont.Typeface.FamilyName;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				FontFamily = new FontFamily(fallbackFont.FamilyName),
+				LineHeight = 34,
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			// we tolerate a 2 pixels difference between the bitmaps due to font differences
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
+		}
 #endif
 
 		[TestMethod]
@@ -67,6 +200,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
 			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
+		[TestMethod]
+		public async Task When_NewLine_After_Tab()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "\t\r",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__
+			var segments = ((Run)SUT.Inlines.Single()).Segments;
+			Assert.AreEqual(2, segments.Count);
+			Assert.IsTrue(segments[0].IsTab);
+			Assert.AreEqual("\r", segments[1].Text.ToString());
+#endif
+
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Microsoft.UI.Colors.Red, tolerance: 15);
 		}
 
 		[TestMethod]
@@ -450,6 +611,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __WASM__
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		public async Task When_Changing_Text_Through_Inlines()
+		{
+			var SUT = new TextBlock { Text = "Initial Text" };
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
+			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
+
+			SUT.Inlines.Clear();
+			SUT.Inlines.Add(new Run { Text = "Updated Text" });
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
+
+			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
+		}
+#endif
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -551,16 +730,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
-			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-			}
-
-#if __MACOS__
-			Assert.Inconclusive();
-#endif
 			var SUT = new TextBlock
 			{
 				Text = "••••••••",
@@ -736,8 +912,479 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
 
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
-			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
+#endif
+
+#if HAS_UNO // GetMouse is not available on WinUI
+		#region IsTextSelectionEnabled
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_PointerDrag()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Chunking_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello_world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			// Double click within Hello. We should only find Hello selected without "_" or "world"
+			mouse.MoveTo(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Width = 50,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Awordthatislongerthananentireline",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				bitmap,
+				new Rectangle(new System.Drawing.Point(), bitmap.Size),
+				SUT.SelectionHighlightColor.Color);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// first line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, 0, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
+			// last line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, bitmap.Height * 5 / 6, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Requires authorization to access to the clipboard on WASM.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "🚫 Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Requires authorization to access to the clipboard on WASM.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_CRLF()
+		{
+			var delayToAvoidDoubleTap = 600;
+			var SUT = new TextBlock
+			{
+				Text = "FirstLine\r\n Second",
+				IsTextSelectionEnabled = true,
+				FontFamily = "Arial" // to remain consistent between platforms with different default fonts
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// move to the center of the first line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 5));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await Task.Delay(delayToAvoidDoubleTap);
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("FirstLine", await Clipboard.GetContent()!.GetTextAsync());
+
+			// move to the center of the second line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 25));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await Task.Delay(delayToAvoidDoubleTap);
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Second", await Clipboard.GetContent()!.GetTextAsync());
+
+			// move to the start of the second line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(0, 25));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(" ", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
+		[Ignore("The context menu is only implemented on skia.")]
+#endif
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_TextBlock_RightTapped(bool isTextSelectionEnabled)
+		{
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = isTextSelectionEnabled,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, mod));
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, mod));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(10, 10); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
+		[Ignore("The context menu is only implemented on skia.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight(bounds.GetCenter());
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(10, 10); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+		}
+		#endregion
 #endif
 	}
 }

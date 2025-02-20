@@ -50,22 +50,6 @@ namespace Microsoft.UI.Xaml
 		public Style AppliedDefaultStyle { get; protected set; }
 
 		/// <summary>
-		/// Debugging helper method to get a list of the set value at each precedence for a DependencyProperty.
-		/// </summary>
-		/// <param name="propertyName">The property to get values by precedence for.</param>
-		internal (object value, DependencyPropertyValuePrecedences precedence)[] GetValuesByPrecedence(string propertyName)
-		{
-
-			var dp = GetDPByName(propertyName);
-			if (dp == null)
-			{
-				return null;
-			}
-
-			return this.GetValueForEachPrecedences(dp);
-		}
-
-		/// <summary>
 		/// A helper method while debugging to get the theme resource, if any, assigned to <paramref name="propertyName"/>.
 		/// </summary>
 		internal string GetThemeSource(string propertyName)
@@ -207,12 +191,14 @@ namespace Microsoft.UI.Xaml
 			return current as FrameworkElement;
 		}
 
-		internal View[] GetAllAncestorsDebug()
+		internal View[] GetAllAncestorsDebug(bool includeSelf = false)
 		{
 			return GetInner().ToArray();
 
 			IEnumerable<View> GetInner()
 			{
+				yield return this;
+
 				var current = this.GetVisualTreeParent();
 				while (current != null)
 				{
@@ -222,16 +208,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal string[] GetAllAncestorsAsStrings()
+		internal string[] GetAllAncestorsAsStrings(bool includeSelf = false)
 		{
-			return GetAllAncestorsDebug().Select(v =>
+			return GetAllAncestorsDebug(includeSelf).Select(v =>
+			{
+				if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
 				{
-					if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
-					{
-						return $"{fe.Name}({fe.GetType().Name})";
-					}
-					return v.GetType().Name;
-				})
+					return $"{fe.Name}({fe.GetType().Name})";
+				}
+				return v.GetType().Name;
+			})
 				.ToArray();
 		}
 

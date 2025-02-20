@@ -19,7 +19,7 @@ namespace Uno.UI.Dispatching
 				typeof(NativeDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: NativeDispatcher.DispatcherCallback()");
 			}
 
-			Main.DispatchItems();
+			DispatchItems();
 		}
 
 		partial void Initialize()
@@ -39,19 +39,16 @@ namespace Uno.UI.Dispatching
 			= Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_FEATURES")
 				?.Split(',').Contains("threads", StringComparer.OrdinalIgnoreCase) ?? false;
 
-		// Always reschedule, otherwise we may end up in live-lock.
-		internal static bool HasThreadAccessOverride { get; set; }
-
 		private bool GetHasThreadAccess()
-			=> IsThreadingSupported ? Environment.CurrentManagedThreadId == 1 : HasThreadAccessOverride;
+			=> !IsThreadingSupported || Environment.CurrentManagedThreadId == 1;
 
 		/// <summary>
 		/// Provide an action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal static Action<Action> DispatchOverride;
+		internal static Action<Action, NativeDispatcherPriority> DispatchOverride;
 
-		partial void EnqueueNative()
+		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
 			if (typeof(NativeDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -77,7 +74,7 @@ namespace Uno.UI.Dispatching
 			}
 			else
 			{
-				DispatchOverride(() => DispatchItems());
+				DispatchOverride(NativeDispatcher.DispatchItems, priority);
 			}
 		}
 

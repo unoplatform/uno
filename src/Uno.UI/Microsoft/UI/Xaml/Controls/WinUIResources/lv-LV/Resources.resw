@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME IZSLĒGTS</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Balta</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gaiši pelēka</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Pelēka</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tumši pelēka</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Melna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koraļļu</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rožaina</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Gaiši oranža</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Dzeltenbrūna</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Gaiši dzeltena</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Gaiši zaļa</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Laima zaļa</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarīna</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Debeszila</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Gaiši tirkīzzila</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bāli zila</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Gaiši zila</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Leduszila</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Pelēcīgi violeta</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Mēļa</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rozā</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Sarkana</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranža</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brūna</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zelta</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Dzeltena</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olīvzaļa</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zaļa</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Spilgti zaļa</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Zilganzaļa</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Tirkīzzila</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Zila</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Zilganpelēka</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpursarkana</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tumši sarkana</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tumši dzeltena</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tumši zaļa</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tumši zilganzaļa</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tumši zila</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tumši purpursarkana</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plūmju</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Aizvērt</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

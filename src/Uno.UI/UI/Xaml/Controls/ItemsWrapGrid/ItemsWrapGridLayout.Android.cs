@@ -13,6 +13,8 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Uno.UI.Extensions;
 
+using Size = Windows.Foundation.Size;
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
@@ -76,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 				//Add view before we measure it, this ensures that DP inheritances are correctly applied
 				AddView(view, direction);
 
-				var slotSize = new Windows.Foundation.Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
+				var slotSize = new Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
 				var measuredSize = _layouter.MeasureChild(view, slotSize);
 				var physicalMeasuredSize = measuredSize.LogicalToPhysicalPixels();
 				var measuredWidth = (int)physicalMeasuredSize.Width;
@@ -264,7 +266,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return Math.Min(maximumItemsBySetting, maximumItemsBySpace);
 		}
 
-		protected override Windows.Foundation.Size ApplyChildStretch(Windows.Foundation.Size childSize, Windows.Foundation.Size slotSize, ViewType viewType)
+		protected override Size ApplyChildStretch(Size childSize, Size slotSize, ViewType viewType)
 		{
 			//Item views in a grid layout shouldn't be stretched
 			if (viewType == ViewType.Item)

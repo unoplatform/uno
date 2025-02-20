@@ -41,10 +41,10 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.Condition.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion.NaturalMotion.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion Create(global::Microsoft.UI.Composition.Compositor compositor)

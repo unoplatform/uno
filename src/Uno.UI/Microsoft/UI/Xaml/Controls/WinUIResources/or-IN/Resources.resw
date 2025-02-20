@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ଅଫ୍</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ଧଳା</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ହାଲୁକା ଗ୍ରେ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ଧୂସର</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ଗାଢ ଧୂସର</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>କଳା</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>କୋରାଲ୍</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ଗୋଲାପ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ହାଲୁକା କମଳା</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ଟ୍ୟାନ</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ହାଲୁକା ହଳଦିଆ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ହାଲୁକା ସବୁଜ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ଲାଇମ୍</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>ପାଣିଆ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ଆକାଶୀ ନୀଳ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ହାଲୁକା ଟୁର୍‌କ୍ଵୋସ୍</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ପାଲେ ନୀଳ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ହାଲୁକା ନୀଳ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ଆଇସ୍‌ ନୀଳ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>ପେରିୱିଙ୍କଲ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ଲାଭେଣ୍ଡର୍</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ଗୋଲାପୀ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ଲାଲ୍</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>କମଳା</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ବାଦାମୀ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ସ୍ୱର୍ଣ୍ଣ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ହଳଦୀଆ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ଓଲିଭ୍ ସବୁଜ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>ସବୁଜ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ଉଜ୍ଵଳ ସବୁଜ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ତିଲ୍</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ଟୁର୍‌କ୍ଵୋଇସ୍</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ନୀଳ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ନୀଳ-ଗ୍ରେ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ଇଣ୍ଡିଗୋ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ବାଇଗଣୀ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ଗାଢ ଲାଲ୍</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ଗାଢ ହଳଦିଆ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ଗାଢ ସବୁଜ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ଗାଢ ଟିଲ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ଗାଢ ନୀଳ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ଗାଢ ବାଇଗଣୀ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ପ୍ଲମ୍‌</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ବନ୍ଦ କରନ୍ତୁ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

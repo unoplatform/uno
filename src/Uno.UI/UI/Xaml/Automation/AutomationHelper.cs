@@ -107,5 +107,11 @@ namespace Microsoft.UI.Xaml.Automation
 
 			return null;
 		}
+
+		public static void SetElementAutomationName(DependencyObject pDO, string name) =>
+			AutomationProperties.SetName(pDO, name);
+
+		public static void SetElementAutomationId(DependencyObject pDO, string id) =>
+			AutomationProperties.SetAutomationId(pDO, id);
 	}
 }

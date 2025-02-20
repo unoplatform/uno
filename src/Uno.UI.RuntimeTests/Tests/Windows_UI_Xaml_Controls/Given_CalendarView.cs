@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
-using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Media;
-using Uno.UI.RuntimeTests.MUX.Helpers;
-using Windows.UI;
-using Microsoft.UI.Xaml.Input;
 using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using System.Linq;
+using SamplesApp.UITests;
+using Windows.Foundation;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
@@ -22,6 +24,110 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarView
 {
+	const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
+
+	[TestMethod]
+	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
+	public async Task When_ReMeasure_After_Changing_MaxDate()
+	{
+		var contentDialog = new ContentDialog();
+		contentDialog.XamlRoot = TestServices.WindowHelper.XamlRoot;
+		var calendarView = new CalendarView();
+		contentDialog.Content = calendarView;
+
+		// Set MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(1);
+		var task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot1 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		// Change MaxDate, show dialog, screenshot it, and hide it.
+		calendarView.MaxDate = DateTimeOffset.Now.AddDays(2);
+		task = contentDialog.ShowAsync();
+		await TestServices.WindowHelper.WaitForIdle();
+		var screenshot2 = await UITestHelper.ScreenShot(calendarView);
+		task.Cancel();
+
+		await ImageAssert.AreEqualAsync(screenshot1, screenshot2);
+	}
+
+	[TestMethod]
+	public async Task When_MinDate_Has_Different_Offset()
+	{
+		var calendarView = new CalendarView();
+		calendarView.MinDate = new DateTimeOffset(new DateTime(2010, 1, 1, 22, 0, 0), TimeSpan.Zero);
+		calendarView.MaxDate = new DateTimeOffset(new DateTime(2010, 1, 31), TimeSpan.FromHours(2));
+
+		await UITestHelper.Load(calendarView);
+	}
+
+	[TestMethod]
+	public async Task When_Scroll_To_MaxDate()
+	{
+		var calendarView = new CalendarView()
+		{
+			DisplayMode = CalendarViewDisplayMode.Decade
+		};
+
+		await UITestHelper.Load(calendarView);
+
+		Type calendarViewType = typeof(CalendarView);
+		MethodInfo ChangeVisualStateInfo = calendarViewType.GetMethod("ChangeVisualState", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		// Scroll to max date
+		calendarView.SetDisplayDate(calendarView.MaxDate);
+
+		// Switch to Year view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Switch back to Decade view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Decade;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Decade viewport should be full of items (no missing row)
+		calendarView.GetActiveGeneratorHost(out var pHost);
+		var maxDecadeIndex = DEFAULT_MIN_MAX_DATE_YEAR_OFFSET * 2;
+		var maxDisplayedItems = pHost.Panel.Rows * pHost.Panel.Cols;
+
+		// The first visible index should be less than the max possible index minus the max items we can display
+		// Worst case scenario is that the last row only has 1 item
+		Assert.IsTrue(pHost.Panel.FirstVisibleIndex <= maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1));
+	}
+
+#if __WASM__
+	[TestMethod]
+	[Ignore("Fails on Fluent styles #17272")]
+	public async Task When_ItemCornerRadius()
+	{
+		var calendarView = new CalendarView();
+		calendarView.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		calendarView.CalendarItemCornerRadius = new CornerRadius(40);
+		calendarView.DayItemCornerRadius = new CornerRadius(20);
+
+		await UITestHelper.Load(calendarView);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var hasOutOfScope = false;
+
+		foreach (var dayItem in calendarView.EnumerateDescendants().OfType<CalendarViewDayItem>())
+		{
+			var color = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"background-color\"]");
+			if (color == "rgb(255, 0, 0)")
+			{
+				hasOutOfScope = true;
+				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"border-radius\"]");
+				Assert.AreEqual("21px", result);
+			}
+		}
+
+		Assert.IsTrue(hasOutOfScope);
+	}
+#endif
 #if __ANDROID__ || __IOS__ || __MACOS__
 	[Ignore("Test fails on these platforms")]
 #endif

@@ -16,8 +16,6 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI;
 
-using static Uno.Extensions.MathEx;
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
@@ -50,8 +48,8 @@ namespace Microsoft.UI.Xaml.Controls
 			const int minScroll = -maxScroll;
 
 			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
-			var adjustedPhysicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
-			var adjustedPhysicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
+			var adjustedPhysicalHorizontalOffset = Math.Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedPhysicalVerticalOffset = Math.Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{
@@ -188,5 +186,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
 	}
 }

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SamplesApp.Skia.Wpf": {
-      "commandName": "Project",
-      "commandLineArgs": ""
-    }
-  }
-}

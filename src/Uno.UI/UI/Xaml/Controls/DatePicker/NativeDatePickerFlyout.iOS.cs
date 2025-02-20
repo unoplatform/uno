@@ -27,13 +27,17 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
+		internal DatePickerSelector _selector;
 
 		private NativeDatePickerFlyoutPresenter _presenter
 		{
 			get => _tpPresenter as NativeDatePickerFlyoutPresenter;
 			set => _tpPresenter = value;
 		}
-		private DatePickerSelector _selector;
+
+		internal bool IsNativeDialogOpen { get; private set; }
+
+		internal DateTimeOffset NativeDialogDate => _selector.Date;
 
 		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
 			"UseNativeMinMaxDates",
@@ -128,7 +132,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
-					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 					binder.Store.SetValue(binder.Store.DataContextProperty, flyout.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
 
@@ -144,10 +147,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
-			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
+			if (date == DatePicker.NullDateSentinelValue)
 			{
-				var temp = new Windows.Globalization.Calendar();
-				var calendar = new Windows.Globalization.Calendar(
+				var temp = new global::Windows.Globalization.Calendar();
+				var calendar = new global::Windows.Globalization.Calendar(
 					temp.Languages,
 					CalendarIdentifier,
 					temp.GetClock());
@@ -168,12 +171,14 @@ namespace Microsoft.UI.Xaml.Controls
 			AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss());
 
 			_presenterLoadedDisposable.Disposable = null;
+			IsNativeDialogOpen = true;
 		}
 
 		private void OnPresenterUnloaded(object sender, RoutedEventArgs e)
 		{
 			_presenterLoadedDisposable.Disposable = null;
 			_presenterUnloadedDisposable.Disposable = null;
+			IsNativeDialogOpen = false;
 		}
 
 		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)

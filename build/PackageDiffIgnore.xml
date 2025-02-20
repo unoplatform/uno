@@ -16,8 +16,7 @@
 			<Member fullName="Uno.UI.Toolkit" reason="Android 12 support"/>
 			<Member fullName="Uno.Xaml" reason="Android 12 support"/>
 		</Assemblies>
-		<Methods>
-			<Member
+		<Methods><Member
 				fullName="System.Void Uno.Media.StreamGeometryContext.BeginFigure(Windows.Foundation.Point startPoint, System.Boolean isFilled, System.Boolean isClosed)"
 				reason="isClosed paramater is not used and is misleading" />
 			<Member
@@ -1732,6 +1731,20 @@
 		</Events>
 
 		<Fields>
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
 		</Fields>
 
 		<Properties>
@@ -1750,22 +1763,110 @@
 			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in Windows" />
 
 			<Member fullName="System.Void Uno.Media.Playback.IMediaPlayerEventsExtension.RaiseVideoRatioChanged(System.Double videoRatio)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.add_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.remove_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationStartPosition2(System.Double value)" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />	
-      		<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationEndPosition2(System.Double value)" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
+
+			<!-- Multiple XamlRoots -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 		</Methods>
 	</IgnoreSet>
-	  <!--
-	Supported nodes (please keep at the bottom of this file):
-	<IgnoreSet baseVersion="0.0">
+
+	<IgnoreSet baseVersion="5.1">
+		<Types>
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueController" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
+
+			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
+
+			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
+		</Fields>
+
+		<Properties>
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView::IsFullScreen()" reason="Not in WinUI" />
+		</Properties>
+
+		<Methods>
+			<!-- Multiple XamlRoots -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+
+			<!-- Begin Skia Builder-->
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost.Run()" reason="Non-breaking API, moved to SkiaHost" />
+			<!-- End Skia Builder-->
+
+			<!-- Begin Composition target updates -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
+			<!-- End Composition target updates -->
+
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Void Windows.UI.ViewManagement.ApplicationView..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
+		</Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="5.2">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar::.*" reason="Not in UWP" isRegex="true" />
+		</Properties>
+
+		<Methods>
+			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
+		</Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="5.3">
+		<Assemblies>
+			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
+		</Assemblies>
 		<Types>
 		</Types>
 
@@ -1779,8 +1880,177 @@
 		</Properties>
 
 		<Methods>
+			<!-- AutomationPeers -->
+			<Member fullName="System.Void Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
+
+			<!-- BEGIN Keyboard accelerators -->
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Windows.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_KeyboardAccelerators(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Input.KeyboardAccelerator&gt; value)" reason="Keyboard Accelerators setter is not public" />
+			<!-- END Keyboard accelerators -->
+
+			<!-- MarkupExtensions\XamlServiceProvider -->
+			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
+			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.4">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView::(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- END templated-parent rework -->
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
+
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- DependencyObject (codegen for all descendants) -->
+			<Member fullName=".*DependencyProperty .*\.get_TemplatedParentProperty\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName=".*DependencyObject .*\.get_TemplatedParent\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void .*\.set_TemplatedParent\((Microsoft|Windows)\.UI\.Xaml\.DependencyObject value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- templates: FrameworkTemplate, DataTemplate, ControlTemplate, ItemsPanelTemplate -->
+			<Member fullName="(?&lt;ReturnType&gt;(Microsoft|Windows)\.UI\.Xaml\.(DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate))) \k&lt;ReturnType&gt;\.op_Implicit\(System\.Func`1&lt;.*&gt; obj\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Func`1&lt;.*&gt; (?&lt;DeclaringType&gt;(Microsoft|Windows)\.UI\.Xaml\.(FrameworkTemplate|DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate)))\.op_Implicit\(\k&lt;DeclaringType&gt; obj\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView\.get_(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- ViewExtensions -->
+			<Member fullName="System\.String Uno\.UI\.Extensions\.ViewExtensions\.TreeGraph\((?&lt;_View&gt;.+) reference, System\.Func`2&lt;\k&lt;_View&gt;,System\.String&gt; describe\)" isRegex="true" reason="Not in UWP" />
+
+			<!-- END templated-parent rework -->
+
+			<!-- BEGIN ComboBox.IsEditable -->
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
+			<!-- END ComboBox.IsEditable -->
+
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
+		</Methods>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.5">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
+			
+			<!-- BEGIN DiagnosticsOverlay -->
+			<Member fullName="System.Void Uno.Diagnostics.UI.DiagnosticsOverlay.Add(System.String id, System.String name, Microsoft.UI.Xaml.UIElement preview, System.Func`1&lt;Microsoft.UI.Xaml.UIElement&gt; details)" reason="Recently public, nobody uses it yet." />
+			<!-- END DiagnosticsOverlay -->
+		</Methods>
+	</IgnoreSet>
+    
+  <IgnoreSet baseVersion="5.6">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationStartPosition2(System.Double value)" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />	
+      <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationEndPosition2(System.Double value)" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+		</Methods>
+	</IgnoreSet>
+
+	<![CDATA[
+		The 'baseVersion' should be the current latest stable version published on nuget, 
+		NOT what will be published by the PR in progress.
+		To test locally, you need to install: 
+			; the tool version can be found from the failed task OR look for "ValidatePackage" in Uno.UI.Build.csproj
+			dotnet tool install --global Uno.PackageDiff --version 1.1.0-dev.29
+		Then, run this command: // the command is supposed to be one line
+			generatepkgdiff
+				--base=path/to/the-latest-stable-from-nuget-org/uno.winui.5.2.175.nupkg
+				--other=path/to/nupkg-from-the-pr-artifact/Uno.WinUI.5.4.0-PullRequest-17260-131308-17260.nupkg
+				--diffignore=path/to/this-repo/build/PackageDiffIgnore.xml
+				--outfile=diff.md
+			| findstr Error
+	]]>
+	<!--
+		Supported nodes (please keep at the bottom of this file):
+		<IgnoreSet baseVersion="0.0">
+			<Types>
+			</Types>
+
+			<Events>
+			</Events>
+
+			<Fields>
+			</Fields>
+
+			<Properties>
+			</Properties>
+
+			<Methods>
+			</Methods>
+		</IgnoreSet>
 	-->
   </IgnoreSets>
 </DiffIgnore>

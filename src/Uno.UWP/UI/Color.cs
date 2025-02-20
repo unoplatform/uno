@@ -40,7 +40,9 @@ namespace Windows.UI
 
 		internal Color(byte a, byte r, byte g, byte b)
 		{
-			_color = 0; // Required for field initialization rules in C#
+			// Required for field initialization rules in C#
+			_color = 0;
+
 			_b = b;
 			_g = g;
 			_r = r;
@@ -54,6 +56,7 @@ namespace Windows.UI
 			_g = 0;
 			_r = 0;
 			_a = 0;
+
 			_color = color;
 		}
 
@@ -80,6 +83,53 @@ namespace Windows.UI
 		internal Color WithOpacity(double opacity) => new((byte)(_a * opacity), _r, _g, _b);
 
 		internal uint AsUInt32() => _color;
+
+		internal HslColor ToHsl()
+		{
+			double r = R / 255.0;
+			double g = G / 255.0;
+			double b = B / 255.0;
+
+			double max = Math.Max(Math.Max(r, g), b);
+			double min = Math.Min(Math.Min(r, g), b);
+
+			double h = 0, s = 0, l = (max + min) / 2;
+			double delta = max - min;
+
+			if (Math.Abs(delta) > double.Epsilon)
+			{
+				s = delta / (l > 0.5 ? (2.0 - max - min) : (max + min));
+
+				double deltaR = (((max - r) / 6) + (delta / 2)) / delta;
+				double deltaG = (((max - g) / 6) + (delta / 2)) / delta;
+				double deltaB = (((max - b) / 6) + (delta / 2)) / delta;
+
+				if (Math.Abs(r - max) < double.Epsilon)
+				{
+					h = deltaB - deltaG;
+				}
+				else if (Math.Abs(g - max) < double.Epsilon)
+				{
+					h = (1.0 / 3.0) + deltaR - deltaB;
+				}
+				else
+				{
+					h = (2.0 / 3.0) + deltaG - deltaR;
+				}
+
+				if (h < 0)
+				{
+					h += 1;
+				}
+
+				if (h > 1)
+				{
+					h -= 1;
+				}
+			}
+
+			return new(h, s, l);
+		}
 
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
 

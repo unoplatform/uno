@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ئېتىك</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ئاق</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ئاچ كۈلرەڭ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>كۈلرەڭ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>توق كۈلرەڭ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>قارا</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مارجان</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>قىزىلگۈل</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ئاچ قىزغۇچ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>قارامتۇل</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ئاچ سېرىق</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ئاچ يېشىل</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>سۇس يېشىل</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>سۇ يېشىل</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ئاسمان كۆك</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ئاچ كۆكۈچ يېشىل</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ئۆڭمە كۆك</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ئاچ كۆك</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>مۇز كۆك</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>گۈلبىنەپشە</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>سۇس بىنەپشە</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>بىنەپشە</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>قىزىل</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>قىزغۇچ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>قوڭۇر</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ئالتۇنرەڭ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>سېرىق</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>زەيتۇن يېشىل</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>يېشىل</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>يورۇق يېشىل</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>بۇژغۇن</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>كۆكۈچ يېشىل</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>كۆك</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>كۆكۈچ كۈلرەڭ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>دۇغ كۆك</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>سۆسۈن</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>توق قىزىل</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>توق سېرىق</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>توق يېشىل</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>توق بۇژغۇن</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>توق كۆك</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>توق سۆسۈن</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>قارائۆرۈك</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>يېپىش</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

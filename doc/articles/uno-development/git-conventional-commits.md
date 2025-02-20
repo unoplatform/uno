@@ -8,7 +8,7 @@ Uno uses the [Conventional Commits format](https://www.conventionalcommits.org/e
 
 The Conventional Commits format is as follows:
 
-```
+```text
 <type>([optional scope]): <description>
 
 [optional body]
@@ -16,24 +16,24 @@ The Conventional Commits format is as follows:
 [optional footer(s)]
 ```
 
-### Type
+## Type
 
 Only certain _types_ are permitted, with the most common being:
 
- - `fix:` a commit that fixes a bug in Uno.
- - `feat:` a commit that adds new functionality to Uno.
- - `docs:` a commit that adds or improves Uno's documentation.
- - `test:` a commit that adds unit tests.
- - `perf:` a commit that improves performance, without functional changes.
- - `chore:` a catch-all type for any other commits. For instance, if you're implementing a single feature and it makes sense to divide the work into multiple commits, you should mark one commit as `feat` and the rest as `chore`.
+- `fix:` a commit that fixes a bug in Uno.
+- `feat:` a commit that adds new functionality to Uno.
+- `docs:` a commit that adds or improves Uno's documentation.
+- `test:` a commit that adds unit tests.
+- `perf:` a commit that improves performance, without functional changes.
+- `chore:` a catch-all type for any other commits. For instance, if you're implementing a single feature and it makes sense to divide the work into multiple commits, you should mark one commit as `feat` and the rest as `chore`.
 
-### Scope
+## Scope
 
  The _scope_ optionally provides extra context. If you're fixing a `ListView` bug, for example, you might use `fix(listview)`.
 
  One scope with special meaning is `reg`, short for regression. This is used for fixes for bugs that weren't present in the most recent stable release.
 
-### Breaking changes
+## Breaking changes
 
 Breaking changes are indicated by putting `BREAKING CHANGE:` at the start of the message body, for any commit type. Optionally they may be emphasized by appending a `!` after the type and scope. The message body should provide appropriate guidance for developers affected by the breaking change.
 
@@ -41,8 +41,8 @@ Breaking changes are indicated by putting `BREAKING CHANGE:` at the start of the
 
 If you already made commits and they don't meet the Conventional Commits specification, you have a couple of options:
 
- - if there's only one commit to redo, the easiest option is to use `git commit --amend` with no staged changes, which will allow you to edit the commit message.
- - if you have multiple commits to reformat, you'll probably need to do an [interactive rebase](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and use the `reword` option.
+- if there's only one commit to redo, the easiest option is to use `git commit --amend` with no staged changes, which will allow you to edit the commit message.
+- if you have multiple commits to reformat, you'll probably need to do an [interactive rebase](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and use the `reword` option.
 
 ## Examples
 

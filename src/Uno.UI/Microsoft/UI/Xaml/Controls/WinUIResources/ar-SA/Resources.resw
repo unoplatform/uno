@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>أسلوب الإدخال قيد الإيقاف</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>أبيض</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>رمادي فاتح</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>رمادي</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>رمادي داكن</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>أسود</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>مرجاني</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>وردي</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>برتقالي فاتح</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>خمري</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>أصفر فاتح</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>أخضر فاتح</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ليموني</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>أزرق مائي</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>أزرق سماوي</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>تركوازي فاتح</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>أزرق شاحب</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>أزرق فاتح</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>أزرق ثلجي</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>صدفي</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>أرجواني شاحب</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>قرنفلي</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>أحمر</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>برتقالي</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>بني</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ذهبي</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>أصفر</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>أخضر زيتي</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>أخضر</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>أخضر ساطع</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>أزرق مخضر</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>فيروزي</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>أزرق</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>أزرق-رمادي</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>نيلي</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>أرجواني</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>أحمر داكن</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>أصفر داكن</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>أخضر داكن</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>أزرق مخضر داكن</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>أزرق داكن</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>أرجواني داكن</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>أرجواني مائل للزرقة</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>إغلاق</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

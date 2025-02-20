@@ -3,84 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TeachingTipTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Thickness TopRightHighlightMargin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(TopRightHighlightMarginProperty);
-			}
-			set
-			{
-				this.SetValue(TopRightHighlightMarginProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Thickness TopLeftHighlightMargin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(TopLeftHighlightMarginProperty);
-			}
-			set
-			{
-				this.SetValue(TopLeftHighlightMarginProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.IconElement IconElement
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.IconElement)this.GetValue(IconElementProperty);
-			}
-			set
-			{
-				this.SetValue(IconElementProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IconElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IconElement), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopLeftHighlightMarginProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopLeftHighlightMargin), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopRightHighlightMarginProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopRightHighlightMargin), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TeachingTipTemplateSettings() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings", "TeachingTipTemplateSettings.TeachingTipTemplateSettings()");
-		}
-#endif
+		// Skipping already declared property TopRightHighlightMargin
+		// Skipping already declared property TopLeftHighlightMargin
+		// Skipping already declared property IconElement
+		// Skipping already declared property IconElementProperty
+		// Skipping already declared property TopLeftHighlightMarginProperty
+		// Skipping already declared property TopRightHighlightMarginProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TeachingTipTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.set

@@ -39,7 +39,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_horizontalAlignmentRatio = value;
 		}
@@ -80,7 +80,7 @@ public partial class BringIntoViewOptions
 		{
 			if (!double.IsNaN(value))
 			{
-				value = value.Clamp(0.0, 1.0);
+				value = Math.Clamp(value, 0.0, 1.0);
 			}
 			_verticalAlignmentRatio = value;
 		}

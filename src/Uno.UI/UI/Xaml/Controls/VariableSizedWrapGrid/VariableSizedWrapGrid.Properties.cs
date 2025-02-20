@@ -104,7 +104,7 @@ partial class VariableSizedWrapGrid
 			typeof(VariableSizedWrapGrid),
 			new FrameworkPropertyMetadata(-1));
 
-	internal override Orientation? InternalOrientation => Orientation;
+	internal override Orientation? PhysicalOrientation => Orientation;
 
 	/// <summary>
 	/// Gets or sets the direction in which child elements are arranged.

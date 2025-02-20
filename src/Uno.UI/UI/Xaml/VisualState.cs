@@ -16,8 +16,14 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder;
-
+		/// <summary>
+		/// Lazy builder provided by the source generator. Invoking this will
+		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
+		/// </summary>
+		internal Action LazyBuilder { get; set; }
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal bool? FromLegacyTemplate { get; set; }
+#endif
 		public VisualState()
 		{
 			InitializeBinder();
@@ -150,16 +156,6 @@ namespace Microsoft.UI.Xaml
 		internal VisualStateGroup Owner => this.GetParent() as VisualStateGroup;
 
 		/// <summary>
-		/// Lazy builder provided by the source generator. Invoking this will
-		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
-		/// </summary>
-		internal Action LazyBuilder
-		{
-			get => lazyBuilder;
-			set => lazyBuilder = value;
-		}
-
-		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
 		private void EnsureMaterialized()
@@ -168,8 +164,19 @@ namespace Microsoft.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				builder.Invoke();
-
+				try
+				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
+#endif
+					builder.Invoke();
+				}
+				finally
+				{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					TemplatedParentScope.PopScope();
+#endif
+				}
 
 				// Resolve all theme resources from storyboard children
 				// and setters values. This step is needed to ensure that

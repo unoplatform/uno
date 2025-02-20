@@ -12,6 +12,7 @@ using Windows.UI;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -21,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -168,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (textBox != null)
 			{
-				var newFont = UIFontHelper.TryGetFont((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontFamily);
+				var newFont = FontHelper.TryGetFont(new((float)textBox.FontSize, textBox.FontWeight, textBox.FontStyle, textBox.FontStretch), textBox.FontFamily);
 
 				if (newFont != null)
 				{
@@ -203,7 +205,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (newValue is SolidColorBrush scb)
 				{
-					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+					_foregroundBrushChangedSubscription?.Dispose();
+					_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{

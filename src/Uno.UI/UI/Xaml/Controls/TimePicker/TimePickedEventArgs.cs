@@ -1,20 +1,32 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the TimePicked event.
+/// </summary>
+public sealed partial class TimePickedEventArgs : DependencyObject
 {
-	public partial class TimePickedEventArgs
+	/// <summary>
+	/// Initializes a new instance of the TimePickedEventArgs class.
+	/// </summary>
+	public TimePickedEventArgs()
 	{
-		public TimePickedEventArgs()
-		{
-		}
-
-		public TimePickedEventArgs(TimeSpan oldTime, TimeSpan newTime)
-		{
-			OldTime = oldTime;
-			NewTime = newTime;
-		}
-
-		public TimeSpan OldTime { get; }
-		public TimeSpan NewTime { get; }
 	}
+
+	internal TimePickedEventArgs(TimeSpan oldTime, TimeSpan newTime)
+	{
+		OldTime = oldTime;
+		NewTime = newTime;
+	}
+
+	/// <summary>
+	/// Gets the old time value.
+	/// </summary>
+	public TimeSpan OldTime { get; }
+
+	/// <summary>
+	/// Gets the time that was selected by the user.
+	/// </summary>
+	public TimeSpan NewTime { get; }
 }

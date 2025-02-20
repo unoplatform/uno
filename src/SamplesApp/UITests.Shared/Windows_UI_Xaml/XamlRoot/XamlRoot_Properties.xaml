@@ -9,9 +9,27 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<StackPanel>
-		<TextBlock>
-			RasterizationScale: <Run x:Name="rasterizationScale" />
-		</TextBlock>
-	</StackPanel>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel Spacing="8" Padding="8">
+			<TextBlock>
+			<Run Text="RasterizationScale:" FontWeight="Bold" />
+			<Run x:Name="RasterizationScaleRun" />
+			</TextBlock>
+			<TextBlock>
+			<Run Text="IsHostVisible:" FontWeight="Bold" />
+			<Run x:Name="IsHostVisibleRun" />
+			</TextBlock>
+			<TextBlock>
+			<Run Text="Size:" FontWeight="Bold" />
+			<Run x:Name="SizeRun" />
+			</TextBlock>
+			<TextBlock Margin="0,16,0,0" Text="Change log:" FontWeight="Bold" />
+			<Button Click="{x:Bind ClearClick}">Clear</Button>
+		</StackPanel>
+		<ListView ItemsSource="{x:Bind ChangeLog}" Grid.Row="1" />
+	</Grid>
 </UserControl>

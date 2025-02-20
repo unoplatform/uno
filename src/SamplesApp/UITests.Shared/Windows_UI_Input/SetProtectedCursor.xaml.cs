@@ -1,5 +1,5 @@
 ﻿using Microsoft/* UWP don't rename */.UI.Xaml;
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 using Uno.UI.Samples.Controls;
@@ -8,10 +8,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-
-#if !WINAPPSDK
 using Microsoft.UI.Input;
-#endif
 
 namespace SamplesApp.Wasm.Windows_UI_Input
 {
@@ -25,26 +22,20 @@ namespace SamplesApp.Wasm.Windows_UI_Input
 
 		private void ChangeButtonCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINAPPSDK
 			var SizeWestEastCursor = InputSystemCursor.Create(InputSystemCursorShape.SizeWestEast);
 			this.ProtectedCursor = SizeWestEastCursor;
-#endif
 		}
 
 		private void ChangeBorderCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINAPPSDK
 			var waitCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
 			this.ProtectedCursor = waitCursor;
-#endif
 		}
 
 		private void CaptureCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINAPPSDK
 			var border = (Border)sender;
 			border.CapturePointer(e.Pointer);
-#endif
 		}
 	}
 }

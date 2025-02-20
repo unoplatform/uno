@@ -144,10 +144,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 // </auto-generated>
 
 #pragma warning disable 1591 // Ignore missing XML comment warnings
+");
+
+					AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+
+					builder.Append(@"
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
@@ -167,20 +173,21 @@ using AppKit;
 						{
 							builder.AppendLineIndented(@"[global::Microsoft.UI.Xaml.Data.Bindable]");
 						}
-
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
 					};
 
-					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+					var implementations = new string?[]
 					{
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
-
+						"IDependencyObjectStoreProvider",
+						_isUnoSolution && !typeSymbol.IsSealed ? "IDependencyObjectInternal" : null,
+						"IWeakReferenceProvider",
+					}.Where(x => x is not null);
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: " : " + string.Join(", ", implementations)))
+					{
 						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 						GenerateIBinderImplementation(typeSymbol, builder);
 					}
 
-					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+					_context.AddSource(typeSymbol.GetFullMetadataNameForFileName(), builder.ToString());
 				}
 			}
 
@@ -235,19 +242,9 @@ public override void WillMoveToSuperview(UIKit.UIView newsuper)
 	base.WillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(UIKit.UIView newsuper);
-
-private void SyncBinder(UIKit.UIView superview, UIKit.UIWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -273,19 +270,9 @@ public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
 	base.ViewWillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(AppKit.NSView newsuper);
-
-private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -473,23 +460,9 @@ partial void OnDetachedFromWindowPartial();
 				if (hasBinderDetails)
 				{
 					builder.AppendMultiLineIndented($@"
-///<summary>
-/// Should not be used directly.
-/// Helper method to provide Xaml debugging information to tools like Stetho.
-///</summary>
-[Java.Interop.ExportField(""xamlBinder"")]
 public BinderDetails GetBinderDetail()
 {{
 	return null;
-}}
-
-partial void UpdateBinderDetails()
-{{
-	if (BinderDetails.IsBinderDetailsEnabled)
-	{{
-		var field = this.Class.GetField(""xamlBinder"");
-		field.Set(this, new BinderDetails(this));
-	}}
 }}
 					");
 				}
@@ -501,7 +474,7 @@ partial void UpdateBinderDetails()
 private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 private BinderReferenceHolder _refHolder;
 
-public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 partial void InitializeBinder();
 
@@ -510,13 +483,8 @@ private void __InitializeBinder()
 	if(BinderReferenceHolder.IsEnabled)
 	{{
 		_refHolder = new BinderReferenceHolder(this.GetType(), this);
-
-		UpdateBinderDetails();
 	}}
 }}
-
-
-partial void UpdateBinderDetails();
 
 /// <summary>
 /// Obsolete method kept for binary compatibility
@@ -643,6 +611,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
+
 				string dataContextChangedInvokeArgument;
 				if (typeSymbol.Is(_frameworkElementSymbol))
 				{
@@ -694,15 +664,16 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 
 #endregion
 
-#region TemplatedParent DependencyProperty
+#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 
-public DependencyObject TemplatedParent
+{legacyNonBrowsable}public DependencyObject TemplatedParent
 {{
 	get => (DependencyObject)GetValue(TemplatedParentProperty);
 	set => SetValue(TemplatedParentProperty, value);
 }}
 
 // Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+{legacyNonBrowsable}
 public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(TemplatedParent),
@@ -710,15 +681,15 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 		ownerType: typeof({typeSymbol.Name}),
 		typeMetadata: new FrameworkPropertyMetadata(
 			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+			options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
 			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
 		)
 	);
 
 
+{legacyNonBrowsable}
 {protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 {{
-	__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
 	OnTemplatedParentChangedPartial(e);
 }}
 
@@ -749,6 +720,7 @@ internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyI
 
 partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 
+{legacyNonBrowsable}
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
 public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
@@ -796,7 +768,7 @@ public override bool Equals(object other)
 			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder, bool hasDispatcherQueue)
 			{
 				builder.AppendLineIndented(@"private DependencyObjectStore __storeBackingField;");
-				builder.AppendLineIndented(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
+				builder.AppendLineIndented(@"public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				if (hasDispatcherQueue)
 				{
@@ -809,7 +781,7 @@ public override bool Equals(object other)
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);");
+							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty);");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 

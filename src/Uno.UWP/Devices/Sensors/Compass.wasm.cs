@@ -28,7 +28,7 @@ public partial class Compass
 				return;
 			}
 
-			lock (_syncLock)
+			lock (_readingChangedWrapper.SyncLock)
 			{
 				_reportInterval = value;
 
@@ -37,7 +37,7 @@ public partial class Compass
 					return;
 				}
 
-				if (_readingChanged != null)
+				if (_readingChangedWrapper.Event != null)
 				{
 					//restart reading to apply interval
 					StopReadingChanged();

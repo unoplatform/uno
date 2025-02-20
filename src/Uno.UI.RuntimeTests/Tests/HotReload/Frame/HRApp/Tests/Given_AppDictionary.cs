@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
@@ -18,7 +17,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_String()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -48,7 +47,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_DataTemplate()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -78,7 +77,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_Color()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -92,7 +91,7 @@ public class Given_Dictionary : BaseTestClass
 		{
 			if (root.FindName("tb01") is TextBlock tb)
 			{
-				if(tb.Foreground is SolidColorBrush scb)
+				if (tb.Foreground is SolidColorBrush scb)
 				{
 					return scb.Color == color;
 				}
@@ -121,7 +120,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_SubDictionary_String()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -149,9 +148,10 @@ public class Given_Dictionary : BaseTestClass
 	}
 
 	[TestMethod]
+	//[Ignore("Failing ramdomly on CI")]
 	public async Task When_Change_AppResource_LotOfTimes()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(90)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content

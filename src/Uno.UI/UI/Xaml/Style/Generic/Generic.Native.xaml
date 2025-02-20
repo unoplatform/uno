@@ -158,9 +158,6 @@
 	<!-- Default native ToggleSwitch styles -->
 	<ios:Style x:Key="NativeDefaultToggleSwitch"
 			   TargetType="ToggleSwitch">
-		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
-		<Setter Property="ClipsToBounds"
-				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleSwitch">
@@ -718,7 +715,7 @@
 	</ios:Style>
 
 	<!-- TimePicker -->
-	<android:Style TargetType="TimePickerFlyoutPresenter">
+	<android:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
@@ -743,7 +740,7 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	<ios:Style TargetType="TimePickerFlyoutPresenter">
+	<ios:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
@@ -770,10 +767,10 @@
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
 
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0"
 							  x:Name="AcceptDismissHostGrid"

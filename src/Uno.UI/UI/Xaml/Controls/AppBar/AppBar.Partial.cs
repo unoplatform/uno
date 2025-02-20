@@ -131,9 +131,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			SizeChanged += OnSizeChanged;
 
-			m_windowSizeChangedEventHandler.Disposable = Microsoft.UI.Xaml.Window.Current.RegisterSizeChangedEvent(OnWindowSizeChanged);
-
-
 			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
 		}
 
@@ -148,6 +145,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (isOpen)
 			{
 				OnIsOpenChanged(true);
+			}
+
+			// TODO: Uno specific - use XamlRoot instead of Window
+			if (XamlRoot is not null)
+			{
+				XamlRoot.Changed += OnXamlRootChanged;
+				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
 
 			//UNO TODO
@@ -239,6 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
+
 			if (GetOwner() is { } pageOwner)
 			{
 				// UNO TODO
@@ -605,7 +611,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			if (m_Mode == AppBarMode.Inline)
 			{
@@ -763,7 +769,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// If the AppBar is not live, then wait until it's loaded before
 			// responding to changes to opened state and firing our Opening/Opened events.
-			if (!IsInLiveTree)
+			// Uno Specific: using IsLoaded instead of IsInLiveTree, which makes more sense because OnOpening (called below) -> SetupOverlayState expects OnApplyTemplate to have already been called
+			if (!IsLoaded)
 			{
 				return;
 			}
@@ -1156,7 +1163,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
+					layoutBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{

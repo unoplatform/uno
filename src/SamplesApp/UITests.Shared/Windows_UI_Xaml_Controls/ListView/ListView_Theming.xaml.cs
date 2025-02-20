@@ -30,14 +30,14 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 
 		private void Button_Click1(object sender, RoutedEventArgs e)
 		{
-			if (global::Microsoft.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (XamlRoot?.Content is FrameworkElement root)
 			{
 				root.RequestedTheme = ElementTheme.Light;
 			}
 		}
 		private void Button_Click2(object sender, RoutedEventArgs e)
 		{
-			if (global::Microsoft.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (XamlRoot?.Content is FrameworkElement root)
 			{
 				root.RequestedTheme = ElementTheme.Dark;
 			}

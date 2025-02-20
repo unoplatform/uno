@@ -2,7 +2,7 @@
 uid: Uno.GetStarted.vscode
 ---
 
-## Get Started on VS Code
+# Get Started on VS Code
 
 This guide will walk you through the set-up process for building apps with Uno under Windows, Linux or macOS.
 
@@ -15,12 +15,11 @@ See these sections for information about using Uno Platform with:
 
 - [**Visual Studio Code**](https://code.visualstudio.com/)
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
-- For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
-- For Linux, install [OpenJDK 11](https://learn.microsoft.com/en-us/java/openjdk/install#install-on-ubuntu) for Android development.
+- For Linux, install [OpenJDK 11](https://learn.microsoft.com/java/openjdk/install#install-on-ubuntu) for Android development.
 
 ## Check your environment
 
-[!include[getting-help](use-uno-check-inline-noheader.md)]
+[!include[getting-help](includes/use-uno-check-inline-noheader.md)]
 
 ## Configure VS Code
 
@@ -33,11 +32,12 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 
 ## OmniSharp Legacy Mode
 
-Starting **Uno Platform extension** version 0.12, running in VS Code automatically uses the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`. 
+Starting **Uno Platform extension** version 0.12, running in VS Code automatically uses the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`.
 
 If you are using GitPod, any [Open VSX environment](https://open-vsx.org) or earlier versions of the Uno Platform extension, you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
 
 To switch between C# Dev Kit and OmniSharp:
+
 - [Switch to C# Dev Kit Mode](xref:Uno.GetStarted.vscode.DevKit)
 - [Switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
 
@@ -45,19 +45,11 @@ To switch between C# Dev Kit and OmniSharp:
 
 You may need to follow additional directions, depending on your development environment.
 
-# [**Windows**](#tab/windows)
+### Linux
 
-[!include[windows-setup](additional-windows-setup-inline.md)]
+[!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
-# [**Linux**](#tab/linux)
-
-[!include[linux-setup](additional-linux-setup-inline.md)]
-
-# [**macOS**](#tab/macos)
-
-[!include[macos-setup](additional-macos-setup-inline.md)]
-
-***
+---
 
 ## Next Steps
 

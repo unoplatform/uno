@@ -1,5 +1,9 @@
 ﻿#nullable enable
 
+using System;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition
 {
 	public partial class InsetClip : CompositionClip
@@ -36,6 +40,54 @@ namespace Microsoft.UI.Composition
 		{
 			get => _bottomInset;
 			set => SetProperty(ref _bottomInset, value);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase))
+			{
+				return BottomInset;
+			}
+			else if (propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase))
+			{
+				return LeftInset;
+			}
+			else if (propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase))
+			{
+				return RightInset;
+			}
+			else if (propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
+			{
+				return TopInset;
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase))
+			{
+				BottomInset = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase))
+			{
+				LeftInset = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase))
+			{
+				RightInset = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
+			{
+				TopInset = ValidateValue<float>(propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }

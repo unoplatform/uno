@@ -96,7 +96,7 @@
                                 <Setter Property="AllowFocusOnInteraction" Value="True" />
                             </Style>
                             <!-- New CommandBar Style -->
-                            <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}">
+                            <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}">
                                 <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="DefaultLabelPosition" Value="Collapsed"/>
                             </Style>
@@ -115,7 +115,7 @@
                                 <Setter Property="Padding" Value="0" />
                                 <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
                             </Style>
-                            
+
                             <Style x:Key="MediaSliderStyle" TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}" />
                             <Style x:Key="MediaControlAppBarButtonStyle" TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}" />
                         </Grid.Resources>
@@ -220,7 +220,7 @@
                                         <Setter Target="PlayPauseButton.Visibility" Value="Collapsed" />
                                         <Setter Target="ProgressSlider.Margin" Value="{ThemeResource MediaTransportControlsProgressSliderCompactMargin}" />
                                         <Setter Target="ControlPanelGrid.Padding" Value="3" />
-                                    </VisualState.Setters> 
+                                    </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
                             <!-- PlayPause states -->

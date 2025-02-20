@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME オフ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>白</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>淡い灰色</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>灰色</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>濃い灰色</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>黒</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>さんご</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ローズ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>薄いオレンジ</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>タン</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>薄い黄</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>薄い緑</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>黄緑</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>水色</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>スカイブルー</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>薄いターコイズ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>淡い青</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>薄い青</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>アイスブルー</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>薄紫</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ラベンダー</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ピンク</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>赤</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>オレンジ</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>茶</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>金色</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>黄</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>オリーブ グリーン</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>緑</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>明るい緑</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>青緑</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ターコイズ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>青</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ブルーグレー</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>インディゴ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>紫</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>濃い赤</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>濃い黄色</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>濃い緑</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>濃い青緑</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>濃い青</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>濃い紫</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>プラム</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>閉じる</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

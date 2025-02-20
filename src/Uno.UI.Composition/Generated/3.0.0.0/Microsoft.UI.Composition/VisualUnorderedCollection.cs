@@ -23,13 +23,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.VisualUnorderedCollection", "void VisualUnorderedCollection.RemoveAll()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.VisualUnorderedCollection.First()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Add(global::Microsoft.UI.Composition.Visual newVisual)
@@ -44,8 +38,14 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.VisualUnorderedCollection", "void VisualUnorderedCollection.Remove(Visual visual)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void RemoveAll()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.VisualUnorderedCollection", "void VisualUnorderedCollection.RemoveAll()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.VisualUnorderedCollection.Count.get
-		// Forced skipping of method Microsoft.UI.Composition.VisualUnorderedCollection.First()
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Visual>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Visual>

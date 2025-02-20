@@ -251,7 +251,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region HorizontalAlignment Dependency Property
 
-		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty HorizontalAlignmentProperty { get ; } = CreateHorizontalAlignmentProperty();
 
 		public
@@ -267,7 +267,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#region VerticalAlignment Dependency Property
 
-		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
+		[GeneratedDependencyProperty(DefaultValue = HorizontalAlignment.Stretch, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty VerticalAlignmentProperty { get ; } = CreateVerticalAlignmentProperty();
 
 		public
@@ -361,55 +361,63 @@ namespace <#= mixin.NamespaceName #>
 			get { return base.Frame; }
 			set
 			{
-				var previousSize = _actualSize;
-				_actualSize = value.Size.ToFoundationSize().PhysicalToLogicalPixels();
+				try
+				{
+					var previousSize = _actualSize;
+					_actualSize = value.Size.ToFoundationSize().PhysicalToLogicalPixels();
 
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-				RenderSize = _actualSize;
-				AssignedActualSize = _actualSize;
+					RenderSize = _actualSize;
 #endif
 
-				CGAffineTransform? oldTransform = null;
-				if (!Transform.IsIdentity)
-				{
-					// If UIView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/#//apple_ref/occ/instp/UIView/transform)
-					// We reapply the transform based on the new size straight after.
-					oldTransform = Transform;
-					Transform = CGAffineTransform.MakeIdentity();
-				}
-
-				base.Frame = value;
-				AppliedFrame = value;
-
-				if (previousSize != _actualSize)
-				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
-
-					if (_renderTransform != null)
+					CGAffineTransform? oldTransform = null;
+					if (!Transform.IsIdentity)
 					{
-						// This will set the updated Transform
-						_renderTransform.UpdateSize(_actualSize);
+						// If UIView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/#//apple_ref/occ/instp/UIView/transform)
+						// We reapply the transform based on the new size straight after.
+						oldTransform = Transform;
+						Transform = CGAffineTransform.MakeIdentity();
+					}
+
+					base.Frame = value;
+					AppliedFrame = value;
+
+					if (previousSize != _actualSize)
+					{
+						SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
+
+						if (_renderTransform != null)
+						{
+							// This will set the updated Transform
+							_renderTransform.UpdateSize(_actualSize);
+						}
+						else if (oldTransform.HasValue)
+						{
+							// We grudgingly support setting the native transform directly without going through RenderTransform.
+							Transform = oldTransform.Value;
+						}
+
+#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
+						if (Superview != null && !(Superview is DependencyObject))
+						{
+							// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
+							// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
+							// required for some views (eg Image) to display correctly.
+							SetLayoutFlags(LayoutFlag.MeasureDirty);
+						}
+#endif
 					}
 					else if (oldTransform.HasValue)
 					{
 						// We grudgingly support setting the native transform directly without going through RenderTransform.
 						Transform = oldTransform.Value;
 					}
-
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-					if (Superview != null && !(Superview is DependencyObject))
-					{
-						// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
-						// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
-						// required for some views (eg Image) to display correctly.
-						SetLayoutFlags(LayoutFlag.MeasureDirty);
-					}
-#endif
 				}
-				else if (oldTransform.HasValue)
+				catch (Exception ex)
 				{
-					// We grudgingly support setting the native transform directly without going through RenderTransform.
-					Transform = oldTransform.Value;
+					// The app must not crash if any managed exception happens in the
+					// native override
+					Application.Current.RaiseRecoverableUnhandledException(ex);
 				}
 			}
 		}
@@ -861,12 +869,14 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		Action _brushChanged;
+		IDisposable _backgroundBrushChangedSubscription;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var oldValue = e.OldValue as Brush;
 			var newValue = e.NewValue as Brush;
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
+
+			_backgroundBrushChangedSubscription?.Dispose();
+			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
 		}
 
 		#endregion

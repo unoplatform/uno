@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<!-- Ensure that the app logs the console -->
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
@@ -14,6 +14,9 @@
 		<UnoUIRuntimeTestEngine_DisableValidateUno>true</UnoUIRuntimeTestEngine_DisableValidateUno>
        <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);CS1998;IDE0051;IDE0055;NU1903;MSB3277</NoWarn>
 	</PropertyGroup>
 
 	<Target Name="DisplayBasePath" BeforeTargets="BeforeBuild">
@@ -35,25 +38,25 @@
 		
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
-		<PackageReference Include="SkiaSharp" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.3" />
-		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.15.0-dev.56" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
+		<PackageReference Include="SkiaSharp" Version="2.88.7" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.7" />
+		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
 		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.8.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.7" />
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
 		-->
 	</ItemGroup>
-
 	
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.props" />
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
 

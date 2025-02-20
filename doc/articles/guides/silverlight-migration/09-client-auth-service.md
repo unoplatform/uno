@@ -11,8 +11,8 @@ As WCF RIA Services is no longer available, and the general approach to web serv
 > [!NOTE]
 > There are lots of authentication options out there - you can learn more about some of them from the resources below:
 >
-> * [Overview of ASP.NET Core authentication](https://docs.microsoft.com/aspnet/core/security/authentication/?view=aspnetcore-5.0)
-> * [Authentication and authorization in gRPC for ASP.NET Core](https://docs.microsoft.com/aspnet/core/grpc/authn-and-authz?view=aspnetcore-5.0)
+> * [Overview of ASP.NET Core authentication](https://learn.microsoft.com/aspnet/core/security/authentication/?view=aspnetcore-5.0)
+> * [Authentication and authorization in gRPC for ASP.NET Core](https://learn.microsoft.com/aspnet/core/grpc/authn-and-authz?view=aspnetcore-5.0)
 > * [IdentityServer4 Big Picture](https://identityserver4.readthedocs.io/en/latest/intro/big_picture.html)
 > * [Auth0 Get Started](https://auth0.com/docs/get-started)
 
@@ -25,7 +25,7 @@ As discussed earlier, the UWP implementation of the **TimeEntryUno** application
 > [!TIP]
 > The IdentityServer4 server-side implementation used in the sample mirrors the QuickStart tutorial shown below. :
 >
-> * [Protecting an API using Client Credentials](http://docs.identityserver.io/en/latest/quickstarts/1_client_credentials.html)
+> * [Protecting an API using Client Credentials](https://docs.duendesoftware.com/identityserver/v7/quickstarts/1_client_credentials/)
 
 The code to retrieve the access token is encapsulated within the a class **IdentityServerClient** and uses the **HttpClient** class as well as the **IdentityModel** NuGet package.
 
@@ -80,8 +80,8 @@ The code to retrieve the access token is encapsulated within the a class **Ident
     > [!TIP]
     > You can learn more about platform-specific C# and XAML here:
     >
-    > * [Platform-specific C# code in Uno](https://platform.uno/docs/articles/platform-specific-csharp.html)
-    > * [Platform-specific XAML markup in Uno](https://platform.uno/docs/articles/platform-specific-xaml.html)
+    > * [Platform-specific C# code in Uno](xref:Uno.Development.PlatformSpecificCSharp)
+    > * [Platform-specific XAML markup in Uno](xref:Uno.Development.PlatformSpecificXaml)
 
 1. To supply the required parameters to the **IdentityServerClient** class, add the following constructor:
 

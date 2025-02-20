@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME WETO</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Mā</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Kiwikiwi Kōmā</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Kiwikiwi</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Kiwikiwi Kōuri</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Pango</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Kora</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rōhi</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Karaka kōmā</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Pākākā</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Kōwhai Kōmā</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Kākāriki Kōmā</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Raima</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Kiko Moana</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Kiko o te Rangi</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Kārikirangi Kōmā</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Kikorangi Kōtea</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Kikorangi Kōmā</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Kikorangi Tio</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Kikorangi Porokōmā</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Porokōmā</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Māwhero</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Whero</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Karaka</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Parauri</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Kōura</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Kōwhai</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Kākāriki Oriwa</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Kākāriki</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Kākāriki mumura</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Tira</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Kārikirangi</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Kikorangi</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Kikorangi-Hina</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Māhoe</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Waiporoporo</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Kurauri</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Kōwhai kōuri</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Kārikiuri</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tira kōuri</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Ōrangiuri</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Waiporoporo kōuri</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Paramu</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Kati</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

@@ -3,7 +3,7 @@
 
 using System;
 using System.Globalization;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {

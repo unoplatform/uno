@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -120,6 +121,19 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return rect;
 		}
 
+		public static bool IsContainedIn(Rect inner, Rect outer)
+		{
+			var outerRight = outer.X + outer.Width;
+			var outerBottom = outer.Y + outer.Height;
+			var innerRight = inner.X + inner.Width;
+			var innerBottom = inner.Y + inner.Height;
+
+			return outer.X <= inner.X
+				&& outer.Y <= inner.Y
+				&& outerRight >= innerRight
+				&& outerBottom >= innerBottom;
+		}
+
 		public static async Task<bool> IsInVisualState(Control control, string visualStateGroupName, string visualStateName)
 		{
 			bool result = false;
@@ -165,6 +179,46 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				}
 			}
 			return group;
+		}
+
+		internal static async Task<Point> GetCenterOfElement(FrameworkElement element)
+		{
+			Point offsetFromCenter = default;
+
+			return await GetOffsetCenterOfElement(element, offsetFromCenter);
+		}
+
+		private static async Task<Point> GetOffsetCenterOfElement(FrameworkElement element, Point offsetFromCenter)
+		{
+			Point result = default;
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				var offsetCenterLocal = new Point((element.ActualWidth / 2) + offsetFromCenter.X, (element.ActualHeight / 2) + offsetFromCenter.Y);
+				result = element.TransformToVisual(null).TransformPoint(offsetCenterLocal);
+			});
+			return result;
+		}
+
+		public static async Task EnsureFocused(Control control)
+		{
+			bool hasFocus = false;
+			var gotFocusRegistration = Private.Infrastructure.TestServices.CreateSafeEventRegistration<Control, RoutedEventHandler>("GotFocus");
+			gotFocusRegistration.Attach(control, (s, e) => hasFocus = true);
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				if (control.FocusState == FocusState.Unfocused)
+				{
+					control.Focus(FocusState.Programmatic);
+				}
+				else
+				{
+					hasFocus = true;
+				}
+			});
+
+			await TestServices.WindowHelper.WaitFor(() => hasFocus);
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
 }

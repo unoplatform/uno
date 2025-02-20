@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -19,6 +20,7 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
@@ -47,6 +49,10 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
@@ -63,7 +69,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -93,27 +99,4 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-		<!--
-				VS4Mac seems to process System.Memory differently, and removes
-				the System.Memory local reference if the package is transitively referenced.
-				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
-				is properly adding the local System.Memory to the Reference item group.
-		-->
-		<ItemGroup>
-			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
-			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
-
-			<Reference Remove="@(_ReferenceToRemove)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
-		<ItemGroup>
-			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
-			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
-
-			<ReferencePath Remove="@(_ReferencePathToRemove)" />
-		</ItemGroup>
-	</Target>
 </Project>

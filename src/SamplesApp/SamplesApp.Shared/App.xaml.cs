@@ -1,4 +1,6 @@
-﻿using System;
+#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
@@ -16,21 +18,27 @@ using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
-using Uno;
 using System.Diagnostics.CodeAnalysis;
+using Uno;
+using Uno.UI;
+using Uno.UI.RuntimeTests.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Uno.UI;
 using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;
 #endif
 
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
@@ -50,15 +58,17 @@ namespace SamplesApp
 #endif
 	{
 #if HAS_UNO
-		private static Uno.Foundation.Logging.Logger _log;
+		private static Uno.Foundation.Logging.Logger? _log;
 #else
-		private static ILogger _log;
+		private static ILogger? _log;
 #endif
 
+		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
-
-		public static Window MainWindow { get; set; }
+#if __SKIA__
+		private bool _gotOnLaunched;
+#endif
 
 		static App()
 		{
@@ -91,7 +101,15 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
+#if __SKIA__
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
+			{
+				Assert.IsTrue(_gotOnLaunched);
+			});
+#endif
 		}
+
+		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
 
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
@@ -102,16 +120,27 @@ namespace SamplesApp
 #if HAS_UNO
 			internal
 #endif
-			override void OnLaunched(LaunchActivatedEventArgs e)
+		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT && HAS_TESTCLOUD_AGENT
-			// requires Xamarin Test Cloud Agent
-			Xamarin.Calabash.Start();
+#if __SKIA__
+			_gotOnLaunched = true;
+#endif
+			EnsureMainWindow();
 
+#if __WASM__
+			DispatcherQueue.Main.TryEnqueue(
+				DispatcherQueuePriority.Low,
+				() => InitWasmSampleRunner()
+			);
+#endif
+
+			SetupAndroidEnvironment();
+
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 				e.UWPLaunchActivatedEventArgs.Kind
 #else
 				e.Kind
@@ -125,14 +154,13 @@ namespace SamplesApp
 				AssertIssue12936();
 
 				AssertIssue12937();
+
+				AssertIssue15521();
 			}
 
 			var sw = Stopwatch.StartNew();
-#if DEBUG
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// this.DebugSettings.EnableFrameRateCounter = true;
-			}
+#if WINAPPSDK && DEBUG
+			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
 			AssertInitialWindowSize();
 
@@ -145,6 +173,8 @@ namespace SamplesApp
 
 #if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#else
+			MainWindow!.Title = "Uno Samples";
 #endif
 
 #if __SKIA__ && DEBUG
@@ -171,6 +201,43 @@ namespace SamplesApp
 		}
 #endif
 
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			_mainWindow ??=
+#if HAS_UNO_WINUI || WINAPPSDK
+				new Microsoft.UI.Xaml.Window();
+#else
+				Microsoft.UI.Xaml.Window.Current!;
+#endif
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				_mainWindow;
+		}
+
+		private void SetupAndroidEnvironment()
+		{
+#if __ANDROID__
+			// Read a file from /sdcard/environment.txt and set the environment variables	
+			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+			if (File.Exists(environmentFilePath))
+			{
+				var lines = File.ReadAllLines(environmentFilePath);
+				foreach (var line in lines)
+				{
+					var parts = line.Split('=');
+					if (parts.Length == 2)
+					{
+						var key = parts[0];
+						var value = parts[1];
+						Console.WriteLine($"Setting environment variable {key} to {value}");
+						System.Environment.SetEnvironmentVariable(key, value);
+					}
+				}
+			}
+#endif
+		}
+
+
 #if __IOS__
 		/// <summary>
 		/// Launches a watchdog that will terminate the app if the dispatcher does not process
@@ -187,7 +254,7 @@ namespace SamplesApp
 			{
 				Console.WriteLine("Starting dispatcher WatchDog...");
 
-				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+				var dispatcher = UnitTestDispatcherCompat.From(_mainWindow!);
 				var timeout = TimeSpan.FromSeconds(240);
 
 				Task.Run(async () =>
@@ -196,7 +263,7 @@ namespace SamplesApp
 					while (true)
 					{
 						var delayTask = Task.Delay(timeout);
-						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+						var messageTask = dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.High, () => { }).AsTask();
 
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
@@ -204,7 +271,7 @@ namespace SamplesApp
 								_ =>
 								{
 									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-									throw new Exception($"Watchdog failed");
+									System.Environment.Exit(1);
 								});
 						}
 
@@ -224,6 +291,7 @@ namespace SamplesApp
 		{
 			base.OnActivated(e);
 
+			EnsureMainWindow();
 			InitializeFrame();
 			ActivateMainWindow();
 
@@ -245,17 +313,17 @@ namespace SamplesApp
 		private void ActivateMainWindow()
 		{
 #if DEBUG && (__SKIA__ || __WASM__)
-			Microsoft.UI.Xaml.Window.Current.EnableHotReload();
+			_mainWindow!.EnableHotReload();
 #endif
-			MainWindow.Activate();
+			_mainWindow!.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
 
-		public event EventHandler MainWindowActivated;
+		public event EventHandler? MainWindowActivated;
 
-#if !HAS_UNO_WINUI
+#if HAS_UNO && !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
 		{
 			if (Current is null)
@@ -265,23 +333,18 @@ namespace SamplesApp
 		}
 #endif
 
-		private void InitializeFrame(string arguments = null)
+		private void InitializeFrame(string? arguments = null)
 		{
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
-			MainWindow = new Window();
-#else
-			MainWindow = Microsoft.UI.Xaml.Window.Current;
-#endif
+			if (_mainWindow is null)
+			{
+				throw new InvalidOperationException("Main window must be initialized before Frame");
+			}
 
-#if DEBUG
-			MainWindow.EnableHotReload();
-#endif
-
-			Frame rootFrame = MainWindow.Content as Frame;
+			var rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
-			if (rootFrame == null)
+			if (rootFrame is null)
 			{
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();
@@ -289,10 +352,10 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				MainWindow.Content = rootFrame;
+				_mainWindow.Content = rootFrame;
 			}
 
-			if (rootFrame.Content == null)
+			if (rootFrame.Content is null)
 			{
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
@@ -313,10 +376,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
-			if (launchActivatedEventArgs.Arguments is not { } args)
-			{
-				return;
-			}
+			var args = launchActivatedEventArgs.Arguments ?? "";
 
 			if (HandleAutoScreenshots(args))
 			{
@@ -337,6 +397,11 @@ namespace SamplesApp
 			{
 				var dlg = new MessageDialog(args, "Launch arguments");
 				await dlg.ShowAsync();
+			}
+
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 			}
 		}
 
@@ -368,7 +433,7 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		private void OnResuming(object sender, object e)
+		private void OnResuming(object? sender, object e)
 		{
 			Console.WriteLine("OnResuming");
 
@@ -389,6 +454,10 @@ namespace SamplesApp
 				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #else
 				builder.AddConsole();
+#endif
+
+#if __IOS__
+				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 
 #if !DEBUG
@@ -412,7 +481,7 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
-				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Warning);
+				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
@@ -474,8 +543,15 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
-#if __SKIA__
+#if HAS_UNO
+			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
+
+			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
+#endif
+#if __ANDROID__
+			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
 		}
 
@@ -501,7 +577,10 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+#pragma warning restore SYSLIB1045
+
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);
@@ -514,7 +593,9 @@ namespace SamplesApp
 					{
 						try
 						{
-							property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
+							// ChangeType doesn't handle Nullable types
+							var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+							property.SetValue(null, value == "null" ? null : Convert.ChangeType(value, type));
 						}
 						catch (Exception)
 						{
@@ -538,6 +619,9 @@ namespace SamplesApp
 #endif
 		}
 
+#if __WASM__
+		[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 		public static string GetDisplayScreenScaling(string displayId)
 			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
 	}

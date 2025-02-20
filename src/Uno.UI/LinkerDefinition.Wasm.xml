@@ -7,7 +7,6 @@
 		<type fullname="Microsoft.UI.Xaml.CornerRadiusConverter" />
 		<type fullname="Uno.Media.GeometryConverter" />
 		<type fullname="Microsoft.UI.Xaml.ThicknessConverter" />
-		<type fullname="Microsoft.UI.Xaml.ObservableVectorWrapper" />
 		<type fullname="Microsoft.UI.Xaml.Input.FocusManager">
 			<method name="ReceiveFocusNative" />
 		</type>
@@ -93,11 +92,6 @@
 		<type fullname="Uno.ApplicationModel.Contacts.Internal.WasmContactAddress" />
 		<type fullname="Uno.Storage.Pickers.Internal.NativeFilePickerAcceptType" />
 		<type fullname="Uno.Storage.Pickers.Internal.NativeFilePickerAcceptTypeItem" />
-	</assembly>
-
-	<assembly fullname="Uno.Foundation">
-		<type fullname="Uno.Foundation.Interop.JSObject" />
-		<type fullname="Windows.Foundation.SizeConverter" />
 	</assembly>
 
 	<assembly fullname="System">

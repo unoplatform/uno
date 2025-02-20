@@ -33,11 +33,7 @@ namespace MUXControlsTestApp.Utilities
 		{
 			Exception exception = null;
 			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess
-#if __WASM__
-				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
-#endif
-				)
+			if (dispatcher.HasThreadAccess)
 			{
 				action();
 			}
@@ -122,11 +118,7 @@ namespace MUXControlsTestApp.Utilities
 		{
 			Exception exception = null;
 			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess
-#if __WASM__
-				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
-#endif
-				)
+			if (dispatcher.HasThreadAccess)
 			{
 				await task();
 			}

@@ -23,11 +23,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
+		private static ImageData Open(UnmanagedArrayOfBytes buffer, int bufferLength, int width, int height)
 		{
 			using var colorSpace = CGColorSpace.CreateDeviceRGB();
 			using var context = new CGBitmapContext(
-				buffer,
+				buffer.Pointer,
 				width,
 				height,
 				_bitsPerComponent,
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return default;
 		}
 
-		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
+		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 		{
 			var size = new Size(element.ActualSize.X, element.ActualSize.Y);
 			if (size == default)
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 				using var colorSpace = CGColorSpace.CreateDeviceRGB();
 				using var context = new CGBitmapContext(
-					buffer,
+					buffer!.Pointer,
 					width,
 					height,
 					_bitsPerComponent,

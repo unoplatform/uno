@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -196,8 +198,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			ColorPickerHsvChannel incrementChannel = ColorPickerHsvChannel.Hue;
 
@@ -682,7 +683,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			// The gradient image contains two dimensions of HSL information, but not the third.
 			// We should keep the third where it already was.
 			// Uno Doc: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
-			Hsv hsvAtPoint = m_hsvValues[MathEx.Clamp((y * width + x), 0, m_hsvValues.Count - 1)];
+			Hsv hsvAtPoint = m_hsvValues[Math.Clamp((y * width + x), 0, m_hsvValues.Count - 1)];
 
 			var components = this.Components;
 			var hsvColor = this.HsvColor;
@@ -734,9 +735,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 
 			Vector4 hsvColor = this.HsvColor;
 
-			Hsv.SetHue(hsvColor, MathEx.Clamp(Hsv.GetHue(hsvColor), (float)m_minHueFromLastBitmapCreation, (float)m_maxHueFromLastBitmapCreation));
-			Hsv.SetSaturation(hsvColor, MathEx.Clamp(Hsv.GetSaturation(hsvColor), m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f));
-			Hsv.SetValue(hsvColor, MathEx.Clamp(Hsv.GetValue(hsvColor), m_minValueFromLastBitmapCreation / 100.0f, m_maxValueFromLastBitmapCreation / 100.0f));
+			Hsv.SetHue(hsvColor, Math.Clamp(Hsv.GetHue(hsvColor), (float)m_minHueFromLastBitmapCreation, (float)m_maxHueFromLastBitmapCreation));
+			Hsv.SetSaturation(hsvColor, Math.Clamp(Hsv.GetSaturation(hsvColor), m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f));
+			Hsv.SetValue(hsvColor, Math.Clamp(Hsv.GetValue(hsvColor), m_minValueFromLastBitmapCreation / 100.0f, m_maxValueFromLastBitmapCreation / 100.0f));
 
 			if (m_shapeFromLastBitmapCreation == ColorSpectrumShape.Box)
 			{

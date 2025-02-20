@@ -51,7 +51,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(gridView);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(30, gvi2.LayoutSlot.Width);
+			Assert.AreEqual(30, LayoutInformation.GetLayoutSlot(gvi2).Width);
 		}
 
 #if !__ANDROID__
@@ -86,7 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(gridView);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(gridView.ActualWidth / 2, gvi2.LayoutSlot.Width, 1);
+			Assert.AreEqual(gridView.ActualWidth / 2, LayoutInformation.GetLayoutSlot(gvi2).Width, 1);
 		}
 
 #if !__IOS__
@@ -109,9 +109,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(gridView);
 			await WindowHelper.WaitForIdle();
 
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlot);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi));
 			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlotWithMarginsAndAlignments);
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlot);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi2));
 			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlotWithMarginsAndAlignments);
 		}
 	}

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME አጥፋ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>ነጭ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ውሃ ግራጫ</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ግራጫ</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ጥቁር ግራጫ</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>ጥቁር</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value> ኮራል</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ሮዝ</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ውሃ ብርቱካን</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value> ታን</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ቀላል</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ውሃ አረንጓዴ</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ኖራ</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>አኳ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ሰማይ ሰማያዊ</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ውሃ ቱርኮይዝ</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>ፈዛዛ ሰማያዊ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ውሃ ሰማያዊ</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>አይስ ሰማያዊ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value> ፔሪዊንክል</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ላቬንደር</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>ሮዝ</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ቀይ</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ብርቱካን</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>ቡናማ</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ወርቃማ</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>ብጫ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ወይራ አረንጓዴ</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>አረንጓዴ</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ብሩህ አረንጓዴ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value> ቲል</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ቱርኮይዝ</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>ሰማያዊ</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ሰማያዊ-ግራጫ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ኢንዲጎ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>ወይን ጠጅ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>ጥቁር ቀይ</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>ጥቁር ብጫ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>ደማቅ አረንጓዴ</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ጥቁር ቲል</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>ጥቁር ሰማያዊ</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ጥቁር ወይን ጠጅ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>ፕለም</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ዝጋ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

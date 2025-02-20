@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using Gtk;
@@ -9,7 +9,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.UI.Core;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using IOPath = System.IO.Path;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -20,16 +19,17 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 internal class UnoGtkWindow : Window
 {
 	private readonly WinUIWindow _winUIWindow;
+	private readonly ApplicationView _applicationView;
+	private static readonly ConcurrentDictionary<WinUIWindow, UnoGtkWindow> _windowToGtkWindow = new();
 
-	private bool _wasShown;
+	public static UnoGtkWindow? GetGtkWindowFromWindow(WinUIWindow window)
+		=> _windowToGtkWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
 
-	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
-
-	public UnoGtkWindow(WinUIWindow winUIWindow) : base(WindowType.Toplevel)
+	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Showing += OnShowing;
-		_winUIWindow.NativeWindow = this;
+		_winUIWindow = winUIWindow;
+		_windowToGtkWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToGtkWindow.TryRemove(winUIWindow, out _);
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
@@ -48,54 +48,40 @@ internal class UnoGtkWindow : Window
 			Cursors.EnsureLoaded();
 		};
 
-		DeleteEvent += WindowClosing;
-
-		WindowStateEvent += OnWindowStateChanged;
-
 		Host = new UnoGtkWindowHost(this, winUIWindow);
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		if (GtkHost.Current is not null)
+		{
+			GtkHost.Current.InitialWindow ??= this;
+		}
+
+		GtkManager.XamlRootMap.Register(xamlRoot, Host);
+
+		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
+		Destroyed += UnoGtkWindow_Destroyed;
+		Shown += UnoGtkWindow_Shown;
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
+	}
+
+	internal static event EventHandler<UnoGtkWindow>? NativeWindowShown;
+
+	private void UnoGtkWindow_Shown(object? sender, EventArgs e) => NativeWindowShown?.Invoke(this, this);
+
+	private void UnoGtkWindow_Destroyed(object? sender, EventArgs e)
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
 
-	private async void OnShowing(object? sender, EventArgs e)
-	{
-		try
-		{
-			await Host.InitializeAsync();
-			ShowAll();
-			_wasShown = true;
-			ReplayPendingWindowStateChanges();
-		}
-		catch (Exception ex)
-		{
-			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
-		}
-	}
-
-	private void WindowClosing(object sender, DeleteEventArgs args)
-	{
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented, handle event
-				args.RetVal = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-
-		// All prerequisites passed, can safely close.
-		args.RetVal = false;
-		Main.Quit();
-	}
-
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{
@@ -129,99 +115,24 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.GetForCurrentView();
-		Title = appView.Title;
-		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
+		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 
-	internal void UpdateWindowPropertiesFromCoreApplication()
+	private void UpdateWindowPropertiesFromCoreApplication()
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
-		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
+		ExtendContentIntoTitleBar(coreApplicationView.TitleBar.ExtendViewIntoTitleBar);
 	}
 
-	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
-	{
-		var newState = args.Event.NewWindowState;
-		var changedMask = args.Event.ChangedMask;
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"OnWindowStateChanged: {newState}/{changedMask}");
-		}
-
-		if (_wasShown)
-		{
-			ProcessWindowStateChanged(newState, changedMask);
-		}
-		else
-		{
-			// Store state changes to replay once the application has been
-			// initalized completely (initialization can be delayed if the render
-			// surface is automatically detected).
-			_pendingWindowStateChanged?.Add(new(newState, changedMask));
-		}
-	}
-
-	private void ReplayPendingWindowStateChanges()
-	{
-		if (_pendingWindowStateChanged is not null)
-		{
-			foreach (var state in _pendingWindowStateChanged)
-			{
-				ProcessWindowStateChanged(state.newState, state.changedMask);
-			}
-
-			_pendingWindowStateChanged = null;
-		}
-	}
-
-	private void ProcessWindowStateChanged(Gdk.WindowState newState, Gdk.WindowState changedMask)
-	{
-		var winUIApplication = WinUIApplication.Current;
-
-		var isVisible =
-			!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
-			newState.HasFlag(Gdk.WindowState.Iconified));
-
-		var isVisibleChanged =
-			changedMask.HasFlag(Gdk.WindowState.Withdrawn) ||
-			changedMask.HasFlag(Gdk.WindowState.Iconified);
-
-		var focused = newState.HasFlag(Gdk.WindowState.Focused);
-		var focusChanged = changedMask.HasFlag(Gdk.WindowState.Focused);
-
-		if (!focused && focusChanged)
-		{
-			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-		}
-
-		if (isVisibleChanged)
-		{
-			if (isVisible)
-			{
-				winUIApplication?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
-			}
-			else
-			{
-				_winUIWindow?.OnNativeVisibilityChanged(false);
-				winUIApplication?.RaiseEnteredBackground(null);
-			}
-		}
-
-		if (focused && focusChanged)
-		{
-			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
-		}
-	}
+	internal void ExtendContentIntoTitleBar(bool extend) => Decorated = !extend;
 }

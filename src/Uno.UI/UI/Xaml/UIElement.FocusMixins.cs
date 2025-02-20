@@ -160,6 +160,8 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
+		internal bool IsEnabledInternal() => IsEnabled();
+
 		internal
 #if __ANDROID__
 			new

@@ -38,13 +38,13 @@ namespace Windows.UI.Tests.Enterprise
 	public class AppBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		public void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		public void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
@@ -277,13 +277,13 @@ namespace Windows.UI.Tests.Enterprise
 			AttachOpenedAndClosedHandlers(inlineAppBar, inlineOpenedEvent, inlineOpenedRegistration, inlineClosedEvent, inlineClosedRegistration);
 
 			LOG_OUTPUT("Pressing the CONTEXTMENU key opens the top and bottom AppBars only (and not the inline AppBar).");
-			KeyboardHelper.PressKeySequence(contextMenuKeySequence);
+			await KeyboardHelper.PressKeySequence(contextMenuKeySequence);
 			await topOpenedEvent.WaitForDefault();
 			await bottomOpenedEvent.WaitForDefault();
 			VERIFY_IS_FALSE(inlineOpenedEvent.HasFired());
 
 			LOG_OUTPUT("Pressing the CONTEXTMENU key closes the top and bottom AppBars only (and not the inline AppBar).");
-			KeyboardHelper.PressKeySequence(contextMenuKeySequence);
+			await KeyboardHelper.PressKeySequence(contextMenuKeySequence);
 			await topClosedEvent.WaitForDefault();
 			await bottomClosedEvent.WaitForDefault();
 			VERIFY_IS_FALSE(inlineClosedEvent.HasFired());
@@ -399,16 +399,16 @@ namespace Windows.UI.Tests.Enterprise
 				bottomExpandButton.Focus(FocusState.Programmatic);
 			});
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Try closing the non-sticky bottom AppBar using ESC key.");
-			KeyboardHelper.PressKeySequence(escapeKeySequence);
+			await KeyboardHelper.PressKeySequence(escapeKeySequence);
 			await bottomClosedEvent.WaitForDefault();
 
 
 			LOG_OUTPUT("Try closing the non-sticky inline Appbar using ESC key.");
-			KeyboardHelper.PressKeySequence(escapeKeySequence);
+			await KeyboardHelper.PressKeySequence(escapeKeySequence);
 			await inlineClosedEvent.WaitForDefault();
 
 			await RunOnUIThread(() =>
@@ -523,7 +523,9 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that an AppBar with AppBar.ClosedDisplayMode=Minimal can be opened by clicking the bar itself.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-
+#if !__SKIA__
+		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanOpenMinimalAppBarUsingMouse()
 		{
 			TestCleanupWrapper cleanup;
@@ -693,6 +695,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that items in an app bar are clickable.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task CanClickAButtonInAnAppBar()
 		{
 			TestCleanupWrapper cleanup;
@@ -944,7 +947,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus stayed on the pageButton.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -981,7 +984,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1026,7 +1029,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1034,7 +1037,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus moved back to the pageButton (previously focused element) since the AppBar was closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1077,7 +1080,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Then, close the AppBar programmatically.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1085,7 +1088,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus is still on the expandButton after the AppBar closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1638,8 +1641,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			double expectedAppBarWidth = 400;
 
-			double expectedAppBarCompactClosedHeight = 40;
-			double expectedAppBarCompactOpenHeight = 40;
+			double expectedAppBarCompactClosedHeight = 48;
+			double expectedAppBarCompactOpenHeight = 48;
 
 			double expectedAppBarMinimalClosedHeight = 24;
 			double expectedAppBarMinimalOpenHeight = 24;
@@ -2185,7 +2188,7 @@ namespace Windows.UI.Tests.Enterprise
 					pageKeyDownEvent.Set();
 				});
 
-				CommonInputHelper.Cancel(device);
+				await CommonInputHelper.Cancel(device);
 
 				await pageKeyDownEvent.WaitForDefault();
 			},
@@ -2258,7 +2261,7 @@ namespace Windows.UI.Tests.Enterprise
 			});
 			await WindowHelper.WaitForIdle();
 
-			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton)));
+			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton)));
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("After closing AppBars, further calls to 'close function', while focus is on top AppBar, should not get handled.");

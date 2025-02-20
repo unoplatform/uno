@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ListBoxAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ListBoxAutomationPeer(global::Microsoft.UI.Xaml.Controls.ListBox owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer", "ListBoxAutomationPeer.ListBoxAutomationPeer(ListBox owner)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ListBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ListBox)
 	}
 }

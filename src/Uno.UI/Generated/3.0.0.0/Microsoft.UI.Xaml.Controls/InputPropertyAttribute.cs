@@ -3,22 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputPropertyAttribute : global::System.Attribute
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InputPropertyAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.InputPropertyAttribute", "InputPropertyAttribute.InputPropertyAttribute()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.InputPropertyAttribute.InputPropertyAttribute()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InputPropertyAttribute.InputPropertyAttribute()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public string Name;
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.InputPropertyAttribute.Name
 	}
 }

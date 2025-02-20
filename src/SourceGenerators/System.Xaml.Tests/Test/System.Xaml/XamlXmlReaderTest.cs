@@ -360,6 +360,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void Read_GenericWithProperty()
 		{
+			const string not_win = "{http://uno.ui/not_win}";
 			var sequence = new SequenceItem[] {
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
 				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
@@ -382,16 +383,18 @@ namespace MonoTests.Uno.Xaml
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
-				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Style"},
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = $"{not_win}Style"},
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}Key", },
 				new SequenceItem { NodeType = XamlNodeType.Value, Value = "DefaultComboBoxItemStyle", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
-				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Style.OtherProperty", },
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = $"{not_win}Style.OtherProperty", },
 				new SequenceItem { NodeType = XamlNodeType.Value, Value = "test", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+#if false // XamlXmlReader fails to read any xmlns'd node/attribute with invalid uri (such as a guid or 'using:System.Somewhere')
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Style.TargetType", },
 				new SequenceItem { NodeType = XamlNodeType.Value, Value = "SelectorItem", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+#endif
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },
@@ -2507,9 +2510,30 @@ namespace MonoTests.Uno.Xaml
 		}
 		#endregion
 
+		private string GetXml(string fileName)
+		{
+			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
+			var path = Path.Combine(directory, "Test/XmlFiles", fileName);
+
+			return File.ReadAllText(path).Replace("System.Xaml_test_net_4_0", "Uno.Xaml.Tests");
+		}
+
+		private IEnumerable<(XamlNodeType, string, string, object, string)> ReadAllTokens(string fileName)
+		{
+			var r = GetReader(fileName);
+			int i = 0;
+			while (r.Read())
+			{
+				yield return (r.NodeType, r.Member?.ToString(), r.Member?.Name, r.Value, r.Type?.ToString());
+			}
+		}
+
 		private void ReadSequence(string fileName, IEnumerable<SequenceItem> sequence)
 		{
-			//ReadTest(fileName);
+#if DEBUG && false
+			var xml = GetXml(fileName);
+			var tokens = ReadAllTokens(fileName).ToArray();
+#endif
 
 			var r = GetReader(fileName);
 

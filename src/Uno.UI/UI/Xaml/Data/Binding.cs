@@ -52,7 +52,6 @@ namespace Microsoft.UI.Xaml.Data
 
 		public Binding()
 		{
-
 		}
 
 		/// <summary>
@@ -68,7 +67,6 @@ namespace Microsoft.UI.Xaml.Data
 			Path = path ?? new PropertyPath(String.Empty);
 			Converter = converter;
 			ConverterParameter = converterParameter;
-			Mode = BindingMode.OneWay;
 		}
 
 		public static implicit operator Binding(string path)
@@ -98,7 +96,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// Gets or sets a value that names the language to pass to any converter specified by the Converter property.
 		/// </summary>
 		/// <value>The converter language.</value>
-		public string ConverterLanguage { get; set; }
+		public string ConverterLanguage { get; set; } = "";
 
 		/// <summary>
 		/// Gets or sets the name of the element to use as the binding source for the Binding.
@@ -123,11 +121,13 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
+		internal string FallbackValueThemeResource { get; set; }
+
 		/// <summary>
 		/// Gets or sets a value that indicates the direction of the data flow in the binding.
 		/// </summary>
 		/// <value>The mode.</value>
-		public BindingMode Mode { get; set; }
+		public BindingMode Mode { get; set; } = BindingMode.OneWay;
 
 		/// <summary>
 		/// Gets or sets the binding source by specifying its location relative to the position of the binding target. This is most often used in bindings within XAML control templates.
@@ -180,6 +180,10 @@ namespace Microsoft.UI.Xaml.Data
 		/// <value>The target null value.</value>
 		public object TargetNullValue { get; set; }
 
+		internal string TargetNullValueThemeResource { get; set; }
+
+		internal object ParseContext { get; set; }
+
 		/// <summary>
 		/// Gets or sets a value that determines the timing of binding source updates for two-way bindings.
 		/// </summary>
@@ -197,7 +201,6 @@ namespace Microsoft.UI.Xaml.Data
 #else
 		{ get; set; }
 #endif
-
 
 		/// <summary>
 		/// Provides the method used in the context of x:Bind expressions to
@@ -217,6 +220,9 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
+		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
+		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
+
 		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
 		{
 			CompiledSource = compiledSource;
@@ -231,6 +237,8 @@ namespace Microsoft.UI.Xaml.Data
 		/// <remarks>To be used for x:Bind only</remarks>
 		internal bool IsFallbackValueSet
 			=> _flags.HasFlag(BindingFlags.FallbackValueSet);
+
+		internal bool IsTemplateBinding => RelativeSource?.Mode is RelativeSourceMode.TemplatedParent;
 
 		[Flags]
 		private enum BindingFlags

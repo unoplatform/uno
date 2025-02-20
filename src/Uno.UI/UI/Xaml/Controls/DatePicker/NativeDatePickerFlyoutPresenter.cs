@@ -2,6 +2,8 @@
 using Microsoft.UI.Xaml.Controls;
 using NotImplementedException = System.NotImplementedException;
 
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+
 #if __ANDROID__ || __IOS__
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -22,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		}
 
-		DateTimeOffset IDatePickerFlyoutPresenter.GetDate()
+		DateTime IDatePickerFlyoutPresenter.GetDate()
 		{
 #if __IOS__
 			if (Content is DatePickerSelector selector)

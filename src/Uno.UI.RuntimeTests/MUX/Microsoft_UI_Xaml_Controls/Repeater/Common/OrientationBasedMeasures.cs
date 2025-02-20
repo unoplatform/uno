@@ -4,6 +4,7 @@
 using MUXControlsTestApp.Utilities;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 using DisplayInformation = Windows.Graphics.Display.DisplayInformation;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
@@ -24,9 +25,15 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 			ScrollOrientation = o;
 			m_useLayoutRounding = useLayoutRounding;
 
-			bool? hasThreadAccess = Window.Current?.Dispatcher?.HasThreadAccess;
-			if (useLayoutRounding && hasThreadAccess.HasValue && hasThreadAccess.Value)
+			var hasThreadAccess = TestServices.HasDispatcherAccess;
+			if (useLayoutRounding && hasThreadAccess)
+			{
+#if HAS_UNO
+				m_rawPixelsPerViewPixel = DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel;
+#else
 				m_rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+#endif
+			}
 		}
 
 		public double Major(Size size)

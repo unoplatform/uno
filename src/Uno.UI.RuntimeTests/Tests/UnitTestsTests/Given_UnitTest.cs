@@ -6,10 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 {
 	[TestClass]
-	class Given_UnitTest
+	public class Given_UnitTest
 	{
 		static int When_UnhandledException_Count;
 
+		// This tests that automatic retry is working.
 		[TestMethod]
 		public void When_UnhandledException()
 		{
@@ -21,10 +22,11 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	}
 
 	[TestClass]
-	class Given_UnitTest_Initialize
+	public class Given_UnitTest_Initialize
 	{
 		static int Initialize_Count;
 
+		// This tests that automatic retry is working.
 		[TestInitialize]
 		public void Initialize()
 		{

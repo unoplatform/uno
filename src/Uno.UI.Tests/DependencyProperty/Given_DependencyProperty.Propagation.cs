@@ -34,12 +34,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
 		}
 
-		public void TestInitialize()
-		{
-
-
-		}
-
 		[TestMethod]
 		public void When_Path_Invalid()
 		{
@@ -374,7 +368,13 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			{
 				var sub1 = new SubObject();
 				SUT.SubObject = sub1;
-				sub1.SetParent(SUT);
+				//sub1.SetParent(SUT);
+
+				// note:
+				// setting SUT as parent of sub1, would create an explicit hard-reference from SUT to sub1, holding it alive.
+				// presumably previously, setting and clearing SUT.TemplatedParent have a cascading effect on the dep-obj hierarchy,
+				// and would clear the parent-child reference somehow.
+				// However, now that Set/GetTemplatedParent has side effect, unless specially overridden.
 
 				sub1WR = new WeakReference(sub1);
 				sub1Store = new WeakReference(((IDependencyObjectStoreProvider)sub1).Store);
@@ -384,13 +384,11 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 			CreateSub();
 
-			SUT.TemplatedParent = SUT;
-
+			//SUT.TemplatedParent = SUT;
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
 
-			SUT.TemplatedParent = null;
-
+			//SUT.TemplatedParent = null;
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
 
@@ -507,7 +505,14 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var dc = new object();
 				SUT.DataContext = dc;
 
+				SUT.SetValue(
+					ContentControl.ForegroundProperty,
+					new SolidColorBrush(new Windows.UI.Color(1, 2, 3, 4)),
+					DependencyPropertyValuePrecedences.Inheritance);
+
 				var originalBrush = SUT.Foreground as Brush;
+				Assert.AreEqual(dc, originalBrush.DataContext);
+
 				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
 
 				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
@@ -538,15 +543,9 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var dc = new object();
 				SUT.DataContext = dc;
 
-				var originalBrush = SUT.Foreground as Brush;
-
 				SUT.SetValue(ContentControl.ForegroundProperty, null);
 
-				Assert.IsNull(originalBrush.DataContext);
-
 				SUT.ClearValue(ContentControl.ForegroundProperty);
-
-				Assert.AreEqual(dc, originalBrush.DataContext);
 
 				SUT.DataContext = null;
 

@@ -41,31 +41,41 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		private async void OnMyButtonClick(object sender, object args)
 		{
-			var result = await new ContentDialog_Simple_Dialog().ShowAsync();
+			var dialog = new ContentDialog_Simple_Dialog();
+			dialog.XamlRoot = this.XamlRoot;
+			var result = await dialog.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 
 		private async void OnMyButtonClick2(object sender, object args)
 		{
-			var result = await new ContentDialog_Simple_Dialog() { CloseButtonText = "Close" }.ShowAsync();
+			var dialog = new ContentDialog_Simple_Dialog() { CloseButtonText = "Close" };
+			dialog.XamlRoot = this.XamlRoot;
+			var result = await dialog.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 
 		private async void OnMyButtonClick3(object sender, object args)
 		{
-			var result = await new ContentDialog_Simple_Dialog() { IsPrimaryButtonEnabled = false }.ShowAsync();
+			var dialog = new ContentDialog_Simple_Dialog() { IsPrimaryButtonEnabled = false };
+			dialog.XamlRoot = this.XamlRoot;
+			var result = await dialog.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 
 		private async void OnMyButtonClick4(object sender, object args)
 		{
-			var result = await new ContentDialog_Simple_Dialog() { PrimaryButtonCommand = new DelegateCommand(() => commandResult.Text = "primaryCommand") }.ShowAsync();
+			var dialog = new ContentDialog_Simple_Dialog() { PrimaryButtonCommand = new DelegateCommand(() => commandResult.Text = "primaryCommand") };
+			dialog.XamlRoot = this.XamlRoot;
+			var result = await dialog.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 
 		private async void OnMyButtonClick5(object sender, object args)
 		{
-			var result = await new ContentDialog_Simple_Dialog() { DefaultButton = ContentDialogButton.Primary }.ShowAsync();
+			var dialog = new ContentDialog_Simple_Dialog() { DefaultButton = ContentDialogButton.Primary };
+			dialog.XamlRoot = this.XamlRoot;
+			var result = await dialog.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}
 
@@ -78,6 +88,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 				_dialog6 = new ContentDialog_Simple_Dialog { };
 			}
 
+			_dialog6.XamlRoot = this.XamlRoot;
 			var result = await _dialog6.ShowAsync();
 			dialogResult.Text = result.ToString();
 		}

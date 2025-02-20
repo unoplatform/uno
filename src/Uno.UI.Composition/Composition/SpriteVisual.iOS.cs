@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal override void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		internal override bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 		{
 			base.StartAnimationCore(propertyName, animation);
 
@@ -32,8 +32,10 @@ namespace Microsoft.UI.Composition
 			{
 				case ScalarKeyFrameAnimation kfa:
 					AnimateKeyFrameAnimation(propertyName, kfa);
-					break;
+					return true;
 			}
+
+			return false;
 		}
 
 		private void AnimateKeyFrameAnimation(string propertyName, ScalarKeyFrameAnimation kfa)

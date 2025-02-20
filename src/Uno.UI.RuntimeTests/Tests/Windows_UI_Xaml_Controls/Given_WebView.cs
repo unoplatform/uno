@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using System.Linq;
-#if !HAS_UNO_WINUI
+using Microsoft.Web.WebView2.Core;
+
+
+
+#if HAS_UNO && !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
-
-
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
@@ -24,6 +26,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_WebView
 {
 	[TestMethod]
+#if __IOS__
+	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public void When_Navigate()
 	{
 		var webView = new WebView();
@@ -34,7 +39,7 @@ public class Given_WebView
 		Assert.AreEqual("https://bing.com", uri.OriginalString);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 	[TestMethod]
 	public void When_NavigateWithHttpRequestMessage()
 	{
@@ -48,17 +53,30 @@ public class Given_WebView
 #endif
 
 	[TestMethod]
-	public void When_NavigateToString()
+	public async Task When_NavigateToString()
 	{
+		var border = new Border();
 		var webView = new WebView();
-		var uri = new Uri("https://bing.com");
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("https://platform.uno/");
+		bool navigationStarting = false;
+		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
-
-		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-		Assert.AreEqual("https://bing.com", uri.OriginalString);
-
+		Assert.IsNotNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		Assert.IsNotNull(webView.Source);
+		navigationStarting = false;
+		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 	}
 
 #if __ANDROID__ || __IOS__
@@ -123,21 +141,21 @@ public class Given_WebView
 		Assert.IsFalse(webView.CanGoForward);
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.Navigate(new Uri("https://example.com/1"));
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		webView.Navigate(new Uri("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html"));
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsFalse(webView.CanGoForward);
 
 		navigated = false;
-		webView.Navigate(new Uri("https://example.com/2"));
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		webView.Navigate(new Uri("https://platform.uno"));
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsTrue(webView.CanGoBack);
 
 		navigated = false;
 		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsTrue(webView.CanGoForward);

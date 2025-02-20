@@ -32,6 +32,8 @@ using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls
 using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
 using System.Collections.Generic;
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -39,7 +41,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class FlowLayoutCollectionChangeTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -113,13 +114,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[Ignore("UNO: Test does not pass yet with Uno (The EffectiveViewport is updated to late) https://github.com/unoplatform/uno/issues/4529")]
-		public void CanRemoveItemsStartingBeforeRealizedRange()
+		public async Task CanRemoveItemsStartingBeforeRealizedRangeAsync()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 20).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -135,8 +136,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 600, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -264,13 +265,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
-		public void CanReplaceSingleItem()
+		public async Task CanReplaceSingleItem()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int elementsCleared = 0;
 			int elementsPrepared = 0;
 
@@ -291,8 +292,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 200, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -333,13 +334,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
-		public void CanMoveItem()
+		public async Task CanMoveItem()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -354,8 +355,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				scrollViewer.ChangeView(null, 400, null, true);
 			});
 
-			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
-			IdleSynchronizer.Wait();
+			Verify.IsTrue(await viewChangedEvent.WaitOne(DefaultWaitTime), "Waiting for ViewChanged.");
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -387,7 +388,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 #if false
 		[TestMethod]
-		public void VerifyElement0OwnershipInUniformGridLayout()
+		public async Task VerifyElement0OwnershipInUniformGridLayout()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(new List<int>()));
@@ -402,7 +403,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.ElementClearing += (sender, args) => { elementsCleared++; };
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -434,13 +435,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		[Ignore("Failing for now https://github.com/unoplatform/uno/issues/4529")]
 		[RequiresFullWindow]
-		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
+		public async Task EnsureReplaceOfAnchorDoesNotResetAllContainers()
 		{
 			CustomItemsSource dataSource = null;
 			RunOnUIThread.Execute(() => dataSource = new CustomItemsSource(Enumerable.Range(0, 10).ToList()));
 			ScrollViewer scrollViewer = null;
 			ItemsRepeater repeater = null;
-			var viewChangedEvent = new ManualResetEvent(false);
+			var viewChangedEvent = new UnoManualResetEvent(false);
 			int elementsCleared = 0;
 			int elementsPrepared = 0;
 
@@ -451,7 +452,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.ElementClearing += (sender, args) => { elementsCleared++; };
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -471,7 +472,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		//[TestMethod]
+		[TestMethod]
+		[Ignore]
 		public void ReplaceMultipleItems()
 		{
 			// TODO: Lower prioirty scenario. Tracked by work item: 9738020

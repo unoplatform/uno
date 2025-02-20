@@ -14,15 +14,19 @@ using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
+using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.UI.Xaml
 {
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
 		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
-		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
+		private readonly ObservableCollection<ResourceDictionary> _mergedDictionaries = new();
 		private ResourceDictionary _themeDictionaries;
+		private ResourceDictionary _parent;
 		private ManagedWeakReference _sourceDictionary;
+		private HashSet<ResourceKey> _keyNotFoundCache;
 
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
@@ -36,6 +40,25 @@ namespace Microsoft.UI.Xaml
 
 		public ResourceDictionary()
 		{
+			_mergedDictionaries.CollectionChanged += (s, e) =>
+			{
+				if (e.OldItems != null)
+				{
+					foreach (ResourceDictionary oldDict in e.OldItems)
+					{
+						oldDict._parent = null;
+					}
+				}
+				if (e.NewItems != null)
+				{
+					foreach (ResourceDictionary newDict in e.NewItems)
+					{
+						newDict._parent = this;
+					}
+
+					InvalidateNotFoundCache(true);
+				}
+			};
 		}
 
 		private Uri _source;
@@ -70,7 +93,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_themeDictionaries is null)
 			{
-				_themeDictionaries = new ResourceDictionary();
+				_themeDictionaries = new ResourceDictionary() { _parent = this };
 				_themeDictionaries.ResourceDictionaryValueChange += (sender, e) =>
 				{
 					// Invalidate the cache whenever a theme dictionary is added/removed.
@@ -88,6 +111,10 @@ namespace Microsoft.UI.Xaml
 		/// Is this a ResourceDictionary created from system resources, ie within the Uno.UI assembly?
 		/// </summary>
 		internal bool IsSystemDictionary { get; set; }
+
+
+		private HashSet<ResourceKey> KeyNotFoundCache
+			=> _keyNotFoundCache ??= new(SpecializedResourceDictionary.ResourceKeyComparer.Default);
 
 		internal object Lookup(object key)
 		{
@@ -133,11 +160,29 @@ namespace Microsoft.UI.Xaml
 		public bool Remove(object key)
 		{
 			var keyToRemove = new ResourceKey(key);
+#if __SKIA__ || __WASM__ || __ANDROID__
+			if (_values.TryGetValue(keyToRemove, out var value))
+			{
+				_values.Remove(keyToRemove);
+				if (value is FrameworkElement fe)
+				{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					fe.LeaveImpl(new LeaveParams());
+#else
+					fe.PerformOnUnloaded(isFromResources: true);
+#endif
+				}
+
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+				return true;
+			}
+#else
 			if (_values.Remove(keyToRemove))
 			{
 				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				return true;
 			}
+#endif
 
 			return false;
 		}
@@ -183,13 +228,23 @@ namespace Microsoft.UI.Xaml
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem) =>
-			TryGetValue(resourceKey, ResourceKey.Empty, out value, shouldCheckSystem);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool TryGetValue(in ResourceKey resourceKey, ResourceKey activeTheme, out object value, bool shouldCheckSystem)
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
 		{
-			if (_values.TryGetValue(resourceKey, out value))
+			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
+			var modifiedKey = resourceKey;
+
+			if (useKeysNotFoundCache)
+			{
+				if (!shouldCheckSystem && KeyNotFoundCache.Contains(resourceKey))
+				{
+					value = null;
+					return false;
+				}
+
+				modifiedKey = modifiedKey with { ShouldFilter = false };
+			}
+
+			if (_values.TryGetValue(modifiedKey, out value))
 			{
 				if (value is SpecialValue)
 				{
@@ -203,24 +258,25 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetFromMerged(resourceKey, out value))
+			if (GetFromMerged(modifiedKey, out value))
 			{
 				return true;
 			}
 
-			if (activeTheme.IsEmpty)
-			{
-				activeTheme = Themes.Active;
-			}
-
-			if (GetFromTheme(resourceKey, activeTheme, out value))
+			if (GetActiveThemeDictionary(Themes.Active) is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
 
 			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
 			{
-				return ResourceResolver.TrySystemResourceRetrieval(resourceKey, out value);
+				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
+			}
+
+			if (useKeysNotFoundCache && !shouldCheckSystem)
+			{
+				KeyNotFoundCache.Add(resourceKey);
 			}
 
 			return false;
@@ -264,12 +320,21 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				_values[resourceKey] = value;
-				if (value is ResourceDictionary)
+				_values.AddOrUpdate(resourceKey, value, out var previousValue);
+
+				if (previousValue is ResourceDictionary previousDictionary)
 				{
+					previousDictionary._parent = null;
+				}
+
+				if (value is ResourceDictionary newDictionary)
+				{
+					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
 			}
+
+			InvalidateNotFoundCache(true, resourceKey);
 		}
 
 		/// <summary>
@@ -398,6 +463,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!activeTheme.Equals(_activeTheme))
 			{
+				InvalidateNotFoundCache(false);
 				_activeTheme = activeTheme;
 				_activeThemeDictionary = GetThemeDictionary(activeTheme) ?? GetThemeDictionary(Themes.Default);
 			}
@@ -415,36 +481,6 @@ namespace Microsoft.UI.Xaml
 
 			return null;
 		}
-
-		private bool GetFromTheme(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
-		{
-			var dict = GetActiveThemeDictionary(activeTheme);
-
-			if (dict != null && dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
-			{
-				return true;
-			}
-
-			return GetFromThemeMerged(resourceKey, activeTheme, out value);
-		}
-
-		private bool GetFromThemeMerged(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
-		{
-			var count = _mergedDictionaries.Count;
-
-			for (int i = count - 1; i >= 0; i--)
-			{
-				if (_mergedDictionaries[i].GetFromTheme(resourceKey, activeTheme, out value))
-				{
-					return true;
-				}
-			}
-
-			value = null;
-
-			return false;
-		}
-
 
 		private bool ContainsKeyTheme(in ResourceKey resourceKey, in ResourceKey activeTheme)
 		{
@@ -514,6 +550,8 @@ namespace Microsoft.UI.Xaml
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
+
+		internal SpecializedResourceDictionary.ValueCollection ValuesInternal => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
 
@@ -679,6 +717,46 @@ namespace Microsoft.UI.Xaml
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
+
+		internal void InvalidateNotFoundCache(bool propagate)
+		{
+			if (propagate)
+			{
+				// Traverse dictionary sub-tree iteratively as it has less overhead.
+				var current = this;
+
+				while (current is not null)
+				{
+					current._keyNotFoundCache?.Clear();
+
+					current = current._parent;
+				}
+			}
+			else
+			{
+				_keyNotFoundCache?.Clear();
+			}
+		}
+
+		internal void InvalidateNotFoundCache(bool propagate, in ResourceKey key)
+		{
+			if (propagate)
+			{
+				// Traverse dictionary sub-tree iteratively as it has less overhead.
+				var current = this;
+
+				while (current is not null)
+				{
+					current._keyNotFoundCache?.Remove(key);
+					current = current._parent;
+				}
+			}
+			else
+			{
+				_keyNotFoundCache?.Remove(key);
+			}
+		}
+
 
 		private static class Themes
 		{

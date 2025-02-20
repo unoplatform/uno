@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (drawable != null)
 			{
-				Owner.UpdateSourceImageSize(new Windows.Foundation.Size(drawable.IntrinsicWidth, drawable.IntrinsicHeight));
+				Owner.UpdateSourceImageSize(new global::Windows.Foundation.Size(drawable.IntrinsicWidth, drawable.IntrinsicHeight));
 			}
 
 			try
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Drawable != null)
 			{
-				Owner.UpdateSourceImageSize(new Windows.Foundation.Size(Drawable.IntrinsicWidth, Drawable.IntrinsicHeight));
+				Owner.UpdateSourceImageSize(new global::Windows.Foundation.Size(Drawable.IntrinsicWidth, Drawable.IntrinsicHeight));
 			}
 
 			TryRecolorMonochrome();
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// A bitmap usually is not density aware (unlike resources in drawable-*dpi directories), and preserves it's original size in pixels.
 				// To match Windows, we render an image that measures 200px by 200px to 200dp by 200dp.
 				// Hence, we consider the physical size of the bitmap to be the logical size of the image.
-				Owner.UpdateSourceImageSize(new Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
+				Owner.UpdateSourceImageSize(new global::Windows.Foundation.Size(bm.Width, bm.Height), isLogicalPixels: true);
 			}
 
 			try
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override bool SetFrame(int l, int t, int r, int b)
 		{
-			var frameSize = new Windows.Foundation.Size(r - l, b - t).PhysicalToLogicalPixels();
+			var frameSize = new global::Windows.Foundation.Size(r - l, b - t).PhysicalToLogicalPixels();
 			Owner.UpdateMatrix(frameSize);
 
 			return base.SetFrame(l, t, r, b);

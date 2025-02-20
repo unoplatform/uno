@@ -12,7 +12,7 @@ namespace Uno.Helpers.Theming;
 
 internal static partial class SystemThemeHelper
 {
-	private static SystemTheme GetSystemTheme()
+	internal static SystemTheme GetSystemTheme()
 	{
 		var serializedTheme = NativeMethods.GetSystemTheme();
 

@@ -8,5 +8,6 @@
 
 	<uc:FromNullableBoolToVisibilityConverter x:Key="TrueToCollapsed"
 											  VisibilityIfTrue="Collapsed" />
+	<uc:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter" />
 
 </ResourceDictionary>

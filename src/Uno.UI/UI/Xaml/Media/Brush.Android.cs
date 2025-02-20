@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Fill style</returns>
-		internal void ApplyToFillPaint(Windows.Foundation.Rect destinationRect, Paint paint)
+		internal void ApplyToFillPaint(Rect destinationRect, Paint paint)
 		{
 			if (paint is null)
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Stroke style</returns>
-		internal void ApplyToStrokePaint(Windows.Foundation.Rect destinationRect, Paint paint)
+		internal void ApplyToStrokePaint(Rect destinationRect, Paint paint)
 		{
 			if (paint is null)
 			{
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
 
-		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
+		internal static Drawable GetBackgroundDrawable(Brush background, Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{
 			if (background is ImageBrush)
 			{

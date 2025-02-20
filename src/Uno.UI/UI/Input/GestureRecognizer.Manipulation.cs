@@ -1,9 +1,10 @@
-﻿#nullable enable
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using Windows.Devices.Input;
@@ -49,8 +50,8 @@ namespace Windows.UI.Input
 			private readonly PointerDeviceType _deviceType;
 			private readonly GestureSettings _settings;
 			private bool _isDraggingEnable; // Note: This might get disabled if user moves out of range while initial hold delay with finger
-			private readonly bool _isTranslateXEnabled;
-			private readonly bool _isTranslateYEnabled;
+			private bool _isTranslateXEnabled;
+			private bool _isTranslateYEnabled;
 			private readonly bool _isRotateEnabled;
 			private readonly bool _isScaleEnabled;
 
@@ -79,6 +80,7 @@ namespace Windows.UI.Input
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
 			public bool IsRotateEnabled => _isRotateEnabled;
 			public bool IsScaleEnabled => _isScaleEnabled;
+			public bool IsDraggingEnabled => _isDraggingEnable;
 
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{
@@ -153,8 +155,8 @@ namespace Windows.UI.Input
 				}
 
 				_isDraggingEnable = (_settings & GestureSettings.Drag) != 0;
-				_isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-				_isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+				_isTranslateXEnabled = (_settings & GestureSettings.ManipulationTranslateX) != 0;
+				_isTranslateYEnabled = (_settings & GestureSettings.ManipulationTranslateY) != 0;
 				_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
 				_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
 
@@ -356,6 +358,8 @@ namespace Windows.UI.Input
 						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
 						//		 but there is no side effect to use the same behavior for all pointer types.
 
+						DecideTranslateDirection(_origins.Center, position, ref cumulative, ref delta, ref velocities);
+
 						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
@@ -403,13 +407,11 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
 			private Point GetPosition()
 			{
 				return _inertia?.GetPosition() ?? _currents.Center;
 			}
 
-			[Pure]
 			private ManipulationDelta GetCumulative()
 			{
 				if (_inertia is { } inertia)
@@ -474,7 +476,6 @@ namespace Windows.UI.Input
 				};
 			}
 
-			[Pure]
 			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
 				var deltaSum = _lastPublishedState.sumOfDelta;
@@ -498,8 +499,8 @@ namespace Windows.UI.Input
 			{
 				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
 				// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
-				var elapsedTicks = _inertia?.Elapsed ?? (double)_currents.Timestamp - _lastPublishedState.timestamp;
-				var elapsedMs = elapsedTicks / TimeSpan.TicksPerMillisecond;
+				var elapsedMicroseconds = _inertia?.Elapsed ?? (_currents.Timestamp - _lastPublishedState.timestamp);
+				var elapsedMs = elapsedMicroseconds / 1000;
 
 				// With uno a single native event might produce multiple managed pointer events.
 				// In that case we would get an empty velocities ... which is often not relevant!
@@ -540,7 +541,7 @@ namespace Windows.UI.Input
 				if (_isDraggingEnable && _deviceType == PointerDeviceType.Touch)
 				{
 					_dragHoldTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-					_dragHoldTimer.Interval = new TimeSpan(DragWithTouchMinDelayTicks);
+					_dragHoldTimer.Interval = TimeSpan.FromMicroseconds(DragWithTouchMinDelayMicroseconds);
 					_dragHoldTimer.IsRepeating = false;
 					_dragHoldTimer.Tick += TouchDragMightStart;
 					_dragHoldTimer.Start();
@@ -564,7 +565,7 @@ namespace Windows.UI.Input
 			}
 
 			// For pen and mouse this only means down -> * moves out of tap range;
-			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
+			// For touch it means down -> * moves close to origin for DragWithTouchMinDelayMicroseconds -> * moves far from the origin 
 			private bool IsBeginningOfDragManipulation()
 			{
 				if (!_isDraggingEnable)
@@ -576,7 +577,7 @@ namespace Windows.UI.Input
 				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
-				var isOutOfRange = Gesture.IsOutOfTapRange(down.Position, current.Position);
+				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);
 
 				switch (_deviceType)
 				{
@@ -591,7 +592,7 @@ namespace Windows.UI.Input
 						// This means that this method is expected to be invoked on each move (until manipulation starts)
 						// in order to update the _isDraggingEnable state.
 
-						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayTicks;
+						var isInHoldPhase = current.Timestamp - down.Timestamp < DragWithTouchMinDelayMicroseconds;
 						if (isInHoldPhase && isOutOfRange)
 						{
 							// The pointer moved out of range while in the hold phase, so we completely disable the drag manipulation
@@ -607,20 +608,70 @@ namespace Windows.UI.Input
 				}
 			}
 
-			[Pure]
+			public void DisableDragging()
+			{
+				StopDragTimer();
+				if (_state is ManipulationState.Starting)
+				{
+					_isDraggingEnable = false;
+				}
+				else if (_state is ManipulationState.Started && IsDragManipulation)
+				{
+					Complete();
+				}
+			}
+
 			private bool ShouldStartInertia(ManipulationVelocities velocities)
 				=> _inertia is null
 					&& !IsDragManipulation
 					&& (_settings & GestureSettingsHelper.Inertia) != 0
 					&& velocities.IsAnyAbove(_inertiaThresholds);
 
-			internal struct Thresholds
+			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
 			{
-				public double TranslateX;
-				public double TranslateY;
-				public double Rotate; // Degrees
-				public double Expansion;
+				Debug.Assert(_state == ManipulationState.Started);
+
+				double slope;
+				if (newPosition.X == oldPosition.X)
+				{
+					slope = double.PositiveInfinity;
+				}
+				else
+				{
+					slope = (newPosition.Y - oldPosition.Y) / (newPosition.X - oldPosition.X);
+				}
+
+				if ((_settings & GestureSettings.ManipulationTranslateRailsX) != 0 && isAngleNearXAxis(slope))
+				{
+					_isTranslateYEnabled = false;
+					cumulative.Translation.Y = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+
+				}
+				else if ((_settings & GestureSettings.ManipulationTranslateRailsY) != 0 && isAngleNearYAxis(slope))
+				{
+					_isTranslateXEnabled = false;
+					cumulative.Translation.X = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+				}
+
+				// The horizontal rail is 22.5 degrees around the X-axis
+				static bool isAngleNearXAxis(double slope)
+					=> Math.Abs(slope) <= Math.Tan(22.5 * Math.PI / 180);
+
+				// The vertical rail is 22.5 degrees around the Y-axis
+				static bool isAngleNearYAxis(double slope)
+					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
 			}
+
+			internal readonly record struct Thresholds(
+				double TranslateX,
+				double TranslateY,
+				double Rotate, // Degrees
+				double Expansion
+			);
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
@@ -628,10 +679,10 @@ namespace Windows.UI.Input
 				public PointerPoint Pointer1;
 				private PointerPoint? _pointer2;
 
-				public ulong Timestamp;
+				public ulong Timestamp; // The timestamp of the latest pointer update to either pointer
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
-				public float Distance;
-				public double Angle;
+				public float Distance; // The distance between the 2 points, or zero if !HasPointer2
+				public double Angle; // The angle between the horizontal axis and the line segment formed by the 2 points, or zero if !HasPointer2
 
 				public bool HasPointer2 => _pointer2 != null;
 
@@ -715,3 +766,4 @@ namespace Windows.UI.Input
 		}
 	}
 }
+#endif

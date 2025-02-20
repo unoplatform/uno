@@ -52,7 +52,11 @@ namespace UITests.Windows_UI_Core
 
 		public WindowActivationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
-			CoreWindow.GetForCurrentThread().Activated += CoreWindowActivated;
+			var coreWindow = CoreWindow.GetForCurrentThread();
+			if (coreWindow is not null)
+			{
+				coreWindow.Activated += CoreWindowActivated;
+			}
 			XamlWindow.Current.Activated += WindowActivated;
 			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
 #if !WINAPPSDK
@@ -68,7 +72,10 @@ namespace UITests.Windows_UI_Core
 
 			Disposables.Add(() =>
 			{
-				CoreWindow.GetForCurrentThread().Activated -= CoreWindowActivated;
+				if (coreWindow is not null)
+				{
+					coreWindow.Activated -= CoreWindowActivated;
+				}
 				XamlWindow.Current.Activated -= WindowActivated;
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
 #if !WINAPPSDK
@@ -140,7 +147,7 @@ namespace UITests.Windows_UI_Core
 		}
 
 		private void WindowActivated(object sender,
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINAPPSDK
 			Microsoft/* UWP don't rename */.UI.Xaml.WindowActivatedEventArgs e
 #else
 			Windows.UI.Core.WindowActivatedEventArgs e
@@ -251,7 +258,7 @@ namespace UITests.Windows_UI_Core
 			ChangeTime = DateTime.Now.ToLongTimeString();
 			var historyItem =
 				$"{DateTime.Now.ToLongTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
-				$"| Mode: {CoreWindow.GetForCurrentThread().ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
+				$"| Mode: {CoreWindow.GetForCurrentThread()?.ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
 			History.Insert(0, historyItem);
 		}
 

@@ -130,24 +130,42 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol? symbol, string name)
 		{
-			do
+			if (symbol != null)
 			{
-				if (symbol != null)
+				foreach (var member in symbol.GetMembers(name))
 				{
-					foreach (var member in symbol.GetMembers(name))
+					yield return member;
+				}
+			}
+
+			if (symbol?.TypeKind == TypeKind.Interface)
+			{
+				foreach (var @interface in symbol.AllInterfaces)
+				{
+					foreach (var member in @interface.GetMembers(name))
 					{
 						yield return member;
 					}
 				}
-
-				symbol = symbol?.BaseType;
-
-				if (symbol == null)
+			}
+			else
+			{
+				do
 				{
-					break;
-				}
+					symbol = symbol?.BaseType;
 
-			} while (symbol.SpecialType != SpecialType.System_Object);
+					if (symbol == null)
+					{
+						break;
+					}
+
+					foreach (var member in symbol.GetMembers(name))
+					{
+						yield return member;
+					}
+
+				} while (symbol.SpecialType != SpecialType.System_Object);
+			}
 		}
 
 		/// <summary>
@@ -265,7 +283,7 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
+		public static ISymbol? GetMemberIncludingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
 		{
 			if (symbol is INamespaceSymbol)
 			{
@@ -286,15 +304,15 @@ namespace Microsoft.CodeAnalysis
 			return null;
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
+		public static ISymbol? GetMemberIncludingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
 		{
 			if (symbol is INamespaceSymbol)
 			{
-				foreach (var candicate in symbol.GetMembers())
+				foreach (var candidate in symbol.GetMembers())
 				{
-					if (predicate(candicate, arg))
+					if (predicate(candidate, arg))
 					{
-						return candicate;
+						return candidate;
 					}
 				}
 
@@ -581,20 +599,21 @@ namespace Microsoft.CodeAnalysis
 		/// </summary>
 		/// <param name="propertyOrSetter">The dependency-property or the attached dependency-property setter</param>
 		/// <returns>The property type</returns>
-		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter)
+		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter, bool unwrapNullable = true)
 		{
-			if (propertyOrSetter is IPropertySymbol dependencyProperty)
+			var type = propertyOrSetter switch
 			{
-				return dependencyProperty.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T }
-					? (dependencyProperty.Type as INamedTypeSymbol)?.TypeArguments[0] as INamedTypeSymbol
-					: dependencyProperty.Type as INamedTypeSymbol;
-			}
-			else if (propertyOrSetter is IMethodSymbol { IsStatic: true, Parameters.Length: 2 } attachedPropertySetter)
+				IPropertySymbol dp => dp.Type,
+				IMethodSymbol { IsStatic: true, Parameters.Length: 2 } adpSetter => adpSetter.Parameters[1].Type,
+
+				_ => null,
+			};
+			if (unwrapNullable && type?.IsNullable(out var innerType) == true)
 			{
-				return attachedPropertySetter.Parameters[1].Type as INamedTypeSymbol;
+				type = innerType;
 			}
 
-			return null;
+			return type as INamedTypeSymbol;
 		}
 	}
 }

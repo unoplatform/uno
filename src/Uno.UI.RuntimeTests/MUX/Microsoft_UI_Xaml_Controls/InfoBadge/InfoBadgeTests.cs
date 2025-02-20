@@ -11,15 +11,17 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
+using Windows.Foundation;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class InfoBadgeTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void InfoBadgeDisplayKindTest()
+		public async Task InfoBadgeDisplayKindTest()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -33,7 +35,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -73,7 +75,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeSupportsAllIconTypes()
+		public async Task InfoBadgeSupportsAllIconTypes()
 		{
 			InfoBadge infoBadge = null;
 			SymbolIconSource symbolIconSource = null;
@@ -104,7 +106,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				pathIconSource = new PathIconSource();
 				var geometry = new RectangleGeometry();
-				geometry.Rect = new Windows.Foundation.Rect { Width = 5, Height = 2, X = 0, Y = 0 };
+				geometry.Rect = new Rect { Width = 5, Height = 2, X = 0, Y = 0 };
 				pathIconSource.Data = geometry;
 
 				animatedIconSource = new AnimatedIconSource();
@@ -114,7 +116,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -145,7 +147,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void InfoBadgeValueLessThanNegativeOneCrashes()
+		public async Task InfoBadgeValueLessThanNegativeOneCrashes()
 		{
 			InfoBadge infoBadge = null;
 			RunOnUIThread.Execute(() =>
@@ -155,7 +157,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			RunOnUIThread.Execute(() =>
 			{

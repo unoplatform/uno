@@ -48,7 +48,7 @@
                             </Style>
                             <!-- New CommandBar Style -->
                             <!-- UNO Explicitly inherit from standard CommandBar style, because we don't want to be given the native template if native CommandBar styling is enabled -->
-                            <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}">
+                            <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}">
                                 <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
                                 <Setter Property="Background" Value="Transparent" />
                             </Style>

@@ -98,7 +98,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject? dependencyObject)
+		internal ElementSoundMode GetEffectiveSoundMode(DependencyObject? dependencyObject)
 		{
 			//TODO Uno: Implement
 			return ElementSoundMode.Off;

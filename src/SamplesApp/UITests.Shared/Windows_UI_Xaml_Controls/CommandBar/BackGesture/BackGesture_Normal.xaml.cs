@@ -29,7 +29,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar.BackGesture
 
 		private void GoBack_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).GoBack();
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).GoBack();
 		}
 	}
 }

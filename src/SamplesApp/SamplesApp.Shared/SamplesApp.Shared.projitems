@@ -58,7 +58,7 @@
 		<Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
-		<Content Include="$(MSBuildThisFileDirectory)Assets\storelogo.png" />
+		<Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
 		<Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />

@@ -221,18 +221,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var spMenuFlyoutItemBase = pElement as MenuFlyoutItemBase;
 
 			spMenuFlyoutItemBase.SetParentMenuFlyoutPresenter(this);
-
-			SynchronizeTemplatedParent(spMenuFlyoutItemBase);
-		}
-
-		private void SynchronizeTemplatedParent(MenuFlyoutItemBase spMenuFlyoutItemBase)
-		{
-			// Manual propagation of the templated parent to the content properly
-			// until we get the propagation running properly
-			if (spMenuFlyoutItemBase is FrameworkElement content)
-			{
-				content.TemplatedParent = TemplatedParent;
-			}
 		}
 
 		protected override void ClearContainerForItemOverride(
@@ -618,7 +606,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private protected override string GetPlainText()
+		internal override string GetPlainText()
 		{
 			string automationName = null;
 

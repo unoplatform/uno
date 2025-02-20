@@ -477,90 +477,84 @@
 		</ResourceDictionary>
 	</UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Samples illustrating the timing of VisualTransition and final state animations. (It's complicated.)">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-				<ScrollViewer >
-					<StackPanel Padding="10,20,10,20">
-						<TextBlock
-							Text="1. Green: Opacity animation in Pressed state. Red: Opacity animation in transition. Blue: Opacity Setter in Pressed state. All execute simultaneously, Blue Setter is converted into animation."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+	<ScrollViewer >
+		<StackPanel Padding="10,20,10,20">
+			<TextBlock
+						Text="1. Green: Opacity animation in Pressed state. Red: Opacity animation in transition. Blue: Opacity Setter in Pressed state. All execute simultaneously, Blue Setter is converted into animation."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="2. Red: Animation -> Opacity=0 in Transition, Animation -> Opacity=0.7 in Pressed state. Blue: Opacity Setter in Pressed State. Animations on red border are executed serially (transition, then state)."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle2}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+			<TextBlock
+						Text="2. Red: Animation -> Opacity=0 in Transition, Animation -> Opacity=0.7 in Pressed state. Blue: Opacity Setter in Pressed State. Animations on red border are executed serially (transition, then state)."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle2}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="3. Red: Animation -> Opacity=0 in Transition, Setter Opacity=0.1 in Pressed state. Blue: Opacity Setter in Pressed State. Transition animation on red border opacity executes, then opacity setter is applied (instantly)."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle3}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+			<TextBlock
+						Text="3. Red: Animation -> Opacity=0 in Transition, Setter Opacity=0.1 in Pressed state. Blue: Opacity Setter in Pressed State. Transition animation on red border opacity executes, then opacity setter is applied (instantly)."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle3}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="4. Green: Opacity animation in Pressed state. Red: Setter Opacity=0 in Pressed state. Blue: Setter Opacity=1 in Pressed state. Transition: GeneratedDuration = 0:0:1. All executed simultaneously; Setters are converted into animations."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle4}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+			<TextBlock
+						Text="4. Green: Opacity animation in Pressed state. Red: Setter Opacity=0 in Pressed state. Blue: Setter Opacity=1 in Pressed state. Transition: GeneratedDuration = 0:0:1. All executed simultaneously; Setters are converted into animations."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle4}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="5. Green: Setter Visibility=Collapsed in Pressed state. Red: Animation -> Opacity=0.3 in Transition, Setter Visibility=Collapsed in Pressed state. Both Setters are applied after Transition animation has completed."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle5}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+			<TextBlock
+						Text="5. Green: Setter Visibility=Collapsed in Pressed state. Red: Animation -> Opacity=0.3 in Transition, Setter Visibility=Collapsed in Pressed state. Both Setters are applied after Transition animation has completed."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle5}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="6. Green: Setter Opacity=0.3 in Pressed state. Setter Width=30 in Pressed state. Red: Animation -> Opacity=0.3 in Transition. Setter Width=30 in Pressed state. The Red and Green opacity changes are animated simultaneously, then the Width setters are applied instantly."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle6}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
+			<TextBlock
+						Text="6. Green: Setter Opacity=0.3 in Pressed state. Setter Width=30 in Pressed state. Red: Animation -> Opacity=0.3 in Transition. Setter Width=30 in Pressed state. The Red and Green opacity changes are animated simultaneously, then the Width setters are applied instantly."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle6}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
 
-						<TextBlock
-							Text="7. Green: Animation Opacity->0.3 in Transition, Animation -> ScaleTransform.ScaleX -> 0.4 in Pressed state. Red: Animation Opacity->0.3 in Transition, Animation -> Width 50->20 in Pressed state. For green border, both animations are simultaneous. For red border, opacity animation executes (simultaneously with green animations), then Width animation executes."
-							FontSize="9"
-							Margin="5,5,5,1"
-							TextWrapping="Wrap" />
-						<Button
-							Style="{StaticResource ButtonVisualTransitionStyle7}"
-							Width="150"
-							Height="50"
-							Margin="7,0,7,7" />
-					</StackPanel>
-				</ScrollViewer>
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
+			<TextBlock
+						Text="7. Green: Animation Opacity->0.3 in Transition, Animation -> ScaleTransform.ScaleX -> 0.4 in Pressed state. Red: Animation Opacity->0.3 in Transition, Animation -> Width 50->20 in Pressed state. For green border, both animations are simultaneous. For red border, opacity animation executes (simultaneously with green animations), then Width animation executes."
+						FontSize="9"
+						Margin="5,5,5,1"
+						TextWrapping="Wrap" />
+			<Button
+						Style="{StaticResource ButtonVisualTransitionStyle7}"
+						Width="150"
+						Height="50"
+						Margin="7,0,7,7" />
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

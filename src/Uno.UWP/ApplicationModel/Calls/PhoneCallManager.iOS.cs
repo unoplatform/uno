@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using CallKit;
 using Foundation;
 using UIKit;
@@ -37,10 +38,7 @@ namespace Windows.ApplicationModel.Calls
 		internal static void RaiseCallStateChanged() => CallStateChanged?.Invoke(null, null);
 
 		private static void ShowPhoneCallUIImpl(string phoneNumber, string displayName)
-		{
-			var url = new NSUrl($"tel:{phoneNumber}");
-			UIApplication.SharedApplication.OpenUrl(url);
-		}
+			=> Task.Run(() => UIApplication.SharedApplication.OpenUrlAsync(new NSUrl($"tel:{phoneNumber}"), new UIApplicationOpenUrlOptions()));
 
 	}
 }

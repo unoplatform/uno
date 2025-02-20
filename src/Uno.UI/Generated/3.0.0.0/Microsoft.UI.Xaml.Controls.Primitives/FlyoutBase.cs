@@ -38,20 +38,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 #endif
 		// Skipping already declared property Placement
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.DependencyObject OverlayInputPassThroughElement
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(OverlayInputPassThroughElementProperty);
-			}
-			set
-			{
-				this.SetValue(OverlayInputPassThroughElementProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property OverlayInputPassThroughElement
 		// Skipping already declared property LightDismissOverlayMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -105,6 +92,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared property IsOpen
 		// Skipping already declared property Target
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SystemBackdrop)this.GetValue(SystemBackdropProperty);
+			}
+			set
+			{
+				this.SetValue(SystemBackdropProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		// Skipping already declared property AllowFocusWhenDisabledProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -134,14 +135,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 		// Skipping already declared property IsOpenProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty OverlayInputPassThroughElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(OverlayInputPassThroughElement), typeof(global::Microsoft.UI.Xaml.DependencyObject),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.DependencyObject)));
-#endif
+		// Skipping already declared property OverlayInputPassThroughElementProperty
 		// Skipping already declared property PlacementProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -166,6 +160,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			nameof(Target), typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FrameworkElement)));
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
+			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.FlyoutBase()
@@ -204,21 +206,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAt(Microsoft.UI.Xaml.FrameworkElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAt(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Hide()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TryInvokeKeyboardAccelerator(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.TryInvokeKeyboardAccelerator(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.TryInvokeKeyboardAccelerator(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdrop.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdrop.set
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.CreatePresenter()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnProcessKeyboardAccelerators(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.TargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.PlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.AllowFocusOnInteractionProperty.get

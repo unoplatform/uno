@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Uno.Collections
@@ -18,6 +20,8 @@ namespace Uno.Collections
 	{
 		private readonly List<T> _innerList;
 		private List<T>? _materialized;
+		private List<T>? _materializedSorted;
+		private object? _lastSortingFunc;
 
 		public MaterializableList()
 		{
@@ -45,7 +49,28 @@ namespace Uno.Collections
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator() => Materialized.GetEnumerator();
 
-		public MaterializableList<T>.ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(Materialized);
+		public ReverseEnumerator GetReverseEnumerator() => new(Materialized);
+
+		public ReverseReduceEnumerator GetReverseEnumerator(Predicate<T> predicate) => new(Materialized, predicate);
+
+		/// <remarks>
+		/// To optimize sequential calls with the same sorting function, the implementation remembers the sorted list and the last
+		/// provided keySelector and compares it by reference. If it's the same function, the sorted list is reused.
+		/// </remarks>
+		/// <remarks>
+		/// The user is responsible for invalidating the caches sorted list whenever the sorting key of one of the
+		/// elements changes.
+		/// </remarks>
+		internal MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
+		{
+			Debug.Assert(keySelector.Target is null);
+			if (_materializedSorted is null || !ReferenceEquals(_lastSortingFunc, keySelector))
+			{
+				_materializedSorted = _innerList.OrderBy(keySelector).ToList();
+			}
+			_lastSortingFunc = keySelector;
+			return new ReverseEnumerator(_materializedSorted);
+		}
 
 		public void Add(T item)
 		{
@@ -121,6 +146,18 @@ namespace Uno.Collections
 		public void ClearMaterialized()
 		{
 			_materialized = null;
+			_materializedSorted = null;
+			_lastSortingFunc = null;
+		}
+
+		/// <summary>
+		/// Clears the cached reverse-sorted list used with <see cref="GetReverseSortedEnumerator{TKey}"/> to be
+		/// recomputed the next time it's needed
+		/// </summary>
+		internal void ClearCachedReverseSortedList()
+		{
+			_materializedSorted = null;
+			_lastSortingFunc = null;
 		}
 
 		public struct ReverseEnumerator : IEnumerator<T>, IEnumerator
@@ -147,6 +184,52 @@ namespace Uno.Collections
 					_current = _list[_index];
 					_index--;
 					return true;
+				}
+
+				return false;
+			}
+
+			public T Current => _current!;
+
+			object? IEnumerator.Current => _current;
+
+			void IEnumerator.Reset()
+			{
+				_index = _list.Count - 1;
+				_current = default;
+			}
+		}
+
+		public struct ReverseReduceEnumerator : IEnumerator<T>, IEnumerator
+		{
+			private readonly List<T> _list;
+			private readonly Predicate<T> _predicate;
+			private int _index;
+			private T? _current;
+
+			internal ReverseReduceEnumerator(List<T> list, Predicate<T> predicate)
+			{
+				_list = list;
+				_predicate = predicate;
+				_index = list.Count - 1;
+				_current = default;
+			}
+
+			public void Dispose()
+			{
+			}
+
+			public bool MoveNext()
+			{
+				while (_index >= 0)
+				{
+					_current = _list[_index];
+					_index--;
+
+					if (_predicate(_current))
+					{
+						return true;
+					}
 				}
 
 				return false;

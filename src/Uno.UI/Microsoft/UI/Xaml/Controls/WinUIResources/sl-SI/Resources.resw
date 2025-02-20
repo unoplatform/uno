@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>UREJEVALNIK VNOSNE METODE JE IZKLOPLJEN</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Bela</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Svetlo siva</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Siva</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Temno siva</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Črna</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koralna</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rožnata</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Svetlo oranžna</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Kožno rjava</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Svetlo rumena</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Svetlo zelena</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Rumenozelena</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akvamarin</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Nebesno modra</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Svetlo turkizna</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bledo modra</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Svetlo modra</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Ledeno modra</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Vijoličasto modra</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Sivka</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Roza</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rdeča</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranžna</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Rjava</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Zlata</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Rumena</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivno zelena</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zelena</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Bleščeče zelena</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Zelenomodra</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkizna</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Modra</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Modro-siva</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpurna</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Temno rdeča</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Temno rumena</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Temno zelena</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Temno zelenomodra</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Temno modra</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Temno purpurna</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Sliva</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zapri</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

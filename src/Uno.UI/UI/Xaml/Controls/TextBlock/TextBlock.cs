@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
@@ -26,6 +27,7 @@ using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml;
 
 #if __IOS__
 using UIKit;
@@ -34,16 +36,19 @@ using UIKit;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject
+	public partial class TextBlock : DependencyObject, IThemeChangeAware
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private IDisposable _foregroundBrushChangedSubscription;
 
 #if !__WASM__
-		private Hyperlink _hyperlinkOver;
-		private bool _subscribeToPointerEvents;
+		// Used for text selection which is handled natively
 		private bool _isPressed;
 #endif
+
+		private Hyperlink _hyperlinkOver;
+		private bool _subscribeToPointerEvents;
 
 		private Action _foregroundChanged;
 
@@ -51,6 +56,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _skipInlinesChangedTextSetter;
 		private Range _selection;
 
+		// end can be less than or equal to start when the selection starts ahead and then goes back
+		// see the selection in TextBox.skia.cs for more info
 		private Range Selection
 		{
 			get => _selection;
@@ -68,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
@@ -111,6 +118,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
+#if __WASM__
+					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
+#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -166,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStyleChanged()
 				)
 			);
@@ -178,6 +188,27 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnFontStyleChangedPartial();
+
+		#endregion
+
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+
+		private void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+			InvalidateTextBlock();
+		}
+
+		partial void OnFontStretchChangedPartial();
 
 		#endregion
 
@@ -196,6 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextWrappingChanged()
 				)
 			);
@@ -225,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontWeightChanged()
 				)
 			);
@@ -260,6 +292,7 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					coerceValueCallback: CoerceText,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) =>
 						((TextBlock)s).OnTextChanged((string)e.OldValue, (string)e.NewValue)
 				)
@@ -274,7 +307,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateInlines(newValue);
 
-			Selection = new Range(0, 0);
+#if __SKIA__
+			if (GetTemplatedParent() is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+#endif
+			{
+				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
+				Selection = new Range(0, 0);
+			}
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
@@ -304,7 +343,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontFamilyChanged()
 				)
 			);
@@ -334,7 +373,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)
 			);
@@ -364,6 +403,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
 			);
@@ -393,6 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextTrimming.None,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextTrimmingChanged()
 				)
 			);
@@ -448,7 +489,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private void Subscribe(Brush oldValue, Brush newValue)
 		{
 			var newOnInvalidateRender = _foregroundChanged ?? (() => OnForegroundChanged());
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, newOnInvalidateRender);
+
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, newOnInvalidateRender);
 		}
 
 		private void OnForegroundChanged()
@@ -505,8 +548,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsTextSelectionEnabledChanged()
 		{
-			Selection = new Range(0, 0);
-
+			ProtectedCursor = IsTextSelectionEnabled ? InputSystemCursor.Create(InputSystemCursorShape.IBeam) : null;
 			OnIsTextSelectionEnabledChangedPartial();
 		}
 
@@ -518,20 +560,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public new TextAlignment TextAlignment
 		{
-			get => (TextAlignment)GetValue(TextAlignmentProperty);
-			set => SetValue(TextAlignmentProperty, value);
+			get => GetTextAlignmentValue();
+			set => SetTextAlignmentValue(value);
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register(
-				"TextAlignment",
-				typeof(TextAlignment),
-				typeof(TextBlock),
-				new FrameworkPropertyMetadata(
-					defaultValue: TextAlignment.Left,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextAlignmentChanged()
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
+		public static DependencyProperty TextAlignmentProperty { get; } = CreateTextAlignmentProperty();
 
 		private void OnTextAlignmentChanged()
 		{
@@ -559,6 +593,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnHorizontalTextAlignmentChanged()
 				)
 			);
@@ -579,9 +614,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
-			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
-				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineHeight),
+				typeof(double),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					0d,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
 		private void OnLineHeightChanged()
 		{
@@ -602,10 +642,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineStackingStrategyProperty { get; } =
-			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock),
-				new FrameworkPropertyMetadata(LineStackingStrategy.MaxHeight,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineStackingStrategy),
+				typeof(LineStackingStrategy),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					LineStackingStrategy.MaxHeight,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged()));
 
 		private void OnLineStackingStrategyChanged()
 		{
@@ -627,12 +671,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
-				"Padding",
+				nameof(Padding),
 				typeof(Thickness),
 				typeof(TextBlock),
-				new FrameworkPropertyMetadata((Thickness)Thickness.Empty,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged())
-			);
+				new FrameworkPropertyMetadata(
+					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged()));
 
 		private void OnPaddingChanged()
 		{
@@ -654,12 +699,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
-				"CharacterSpacing",
+				nameof(CharacterSpacing),
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)
 			);
@@ -689,7 +734,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
 				)
 			);
@@ -705,10 +750,31 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region DependencyProperty: IsTextTrimmed
+		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
+
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged;
+		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
+		{
+			add
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				_isTextTrimmedChanged += value;
+			}
+			remove
+			{
+				_isTextTrimmedChanged -= value;
+			}
+		}
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -724,19 +790,36 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		public bool IsTextTrimmed
 		{
-			get => (bool)GetValue(IsTextTrimmedProperty);
+			get
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				return (bool)GetValue(IsTextTrimmedProperty);
+			}
+
 			private set => SetValue(IsTextTrimmedProperty, value);
 		}
 
 		private void OnIsTextTrimmedChanged()
 		{
 			OnIsTextTrimmedChangedPartial();
-			IsTextTrimmedChanged?.Invoke(this, new());
+			_isTextTrimmedChanged?.Invoke(this, new());
 		}
 
 		partial void OnIsTextTrimmedChangedPartial();
 
 		#endregion
+
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correctly on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
 
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines
@@ -784,7 +867,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (ReadLocalValue(TextProperty) is UnsetValue)
+			if (ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
 			{
 				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();
@@ -819,58 +902,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ClearTextPartial();
 
-		#region Hyperlinks
+		#region pointer events
 
-#if __WASM__
-		// As on wasm the TextElements are UIElement, when the hosting TextBlock will capture the pointer on Pressed,
-		// the original source of the Release event will be this TextBlock (and we won't receive 'pointerup' nor 'click'
-		// events on the Hyperlink itself - On FF we will still get the 'click').
-		// To workaround that, we subscribe to the events directly on the Hyperlink, and make the Capture on this hyperlink.
-
-		private void UpdateHyperlinks() { } // Events are subscribed in Hyperlink's ctor.
-
-		internal static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
-		{
-			if (sender is Hyperlink hyperlink
-				&& e.GetCurrentPoint(hyperlink).Properties.IsLeftButtonPressed
-				&& hyperlink.CapturePointer(e.Pointer))
-			{
-				hyperlink.SetPointerPressed(e.Pointer);
-				e.Handled = true;
-				// hyperlink.CompleteGesture(); No needs to complete the gesture as the TextBlock won't even receive the Pressed.
-			}
-			else if (sender is TextBlock textBlock && textBlock.IsTextSelectionEnabled)
-			{
-				// Selectable TextBlock should also handle pointer pressed to ensure
-				// RootVisual does not steal its focus.
-				e.Handled = true;
-			}
-		};
-
-		internal static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
-		{
-			if (sender is Hyperlink hyperlink
-				&& hyperlink.IsCaptured(e.Pointer))
-			{
-				// Un UWP we don't get the Tapped event, so make sure to abort it
-				(hyperlink.GetParent() as TextBlock)?.CompleteGesture();
-
-				hyperlink.ReleasePointerPressed(e.Pointer);
-			}
-
-			// e.Handled = true; ==> On UWP the pointer released is **NOT** handled
-		};
-
-		internal static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
-		{
-			if (sender is Hyperlink hyperlink)
-			{
-				var handled = hyperlink.AbortPointerPressed(e.Pointer);
-
-				e.Handled = handled;
-			}
-		};
-#else
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is not TextBlock that)
@@ -878,24 +911,16 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var point = e.GetCurrentPoint(that);
-			if (!point.Properties.IsLeftButtonPressed)
+			if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
 			{
 				return;
 			}
 
+#if !__WASM__
 			that._isPressed = true;
-			if (that.IsTextSelectionEnabled)
-			{
-#if __SKIA__
-				var index = that.Inlines.GetIndexAt(point.Position, false);
-#else
-				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
-				that.Selection = new Range(index, index);
-			}
 
-			if (that.FindHyperlinkAt(point.Position) is Hyperlink hyperlink)
+			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{
 				if (!that.CapturePointer(e.Pointer))
 				{
@@ -906,6 +931,27 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
+#if !__WASM__
+			else if (that.IsTextSelectionEnabled)
+			{
+				var point = e.GetCurrentPoint(that);
+
+#if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char
+				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+#else // TODO: add an option to get the closest char to point
+				var index = that.GetCharacterIndexAtPoint(point.Position);
+#endif
+				if (index >= 0) // should always be true if above TODO is addressed
+				{
+					that.Selection = new Range(index, index);
+				}
+
+				e.Handled = true;
+				that.Focus(FocusState.Pointer);
+
+				that.CapturePointer(e.Pointer);
+			}
+#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
@@ -915,19 +961,24 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-
-			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) is Hyperlink hyperlink)
+#if !__WASM__
+			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e) is { })
 			{
 				// if we release on a hyperlink, we don't select anything
 				that.Selection = new Range(0, 0);
 			}
 
 			that._isPressed = false;
+#endif
 
 			if (that.IsCaptured(e.Pointer))
 			{
-				// On UWP we don't get the Tapped event, so make sure to abort it.
-				that.CompleteGesture();
+				var hyperlink = that.FindHyperlinkAt(e);
+				// On UWP we don't get the Tapped event if we tapped a hyperlink, so make sure to abort it.
+				if (hyperlink is { })
+				{
+					that.CompleteGesture();
+				}
 
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
 				that.ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
@@ -935,7 +986,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
 				// would move it after the PointerExited. So prefer to raise it before (actually like a Button).
-				if (!(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position)?.ReleasePointerPressed(e.Pointer) ?? false))
+				if (!(hyperlink?.ReleasePointerPressed(e.Pointer) ?? false))
 				{
 					// We failed to find the hyperlink that made this capture but we ** silently ** removed the capture,
 					// so we won't receive the CaptureLost. So make sure to AbortPointerPressed on the Hyperlink which made the capture.
@@ -943,7 +994,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// e.Handled = true; ==> On UWP the pointer released is **NOT** handled
+#if !__WASM__
+			e.Handled |= that.IsTextSelectionEnabled;
+#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
@@ -961,9 +1014,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var point = e.GetCurrentPoint(that);
-
-			var hyperlink = that.FindHyperlinkAt(point.Position);
+			var hyperlink = that.FindHyperlinkAt(e);
 			if (that._hyperlinkOver != hyperlink)
 			{
 				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
@@ -971,15 +1022,21 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
+#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled)
 			{
-#if __SKIA__
-				var index = that.Inlines.GetIndexAt(point.Position, false);
-#else
+				var point = e.GetCurrentPoint(that);
+#if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char
+				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+#else // TODO: add an option to get the closest char to point
 				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
-				that.Selection = new Range(that.Selection.start, index);
+				if (index >= 0) // should always be true if above TODO is addressed
+				{
+					that.Selection = that.Selection with { end = index };
+				}
 			}
+#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
@@ -993,9 +1050,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// TODO: make it such that this assertion doesn't fail
 			// global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
 
-			var point = e.GetCurrentPoint(that);
-
-			var hyperlink = that.FindHyperlinkAt(point.Position);
+			var hyperlink = that.FindHyperlinkAt(e);
 
 			that._hyperlinkOver = hyperlink;
 			hyperlink?.SetPointerOver(e.Pointer);
@@ -1007,8 +1062,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-
-			global::System.Diagnostics.Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
 
 			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
 			that._hyperlinkOver = null;
@@ -1035,7 +1088,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RecalculateSubscribeToPointerEvents()
 		{
-			SubscribeToPointerEvents = HasHyperlink || IsTextSelectionEnabled;
+			SubscribeToPointerEvents = HasHyperlink
+#if !__WASM__
+				|| IsTextSelectionEnabled
+#endif
+				;
 		}
 
 		private void UpdateHyperlinks()
@@ -1059,7 +1116,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var previousHyperLinks = _hyperlinks.Select(h => h.hyperlink).ToList();
+			var previousHyperLinks = _hyperlinks.SelectToList(hyperlink => hyperlink.hyperlink);
+
 			_hyperlinkOver = null;
 			_hyperlinks.Clear();
 
@@ -1134,20 +1192,43 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-
-#if !__SKIA__
-		private Hyperlink FindHyperlinkAt(Point point)
+		private Hyperlink FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
+#if __WASM__
+			var point = e.GetCurrentPoint(null).Position;
+			var elementInCoordinate = WindowManagerInterop.TryGetElementInCoordinate(point) as TextElement;
+			while (elementInCoordinate is not null)
+			{
+				if (elementInCoordinate is Hyperlink)
+				{
+					break;
+				}
+
+				elementInCoordinate = elementInCoordinate.GetParent() as TextElement;
+			}
+
+			if (elementInCoordinate is Hyperlink hyperlink)
+			{
+				foreach (var candidate in _hyperlinks)
+				{
+					if (hyperlink == candidate.hyperlink)
+					{
+						return hyperlink;
+					}
+				}
+			}
+
+			return null;
+#else
+			var point = e.GetCurrentPoint(this).Position;
 			var characterIndex = GetCharacterIndexAtPoint(point);
 			var hyperlink = _hyperlinks
 				.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 				.hyperlink;
 
 			return hyperlink;
+#endif
 		}
-#endif
-#endif
-
 		#endregion
 
 		private void InvalidateTextBlock()
@@ -1170,13 +1251,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.UpdateThemeBindings(updateReason);
 
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			if (_inlines is not null)
 			{
 				foreach (var inline in _inlines)
 				{
-					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason);
+					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
@@ -1205,5 +1286,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		partial void UpdateIsTextTrimmed();
+
+		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+		// There is a special handling for Foreground specifically there.
+		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
 	}
 }

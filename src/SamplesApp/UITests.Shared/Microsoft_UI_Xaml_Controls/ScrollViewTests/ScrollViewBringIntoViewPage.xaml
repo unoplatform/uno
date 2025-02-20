@@ -1,0 +1,150 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.ScrollViewBringIntoViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="rootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="4">
+            <CheckBox x:Name="chkBringIntoViewUI" 
+                Content="BringIntoView test UI" 
+                Checked="ChkBringIntoViewUI_Checked" 
+                Unchecked="ChkBringIntoViewUI_Unchecked" 
+                IsChecked="True" 
+                IsThreeState="False"
+                Margin="2,0,0,0"/>
+            <CheckBox x:Name="chkLogs" 
+                Content="Logs" 
+                Checked="ChkLogs_Checked" 
+                Unchecked="ChkLogs_Unchecked" 
+                IsChecked="True" 
+                IsThreeState="False"
+                Margin="2,0,0,0"/>
+        </StackPanel>
+
+        <controls:ScrollView 
+            x:Name="scrollView"
+            Width="300" Height="400"
+            Padding="25"
+            Grid.Row="1" Margin="1"
+            Background="AliceBlue" VerticalAlignment="Top">
+            <Rectangle x:Name="rectangle" Width="900" Height="200" Margin="0, 750, 1000, 0">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="Blue" Offset="0.0"/>
+                        <GradientStop Color="Yellow" Offset="0.5"/>
+                        <GradientStop Color="Red" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </controls:ScrollView>
+
+        <Grid x:Name="grdBringIntoViewUI" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="2" Background="LightYellow">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="BringIntoViewOptions" Grid.ColumnSpan="2" Foreground="Red"/>
+
+            <TextBlock Text="AnimationDesired:" VerticalAlignment="Center" Grid.Row="1"/>
+            <ComboBox x:Name="cmbAnimationDesired" Width="100" Margin="1" Grid.Row="1" Grid.Column="1" SelectedIndex="0">
+                <ComboBoxItem>True</ComboBoxItem>
+                <ComboBoxItem>False</ComboBoxItem>
+            </ComboBox>
+
+            <TextBlock Text="HorizontalAlignmentRatio:" VerticalAlignment="Center" Grid.Row="2"/>
+            <TextBox x:Name="txtHorizontalAlignmentRatio" Text="NaN" Margin="1" Grid.Row="2" Grid.Column="1"/>
+
+            <TextBlock Text="VerticalAlignmentRatio:" VerticalAlignment="Center" Grid.Row="3"/>
+            <TextBox x:Name="txtVerticalAlignmentRatio" Text="NaN" Margin="1" Grid.Row="3" Grid.Column="1"/>
+
+            <TextBlock Text="HorizontalOffset:" VerticalAlignment="Center" Grid.Row="4"/>
+            <TextBox x:Name="txtHorizontalOffset" Text="0" Margin="1" Grid.Row="4" Grid.Column="1"/>
+
+            <TextBlock Text="VerticalOffset:" VerticalAlignment="Center" Grid.Row="5"/>
+            <TextBox x:Name="txtVerticalOffset" Text="0" Margin="1" Grid.Row="5" Grid.Column="1"/>
+
+            <TextBlock Text="TargetElement:" VerticalAlignment="Center" Grid.Row="6"/>
+            <ComboBox x:Name="cmbTargetElement" SelectedIndex="0" Margin="1" Grid.Row="6" Grid.Column="1">
+                <ComboBoxItem>rectangle</ComboBoxItem>
+                <ComboBoxItem>scrollView</ComboBoxItem>
+            </ComboBox>
+
+            <TextBlock Text="Duration overrides (msec):" Grid.Row="7" Margin="0,4,0,0" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" VerticalAlignment="Center">
+                <TextBox x:Name="txtStockOffsetsChangeDuration" Margin="1" IsReadOnly="True"/>
+                <TextBox x:Name="txtOverriddenOffsetsChangeDuration" Margin="1"/>
+            </StackPanel>
+
+            <CheckBox x:Name="chkCancelOperationInBringingIntoView" Content="Cancel Operation in BringingIntoView?" Grid.Row="9" Grid.ColumnSpan="2"/>
+
+            <Button x:Name="btnStartBringIntoView" Content="StartBringIntoView" Margin="1,4,1,1" 
+                Grid.Row="10" Grid.ColumnSpan="2" Click="BtnStartBringIntoView_Click" HorizontalAlignment="Stretch"/>
+        </Grid>
+
+        <Grid x:Name="grdLogs" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Logs" Foreground="Red"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <Button x:Name="btnClearLogs" Content="Clear" Click="BtnClearLogs_Click" Margin="1"/>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="chkLogScrollPresenterEvents" Content="Log ScrollPresenter Events?" Margin="1" Checked="ChkLogScrollPresenterEvents_Checked" Unchecked="ChkLogScrollPresenterEvents_Unchecked"/>
+                        <CheckBox x:Name="chkLogScrollViewEvents" Content="Log ScrollView Events?" IsChecked="True" Margin="1" Checked="ChkLogScrollViewEvents_Checked" Unchecked="ChkLogScrollViewEvents_Unchecked"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="chkLogScrollPresenterMessages" Content="Log ScrollPresenter Messages?" Margin="1" Checked="ChkLogScrollPresenterMessages_Checked" Unchecked="ChkLogScrollPresenterMessages_Unchecked"/>
+                        <CheckBox x:Name="chkLogScrollViewMessages" Content="Log ScrollView Messages?" Margin="1" Checked="ChkLogScrollViewMessages_Checked" Unchecked="ChkLogScrollViewMessages_Unchecked"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <ListBox x:Name="lstLogs" Margin="1" Grid.Row="2"/>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="4">
+            <TextBlock Text="Exception Report" VerticalAlignment="Center" Margin="2"/>
+            <Button x:Name="btnClearExceptionReport" Content="Clear Exception Report" Click="BtnClearExceptionReport_Click" Margin="2"/>
+            <TextBox x:Name="txtExceptionReport" IsReadOnly="True" Margin="2"/>
+        </StackPanel>
+    </Grid>
+</local:TestPage>

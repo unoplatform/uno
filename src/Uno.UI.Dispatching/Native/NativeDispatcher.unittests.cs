@@ -4,9 +4,7 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		internal static bool HasThreadAccessOverride { get; set; } = true;
-
-		private bool GetHasThreadAccess() => HasThreadAccessOverride;
+		private bool GetHasThreadAccess() => true;
 
 		private bool HasWork =>
 			_queues[0].Count +

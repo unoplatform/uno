@@ -3,8 +3,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.UserProfile
 {
-#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public static partial class GlobalizationPreferences
 	{
@@ -48,8 +48,8 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<string> Languages
 		{
 			get

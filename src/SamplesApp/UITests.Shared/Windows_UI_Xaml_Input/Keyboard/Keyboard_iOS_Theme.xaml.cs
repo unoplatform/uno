@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 
 		private void UpdateTheme(object sender, RoutedEventArgs e)
 		{
-			var root = global::Microsoft.UI.Xaml.Window.Current.Content as FrameworkElement;
+			var root = XamlRoot?.Content as FrameworkElement;
 			var theme = (sender as RadioButton).Content switch
 			{
 				"Light" => ElementTheme.Light,

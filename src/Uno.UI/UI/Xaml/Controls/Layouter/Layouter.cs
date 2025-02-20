@@ -3,7 +3,6 @@
 #if !UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -134,6 +133,11 @@ namespace Microsoft.UI.Xaml.Controls
 					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
+				}
+
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
@@ -167,14 +171,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		[Pure]
 		private static bool IsCloseReal(double a, double b)
 		{
 			var x = Math.Abs((a - b) / (b == 0d ? 1d : b));
 			return x < 1.85e-3d;
 		}
 
-		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
 			return (a < b) && !IsCloseReal(a, b);
@@ -203,6 +205,11 @@ namespace Microsoft.UI.Xaml.Controls
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
+				}
+
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
 				}
 
 				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty

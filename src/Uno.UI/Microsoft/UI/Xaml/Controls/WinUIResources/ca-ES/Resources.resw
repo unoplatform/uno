@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME DESACTIVAT</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Blanc</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gris clar</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Gris</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Gris fosc</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Negre</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Coral</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa clar</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Taronja clar</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Canyella</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Groc clar</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Verd clar</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Llima</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Aigua</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Blau cel</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Turquesa clar</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blau pàl·lid</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Blau clar</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Blau gel</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Blau tinta</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavanda</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Vermell</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Taronja</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Marró</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Or</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Groc</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Verd d'oliva</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Verd</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Verd llima</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Verd blavós</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turquesa</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blau</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Gris blavós</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Anyil</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Porpra</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Vermell fosc</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Groc fosc</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Verd fosc</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Verd blavós fosc</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Blau fosc</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Porpra fosc</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Pruna</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Tanca</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

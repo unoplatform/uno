@@ -5,7 +5,7 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
-using static Uno.UI.Helpers.WinUI.MathHelpers;
+using static Uno.Helpers.MathHelpers;
 
 namespace Uno.UI.Xaml.Input
 {

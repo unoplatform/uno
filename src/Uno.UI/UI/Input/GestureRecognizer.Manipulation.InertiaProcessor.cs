@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 #nullable enable
 
 using System;
@@ -86,7 +88,7 @@ namespace Windows.UI.Input
 				/// Depending of the platform, the timestamp provided by pointer events might not be absolute,
 				/// so it's preferable to not compare timestamp between pointers and inertia processor.
 				/// </remarks>
-				public long Elapsed => _timer.LastTickElapsed.Ticks;
+				public double Elapsed => _timer.LastTickElapsed.TotalMicroseconds;
 
 				public void Start()
 				{
@@ -216,3 +218,4 @@ namespace Windows.UI.Input
 		}
 	}
 }
+#endif

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -8,12 +9,14 @@
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 
-		<OutputType>Exe</OutputType>
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
+		<ApplicationId>uno.platform.samplesdev</ApplicationId>
+
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">osx-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
@@ -57,11 +60,12 @@
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+				<PackageReference Include="harfbuzzsharp.nativeassets.ios" />
 				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true' and !$(RuntimeIdentifier.Contains('arm64'))" />
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
 				
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
@@ -99,6 +103,9 @@
 
 				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+
+				<!-- Only the invariant culture is support in globalization-invariant mode. See https://aka.ms/GlobalizationInvariantMode -->
+				<InvariantGlobalization>false</InvariantGlobalization>
 			</PropertyGroup>
 			
 			<ItemGroup>
@@ -142,12 +149,13 @@
 			
 			<ItemGroup>
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
-				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 			</ItemGroup>
 			
 			<ItemGroup>
 				<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" />
+				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 			</ItemGroup>
 			
 			<ItemGroup>
@@ -167,6 +175,7 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='macos'">
 			<ItemGroup>
 				<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+				<PackageReference Include="System.CommandLine" />
 			</ItemGroup>
 		</When>
 	</Choose>
@@ -176,23 +185,24 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	  <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+		<DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph">
-			<Version>3.12.0</Version>
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='ios'"> <!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client">
-			<Version>4.47.0</Version>
+			<Version>4.61.3</Version>
 		</PackageReference>
 
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -215,8 +225,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MacOS\" />
-	  <Folder Include="Properties\" />
+		<Folder Include="MacOS\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
@@ -228,14 +238,10 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
-			Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec Command="git rev-list --count HEAD"
-              ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput"
-                      PropertyName="_VersionCode" />
+		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
@@ -248,7 +254,7 @@
 
 	</Target>
 
-	<PropertyGroup >
+	<PropertyGroup>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>

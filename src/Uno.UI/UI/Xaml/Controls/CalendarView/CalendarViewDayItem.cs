@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Printing;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -140,11 +140,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		}
 
-#if DEBUG && false
+#if DEBUG
 		private void put_Date(DateTime value)
 		{
 			SetDateForDebug(value);
-			CalendarViewDayItemGenerated.Date = value;
+			//CalendarViewDayItemGenerated.Date = value;
 
 		}
 #endif

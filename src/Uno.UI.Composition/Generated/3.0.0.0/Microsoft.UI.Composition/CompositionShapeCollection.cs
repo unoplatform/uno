@@ -18,18 +18,18 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAt(uint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IndexOf(Microsoft.UI.Composition.CompositionShape, out uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Append(Microsoft.UI.Composition.CompositionShape)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAtEnd()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Clear()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetMany(uint, Microsoft.UI.Composition.CompositionShape[])
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.ReplaceAll(Microsoft.UI.Composition.CompositionShape[])
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Append(Microsoft.UI.Composition.CompositionShape)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.RemoveAt(uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.IndexOf(Microsoft.UI.Composition.CompositionShape, out uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.SetAt(uint, Microsoft.UI.Composition.CompositionShape)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.GetView()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShapeCollection.InsertAt(uint, Microsoft.UI.Composition.CompositionShape)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>
 		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Composition.CompositionShape>.this[int]

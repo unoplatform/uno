@@ -49,8 +49,8 @@
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Runtime.Skia.Gtk.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Runtime.Skia.Gtk.targets" />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">

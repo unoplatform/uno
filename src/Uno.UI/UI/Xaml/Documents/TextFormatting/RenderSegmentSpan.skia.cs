@@ -10,6 +10,6 @@
 	/// <param name="TrailingSpaces">The number of rendered trailing spaces in the span.</param>
 	/// <param name="Width">The width of the span as rendered. This includes rendered trailing spaces.</param>
 	/// <param name="WidthWithoutTrailingSpaces">The width of the span as rendered without any trailing spaces.</param>
-	/// <param name="FullGlyphsLength">The number of rendered and non-rendered glyphs in the span. i.e. Segment[ + FullGlyphsLength - 1] will get the last glyph in the span. This includes all trailing spaces, even the ones that aren't actually rendered due to running out of width. This does not include newline glyphs.</param>
+	/// <param name="FullGlyphsLength">The number of rendered and non-rendered glyphs in the span. i.e. Segment[GlyphsStart + FullGlyphsLength - 1] will get the last glyph in the span. This includes all trailing spaces, even the ones that aren't actually rendered due to running out of width. This does not include newline glyphs.</param>
 	internal record RenderSegmentSpan(Segment Segment, int GlyphsStart, int GlyphsLength, int LeadingSpaces, int TrailingSpaces, float CharacterSpacing, float Width, float WidthWithoutTrailingSpaces, int FullGlyphsLength);
 }

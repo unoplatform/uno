@@ -45,13 +45,19 @@ namespace Microsoft.UI.Composition
 #endif
 		// Skipping already declared property ColorStops
 		// Skipping already declared property MappingMode
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.AnchorPoint.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.CenterPoint.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.AnchorPoint.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngle.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.TransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngleInDegrees.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Scale.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Scale.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.AnchorPoint.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.TransformMatrix.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.MappingMode.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.MappingMode.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngle.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.AnchorPoint.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.CenterPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.ColorStops.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.ExtendMode.get
@@ -60,11 +66,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.InterpolationSpace.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngle.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngle.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngleInDegrees.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.RotationAngleInDegrees.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Scale.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGradientBrush.Scale.set
 	}
 }

@@ -9,16 +9,17 @@ uid: Uno.Features.ApplicationData
 To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
 Legend
-  - ✔  Supported
 
-| Picker         | WinUI/UWP   | WebAssembly | Android | iOS/Mac Catalyst   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `LocalFolder` | ✔   | ✔   | ✔     | ✔    | ✔   | ✔  | ✔  |
-| `RoamingFolder` | ✔   | ✔  | ✔     | ✔    | ✔   | ✔  | ✔  |
-| `LocalCacheFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `TemporaryFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `LocalSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
-| `RoamingSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
+- ✔  Supported
+
+| Picker             | WinUI/UWP | WebAssembly | Android | iOS/Mac Catalyst   | macOS | Skia Desktop |
+|--------------------|-----------|-------------|---------|--------------------|-------|--------------|
+| `LocalFolder`      | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingFolder`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `TemporaryFolder`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalSettings`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingSettings`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 
@@ -51,7 +52,7 @@ string text = await FileIO.ReadTextAsync(file);
 
 The `LocalSettings` and `RoamingSettings` properties provide access to simple key-value containers that allow storage of lightweight user and application preferences. The values stored in settings should be simple serializable types. To store more complex data structures, it is preferred to serialize them first into a string (for example using a JSON serializer).
 
-``` csharp
+```csharp
 ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
 // Save a setting.
@@ -61,11 +62,11 @@ localSettings.Values["name"] = "Martin";
 string value = (string)localSettings.Values["name"];
 ```
 
-## Data location on GTK and WPF
+## Data location on Skia Desktop
 
-In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system:
+In the case of Skia Desktop targets, the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
 
-**Windows**
+### Windows
 
 - `LocalFolder` - `C:\Users\UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalState`
 - `RoamingFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
@@ -74,7 +75,7 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 - `LocalSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Local.dat`
 - `RoamingSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Roaming.dat`
 
-**Unix-based systems**
+### Unix-based systems
 
 - `LocalFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/LocalState`
 - `RoamingFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/RoamingState`
@@ -91,6 +92,6 @@ The default paths above can be overridden using the following feature flags:
 - `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
 - `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCaheFolder`, `LocalSettings` and `RoamingSettings`
 
-These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `WpfHost` or `GtkHost` instance is created.
+These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `SkiaHostBuilder` instance is created.
 
-If you intend to support both Windows and Unix-based systems for GTK target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
+If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.

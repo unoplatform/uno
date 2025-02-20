@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
+using Windows.System;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
@@ -75,6 +78,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
+		public async Task When_Child_Visual_Parents_Do_Not_Include_Popup()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element == popup, element => VisualTreeHelper.GetParent(element));
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parents_Include_Popup()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element == popup, element => (element as FrameworkElement)?.Parent);
+
+			Assert.IsTrue(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Visual_Parent_Is_Canvas()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			var child = (FrameworkElement)popup.Child;
+			var parent = VisualTreeHelper.GetParent(child);
+			Assert.IsInstanceOfType(parent, typeof(Canvas));
+#if HAS_UNO // It is actually a PopupRoot, but it is internal in WinUI
+			Assert.IsInstanceOfType(parent, typeof(PopupRoot));
+#endif
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parent_Is_Popup()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			var child = (FrameworkElement)popup.Child;
+
+			Assert.AreEqual(popup, child.Parent);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+#if HAS_UNO // PopupPanel is Uno-specific
+		[TestMethod]
+		public async Task When_Child_Visual_Parents_Do_Not_Include_PopupPanel()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, VisualTreeHelper.GetParent);
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parents_Do_Not_Include_PopupPanel()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, element => (element as FrameworkElement)?.Parent);
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+#endif
+
+		private async Task<Popup> LoadAndOpenPopupWithButtonAsync()
+		{
+			var popup = new Popup();
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+			var button = new Button()
+			{
+				Content = "test"
+			};
+			popup.Child = button;
+			popup.IsOpen = true;
+			await WindowHelper.WaitForLoaded(button);
+			return popup;
+		}
+
+		private bool SearchPopupChildAscendants(Popup popup, Predicate<DependencyObject> predicate, Func<DependencyObject, DependencyObject> getParent)
+		{
+			DependencyObject current = popup.Child;
+			while (current != null)
+			{
+				if (predicate(current))
+				{
+					return true;
+				}
+
+				current = getParent(current);
+			}
+
+			return false;
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -110,6 +220,101 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = false;
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Escape_Handled()
+		{
+			var popup = new Popup
+			{
+				Child = new Button { Content = "Test" }
+			};
+			popup.XamlRoot = WindowHelper.XamlRoot;
+
+			Assert.IsFalse(popup.IsOpen);
+
+			popup.IsOpen = true;
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			await WindowHelper.WaitForIdle();
+
+			var args = new KeyRoutedEventArgs(popup, VirtualKey.Escape, VirtualKeyModifiers.None);
+			popup.SafeRaiseEvent(UIElement.KeyDownEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(args.Handled);
+			Assert.IsFalse(popup.IsOpen);
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			popup.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Escape_Canceled()
+		{
+			var menu = new MenuFlyout();
+			menu.Items.Add(new MenuFlyoutItem() { Text = "Text" });
+			menu.XamlRoot = WindowHelper.XamlRoot;
+
+			var trigger = new Button();
+			await UITestHelper.Load(trigger);
+
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			menu.ShowAt(trigger);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)[0];
+
+			menu.Closing += (_, e) => e.Cancel = true;
+
+			var args = new KeyRoutedEventArgs(popup, VirtualKey.Escape, VirtualKeyModifiers.None);
+			((UIElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot))!.SafeRaiseEvent(UIElement.KeyDownEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			// It's unclear what the right behavior is, but we don't care.
+			// This test just "documents" the current behavior, and can't run on WinUI.
+#if __SKIA__ || __WASM__
+			Assert.IsTrue(args.Handled);
+#else
+			Assert.IsFalse(args.Handled);
+#endif
+			Assert.IsTrue(popup.IsOpen);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var popup = new Popup()
+			{
+				Child = new Button() { Content = "Test" },
+				IsLightDismissEnabled = isLightDismissEnabled
+			};
+			try
+			{
+				TestServices.WindowHelper.WindowContent = popup;
+				popup.IsOpen = true;
+				await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
+				var popupRoot = TestServices.WindowHelper.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(!isLightDismissEnabled, popup.IsOpen);
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+#endif
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{

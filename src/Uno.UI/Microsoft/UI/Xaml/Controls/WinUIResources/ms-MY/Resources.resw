@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME HIDUP</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Putih</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Kelabu muda</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Kelabu</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Kelabu tua</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Hitam</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Merjan</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Ros</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Jingga muda</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Sawo matang</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Kuning muda</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Hijau muda</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Hijau limau</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Biru Kehijau-hijauan</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Biru langit</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Hijau kebiruan muda</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Biru pucat</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Biru muda</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Biru ais</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Biru Muda Keunguan</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lavender</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Merah jambu</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Merah</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Jingga</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Perang</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Emas</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Kuning</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Hijau buah zaitun</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Hijau</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Hijau terang</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Teal</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Hijau kebiruan</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Biru</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Biru-kelabu</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Ungu</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Merah gelap</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Kuning tua</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Hijau gelap</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Teal gelap</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Biru tua</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Ungu gelap</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Plum</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Tutup</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

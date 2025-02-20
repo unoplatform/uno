@@ -76,6 +76,12 @@ else
 	fi
 fi
 
+export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
+export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
+
+# Create the log directory early so that the artifacts publish task works property
+mkdir -p $LOG_FILEPATH
+
 export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
@@ -86,8 +92,10 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+
+export UnoTargetFrameworkOverride="net8.0-ios17.0"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
@@ -101,28 +109,48 @@ fi
 echo "Current system date"
 date
 
-echo "Listing iOS simulators"
-xcrun simctl list devices --json
+# Wait while ios runtime 16.1 is not having simulators. The install process may 
+# take a few seconds and "simctl list devices" may not return devices.
+while true; do
+	export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
+	export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
+
+	if [ -n "$UITEST_IOSDEVICE_ID" ]; then
+		break
+	fi
+
+	echo "Waiting for the simulator to be available"
+	sleep 5
+done
+
+export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
+echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
+xcrun simctl list devices --json > $DEVICELIST_FILEPATH
+
+# check for the presence of idb, and install it if it's not present
+export PATH=$PATH:~/.local/bin
+
+if ! command -v idb &> /dev/null
+then
+	echo "Installing idb"
+	brew install pipx
+	# # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+	brew tap facebook/fb
+	brew install idb-companion
+	pipx install fb-idb
+else
+	echo "Using idb from:" `command -v idb`
+fi
 
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
-export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
-
-echo "Starting simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
-echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
-xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-
-echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
-
-echo "Installing idb"
-# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-brew tap facebook/fb
-brew install idb-companion
-pip3 install fb-idb
+# echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
+# xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
@@ -134,7 +162,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 # Imported app bundle from artifacts is not executable
-chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
+sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
@@ -149,29 +177,96 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
-echo "Test Parameters:"
-echo "  Timeout=$UITEST_TEST_TIMEOUT"
-echo "  Test filters: $UNO_TESTS_FILTER"
+echo "Starting tests in mode $UITEST_AUTOMATED_GROUP"
 
-## Run tests
-dotnet test \
-	-c Release \
-	-l:"console;verbosity=normal" \
-	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-	-v m \
-	|| true
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP
+	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
+	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
+
+	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "uno.platform.samplesdev"
+
+	# get the process id for the app
+	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesdev" | awk '{print $1}'`
+	echo "App PID: $APP_PID"
+
+	# Set the timeout in seconds 
+	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	INTERVAL=15
+	END_TIME=$((SECONDS+TIMEOUT))
+
+	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
+
+	# Loop until the file exists or the timeout is reached
+	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
+		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+		sleep $INTERVAL
+
+		# exit loop if the APP_PID is not running anymore
+		if ! ps -p $APP_PID > /dev/null; then
+			echo "The app is not running anymore"
+			break
+		fi
+	done
+
+	if ! [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+ 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, waiting 2 seconds"
+ 		sleep 2
+ 	fi
+  
+	# if the file exists, show a message
+	if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
+
+		# Copy the results to the build directory
+		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+	else
+		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+	fi
+
+else
+
+	echo "Test Parameters:"
+	echo "  Timeout=$UITEST_TEST_TIMEOUT"
+	echo "  Test filters: $UNO_TESTS_FILTER"
+
+	## Run tests
+	dotnet test \
+		-c Release \
+		-l:"console;verbosity=normal" \
+		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--filter "$UNO_TESTS_FILTER" \
+		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+		-v m \
+		|| true
+fi
 
 # export the simulator logs
-export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
-export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
-export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
+export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
+export LOG_FILE_DIRECTORY=$LOG_FILEPATH/$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`
+export LOG_FILEPATH_FULL=$LOG_FILE_DIRECTORY/DeviceLog-`date +"%Y%m%d%H%M%S"`.txt
 
-mkdir -p $LOG_FILEPATH
+mkdir -p $LOG_FILE_DIRECTORY
+
+cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
+
+# Copy all the dotnet test dmp files to the log directory
+find $AGENT_TEMPDIRECTORY -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
+find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
+
+## Take a screenshot
+xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png
+
+## Capture the device logs
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 
-echo "Dumping device logs"
+## Shutting down simulator to reclaim memory
+echo "Shutting down simulator"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+
+echo "Dumping device logs to $LOG_FILEPATH_FULL"
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
 echo "Searching for failures in device logs"
@@ -189,11 +284,21 @@ fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
-	return 1
 fi
 
-## Export the failed tests list for reuse in a pipeline retry
+echo "Copying crash reports"
+cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY || true
+
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
+echo "Running NUnitTransformTool"
+
+## Fail the build when no test results could be read
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+
+if [ $? -eq 0 ]; then
+	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+fi
+
 popd

@@ -5,6 +5,8 @@ using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __IOS__
 using Foundation;
 using UIKit;
@@ -30,6 +32,11 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
+		internal event Action GeometryChanged;
+
+		private protected void RaiseGeometryChanged()
+			=> GeometryChanged?.Invoke();
+
 		public static implicit operator Geometry(string data)
 		{
 #if __WASM__
@@ -39,9 +46,9 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		public Windows.Foundation.Rect Bounds => ComputeBounds();
+		public Rect Bounds => ComputeBounds();
 
-		private protected virtual Windows.Foundation.Rect ComputeBounds()
+		private protected virtual Rect ComputeBounds()
 		{
 			throw new NotImplementedException($"Bounds property is not implemented on {GetType().Name}.");
 		}
@@ -59,8 +66,26 @@ namespace Microsoft.UI.Xaml.Media
 				"Transform",
 				typeof(Transform),
 				typeof(Geometry),
-				new FrameworkPropertyMetadata(default(Transform))
+				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: (s, args) => ((Geometry)s).OnTransformChanged(args))
 			);
+
+		private void OnTransformChanged(DependencyPropertyChangedEventArgs args)
+		{
+			RaiseGeometryChanged();
+
+			if (args.OldValue is Transform oldValue)
+			{
+				oldValue.Changed -= OnTransformSubChanged;
+			}
+
+			if (args.NewValue is Transform newValue)
+			{
+				newValue.Changed += OnTransformSubChanged;
+			}
+		}
+
+		private void OnTransformSubChanged(object sender, EventArgs e)
+			=> RaiseGeometryChanged();
 
 		#endregion
 

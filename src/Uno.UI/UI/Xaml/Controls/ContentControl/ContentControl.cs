@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
-				"Content",
+				nameof(Content),
 				typeof(object),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// (ie if created in code by new SomeControl())
 					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
 					// the DataContext won't get propagated and any bindings won't get updated.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
@@ -120,12 +120,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ContentTemplateProperty { get; } =
 			DependencyProperty.Register(
-				"ContentTemplate",
+				nameof(ContentTemplate),
 				typeof(DataTemplate),
 				typeof(ContentControl),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentControl)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
-				SetUpdateControlTemplate();
+				ApplyTemplate();
 			}
 		}
 
@@ -350,7 +350,13 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
 					_dataTemplateUsedLastUpdate = dataTemplate;
-					ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+
+					ContentTemplateRoot =
+						// Typically the ContentTemplate subtree should all have the ContentPresenter as templated-parent,
+						// but because we are doing without it, let's be explicit here.
+						// Generally, this is fine since we don't usually template-bind from a DataTemplate.
+						dataTemplate?.LoadContentCached(templatedParent: null) ??
+						Content as View;
 				}
 
 				if (Content != null
@@ -515,5 +521,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #nullable enable
+
+		internal void ClearContentPresenterBypass()
+		{
+			if (Content is UIElement contentAsUIE && ContentTemplateRoot == contentAsUIE)
+			{
+
+				RemoveChild(contentAsUIE);
+				ContentTemplateRoot = null;
+			}
+		}
 	}
 }

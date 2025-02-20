@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Header dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(nameof(Header), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Header), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the HeaderTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(HeaderTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsOn dependency property.
 		/// </summary>
 		public static DependencyProperty IsOnProperty { get; } =
-			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -135,7 +135,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OffContent dependency property.
 		/// </summary>
 		public static DependencyProperty OffContentProperty { get; } =
-			DependencyProperty.Register(nameof(OffContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OffContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OffContentTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty OffContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(OffContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(OffContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OnContent dependency property.
 		/// </summary>
 		public static DependencyProperty OnContentProperty { get; } =
-			DependencyProperty.Register(nameof(OnContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OnContent), typeof(object), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the OnContentTemplate dependency property.
 		/// </summary>
 		public static DependencyProperty OnContentTemplateProperty { get; } =
-			DependencyProperty.Register(nameof(OnContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(nameof(OnContentTemplate), typeof(DataTemplate), typeof(ToggleSwitch), new FrameworkPropertyMetadata(null, options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

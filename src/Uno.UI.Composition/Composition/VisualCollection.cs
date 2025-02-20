@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 
 		public int Count => _visuals.Count;
 
-		internal IList<Visual> InnerList => _visuals;
+		internal List<Visual> InnerList => _visuals;
 
 		public void InsertAbove(Visual newChild, Visual sibling)
 		{

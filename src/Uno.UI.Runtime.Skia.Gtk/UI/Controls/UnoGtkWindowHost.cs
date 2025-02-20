@@ -8,36 +8,36 @@ using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
-using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
+using Windows.Foundation;
+using SkiaSharp;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
+using GtkWindow = Gtk.Window;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindowHost : IGtkXamlRootHost
 {
-	private readonly Window _gtkWindow;
+	private readonly GtkWindow _gtkWindow;
 	private readonly WinUIWindow _winUIWindow;
 	private readonly UnoEventBox _eventBox = new();
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
-	private readonly DisplayInformation _displayInformation;
 
-	private Widget? _area;
+	private XamlRoot? _xamlRoot;
 	private IGtkRenderer? _renderer;
-	private bool _firstSizeAllocated;
 
-	public UnoGtkWindowHost(Window gtkWindow, WinUIWindow winUIWindow)
+	public UnoGtkWindowHost(GtkWindow gtkWindow, WinUIWindow winUIWindow)
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
-		_displayInformation = DisplayInformation.GetForCurrentView();
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 		RegisterForBackgroundColor();
 	}
+
+	public GtkWindow GtkWindow => _gtkWindow;
 
 	public UnoEventBox EventBox => _eventBox;
 
@@ -49,46 +49,71 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	public Fixed? NativeOverlayLayer => _nativeOverlayLayer;
 
-	public IGtkRenderer? Renderer => _renderer;
-
 	public async Task InitializeAsync()
 	{
 		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
+		UpdateRendererBackground();
+		_renderer.BackgroundColor = SKColors.Transparent;
 
-		var overlay = new Overlay();
+		var area = _renderer is GLRenderSurfaceBase ? (Widget)_renderer : new Box(Orientation.Vertical, 0);
 
-		_area = (Widget)_renderer;
+		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
+		_xamlRoot!.Changed += OnXamlRootChanged;
 
-		_displayInformation.DpiChanged += OnDpiChanged;
-
-		_area.Realized += (s, e) =>
+		// Subscribing to _area or _gtkWindow should yield similar results, except on WSL,
+		// where _gtkWindow.AllocatedHeight is a lot bigger than it actually is for some reason.
+		// Either way, make sure to match the subscription with the size, i.e. either use
+		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
+		// and _gtkWindow.AllocatedXX
+		area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
+			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
 		};
-
-		_area.SizeAllocated += (s, e) =>
+		area.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
-			if (!_firstSizeAllocated)
-			{
-				_firstSizeAllocated = true;
-				_winUIWindow.OnNativeWindowCreated();
-			}
 		};
 
-		overlay.Add(_area);
+		var overlay = new Overlay();
+		overlay.Add(area);
 		overlay.AddOverlay(_nativeOverlayLayer);
+
+		// we don't enable airspace when using OpenGL due to problems with transparency
+		if (_renderer is SoftwareRenderSurface)
+		{
+			var area2 = (Widget)_renderer;
+			// PassThrough makes it so that any pointer event will fall through.
+			// We can't selectively pass certain events through, so we can either
+			// pass through all the events, or none of them. We go with the
+			// former. This means that clicking on a popup on top of a native element
+			// will pass the pointer event to the native element even if it's supposed
+			// to be hidden behind the popup.
+			area2.Realized += (s, e) =>
+			{
+				area2.Window.PassThrough = true;
+			};
+
+			area.SizeAllocated += (s, e) =>
+			{
+				UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+			};
+			overlay.AddOverlay(area2);
+			overlay.SetOverlayPassThrough(area2, true);
+		}
+
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
 	}
 
-	private void OnDpiChanged(DisplayInformation sender, object args) =>
+	internal event EventHandler<Size>? SizeChanged;
+
+	private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args) =>
 		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
 
 	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
-		_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
+		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 
 	private void RegisterForBackgroundColor()
@@ -107,7 +132,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				_renderer.BackgroundColor = brush.Color;
 			}
 		}
-		else
+		else if (_winUIWindow.Background is not null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -116,28 +141,12 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		}
 	}
 
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		GtkManager.XamlRootMap.Register(xamlRoot, this);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
-	}
-
 	void IXamlRootHost.InvalidateRender()
 	{
 		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 
 		_renderer?.InvalidateRender();
 	}
+
+	public void TakeScreenshot(string filePath) => _renderer?.TakeScreenshot(filePath);
 }

@@ -44,10 +44,22 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
+					{
+						UnhookScrollEvents(oldScrollerTarget);
+					}
+#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+				if (IsInLiveTree && value is ScrollViewer newTarget)
+				{
+					HookScrollEvents(newTarget);
+				}
+#endif
 			}
 		}
 		#endregion
@@ -73,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
 			typeof(ScrollContentPresenter),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public bool SizesContentToTemplatedParent
 		{
@@ -174,20 +186,30 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
+				// when set to true, this means that we wanted to set to infinity but were blocked in doing it.
+				bool childPreventsInfiniteAvailableWidth = false;
+				bool childPreventsInfiniteAvailableHeight = false;
 
 				if (CanVerticallyScroll)
 				{
-					if (!sizesContentToTemplatedParent)
+					childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
+					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
 					{
 						slotSize.Height = double.PositiveInfinity;
 					}
 				}
 				if (CanHorizontallyScroll)
 				{
-					if (!sizesContentToTemplatedParent)
+					childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
+					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
 					{
 						slotSize.Width = double.PositiveInfinity;
 					}
+				}
+
+				if (child is ItemsPresenter itemsPresenter)
+				{
+					itemsPresenter.EvaluateAndSetNonClippingBehavior(childPreventsInfiniteAvailableWidth || childPreventsInfiniteAvailableHeight);
 				}
 
 				child.Measure(slotSize);
@@ -231,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __CROSSRUNTIME__
 		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
-		private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
 			=> new Rect(default, RenderSize);
 #endif
 
@@ -253,7 +275,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
 				}
-				else if (canScrollHorizontally && (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
+				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),

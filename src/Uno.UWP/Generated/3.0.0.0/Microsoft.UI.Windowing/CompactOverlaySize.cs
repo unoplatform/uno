@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum CompactOverlaySize
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Small = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Medium = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Large = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.CompactOverlaySize.Small
+		// Skipping already declared field Microsoft.UI.Windowing.CompactOverlaySize.Medium
+		// Skipping already declared field Microsoft.UI.Windowing.CompactOverlaySize.Large
 	}
 #endif
 }

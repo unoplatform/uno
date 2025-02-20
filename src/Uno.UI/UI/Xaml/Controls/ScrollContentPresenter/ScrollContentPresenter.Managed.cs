@@ -1,19 +1,16 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Windows.Foundation;
-using System.IO;
-using Windows.Devices.Input;
-using Windows.System;
-using Microsoft.UI.Composition;
+using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.Media;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Uno.Disposables;
+
+
+#if HAS_UNO_WINUI
+using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
+#else
+using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -60,6 +57,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private object RealContent => Content;
 
+		private readonly SerialDisposable _eventSubscriptions = new();
+
 		partial void InitializePartial()
 		{
 #if __SKIA__
@@ -70,14 +69,62 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_strategy.Initialize(this);
 
+			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+		}
+
+		private void HookScrollEvents(ScrollViewer sv)
+		{
+			UnhookScrollEvents(sv);
+
+			// Note: the way WinUI does scrolling is very different, and doesn't use
+			// PointerWheelChanged changes, etc.
+			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
+			// the way hit-testing works (see #16201), the SCP will not receive any pointer
+			// events. On WinUI, this is also the case: pointer presses are received on the SV,
+			// not on the SCP.
+
 			// Mouse wheel support
-			PointerWheelChanged += PointerWheelScroll;
+			sv.PointerWheelChanged += PointerWheelScroll;
 
 			// Touch scroll support
-			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+			// Note: Events are hooked on the SCP itself, not the ScrollViewer
 			ManipulationStarting += PrepareTouchScroll;
+			ManipulationStarted += TouchScrollStarted;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
+
+			_eventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				sv.PointerWheelChanged -= PointerWheelScroll;
+
+				ManipulationStarting -= PrepareTouchScroll;
+				ManipulationStarted -= TouchScrollStarted;
+				ManipulationDelta -= UpdateTouchScroll;
+				ManipulationCompleted -= CompleteTouchScroll;
+			});
+		}
+
+		private void UnhookScrollEvents(ScrollViewer sv)
+		{
+			_eventSubscriptions.Disposable = null;
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (Scroller is { } sv)
+			{
+				HookScrollEvents(sv);
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			if (Scroller is { } sv)
+			{
+				UnhookScrollEvents(sv);
+			}
 		}
 
 		/// <inheritdoc />
@@ -170,6 +217,11 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			if (Scroller?.IsScrollInertiaEnabled is true)
+			{
+				e.Mode |= ManipulationModes.TranslateInertia;
+			}
+
 			if (!CanVerticallyScroll || ExtentHeight <= 0)
 			{
 				e.Mode &= ~ManipulationModes.TranslateY;
@@ -178,6 +230,21 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!CanHorizontallyScroll || ExtentWidth <= 0)
 			{
 				e.Mode &= ~ManipulationModes.TranslateX;
+			}
+		}
+
+		private void TouchScrollStarted(object sender, ManipulationStartedRoutedEventArgs e)
+		{
+			if (e.Container != this)
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
+			if (e.PointerDeviceType == _PointerDeviceType.Touch)
+			{
+				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+				this.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 			}
 		}
 
@@ -204,6 +271,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			Set(disableAnimation: true, isIntermediate: false);
+
+			Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
+			this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 		}
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

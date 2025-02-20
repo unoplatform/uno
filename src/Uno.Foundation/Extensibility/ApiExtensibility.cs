@@ -82,8 +82,11 @@ public static class ApiExtensibility
 		{
 			if (_registrations.TryGetValue(typeof(T), out var builder))
 			{
-				instance = (T)builder(owner);
-				return true;
+				if (builder(owner) is { } o)
+				{
+					instance = (T)o;
+					return true;
+				}
 			}
 		}
 

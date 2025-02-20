@@ -10,7 +10,7 @@ Creating such a library will make UI Controls compatible with all Uno Platform t
 > [!NOTE]
 > Control libraries are different from "normal" libraries as they reference WinAppSDK, Uno.WinUI or Uno.UI. Those libraries are special because they have explicit dependencies on platform-specific features. "Normal" libraries (e.g. Newtonsoft.Json) do not need any special treatment to work with Uno.
 
-You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/blob/master/UI/ControlLibrary) for this how-to in our samples repository.
+You can find the [full ControlLibrary sample code](https://github.com/unoplatform/Uno.Samples/blob/master/UI/ControlLibrary) for this how-to in our samples repository.
 
 ## Create a Control Library
 
@@ -18,15 +18,17 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 1. In your app's existing Class Library project, add a reference to your new library.
 
 ## Create the Control
+
 1. Right-click on the project library, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Templated Control**, name it `MyTemplatedControl`
    > [!TIP]
    > Choose the template flavor based on your library's flavor: UWP or WinUI. If your project uses the `Uno.UI` NuGet package, it's **UWP** otherwise **Windows App SDK** if it uses `Uno.WinUI`.
 
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Themes` (case sentitive)
-1. Right click on the `Generic` folder, then **Add**, **New Item**
+1. Right click on the `Themes` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `Generic.xaml` (case sensitive)
 1. In the new created file, paste the following:
+
    ```xml
    <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -50,8 +52,9 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 
 ## Use the control
 
-1. In your application's `MainPage.xaml`, add the the following namespace `xmlns:myControlLib="using:XamlControlLibrary"` in the `Page` element
-2. Add the following code in somewhere in the page:
+1. In your application's `MainPage.xaml`, add the following namespace `xmlns:myControlLib="using:XamlControlLibrary"` in the `Page` element
+2. Add the following code somewhere in the page:
+
    ```xml
    <myControlLib:MyTemplatedControl />
    ```
@@ -61,10 +64,12 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 Placing XAML styles in different files can be useful to make the XAML more readable and easier to browse.
 
 Considering the example above:
+
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Styles` (case sentitive)
 1. Right click on the `Styles` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `MyControlStyles.xaml` (case sensitive)
 1. Move the contents of the `Generic.xaml` file into `MyControlStyles.xaml` to be:
+
     ```xml
     <ResourceDictionary
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -85,7 +90,9 @@ Considering the example above:
 
     </ResourceDictionary>
     ```
+
 1. Finally, change the `Generic.xaml` file contents to be:
+
     ```xml
     <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
         <ResourceDictionary.MergedDictionaries>
@@ -97,6 +104,8 @@ Considering the example above:
     > [!NOTE]
     > The path to `MyControlStyles.xaml` in `Generic.xaml` is containing the current project's assembly name. If you rename your project, you'll also need to change the path in the `Generic.xaml` file.
 
+In a Control Class Library, [conditional XAML](xref:Uno.Development.PlatformSpecificXaml) and [platform-specific C#](xref:Uno.Development.PlatformSpecificCSharp) can be used.
+
 ## Library assets
 
 WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx:///[libraryname]/[assetname_file_name]` format.
@@ -107,6 +116,7 @@ WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of cont
 Library assets can be of any type.
 
 Library assets are supported in two configurations:
+
 - `ProjectReference`, where the library project is included in the solution with the application that uses it
 - `PackageReference`, where the library project is being packaged as a NuGet package, and used in a separate solution, from a NuGet feed.
 

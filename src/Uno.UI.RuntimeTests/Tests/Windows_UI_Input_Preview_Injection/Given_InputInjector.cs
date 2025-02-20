@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if HAS_INPUT_INJECTOR
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using Private.Infrastructure;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Input_Preview_Injection;
 
 [TestClass]
-internal class Given_InputInjector
+public class Given_InputInjector
 {
 	[TestMethod]
 	[RunsOnUIThread]

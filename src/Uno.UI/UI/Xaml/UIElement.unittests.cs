@@ -26,8 +26,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsArrangeDirtyPath => false;
 
-		internal bool IsPointerCaptured { get; set; }
-
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
 
@@ -48,7 +46,7 @@ namespace Microsoft.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotSupportedException();
 		}

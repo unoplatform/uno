@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>„IME“ išjungta</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Balta</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Šviesiai pilka</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Pilka</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Tamsiai pilka</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Juoda</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koralo</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rožinė</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Šviesiai oranžinė</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Gelsvai ruda</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Šviesiai geltona</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Žalsva</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Citrininė</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Žalsvai melsva</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Dangaus mėlyna</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Šviesiai žalsvai melsva</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blyškiai mėlyna</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Šviesiai mėlyna</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Melsva</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Violetinė</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Violetinė</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rožinė</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Raudona</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Oranžinė</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Ruda</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Auksinė</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Geltona</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Žaliųjų alyvuogių</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Žalia</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Šviesiai žalia</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Tamsiai žydra</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Žalsvai melsva</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Mėlyna</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Melsvai pilka</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Sodri mėlyna</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Violetinė</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Tamsiai raudona</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Tamsiai geltona</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Tamsiai žalia</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Tamsiai žalsvai mėlyna</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Tamsiai mėlyna</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Tamsiai violetinė</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Slyvinė</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Uždaryti</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

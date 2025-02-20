@@ -12,10 +12,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using static Microsoft.UI.Xaml.Shapes.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -26,14 +26,13 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
-	private readonly DisplayInformation _displayInformation;
+	private readonly XamlRoot? _xamlRoot;
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
 
-	protected GtkTextBoxView()
+	protected GtkTextBoxView(XamlRoot? xamlRoot)
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
-
+		_xamlRoot = xamlRoot;
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
@@ -56,12 +55,12 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public static IOverlayTextBoxView Create(TextBox textBox) =>
 		textBox is PasswordBox || !textBox.AcceptsReturn ?
-			new SinglelineTextBoxView(textBox is PasswordBox) :
-			new MultilineTextBoxView();
+			new SinglelineTextBoxView(textBox is PasswordBox, textBox.XamlRoot) :
+			new MultilineTextBoxView(textBox.XamlRoot);
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GtkCoreWindowExtension.GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
+		if (GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer is { } layer && RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
 			layer.ShowAll();
@@ -99,7 +98,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void SetSize(double width, double height)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		RootWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 		InputWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 	}
@@ -108,7 +107,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	{
 		if (RootWidget.Parent is Fixed layer)
 		{
-			var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+			var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 			layer.Move(RootWidget, (int)(x * sizeAdjustment), (int)(y * sizeAdjustment));
 		}
 	}
@@ -117,7 +116,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	private void SetFont(TextBox textBox)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = _xamlRoot?.FractionalScaleAdjustment ?? 1.0;
 		var fontDescription = new FontDescription
 		{
 			Weight = textBox.FontWeight.ToPangoWeight(),

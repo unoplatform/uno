@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -12,10 +13,6 @@ using _View = Android.Views.View;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif __WASM__
-using _View = Microsoft.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -45,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <summary>
 		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
 		/// </summary>
-		internal event EventHandler Changed;
+		internal event EventHandler? Changed;
 
 		protected void NotifyChanged()
 		{
@@ -85,10 +82,12 @@ namespace Microsoft.UI.Xaml.Media
 		/// <returns>An affine matrix of the transformation</returns>
 		internal abstract Matrix3x2 ToMatrix(Point absoluteOrigin);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual _View View { get; set; }
+		internal virtual _View? View { get; set; }
+#endif
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />

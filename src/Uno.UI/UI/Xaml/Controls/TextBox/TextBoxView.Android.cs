@@ -28,6 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
 		private Action? _foregroundChanged;
+		private IDisposable? _foregroundBrushChangedSubscription;
+		private bool _isDisposed;
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -216,7 +218,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
 								(Android.Graphics.Color)color,
-								BlendModeCompat.SrcAtop);
+								BlendModeCompat.SrcAtop!);
 							drawable?.SetColorFilter(colorFilter);
 						}
 					}
@@ -309,14 +311,31 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (newValue is SolidColorBrush scb)
 			{
-				Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 				void ApplyColor()
 				{
+					if (_isDisposed
+
+						// This is based on `Java.Interop.JniPeerMembers.AssertSelf`
+						|| !this.PeerReference.IsValid)
+					{
+						// Binding changes may happen after the
+						// underlying control has been disposed
+						return;
+					}
+
 					SetTextColor(scb.Color);
 					SetCursorColor(scb.Color);
 				}
 			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			_isDisposed = true;
+			base.Dispose(disposing);
 		}
 	}
 }

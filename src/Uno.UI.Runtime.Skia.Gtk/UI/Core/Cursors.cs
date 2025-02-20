@@ -62,7 +62,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Core
 		{
 			try
 			{
-				var display = GtkHost.Current.MainWindow.Display;
+				var display = GtkHost.Current.InitialWindow.Display;
 				if (display != null)
 				{
 					cursor = new Cursor(display, name);

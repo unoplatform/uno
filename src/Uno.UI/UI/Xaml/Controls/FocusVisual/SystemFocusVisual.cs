@@ -23,7 +23,24 @@ internal partial class SystemFocusVisual : Control
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
-		Microsoft.UI.Xaml.Window.Current.SizeChanged += WindowSizeChanged;
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed += XamlRootChanged;
+		}
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed -= XamlRootChanged;
+		}
 	}
 
 	public UIElement? FocusedElement
@@ -49,9 +66,10 @@ internal partial class SystemFocusVisual : Control
 
 		if (args.NewValue is FrameworkElement element)
 		{
-			element.EnsureFocusVisualBrushDefaults();
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
+#endif
 			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
@@ -67,7 +85,9 @@ internal partial class SystemFocusVisual : Control
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
+#endif
 				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
@@ -82,13 +102,15 @@ internal partial class SystemFocusVisual : Control
 
 	partial void SetLayoutPropertiesPartial();
 
-	private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => SetLayoutProperties();
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) => SetLayoutProperties();
 
 	private void FocusedElementUnloaded(object sender, RoutedEventArgs e) => FocusedElement = null;
 
 	private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
+#endif
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 
@@ -100,7 +122,8 @@ internal partial class SystemFocusVisual : Control
 
 	private void SetLayoutProperties()
 	{
-		if (FocusedElement == null ||
+		if (XamlRoot is null ||
+			FocusedElement is null ||
 			FocusedElement.Visibility == Visibility.Collapsed ||
 			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
 		{
@@ -108,10 +131,26 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
+		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
+		if (parentElement is null)
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		RenderTransform = FocusedElement.RenderTransform;
+		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
-		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
+		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
+		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
+
+		var point = new Windows.Foundation.Point
+		{
+			X = parentPoint.X + FocusedElement.ActualOffset.X,
+			Y = parentPoint.Y + FocusedElement.ActualOffset.Y
+		};
+
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
 		if (newRect != _lastRect)
@@ -119,6 +158,7 @@ internal partial class SystemFocusVisual : Control
 			Width = FocusedElement.ActualSize.X;
 			Height = FocusedElement.ActualSize.Y;
 
+			// FocusVisual and Element has same position and width
 			Canvas.SetLeft(this, point.X);
 			Canvas.SetTop(this, point.Y);
 

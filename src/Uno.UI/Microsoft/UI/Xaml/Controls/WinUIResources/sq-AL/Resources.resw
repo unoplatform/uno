@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME JOAKTIV</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>E bardhë</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Gri e çelur</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Gri</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Gri e errët</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>E zezë</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koral</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Trëndafil</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Portokalli e çelur</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>E bronztë</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>E verdhë e çelur</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>E gjelbër e çelur</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limon i gjelbër</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Gurkali</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>E kaltër qielli</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>E bruztë e çelur</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>E kaltër e zbehtë</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>E kaltër e çelur</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>E kaltër e akullt</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Manushaqe</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>E purpurt e zbehtë</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rozë</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>E kuqe</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Portokalli</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Kafe</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>E artë</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>E verdhë</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>E gjelbër ulliri</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>E gjelbër</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>E gjelbër e ndritshme</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>E gjelbër në të kaltër</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>E bruztë</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>E kaltër</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blu-gri</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>E purpurt</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>E kuqe e errët</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>E verdhë e errët</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>E gjelbër e errët</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>E gjelbër në të kaltër e errët</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Blu e errët</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>E purpurt e errët</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Ngjyrë kumbulle</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Mbyll</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

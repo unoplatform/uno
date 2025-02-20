@@ -19,7 +19,8 @@ partial class InputManager
 
 	private void InitDragAndDrop()
 	{
-		var coreManager = CoreDragDropManager.CreateForCurrentView(); // So it's ready to be accessed by ui manager and platform extension
+		// So it's ready to be accessed by ui manager and platform extension
+		var coreManager = ContentRoot.GetOwnerWindow()?.AppWindow.Id is { } id ? CoreDragDropManager.GetOrCreateForWindowId(id) : CoreDragDropManager.GetForCurrentViewSafe();
 		var uiManager = DragDrop = new DragDropManager(this);
 
 		coreManager.SetUIManager(uiManager);

@@ -26,6 +26,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -67,6 +68,10 @@
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.csproj" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>
@@ -96,8 +101,16 @@
 	</Target>
 
 	<ItemGroup>
-	  <Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
+		<Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
+
+	<!-- Multiwindowing is only supported on Uno.WinUI -->
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
+	</PropertyGroup>
 </Project>

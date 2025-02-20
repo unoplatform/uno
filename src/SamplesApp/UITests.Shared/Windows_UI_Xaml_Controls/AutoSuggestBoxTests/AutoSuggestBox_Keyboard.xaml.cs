@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
-[Sample("AutoSuggestBox")]
+[Sample("AutoSuggestBox", IsManualTest = false)]
 public sealed partial class AutoSuggestBox_Keyboard : UserControl
 {
 	public class Suggestion

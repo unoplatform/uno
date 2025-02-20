@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ഓഫ്</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>വെളുപ്പ്</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>ഇളം ചാരനിറം</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>ചാര നിറം</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>ഇരുണ്ട ചാരനിറം</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>കറുപ്പ്</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>കോറൽ</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>റോസ്</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>ഇളം ഓറഞ്ച്</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>ടാൻ</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>ഇളം മഞ്ഞ</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>ഇളം പച്ച</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>ലൈം</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>അക്വ</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>ആകാശ നീല</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>ഇളം ടർക്കോയിസ്</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>പേൾ ബ്ലൂ</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>ഇളം നീല</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ഐസ് ബ്ലൂ</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>പെരിവിങ്കിൾ</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>ലാവെൻഡർ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>പിങ്ക്</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>ചുവപ്പ്</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ഓറഞ്ച്</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>തവിട്ട്</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>ഗോൾഡ്</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>മഞ്ഞ</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ഒലീവ് പച്ച</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>പച്ച</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ബ്രൈറ്റ് ഗ്രീൻ</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>ടീൽ</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>ടർക്കോയിസ്</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>നീല</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>ബ്ലൂ-ഗ്രേ</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>ഇന്‍‌ഡിഗൊ</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>പർപ്പിൾ</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>കടും ചുവപ്പ്</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>കടും മഞ്ഞ</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>കടും പച്ച</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>ഇരുണ്ട ടീൽ</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>കടും നീല</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>ഇരുണ്ട പർപ്പിൾ</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>പ്ലം</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>അടയ്ക്കുക</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

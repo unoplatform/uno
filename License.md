@@ -1,9 +1,3 @@
-# Uno Platform
-
-Copyright (c) Uno Platform Inc.
-
-All rights reserved. 
-
 # Apache 2.0 License
 
                                  Apache License
@@ -207,3 +201,9 @@ All rights reserved.
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+# Uno Platform
+
+Copyright (c) Uno Platform Inc.
+
+All rights reserved.

@@ -41,8 +41,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Brush.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Brush.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.Brush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.get
 	}

@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME WYŁ.</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Biały</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Jasnoszary</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Szary</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Ciemnoszary</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Czarny</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Koralowy</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Różany</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Jasnopomarańczowy</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Pastelowobrązowy</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Jasnożółty</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Jasnozielony</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limonowy</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Akwamaryna</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Lazurowy</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Jasnoturkusowy</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Bladoniebieski</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Jasnoniebieski</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Krystaliczny błękitny</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Niebieskofioletowy</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Lawendowy</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Różowy</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Czerwony</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Pomarańczowy</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Brązowy</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Złoty</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Żółty</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Oliwkowozielony</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Zielony</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Intensywny zielony</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Zielonomodry</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Turkusowy</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Niebieski</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Niebieskoszary</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indygo</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Purpurowy</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Ciemnoczerwony</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Ciemnożółty</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Ciemnozielony</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Ciemnozielonomodry</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Ciemnoniebieski</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Ciemnopurpurowy</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Śliwkowy</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Zamknij</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

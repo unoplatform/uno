@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Media.Core;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -28,15 +29,11 @@ public sealed partial class MediaPlayerElement_ManualTest : UserControl
 
 	private void Play_Click(object sender, RoutedEventArgs e)
 	{
-#if !WINAPPSDK
 		mpe.MediaPlayer.Play();
-#endif
 	}
 	private void Pause_Click(object sender, RoutedEventArgs e)
 	{
-#if !WINAPPSDK
 		mpe.MediaPlayer.Pause();
-#endif
 	}
 	private void Stop_Click(object sender, RoutedEventArgs e)
 	{

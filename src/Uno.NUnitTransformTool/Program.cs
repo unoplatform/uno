@@ -14,7 +14,7 @@ using Mono.Collections.Generic;
 
 namespace Uno.ReferenceImplComparer
 {
-	class Program
+	partial class Program
 	{
 		static int Main(string[] args)
 		{
@@ -42,6 +42,10 @@ namespace Uno.ReferenceImplComparer
 			{
 				Console.WriteLine($"The test results file {inputFile} does not contain any results");
 			}
+			else
+			{
+				Console.WriteLine($"The test results file {inputFile} contains {allNodes?.Count} results");
+			}
 
 			return isEmpty ? 1 : 0;
 		}
@@ -59,7 +63,7 @@ namespace Uno.ReferenceImplComparer
 				var name = failedNode.GetAttribute("fullname");
 
 				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
-				var simpleName = Regex.Replace(name, @"\(([^)]*)\)", "");
+				var simpleName = SimpleNameRegex().Replace(name, "");
 
 				failedTests.Add(simpleName);
 			}
@@ -74,5 +78,8 @@ namespace Uno.ReferenceImplComparer
 
 			return 0;
 		}
+
+		[GeneratedRegex(@"\(([^)]*)\)")]
+		private static partial Regex SimpleNameRegex();
 	}
 }

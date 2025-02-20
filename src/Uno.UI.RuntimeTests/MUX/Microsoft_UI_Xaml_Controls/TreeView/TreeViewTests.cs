@@ -52,7 +52,6 @@ namespace MUXControlsTestApp
 	class SpecialTreeViewNode : TreeViewNode { }
 
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class TreeViewTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -168,39 +167,40 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemSourceResetRecreateItems()
 		{
-			ExtendedObservableCollection<TreeViewItemSource> items
-				= new ExtendedObservableCollection<TreeViewItemSource>();
-			TreeViewItemSource item1 = new TreeViewItemSource() { Content = "item1" };
-			TreeViewItemSource item2 = new TreeViewItemSource() { Content = "item2" };
-			TreeViewItemSource item3 = new TreeViewItemSource() { Content = "item3" };
-			items.Add(item1);
-			items.Add(item2);
-			items.Add(item3);
+			RunOnUIThread.Execute(() =>
+			{
+				ExtendedObservableCollection<TreeViewItemSource> items
+					= new ExtendedObservableCollection<TreeViewItemSource>();
+				TreeViewItemSource item1 = new TreeViewItemSource() { Content = "item1" };
+				TreeViewItemSource item2 = new TreeViewItemSource() { Content = "item2" };
+				TreeViewItemSource item3 = new TreeViewItemSource() { Content = "item3" };
+				items.Add(item1);
+				items.Add(item2);
+				items.Add(item3);
 
-			var treeView = new TreeView();
-			treeView.ItemsSource = items;
+				var treeView = new TreeView();
+				treeView.ItemsSource = items;
 
-			Verify.AreEqual(treeView.RootNodes.Count, 3);
-			Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+				Verify.AreEqual(treeView.RootNodes.Count, 3);
+				Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
 
-			List<TreeViewItemSource> newItems = new List<TreeViewItemSource>();
-			TreeViewItemSource item4 = new TreeViewItemSource() { Content = "item4" };
-			TreeViewItemSource item5 = new TreeViewItemSource() { Content = "item5" };
+				List<TreeViewItemSource> newItems = new List<TreeViewItemSource>();
+				TreeViewItemSource item4 = new TreeViewItemSource() { Content = "item4" };
+				TreeViewItemSource item5 = new TreeViewItemSource() { Content = "item5" };
 
-			newItems.Add(item4);
-			newItems.Add(item5);
+				newItems.Add(item4);
+				newItems.Add(item5);
 
-			items.ReplaceAll(newItems);
+				items.ReplaceAll(newItems);
 
-			Verify.AreEqual(treeView.RootNodes.Count, 2);
-			Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+				Verify.AreEqual(treeView.RootNodes.Count, 2);
+				Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+			});
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task TreeViewUpdateTest()
 		{
 			TreeView treeView = null;
@@ -262,7 +262,8 @@ namespace MUXControlsTestApp
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//[TestMethod] Disabled with issue number #1775 (WinUI issue)
+		[TestMethod] // Disabled with issue number #1775 (WinUI issue)
+		[Ignore]
 		public void TreeViewInheritanceTest()
 		{
 			StackPanel stackPanel = new StackPanel();
@@ -337,50 +338,57 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewNodeDPTest()
 		{
-			TreeViewNode rootNode = new TreeViewNode() { Content = "Root" };
-			TreeViewNode childNode = new TreeViewNode() { Content = "Child" };
-			rootNode.Children.Add(childNode);
-			rootNode.IsExpanded = true;
+			RunOnUIThread.Execute(() =>
+			{
+				TreeViewNode rootNode = new TreeViewNode() { Content = "Root" };
+				TreeViewNode childNode = new TreeViewNode() { Content = "Child" };
+				rootNode.Children.Add(childNode);
+				rootNode.IsExpanded = true;
 
-			Verify.AreEqual((string)rootNode.GetValue(TreeViewNode.ContentProperty), "Root");
-			Verify.AreEqual((string)childNode.GetValue(TreeViewNode.ContentProperty), "Child");
+				Verify.AreEqual((string)rootNode.GetValue(TreeViewNode.ContentProperty), "Root");
+				Verify.AreEqual((string)childNode.GetValue(TreeViewNode.ContentProperty), "Child");
 
-			Verify.AreEqual((int)rootNode.GetValue(TreeViewNode.DepthProperty), -1);
-			Verify.AreEqual((int)childNode.GetValue(TreeViewNode.DepthProperty), 0);
+				Verify.AreEqual((int)rootNode.GetValue(TreeViewNode.DepthProperty), -1);
+				Verify.AreEqual((int)childNode.GetValue(TreeViewNode.DepthProperty), 0);
 
-			Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.IsExpandedProperty), true);
-			Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.IsExpandedProperty), false);
+				Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.IsExpandedProperty), true);
+				Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.IsExpandedProperty), false);
 
-			Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.HasChildrenProperty), true);
-			Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.HasChildrenProperty), false);
+				Verify.AreEqual((bool)rootNode.GetValue(TreeViewNode.HasChildrenProperty), true);
+				Verify.AreEqual((bool)childNode.GetValue(TreeViewNode.HasChildrenProperty), false);
+			});
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemTemplateTest()
 		{
-			TreeView treeView = new TreeView();
-			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			RunOnUIThread.Execute(() =>
 			{
-				var dataTemplate = (DataTemplate)XamlReader.Load(
-			   @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-		                        <TextBlock Text='TreeViewItemTemplate'/>
-		                    </DataTemplate>");
-				treeView.ItemTemplate = dataTemplate;
-				var node = new TreeViewNode();
-				treeView.RootNodes.Add(node);
-				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-				Verify.AreEqual(treeViewItem.ContentTemplate, dataTemplate);
-			};
+				TreeView treeView = new TreeView();
+				treeView.Loaded += (object sender, RoutedEventArgs e) =>
+				{
+					var dataTemplate = (DataTemplate)XamlReader.Load(
+					   @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+										<TextBlock Text='TreeViewItemTemplate'/>
+									</DataTemplate>");
+					treeView.ItemTemplate = dataTemplate;
+					var node = new TreeViewNode();
+					treeView.RootNodes.Add(node);
+					var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+					var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+					Verify.AreEqual(treeViewItem.ContentTemplate, dataTemplate);
+				};
+			});
 		}
 
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __IOS__
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
 		{
@@ -415,102 +423,117 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemContainerStyleTest()
 		{
-			TreeView treeView = new TreeView();
-			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			RunOnUIThread.Execute(() =>
 			{
-				var style = (Style)XamlReader.Load(
-			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+				TreeView treeView = new TreeView();
+				treeView.Loaded += (object sender, RoutedEventArgs e) =>
+				{
+					var style = (Style)XamlReader.Load(
+				   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
 		                        <Setter Property='Background' Value='Green'/>
 		                    </Style>");
-				treeView.ItemContainerStyle = style;
-				var node = new TreeViewNode();
-				treeView.RootNodes.Add(node);
-				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-				Verify.AreEqual(treeViewItem.Style, style);
-			};
+					treeView.ItemContainerStyle = style;
+					var node = new TreeViewNode();
+					treeView.RootNodes.Add(node);
+					var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+					var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+					Verify.AreEqual(treeViewItem.Style, style);
+				};
+			});
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemContainerTransitionTest()
 		{
-			TreeView treeView = new TreeView();
-			treeView.Loaded += (object sender, RoutedEventArgs e) =>
+			RunOnUIThread.Execute(() =>
 			{
-				var transition = (TransitionCollection)XamlReader.Load(
-			   @"<TransitionCollection xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
-		                          <ContentThemeTransition />
-		                    </TransitionCollection>");
-				treeView.ItemContainerTransitions = transition;
-				var node = new TreeViewNode();
-				treeView.RootNodes.Add(node);
-				var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
-				var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
-				Verify.AreEqual(treeViewItem.ContentTransitions, transition);
-			};
+				TreeView treeView = new TreeView();
+				treeView.Loaded += (object sender, RoutedEventArgs e) =>
+				{
+					var transition = (TransitionCollection)XamlReader.Load(
+				   @"<TransitionCollection xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'> 
+									  <ContentThemeTransition />
+								</TransitionCollection>");
+					treeView.ItemContainerTransitions = transition;
+					var node = new TreeViewNode();
+					treeView.RootNodes.Add(node);
+					var listControl = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+					var treeViewItem = listControl.ContainerFromItem(node) as TreeViewItem;
+					Verify.AreEqual(treeViewItem.ContentTransitions, transition);
+				};
+			});
+
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemsSourceTest()
 		{
-			var treeView = new TreeView();
-			var items = CreateTreeViewItemsSource();
-			treeView.ItemsSource = items;
+			RunOnUIThread.Execute(() =>
+			{
+				var treeView = new TreeView();
+				var items = CreateTreeViewItemsSource();
+				treeView.ItemsSource = items;
 
-			Verify.AreEqual(treeView.RootNodes.Count, 2);
-			Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+				Verify.AreEqual(treeView.RootNodes.Count, 2);
+				Verify.AreEqual(treeView.RootNodes[0].Content as TreeViewItemSource, items[0]);
+			});
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewItemsSourceUpdateTest()
 		{
-			var treeView = new TreeView();
-			var items = CreateTreeViewItemsSource();
-			treeView.ItemsSource = items;
+			RunOnUIThread.Execute(() =>
+			{
+				var treeView = new TreeView();
+				var items = CreateTreeViewItemsSource();
+				treeView.ItemsSource = items;
 
-			// Insert
-			var newItem = new TreeViewItemSource() { Content = "newItem" };
-			items.Add(newItem);
-			Verify.AreEqual(treeView.RootNodes.Count, 3);
-			var itemFromNode = treeView.RootNodes[2].Content as TreeViewItemSource;
-			Verify.AreEqual(newItem.Content, itemFromNode.Content);
+				// Insert
+				var newItem = new TreeViewItemSource() { Content = "newItem" };
+				items.Add(newItem);
+				Verify.AreEqual(treeView.RootNodes.Count, 3);
+				var itemFromNode = treeView.RootNodes[2].Content as TreeViewItemSource;
+				Verify.AreEqual(newItem.Content, itemFromNode.Content);
 
-			// Remove
-			items.Remove(newItem);
-			Verify.AreEqual(treeView.RootNodes.Count, 2);
+				// Remove
+				items.Remove(newItem);
+				Verify.AreEqual(treeView.RootNodes.Count, 2);
 
-			// Replace
-			var item3 = new TreeViewItemSource() { Content = "3" };
-			items[1] = item3;
-			itemFromNode = treeView.RootNodes[1].Content as TreeViewItemSource;
-			Verify.AreEqual(item3.Content, itemFromNode.Content);
+				// Replace
+				var item3 = new TreeViewItemSource() { Content = "3" };
+				items[1] = item3;
+				itemFromNode = treeView.RootNodes[1].Content as TreeViewItemSource;
+				Verify.AreEqual(item3.Content, itemFromNode.Content);
 
-			// Clear
-			items.Clear();
-			Verify.AreEqual(treeView.RootNodes.Count, 0);
+				// Clear
+				items.Clear();
+				Verify.AreEqual(treeView.RootNodes.Count, 0);
+			});
+
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void TreeViewNodeStringableTest()
 		{
-			var node = new TreeViewNode() { Content = "Node" };
-			Verify.AreEqual(node.Content, node.ToString());
+			RunOnUIThread.Execute(() =>
+			{
+				var node = new TreeViewNode() { Content = "Node" };
+				Verify.AreEqual(node.Content, node.ToString());
 
-			// Test inherited type
-			var node2 = new TreeViewNode2() { Content = "Inherited from TreeViewNode" };
-			Verify.AreEqual(node2.Content, node2.ToString());
+				// Test inherited type
+				var node2 = new TreeViewNode2() { Content = "Inherited from TreeViewNode" };
+				Verify.AreEqual(node2.Content, node2.ToString());
+			});
 		}
 
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __IOS__
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewPendingSelectedNodesTest()
 		{
@@ -557,6 +580,9 @@ namespace MUXControlsTestApp
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __IOS__
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
 #endif
 		public async Task TreeViewSelectionChangedSingleMode()
 		{

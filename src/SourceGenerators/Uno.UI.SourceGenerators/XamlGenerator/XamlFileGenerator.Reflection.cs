@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
@@ -89,6 +90,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(type, typeSymbol);
 		}
 
+		private bool IsAssignableTo(XamlType xamlType, ISymbol? typeSymbol)
+			=> IsType(xamlType, typeSymbol) || (xamlType.Name is "NullExtension" && xamlType.PreferredXamlNamespace is XamlConstants.XamlXmlNamespace);
+
 		private static bool IsType([NotNullWhen(true)] INamedTypeSymbol? namedTypeSymbol, ISymbol? typeSymbol)
 		{
 			if (namedTypeSymbol != null)
@@ -97,6 +101,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					// Everything is an object.
 					return true;
+				}
+
+				if (typeSymbol is INamedTypeSymbol { TypeKind: TypeKind.Interface })
+				{
+					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol, SymbolEqualityComparer.Default);
 				}
 
 				do
@@ -187,9 +196,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsDependencyObject(XamlObjectDefinition component)
 			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
 
-		private bool IsDependencyObject(INamedTypeSymbol component)
-			=> component.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
-
 		private bool IsUIElement(INamedTypeSymbol? symbol)
 			=> IsType(symbol, Generation.UIElementSymbol.Value);
 
@@ -246,13 +252,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName)
+		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName, int lineNumber, int linePosition, [CallerMemberName] string caller = "")
 		{
 			var definition = _metadataHelper.FindPropertyTypeByOwnerSymbol(ownerType, propertyName);
 
 			if (definition == null)
 			{
-				throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
+				throw new Exception($"The property {ownerType}.{propertyName} is unknown. Line number: {lineNumber}, Line position: {linePosition}, Caller: {caller}, File: {_fileDefinition.FilePath}");
 			}
 
 			return definition;
@@ -289,9 +295,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool IsRelevantProperty(XamlMember? member)
+		private static bool IsRelevantProperty(XamlMember? member, XamlObjectDefinition objectDefinition)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
+			{
+				return false;
+			}
+
+			if (member?.Name == "IsNativeStyle" && objectDefinition.Type.Name == "Style")
 			{
 				return false;
 			}
@@ -514,28 +525,39 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol? SearchClrNamespaces(string name)
+		private INamedTypeSymbol? SearchNamespaces(string name, string[] namespaces)
 		{
-			if (_clrNamespaces != null)
+			foreach (var @namespace in namespaces)
 			{
-				// Search first using the default namespace
-				foreach (var clrNamespace in _clrNamespaces)
+				if (_metadataHelper.FindTypeByFullName(@namespace + "." + name) is INamedTypeSymbol type)
 				{
-					if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
-					{
-						return type;
-					}
+					return type;
 				}
 			}
 
 			return null;
 		}
 
-		private INamedTypeSymbol GetType(string name, XamlObjectDefinition? objectDefinition = null)
+		private INamedTypeSymbol? SearchClrNamespaces(string name)
 		{
-			while (objectDefinition is not null)
+			if (_clrNamespaces != null)
 			{
-				var namespaces = objectDefinition.Namespaces;
+				return SearchNamespaces(name, _clrNamespaces);
+			}
+
+			return null;
+		}
+
+		private INamedTypeSymbol? ResolveType(string? name, XamlObjectDefinition? xmlnsContextProvider = null)
+		{
+			if (name == null)
+			{
+				return null;
+			}
+
+			while (xmlnsContextProvider is not null)
+			{
+				var namespaces = xmlnsContextProvider.Namespaces;
 				if (namespaces is { Count: > 0 } && name.IndexOf(':') is int indexOfColon && indexOfColon > 0)
 				{
 					var ns = name.AsSpan().Slice(0, indexOfColon);
@@ -543,7 +565,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (ns.Equals(@namespace.Prefix.AsSpan(), StringComparison.Ordinal))
 						{
-							if (_metadataHelper.FindTypeByFullName($"{@namespace.Namespace}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
+							if (_metadataHelper.FindTypeByFullName($"{GetTrimmedNamespace(@namespace.Namespace)}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
 							{
 								return namedType;
 							}
@@ -553,18 +575,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				objectDefinition = objectDefinition.Owner;
+				xmlnsContextProvider = xmlnsContextProvider.Owner;
 			}
 
-			var type = _findType!(name);
-
-			if (type == null)
-			{
-				throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
-			}
-
-			return type;
+			return _findType!(name);
 		}
+		private INamedTypeSymbol GetType(string name, XamlObjectDefinition? objectDefinition = null) =>
+			ResolveType(name, objectDefinition) ??
+			throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
 
 		private INamedTypeSymbol GetType(XamlType type)
 		{
@@ -604,9 +622,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					namespaceUrl = ns.Namespace.Substring(0, indexOfQuestionMark);
 				}
 
-				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
+				if (_knownNamespaces.TryGetValue(namespaceUrl, out var knownNamespaces))
 				{
-					return SearchClrNamespaces(fields[1]);
+					return SearchNamespaces(fields[1], knownNamespaces);
 				}
 
 				var nsName = GetTrimmedNamespace(namespaceUrl);
@@ -697,7 +715,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static string GetTrimmedNamespace(string nsNamespace)
 		{
 			var nsName = nsNamespace.TrimStart("using:");
-
 			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");

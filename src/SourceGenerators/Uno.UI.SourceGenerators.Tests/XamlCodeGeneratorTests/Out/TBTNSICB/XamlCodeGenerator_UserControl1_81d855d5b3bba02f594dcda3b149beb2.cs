@@ -53,27 +53,27 @@ namespace TestRepro
 				IsParsing = true,
 				// Source 0\UserControl1.xaml (Line 12:3)
 			}
-			.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler0)(c0 => 
+			.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
-				c0.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c1) => 
+			.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Source 0\UserControl1.xaml (Line 1:2)
-				
-				// WARNING Property c1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}UserControl, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\UserControl1.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}UserControl, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c2) => 
+			.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Class TestRepro.UserControl1
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
-				c2.CreationComplete();
+			// Class TestRepro.UserControl1
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -90,6 +90,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.UserControl instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.UserControl UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply(this global::Microsoft.UI.Xaml.Controls.UserControl instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

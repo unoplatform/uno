@@ -118,23 +118,23 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 
 			collection.Add(1);
 
-			Assert.AreEqual(1, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 1 : 2, count);
 
 			collection.Add(42);
 
-			Assert.AreEqual(2, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 2 : 4, count);
 
 			collection.Add(43);
 
-			Assert.AreEqual(3, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 3 : 6, count);
 
 			collection.RemoveAt(0);
 
-			Assert.AreEqual(3, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 3 : 6, count);
 
 			collection[0] = 44;
 
-			Assert.AreEqual(FeatureConfiguration.FrameworkTemplate.IsPoolingEnabled ? 3 : 4, count);
+			Assert.AreEqual(FeatureConfiguration.FrameworkTemplate.IsPoolingEnabled ? 3 : 8, count);
 		}
 	}
 

@@ -1,10 +1,10 @@
 ﻿#nullable enable
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Gtk;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.Graphics.Display;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -18,32 +18,63 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 	public GtkDisplayInformationExtension(object owner)
 	{
 		_displayInformation = (DisplayInformation)owner;
-		GtkHost.Current!.MainWindowShown += GtkDisplayInformationExtension_MainWindowShown;
+		UnoGtkWindow.NativeWindowShown += UnoGtkWindow_NativeWindowShown;
 		_dpiHelper = new DpiHelper();
 	}
 
-	private void GtkDisplayInformationExtension_MainWindowShown(object? sender, EventArgs e)
+	private void UnoGtkWindow_NativeWindowShown(object? sender, UnoGtkWindow e)
 	{
+		UnoGtkWindow.NativeWindowShown -= UnoGtkWindow_NativeWindowShown;
 		_dpiHelper.DpiChanged += OnDpiChanged;
 		OnDpiChanged(null, EventArgs.Empty);
 	}
 
 	private Window GetWindow()
 	{
-		_window ??= GtkHost.Current?.MainWindow;
-		if (_window is null)
+		if (_window is { })
 		{
-			throw new InvalidOperationException("Main window is not set yet.");
+			return _window;
 		}
 
+		// TODO: this is a ridiculous amount of indirection, find something better
+		if (AppWindow.GetFromWindowId(_displayInformation.WindowId) is not { } appWindow ||
+			Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+			UnoGtkWindow.GetGtkWindowFromWindow(window) is not { } gtkWindow)
+		{
+			throw new InvalidOperationException($"{nameof(GtkDisplayInformationExtension)} couldn't find a GTK window.");
+		}
+
+		_window = gtkWindow;
 		return _window;
 	}
 
 	public DisplayOrientations CurrentOrientation => DisplayOrientations.Landscape;
 
-	public uint ScreenHeightInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Height;
+	public uint ScreenHeightInRawPixels
+	{
+		get
+		{
+			if (GetWindow() is not { } window)
+			{
+				return default;
+			}
 
-	public uint ScreenWidthInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Width;
+			return (uint)window.Display.GetMonitorAtWindow(window.Window).Workarea.Height;
+		}
+	}
+
+	public uint ScreenWidthInRawPixels
+	{
+		get
+		{
+			if (GetWindow() is not { } window)
+			{
+				return default;
+			}
+
+			return (uint)window.Display.GetMonitorAtWindow(window.Window).Workarea.Width;
+		}
+	}
 
 	public float LogicalDpi
 	{
@@ -52,8 +83,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 			if (_dpi is null)
 			{
 				var window = GetWindow();
-				var nativeWindow = window.Window;
-				if (nativeWindow is not null)
+				if (window?.Window is not null)
 				{
 					_dpi = GetNativeDpi();
 				}
@@ -76,20 +106,5 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		_displayInformation.NotifyDpiChanged();
 	}
 
-	private float GetNativeDpi()
-	{
-		var dpi = _dpiHelper.GetNativeDpi();
-
-		if (GtkHost.Current?.RenderSurfaceType == RenderSurfaceType.Software)
-		{
-			// Software rendering is not affected by fractional DPI.
-			return dpi;
-		}
-
-		// We need to make sure that in case of fractional DPI, we use the nearest whole DPI instead,
-		// otherwise we get GuardBand related rendering issues.
-		var fractionalDpi = dpi / DisplayInformation.BaseDpi;
-		var wholeDpi = Math.Max(1.0f, float.Floor(fractionalDpi));
-		return wholeDpi * DisplayInformation.BaseDpi;
-	}
+	private float GetNativeDpi() => _dpiHelper.GetNativeDpi();
 }

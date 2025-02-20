@@ -33,8 +33,18 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 			_automationFlow = AutomationFlow().GetEnumerator();
 			this.InitializeComponent();
 
-			CounterGrid.WasUpdated += CounterGrid_WasUpdated;
-			CounterGrid2.WasUpdated += CounterGrid_WasUpdated;
+			this.Loaded += (_, _) =>
+			{
+				CounterGrid.WasUpdated += CounterGrid_WasUpdated;
+				CounterGrid2.WasUpdated += CounterGrid_WasUpdated;
+			};
+
+			this.Unloaded += (_, _) =>
+			{
+				CounterGrid.WasUpdated -= CounterGrid_WasUpdated;
+				CounterGrid2.WasUpdated -= CounterGrid_WasUpdated;
+			};
+
 			SubjectList.ItemsSource = _collection;
 			ModificationSelector.ItemsSource = new[]
 			{

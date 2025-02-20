@@ -69,13 +69,13 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Direction.get
 		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Color.get
-		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.DistantLight.CoordinateSpace.get
 		// Forced skipping of method Microsoft.UI.Composition.DistantLight.CoordinateSpace.set
-		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Intensity.set
+		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Direction.get
 		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Direction.set
 		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Intensity.get
+		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Intensity.set
+		// Forced skipping of method Microsoft.UI.Composition.DistantLight.Color.set
 	}
 }

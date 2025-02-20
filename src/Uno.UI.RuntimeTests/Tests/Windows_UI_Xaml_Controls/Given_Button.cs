@@ -12,6 +12,17 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Color = Windows.UI.Color;
+using Microsoft.UI.Xaml.Data;
+
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -19,6 +30,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_Button
 	{
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_NavigationViewButtonStyles(bool useFluent)
+		{
+			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
+
+			var normalBtn = (Button)XamlReader.Load("""
+				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />
+				""");
+			var normalBtnRect = await UITestHelper.Load(normalBtn);
+
+			var smallBtn = (Button)XamlReader.Load("""
+				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonSmallStyle}" />
+				""");
+			var smallBtnRect = await UITestHelper.Load(smallBtn);
+
+			Assert.AreEqual(new Size(40, 40), new Size(normalBtnRect.Width, normalBtnRect.Height));
+			Assert.AreEqual(new Size(32, 32), new Size(smallBtnRect.Width, smallBtnRect.Height));
+			Assert.AreEqual(0, normalBtnRect.Left - smallBtnRect.Left);
+			Assert.AreEqual(8, normalBtnRect.Right - smallBtnRect.Right);
+		}
+
 		[TestMethod]
 		public async Task When_Enabled_Inside_Disabled_Control()
 		{
@@ -30,48 +64,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = SUT
 			};
 
-			WindowHelper.WindowContent = cc;
-
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.Load(cc);
 
 			// The button should be disabled because the outer control is disabled
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			// Once the outer control is enabled, the button can control its own IsEnabled
 			cc.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, true);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			// We test once again to test behaviour when the value is set while running
 			// instead of during initialization
 			cc.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			// Now let's make sure Button.IsEnabled doesn't
 			// affect the outer ContentControl.IsEnabled
 
 			// cc.IsEnbaled is false
 			SUT.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			SUT.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			cc.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			SUT.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, true);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			SUT.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 		}
 
 		[TestMethod]
@@ -86,6 +118,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var command = new IsExecutingCommand(false);
 			await RunIsExecutingCommandCommon(command);
+		}
+
+		[TestMethod]
+		[DataRow(typeof(Button))]
+		[DataRow(typeof(ToggleButton))]
+		[DataRow(typeof(RepeatButton))]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_BorderThickness_Zero(Type type)
+		{
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var button = (ButtonBase)Activator.CreateInstance(type);
+
+			button.Content = "";
+			button.Background = new SolidColorBrush(Colors.Transparent);
+			button.BorderThickness = new Thickness(0);
+			button.Width = 100;
+			button.Height = 100;
+
+			grid.Children.Add(button);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(grid);
+
+			button.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(grid);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
 		}
 
 		[TestMethod]
@@ -111,8 +180,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_DoubleTap_Timing()
 		{
@@ -188,8 +257,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Tapped_PointerPressed_Is_Not_Raised()
 		{
@@ -248,6 +317,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Command_CanExecute_Throws()
+		{
+			// Here we are testing against a bug where
+			// a data-bound ICommand that throws in its CanExecute
+			// can cause the binding to reset to its FallbackValue.
+			var vm = new
+			{
+				UnstableCommand = new DelegateCommand(x => throw new Exception("fail...")),
+			};
+
+			var sut = new Button();
+			sut.SetBinding(Button.CommandProperty, new Binding { Path = new(nameof(vm.UnstableCommand)), FallbackValue = new NoopCommand() });
+			sut.DataContext = vm;
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.AreEqual(vm.UnstableCommand, sut.Command, "Binding did not set the proper value.");
+		}
 
 		private async Task RunIsExecutingCommandCommon(IsExecutingCommand command)
 		{
@@ -353,5 +442,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+
+		public class DelegateCommand : ICommand
+		{
+			private readonly Func<object, bool> canExecuteImpl;
+			private readonly Action<object> executeImpl;
+
+			public event EventHandler CanExecuteChanged;
+
+			public DelegateCommand(Func<object, bool> canExecute = null, Action<object> execute = null)
+			{
+				this.canExecuteImpl = canExecute;
+				this.executeImpl = execute;
+			}
+
+			public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, default);
+
+			public bool CanExecute(object parameter) => canExecuteImpl?.Invoke(parameter) ?? true;
+			public void Execute(object parameter) => executeImpl?.Invoke(parameter);
+		}
+
+		public class NoopCommand() : DelegateCommand(null, null) { }
 	}
 }

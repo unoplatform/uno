@@ -4,7 +4,7 @@
 using System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {

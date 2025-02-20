@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME AUS</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Weiß</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Hellgrau</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Grau</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Dunkelgrau</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Schwarz</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Korallenrot</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Hellorange</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Hellbraun</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Hellgelb</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Hellgrün</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Limone</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Wasserblau</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Himmelblau</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Helltürkis</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Blassblau</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Hellblau</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Eisblau</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Immergrün</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Flieder</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Rosa</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Rot</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Braun</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Gold</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Gelb</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Olivgrün</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Grün</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Hellgrün</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Blaugrün</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Türkis</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Blau</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Blaugrau</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Indigoblau</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Lila</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Dunkelrot</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Dunkelgelb</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Dunkelgrün</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Dunkelblaugrün</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Dunkelblau</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Dunkellila</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Pflaume</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Schließen</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

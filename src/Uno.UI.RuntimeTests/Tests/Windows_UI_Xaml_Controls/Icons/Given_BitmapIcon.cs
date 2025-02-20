@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
-using Private.Infrastructure;
 using System.Threading.Tasks;
-using Windows.UI;
-using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 
@@ -46,15 +46,16 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_Fluent()
+	public async Task When_Themed_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed();
 	}
 
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
 	public async Task When_Foreground_Set_With_ShowAsMonochrome_False()
 	{
 		var bitmapIcon = new BitmapIcon()
@@ -76,6 +77,9 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
 	public async Task When_Foreground_Set_With_ShowAsMonochrome_True()
 	{
 		var bitmapIcon = new BitmapIcon

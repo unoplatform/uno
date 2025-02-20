@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Uno.Core.Comparison;
@@ -16,6 +17,8 @@ internal static class HtmlElementHelper
 	private static readonly PropertyInfo _htmlElementAttributeTagGetter;
 	private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "HtmlElementAttribute is suppressed from the linker")]
+	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "HtmlElementAttribute is suppressed from the linker")]
 	static HtmlElementHelper()
 	{
 		_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true)!;

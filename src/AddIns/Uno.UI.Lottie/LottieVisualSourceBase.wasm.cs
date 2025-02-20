@@ -30,6 +30,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private readonly SerialDisposable _animationDataSubscription = new SerialDisposable();
 
+		~LottieVisualSourceBase()
+		{
+			if (_initializedPlayer is { })
+			{
+				NativeMethods.Kill(_initializedPlayer.HtmlId);
+			}
+		}
+
 		async Task InnerUpdate(CancellationToken ct)
 		{
 			var player = _player;
@@ -278,6 +286,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			[JSImport($"{JsType}.stop")]
 			internal static partial void Stop(nint htmlId);
+
+			[JSImport($"{JsType}.kill")]
+			internal static partial void Kill(nint Handle);
 		}
 	}
 }

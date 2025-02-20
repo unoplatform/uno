@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal LoopingSelector()
 		{
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
-
 			_hasFocus = false;
 			_isSized = false;
 			_isSetupPending = true;
@@ -426,7 +424,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// This event can be raised synchronously
 			// with the ScrollViewer's ChangeView().
 			// It must be delayed to prevent incorrect re-selection of another value.
-			Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
 		}
 
 		void OnViewChanging(
@@ -482,7 +480,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//UNREFERENCED_PARAMETER(pEventArgs);
 			var nPointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null)
@@ -1795,6 +1793,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			FrameworkElement spPanelAsFE;
 			UIElement spThisAsUI;
 
+#if HAS_UNO
+			// Uno specific: Due to lifecycle differences, the ScrollViewer is may not be initialized at this point.
+			// If ViewportHeight is 0, we would temporarily size the panel incorrectly, which could cause the selected
+			// item to be changed.
+			if (_tpScrollViewer is null || _tpScrollViewer.ViewportHeight == 0)
+			{
+				return;
+			}
+#endif
+
 			var shouldLoop = false;
 			shouldLoop = ShouldLoop;
 			//QueryInterface(__uuidof(UIElement), &spThisAsUI);
@@ -1887,7 +1895,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				//	wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
 				//	&spDispatcherQueueStatics));
 				//spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
-				spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
+				spDispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
 				//(spDispatcherQueue.TryEnqueue(
 				//	WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
 

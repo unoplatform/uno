@@ -40,12 +40,13 @@ namespace Uno.UI.Xaml
 		public static void ApplyXBind(this DependencyObject instance)
 			=> (instance as IDependencyObjectStoreProvider)?.Store.ApplyCompiledBindings();
 
-		public static void UpdateResourceBindings(this DependencyObject instance)
+		public static void UpdateResourceBindings(this DependencyObject instance) => UpdateResourceBindings(instance, resourceContextProvider: null);
+		public static void UpdateResourceBindings(this DependencyObject instance, FrameworkElement? resourceContextProvider)
 		{
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ApplyElementNameBindings();
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
 			}
 		}
 	}

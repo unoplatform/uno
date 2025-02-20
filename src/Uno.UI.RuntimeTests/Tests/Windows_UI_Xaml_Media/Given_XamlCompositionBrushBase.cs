@@ -19,12 +19,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 [TestClass]
 public class Given_XamlCompositionBrushBase
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_CompositionBrush_Changes()
 	{
-		var dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
 
 		var compositor = Window.Current.Compositor;
 		var expected = new Grid
@@ -83,5 +85,4 @@ public class Given_XamlCompositionBrushBase
 
 		return (ss1, ss2);
 	}
-#endif
 }

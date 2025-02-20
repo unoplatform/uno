@@ -144,4 +144,25 @@
   <data name="StorageProviderWasmDownloadPickerName" xml:space="preserve">
     <value>WASM Download picker</value>
   </data>
+  <data name="FILE_PICKER_TITLE_DIRECTORY_MULTIPLE" xml:space="preserve">
+    <value>Choose one or more directories</value>
+  </data>
+  <data name="FILE_PICKER_TITLE_FILE_MULTIPLE" xml:space="preserve">
+    <value>Choose one or more files</value>
+  </data>
+  <data name="FILE_PICKER_TITLE_DIRECTORY_SINGLE" xml:space="preserve">
+    <value>Choose a directory</value>
+  </data>
+  <data name="FILE_PICKER_TITLE_FILE_SINGLE" xml:space="preserve">
+    <value>Choose a file</value>
+  </data>
+  <data name="FILE_PICKER_ACCEPT_LABEL" xml:space="preserve">
+  <value>Submit</value>
+  </data>
+  <data name="FILE_PICKER_TITLE" xml:space="preserve">
+    <value>Choose where to save the file</value>
+  </data>
+  <data name="FILE_SAVER_ACCEPT_LABEL" xml:space="preserve">
+    <value>Submit</value>
+  </data>
 </root>

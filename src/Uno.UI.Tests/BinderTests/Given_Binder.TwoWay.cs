@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml;
+using System.Globalization;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -66,7 +67,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			BindingOperations.SetBinding(dp2, MyDP.MyStringProperty, binding);
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -101,7 +102,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			dp2.ApplyXBind();
 
-			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual("$0.00", dp2.MyString);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
@@ -115,7 +116,7 @@ namespace Uno.UI.Tests.BinderTests
 			// the UpdateSource invocation as a two-way binding is still happening.
 			//
 			// This behavior is different with a normal binding.
-			Assert.AreEqual("¤42.00", dp2.MyString);
+			Assert.AreEqual("$42.00", dp2.MyString);
 			Assert.AreEqual(42, dp1.MyDouble);
 			Assert.AreEqual(2, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);
@@ -308,7 +309,9 @@ namespace Uno.UI.Tests.BinderTests
 				if (value != null)
 				{
 					var result = (double)value;
-					return result.ToString("C");
+
+					// Required after mstest 3.3.6, which changes the default culture
+					return result.ToString("C", new CultureInfo("en-US"));
 				}
 				else
 				{

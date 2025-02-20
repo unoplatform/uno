@@ -11,9 +11,13 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
+[assembly: InternalsVisibleTo("Uno.UI.GooglePlay")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
+[assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
+
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]

@@ -1,6 +1,7 @@
-﻿using System;
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -38,7 +39,6 @@ namespace Windows.UI.Input
 				|| Math.Abs(Expansion) > thresholds.Expansion;
 
 		/// <inheritdoc />
-		[Pure]
 		public override string ToString()
 			=> $"x:{Linear.X:N0};y:{Linear.Y:N0};θ:{Angular};e:{Expansion:F2}";
 
@@ -66,3 +66,4 @@ namespace Windows.UI.Input
 		#endregion
 	}
 }
+#endif

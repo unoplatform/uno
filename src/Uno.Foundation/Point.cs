@@ -13,16 +13,34 @@ namespace Windows.Foundation;
 [DebuggerDisplay("{DebugDisplay,nq}")]
 public partial struct Point
 {
-	public Point(double x, double y)
+	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.
+	private float _x;
+	private float _y;
+
+	public Point(float x, float y)
 	{
-		X = x;
-		Y = y;
+		_x = x;
+		_y = y;
+	}
+
+	public Point(double x, double y)
+		: this((float)x, (float)y)
+	{
 	}
 
 	internal static Point Zero => new Point(0, 0);
 
-	public double X { get; set; }
-	public double Y { get; set; }
+	public double X
+	{
+		get => _x;
+		set => _x = (float)value;
+	}
+
+	public double Y
+	{
+		get => _y;
+		set => _y = (float)value;
+	}
 
 	internal Point WithX(double x) => new Point(x, Y);
 

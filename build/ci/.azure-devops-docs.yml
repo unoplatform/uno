@@ -21,10 +21,12 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
+
+  - template: templates/docfx-intermediary-assets.yml
 
   - task: MSBuild@1
     inputs:
@@ -32,7 +34,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True /p:UnoTargetFrameworkOverride=net7.0 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false

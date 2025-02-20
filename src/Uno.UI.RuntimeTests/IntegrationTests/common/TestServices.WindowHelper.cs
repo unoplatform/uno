@@ -7,8 +7,16 @@ using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
-using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
+using System.Linq;
+using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
+using System.Reflection.Metadata.Ecma335;
+using UIElement = Microsoft.UI.Xaml.UIElement;
+
+#if HAS_UNO
+using DirectUI;
+#endif
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -25,25 +33,13 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Microsoft.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
 			public static XamlRoot XamlRoot { get; set; }
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow
-			{
-				get
-				{
-					if (_currentTestWindow is null)
-					{
-						throw new InvalidOperationException("Current test window not set.");
-					}
-					return _currentTestWindow;
-				}
-				set => _currentTestWindow = value;
-			}
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 
@@ -118,12 +114,12 @@ namespace Private.Infrastructure
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
 			public static UIElement RootElement => UseActualWindowRoot ?
-				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+				XamlRoot.Content : EmbeddedTestRoot.control;
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
 			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
-				? UnitTestDispatcherCompat.From(CurrentTestWindow)
+				? (CurrentTestWindow is { } ? UnitTestDispatcherCompat.From(CurrentTestWindow) : UnitTestDispatcherCompat.Instance)
 				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()
@@ -154,7 +150,7 @@ namespace Private.Infrastructure
 			/// This method assumes that the control will have a non-zero size once loaded, so it's not appropriate for elements that are
 			/// collapsed, empty, etc.
 			/// </remarks>
-			internal static async Task WaitForLoaded(FrameworkElement element, int timeoutMS = 1000)
+			internal static async Task WaitForLoaded(FrameworkElement element, Func<FrameworkElement, bool> isLoaded = null, int timeoutMS = 1000)
 			{
 				async Task Do()
 				{
@@ -179,7 +175,10 @@ namespace Private.Infrastructure
 						return true;
 					}
 
-					await WaitFor(IsLoaded, message: $"{element} loaded", timeoutMS: timeoutMS);
+					await WaitFor(
+						isLoaded is { } ? () => isLoaded(element) : IsLoaded,
+						message: $"Timeout waiting on {element} to be loaded",
+						timeoutMS: timeoutMS);
 				}
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
@@ -425,6 +424,32 @@ namespace Private.Infrastructure
 			{
 
 			}
+
+			internal static void CloseAllSecondaryWindows()
+			{
+#if HAS_UNO_WINUI && !WINAPPSDK
+				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
+				foreach (var window in windows)
+				{
+					if (window != TestServices.WindowHelper.XamlRoot.HostWindow)
+					{
+						window.Close();
+					}
+				}
+#endif
+			}
+
+#if HAS_UNO
+			internal async static Task<ToolTip> TestGetActualToolTip(UIElement element)
+			{
+				ToolTip toolTip = null;
+				await RunOnUIThread(() =>
+				{
+					toolTip = DXamlTestHooks.TestGetActualToolTip(element);
+				});
+				return toolTip;
+			}
+#endif
 		}
 	}
 }

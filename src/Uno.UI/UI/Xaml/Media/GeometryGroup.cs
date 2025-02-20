@@ -1,6 +1,8 @@
 ﻿using Uno.UI;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
+using Windows.Foundation;
+
+using Rect = Windows.Foundation.Rect;
 
 namespace Microsoft.UI.Xaml.Media
 {

@@ -1,7 +1,8 @@
 ﻿using System;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -31,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 				contentPresenter.Measure(new Size(0, 0));
 				if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 1 && VisualTreeHelper.GetChild(contentPresenter, 0) is ImplicitTextBlock textBlock)
 				{
-					textBlock.TextDecorations = Windows.UI.Text.TextDecorations.Underline;
+					textBlock.TextDecorations = TextDecorations.Underline;
 				}
 			}
 		}

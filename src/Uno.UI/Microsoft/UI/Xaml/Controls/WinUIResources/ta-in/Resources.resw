@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ஆஃப்</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>வெள்ளை</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>வெளிர் சாம்பல்</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>சாம்பல்</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>அடர் சாம்பல்</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>கருப்பு</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>பவளம்</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>ரோஸ்</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>வெளிர் ஆரஞ்சு</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>வெளிறிய மேனி நிறம்</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>வெளிர் மஞ்சள்</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>வெளிர் பச்சை</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>எலுமிச்சை</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>நீர் வண்ணம்</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>மேக நீலம்</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>வெளிர் டர்க்கோய்ஸ்</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>வெளிர் நீலம்</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>இளம் நீலம்</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>ஐஸ் நீலம்</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>பெரிவிங்கிள்</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>தாழம்பூ</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>இளஞ்சிவப்பு</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>சிவப்பு</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>ஆரஞ்சு</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>பழுப்பு</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>தங்கம்</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>மஞ்சள்</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>ஆலிவ் பச்சை</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>பச்சை</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>ஒளிர் பச்சை</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>பசும்நீலம்</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>டர்க்கோய்ஸ்</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>நீலம்</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>நீலம்-சாம்பல்</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>கருநீலம்</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>கருஞ்சிவப்பு</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>அடர் சிவப்பு</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>அடர் மஞ்சள்</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>அடர் பச்சை</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>அடர் பசும்நீலம்</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>அடர் நீலம்</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>அடர் கருஞ்சிவப்பு</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>பிளம்</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>மூடு</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

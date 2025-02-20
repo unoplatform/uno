@@ -64,9 +64,29 @@ namespace SamplesApp.UITests
 
 			try
 			{
-				// Start the app only once, so the tests runs don't restart it
-				// and gain some time for the tests.
-				AppInitializer.ColdStartApp();
+				if (AppInitializer.GetLocalPlatform() == Platform.iOS)
+				{
+					AppInitializer.ColdStartApp();
+				}
+				else
+				{
+					// Start the app only once, so the tests runs don't restart it
+					// and gain some time for the tests.
+					var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
+
+					// Force an explicit timeout to avoid excessive waiting on iOS
+					var timeout = TimeSpan.FromMinutes(5);
+					var timeoutTask = Task.Delay(timeout);
+
+					var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
+					allTasks.Wait();
+
+					if (allTasks.Result == timeoutTask)
+					{
+						throw new Exception($"Cold start timeout after {timeout}");
+					}
+				}
+
 			}
 			catch
 			{
@@ -80,7 +100,7 @@ namespace SamplesApp.UITests
 		private static void TryInitializeSkiaSharpLoader()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.Browser
-				&& !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				&& !OperatingSystem.IsWindows())
 			{
 #if DEBUG
 				Console.WriteLine("Initializing SkiaSharp loader");
@@ -261,6 +281,9 @@ namespace SamplesApp.UITests
 			}
 		}
 
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, bool? ignoreInSnapshotCompare = null)
+			=> TakeScreenshot(stepName, ignoreInSnapshotCompare);
+
 		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
@@ -268,6 +291,9 @@ namespace SamplesApp.UITests
 					? new ScreenshotOptions { IgnoreInSnapshotCompare = ignoreInSnapshotCompare.Value }
 					: null
 			);
+
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, ScreenshotOptions options)
+			=> TakeScreenshot(stepName, options);
 
 		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{

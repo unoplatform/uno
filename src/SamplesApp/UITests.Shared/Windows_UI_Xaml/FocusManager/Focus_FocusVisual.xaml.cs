@@ -32,7 +32,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 		{
 		}
 
-		public FocusState[] FocusStates { get; } = Enum.GetValues(typeof(FocusState)).OfType<FocusState>().ToArray();
+		public FocusState[] FocusStates { get; } = Enum.GetValues<FocusState>();
 
 		public FocusState SelectedFocusState { get; set; } = FocusState.Unfocused;
 

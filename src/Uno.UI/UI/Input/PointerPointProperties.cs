@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System.Text;
 using Windows.Foundation;
 using Uno;
@@ -14,7 +16,7 @@ namespace Windows.UI.Input
 		{
 		}
 
-		internal PointerPointProperties(Windows.UI.Input.PointerPointProperties properties)
+		internal PointerPointProperties(global::Windows.UI.Input.PointerPointProperties properties)
 		{
 			if (properties is null)
 			{
@@ -43,9 +45,9 @@ namespace Windows.UI.Input
 		}
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-		public static explicit operator Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
+		public static explicit operator global::Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
 		{
-			var props = new Windows.UI.Input.PointerPointProperties();
+			var props = new global::Windows.UI.Input.PointerPointProperties();
 
 			props.IsPrimary = muxProps.IsPrimary;
 			props.IsInRange = muxProps.IsInRange;
@@ -62,7 +64,7 @@ namespace Windows.UI.Input
 			props.ContactRect = muxProps.ContactRect;
 			props.TouchConfidence = muxProps.TouchConfidence;
 			props.IsCanceled = muxProps.IsCanceled;
-			props.PointerUpdateKind = (Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
+			props.PointerUpdateKind = (global::Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
 			props.XTilt = muxProps.XTilt;
 			props.YTilt = muxProps.YTilt;
 			props.MouseWheelDelta = muxProps.MouseWheelDelta;
@@ -79,6 +81,11 @@ namespace Windows.UI.Input
 		public bool IsPrimary { get; internal set; }
 
 		public bool IsInRange { get; internal set; }
+
+		/// <summary>
+		/// This is necessary for InteractionTracker, which behaves differently on mouse, touch and trackpad inputs.
+		/// </summary>
+		internal bool IsTouchPad { get; set; }
 
 		public bool IsLeftButtonPressed { get; internal set; }
 
@@ -150,6 +157,7 @@ namespace Windows.UI.Input
 			// Pen
 			if (IsBarrelButtonPressed) builder.Append("barrel ");
 			if (IsEraser) builder.Append("eraser ");
+			if (IsTouchPad) builder.Append("touchpad ");
 
 			// Misc
 			builder.Append('(');
@@ -160,3 +168,4 @@ namespace Windows.UI.Input
 		}
 	}
 }
+#endif

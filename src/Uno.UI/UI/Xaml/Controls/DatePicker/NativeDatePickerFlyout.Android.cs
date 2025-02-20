@@ -7,11 +7,13 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeDatePickerFlyout : DatePickerFlyout
 	{
+		private bool _programmaticallyDismissed;
 		private DatePickerDialog _dialog;
 
 		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
@@ -34,16 +36,20 @@ namespace Microsoft.UI.Xaml.Controls
 			this.RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
 		}
 
+		internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
+
+		internal DateTimeOffset NativeDialogDate => _dialog.DatePicker.DateTime;
+
 		protected internal override void Open()
 		{
 			var date = Date;
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
-			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
+			if (date == DatePicker.NullDateSentinelValue)
 			{
-				var temp = new Windows.Globalization.Calendar();
-				var calendar = new Windows.Globalization.Calendar(
+				var temp = new global::Windows.Globalization.Calendar();
+				var calendar = new global::Windows.Globalization.Calendar(
 					temp.Languages,
 					CalendarIdentifier,
 					temp.GetClock());
@@ -51,10 +57,12 @@ namespace Microsoft.UI.Xaml.Controls
 				date = calendar.GetDateTime();
 			}
 
+			var themeResourceId = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Light ? global::Android.Resource.Style.ThemeDeviceDefaultLightDialog : global::Android.Resource.Style.ThemeDeviceDefaultDialog;
 			// Note: Month needs to be -1 since on Android months go from 0-11
 			// http://developer.android.com/reference/android/app/DatePickerDialog.OnDateSetListener.html#onDateSet(android.widget.DatePicker, int, int, int)
 			_dialog = new DatePickerDialog(
 				ContextHelper.Current,
+				themeResourceId,
 				OnDateSet,
 				date.Year,
 				date.Month - 1,
@@ -82,6 +90,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
+
+			AddToOpenFlyouts();
 		}
 
 		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)
@@ -92,12 +102,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnDismiss(object sender, EventArgs e)
 		{
-			Hide(canCancel: false);
+			if (!_programmaticallyDismissed)
+			{
+				Hide(canCancel: false);
+				RemoveFromOpenFlyouts();
+			}
 		}
 
-		internal protected override void Close()
+		private protected override void OnClosed()
 		{
+			_programmaticallyDismissed = true;
 			_dialog?.Dismiss();
+			base.OnClosed();
+			_programmaticallyDismissed = false;
 		}
 
 		private void OnDateSet(object sender, DatePickerDialog.DateSetEventArgs e)

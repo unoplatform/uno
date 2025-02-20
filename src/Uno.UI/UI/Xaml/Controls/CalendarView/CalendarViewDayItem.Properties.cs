@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 
 	public partial class CalendarViewDayItem //: global::Microsoft.UI.Xaml.Controls.Control
@@ -15,7 +17,7 @@
 			}
 		}
 
-		internal override global::System.DateTimeOffset DateBase
+		internal override DateTime DateBase
 		{
 			get => Date;
 			set => Date = value;
@@ -28,6 +30,9 @@
 			}
 			internal set
 			{
+#if DEBUG
+				put_Date(value);
+#endif
 				this.SetValue(DateProperty, value);
 			}
 		}

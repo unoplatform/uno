@@ -20,6 +20,8 @@ namespace Microsoft.UI.Xaml
 	{
 		private Size? _lastLayoutSize;
 		private bool _constraintsChanged;
+		private bool? _stretchAffectsMeasure;
+		private bool _stretchAffectsMeasureDefault;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -34,10 +36,13 @@ namespace Microsoft.UI.Xaml
 		partial void Initialize();
 
 		protected override void OnNativeLoaded()
+			=> OnNativeLoaded(isFromResources: false);
+
+		private void OnNativeLoaded(bool isFromResources)
 		{
 			try
 			{
-				PerformOnLoaded();
+				PerformOnLoaded(isFromResources);
 
 				base.OnNativeLoaded();
 			}
@@ -48,10 +53,26 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void PerformOnLoaded()
+		private void PerformOnLoaded(bool isFromResources = false)
 		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
+			if (!isFromResources)
+			{
+				((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+				OnLoading();
+			}
+
+			if (this.Resources is not null)
+			{
+				foreach (var resource in Resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsFrameworkElement)
+					{
+						resourceAsFrameworkElement.XamlRoot = XamlRoot;
+						resourceAsFrameworkElement.PerformOnLoaded(isFromResources: true);
+					}
+				}
+			}
+
 			OnLoaded();
 
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
@@ -67,17 +88,20 @@ namespace Microsoft.UI.Xaml
 						// Calling this method is acceptable as it is an abstract method that
 						// will never do interop with the java class. It is required to invoke
 						// Loaded/Unloaded actions.
-						e.OnNativeLoaded();
+						e.OnNativeLoaded(isFromResources);
 					}
 				}
 			}
 		}
 
 		protected override void OnNativeUnloaded()
+			=> OnNativeUnloaded();
+
+		private void OnNativeUnloaded(bool isFromResources = false)
 		{
 			try
 			{
-				PerformOnUnloaded();
+				PerformOnUnloaded(isFromResources);
 
 				base.OnNativeUnloaded();
 			}
@@ -88,11 +112,22 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void PerformOnUnloaded()
+		internal void PerformOnUnloaded(bool isFromResources = false)
 		{
+			if (this.Resources is not null)
+			{
+				foreach (var resource in this.Resources.Values)
+				{
+					if (resource is FrameworkElement fe)
+					{
+						fe.PerformOnUnloaded(isFromResources: true);
+					}
+				}
+			}
+
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
 			{
-				if (IsNativeLoaded)
+				if (isFromResources || IsNativeLoaded)
 				{
 					OnUnloaded();
 
@@ -107,7 +142,7 @@ namespace Microsoft.UI.Xaml
 							// Calling this method is acceptable as it is an abstract method that
 							// will never do interop with the java class. It is required to invoke
 							// Loaded/Unloaded actions.
-							e.OnNativeUnloaded();
+							e.OnNativeUnloaded(isFromResources);
 						}
 						else if (view is ViewGroup childViewGroup)
 						{
@@ -159,12 +194,12 @@ namespace Microsoft.UI.Xaml
 		partial void OnLoadedPartial()
 		{
 			// see StretchAffectsMeasure for details.
-			this.SetValue(
-				StretchAffectsMeasureProperty,
-				!(NativeVisualParent is DependencyObject),
-				DependencyPropertyValuePrecedences.DefaultValue
-			);
+			_stretchAffectsMeasureDefault = NativeVisualParent is not DependencyObject;
+
+			ReconfigureViewportPropagationPartial();
 		}
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		#region StretchAffectsMeasure DependencyProperty
 
@@ -179,13 +214,23 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public bool StretchAffectsMeasure
 		{
-			get { return (bool)GetValue(StretchAffectsMeasureProperty); }
-			set { SetValue(StretchAffectsMeasureProperty, value); }
+			get => (bool)GetValue(StretchAffectsMeasureProperty);
+			set => SetValue(StretchAffectsMeasureProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
 		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
-			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register(nameof(StretchAffectsMeasure), typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == StretchAffectsMeasureProperty)
+			{
+				defaultValue = _stretchAffectsMeasureDefault;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
+		}
 
 		#endregion
 

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
+		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -21,6 +22,8 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
+
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
@@ -52,12 +55,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="LinkerSubstitution.Wasm.xml" />
-	  <UnoLinkerSubstitution Include="LinkerSubstitution.Wasm.xml" />
-	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+		<None Include="LinkerSubstitution.Wasm.xml" />
+		<UnoLinkerSubstitution Include="LinkerSubstitution.Wasm.xml" />
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
+		</EmbeddedResource>
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -77,9 +80,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
-	  <Folder Include="obj\Uno.UI.Wasm\Debug\" />
-	  <Folder Include="tsBindings\" />
+		<Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
+		<Folder Include="obj\Uno.UI.Wasm\Debug\" />
+		<Folder Include="tsBindings\" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
@@ -95,8 +98,17 @@
 		<PageExclusions>$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
-		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
+
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCompileDependsOn Include="$(CompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CompileDependsOn>@(_AdjustedCompileDependsOn)</CompileDependsOn>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>
@@ -105,28 +117,19 @@
 		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 
-	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
-		<PropertyGroup>
-			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
-		</PropertyGroup>
-		<ItemGroup>
-			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
-		</ItemGroup>
-		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
+			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
+			DependsOnTargets="CompileTypeScriptWithTSConfig"
+			BeforeTargets="_UnoEmbeddedResourcesInjection">
+			<PropertyGroup>
+				<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
+			</PropertyGroup>
+			<ItemGroup>
+				<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
+				<_UnoInjectedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			</ItemGroup>
+			<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
-
-	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
-		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
-			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
-		</ItemGroup>
-	</Target>
-
-	<ItemGroup>
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="MixinGeneration.targets" />
@@ -136,7 +139,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -170,7 +173,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />

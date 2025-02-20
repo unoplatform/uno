@@ -13,6 +13,8 @@ namespace SampleControl.Entities
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{
+		// Keep all property getters and setters public to avoid issues when serializing/deserializing recent samples
+		// See https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
 		public string ControlName { get; set; }
 		public Type ViewModelType { get; set; }
 		public Type ControlType { get; set; }
@@ -20,9 +22,9 @@ namespace SampleControl.Entities
 		public string CategoriesString => Categories?.JoinBy(", ");
 		public string Description { get; set; }
 		public string QueryString => $"?sample={Categories.FirstOrDefault() ?? ""}/{ControlName}";
-		public bool IgnoreInSnapshotTests { get; internal set; }
-		public bool IsManualTest { get; internal set; }
-		public bool UsesFrame { get; internal set; }
+		public bool IgnoreInSnapshotTests { get; set; }
+		public bool IsManualTest { get; set; }
+		public bool UsesFrame { get; set; }
 
 		bool _isFavorite;
 		public bool IsFavorite

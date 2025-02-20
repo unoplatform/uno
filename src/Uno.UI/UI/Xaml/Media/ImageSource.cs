@@ -1,30 +1,25 @@
 ﻿#nullable enable
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
-using Uno.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI;
-using System.Net;
-
-#if !IS_UNO
-using Uno.Web.Query;
-using Uno.Web.Query.Cache;
-#endif
+using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private protected static HttpClient? _httpClient;
 		private protected ImageData _imageData = ImageData.Empty;
 
 		internal event Action? Invalidated;
@@ -52,21 +47,6 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		public IImageSourceDownloader? Downloader;
 #pragma warning restore CA2211
-
-
-#if __ANDROID__ || __IOS__ || __MACOS__
-		/// <summary>
-		/// Initializes the Uno image downloader.
-		/// </summary>
-		private void InitializeDownloader()
-		{
-			Downloader = DefaultDownloader;
-		}
-#endif
-
-#if !(__CROSSRUNTIME__)
-		internal Stream? Stream { get; set; }
-#endif
 
 		internal string? FilePath { get; private set; }
 
@@ -205,27 +185,6 @@ namespace Microsoft.UI.Xaml.Media
 			DisposePartial();
 		}
 
-		/// <summary>
-		/// Downloads an image from the provided Uri.
-		/// </summary>
-		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		internal async Task<Uri> Download(CancellationToken ct, Uri uri)
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("Initiated download from {0}", uri);
-			}
-
-			if (Downloader != null)
-			{
-				return await Downloader.Download(ct, uri);
-			}
-			else
-			{
-				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-			}
-		}
-
 		private Uri? _absoluteUri;
 
 		internal Uri? AbsoluteUri
@@ -245,18 +204,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		partial void SetImageLoader();
 
-		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
-		{
-			if (uri.IsFile)
-			{
-				return File.Open(uri.LocalPath, FileMode.Open);
-			}
-
-			_httpClient ??= new HttpClient();
-			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-			return await response.Content.ReadAsStreamAsync();
-		}
-
 		internal void UnloadImageData()
 		{
 			UnloadImageDataPlatform();
@@ -273,5 +220,41 @@ namespace Microsoft.UI.Xaml.Media
 		private protected virtual void UnloadImageSourceData()
 		{
 		}
+
+		#region Implementers API
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open synchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="image">Returned image data.</param>
+		/// <returns>True if opening synchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
+		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
+		{
+			image = default;
+			return false;
+		}
+
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open asynchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="asyncImage">Async task for image data retrieval.</param>
+		/// <returns>True if opening asynchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
+		{
+			asyncImage = default;
+			return false;
+		}
+		#endregion
 	}
 }

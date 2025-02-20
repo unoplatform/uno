@@ -16,7 +16,7 @@ public class Given_ScrollViewer : BaseTestClass
 	[RequiresFullWindow]
 	public async Task Check_Change_ScrollViewer()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;

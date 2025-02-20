@@ -17,6 +17,18 @@ namespace UITests.Shared.Windows_Graphics_Display
 		public DisplayInformationTests()
 		{
 			this.InitializeComponent();
+
+			Loaded += (_, _) =>
+			{
+				if (DataContext is DisplayInformationTestsViewModel vm)
+				{
+#if HAS_UNO
+					vm.SetDisplayInformation(Microsoft.UI.Xaml.XamlRoot.GetDisplayInformation(XamlRoot));
+#else
+					vm.SetDisplayInformation(DisplayInformation.GetForCurrentView());
+#endif
+				}
+			};
 		}
 	}
 
@@ -24,16 +36,24 @@ namespace UITests.Shared.Windows_Graphics_Display
 	{
 		private bool _dpiChangesOn = false;
 		private bool _orientationChangesOn = false;
+		private DisplayInformation _displayInformation;
 
 		public DisplayInformationTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			RefreshDisplayInformation();
 			Disposables.Add(Disposable.Create(() =>
 			{
-				var displayInformation = DisplayInformation.GetForCurrentView();
-				displayInformation.DpiChanged -= DpiChanged;
-				displayInformation.OrientationChanged -= OrientationChanged;
+				if (_displayInformation is { })
+				{
+					_displayInformation.DpiChanged -= DpiChanged;
+					_displayInformation.OrientationChanged -= OrientationChanged;
+				}
 			}));
+		}
+
+		public void SetDisplayInformation(DisplayInformation displayInformation)
+		{
+			_displayInformation ??= displayInformation;
 		}
 
 		public ICommand RefreshCommand => GetOrCreateCommand(Refresh);
@@ -70,14 +90,16 @@ namespace UITests.Shared.Windows_Graphics_Display
 
 		private void ObserveDpiChanges()
 		{
-			var info = DisplayInfo.GetForCurrentView();
-			if (DpiChangesOn)
+			if (_displayInformation is { } info)
 			{
-				info.DpiChanged += DpiChanged;
-			}
-			else
-			{
-				info.DpiChanged -= DpiChanged;
+				if (DpiChangesOn)
+				{
+					info.DpiChanged += DpiChanged;
+				}
+				else
+				{
+					info.DpiChanged -= DpiChanged;
+				}
 			}
 		}
 
@@ -85,14 +107,16 @@ namespace UITests.Shared.Windows_Graphics_Display
 
 		private void ObserveOrientationChanges()
 		{
-			var info = DisplayInfo.GetForCurrentView();
-			if (OrientationChangesOn)
+			if (_displayInformation is { } info)
 			{
-				info.OrientationChanged += OrientationChanged;
-			}
-			else
-			{
-				info.OrientationChanged -= OrientationChanged;
+				if (OrientationChangesOn)
+				{
+					info.OrientationChanged += OrientationChanged;
+				}
+				else
+				{
+					info.OrientationChanged -= OrientationChanged;
+				}
 			}
 		}
 
@@ -110,23 +134,25 @@ namespace UITests.Shared.Windows_Graphics_Display
 
 		private void RefreshDisplayInformation()
 		{
-			var info = DisplayInfo.GetForCurrentView();
-			var properties = new PropertyInformation[]
+			if (_displayInformation is { } info)
 			{
-				new PropertyInformation(nameof(DisplayInfo.AutoRotationPreferences), SafeGetValue(()=>DisplayInfo.AutoRotationPreferences)),
-				new PropertyInformation(nameof(info.CurrentOrientation), SafeGetValue(()=>info.CurrentOrientation)),
-				new PropertyInformation(nameof(info.NativeOrientation), SafeGetValue(()=>info.NativeOrientation)),
-				new PropertyInformation(nameof(info.ScreenHeightInRawPixels), SafeGetValue(()=>info.ScreenHeightInRawPixels)),
-				new PropertyInformation(nameof(info.ScreenWidthInRawPixels), SafeGetValue(()=>info.ScreenWidthInRawPixels)),
-				new PropertyInformation(nameof(info.LogicalDpi), SafeGetValue(()=>info.LogicalDpi)),
-				new PropertyInformation(nameof(info.DiagonalSizeInInches), SafeGetValue(()=>info.DiagonalSizeInInches)),
-				new PropertyInformation(nameof(info.RawPixelsPerViewPixel), SafeGetValue(()=>info.RawPixelsPerViewPixel)),
-				new PropertyInformation(nameof(info.RawDpiX), SafeGetValue(()=>info.RawDpiX)),
-				new PropertyInformation(nameof(info.RawDpiY), SafeGetValue(()=>info.RawDpiY)),
-				new PropertyInformation(nameof(info.ResolutionScale), SafeGetValue(()=>info.ResolutionScale)),
-			};
-			Properties = new ObservableCollection<PropertyInformation>(properties);
-			RaisePropertyChanged(nameof(Properties));
+				var properties = new PropertyInformation[]
+				{
+					new PropertyInformation(nameof(DisplayInfo.AutoRotationPreferences), SafeGetValue(()=>DisplayInfo.AutoRotationPreferences)),
+					new PropertyInformation(nameof(info.CurrentOrientation), SafeGetValue(()=>info.CurrentOrientation)),
+					new PropertyInformation(nameof(info.NativeOrientation), SafeGetValue(()=>info.NativeOrientation)),
+					new PropertyInformation(nameof(info.ScreenHeightInRawPixels), SafeGetValue(()=>info.ScreenHeightInRawPixels)),
+					new PropertyInformation(nameof(info.ScreenWidthInRawPixels), SafeGetValue(()=>info.ScreenWidthInRawPixels)),
+					new PropertyInformation(nameof(info.LogicalDpi), SafeGetValue(()=>info.LogicalDpi)),
+					new PropertyInformation(nameof(info.DiagonalSizeInInches), SafeGetValue(()=>info.DiagonalSizeInInches)),
+					new PropertyInformation(nameof(info.RawPixelsPerViewPixel), SafeGetValue(()=>info.RawPixelsPerViewPixel)),
+					new PropertyInformation(nameof(info.RawDpiX), SafeGetValue(()=>info.RawDpiX)),
+					new PropertyInformation(nameof(info.RawDpiY), SafeGetValue(()=>info.RawDpiY)),
+					new PropertyInformation(nameof(info.ResolutionScale), SafeGetValue(()=>info.ResolutionScale)),
+				};
+				Properties = new ObservableCollection<PropertyInformation>(properties);
+				RaisePropertyChanged(nameof(Properties));
+			}
 		}
 
 		private string SafeGetValue<T>(Func<T> getter)

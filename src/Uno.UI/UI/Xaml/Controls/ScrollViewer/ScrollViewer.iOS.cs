@@ -38,11 +38,12 @@ namespace Microsoft.UI.Xaml.Controls
 			SetScrollableContainer();
 		}
 
-		private protected override void OnLoaded()
+		private partial void OnLoadedPartial()
 		{
 			SetScrollableContainer();
-			base.OnLoaded();
 		}
+
+		private partial void OnUnloadedPartial() { }
 
 		private void SetScrollableContainer()
 		{
@@ -80,8 +81,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// iOS doesn't limit the offset to the scrollable bounds by itself
 				var limit = _scrollableContainer.UpperScrollLimit;
-				var desiredOffsets = new Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
-				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
+				var desiredOffsets = new global::Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
+				var clampedOffsets = new global::Windows.Foundation.Point(Math.Clamp(desiredOffsets.X, 0, limit.X), Math.Clamp(desiredOffsets.Y, 0, limit.Y));
 
 				var success = desiredOffsets == clampedOffsets;
 
@@ -195,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void WillMoveToSuperview(UIView newsuper)
 		{
 			base.WillMoveToSuperview(newsuper);
-			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
+			UpdateSizeChangedSubscription(newsuper == null);
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;

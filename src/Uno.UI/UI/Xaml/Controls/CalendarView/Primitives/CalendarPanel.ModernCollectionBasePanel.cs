@@ -77,7 +77,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_entries.Clear();
 				FirstIndex = -1;
 				LastIndex = int.MinValue;
-
+				_generationRecyclableBefore = default;
+				_generationUnusedInRange = default;
+				_generationRecyclableAfter = default;
 				_generationStartIndex = -1;
 				_generationCurrentIndex = -1;
 				_generationEndIndex = -1;
@@ -98,17 +100,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_generationEndIndex = endIndex;
 				_generationState = GenerationState.Before;
 
-				// Note: Fist and Last indexes are INCLUSIVE
-				startIndex = Math.Max(FirstIndex, startIndex);
-				endIndex = Math.Min(LastIndex, endIndex);
-
-				if (endIndex < 0)
-				{
-					return; // Cache is empty
-				}
-
-				var startEntryIndex = Math.Min(GetEntryIndex(startIndex), _entries.Count);
-				var endEntryIndex = Math.Max(0, GetEntryIndex(endIndex) + 1);
+				var startEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(startIndex), _entries.Count));
+				var endEntryIndex = Math.Max(0, Math.Min(GetEntryIndex(endIndex) + 1, _entries.Count));
 
 				// Since the _generationEndIndex is only an estimation, we might have some items that was not flagged as recyclable which are not going to be not used.
 				// The easiest solution is to track them using the _generationUnusedInRange.
@@ -201,7 +194,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				switch (_generationState)
 				{
 					case GenerationState.Before when index >= FirstIndex:
-						if (index > LastIndex)
+						if (index > LastIndex || _generationUnusedInRange.count <= 0)
 						{
 							_generationState = GenerationState.After;
 							goto after;
@@ -211,8 +204,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 							_generationState = GenerationState.InRange;
 							goto inRange;
 						}
-					case GenerationState.InRange when index > LastIndex
-						|| GetEntryIndex(index) >= _generationRecyclableAfter.at + _generationRecyclableAfter.count: // Unfortunately we had already recycled that container, we need to create a new one!
+					case GenerationState.InRange when _generationUnusedInRange.count <= 0: // Unfortunately we had already recycled all containers, we need to create new ones!
 						_generationState = GenerationState.After;
 						goto after;
 
@@ -262,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 								_generationRecyclableAfter.count--;
 
-								global::System.Diagnostics.Debug.Assert(entry.Index > index);
+								global::System.Diagnostics.Debug.Assert(entry.Index > index || _generationUnusedInRange.count == 0);
 							}
 							else
 							{
@@ -440,7 +432,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// then it will request GetContainerFromIndex and tries to focus it.
 				// So here we prepare the _effectiveViewport (which will most probably be re-updated by the ChangeView below),
 				// and then force a base_Measure()
-				_effectiveViewport.Y += newOffset - currentOffset;
+
+#if HAS_UNO
+				// Scrolling to the MaxDate and switching between Decade/Year/Month views keeps increasing the _effectiveViewport.Y
+				// even though there's no more items to show after MaxDate, causing empty rows in the viewport
+				if (newOffset >= sv.ScrollableHeight)
+				{
+					_effectiveViewport.Y = currentOffset;
+				}
+				else
+				{
+					_effectiveViewport.Y += newOffset - currentOffset;
+				}
+#else
+				_effectiveViewport.Y += newOffset - currentOffset;			
+#endif
 
 				sv.ChangeView(
 					horizontalOffset: null,
@@ -450,6 +456,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				// Makes sure the container of the requested date is materialized before the end of this method
 				base_MeasureOverride(_lastLayoutedViewport.Size);
+				// We then invalidate arrange to make sure the containers are properly rendered, but async.
+				InvalidateArrange();
 			}
 		}
 

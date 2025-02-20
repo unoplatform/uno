@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
@@ -119,11 +120,12 @@ namespace Uno.UWPSyncGenerator
 			"Microsoft.UI.Composition",
 			"Microsoft.UI.Dispatching",
 			"Microsoft.UI.Text",
+			"Microsoft.UI.Content",
 			"Microsoft.UI.Windowing",
 			"Microsoft.UI.Input",
 			"Microsoft.System",
 			"Microsoft.Graphics",
-			"Microsoft.ApplicationModel.Resources",
+			"Microsoft.Windows.ApplicationModel.Resources",
 			"Microsoft.Web",
 #endif
 			};
@@ -135,7 +137,7 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		public virtual async Task Build(string baseName, string sourceAssembly)
 		{
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
@@ -143,16 +145,16 @@ namespace Uno.UWPSyncGenerator
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
+			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
-			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
-			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
-			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net7.0");
-			_macCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-macos");
+			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-ios17.0");
+			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-android");
+			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net8.0");
+			_macCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net8.0-macos14.0");
 
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net7.0");
-			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net7.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net7.0");
+			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net8.0");
+			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net8.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net8.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
@@ -161,23 +163,9 @@ namespace Uno.UWPSyncGenerator
 			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
-			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
-						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
-						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.UI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Services.Store.StoreContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
-						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
-						  where asm != null
-						  select asm;
+			var origins = s_referenceCompilation.ExternalReferences
+				.Select(@ref => s_referenceCompilation.GetAssemblyOrModuleSymbol(@ref) as IAssemblySymbol)
+				.Where(s => s?.Name == sourceAssembly);
 
 			var excludeNamespaces = new List<string>();
 			var includeNamespaces = new List<string>();
@@ -201,7 +189,6 @@ namespace Uno.UWPSyncGenerator
 #endif
 
 			var q = from asm in origins
-					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
 					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
@@ -322,9 +309,10 @@ namespace Uno.UWPSyncGenerator
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #endif
 			)
@@ -421,7 +409,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
-					MacOSSymbol == null ? MacDefine : "false",
+					IsNotDefinedByUno(MacOSSymbol) ? MacDefine : "false",
 				};
 
 				using (b.Indent(-b.CurrentLevel))
@@ -439,7 +427,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
 					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
-					MacOSSymbol == null ? $"\"{MacDefine}\"" : "",
+					IsNotDefinedByUno(MacOSSymbol) ? $"\"{MacDefine}\"" : "",
 				};
 
 				return defines.Where(d => d.Length > 0).JoinBy(", ");
@@ -452,7 +440,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) &&
 					IsNotDefinedByUno(SkiaSymbol) &&
 					IsNotDefinedByUno(NetStdReferenceSymbol) &&
-					MacOSSymbol == null;
+					IsNotDefinedByUno(MacOSSymbol);
 
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
@@ -998,16 +986,6 @@ namespace Uno.UWPSyncGenerator
 				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
-				if (IsObjectCtor(methods.AndroidSymbol))
-				{
-					methods.AndroidSymbol = null;
-				}
-
-				if (IsObjectCtor(methods.IOSSymbol))
-				{
-					methods.IOSSymbol = null;
-				}
-
 				if (
 					method.MethodKind == MethodKind.Constructor
 					&& type.TypeKind != TypeKind.Interface
@@ -1292,9 +1270,6 @@ namespace Uno.UWPSyncGenerator
 			}
 			return false;
 		}
-
-		private bool IsObjectCtor(IMethodSymbol androidMember)
-			=> androidMember?.Name == ".ctor" && androidMember.OriginalDefinition.ContainingType.SpecialType == SpecialType.System_Object;
 
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
@@ -1782,7 +1757,7 @@ namespace Uno.UWPSyncGenerator
 		static Dictionary<(string projectFile, string targetFramework), Compilation> _projects
 			= new();
 
-		private static async Task<Compilation> LoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> LoadProject(string projectFile, string targetFramework)
 		{
 			var key = (projectFile, targetFramework);
 
@@ -1792,7 +1767,24 @@ namespace Uno.UWPSyncGenerator
 				return compilation;
 			}
 
-			return _projects[key] = await InnerLoadProject(projectFile, targetFramework);
+			compilation = await InnerLoadProject(projectFile, targetFramework);
+			_projects[key] = compilation;
+			var externalCompilationReferences = compilation.ExternalReferences.OfType<CompilationReference>().Select(r => r.Display).ToArray();
+			string[] expectedRefs = ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"];
+			foreach (var expectedRef in expectedRefs)
+			{
+				if (!externalCompilationReferences.Contains(expectedRef))
+				{
+					// If you hit this, ensure projectFile was restored. If it wasn't and `obj/project.assets.json` is missing,
+					// the target IncludeTransitiveProjectReferences will not be run, and we can end up with missing assemblies.
+					// Another reason for hitting this is if you define UnoTargetFrameworkOverride, say to net7.0.
+					// This will cause project.assets.json to have `net7.0` instead of `net7.0-platform` which
+					// breaks ResolvePackageAssets target and cause it to not produce TransitiveProjectReferences
+					throw new Exception($"{expectedRef} not found when loading '{projectFile} ({targetFramework})'");
+				}
+			}
+
+			return compilation;
 		}
 
 		private static async Task<Compilation> LoadUWPReferenceProject(string referencesFile)
@@ -1804,14 +1796,18 @@ namespace Uno.UWPSyncGenerator
 			return await p.GetCompilationAsync();
 		}
 
-		private static async Task<Compilation> InnerLoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> InnerLoadProject(string projectFile, string targetFramework)
 		{
-			Console.WriteLine($"Loading for {targetFramework}: {Path.GetFileName(projectFile)}");
+			var projectFileName = Path.GetFileName(projectFile);
+			Console.WriteLine($"Loading for {targetFramework}: {projectFileName}");
 
 			var properties = new Dictionary<string, string>
 			{
 				// { "VisualStudioVersion", "15.0" },
-				// { "Configuration", "Debug" },
+				// Important to load with Release.
+				// The projects should be restored for the generator to function properly.
+				// The BuildSyncGenerator target in Uno.UI.Build.csproj will restore for Release.
+				{ "Configuration", "Release" },
 				//{ "BuildingInsideVisualStudio", "true" },
 				{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 				{ "DocsGeneration", "true" }, // Detect that source generation is running
@@ -1835,14 +1831,10 @@ namespace Uno.UWPSyncGenerator
 			ws.WorkspaceFailed +=
 				(s, e) => Console.WriteLine(e.Diagnostic.ToString());
 
-			var project = await ws.OpenProjectAsync(projectFile);
-
-			var generatedDocs = project.Documents
-				.Where(d => d.FilePath.Contains("\\Generated\\"))
-				.Select(d => d.Id)
-				.ToImmutableArray();
-
-			project = project.RemoveDocuments(generatedDocs);
+			// NOTE: msbuildLogger doesn't work in 4.9
+			// https://github.com/dotnet/roslyn/issues/72202
+			// https://github.com/dotnet/roslyn/discussions/71950
+			var project = await ws.OpenProjectAsync(projectFile, msbuildLogger: new BinaryLogger() { Parameters = Path.Combine(Directory.GetCurrentDirectory(), "binlogs", $"{projectFileName}_{targetFramework}.binlog") });
 
 			var metadataLessProjects = ws
 				.CurrentSolution

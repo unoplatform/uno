@@ -9,7 +9,7 @@ namespace Windows.Storage.Pickers
 	/// <summary>
 	/// Represents a UI element that lets the user choose and open files.
 	/// </summary>
-	public partial class FileOpenPicker
+	public partial class FileOpenPicker : IFilePicker
 	{
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
@@ -46,6 +46,10 @@ namespace Windows.Storage.Pickers
 			get => _commitButtonText;
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
+
+		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => SuggestedStartLocation;
+		IList<string> IFilePicker.FileTypeFilterInternal => FileTypeFilter;
 
 #if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()
@@ -95,5 +99,22 @@ namespace Windows.Storage.Pickers
 			}
 		}
 #endif
+	}
+
+	public static class FileOpenPickerExtensions
+	{
+		/// <summary>
+		/// Sets the file limit a user can select when picking multiple files.
+		/// </summary>
+		/// <param name="limit">The maximum number of files that the user can pick.</param>
+#if !__IOS__
+		[global::Uno.NotImplemented]
+#endif
+		public static void SetMultipleFilesLimit(this FileOpenPicker picker, int limit)
+		{
+#if __IOS__
+			picker.SetMultipleFileLimit(limit);
+#endif
+		}
 	}
 }

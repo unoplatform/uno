@@ -5,32 +5,43 @@ uid: Uno.Features.WSPower
 # Battery Information
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.power
+> This article covers Uno-specific information for the `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, see [Windows.System.Power Namespace](https://learn.microsoft.com/uwp/api/windows.system.power).
 
- * You can use the `Windows.System.Power.PowerManager` class to query the battery and charging status of the device and subscribe to the related events when these change.
+* You can use the `Windows.System.Power.PowerManager` class to query the battery and charging status of the device and subscribe to the related events when these change.
 
 ## `PowerManager`
 
 **Legend**
-  - ✔  Supported
-  - ✖ Not supported
 
-| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ | ✖ ️  |
-| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
-| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
-| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ | ✖ ️  |
+* ✔  Supported
+* ✖ Not supported
+
+| Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | Skia Desktop |
+|----------------|-------|-------------|---------|-------|-------|-----|
+| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ |
+| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ |
+| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ |
+| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ |
+| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ |
 
 ### Usage
 
-For general usage you can follow the documentation provided by [Microsoft](https://learn.microsoft.com/en-us/uwp/api/windows.system.power.powermanager).
+For general usage, see [PowerManager Class](https://learn.microsoft.com/uwp/api/windows.system.power.powermanager).
+
+## Platform-specific requirements
+
+### Android
+
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.BATTERY_STATS" />
+```
 
 ### Limitations
 
@@ -43,7 +54,7 @@ For general usage you can follow the documentation provided by [Microsoft](https
 Before any of the properties/events of `PowerManager` can be accessed, the class needs to be initialized via a platform-specific `InitializeAsync` method:
 
 ```csharp
-#if __HAS_UNO__
+#if HAS_UNO
 var isAvailable = await PowerManager.InitializeAsync();
 #endif
 ```

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Microsoft.UI.Xaml.Data;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {
@@ -15,26 +17,10 @@ namespace Microsoft.UI.Xaml
 	partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
-		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
 
 		private bool _bindingsSuspended;
 
-		/// <summary>
-		/// Applies the specified templated parent on the current <see cref="TemplateBinding"/> instances
-		/// </summary>
-		/// <param name="templatedParent"></param>
-		internal void ApplyTemplatedParent(FrameworkElement templatedParent)
-		{
-			var templateBindings = _templateBindings.Data;
-
-			for (int i = 0; i < templateBindings.Length; i++)
-			{
-				ApplyBinding(templateBindings[i], templatedParent);
-			}
-		}
-
-		public bool HasBindings =>
-			_bindings != ImmutableList<BindingExpression>.Empty || _templateBindings != ImmutableList<BindingExpression>.Empty;
+		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
 		/// <summary>
 		/// Applies the specified datacontext on the current <see cref="Binding"/> instances
@@ -75,6 +61,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void ApplyTemplateBindings()
+		{
+			var bindings = _bindings.Data;
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				bindings[i].ApplyTemplateBindingParent();
+			}
+		}
+
 		/// <summary>
 		/// Suspends the <see cref="Binding"/> instances from reacting to DataContext changes
 		/// </summary>
@@ -109,7 +105,15 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				ApplyDataContext(DataContextPropertyDetails.GetValue());
+				var value = DataContextPropertyDetails.GetEffectiveValue();
+				if (value == DependencyProperty.UnsetValue)
+				{
+					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+					// In this case, we know for sure that DataContext's default value is null.
+					value = null;
+				}
+
+				ApplyDataContext(value);
 			}
 		}
 
@@ -137,24 +141,25 @@ namespace Microsoft.UI.Xaml
 					);
 
 				details.SetBinding(bindingExpression);
+				_bindings = _bindings.Add(bindingExpression);
 
-				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
+				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					_templateBindings = _templateBindings.Add(bindingExpression);
-
-					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
-				}
-				else
-				{
-					_bindings = _bindings.Add(bindingExpression);
-
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
-						bindingExpression.DataContext = details.GetValue(DependencyPropertyValuePrecedences.Inheritance);
+						bindingExpression.DataContext = details.GetInheritedValue();
 					}
 					else
 					{
-						ApplyBinding(bindingExpression, DataContextPropertyDetails.GetValue());
+						var value = DataContextPropertyDetails.GetEffectiveValue();
+						if (value == DependencyProperty.UnsetValue)
+						{
+							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+							// In this case, we know for sure that DataContext's default value is null.
+							value = null;
+						}
+
+						ApplyBinding(bindingExpression, value);
 					}
 				}
 			}
@@ -162,11 +167,7 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyBinding(BindingExpression binding, object dataContext)
 		{
-			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent))
-			{
-				binding.DataContext = dataContext;
-			}
-			else if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
+			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
 			{
 				binding.DataContext = Owner;
 			}
@@ -201,7 +202,7 @@ namespace Microsoft.UI.Xaml
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Set binding value [{0}] from [{1}].", details.Property.Name, _ownerType);
+				this.Log().DebugFormat("Set binding value [{0}].", details.Property.Name);
 			}
 		}
 
@@ -218,6 +219,62 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return null;
+		}
+
+		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
+		{
+			foreach (var binding in _bindings)
+			{
+				if (binding.TargetPropertyDetails.Property == dependencyProperty)
+				{
+					return binding.ParentBinding.IsTemplateBinding;
+				}
+			}
+
+			return false;
+		}
+
+		internal void UpdateBindingExpressions()
+		{
+			foreach (var binding in _bindings)
+			{
+				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
+			}
+		}
+
+		private static void UpdateBindingPropertiesFromThemeResources(Binding binding)
+		{
+			if (binding.TargetNullValueThemeResource is { } targetNullValueThemeResourceKey)
+			{
+				binding.TargetNullValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(targetNullValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+			}
+
+			if (binding.FallbackValueThemeResource is { } fallbackValueThemeResourceKey)
+			{
+				binding.FallbackValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(fallbackValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+			}
+		}
+
+		internal void OnThemeChanged()
+		{
+			foreach (var binding in _bindings)
+			{
+				RefreshBindingValueIfNecessary(binding);
+			}
+		}
+
+		private void RefreshBindingValueIfNecessary(BindingExpression binding)
+		{
+			if (binding.ParentBinding.TargetNullValueThemeResource is not null ||
+				binding.ParentBinding.FallbackValueThemeResource is not null)
+			{
+				// Note: This may refresh the binding more than really necessary.
+				// For example, if TargetNullValue is set to a theme resource, but the binding is not null
+				// In this case, a change to TargetNullValue should probably not refresh the binding.
+				// Another case is when the ThemeResource evaluates the same between light/dark themes.
+				// For now, it's not necessary.
+				binding.RefreshTarget();
+			}
 		}
 	}
 }

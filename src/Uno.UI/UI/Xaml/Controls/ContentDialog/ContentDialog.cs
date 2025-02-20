@@ -105,8 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		// Uno specific: Ensure we respond to window sizing
-		private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
+		private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) =>
 			UpdateSizeProperties();
 
 		private void UpdateSizeProperties()
@@ -192,16 +191,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void Hide()
 		{
-			if (_hiding)
+			if (_hiding || !m_isShowing)
 			{
 				return;
 			}
-			_hiding = true;
 			Hide(ContentDialogResult.None);
 		}
 
 		internal bool Hide(ContentDialogResult result)
 		{
+			_hiding = true;
 			void Complete(ContentDialogClosingEventArgs args)
 			{
 				if (!args.Cancel)
@@ -395,11 +394,11 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			}
 
-			var window = Microsoft.UI.Xaml.Window.Current;
-			window.SizeChanged += WindowSizeChanged;
+			var xamlRoot = XamlRoot;
+			xamlRoot.Changed += XamlRootChanged;
 			d.Add(() =>
 			{
-				window.SizeChanged -= WindowSizeChanged;
+				xamlRoot.Changed -= XamlRootChanged;
 			});
 
 			// Here we are relying on the BackRequested event to be able to close the ContentDialog on back button pressed.
@@ -477,7 +476,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			CloseButtonClick?.Invoke(this, args);
@@ -508,7 +506,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			SecondaryButtonClick?.Invoke(this, args);
@@ -541,7 +538,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			PrimaryButtonClick?.Invoke(this, args);

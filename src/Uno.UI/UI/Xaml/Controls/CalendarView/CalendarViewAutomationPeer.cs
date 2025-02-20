@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -449,8 +449,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 						selectedCount = (spOwner as CalendarView).m_tpSelectedDates.Size;
 
-						IReadOnlyList<DateTime> spAddedDates;
-						IReadOnlyList<DateTime> spRemovedDates;
+						IReadOnlyList<DateTimeOffset> spAddedDates;
+						IReadOnlyList<DateTimeOffset> spRemovedDates;
 						uint addedDatesSize = 0;
 						uint removedDatesSize = 0;
 

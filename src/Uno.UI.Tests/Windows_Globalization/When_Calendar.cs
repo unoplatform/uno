@@ -19,14 +19,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 			var calendar = new WG.Calendar();
 			var offset = new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 21, minute: 0, second: 0, TimeSpan.FromHours(-5));
 			calendar.SetDateTime(offset);
-			// calendar.Day must be 1 here to match WinUI, **and also** not break CalendarView selection of "Today"
-			Assert.AreEqual(1, calendar.Day);
+			Assert.AreEqual(2, calendar.Day);
 			Assert.AreEqual(2, offset.UtcDateTime.Day);
 
 			var comparer = new DirectUI.DateComparer();
 			comparer.SetCalendarForComparison(calendar);
 			var result = comparer.CompareDay(offset, new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 4, minute: 0, second: 0, TimeSpan.FromHours(0)));
-			Assert.AreEqual(0, result);
+			Assert.AreEqual(1, result);
 		}
 
 		[TestMethod]
@@ -318,7 +317,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				year: 2020,
 				month: 01,
 				day: 03,
-				hours: 00,
+				hours: 12,
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,

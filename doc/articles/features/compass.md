@@ -5,17 +5,17 @@ uid: Uno.Features.Compass
 # Compass
 
 > [!TIP]
-> This article covers Uno-specific information for `Compass`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.devices.sensors.Compass
+> This article covers Uno-specific information for `Compass`. For a full description of the feature and instructions on using it, see [Compass Class](https://learn.microsoft.com/uwp/api/windows.devices.sensors.Compass).
 
 * The `Windows.Devices.Sensors.Compass` class returns a heading with respect to Magnetic North and, possibly, True North.
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
-| `ReportInterval`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
+|------------------|---------|---------|-----|------------|-------|--------------|--------------|
+| `GetDefault`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| `ReadingChanged` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
+| `ReportInterval` | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
 
 ## Using Compass with Uno
 
@@ -32,7 +32,7 @@ If you are planning to use the `HeadingTrueNorth`, your app must declare `androi
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
 ```
 
-> [!Note]
+> [!NOTE]
 > Android lacks a dedicated API for accessing the compass heading. Uno Platform utilizes the accelerometer and magnetometer sensors to calculate the magnetic north heading, a method endorsed by Google.
 >
 > In rare cases, you may encounter inconsistent results due to the need for sensor calibration. The process of recalibrating the compass on Android varies across phone models and Android versions. To recalibrate, consult online resources specific to your device. Here are two links that may assist you in recalibrating the compass:

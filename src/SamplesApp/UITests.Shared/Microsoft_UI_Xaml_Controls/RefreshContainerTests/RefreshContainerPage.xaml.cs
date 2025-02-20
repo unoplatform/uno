@@ -60,6 +60,7 @@ namespace MUXControlsTestApp
 		{
 			this.InitializeComponent();
 			this.Loaded += OnMainPageLoaded;
+			this.Unloaded += OnMainPageUnloaded;
 
 			containerTimer.Interval = new TimeSpan(0, 0, 0, 5, 0);
 			containerTimer.Tick += containerTimer_Tick;
@@ -68,13 +69,10 @@ namespace MUXControlsTestApp
 			LogController.InitializeLogging();
 		}
 
-		protected
-#if HAS_UNO
-			internal
-#endif
-			override void OnNavigatedFrom(NavigationEventArgs e)
+		// Uno specific: Unlike WinUI, we unsubscribe on Unloaded because we don't get OnNavigatedFrom.
+		// See point #2 in https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
+		private void OnMainPageUnloaded(object sender, RoutedEventArgs e)
 		{
-			base.OnNavigatedFrom(e);
 			containerTimer.Stop();
 			visualizerTimer.Stop();
 		}

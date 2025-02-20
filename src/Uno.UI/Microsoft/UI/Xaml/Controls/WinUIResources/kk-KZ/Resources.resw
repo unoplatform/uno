@@ -1395,4 +1395,134 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ӨШІРУЛІ</value>
   </data>
+  <data name="5114" xml:space="preserve">
+    <value>Ақ</value>
+  </data>
+  <data name="5115" xml:space="preserve">
+    <value>Ақшыл сұр</value>
+  </data>
+  <data name="5116" xml:space="preserve">
+    <value>Сұр</value>
+  </data>
+  <data name="5117" xml:space="preserve">
+    <value>Қою сұр</value>
+  </data>
+  <data name="5118" xml:space="preserve">
+    <value>Қара</value>
+  </data>
+  <data name="5119" xml:space="preserve">
+    <value>Қызғылтым-сары</value>
+  </data>
+  <data name="5120" xml:space="preserve">
+    <value>Қызғылтым</value>
+  </data>
+  <data name="5121" xml:space="preserve">
+    <value>Ақшыл қызғылт-сары</value>
+  </data>
+  <data name="5122" xml:space="preserve">
+    <value>Күйген түс</value>
+  </data>
+  <data name="5123" xml:space="preserve">
+    <value>Ашық сары</value>
+  </data>
+  <data name="5124" xml:space="preserve">
+    <value>Ақшыл жасыл</value>
+  </data>
+  <data name="5125" xml:space="preserve">
+    <value>Қанық сары</value>
+  </data>
+  <data name="5126" xml:space="preserve">
+    <value>Көгілдір</value>
+  </data>
+  <data name="5127" xml:space="preserve">
+    <value>Аспан көк</value>
+  </data>
+  <data name="5128" xml:space="preserve">
+    <value>Ашық көгілдір-жасыл</value>
+  </data>
+  <data name="5129" xml:space="preserve">
+    <value>Боз көк</value>
+  </data>
+  <data name="5130" xml:space="preserve">
+    <value>Ақшыл көк</value>
+  </data>
+  <data name="5131" xml:space="preserve">
+    <value>Мұз көк</value>
+  </data>
+  <data name="5132" xml:space="preserve">
+    <value>Көгілдір-күлгін</value>
+  </data>
+  <data name="5133" xml:space="preserve">
+    <value>Ақшыл көк</value>
+  </data>
+  <data name="5134" xml:space="preserve">
+    <value>Қызғылт</value>
+  </data>
+  <data name="5135" xml:space="preserve">
+    <value>Қызыл</value>
+  </data>
+  <data name="5136" xml:space="preserve">
+    <value>Қызғылт-сары</value>
+  </data>
+  <data name="5137" xml:space="preserve">
+    <value>Қоңыр</value>
+  </data>
+  <data name="5138" xml:space="preserve">
+    <value>Алтын түсті</value>
+  </data>
+  <data name="5139" xml:space="preserve">
+    <value>Сары</value>
+  </data>
+  <data name="5140" xml:space="preserve">
+    <value>Зәйтүн жасыл</value>
+  </data>
+  <data name="5141" xml:space="preserve">
+    <value>Жасыл</value>
+  </data>
+  <data name="5142" xml:space="preserve">
+    <value>Ашық жасыл</value>
+  </data>
+  <data name="5143" xml:space="preserve">
+    <value>Жасыл-көк</value>
+  </data>
+  <data name="5144" xml:space="preserve">
+    <value>Көгілдір-жасыл</value>
+  </data>
+  <data name="5145" xml:space="preserve">
+    <value>Көк</value>
+  </data>
+  <data name="5146" xml:space="preserve">
+    <value>Бозаң</value>
+  </data>
+  <data name="5147" xml:space="preserve">
+    <value>Күлгін көк</value>
+  </data>
+  <data name="5148" xml:space="preserve">
+    <value>Күлгін</value>
+  </data>
+  <data name="5149" xml:space="preserve">
+    <value>Қою қызыл</value>
+  </data>
+  <data name="5150" xml:space="preserve">
+    <value>Қою сары</value>
+  </data>
+  <data name="5151" xml:space="preserve">
+    <value>Қою жасыл</value>
+  </data>
+  <data name="5152" xml:space="preserve">
+    <value>Қою жасыл-көк</value>
+  </data>
+  <data name="5153" xml:space="preserve">
+    <value>Қою көк</value>
+  </data>
+  <data name="5154" xml:space="preserve">
+    <value>Қою күлгін</value>
+  </data>
+  <data name="5155" xml:space="preserve">
+    <value>Алша</value>
+  </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Жабу</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

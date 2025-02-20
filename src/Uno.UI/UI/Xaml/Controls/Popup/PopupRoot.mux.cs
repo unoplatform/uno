@@ -119,6 +119,39 @@ internal partial class PopupRoot
 		//return popupChildrenDuringEngagement;
 	}
 
+	private void CloseTopmostPopup(FocusState focusStateAfterClosing, PopupFilter filter, out bool didCloseAPopup)
+	{
+		didCloseAPopup = false;
+
+		var popupNoRef = GetTopmostPopup(filter);
+		if (popupNoRef is { })
+		{
+			// Give the popup an opportunity to cancel closing.
+			var cancel = false;
+			popupNoRef.OnClosing(ref cancel);
+			if (cancel)
+			{
+				return;
+			}
+
+			// Take a ref for the duration of the SetValue call below, which could otherwise release
+			// the last reference to the popup in the middle of the call, where the "this" pointer is
+			// still expected to be valid.
+			// xref_ptr<CPopup> popup(popupNoRef);
+			var popup = popupNoRef;
+
+			// Uno Todo
+			// popup.m_focusStateAfterClosing = focusStateAfterClosing;
+			popup.IsOpen = false;
+			didCloseAPopup = true;
+		}
+
+		// if (pDidCloseAPopup != nullptr)
+		// {
+		// 	*pDidCloseAPopup = didCloseAPopup;
+		// }
+	}
+
 	// TODO Uno: Implementation is currently simplified compared to MUX.
 	internal IReadOnlyList<Popup> GetOpenPopups() =>
 		_openPopups

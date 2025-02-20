@@ -15,10 +15,17 @@ using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
-using Windows.Graphics.Display;
+using Microsoft.Graphics.Display;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
+#endif
+
+#if HAS_UNO
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI;
+using Uno;
 #endif
 
 namespace SampleControl.Presentation
@@ -41,6 +48,7 @@ namespace SampleControl.Presentation
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
 		private bool _useDarkTheme;
+		private bool _manualTestsOnly;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -126,6 +134,17 @@ namespace SampleControl.Presentation
 			{
 				_categoryVisibility = value;
 				RaisePropertyChanged();
+			}
+		}
+
+		public bool ManualTestsOnly
+		{
+			get => _manualTestsOnly;
+			set
+			{
+				_manualTestsOnly = value;
+				RaisePropertyChanged();
+				RefreshSamples();
 			}
 		}
 
@@ -407,11 +426,56 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				Application.PropagateResourcesChanged(Microsoft.UI.Xaml.Window.Current.Content, updateReason);
+				foreach (var root in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				{
+					Application.PropagateResourcesChanged(root.XamlRoot?.Content, updateReason);
+				}
 #endif
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool UseRtl
+		{
+			get => Owner.FlowDirection == FlowDirection.RightToLeft;
+			set
+			{
+				var newValue = value ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+				if (newValue != Owner.FlowDirection)
+				{
+					Owner.FlowDirection = newValue;
+					RaisePropertyChanged();
+				}
+			}
+		}
+
+#if HAS_UNO
+		public bool SimulateTouch
+		{
+#if DEBUG
+			get => WinRTFeatureConfiguration.DebugOptions.SimulateTouch;
+#else
+			get => false;
+#endif
+			set
+			{
+#if DEBUG
+				WinRTFeatureConfiguration.DebugOptions.SimulateTouch = value;
+				RaisePropertyChanged();
+#endif
+			}
+		}
+
+		public bool PreventLightDismissOnWindowDeactivated
+		{
+			get => FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated;
+			set
+			{
+				FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated = value;
+				RaisePropertyChanged();
+			}
+		}
+#endif
 
 		public bool UseDarkTheme
 		{

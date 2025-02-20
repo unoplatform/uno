@@ -23,8 +23,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Insert(string, string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.First()
+		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Insert(string, string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.HasKey(string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.GetView()

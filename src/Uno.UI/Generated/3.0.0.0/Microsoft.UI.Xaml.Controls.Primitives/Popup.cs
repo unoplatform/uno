@@ -55,6 +55,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property PlacementTarget
 		// Skipping already declared property DesiredPlacement
 		// Skipping already declared property ActualPlacement
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SystemBackdrop)this.GetValue(SystemBackdropProperty);
+			}
+			set
+			{
+				this.SetValue(SystemBackdropProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property ChildProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -79,6 +93,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalOffsetProperty
 		// Skipping already declared property DesiredPlacementProperty
 		// Skipping already declared property PlacementTargetProperty
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
+			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.Popup),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Popup.Popup()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Popup()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Child.get
@@ -109,6 +131,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ActualPlacement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ActualPlacementChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ActualPlacementChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdrop.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.PlacementTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.DesiredPlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ChildProperty.get
