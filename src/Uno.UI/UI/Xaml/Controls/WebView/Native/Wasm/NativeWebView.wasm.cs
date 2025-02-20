@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;

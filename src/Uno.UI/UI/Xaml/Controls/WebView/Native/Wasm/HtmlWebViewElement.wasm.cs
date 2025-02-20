@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +15,7 @@ public class HtmlWebViewElement : UIElement, INativeWebView
 {
 	private CoreWebView2 _coreWebView;
 
-	public NativeWebView(CoreWebView2 coreWebView) : base("iframe")
+	public HtmlWebViewElement(CoreWebView2 coreWebView) : base("iframe")
 	{
 		_coreWebView = coreWebView;
 
