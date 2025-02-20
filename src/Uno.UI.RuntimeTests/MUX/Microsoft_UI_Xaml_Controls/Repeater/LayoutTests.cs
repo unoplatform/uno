@@ -36,6 +36,7 @@ using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls
 using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
 using ElementRealizationOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementRealizationOptions;
 using LayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutContext;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using System.Threading.Tasks;
