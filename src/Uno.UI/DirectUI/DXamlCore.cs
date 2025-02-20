@@ -13,6 +13,7 @@ using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
+using Windows.Devices.Input;
 
 namespace DirectUI
 {
@@ -22,6 +23,7 @@ namespace DirectUI
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
+		private KeyboardCapabilities? _keyboardCapabilities;
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
 
@@ -97,6 +99,15 @@ namespace DirectUI
 
 			// TODO Uno: Not needed now.
 			// OnUWPWindowSizeChanged();
+		}
+
+		internal bool IsKeyboardPresent
+		{
+			get
+			{
+				_keyboardCapabilities ??= new KeyboardCapabilities();
+				return _keyboardCapabilities.KeyboardPresent != 0;
+			}
 		}
 	}
 }
