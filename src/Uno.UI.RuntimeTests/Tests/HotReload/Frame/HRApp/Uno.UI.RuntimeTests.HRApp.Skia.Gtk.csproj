@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
-		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Gtk/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
 
 		<!-- CI runtime test job -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
@@ -56,8 +56,8 @@
 		-->
 	</ItemGroup>
 	
-	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
 
