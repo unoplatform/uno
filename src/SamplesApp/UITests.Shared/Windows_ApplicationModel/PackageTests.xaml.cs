@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel;
 using Windows.System;
@@ -13,32 +15,68 @@ namespace UITests.Shared.Windows_ApplicationModel
 		public PackageTests()
 		{
 			this.InitializeComponent();
-			DisplayName = SafeSet(() => Package.Current.DisplayName);
-			InstalledPath = SafeSet(() => Package.Current.InstalledPath);
-			var packageId = Package.Current.Id;
-			Architecture = SafeSet(() => packageId.Architecture);
-			FamilyName = SafeSet(() => packageId.FamilyName);
-			FullName = SafeSet(() => packageId.FullName);
-			Name = SafeSet(() => packageId.Name);
-			Publisher = SafeSet(() => packageId.Publisher);
-			PublisherId = SafeSet(() => packageId.PublisherId);
-			ResourceId = SafeSet(() => packageId.ResourceId);
-			Version = SafeSet(() => $"{packageId.Version.Major}.{packageId.Version.Minor}.{packageId.Version.Revision}.{packageId.Version.Build}");
+
+			AddProperties(Package.Current);
 		}
 
-		private string SafeSet(Func<object> propertyGetter)
+		public void AddProperties(Package package)
+		{
+			SafeAdd("DisplayName", () => package.DisplayName);
+			SafeAdd("Description", () => package.Description);
+			SafeAdd("EffectiveExternalLocation", () => package.EffectiveExternalLocation?.Path);
+			SafeAdd("EffectiveExternalPath", () => package.EffectiveExternalPath);
+			SafeAdd("EffectiveLocation", () => package.EffectiveLocation.Path);
+			SafeAdd("EffectivePath", () => package.EffectivePath);
+			SafeAdd("Status", () => package.Status);
+			SafeAdd("PublisherDisplayName", () => package.PublisherDisplayName);
+			SafeAdd("InstallDate", () => package.InstallDate);
+			SafeAdd("InstalledDate", () => package.InstalledDate);
+			SafeAdd("InstalledLocation", () => package.InstalledLocation.Path);
+			SafeAdd("InstalledPath", () => package.InstalledPath);
+			SafeAdd("IsBundle", () => package.IsBundle);
+			SafeAdd("IsDevelopmentMode", () => package.IsDevelopmentMode);
+			SafeAdd("IsFramework", () => package.IsFramework);
+			SafeAdd("IsOptional", () => package.IsOptional);
+			SafeAdd("IsResourcePackage", () => package.IsResourcePackage);
+			SafeAdd("IsStub", () => package.IsStub);
+			SafeAdd("Logo", () => package.Logo);
+			SafeAdd("MachineExternalLocation", () => package.MachineExternalLocation?.Path);
+			SafeAdd("MachineExternalPath", () => package.MachineExternalPath);
+			SafeAdd("MutableLocation", () => package.MutableLocation);
+			SafeAdd("MutablePath", () => package.MutablePath);
+			SafeAdd("SignatureKind", () => package.SignatureKind);
+			SafeAdd("UserExternalLocation", () => package.UserExternalLocation?.Path);
+			SafeAdd("UserExternalPath", () => package.UserExternalPath);
+			SafeAdd("Id.Architecture", () => package.Id.Architecture);
+			SafeAdd("Id.FamilyName", () => package.Id.FamilyName);
+			SafeAdd("Id.FullName", () => package.Id.FullName);
+			SafeAdd("Id.Name", () => package.Id.Name);
+			SafeAdd("Id.Publisher", () => package.Id.Publisher);
+			SafeAdd("Id.PublisherId", () => package.Id.PublisherId);
+			SafeAdd("Id.ResourceId", () => package.Id.ResourceId);
+			SafeAdd("Id.Version", () => $"{package.Id.Version.Major}.{package.Id.Version.Minor}.{package.Id.Version.Revision}.{package.Id.Version.Build}");			
+		}
+
+		public ObservableCollection<PackageProperty> Items { get; } = new ObservableCollection<PackageProperty>();
+
+		private void SafeAdd(string propertyName, Func<object> propertyGetter)
 		{
 			try
 			{
-				return propertyGetter()?.ToString() ?? "(null)";
+				var value = propertyGetter()?.ToString() ?? "(null)";
+				Items.Add(new PackageProperty(propertyName, value));
 			}
 			catch (NotImplementedException)
 			{
-				return "Not implemented";
+				Items.Add(new PackageProperty(propertyName, "Not implemented"));
+			}
+			catch (NotSupportedException)
+			{
+				Items.Add(new PackageProperty(propertyName, "Not supported"));
 			}
 			catch (Exception ex)
 			{
-				return $"Exception thrown - {ex.Message}";
+				Items.Add(new PackageProperty(propertyName, $"Exception thrown - {ex.Message}"));
 			}
 		}
 
@@ -63,5 +101,18 @@ namespace UITests.Shared.Windows_ApplicationModel
 		public string ResourceId { get; }
 
 		public string Version { get; }
+	}
+
+	public class PackageProperty
+	{
+		public PackageProperty(string name, string value)
+		{
+			Name = name;
+			Value = value;
+		}
+
+		public string Name { get; }
+
+		public string Value { get; }
 	}
 }
