@@ -112,27 +112,27 @@
       }
 
       @include media-breakpoint-up(lg) {
-        font-size: 19px;
-        line-height: 17px;
+        font-size: 18px;
+        /*line-height: 17px;*/
       }
 
       // Media queries for font size and padding adjustments
       @media (min-width: 1024px) {
         font-size: 14px;
-        line-height: 17px;
-        padding: 0.2rem !important;
+        /*line-height: 17px;*/
+        padding: .2rem !important;
       }
 
       @media (min-width: 1280px) {
         font-size: 16px;
-        line-height: 17px;
-        padding: 0.2rem !important;
+        /*line-height: 17px;*/
+        padding: .2rem !important;
       }
 
       @media (min-width: 1366px) {
-        font-size: 19px;
-        line-height: 17px;
-        padding: 0.2rem !important;
+        font-size: 18px;
+        /*line-height: 17px;*/
+        padding: .2rem !important;
       }
     }
     /**
@@ -301,7 +301,8 @@
       border-radius: 8px;
 
       margin-left: 0;
-      padding: 8px 32px;
+      /*padding: 8px 32px;*/
+      padding: 1.2rem 2.4rem !important;
 
       /*font-size: 16px;*/
       line-height: 24px;
@@ -333,7 +334,36 @@
       }
 
       @media (min-width: 1366px) {
-        font-size: 19px;
+        font-size: 18px;
+
+      }
+
+    }
+  }
+
+  .custom-login-item {
+    a {
+      border: 2px solid rgba(21, 155, 255, 1);
+      margin-left: 20px !important;
+      width: 90% !important;
+      text-transform: none !important;
+      color: rgba(21, 155, 255, 1) !important;
+      border-radius: 13px;
+      padding: 1.2rem 1.6rem !important;
+
+
+      @media (min-width: 1024px) {
+        font-size: 14px;
+
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px;
+
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 18px;
 
       }
 
@@ -383,21 +413,41 @@
         &.get-started-btn,
         &.custom-login-item {
           display: flex;
-          justify-content: center;
-          align-items: center;
+          /*justify-content: center;
+          align-items: center;*/
           width: 100%;
-          margin-bottom: 10px; // Espaciado entre botones
+          margin-bottom: 10px;
+        }
+
+        &.get-started-btn {
+          padding: 0 2rem;
+        }
+
+        &.custom-login-item {
+          padding: 0;
         }
 
         &.get-started-btn a,
         &.custom-login-item a {
-          font-size: 18px !important;
-          font-weight: 700;
-          width: 90% !important;
+          font-size: 20px !important;
+
           padding: 12px 25px !important;
-          text-align: center !important;
+          /*text-align: center !important;*/
           line-height: 30px !important;
           border-radius: 10px !important;
+        }
+        &.custom-login-item a {
+
+          font-weight: 600;
+          width: 95% !important;
+
+        }
+        &.get-started-btn a {
+
+          font-weight: 700;
+          width: 100% !important;
+          text-align: left;
+
         }
 
         &.custom-login-item a {
@@ -406,10 +456,10 @@
           background: transparent !important;
         }
 
-        &.get-started-btn a {
+        /*&.get-started-btn a {
           background: $turquoise;
           color: $black !important;
-        }
+        }*/
 
         &.menu-item-has-children {
           position: relative;
