@@ -127,7 +127,7 @@ namespace Microsoft.UI.Xaml
 
 		public T this[int index]
 		{
-			get => _list[index];
+			get => index < _list.Count ? _list[index] : default;
 			set
 			{
 				ValidateItem(value);

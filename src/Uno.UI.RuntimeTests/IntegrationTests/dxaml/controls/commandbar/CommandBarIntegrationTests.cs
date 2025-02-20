@@ -2584,7 +2584,7 @@ namespace Windows.UI.Tests.Enterprise
 #if __IOS__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
+				expectedCommandBarWidth = WindowHelper.XamlRoot.HostWindow!.NativeWrapper!.GetWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 48;

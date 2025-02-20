@@ -38,31 +38,27 @@ namespace Uno.UI.Tests.Foundation
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_Create_WithNegativeWidth()
 		{
-			new Rect(0, 0, -42, 0);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(0, 0, -42, 0));
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_Create_WithNegativeHeight()
 		{
-			new Rect(0, 0, 0, -42);
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(0, 0, 0, -42));
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_Create_WithNegativeSizeWidth()
 		{
-			new Rect(new Point(0, 0), new Size(-42, 0));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(-42, 0)));
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void When_Create_WithNegativeSizeHeight()
 		{
-			new Rect(new Point(0, 0), new Size(0, -42));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Rect(new Point(0, 0), new Size(0, -42)));
 		}
 
 		[TestMethod]

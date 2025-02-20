@@ -11,11 +11,16 @@ partial class ContentManager
 {
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
 	{
+		if (window.NativeWrapper is not NativeWindowWrapper nativeWindowWrapper)
+		{
+			throw new InvalidOperationException("The window must be initialized before attaching the root element.");
+		}
+
 		if (rootElement.Superview is null)
 		{
-			NativeWindowWrapper.Instance.MainController.View!.AddSubview(rootElement);
+			nativeWindowWrapper.MainController.View!.AddSubview(rootElement);
 		}
-		rootElement.Frame = NativeWindowWrapper.Instance.MainController.View!.Bounds;
+		rootElement.Frame = nativeWindowWrapper.MainController.View!.Bounds;
 		rootElement.AutoresizingMask = UIViewAutoresizing.All;
 	}
 }

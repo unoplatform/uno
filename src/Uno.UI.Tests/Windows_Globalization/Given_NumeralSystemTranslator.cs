@@ -1578,7 +1578,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			When_NumeralSystemIsSpecific(value, expected, "Vaii");
 		}
 
-		public void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
+		private void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
 			sut.NumeralSystem = numeralSystem;

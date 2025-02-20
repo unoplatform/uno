@@ -38,7 +38,7 @@ namespace Uno.UI.Tests.BinderTests_Weak
 			Assert.AreEqual(42, SUT.GetValue(MyObject.ValueProperty));
 
 			SUT.ClearValue(MyObject.ValueProperty, DependencyPropertyValuePrecedences.Inheritance);
-			Assert.AreEqual(null, SUT.GetValue(MyObject.ValueProperty));
+			Assert.IsNull(SUT.GetValue(MyObject.ValueProperty));
 		}
 
 		[TestMethod]

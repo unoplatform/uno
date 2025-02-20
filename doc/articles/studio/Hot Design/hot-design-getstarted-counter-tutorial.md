@@ -16,12 +16,16 @@ This tutorial will guide you through using Hot Design to create a simple counter
 </p>
 
 > [!NOTE]
-> This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
+> This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. If you prefer to use MVVM you can still complete this **Hot Design** tutorial by switching the MVUX code, with the MVVM code from the [XAML + MVVM variant](xref:Uno.Workshop.Counter.XAML.MVVM). Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
+>
+> Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
 >
 > [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
+> **Hot Design™** is currently in beta. Sign up to the [waitlist](https://platform.uno/waitlist/) to get early access and be among the first to try it out!
 >
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
+> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization.
+> - Hot Design does not support C# Markup and is only available with XAML. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
 
 ## Set Up Your Environment for Hot Design
 
@@ -30,12 +34,15 @@ This tutorial will guide you through using Hot Design to create a simple counter
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk). Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
 
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
+
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app.
 
 <p align="center">
-  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
+  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter in design mode" />
 </p>
 
 ## Creating the Counter Application
@@ -70,8 +77,17 @@ The template will create a solution with a single cross-platform project, named 
 - Select **Blank** in **Presets** selection
 - Select the **Presentation** tab and choose **MVUX**
 - Click **Create** to complete the wizard
-- Copy the `dotnet new` command and run it from a terminal
-This will create a new folder called **Counter** containing the new application.
+- Copy the `dotnet new` command and run it from a terminal where you want your solution to be located.
+- This will create a new folder called **Counter** containing the new application.
+- Next, open the project using Visual Studio Code. In the terminal type the following:
+
+  ```bash
+  code ./Counter
+  ```
+
+- Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
+- Once the solution has been loaded, in the status bar at the bottom left of VS Code, `Counter.sln` is selected by default. Select `Counter.csproj` to load the project instead.
+![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-selection.png)
 
 ### [Command Line](#tab/cli)
 
@@ -90,7 +106,7 @@ This will create a new folder called **Counter** containing the new application.
 
 ## Assets
 
-First, we need to add the image file to the application. Download this [SVG image](https://aka.platform.uno/counter-tutorial-svg-uno-logo) and add it to the **Assets** folder. Once added, rebuild the application to ensure the image is included in the application package.
+First, we need to add the image file to the application. Download this [SVG image](https://aka.platform.uno/counter-tutorial-svg-uno-logo) (Open this [link](https://aka.platform.uno/counter-tutorial-svg-uno-logo), right-click on the SVG image and select "Save as") and add it to the **Assets** folder. Once added, rebuild the application to ensure the image is included in the application package.
 
 > [!NOTE]
 > If you're working in Visual Studio, select the newly added **logo.svg** file in the **Solution Explorer**, open the **Properties** window, and ensure the **Build Action** property is set to **`UnoImage`**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **`UnoImage`** for all files in the **Assets** folder.  
@@ -99,20 +115,21 @@ First, we need to add the image file to the application. Download this [SVG imag
 
 ## Run the app
 
-Before you run the application, switch the target platform to **Desktop** (net8.0-desktop) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
+Before you run the application, switch the target platform to **Desktop** (`net9.0-desktop`) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
 
 - [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022#debug-the-app)
 - [VS Code](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+  > [!IMPORTANT]
+  > In the status bar at the bottom left of VS Code, ensure `Counter.csproj` is selected (by default `Counter.sln` is selected).
+  >
+  > ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-selection.png)
 - [Rider](xref:Uno.GettingStarted.CreateAnApp.Rider#debug-the-app)
 
 > [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
 >
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
->
-> [!IMPORTANT]
-> If you're using Visual Studio, you can choose to start it with or without debugging.  
-> If you're using VS Code or Rider, start the app **without the debugger**.
+> - If you're using Visual Studio, you can choose to start it with or without debugging.  
+> - If you're using VS Code or Rider, start the app **without the debugger**.
+> - **Hot Design** is now available on all platforms in beta, with the **Desktop** platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization.
 
 Now, let's run the app.
 
@@ -122,13 +139,13 @@ If is not already previously done, to start using **Hot Design**, ensure you are
 
 ## Enter Hot Design Mode
 
-To start editing the UI, enter **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app (default position is in the top-left corner of the application window).
+To start editing the UI, enter **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app (default position is in the top-left corner of the application window).
 
 > [!NOTE]
-> If you don't see the **Hot Design** flame icon, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing), enrolled in the current beta, and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
+> If you don't see the **Hot Design** flame button, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing), enrolled in the current beta, and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
 
 <p align="center">
-  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter design mode" />
+  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter design mode" />
 </p>
 
 ## Change the Layout

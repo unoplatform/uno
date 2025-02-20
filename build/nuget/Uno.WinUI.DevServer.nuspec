@@ -21,8 +21,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net8.0-maccatalyst17.0 -->
@@ -30,8 +29,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net8.0-macos14.0 -->
@@ -39,8 +37,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net8.0-android -->
@@ -48,8 +45,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net9.0-ios18.0 -->
@@ -57,8 +53,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net9.0-maccatalyst18.0 -->
@@ -66,8 +61,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net9.0-macos15.0 -->
@@ -75,8 +69,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net9.0-android -->
@@ -84,8 +77,7 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- .NET 9.0 (Reference API) -->
@@ -93,9 +85,8 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 				<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
 			</group>
 
 			<!-- .NET 8.0 (Reference API) -->
@@ -103,9 +94,8 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 				<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
-				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
 			</group>
 
 			<!-- .NET 9.0 (WinUI) -->
@@ -159,6 +149,7 @@
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.dll" target="tools\rc\processors\net9.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.pdb" target="tools\rc\processors\net9.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\BuildHost-netcore\**" target="tools\rc\processors\net9.0\BuildHost-netcore" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />

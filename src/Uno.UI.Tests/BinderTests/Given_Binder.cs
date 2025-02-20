@@ -85,22 +85,22 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = null;
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = null;
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(-1000, child.TargetValue);
@@ -145,48 +145,48 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = null;
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = null;
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(-1000, child.TargetValue);
 			Assert.AreEqual(1, converter.ConversionCount);
-			Assert.AreEqual(true, converter.LastValue);
+			Assert.IsTrue((bool?)converter.LastValue);
 
 			// It breaks here, when a broken binding would replace a fully functional one.
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(1, converter.ConversionCount);
-			Assert.AreEqual(true, converter.LastValue);
+			Assert.IsTrue((bool?)converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(-1000, child.TargetValue);
 			Assert.AreEqual(2, converter.ConversionCount);
-			Assert.AreEqual(true, converter.LastValue);
+			Assert.IsTrue((bool?)converter.LastValue);
 
 			SUT.DataContext = null;
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(2, converter.ConversionCount);
-			Assert.AreEqual(true, converter.LastValue);
+			Assert.IsTrue((bool?)converter.LastValue);
 
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(-1000, child.TargetValue);
 			Assert.AreEqual(3, converter.ConversionCount);
-			Assert.AreEqual(true, converter.LastValue);
+			Assert.IsTrue((bool?)converter.LastValue);
 		}
 
 		[TestMethod]
@@ -207,7 +207,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 		}
 
 		[TestMethod]
@@ -228,7 +228,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = new SourceLevel0() { Item = new SourceLevel1() { List = new SourceLevel2[] { new SourceLevel2() } } };
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(0, converter.ConversionCount);
-			Assert.AreEqual(null, converter.LastValue);
+			Assert.IsNull(converter.LastValue);
 		}
 
 		[TestMethod]
@@ -420,7 +420,8 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(tomato, SUT.MyBrushProperty);
 
 			source.Brush = SolidColorBrushHelper.Olive;
-			Assert.AreEqual(SolidColorBrushHelper.Olive.Color, (SUT.MyBrushProperty as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(SUT.MyBrushProperty, typeof(SolidColorBrush));
+			Assert.AreEqual(SolidColorBrushHelper.Olive.Color, ((SolidColorBrush)SUT.MyBrushProperty).Color);
 
 			source.Brush = null;
 			Assert.AreEqual(tomato, SUT.MyBrushProperty);

@@ -86,6 +86,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Hot Design
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
       topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
@@ -268,7 +270,16 @@
         - name: Overview
           href: xref:uno.publishing.overview
         - name: Publishing for Desktop
-          href: xref:uno.publishing.desktop
+          topicHref: xref:uno.publishing.desktop
+          items:
+            - name: Publishing Your App for Desktop
+              href: xref:uno.publishing.desktop
+            - name: Publishing Your App for macOS
+              href: xref:uno.publishing.desktop.macos
+            - name: Publishing Your App for macOS - Advanced Topics
+              href: xref:uno.publishing.desktop.macos.advanced
+            - name: Publishing Your App for Linux
+              href: xref:uno.publishing.desktop.linux
         - name: Publishing for WebAssembly
           href: xref:uno.publishing.webassembly
         - name: Publishing for Windows App SDK
@@ -428,6 +439,8 @@
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
+    - name: Feedback
+      href: xref:Uno.Platform.Studio.Feedback
 
 - name: Reference
   items:

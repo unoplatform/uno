@@ -48,8 +48,8 @@ namespace Windows.Storage.Pickers
 		}
 
 		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
-		PickerLocationId IFilePicker.SuggestedStartLocationInternal => PickerLocationId.DocumentsLibrary;
-		IList<string> IFilePicker.FileTypeFilterInternal => new FileExtensionVector();
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => SuggestedStartLocation;
+		IList<string> IFilePicker.FileTypeFilterInternal => FileTypeFilter;
 
 #if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()

@@ -395,9 +395,11 @@ namespace Uno.UI
 
 				var source = sourcesEnumerator.Current;
 
-				var dictionary = (source.Target as FrameworkElement)?.Resources
+				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;
-				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+
+				if (dictionary != null
+					&& dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}

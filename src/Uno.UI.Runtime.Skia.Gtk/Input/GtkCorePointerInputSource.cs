@@ -501,10 +501,10 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		properties.IsInRange = true;
-
+		var timeInMicroseconds = time * 1000;
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: time,
-			timestamp: time * (ulong)TimeSpan.TicksPerMillisecond, // time is in ms, timestamp is in ticks
+			timestamp: timeInMicroseconds,
 			device: pointerDevice,
 			pointerId: pointerId,
 			rawPosition: rawPosition,

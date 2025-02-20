@@ -322,8 +322,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			translate.Y = 312.0;
 			var afterValue = translate.Y;
 
-			Assert.AreEqual(beforeValue, 100.0, "before: Should be animated to 100");
-			Assert.AreEqual(afterValue, 312.0, "after: Should be set to 312");
+			Assert.AreEqual(100.0, beforeValue, "before: Should be animated to 100");
+			Assert.AreEqual(312.0, afterValue, "after: Should be set to 312");
 		}
 
 #if __ANDROID__

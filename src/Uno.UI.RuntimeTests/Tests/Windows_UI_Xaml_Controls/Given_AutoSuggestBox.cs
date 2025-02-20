@@ -46,10 +46,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
+			var expectedGlyph = SymbolIcon.ConvertSymbolValueToGlyph((int)Symbol.Home);
+
 #if __SKIA__ || __WASM__
-			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
+			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == expectedGlyph);
 #else
-			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == (char)Symbol.Home);
+			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == expectedGlyph);
 #endif
 
 			Assert.AreEqual(12, tb.FontSize);
@@ -655,36 +657,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 1);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(1, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Right();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(1, keyDownNotHandled);
 
 				await KeyboardHelper.Left();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 3); // actually handled in textbox
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(3, keyDownHandled); // actually handled in textbox
+				Assert.AreEqual(1, keyDownNotHandled);
 
 				await KeyboardHelper.Up();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 4);
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(4, keyDownHandled);
+				Assert.AreEqual(1, keyDownNotHandled);
 			}
 			finally
 			{
@@ -773,12 +775,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Enter();
-				Assert.AreEqual(keyDownHandled, 3);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(3, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 			}
 			finally
 			{
@@ -869,8 +871,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				if (escape)
 				{
@@ -880,8 +882,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await KeyboardHelper.Enter();
 				}
-				Assert.AreEqual(keyDownHandled, 3);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(3, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 			}
 			finally
 			{
@@ -1127,5 +1129,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 		}
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
+#if ANDROID && IS_CI
+		[Ignore("This test is failing on Android in CI only.")]
+#endif
+		public async Task When_Loaded_Unloaded()
+		{
+			var SUT = new AutoSuggestBox();
+			var suggestions = new List<string> { "ab", "abc", "abcde" };
+			SUT.ItemsSource = suggestions;
+
+			SUT.TextChanged += (sender, args) =>
+			{
+				if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					var filteredSuggestions =
+						suggestions.Where(s => s.StartsWith(sender.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+					sender.ItemsSource = filteredSuggestions;
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("a");
+
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+		}
+#endif
 	}
 }

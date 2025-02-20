@@ -12,6 +12,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal interface IWindowImplementation
 {
+	INativeWindowWrapper? NativeWindowWrapper { get; }
+
 	bool Visible { get; }
 
 	string Title { get; set; }

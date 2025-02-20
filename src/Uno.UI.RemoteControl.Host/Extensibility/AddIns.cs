@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -16,9 +17,13 @@ public class AddIns
 
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
+		// Note: We include the targets "on the fly" so if a project uses Microsoft.NET.Sdk instead of Uno.Sdk, we will still have the targets defined.
+		var targetsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "DevServer.Custom.Targets");
+
 		var tmp = Path.GetTempFileName();
 		var wd = Path.GetDirectoryName(solutionFile);
-		var command = $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
+		string DumpTFM(string v) => $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" --verbosity {v}";
+		var command = DumpTFM("quiet");
 		var result = ProcessHelper.RunProcess("dotnet", command, wd);
 		var targetFrameworks = Read(tmp);
 
@@ -35,7 +40,10 @@ public class AddIns
 				}
 				else
 				{
+					result = ProcessHelper.RunProcess("dotnet", DumpTFM("diagnostic"), wd);
+
 					_log.Log(LogLevel.Warning, msg);
+					_log.Log(LogLevel.Debug, result.output);
 				}
 			}
 
@@ -51,7 +59,7 @@ public class AddIns
 		foreach (var targetFramework in targetFrameworks)
 		{
 			tmp = Path.GetTempFileName();
-			command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+			command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" \"-p:CustomBeforeMicrosoftCSharpTargets={targetsFile}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
 			result = ProcessHelper.RunProcess("dotnet", command, wd);
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{

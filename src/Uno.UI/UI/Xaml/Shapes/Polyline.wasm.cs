@@ -6,6 +6,7 @@ using Uno;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -13,15 +14,7 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var points = Points;
-			if (points == null)
-			{
-				_mainSvgElement.RemoveAttribute("points");
-			}
-			else
-			{
-				_mainSvgElement.SetAttribute("points", points.ToCssString());
-			}
+			WindowManagerInterop.SetSvgPolyPoints(_mainSvgElement.HtmlId, Points?.Flatten());
 
 			return MeasureAbsoluteShape(availableSize, this);
 		}
@@ -46,7 +39,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected override string GetBBoxCacheKeyImpl() =>
 			Points is { } points
-				? ("polygone:" + points.ToCssString())
+				? ("polyline:" + string.Join(',', points.Flatten()))
 				: null;
 	}
 }

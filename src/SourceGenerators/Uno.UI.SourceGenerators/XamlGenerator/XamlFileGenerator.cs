@@ -186,6 +186,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
+		private string Field(string type, string name)
+			=> $"private {type} {name} {(_isHotReloadEnabled ? "{ get; set; }" : ";")}";
+
 		public XamlCodeGeneration Generation { get; }
 
 		public XamlFileGenerator(
@@ -385,7 +388,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildPartials(writer);
 
-							BuildEventHandlers(writer);
+							BuildCallbackMethods(writer);
 
 							BuildExplicitApplyMethods(writer);
 
@@ -398,6 +401,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							BuildCompiledBindings(writer);
 
 							BuildXBindTryGetDeclarations(writer);
+						}
+					}
+
+					if (_isHotReloadEnabled && Generation.IOSViewSymbol.Value is not null)
+					{
+						// Workaround for HR behaving incorrectly on iOS
+						// https://github.com/xamarin/xamarin-macios/issues/22102
+
+						using (writer.BlockInvariant($"namespace __internal"))
+						{
+							writer.AppendLineIndented("/// <remarks>Internal Use for iOS only.</remarks>");
+							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+							writer.AppendLineIndented("[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
+							using (writer.BlockInvariant($"static partial class __{_xClassName.ClassName}_Dummy"))
+							{
+								using (writer.BlockInvariant("private static class Dummy_Bindings"))
+								{
+									writer.AppendLineIndented("private static object Owner { get; set; }");
+								}
+							}
 						}
 					}
 				}
@@ -828,11 +851,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildEventHandlers(IIndentedStringBuilder writer)
+		private void BuildCallbackMethods(IIndentedStringBuilder writer)
 		{
-			foreach (var eventHandler in CurrentScope.EventHandlers)
+			foreach (var callback in CurrentScope.CallbackMethods)
 			{
-				eventHandler(writer);
+				callback(writer);
 			}
 		}
 
@@ -841,7 +864,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var rAccessor = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
 
 			TryAnnotateWithGeneratorSource(writer);
-			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct())
+			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct().OrderBy(f => f.Name, StringComparer.Ordinal))
 			{
 				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
 
@@ -866,13 +889,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers)
-			{
-				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name}{rAccessor ?? ";"}");
-			}
-
-			foreach (var remainingReference in CurrentScope.ReferencedElementNames)
+			foreach (var remainingReference in CurrentScope.ReferencedElementNames.OrderBy(f => f, StringComparer.Ordinal))
 			{
 				// Create load-time subjects for ElementName references not in local scope
 				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
@@ -899,9 +916,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isInChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
 			var ns = $"{_defaultNamespace}.__Resources";
-			var disposable = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
+			using var _ = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
 
-			using (disposable)
+			// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
+			if (!_isHotReloadEnabled && CurrentScope.Subclasses is not { Count: > 0 } && CurrentScope.SubclassBuilders is not { Count: > 0 })
+			{
+				return;
+			}
+
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+			using (writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class {CurrentScope.SubClassesRoot}"))
 			{
 				foreach (var kvp in CurrentScope.Subclasses)
 				{
@@ -912,12 +937,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (Scope(ns, className))
 						{
-							var classAccessibility = isTopLevel ? "" : "private";
-
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
-							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
+							using (writer.BlockInvariant($"public class {className}"))
 							{
 								BuildBaseUri(writer);
 
@@ -965,7 +988,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildBackingFields(writer);
 
-								BuildEventHandlers(writer);
+								BuildCallbackMethods(writer);
 
 								BuildExplicitApplyMethods(writer);
 
@@ -975,6 +998,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
+				}
+
+				foreach (var subClass in CurrentScope.SubclassBuilders)
+				{
+					subClass(writer);
+					writer.AppendLine();
 				}
 			}
 		}
@@ -1046,7 +1075,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.Window)this).Activated += __UpdateBindingsAndResources;");
 				}
 
-				CurrentScope.EventHandlers.Add(eventWriter =>
+				CurrentScope.CallbackMethods.Add(eventWriter =>
 				{
 					using (eventWriter.BlockInvariant(callbackSignature))
 					{
@@ -1072,7 +1101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineIndented("__fe.Loading += __UpdateBindingsAndResources;");
 
-					CurrentScope.EventHandlers.Add(eventWriter =>
+					CurrentScope.CallbackMethods.Add(eventWriter =>
 					{
 						using (writer.BlockInvariant("private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
 						{
@@ -1087,16 +1116,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer, List<EventHandlerBackingFieldDefinition> xBindEventsHandlers, string prefix = "")
+		private void BuildxBindEventHandlerInitializers(IIndentedStringBuilder writer, List<XBindEventInitializerDefinition> xBindEventsHandlers, string prefix = "")
 		{
 			foreach (var xBindEventHandler in xBindEventsHandlers)
 			{
-				var ownerParameter = _isHotReloadEnabled ? "owner," : "";
+				writer.AppendLineIndented($"{prefix}{xBindEventHandler.MethodName}(true);");
+			}
+		}
 
-				writer.AppendLineIndented($"{prefix}{xBindEventHandler.Name}?.Invoke({ownerParameter} owner.{xBindEventHandler.ComponentName});");
-
-				// Only needs to happen once per visual tree creation
-				writer.AppendLineIndented($"{prefix}{xBindEventHandler.Name} = null;");
+		private void BuildxBindEventHandlerUnInitializers(IIndentedStringBuilder writer, List<XBindEventInitializerDefinition> xBindEventsHandlers, string prefix = "")
+		{
+			foreach (var xBindEventHandler in xBindEventsHandlers)
+			{
+				writer.AppendLineIndented($"{prefix}{xBindEventHandler.MethodName}(false);");
 			}
 		}
 
@@ -1128,10 +1160,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildComponentFields(IIndentedStringBuilder writer)
 		{
-			for (var i = 0; i < CurrentScope.Components.Count; i++)
+			foreach (var current in CurrentScope.Components.OrderBy(c => c.MemberName, StringComparer.Ordinal))
 			{
-				var current = CurrentScope.Components[i];
-
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
@@ -1419,7 +1449,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						BuildXBindTryGetDeclarations(writer);
 
-						BuildEventHandlers(writer);
+						BuildCallbackMethods(writer);
 					}
 				}
 
@@ -1757,7 +1787,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							writer.AppendLine();
 
-							BuildEventHandlers(writer);
+							BuildCallbackMethods(writer);
 							BuildChildSubclasses(writer);
 							BuildXBindTryGetDeclarations(writer);
 						}
@@ -1844,7 +1874,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writer.AppendLineIndented("Loading += __UpdateNamedResources;");
 
-				CurrentScope.EventHandlers.Add(eventWriter =>
+				CurrentScope.CallbackMethods.Add(eventWriter =>
 				{
 					using (eventWriter.BlockInvariant("private void __UpdateNamedResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
 					{
@@ -3076,7 +3106,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						extractionTargetMembers = _uiAutomationMappings
 							?.FirstOrDefault(m => _metadataHelper.FindTypeByFullName(m.Key) is INamedTypeSymbol mappingKeySymbol && (IsType(objectDefinitionType, mappingKeySymbol) || IsImplementingInterface(objectDefinitionType, mappingKeySymbol)))
 							.Value
-							?.ToArray() ?? Array.Empty<string>();
+							?.ToArray() ?? [];
 					}
 
 					if (hasChildrenWithPhase)
@@ -3571,214 +3601,198 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void GenerateInlineEvent(string? closureName, IIndentedStringBuilder writer, XamlMemberDefinition member, IEventSymbol eventSymbol, ComponentDefinition? componentDefinition = null)
 		{
+			if (eventSymbol.Type is not INamedTypeSymbol delegateSymbol)
+			{
+				GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
+				return;
+			}
+
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.
-			var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
-
-			void writeEvent(string? ownerPrefix)
+			var template = IsMemberInsideFrameworkTemplate(member.Owner);
+			var targetInstance = (template.isInside, _xClassName) switch
 			{
-				if (eventSymbol.Type is INamedTypeSymbol delegateSymbol)
+				(false, _) => "this",
+				(_, not null) => CurrentResourceOwnerName,
+				_ => null
+			};
+			if (targetInstance is null)
+			{
+				GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
+				return;
+			}
+			EnsureXClassName();
+
+			var parentApply = (writer as XamlLazyApplyBlockIIndentedStringBuilder)?.MethodName;
+			var parametersWithType = delegateSymbol
+				.DelegateInvokeMethod
+				?.Parameters
+				.Select(p => $"{p.Type.GetFullyQualifiedTypeIncludingGlobal()} {p.Name}")
+				.ToArray();
+			var parameters = delegateSymbol
+				.DelegateInvokeMethod
+				?.Parameters
+				.Select(p => p.Name)
+				.ToArray();
+
+			if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
+			{
+				if (componentDefinition is null)
 				{
-					var parmsNames = delegateSymbol
-						.DelegateInvokeMethod
-						?.Parameters
-						.Select(p => member.Value + "_" + p.Name)
-						.ToArray();
+					throw new InvalidOperationException("The component definition cannot be null.");
+				}
 
-					var parms = parmsNames.JoinBy(",");
+				CurrentScope.XBindExpressions.Add(bind);
 
-					var eventSource = !ownerPrefix.IsNullOrEmpty() ? ownerPrefix : "__that";
+				var path = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
+				if (path is null)
+				{
+					throw new InvalidOperationException("x:Bind event path cannot by empty");
+				}
 
-					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
+				INamedTypeSymbol GetTargetType()
+				{
+					if (template.isInside)
 					{
-						CurrentScope.XBindExpressions.Add(bind);
-
-						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
-
-						if (eventTarget == null)
+						var dataTypeObject = FindMember(template.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
+						if (dataTypeObject?.Value == null)
 						{
-							throw new InvalidOperationException("x:Bind event path cannot by empty");
+							throw new Exception("Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
 						}
 
-						var parts = eventTarget.Split('.').ToList();
-						var isStaticTarget = parts.FirstOrDefault()?.Contains(":") ?? false;
-
-						eventTarget = RewriteNamespaces(eventTarget);
-
-						// x:Bind to second-level method generates invalid code
-						// sanitizing member.Member.Name so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
-						var sanitizedEventTarget = SanitizeResourceName(eventTarget);
-
-						(string target, string weakReference, IMethodSymbol targetMethod) buildTargetContext()
-						{
-							IMethodSymbol FindTargetMethodSymbol(INamedTypeSymbol? sourceType)
-							{
-								if (eventTarget.Contains("."))
-								{
-									ITypeSymbol? currentType = sourceType;
-
-									if (isStaticTarget)
-									{
-										// First part is a type for static method binding and should
-										// overide the original source type
-										currentType = GetType(RewriteNamespaces(parts[0]));
-										parts.RemoveAt(0);
-									}
-
-									for (var i = 0; i < parts.Count - 1; i++)
-									{
-										var next = currentType.GetAllMembersWithName(RewriteNamespaces(parts[i])).FirstOrDefault();
-
-										currentType = next switch
-										{
-											IFieldSymbol fs => fs.Type,
-											IPropertySymbol ps => ps.Type,
-											null => throw new InvalidOperationException($"Unable to find member {parts[i]} on type {currentType}"),
-											_ => throw new InvalidOperationException($"The field {next.Name} is not supported for x:Bind event binding")
-										};
-									}
-
-									var method = currentType?.GetFirstMethodWithName(parts.Last(), includeBaseTypes: true)
-										?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
-
-									return method;
-								}
-								else
-								{
-									return sourceType?.GetFirstMethodWithName(eventTarget, includeBaseTypes: true)
-										?? throw new InvalidOperationException($"Failed to find {eventTarget} on {sourceType}");
-								}
-							}
-
-							if (isInsideDataTemplate.isInside)
-							{
-								var dataTypeObject = FindMember(isInsideDataTemplate.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
-
-								if (dataTypeObject?.Value == null)
-								{
-									throw new Exception($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
-								}
-
-								var dataTypeSymbol = GetType(dataTypeObject.Value.ToString() ?? "");
-
-								return (
-									$"({member.Member.Name}_{sanitizedEventTarget}_That.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {dataTypeSymbol.GetFullyQualifiedTypeIncludingGlobal()}",
-
-									// Use of __rootInstance is required to get the top-level DataContext, as it may be changed
-									// in the current visual tree by the user.
-									$"(__that.__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-									FindTargetMethodSymbol(dataTypeSymbol)
-								);
-							}
-							else
-							{
-								if (_xClassName?.Symbol != null)
-								{
-									return (
-										$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_xClassName}",
-										$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-										FindTargetMethodSymbol(_xClassName.Symbol)
-									);
-								}
-								else
-								{
-									throw new Exception($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
-								}
-							}
-						}
-
-						var targetContext = buildTargetContext();
-
-						var targetMethodHasParamters = targetContext.targetMethod?.Parameters.Any() ?? false;
-						var xBindParams = targetMethodHasParamters ? parms : "";
-
-						var builderName = $"_{ownerPrefix}_{CurrentScope.xBindEventsHandlers.Count}_{member.Member.Name}_{sanitizedEventTarget}_Builder";
-
-						EnsureXClassName();
-
-						var ownerName = CurrentScope.ClassName;
-
-						AddXBindEventHandlerToScope(builderName, ownerName, eventSymbol.ContainingType, componentDefinition);
-
-						var handlerParameters = _isHotReloadEnabled ? "(__that, __owner)" : "(__owner)";
-
-						using (writer.BlockInvariant($"__that.{builderName} = {handlerParameters} => "))
-						{
-							//
-							// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
-							// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
-							// creation of a WeakReference.
-							//
-							var thatVariableName = $"{member.Member.Name}_{sanitizedEventTarget}_That";
-							writer.AppendLineIndented($"var {thatVariableName} = {targetContext.weakReference};");
-
-							if (_isHotReloadEnabled)
-							{
-								// Attach the current context to the owner to avoid closing on "this" in the
-								// handler of the event.
-								writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__owner, \"{eventTarget}\", {thatVariableName});");
-							}
-
-							//CurrentScope.ExplicitApplyMethods ICI
-							using (writer.BlockInvariant($"/* first level targetMethod:{targetContext.targetMethod} */ __owner.{member.Member.Name} += ({parms}) => "))
-							{
-								if (isStaticTarget)
-								{
-									writer.AppendLineIndented($"{eventTarget}({xBindParams});");
-								}
-								else
-								{
-									if (_isHotReloadEnabled && parmsNames is { Length: > 0 })
-									{
-										writer.AppendLineIndented(
-											$"var {thatVariableName} = /* {delegateSymbol.GetFullyQualifiedTypeExcludingGlobal()} */" +
-											$"global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<global::Uno.UI.DataBinding.ManagedWeakReference>({parmsNames[0]}, \"{eventTarget}\");");
-									}
-
-									writer.AppendLineIndented($"({targetContext.target})?.{eventTarget}({xBindParams});");
-								}
-							}
-							writer.AppendLineIndented($";");
-						}
-
-						writer.AppendLineIndented($";");
+						return GetType(dataTypeObject.Value.ToString() ?? "");
+					}
+					else if (_xClassName?.Symbol is not null)
+					{
+						return _xClassName.Symbol;
 					}
 					else
 					{
-						EnsureXClassName();
-
-						// x:Bind to second-level method generates invalid code
-						// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
-						var sanitizedMemberValue = SanitizeResourceName(member.Value?.ToString());
-
-						//
-						// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
-						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
-						// creation of a WeakReference.
-						//
-						var thatEventSource = eventSource != "__that" ? "__that." + eventSource : eventSource;
-						writer.AppendLineIndented($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({thatEventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-
-						writer.AppendLineIndented($"/* second level */ {closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_xClassName})?.{member.Value}({parms});");
+						throw new Exception($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
 					}
 				}
-				else
-				{
-					GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
-				}
-			}
 
-			if (!isInsideDataTemplate.isInside)
-			{
-				writeEvent("");
-			}
-			else if (_xClassName?.ClassName != null)
-			{
-				writeEvent(CurrentResourceOwner);
+				var targetType = GetTargetType(); // The type of the target object onto which the x:Bind path should be resolved
+				var targetInstanceWeakRef = template.isInside
+					// Use of __rootInstance is required to get the top-level DataContext, as it may be changed in the current visual tree by the user.
+					? "(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference"
+					: $"({targetInstance} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference";
+
+				var method = ResolveXBindMethod(targetType, path);
+				var invokeTarget = (method.isStatic, template.isInside) switch
+				{
+					(true, _) => method.declaringType.GetFullyQualifiedTypeIncludingGlobal(), // If the method is static, the target onto which the method should be invoked is the declaringType itself
+					(_, true) => $"((target.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {targetType.GetFullyQualifiedTypeIncludingGlobal()})?",
+					_ => $"(target.Target as {targetType.GetFullyQualifiedTypeIncludingGlobal()})?"
+				};
+
+				var handler = RegisterChildSubclass(
+					$"{parentApply}_{member.Member.Name}_Handler",
+					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
+							public class {{name}}(global::Uno.UI.DataBinding.ManagedWeakReference target)
+							{
+								public void Invoke({{parametersWithType.JoinBy(", ")}})
+								{
+									{{invokeTarget}}.{{method.path}}({{(method.symbol.Parameters.Any() ? parameters.JoinBy(", ") : "")}});
+								}
+							}
+						"""));
+
+				RegisterXBindEventInitializer(
+					$"__{parentApply}_{member.Member.Name}_Initialize",
+					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
+							[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+							{{Field("bool", $"__is{name}d")}}
+
+							[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+							private void {{name}}(bool init)
+							{
+								if (__is{{name}}d || {{componentDefinition.MemberName}} is null)
+								{
+									if (!init)
+									{
+										__is{{name}}d = false;
+										// Note: {{componentDefinition.MemberName}} will be collected, no needs to unsubscribe
+									}
+									
+									return;
+								}
+
+								{{componentDefinition.MemberName}}.{{member.Member.Name}} += new {{handler}}({{targetInstanceWeakRef}}).Invoke;
+								__is{{name}}d = true;
+							}
+						"""));
 			}
 			else
 			{
-				GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
+				//
+				// Generate a sub-class that uses a weak ref, so the owner is not being held onto by the delegate.
+				// We can use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
+				// creation of a WeakReference.
+				// The sub-class prevents fuzzy matching of delegates by HR.
+				//
+				var subClass = RegisterChildSubclass(
+					$"{parentApply}_{member.Member.Name}_Handler",
+					(name, subWriter) => subWriter.AppendMultiLineIndented($$"""
+							public class {{name}}(global::Uno.UI.DataBinding.ManagedWeakReference target)
+							{
+								public void Invoke({{parametersWithType.JoinBy(", ")}})
+								{
+									(target.Target as {{_xClassName}})?.{{member.Value}}({{parameters.JoinBy(", ")}});
+								}
+							}
+						"""));
+				writer.AppendLineIndented($"var {member.Member.Name}_Handler = new {subClass}(({targetInstance} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);");
+				writer.AppendLineIndented($"/* second level */ {closureName}.{member.Member.Name} += {member.Member.Name}_Handler.Invoke;");
+			}
+		}
+
+		private (string path, ITypeSymbol declaringType, IMethodSymbol symbol, bool isStatic) ResolveXBindMethod(INamedTypeSymbol contextType, string path)
+		{
+			if (path.Contains("."))
+			{
+				var rewrittenPath = new StringBuilder();
+				ITypeSymbol currentType = contextType;
+
+				var parts = path.Split('.').ToList();
+				var isStatic = parts.FirstOrDefault()?.Contains(":") ?? false;
+				if (isStatic)
+				{
+					// First part is a type for static method binding and should override the original source type
+					currentType = contextType = GetType(RewriteNamespaces(parts[0]));
+					parts.RemoveAt(0);
+				}
+
+				for (var i = 0; i < parts.Count - 1; i++)
+				{
+					var memberName = RewriteNamespaces(parts[i]);
+					var next = currentType.GetAllMembersWithName(memberName).FirstOrDefault();
+
+					currentType = next switch
+					{
+						IFieldSymbol fs => fs.Type,
+						IPropertySymbol ps => ps.Type,
+						null => throw new InvalidOperationException($"Unable to find member {parts[i]} on type {currentType}"),
+						_ => throw new InvalidOperationException($"The field {next.Name} is not supported for x:Bind event binding")
+					};
+
+					rewrittenPath.Append(memberName);
+					rewrittenPath.Append("?.");
+				}
+
+				var method = currentType.GetFirstMethodWithName(parts.Last(), includeBaseTypes: true)
+					?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
+
+				rewrittenPath.Append(method.Name);
+
+				return (rewrittenPath.ToString(), contextType, method, isStatic);
+			}
+			else
+			{
+				var method = contextType.GetFirstMethodWithName(path, includeBaseTypes: true)
+					?? throw new InvalidOperationException($"Failed to find {path} on {contextType}");
+
+				return (method.Name, contextType, method, false);
 			}
 		}
 
@@ -3845,31 +3859,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void TryValidateContentPresenterBinding(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, XamlMemberDefinition member)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			if (
-				SymbolEqualityComparer.Default.Equals(FindType(objectDefinition.Type), Generation.ContentPresenterSymbol.Value)
-				&& member.Member.Name == "Content"
-			)
+
+			// detect content binding in: <ContentPresenter Content="{Binding}" />
+			if (FindType(objectDefinition.Type)?.Is(Generation.ContentPresenterSymbol.Value) == true &&
+				member.Member.Name == "Content" &&
+				member.Objects.FirstOrDefault(x => x.Type.Name == "Binding") is { } binding)
 			{
-				var binding = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
+				// In Uno, ContentPresenter.Content overrides the local value of ContentPresenter.DataContext,
+				// which in turn breaks the binding source for the Content binding. However, there are certain exceptions
+				// where it would be fine.
 
-				if (binding != null)
+				// It can either be TemplatedParent or Self. In either cases, it does not use the inherited
+				// DataContext, which falls outside of the scenario we want to avoid.
+				if (binding.Members.Any(x => x.Member.Name == "RelativeSource"))
 				{
-					var hasRelativeSource = binding.Members
-						.Any(m =>
-							m.Member.Name == "RelativeSource"
-						// It can either be TemplatedParent or Self. In either cases, it does not use the inherited
-						// DataContext, which falls outside of the scenario we want to avoid.
-						);
-
-					if (!hasRelativeSource)
-					{
-						writer.AppendLine();
-						writer.AppendIndented("#error Using a non-template binding expression on Content " +
-							"will likely result in an undefined runtime behavior, as ContentPresenter.Content overrides " +
-							"the local value of ContentPresenter.DataContent. " +
-							"Use ContentControl instead if you really need a normal binding on Content.\n");
-					}
+					return;
 				}
+
+				// {Binding} is fine, because it doesnt alter the data-context.
+				if (binding.Members.Count == 0)
+				{
+					return;
+				}
+
+				// {Binding .} or {Binding Path=.} are fine too, because it doesnt alter the data-context.
+				if ((FindImplicitContentMember(binding, XamlConstants.PositionalParameters) ?? FindImplicitContentMember(binding, "Path")) is { } path &&
+					path.Value?.ToString() == ".")
+				{
+					return;
+				}
+
+				// Not inside any template.
+				var template = FindAncestor(objectDefinition, x => FrameworkTemplateTypes.Contains(x.Type.Name));
+				if (template == null)
+				{
+					return;
+				}
+
+				// If it is within a <ControlTemplate>, regardless if it descends from ContentControl or not.
+				if (template?.Type.Name is "ControlTemplate")
+				{
+					return;
+				}
+
+				// note: <DataTemplate> with ContentPresenter.Content bound to arbitrary path should work.
+				// but is failing to resolve somehow. We will not allow this case to compile:
+				// 	<ContentControl Content="new TestData { Text='lalala' }">
+				//		<ContentControl.ContentTemplate>
+				//			<DataTemplate>
+				//				<ContentPresenter Content="{Binding Text}" />
+				//	ContentControl // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				//		ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=Content, RelativeSource=TemplatedParent]
+				//			ContentPresenter // DC=TestData, Content=null, Content.Binding=[Path=Text, RelativeSource=]
+				//												^ the binding didnt produces the expected value
+				//				ImplicitTextBlock // DC=TestData, Text=''
+
+				writer.AppendLine();
+				writer.AppendIndented(
+					"#error Using a non-template binding expression on Content " +
+					"will likely result in an undefined runtime behavior, as ContentPresenter.Content overrides " +
+					"the local value of ContentPresenter.DataContent. " +
+					"Use ContentControl instead if you really need a normal binding on Content.\n");
 			}
 		}
 
@@ -3995,6 +4045,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
 		{
 			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode());
+		}
+
+		/// <summary>
+		/// Register a sub-class to be generated for the current scope.
+		/// </summary>
+		/// <param name="name">
+		/// The **suggested** name of the class.
+		/// Be aware this class might not be directly accessible (might be generated nested into another class).
+		/// **Don't use this name directly**, prefer to use the returned fullname instead.
+		/// </param>
+		/// <param name="build">Callback to write the content of the class.</param>
+		/// <returns>The fullname of the generated class.</returns>
+		private string RegisterChildSubclass(string name, Action<string, IIndentedStringBuilder> build)
+		{
+			var fullName = $"{CurrentScope.SubClassesRoot}.{name}";
+			CurrentScope.SubclassBuilders.Add(writer => build(name, writer));
+
+			return fullName;
 		}
 
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
@@ -4260,11 +4328,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? GetDefaultBindMode();
 			var rawBindBack = bindNode.Members.FirstOrDefault(m => m.Member.Name == "BindBack")?.Value?.ToString();
 
-			var sourceInstance = CurrentResourceOwner is not null ? CurrentResourceOwnerName : "__that";
-
-			var applyBindingParameters = _isHotReloadEnabled
-				? $"{sourceInstance}, (___b, __that)"
-				: "___b";
+			var sourceInstance = CurrentResourceOwner switch
+			{
+				null => "__that",
+				_ when _scopeStack is { Count: 1 } => "__that",
+				var owner => "__that." + owner
+			};
 
 			if (isInsideDataTemplate)
 			{
@@ -4341,7 +4410,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
@@ -4428,7 +4497,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, {sourceInstance}, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 
@@ -4671,7 +4740,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var thatCurrentResourceOwnerName = resourceOwner switch
 			{
 				not null => resourceOwner,
-				null when CurrentResourceOwner is { } owner => "__that." + owner,
+				null when CurrentResourceOwner is { } owner => owner,
 				_ => "this"
 			};
 
@@ -5088,6 +5157,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (FindType(objectDefinition.Type) is { } type)
 				{
 					return type;
+				}
+
+				objectDefinition = objectDefinition.Owner;
+			}
+
+			return null;
+		}
+
+		private XamlObjectDefinition? FindAncestor(XamlObjectDefinition? objectDefinition, Func<XamlObjectDefinition, bool> predicate)
+		{
+			while (objectDefinition is not null)
+			{
+				if (predicate(objectDefinition))
+				{
+					return objectDefinition;
 				}
 
 				objectDefinition = objectDefinition.Owner;
@@ -5992,28 +6076,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
 					var contentLocation = (IXamlLocation)xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key") ?? xamlObjectDefinition;
 
-					if (contentOwner != null)
+					if (contentOwner is not null || _isHotReloadEnabled) // If Hot Reload is enabled, we still need to attach the source location, even on empty elements
 					{
-						var resourceOwner = CurrentResourceOwnerName;
-
+						if (contentOwner is not null)
+						{
+							var resourceOwner = CurrentResourceOwnerName;
 #if USE_NEW_TP_CODEGEN
-						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
+							writer.Append($"{resourceOwner}, (__owner, __settings) => ");
 #else
-						writer.Append($"{resourceOwner}, (__owner) => ");
+							writer.Append($"{resourceOwner}, (__owner) => ");
 #endif
-
-						// This case is to support the layout switching for the ListViewBaseLayout, which is not
-						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
-						BuildChildThroughSubclass(writer, contentOwner, returnType);
+							// This case is to support the layout switching for the ListViewBaseLayout, which is not
+							// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
+							var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
+							BuildChildThroughSubclass(writer, contentOwner, returnType);
+						}
 
 						writer.AppendIndented(")");
+
 						if (_isHotReloadEnabled)
 						{
-							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
-							{
-								TrySetOriginalSourceLocation(applyWriter, closureName, contentLocation.LineNumber, contentLocation.LinePosition);
-							}
+							using var applyWriter = CreateApplyBlock(writer, null, out var closureName);
+							TrySetOriginalSourceLocation(applyWriter, closureName, contentLocation.LineNumber, contentLocation.LinePosition);
 						}
 
 					}
@@ -6464,6 +6548,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												innerWriter.AppendLineIndented($"that._{elementName}Subject.ElementInstance = null;");
 											}
+
+											if (CurrentXLoadScope is not null)
+											{
+												BuildxBindEventHandlerUnInitializers(innerWriter, CurrentXLoadScope.xBindEventsHandlers, "that.");
+											}
 										}
 									}
 								}
@@ -6596,16 +6685,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+
+			var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
+
 			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
-			var subClassPrefix = _scopeStack.Aggregate("", (val, scope) => val + scope.Name);
-
-			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal) ? "__Resources." : "";
-
-			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
+			var namespacePrefix = isTopLevel ? "__Resources." : "";
+			var subClassesRoot = CurrentScope.SubClassesRoot;
+			var subclassName = $"SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-			var activator = $"new {namespacePrefix}{subclassName}()";
+			var activator = $"new {namespacePrefix}{subClassesRoot}.{subclassName}()";
 
 #if USE_NEW_TP_CODEGEN
 			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
@@ -6803,7 +6893,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private IDisposable Scope(string? @namespace, string className)
 		{
-			_scopeStack.Push(new NameScope(@namespace, className));
+			_scopeStack.Push(new NameScope(ImmutableStack.Create(_scopeStack.ToArray()), _fileUniqueId, @namespace ?? string.Empty, className));
 
 			return new DisposableAction(() => _scopeStack.Pop());
 		}
@@ -6855,23 +6945,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return component;
 		}
 
-		private void AddXBindEventHandlerToScope(string fieldName, string ownerTypeName, INamedTypeSymbol declaringType, ComponentDefinition? componentDefinition)
+		private void RegisterXBindEventInitializer(string methodName, Action<string, IIndentedStringBuilder> build)
 		{
-			if (componentDefinition is null)
-			{
-				throw new InvalidOperationException("The component definition cannot be null.");
-			}
-
-			var thatParameter = _isHotReloadEnabled ? $"{ownerTypeName}, " : "";
-
-			var builderDelegateType = $"global::System.Action<{thatParameter}{declaringType.GetFullyQualifiedTypeIncludingGlobal()}>";
-			var definition = new EventHandlerBackingFieldDefinition(builderDelegateType, fieldName, Accessibility.Private, componentDefinition.MemberName);
+			var definition = new XBindEventInitializerDefinition(methodName, build);
 
 			CurrentScope.xBindEventsHandlers.Add(definition);
+			CurrentScope.CallbackMethods.Add(writer => build(methodName, writer));
 
 			if (CurrentXLoadScope is { } xLoadScope)
 			{
-				CurrentXLoadScope.xBindEventsHandlers.Add(definition);
+				xLoadScope.xBindEventsHandlers.Add(definition);
 			}
 		}
 

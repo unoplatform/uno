@@ -3,8 +3,8 @@
     "path": "Uno.UI.sln",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
-      "AddIns\\Uno.UI.MediaPlayer.Skia.Gtk\\Uno.UI.MediaPlayer.Skia.Gtk.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
+      "AddIns\\Uno.UI.MediaPlayer.Skia.Gtk\\Uno.UI.MediaPlayer.Skia.Gtk.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
@@ -54,7 +54,6 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
       "Uno.UI.XamlHost.Skia.Wpf\\Uno.UI.XamlHost.Skia.Wpf.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Skia.csproj",
-      "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",

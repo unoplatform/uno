@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
@@ -70,7 +71,8 @@ public static class PrettyPrint
 		return $"[{x.Width:0.#}x{x.Height:0.#}@{x.Left:0.#},{x.Top:0.#}]";
 	}
 #endif
-	public static string FormatSize(Size size) => $"{size.Width:0.#}x{size.Height:0.#}";
+	public static string FormatSize(Size size) => FormatSize(size.Width, size.Height);
+	public static string FormatSize(double width, double height) => $"{width:0.#}x{height:0.#}";
 	public static string FormatBrush(Brush b)
 	{
 		if (b is SolidColorBrush scb) return
@@ -102,7 +104,19 @@ public static class PrettyPrint
 		},
 		_ => /* CS8524: (GridUnitType)123 */ $"{value:#.##}{type}"
 	};
+	public static string FormatPoint(Point p) => FormatPoint(p.X, p.Y);
+	public static string FormatPoint(double x, double y) => $"{x:0.#},{y:0.#}";
+	public static string FormatBinding(BindingExpression be)
+	{
+		if (be == null) return "null";
 
+		var descriptions = new List<string>();
+		descriptions.Add($"Path={be.ParentBinding.Path?.Path}");
+		if (be.ParentBinding.Mode != BindingMode.OneWay) descriptions.Add(be.ParentBinding.Mode.ToString());
+		if (be.ParentBinding.RelativeSource is { Mode: not RelativeSourceMode.None } rs) descriptions.Add(rs.Mode.ToString());
+
+		return $"[{string.Join(", ", descriptions)}]";
+	}
 	public static string EscapeMultiline(string s, bool escapeTabs = false)
 	{
 		s = s

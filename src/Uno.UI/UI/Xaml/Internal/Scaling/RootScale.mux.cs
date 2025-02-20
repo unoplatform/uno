@@ -136,6 +136,9 @@ internal abstract partial class RootScale
 
 		if (scaleChanged)
 		{
+			// TODO Uno: This should not be done here
+			VisualTree.ContentRoot.CompositionTarget.OnRasterizationScaleChanged(GetEffectiveRasterizationScale());
+
 			// TODO Uno: Reload images on scale change!
 			//foreach (var displayListener in _displayListeners)
 			//{

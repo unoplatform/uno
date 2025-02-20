@@ -72,7 +72,9 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="UnoRemoteControlConfigCookie" />
-		<CompilerVisibleProperty Include="UnoEnCLogPath" />
+		<CompilerVisibleProperty Include="UnoHotReloadDiagnosticsLogPath" />
+		<CompilerVisibleProperty Include="AppendRuntimeIdentifierToOutputPath" />
+		<CompilerVisibleProperty Include="OutputPath" />
 		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
@@ -209,6 +211,7 @@
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-105 // Ignore duplicate namespaces" />
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-1591 // Ignore missing XML comment warnings" />
 		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS8669 // Ignore annotation for nullable reference types" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS9113 // Parameter is unread" />
 	</ItemGroup>
 
 	<!--Default UI automation member mappings-->

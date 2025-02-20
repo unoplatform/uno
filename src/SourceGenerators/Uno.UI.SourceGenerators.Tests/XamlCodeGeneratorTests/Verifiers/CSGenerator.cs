@@ -1,9 +1,16 @@
-﻿// Uncomment the following line to write expected files to disk
+﻿#if DEBUG
+// Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 // #define WRITE_EXPECTED
+#endif
+
+#if IS_CI && WRITE_EXPECTED
+#error "WRITE_EXPECTED should not be defined!"
+#endif
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators;
@@ -323,7 +330,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 				};
 
 				var unoUIBase = Path.Combine(
-					Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+					Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 					"..",
 					"..",
 					"..",

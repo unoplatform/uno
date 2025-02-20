@@ -29,6 +29,9 @@
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
+
+		<None Include="**\*.WinAppSDK.cs" Exclude="bin\**\*.WinAppSDK.cs;obj\**\*.WinAppSDK.cs" Condition="!$(IsWinAppSDK)" />
+		<Compile Remove="**\*.WinAppSDK.cs" Condition="!$(IsWinAppSDK)" />
 	</ItemGroup>
 
 </Project>
