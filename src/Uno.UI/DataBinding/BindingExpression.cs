@@ -86,6 +86,8 @@ namespace Microsoft.UI.Xaml.Data
 
 		public object DataItem => _bindingPath.DataItem;
 
+		internal bool IsExplicitlySourced => _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false);
+
 		internal BindingExpression(
 			ManagedWeakReference viewReference,
 			DependencyPropertyDetails targetPropertyDetails,
@@ -157,7 +159,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		private ManagedWeakReference GetWeakDataContext()
 		{
-			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
+			if (IsExplicitlySourced)
 			{
 				return _explicitSourceStore;
 			}
