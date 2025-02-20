@@ -217,7 +217,12 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (Scroller?.IsScrollInertiaEnabled is true && Scroller.ShouldSnap() is false)
+			if (Scroller is
+				{
+					IsScrollInertiaEnabled: true,
+					HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
+					VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
+				})
 			{
 				e.Mode |= ManipulationModes.TranslateInertia;
 			}

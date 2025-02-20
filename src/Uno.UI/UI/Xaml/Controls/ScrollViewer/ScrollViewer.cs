@@ -1250,10 +1250,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		internal bool ShouldSnap()
-			=> HorizontalSnapPointsType != SnapPointsType.None
-				|| VerticalSnapPointsType != SnapPointsType.None;
-
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
@@ -1278,7 +1274,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 					)
 				{
-					if (ShouldSnap())
+					if (HorizontalSnapPointsType != SnapPointsType.None
+						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
 						if (_snapPointsTimer == null)
 						{
