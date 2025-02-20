@@ -46,10 +46,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
+			var expectedGlyph = SymbolIcon.ConvertSymbolValueToGlyph((int)Symbol.Home);
+
 #if __SKIA__ || __WASM__
-			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
+			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == expectedGlyph);
 #else
-			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == (char)Symbol.Home);
+			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == expectedGlyph);
 #endif
 
 			Assert.AreEqual(12, tb.FontSize);
