@@ -12,26 +12,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsHostVisible
 		// Skipping already declared property RasterizationScale
 		// Skipping already declared property Size
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Content.ContentIslandEnvironment ContentIslandEnvironment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentIslandEnvironment XamlRoot.ContentIslandEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIslandEnvironment%20XamlRoot.ContentIslandEnvironment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Content.ContentCoordinateConverter CoordinateConverter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentCoordinateConverter XamlRoot.CoordinateConverter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20XamlRoot.CoordinateConverter");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Size.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.RasterizationScale.get
