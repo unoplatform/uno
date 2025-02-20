@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.WindowTests.Window_ExtendIntoTitleBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml.WindowTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Spacing="8" Padding="20">
+		<Button Click="IsExtended_Click">Is extended?</Button>
+		<ToggleButton x:Name="LayoutMetricsToggleButton" Checked="OnLayoutMetricsToggled" Unchecked="OnLayoutMetricsToggled">Subscribe to layout metrics</ToggleButton>
+		<Button Click="GetMetrics_Click">Get metrics</Button>
+		<Button Click="SetTitleBar_Click">Set title bar</Button>
+		<TextBlock>
+			<Run Text="Left inset:" FontWeight="Bold" /><Run x:Name="LeftInsetRun" />
+		</TextBlock>
+		<TextBlock>
+			<Run Text="Right inset:" FontWeight="Bold" /><Run x:Name="RightInsetRun" />
+		</TextBlock>
+		<TextBlock>
+			<Run Text="Height:" FontWeight="Bold" /><Run x:Name="HeightRun" />
+		</TextBlock>
+	</StackPanel>
+</Page>
