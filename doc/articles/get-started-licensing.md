@@ -48,7 +48,11 @@ If you’ve already set up **Visual Studio Code** by following the [Get Started 
 
    For existing applications, you should take this opportunity to update to the [latest `Uno.Sdk` version](https://www.nuget.org/packages/Uno.Sdk). See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
 
-1. After your project has finished loading, a notification should appear. Click on the **Sign in / Register** button.
+1. After your project has finished loading, check the status bar at the bottom left of VS Code. By default, `YourProjectName.sln` is selected. Switch to `YourProjectName.csproj` to load the project instead.
+
+   ![Selecting the proper project in Visual Studio Code](Assets/uno-settings-vsc-select-project.png)
+
+1. Once you've switched to the proper project, a notification should appear. Click the **Sign in / Register** button.
 
    ![Visual Studio Code notification](Assets/uno-settings-vsc-notification.png)
 
