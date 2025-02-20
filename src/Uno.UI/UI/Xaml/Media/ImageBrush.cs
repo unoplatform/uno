@@ -86,6 +86,13 @@ namespace Microsoft.UI.Xaml.Media
 					(_, _) => OnSourceChangedPartial(newValue, null)
 				);
 			}
+			else if (newValue is SvgImageSource svgImageSource)
+			{
+				_sourceDisposable.Disposable = svgImageSource.RegisterDisposablePropertyChangedCallback(
+					SvgImageSource.UriSourceProperty,
+					(_, _) => OnSourceChangedPartial(newValue, null)
+				);
+			}
 			else
 			{
 				_sourceDisposable.Disposable = null;

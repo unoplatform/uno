@@ -94,6 +94,13 @@ public partial class SvgProvider : ISvgProvider
 		=> new SvgCanvas(_owner, this);
 #endif
 
+	public object? TryGetLoadedDataAsPictureAsync()
+#if __SKIA__
+		=> _skSvg?.Picture;
+#else
+		=> null;
+#endif
+
 	public
 #if !__NETSTD_REFERENCE__
 	async
