@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
+using MUIC = Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
@@ -117,8 +118,8 @@ public sealed partial class XamlRoot
 	}
 
 	//UNO TODO: Properly implement ContentIslandEnvironment from WinUI source
-	public Microsoft.UI.Content.ContentIslandEnvironment ContentIslandEnvironment => new Content.ContentIslandEnvironment();
+	public MUIC.ContentIslandEnvironment ContentIslandEnvironment => new MUIC.ContentIslandEnvironment();
 
 	//UNO TODO: Properly implement ContentCoordinateConverter from WinUI source
-	public Microsoft.UI.Content.ContentCoordinateConverter CoordinateConverter => new Content.ContentCoordinateConverter();
+	public MUIC.ContentCoordinateConverter CoordinateConverter => new MUIC.ContentCoordinateConverter();
 }
