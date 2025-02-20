@@ -509,6 +509,17 @@ declare namespace Windows.System.Profile {
         static getBrowserName(): string;
     }
 }
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static get current(): SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}
 declare namespace Windows.UI.ViewManagement {
     class ApplicationView {
         static setFullScreenMode(turnOn: boolean): boolean;
