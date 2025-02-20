@@ -156,6 +156,14 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = false,
 			bool isIntermediate = false)
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation), isIntermediate);
+
+		private bool Set(
+			double? horizontalOffset = null,
+			double? verticalOffset = null,
+			float? zoomFactor = null,
+			ScrollOptions options = default,
+			bool isIntermediate = false)
 		{
 			var success = true;
 
@@ -186,16 +194,21 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			Apply(disableAnimation, isIntermediate);
+			Apply(options, isIntermediate);
 
 			return success;
 		}
 
-		private void Apply(bool disableAnimation, bool isIntermediate)
+		private void Apply(ScrollOptions options, bool isIntermediate)
 		{
+			if (options != _touchInertiaOptions)
+			{
+				_touchInertiaOptions = null; // abort inertia if ScrollTo is being requested
+			}
+
 			if (Content is UIElement contentElt)
 			{
-				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, _touchInertiaOptions ?? new(disableAnimation));
+				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, options);
 			}
 
 			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
@@ -265,15 +278,21 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-
-			if (e is { IsInertial: true, Manipulation: { } manipulation }
-				&& manipulation.GetInertiaNextTick() is { } next)
+			if (e.IsInertial)
 			{
+				if (_touchInertiaOptions is null
+					|| e.Manipulation.GetInertiaNextTick() is not { } next)
+				{
+					// A scroll to has been requested (e.g. snap points?), abort the manipulation.
+					e.Complete();
+					return;
+				}
+
 				// If inertial, we try to animate up to the next tick instead of applying current value synchronously
 				Set(
 					horizontalOffset: HorizontalOffset - next.Delta.Translation.X,
 					verticalOffset: VerticalOffset - next.Delta.Translation.Y,
-					disableAnimation: false,
+					options: _touchInertiaOptions.Value,
 					isIntermediate: true);
 			}
 			else
@@ -306,7 +325,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset - next.Delta.Translation.X,
 					verticalOffset: VerticalOffset - next.Delta.Translation.Y,
-					disableAnimation: false,
+					options: _touchInertiaOptions.Value,
 					isIntermediate: true);
 			}
 		}
@@ -316,6 +335,15 @@ namespace Microsoft.UI.Xaml.Controls
 			if (e.Container != this || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
+			}
+
+			if (e.IsInertial)
+			{
+				if (_touchInertiaOptions is null)
+				{
+					// Inertia has been aborted (snap points?), do not try to apply the final value.
+					return;
+				}
 			}
 
 			_touchInertiaOptions = null;
