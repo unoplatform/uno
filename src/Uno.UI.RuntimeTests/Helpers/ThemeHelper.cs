@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

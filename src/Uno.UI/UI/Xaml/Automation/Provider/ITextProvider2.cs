@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Provider;
+﻿namespace Windows.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Extends the ITextProvider interface to enable Microsoft UI Automation providers 

@@ -1,5 +1,5 @@
 ﻿using Android.Views;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +7,7 @@ using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
 
-namespace Microsoft.UI.Xaml.Extensions
+namespace Windows.UI.Xaml.Extensions
 {
 	internal static class MotionEventExtensions
 	{

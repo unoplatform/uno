@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using UIKit;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Documents;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
 	{

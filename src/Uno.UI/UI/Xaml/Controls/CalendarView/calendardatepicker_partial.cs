@@ -7,12 +7,12 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -21,7 +21,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class CalendarDatePicker : Control
 	{

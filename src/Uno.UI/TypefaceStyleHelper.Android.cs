@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Graphics;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {

@@ -6,7 +6,7 @@ using DirectUI;
 using Windows.Foundation;
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes RichTextBlock types to Microsoft UI Automation.

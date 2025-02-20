@@ -8,7 +8,7 @@ using Uno.Helpers;
 #if IS_UNO_COMPOSITION
 namespace Uno.UI.Composition;
 #else
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 #endif
 
 /// <summary>Defines the radius of a rectangle's corners. </summary>

@@ -1,6 +1,6 @@
 ﻿#if false // To be brought back in Uno 6
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal readonly struct PropertyChangedParams
 {

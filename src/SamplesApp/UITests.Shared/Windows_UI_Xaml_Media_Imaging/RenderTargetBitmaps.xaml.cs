@@ -6,9 +6,9 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Windows.Graphics.Display;
@@ -25,7 +25,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Microsoft.UI.Xaml.Media", IgnoreInSnapshotTests = false)]
+	[Sample("Windows.UI.Xaml.Media", IgnoreInSnapshotTests = false)]
 	public sealed partial class RenderTargetBitmaps : Page
 	{
 		public static DependencyProperty RunTestProperty { get; } =

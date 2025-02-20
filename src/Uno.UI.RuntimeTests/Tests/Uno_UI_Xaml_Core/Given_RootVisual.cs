@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 

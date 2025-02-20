@@ -5,7 +5,7 @@
 
 using Uno.Disposables;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ItemContainer
 {

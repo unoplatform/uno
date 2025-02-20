@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Navigation;
+﻿namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Specifies the navigation stack characteristics of a navigation.

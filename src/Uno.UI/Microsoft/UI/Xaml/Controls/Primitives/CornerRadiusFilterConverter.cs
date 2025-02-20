@@ -5,8 +5,8 @@
 #nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 

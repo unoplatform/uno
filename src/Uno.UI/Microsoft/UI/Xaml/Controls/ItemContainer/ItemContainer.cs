@@ -5,15 +5,15 @@
 
 using System;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Uno;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(Child))]
 partial class ItemContainer : Control

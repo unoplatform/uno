@@ -9,10 +9,10 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Graphics;
-using MUXWindow = Microsoft.UI.Xaml.Window;
+using MUXWindow = Windows.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using Microsoft.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
+using Windows.UI.Xaml;
+using static Windows.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 

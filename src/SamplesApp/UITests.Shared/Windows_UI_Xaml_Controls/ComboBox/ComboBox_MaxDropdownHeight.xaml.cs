@@ -1,7 +1,7 @@
 ﻿using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {

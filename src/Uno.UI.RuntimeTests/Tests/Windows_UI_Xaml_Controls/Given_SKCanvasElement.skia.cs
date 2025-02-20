@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
@@ -23,13 +23,13 @@ public class Given_SKCanvasElement
 
 		var border = new Border
 		{
-			BorderBrush = Microsoft.UI.Colors.Green,
+			BorderBrush = Windows.UI.Colors.Green,
 			Height = 400,
 			Child = new ScrollViewer
 			{
 				VerticalAlignment = VerticalAlignment.Top,
 				Height = 100,
-				Background = Microsoft.UI.Colors.Red,
+				Background = Windows.UI.Colors.Red,
 				Content = SUT
 			}
 		};
@@ -38,8 +38,8 @@ public class Given_SKCanvasElement
 
 		var bitmap = await UITestHelper.ScreenShot(border);
 
-		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Microsoft.UI.Colors.Blue);
-		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Microsoft.UI.Colors.Blue);
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Windows.UI.Colors.Blue);
+		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Windows.UI.Colors.Blue);
 	}
 
 	private class BlueFillSKCanvasElement : SKCanvasElement

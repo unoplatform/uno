@@ -2,11 +2,11 @@
 
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal partial class DragRoot : Canvas
 	{

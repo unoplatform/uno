@@ -19,15 +19,15 @@ using System.Runtime.InteropServices;
 
 
 #if WINAPPSDK
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #else
-using FrameworkElement = Microsoft.UI.Xaml.IFrameworkElement;
+using FrameworkElement = Windows.UI.Xaml.IFrameworkElement;
 #endif
 
 namespace SampleControl.Presentation

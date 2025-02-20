@@ -14,9 +14,9 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			this.DataContextChanged += FolderPickerTests_DataContextChanged;
 		}
 
-		private void FolderPickerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void FolderPickerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as FileSavePicker_DuplicateFileViewModel;
 		}

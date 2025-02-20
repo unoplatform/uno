@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Media.Imaging.Svg;
 

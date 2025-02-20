@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Media;
+﻿namespace Windows.UI.Xaml.Media;
 
 /// <summary>
 /// A ThemeShadow is a preconfigured shadow effect that can be applied to any XAML element to draw shadows appropriately based on x,y,z coordinates.
