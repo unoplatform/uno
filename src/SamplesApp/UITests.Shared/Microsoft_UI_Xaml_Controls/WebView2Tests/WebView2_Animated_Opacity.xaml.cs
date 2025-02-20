@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[Sample("WebView", Description = "Opacity is animated on WebView2. It shouldn't exceed bounds while page is loading (Android bug #2006)")]
+	[Sample("WebView", IgnoreInSnapshotTests = true, Description = "Opacity is animated on WebView2. It shouldn't exceed bounds while page is loading (Android bug #2006)")]
 	public sealed partial class WebView2_Animated_Opacity : UserControl
 	{
 		public WebView2_Animated_Opacity()

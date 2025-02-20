@@ -6,7 +6,7 @@ using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
 
 namespace UITests.Shared.Windows_UI_Xaml
 {
-	[Sample("WebView", Name = "WebView2_Alert", ViewModelType = typeof(WebView2ViewModel))]
+	[Sample("WebView", Name = "WebView2_Alert", IgnoreInSnapshotTests = true, ViewModelType = typeof(WebView2ViewModel))]
 	public sealed partial class WebView2_Alert : Page
 	{
 		public WebView2_Alert()

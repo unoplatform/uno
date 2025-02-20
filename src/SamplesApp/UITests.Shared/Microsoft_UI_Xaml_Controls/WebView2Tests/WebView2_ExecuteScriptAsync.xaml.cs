@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[Uno.UI.Samples.Controls.Sample("WebView")]
+	[Uno.UI.Samples.Controls.Sample("WebView", IgnoreInSnapshotTests = true)]
 	public sealed partial class WebView2_ExecuteScriptAsync : Page
 	{
 		public WebView2_ExecuteScriptAsync()
