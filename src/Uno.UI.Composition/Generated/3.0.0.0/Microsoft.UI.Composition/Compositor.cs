@@ -173,7 +173,7 @@ namespace Microsoft.UI.Composition
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRadialGradientBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateVisualSurface()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.AnimationController CreateAnimationController()
 		{
