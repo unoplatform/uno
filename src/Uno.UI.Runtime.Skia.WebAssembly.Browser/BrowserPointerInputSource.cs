@@ -18,7 +18,7 @@ namespace Uno.UI.Runtime.Skia;
 internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 {
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
-	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
+	private static readonly Logger? _logTrace = _log.IsTraceEnabled() ? _log : null;
 
 	private ulong _bootTime;
 	private PointerPoint? _lastPoint;

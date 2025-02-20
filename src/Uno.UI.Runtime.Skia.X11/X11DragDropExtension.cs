@@ -45,7 +45,6 @@ internal class X11DragDropExtension : IDragDropExtension
 
 	private readonly X11XamlRootHost _host;
 	private readonly CoreDragDropManager _coreDragDropManager;
-	private readonly DragDropManager _manager;
 	private XdndSession? _currentSession;
 
 	private IntPtr XdndSelection => X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndSelection);
@@ -57,7 +56,6 @@ internal class X11DragDropExtension : IDragDropExtension
 			throw new InvalidOperationException($"Couldn't find a window associated with the {nameof(X11DragDropExtension)}");
 		}
 		_host = X11XamlRootHost.GetHostFromWindow(window) ?? throw new InvalidOperationException($"Couldn't find an {nameof(X11XamlRootHost)} associated with the {nameof(X11DragDropExtension)}");
-		_manager = manager;
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)_host).RootElement!.XamlRoot);
 
 		var display = _host.RootX11Window.Display;
@@ -212,7 +210,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		_currentSession = _currentSession.Value with { LastPosition = new Point(x, y) };
 
-		var acceptedOperations = _manager.ProcessMoved(new DragEventSource(x, y));
+		var acceptedOperations = _coreDragDropManager.ProcessMoved(new DragEventSource(x, y));
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -246,8 +244,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 	private void ProcessXdndLeave(XClientMessageEvent ev)
 	{
-		var pos = _currentSession!.Value.LastPosition!.Value;
-		_manager.ProcessAborted(_fakePointerId);
+		_coreDragDropManager.ProcessAborted(_fakePointerId);
 		_currentSession = null;
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -259,7 +256,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	private void ProcessXdndDrop(XClientMessageEvent ev)
 	{
 		var pos = _currentSession!.Value.LastPosition!.Value;
-		var acceptedOperation = _manager.ProcessReleased(new DragEventSource((int)pos.X, (int)pos.Y));
+		var acceptedOperation = _coreDragDropManager.ProcessDropped(new DragEventSource((int)pos.X, (int)pos.Y));
 		_currentSession = null;
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -295,7 +292,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	}
 
 	// TODO: uno-to-outside dragging
-	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();
+	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted) => throw new System.NotImplementedException();
 
 	private readonly struct DragEventSource(int x, int y) : IDragEventSource
 	{

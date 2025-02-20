@@ -94,6 +94,9 @@ $projects =
     # 5.4 Wasm+Skia
     @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @(), @()),
 
+    # 5.6 Win32+Skia
+    @(3, "5.6/uno56net9win32/uno56net9win32/uno56net9win32.csproj", @(), @()),
+
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
@@ -17,16 +18,24 @@ using Uno.Media.Playback;
 using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 
-[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerExtension), typeof(MediaPlayer))]
+#if IS_MPE_WIN32
+[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension), typeof(MediaPlayer))]
+#else
+[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension), typeof(MediaPlayer))]
+#endif
 
+#if IS_MPE_WIN32
+namespace Uno.UI.MediaPlayer.Skia.Win32;
+#else
 namespace Uno.UI.MediaPlayer.Skia.X11;
+#endif
 
-public class X11MediaPlayerExtension : IMediaPlayerExtension
+public class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
-	private static readonly LibVLC _vlc = new LibVLC(":start-paused");
+	private static readonly LibVLC _vlc = new LibVLC("--start-paused");
 
 	private const string MsAppXScheme = "ms-appx";
-	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, X11MediaPlayerExtension> _mediaPlayerToExtension = new();
+	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
 
 	private readonly IDisposable _timerDisposable;
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
@@ -92,9 +101,12 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 			if (VlcPlayer.Media is { } m)
 			{
-				var weakRef = new WeakReference<X11MediaPlayerExtension>(this);
-				m.ParsedChanged += (o, a) => weakRef.GetTarget()?.OnLoadedMetadata(a.ParsedStatus);
+				var weakRef = new WeakReference<SharedMediaPlayerExtension>(this);
+				m.ParsedChanged += (_, a) => weakRef.GetTarget()?.OnLoadedMetadata(a.ParsedStatus);
 			}
+
+			// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
+			VlcPlayer.Play();
 		}
 	}
 
@@ -116,9 +128,12 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 	internal Windows.Media.Playback.MediaPlayer Player { get; }
 
-	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc);
+	// On Win32, EnableMouseInput needs to be false, or else libvlc will capture the pointer and we won't receive
+	// any mouse events. Attempting to do this later below doesn't work for some reason. It needs to be
+	// right after constructing the LibVLCSharp.Shared.MediaPlayer
+	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 
-	public X11MediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
+	public SharedMediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{
 		Player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
@@ -129,7 +144,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		// to that of its owning MediaPlayer, which is part of the public API and  has an indefinite
 		// lifetime. We rely on the GC to determine when it's time to end this object's lifetime,
 		// and it turn, dispose of libVLC's media player handle as well.
-		var weakRef = new WeakReference<X11MediaPlayerExtension>(this);
+		var weakRef = new WeakReference<SharedMediaPlayerExtension>(this);
 
 		VlcPlayer.LengthChanged += (o, a) => weakRef.GetTarget()?.OnLengthChange(o, a);
 		VlcPlayer.EndReached += (o, a) => weakRef.GetTarget()?.OnEndReached(o, a);
@@ -153,12 +168,12 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		timer.Start();
 	}
 
-	~X11MediaPlayerExtension()
+	~SharedMediaPlayerExtension()
 	{
 		Dispose();
 	}
 
-	internal static X11MediaPlayerExtension? GetByMediaPlayer(Windows.Media.Playback.MediaPlayer player) => _mediaPlayerToExtension.TryGetValue(player, out var ext) ? ext : null;
+	internal static SharedMediaPlayerExtension? GetByMediaPlayer(Windows.Media.Playback.MediaPlayer player) => _mediaPlayerToExtension.TryGetValue(player, out var ext) ? ext : null;
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 
@@ -173,7 +188,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 	public bool IsLoopingAllEnabled { get; set; }
 
 	// Deprecated.
-	public MediaPlayerState CurrentState { get; }
+	public MediaPlayerState CurrentState => MediaPlayerState.Closed;
 
 	public TimeSpan NaturalDuration => VlcPlayer.Media?.Duration is { } d ? TimeSpan.FromMilliseconds(d) : TimeSpan.Zero;
 
@@ -256,7 +271,24 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Pause() => VlcPlayer.Pause();
 
-	public void Stop() => VlcPlayer.Stop();
+	public void Stop()
+	{
+		if (OperatingSystem.IsWindows())
+		{
+			// On Win32, Stop() deadlocks for some reason. The best guess is that Stop does something like SendMessage
+			// and needs the window message queue to continue pumping before returning, so calling it on the UI
+			// thread (which also pumps the queue) deadlocks. This is not a problem on X11 because we run the X11
+			// message queue on a separate thread.
+			Task.Run(() =>
+			{
+				VlcPlayer.Stop();
+			});
+		}
+		else
+		{
+			VlcPlayer.Stop();
+		}
+	}
 
 	public void ToggleMute() => VlcPlayer.Mute = Player.IsMuted;
 
@@ -289,7 +321,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Dispose();
 	}
 
-	private void OnPlaying(object? sender, EventArgs eventArgs)
+	private void OnPlaying(object? _, EventArgs _1)
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Playing);
 
 	private void OnLoadedMetadata(MediaParsedStatus status)
@@ -302,11 +334,12 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 				Events?.NaturalDurationChanged();
 				Events?.RaiseMediaOpened();
 				IsVideo = VlcPlayer.Media?.Tracks.Any(track => track.TrackType is TrackType.Video);
+				VlcPlayer.Time = 1; // this shows the first frame of the video after loading instead of a black frame
 			});
 		}
 	}
 
-	private void OnTimeChanged(object? sender, MediaPlayerTimeChangedEventArgs mediaPlayerTimeChangedEventArgs)
+	private void OnTimeChanged(object? _, MediaPlayerTimeChangedEventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
@@ -317,13 +350,13 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		});
 	}
 
-	private void OnBuffering(object? sender, MediaPlayerBufferingEventArgs mediaPlayerBufferingEventArgs)
+	private void OnBuffering(object? _, MediaPlayerBufferingEventArgs _1)
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering);
 
-	private void OnLengthChange(object? sender, MediaPlayerLengthChangedEventArgs mediaPlayerLengthChangedEventArgs)
+	private void OnLengthChange(object? _, MediaPlayerLengthChangedEventArgs _1)
 		=> NativeDispatcher.Main.Enqueue(() => Events?.NaturalDurationChanged());
 
-	private void OnEndReached(object? sender, EventArgs eventArgs)
+	private void OnEndReached(object? _, EventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
@@ -350,7 +383,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		});
 	}
 
-	private void OnEncounteredError(object? sender, EventArgs eventArgs)
+	private void OnEncounteredError(object? _, EventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
@@ -359,11 +392,8 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		});
 	}
 
-	private void OnPaused(object? sender, EventArgs eventArgs)
+	private void OnPaused(object? _, EventArgs _1)
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Paused);
-
-	private void OnVolumeChanged(object? sender, MediaPlayerVolumeChangedEventArgs mediaPlayerVolumeChangedEventArgs)
-		=> NativeDispatcher.Main.Enqueue(() => Events?.RaiseVolumeChanged());
 
 	private void OnTick()
 	{

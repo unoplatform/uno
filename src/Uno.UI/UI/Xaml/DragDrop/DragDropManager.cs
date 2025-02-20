@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Input;
@@ -13,6 +11,10 @@ using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml
 {
+	/// <summary>
+	/// Don't interact with this class directly. Instead, use <see cref="CoreDragDropManager"/>, which has passthrough
+	/// methods to this class. For more details, see the comments in <see cref="CoreDragDropManager.IDragDropManager"/>
+	/// </summary>
 	internal sealed class DragDropManager : CoreDragDropManager.IDragDropManager
 	{
 		private readonly InputManager _inputManager;

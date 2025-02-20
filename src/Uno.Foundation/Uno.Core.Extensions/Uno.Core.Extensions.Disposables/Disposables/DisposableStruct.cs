@@ -29,3 +29,18 @@ internal struct DisposableStruct<T>(Action<T> disposingAction, T argToAction) : 
 		disposingAction(argToAction);
 	}
 }
+
+internal struct DisposableStruct<T1, T2>(Action<T1, T2> disposingAction, T1 arg1ToAction, T2 arg2ToAction) : IDisposable
+{
+	private bool _disposed;
+
+	public void Dispose()
+	{
+		if (_disposed)
+		{
+			throw new InvalidOperationException($"Disposing {nameof(DisposableStruct<T1, T2>)} twice");
+		}
+		_disposed = true;
+		disposingAction(arg1ToAction, arg2ToAction);
+	}
+}

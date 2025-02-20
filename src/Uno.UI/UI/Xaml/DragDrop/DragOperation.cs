@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml
 		private State _state = State.None;
 		private uint _lastFrameId;
 		private bool _hasRequestedNativeDrag;
-		private DataPackageOperation _acceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link;
+		private DataPackageOperation _acceptedOperation;
 
 		private enum State
 		{
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml
 			_viewHandle.Dispose();
 			if (!_hasRequestedNativeDrag)
 			{
-				_extension?.StartNativeDrag(Info);
+				_extension?.StartNativeDrag(Info, Complete);
 				_hasRequestedNativeDrag = true;
 			}
 		}

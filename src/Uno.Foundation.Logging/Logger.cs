@@ -72,11 +72,11 @@ namespace Uno.Foundation.Logging
 		public void Info(IFormattable formattable) => Log(LogLevel.Information, formattable.ToString());
 
 		public bool IsEnabled(LogLevel logLevel) => _level <= logLevel;
-		public bool IsTraceEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Trace);
-		public bool IsDebugEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Debug);
-		public bool IsErrorEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Error);
-		public bool IsInformationEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Information);
-		public bool IsWarningEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Warning);
-		public bool IsCriticalEnabled(LogLevel logLevel) => IsEnabled(LogLevel.Critical);
+		public bool IsTraceEnabled() => IsEnabled(LogLevel.Trace);
+		public bool IsDebugEnabled() => IsEnabled(LogLevel.Debug);
+		public bool IsErrorEnabled() => IsEnabled(LogLevel.Error);
+		public bool IsInformationEnabled() => IsEnabled(LogLevel.Information);
+		public bool IsWarningEnabled() => IsEnabled(LogLevel.Warning);
+		public bool IsCriticalEnabled() => IsEnabled(LogLevel.Critical);
 	}
 }

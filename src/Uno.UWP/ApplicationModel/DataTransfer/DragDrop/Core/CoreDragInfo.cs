@@ -2,14 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Threading;
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.System;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
@@ -17,8 +10,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	{
 		internal delegate void Completed(DataPackageOperation result);
 
-		private ImmutableList<Completed>? _completions = ImmutableList<Completed>.Empty;
-		private int _result = -1;
+		private readonly List<Completed> _completions = [];
 		private IDragEventSource _source;
 
 		internal CoreDragInfo(
@@ -67,34 +59,15 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			(Position, Modifiers) = src.GetState();
 		}
 
-		internal void RegisterCompletedCallback(Completed onCompleted)
-		{
-			if (_result > 0
-				// If the Update return false, it means that the _completions is null, which means that the _result is now ready!
-				|| !ImmutableInterlocked.Update(ref _completions, AddCompletion, onCompleted))
-			{
-				Debug.Assert(_result >= 0);
-
-				onCompleted((DataPackageOperation)_result);
-			}
-
-			ImmutableList<Completed>? AddCompletion(ImmutableList<Completed>? completions, Completed callback)
-				=> completions?.Add(callback);
-		}
+		internal void RegisterCompletedCallback(Completed onCompleted) => _completions.Add(onCompleted);
 
 		internal void Complete(DataPackageOperation result)
 		{
-			if (Interlocked.CompareExchange(ref _result, (int)result, -1) != -1)
-			{
-				this.Log().Error("This drag operation has already been completed");
-				return;
-			}
-
-			var completions = Interlocked.Exchange(ref _completions, null);
-			foreach (var callback in completions!)
+			foreach (var callback in _completions)
 			{
 				callback(result);
 			}
+			_completions.Clear();
 		}
 	}
 }

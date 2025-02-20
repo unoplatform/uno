@@ -11,6 +11,7 @@
     <StackPanel Padding="12" Spacing="8">
         <TextBox Text="{x:Bind Model.Text, Mode=TwoWay}" AcceptsReturn="True" />
         <Button Command="{x:Bind Model.CopyCommand}">Copy to clipboard</Button>
+        <Button Command="{x:Bind Model.CopyImageCommand}">Copy sample image to clipboard</Button>
         <Button Command="{x:Bind Model.PasteTextCommand}">Paste text from clipboard</Button>
         <Button Command="{x:Bind Model.PasteStorageItemsCommand}">Paste files from clipboard</Button>
         <Button Command="{x:Bind Model.PasteImageCommand}">Paste image from clipboard</Button>
