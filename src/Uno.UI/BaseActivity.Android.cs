@@ -14,7 +14,7 @@ using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
@@ -197,7 +197,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
+			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
 				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 			});
@@ -209,7 +209,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
+			Windows.UI.Xaml.Application.Current?.RaiseResuming();
 			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
@@ -233,7 +233,7 @@ namespace Uno.UI
 			ResignCurrent();
 
 			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
-			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
+			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();

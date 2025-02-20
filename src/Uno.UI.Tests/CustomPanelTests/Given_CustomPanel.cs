@@ -2,15 +2,15 @@
 using Moq;
 using Uno;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
-using View = Microsoft.UI.Xaml.FrameworkElement;
+using View = Windows.UI.Xaml.FrameworkElement;
 using Windows.Foundation;
 
 namespace Uno.UI.Tests.CustomPanelTests

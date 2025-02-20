@@ -4,7 +4,7 @@ using System.Globalization;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.Web.Syndication;
 using WG = Windows.Globalization;
 

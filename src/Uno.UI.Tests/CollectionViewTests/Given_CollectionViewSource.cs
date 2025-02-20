@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.CollectionViewTests

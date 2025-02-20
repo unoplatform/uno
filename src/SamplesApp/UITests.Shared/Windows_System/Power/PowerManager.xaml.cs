@@ -5,7 +5,7 @@ using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using UwpPowerManager = Windows.System.Power.PowerManager;
 using Private.Infrastructure;
 
@@ -23,7 +23,7 @@ public sealed partial class PowerManager : UserControl
 		DataContextChanged += PowerManager_DataContextChanged;
 	}
 
-	private async void PowerManager_DataContextChanged(Microsoft.UI.Xaml.FrameworkElement sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+	private async void PowerManager_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 	{
 		Model = args.NewValue as PowerManagerTestsViewModel;
 		if (Model is { } viewModel)

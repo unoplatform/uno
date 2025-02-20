@@ -2,9 +2,9 @@
 using System.Reflection.Metadata;
 using Uno.Foundation.Logging;
 
-[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.Page), typeof(Microsoft.UI.Xaml.Controls.PageElementMetadataUpdateHandler))]
+[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Windows.UI.Xaml.Controls.Page), typeof(Windows.UI.Xaml.Controls.PageElementMetadataUpdateHandler))]
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal static partial class PageElementMetadataUpdateHandler
 	{

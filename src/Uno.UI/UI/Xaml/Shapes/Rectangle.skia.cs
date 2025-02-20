@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Windows.Foundation;
 using System.Numerics;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{

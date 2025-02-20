@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -16,6 +16,6 @@ internal partial class NativeWindowFactory
 
 	public static bool SupportsMultipleWindows => false;
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot) =>
+	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) =>
 		new NativeWindowWrapper(window, xamlRoot);
 }

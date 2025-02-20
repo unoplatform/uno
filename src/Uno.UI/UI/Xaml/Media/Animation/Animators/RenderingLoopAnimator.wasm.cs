@@ -13,7 +13,7 @@ using Uno.UI.__Resources;
 using Windows.UI.Core;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Media.Animation;
+namespace Windows.UI.Xaml.Media.Animation;
 
 internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T> where T : struct
 {

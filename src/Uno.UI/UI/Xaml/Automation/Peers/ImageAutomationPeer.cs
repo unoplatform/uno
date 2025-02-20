@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ImageAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes Image types to Microsoft UI Automation.

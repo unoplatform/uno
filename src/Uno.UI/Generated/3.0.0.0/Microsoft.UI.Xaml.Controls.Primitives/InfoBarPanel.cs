@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class InfoBarPanel : global::Microsoft.UI.Xaml.Controls.Panel
+	public partial class InfoBarPanel : global::Windows.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property VerticalOrientationPadding
 		// Skipping already declared property HorizontalOrientationPadding
@@ -22,11 +22,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationPadding.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.HorizontalOrientationPaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationPaddingProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetHorizontalOrientationMargin(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Thickness)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetHorizontalOrientationMargin(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetHorizontalOrientationMargin(Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetHorizontalOrientationMargin(Windows.UI.Xaml.DependencyObject)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.HorizontalOrientationMarginProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetVerticalOrientationMargin(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Thickness)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetVerticalOrientationMargin(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetVerticalOrientationMargin(Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetVerticalOrientationMargin(Windows.UI.Xaml.DependencyObject)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationMarginProperty.get
 	}
 }

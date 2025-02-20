@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Navigation;
+namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Provides event data for the WebView.NavigationFailed and Frame.NavigationFailed events.

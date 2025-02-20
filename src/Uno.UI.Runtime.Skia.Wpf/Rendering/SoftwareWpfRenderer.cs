@@ -4,12 +4,12 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
 using Visibility = System.Windows.Visibility;
-using WinUI = Microsoft.UI.Xaml;
+using WinUI = Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;

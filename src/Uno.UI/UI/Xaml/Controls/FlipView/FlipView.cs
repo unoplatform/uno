@@ -5,10 +5,10 @@ using System.Text;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{

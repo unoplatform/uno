@@ -5,10 +5,10 @@
 using System;
 using Uno;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #pragma warning disable IDE0051 // Some of the methods in this file are defined in the WinUI source but are not used.
 

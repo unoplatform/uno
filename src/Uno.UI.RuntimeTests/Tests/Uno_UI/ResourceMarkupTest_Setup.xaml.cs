@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI;

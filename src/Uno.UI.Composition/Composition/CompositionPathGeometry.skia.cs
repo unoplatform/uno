@@ -11,7 +11,7 @@ using Windows.Graphics.Interop;
 using Windows.Graphics.Interop.Direct2D;
 using static Uno.FoundationFeatureConfiguration;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class CompositionPathGeometry : CompositionGeometry, ID2D1GeometrySink
 {

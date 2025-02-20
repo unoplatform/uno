@@ -1,10 +1,10 @@
 ﻿#if XAMARIN
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Windows.System;
 #if __ANDROID__
 using Android.Views;
@@ -13,7 +13,7 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Microsoft.UI.Xaml.DependencyObject;
+using View = Windows.UI.Xaml.DependencyObject;
 #endif
 
 namespace Uno.UI.Behaviors

@@ -1,9 +1,9 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Provides data for the Scroll event.
 /// </summary>
-public partial class ScrollEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
+public partial class ScrollEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 {
 	/// <summary>
 	/// Initializes a new instance of the ScrollEventArgs class.

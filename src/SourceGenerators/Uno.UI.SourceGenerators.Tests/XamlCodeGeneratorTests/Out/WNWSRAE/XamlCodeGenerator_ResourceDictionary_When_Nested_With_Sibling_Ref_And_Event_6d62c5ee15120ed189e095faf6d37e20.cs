@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.Tests.Given_ResourceDictionary
 {
-	partial class When_Nested_With_Sibling_Ref_And_Event : global::Microsoft.UI.Xaml.Controls.Page
+	partial class When_Nested_With_Sibling_Ref_And_Event : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -52,7 +52,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.SC0().Build(__owner)
+					new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.SC0().Build(__owner)
 					)				;
 			}
 			)
@@ -93,7 +93,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
-				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
 				public _View Build(object __ResourceOwner_1)
@@ -101,14 +101,14 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Border
+					new global::Windows.UI.Xaml.Controls.Border
 					{
 						IsParsing = true,
 						Resources = {
 						[
 						"SiblingResource"
 						] = 
-						new global::Microsoft.UI.Xaml.Controls.FontIconSource
+						new global::Windows.UI.Xaml.Controls.FontIconSource
 						{
 							// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 14:7)
 						}
@@ -119,14 +119,14 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 						new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
 						{
 							return 
-								new global::Microsoft.UI.Xaml.Controls.SwipeItems
+								new global::Windows.UI.Xaml.Controls.SwipeItems
 								{
 									// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 15:7)
 								}
 								.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 								{
 								__p1.Add(
-									new global::Microsoft.UI.Xaml.Controls.SwipeItem
+									new global::Windows.UI.Xaml.Controls.SwipeItem
 									{
 										// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 16:8)
 									}
@@ -134,8 +134,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									{
 									/* _isTopLevelDictionary:False */
 									__that._component_0 = __p1;
-									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
-									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+									global::Windows.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
+									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Windows.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 									var Invoked_Handler = new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_MyProject__ResourcesSC0_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.ApplyMethod_3_Invoked_Handler((__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference);
 									/* second level */ __p1.Invoked += Invoked_Handler.Invoke;
 									}
@@ -165,40 +165,40 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					}
 					if (__rootInstance is DependencyObject d)
 					{
-						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+						if (global::Windows.UI.Xaml.NameScope.GetNameScope(d) == null)
 						{
-							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							global::Windows.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
 							__nameScope.Owner = d;
 						}
 						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 					}
 					return __rootInstance;
 				}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
+				private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Windows.UI.Xaml.Controls.SwipeItem _component_0
 				{
 					get
 					{
-						return (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+						return (global::Windows.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
 					}
 					set
 					{
 						_component_0_Holder.Instance = value;
 					}
 				}
-				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-				private global::Microsoft.UI.Xaml.Controls.Border _component_1
+				private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Windows.UI.Xaml.Controls.Border _component_1
 				{
 					get
 					{
-						return (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
+						return (global::Windows.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
 					}
 					set
 					{
 						_component_1_Holder.Instance = value;
 					}
 				}
-				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+				private void __UpdateBindingsAndResources(global::Windows.UI.Xaml.FrameworkElement s, object e)
 				{
 					var owner = this;
 					_component_0.UpdateResourceBindings();
@@ -209,7 +209,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				{
 						public class ApplyMethod_3_Invoked_Handler(global::Uno.UI.DataBinding.ManagedWeakReference target)
 						{
-							public void Invoke(global::Microsoft.UI.Xaml.Controls.SwipeItem sender, global::Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
+							public void Invoke(global::Windows.UI.Xaml.Controls.SwipeItem sender, global::Windows.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
 							{
 								(target.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(sender, args);
 							}
@@ -224,30 +224,30 @@ namespace MyProject
 {
 	static class ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Page ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Windows.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.SwipeItems instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Controls.SwipeItems instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.SwipeItems ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItems instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Controls.SwipeItems ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Windows.UI.Xaml.Controls.SwipeItems instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.SwipeItem instance);
+		public delegate void XamlApplyHandler2(global::Windows.UI.Xaml.Controls.SwipeItem instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.SwipeItem ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.SwipeItem instance, XamlApplyHandler2 handler)
+		public static global::Windows.UI.Xaml.Controls.SwipeItem ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Windows.UI.Xaml.Controls.SwipeItem instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Border instance);
+		public delegate void XamlApplyHandler3(global::Windows.UI.Xaml.Controls.Border instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler3 handler)
+		public static global::Windows.UI.Xaml.Controls.Border ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply(this global::Windows.UI.Xaml.Controls.Border instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
