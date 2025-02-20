@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 
 		/// <inheritdoc />
-		void IDragDropExtension.StartNativeDrag(CoreDragInfo info)
+		void IDragDropExtension.StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 		{
 			// There is no way to programmatically initiate a DragAndDrop in browsers.
 			// We instead have to rely on the native drag and drop support.

@@ -71,9 +71,11 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

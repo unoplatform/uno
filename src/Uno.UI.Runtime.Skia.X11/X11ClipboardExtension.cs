@@ -797,11 +797,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 			XWindowAttributes attributes = default;
 			_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 
-			using var maskDisposable = new DisposableStruct<(X11Window, XWindowAttributes)>(static args =>
+			using var maskDisposable = new DisposableStruct<X11Window, XWindowAttributes>(static (window, attrs) =>
 			{
-				var (window, attrs) = args;
 				_ = XLib.XSelectInput(window.Display, window.Window, attrs.your_event_mask);
-			}, (x11Window, attributes));
+			}, x11Window, attributes);
 			_ = XLib.XSelectInput(x11Window.Display, x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
 
 			while (true)
@@ -930,11 +929,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 		XWindowAttributes attributes = default;
 		_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
-		using var maskDisposable = new DisposableStruct<(X11Window, XWindowAttributes)>(static args =>
+		using var maskDisposable = new DisposableStruct<X11Window, XWindowAttributes>(static (window, attrs) =>
 		{
-			var (window, attrs) = args;
 			_ = XLib.XSelectInput(window.Display, window.Window, attrs.your_event_mask);
-		}, (_x11Window, attributes));
+		}, _x11Window, attributes);
 		_ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

@@ -26,8 +26,8 @@
 	</Target>
 
 	<Target	Name="_UnoAdjustSkiaSharpDependency"
-			BeforeTargets="AssignTargetPaths"
-			Condition=" '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
+			BeforeTargets="AssignTargetPaths;PrepareForBuild"
+			Condition=" '$(IsUnoHead)' == 'True' AND '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
 		<!--
 			This section is an extract of
 			- https://github.com/mono/SkiaSharp/blob/463dd820278ad9635b0d83f4f9f4984c09510a6d/binding/SkiaSharp.NativeAssets.WebAssembly/buildTransitive/SkiaSharp.targets#L4
@@ -36,18 +36,18 @@
 			In order to support a two-layered rendering mode.
 		-->
 
-		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
+		<ItemGroup>
 			<WasmShellNativeFileReference Include="@(SkiaSharpStaticLibrary)" Visible="false" />
 			<WasmShellNativeFileReference Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
-		</ItemGroup>
 
-		<ItemGroup Condition="'$(IsUnoHead)' == 'True'">
 			<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
-			<WasmShellEmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
-
-			<!-- Enable GLCtx when threading is available -->
-			<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" KeepDuplicates="false" />
+			<EmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
 		</ItemGroup>
+
+		<PropertyGroup>
+			<!-- Enable GLCtx when threading is available -->
+			<EmccFlags Condition="'$(WasmShellEnableThreads)'=='True'">$(EmccFlags);-s OFFSCREEN_FRAMEBUFFER=1</EmccFlags>
+		</PropertyGroup>
 	</Target>
 
 </Project>

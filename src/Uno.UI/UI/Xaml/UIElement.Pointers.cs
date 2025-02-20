@@ -801,9 +801,10 @@ namespace Microsoft.UI.Xaml
 				asyncResult.SetResult(result);
 			});
 
-			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
+			var coreDragDropManager = XamlRoot.GetCoreDragDropManager(XamlRoot);
+			coreDragDropManager.DragStarted(dragInfo);
 			// Synchronously fire DragEnter+DragOver without waiting for another "mouse tick". This matches WinUI.
-			XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(ptArgs);
+			coreDragDropManager.ProcessMoved(ptArgs);
 
 			var result = await asyncResult.Task;
 
@@ -1045,7 +1046,7 @@ namespace Microsoft.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 				}
 			}
 
@@ -1077,7 +1078,7 @@ namespace Microsoft.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 				}
 			}
 
@@ -1120,7 +1121,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 				if (isDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessReleased(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessDropped(args);
 				}
 			}
 
@@ -1146,7 +1147,7 @@ namespace Microsoft.UI.Xaml
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
-				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 			}
 
 			return handledInManaged;
@@ -1181,7 +1182,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args.Pointer.PointerId);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessAborted(args.Pointer.PointerId);
 				}
 			}
 

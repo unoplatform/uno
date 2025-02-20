@@ -123,6 +123,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 		NativeWindowWrapper = nativeWindow;
 		Window.AppWindow.SetNativeWindow(nativeWindow);
+		OnNativeSizeChanged(null, new Size(nativeWindow.Size.Width, nativeWindow.Size.Height));
 		SetVisibleBoundsFromNative();
 	}
 
@@ -165,7 +166,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
 			{
-				if (this.Log().IsWarningEnabled(LogLevel.Warning))
+				if (this.Log().IsWarningEnabled())
 				{
 					this.Log().Warn("Closing event was cancelled, but the platform does not support cancellation.");
 				}
@@ -308,7 +309,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 				if (!NativeWindowFactory.SupportsClosingCancellation)
 				{
-					if (this.Log().IsWarningEnabled(LogLevel.Warning))
+					if (this.Log().IsWarningEnabled())
 					{
 						this.Log().Warn("Window.Closed event was cancelled, but the platform does not support cancellation.");
 					}

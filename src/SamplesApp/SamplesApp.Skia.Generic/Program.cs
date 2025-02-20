@@ -3,8 +3,10 @@
 using System;
 using System.IO;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;
 
 namespace SkiaSharpExample
@@ -47,11 +49,18 @@ namespace SkiaSharpExample
 
 					if (host is X11ApplicationHost)
 					{
-						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension(o));
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension(o));
+					}
+					else if (host is Win32Host)
+					{
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension(o));
 					}
 				})
 				.UseX11()
+				.UseWin32()
+				.UseWindows()
 				.UseLinuxFrameBuffer()
 				.UseWindows(b => b
 					.WpfApplication(() =>

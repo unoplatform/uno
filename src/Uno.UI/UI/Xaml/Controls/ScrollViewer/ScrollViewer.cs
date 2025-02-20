@@ -1272,7 +1272,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __APPLE_UIKIT__ || __ANDROID__
 					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
 #endif
-				)
+					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
 						|| VerticalSnapPointsType != SnapPointsType.None)

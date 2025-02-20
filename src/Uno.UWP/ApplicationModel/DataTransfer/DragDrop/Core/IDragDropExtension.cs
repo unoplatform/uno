@@ -5,6 +5,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	internal interface IDragDropExtension
 	{
-		void StartNativeDrag(CoreDragInfo info);
+		void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted);
 	}
 }
