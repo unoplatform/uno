@@ -210,7 +210,7 @@ c.SetClosedState({expectedClosedState});
 		[DataRow("j")]
 		public void Throws_InvalidDataException_On_None_Defined_Command(string pathData)
 		{
-			Assert.ThrowsException<InvalidDataException>(() => Parse(pathData));
+			Assert.ThrowsExactly<InvalidDataException>(() => Parse(pathData));
 		}
 
 		[TestMethod]

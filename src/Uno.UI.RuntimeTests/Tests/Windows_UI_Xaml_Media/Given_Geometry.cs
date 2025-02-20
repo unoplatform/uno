@@ -134,10 +134,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(Exception))] // Catastrophic Failure on UWP
 		public void EmptyGeometry_CheckBounds()
 		{
-			Console.WriteLine(Geometry.Empty.Bounds);
+			// Catastrophic Failure on UWP
+			Assert.Throws<Exception>(() => _ = Geometry.Empty.Bounds);
 		}
 
 #if __SKIA__

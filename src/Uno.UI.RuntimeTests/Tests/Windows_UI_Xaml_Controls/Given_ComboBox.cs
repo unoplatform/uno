@@ -661,7 +661,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var comboBox = new ComboBox();
 			comboBox.Items.Add(new ComboBoxItem());
-			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+			Assert.ThrowsExactly<ArgumentException>(() => comboBox.SelectedIndex = 2);
 		}
 
 		[TestMethod]
@@ -669,7 +669,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var comboBox = new ComboBox();
 			comboBox.Items.Add(new ComboBoxItem());
-			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+			Assert.ThrowsExactly<ArgumentException>(() => comboBox.SelectedIndex = -2);
 		}
 
 		[TestMethod]

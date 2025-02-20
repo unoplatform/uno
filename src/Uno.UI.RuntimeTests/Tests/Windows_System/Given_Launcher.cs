@@ -15,13 +15,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		[TestMethod]
 		public async Task When_Null_Uri_Is_Launched()
 		{
-			await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => Launcher.LaunchUriAsync(null).AsTask());
+			await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => Launcher.LaunchUriAsync(null).AsTask());
 		}
 
 		[TestMethod]
 		public async Task When_Null_Uri_Is_Queried()
 		{
-			await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => Launcher.QueryUriSupportAsync(null, LaunchQuerySupportType.Uri).AsTask());
+			await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => Launcher.QueryUriSupportAsync(null, LaunchQuerySupportType.Uri).AsTask());
 		}
 
 		[TestMethod]

@@ -653,7 +653,7 @@ public class Given_CurrencyFormatter
 	[TestMethod]
 	public void When_CurrencyCodeIsNotValid()
 	{
-		Assert.ThrowsException<ArgumentException>(() => MakeFormatter("irr"));
+		Assert.ThrowsExactly<ArgumentException>(() => MakeFormatter("irr"));
 	}
 
 	private string FormatCurrencyCodeModeNegativeNumber(string text, string symbol)

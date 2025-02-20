@@ -25,12 +25,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
 		public void When_SetLengthGreaterThanCapacity()
 		{
 			var sut = new Buffer(42);
 
-			sut.Length = 43;
+			Assert.Throws<ArgumentException>(() => sut.Length = 43);
 		}
 
 		[TestMethod]
@@ -110,12 +109,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
 		public void When_GetByteGreaterThanCapacity()
 		{
 			var sut = new Buffer(42);
 
-			sut.GetByte(42);
+			Assert.Throws<ArgumentException>(() => sut.GetByte(42));
 		}
 
 		[TestMethod]
