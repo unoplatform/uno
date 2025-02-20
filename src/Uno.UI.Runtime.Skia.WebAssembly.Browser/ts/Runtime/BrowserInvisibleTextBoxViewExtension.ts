@@ -73,6 +73,11 @@
 				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
 			};
 
+			input.onpaste = ev => {
+				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
+				ev.preventDefault();
+			};
+
 			input.onkeydown = ev => {
 				if (ev.ctrlKey) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
