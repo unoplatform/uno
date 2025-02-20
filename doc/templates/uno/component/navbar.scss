@@ -36,7 +36,6 @@
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
 
-
   &::after,
   &::before {
     content: none;
@@ -48,7 +47,6 @@
 
     @media (max-width: 1023px) {
       width: 100%;
-      // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
@@ -58,12 +56,10 @@
     }
   }
 
-
   #header-logo-container {
     width: 36px;
     vertical-align: middle;
     z-index: 9;
-
 
     img {
       width: 100%;
@@ -119,13 +115,30 @@
         font-size: 19px;
         line-height: 17px;
       }
-    }
 
+      // Media queries for font size and padding adjustments
+      @media (min-width: 1024px) {
+        font-size: 14px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 19px;
+        line-height: 17px;
+        padding: 0.2rem !important;
+      }
+    }
     /**
      * Top level menu items
      */
     & > ul > li {
-
       @include media-breakpoint-up(lg) {
         margin: 0 4px;
         align-self: center;
@@ -135,16 +148,13 @@
       @include media-breakpoint-up(navbar) {
         margin: 0 16px;
       }
-
       /**
        * menu-item-has-children means there is a submenu
        */
       &.menu-item-has-children {
-        // actual submenu
         position: relative;
 
         & > a {
-
           &::after {
             display: inline-block;
             text-rendering: auto;
@@ -216,7 +226,6 @@
               padding-bottom: 14px;
               width:100%
             }
-
           }
 
           a {
@@ -242,7 +251,6 @@
             }
           }
 
-          // sub-menu columns
           ul {
             @extend .visibility-opacity-transition;
             display: flex;
@@ -256,7 +264,6 @@
           }
         }
 
-        // shows the submenu
         &:hover > ul {
           visibility: visible;
           opacity: 1;
@@ -284,7 +291,6 @@
       &.row-menu > ul {
         flex-direction: row;
       }
-
     }
   }
 
@@ -297,7 +303,7 @@
       margin-left: 0;
       padding: 8px 32px;
 
-      font-size: 16px;
+      /*font-size: 16px;*/
       line-height: 24px;
       font-weight: 700;
       min-width: 125px;
@@ -315,13 +321,28 @@
         color: $white;
         background-position: bottom left;
       }
+
+      @media (min-width: 1024px) {
+        font-size: 14px;
+
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px;
+
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 19px;
+
+      }
+
     }
   }
 }
 
 #navbar {
   @media (max-width: 1023px) {
-
     overflow: auto !important;
 
     position: fixed;
@@ -344,7 +365,6 @@
       display: none !important;
     }
 
-
     &.collapse.in {
       display: block !important;
       height: 100vh !important;
@@ -360,11 +380,35 @@
         display: block;
         padding: 0;
 
-        &.get-started-btn {
-          position: absolute;
-          padding: 0 16px;
-          bottom: 10%;
+        &.get-started-btn,
+        &.custom-login-item {
+          display: flex;
+          justify-content: center;
+          align-items: center;
           width: 100%;
+          margin-bottom: 10px; // Espaciado entre botones
+        }
+
+        &.get-started-btn a,
+        &.custom-login-item a {
+          font-size: 18px !important;
+          font-weight: 700;
+          width: 90% !important;
+          padding: 12px 25px !important;
+          text-align: center !important;
+          line-height: 30px !important;
+          border-radius: 10px !important;
+        }
+
+        &.custom-login-item a {
+          border: 2px solid rgba(21, 155, 255, 1);
+          color: rgba(21, 155, 255, 1) !important;
+          background: transparent !important;
+        }
+
+        &.get-started-btn a {
+          background: $turquoise;
+          color: $black !important;
         }
 
         &.menu-item-has-children {
@@ -374,7 +418,6 @@
             position: relative;
             max-height: 0;
             padding: 0;
-
             overflow: hidden;
             transition: all .5s ease;
           }
@@ -399,6 +442,13 @@
   position: fixed;
   top: 67px;
   width: 100%;
-  z-index: 999;
-  background-color: #f8f8f8;
+  left: 0;
+  z-index: 9;
+
+  background: $lightblue;
+  padding: 10px 0;
+
+  @include media-breakpoint-up(lg) {
+    display: none;
+  }
 }
