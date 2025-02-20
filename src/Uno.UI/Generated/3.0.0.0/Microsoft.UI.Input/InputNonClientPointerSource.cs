@@ -18,23 +18,16 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ClearRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearRegionRects(NonClientRegionKind region)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.RectInt32[] GetRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region)
-		{
-			throw new global::System.NotImplementedException("The member RectInt32[] InputNonClientPointerSource.GetRegionRects(NonClientRegionKind region) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%5B%5D%20InputNonClientPointerSource.GetRegionRects%28NonClientRegionKind%20region%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region, global::Windows.Graphics.RectInt32[] rects)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.SetRegionRects(NonClientRegionKind region, RectInt32[] rects)");
@@ -49,7 +42,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerMoved.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerMoved.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.add
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerExited.add
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerReleased.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerReleased.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.RegionsChanged.add
@@ -63,9 +56,9 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.add
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerExited.add
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ClearAllRegionRects()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "void InputNonClientPointerSource.ClearAllRegionRects()");
@@ -75,12 +68,12 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.NonClientCaptionTappedEventArgs> CaptionTapped
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "event TypedEventHandler<InputNonClientPointerSource, NonClientCaptionTappedEventArgs> InputNonClientPointerSource.CaptionTapped");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "event TypedEventHandler<InputNonClientPointerSource, NonClientCaptionTappedEventArgs> InputNonClientPointerSource.CaptionTapped");
@@ -187,12 +180,12 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputNonClientPointerSource, global::Microsoft.UI.Input.WindowRectChangedEventArgs> WindowRectChanged
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "event TypedEventHandler<InputNonClientPointerSource, WindowRectChangedEventArgs> InputNonClientPointerSource.WindowRectChanged");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputNonClientPointerSource", "event TypedEventHandler<InputNonClientPointerSource, WindowRectChangedEventArgs> InputNonClientPointerSource.WindowRectChanged");
