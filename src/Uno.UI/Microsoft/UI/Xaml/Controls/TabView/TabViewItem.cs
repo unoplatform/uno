@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using XamlWindow = Microsoft.UI.Xaml.Window;
 using System.Reflection;
-
+using MUII = Microsoft.UI.Input;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -622,8 +622,8 @@ public partial class TabViewItem : ListViewItem
 			// ListView also handles Alt+Arrow  (no Shift) by just doing regular XY focus,
 			// same as how it handles Arrow without any modifier keys, so in that case
 			// we do want to handle things so we get the improved keyboarding experience.
-			var isAltDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
-			var isShiftDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			var isAltDown = (MUII.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			var isShiftDown = (MUII.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			if (!isAltDown || !isShiftDown)
 			{
