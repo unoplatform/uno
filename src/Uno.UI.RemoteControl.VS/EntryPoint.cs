@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
@@ -538,6 +539,39 @@ public partial class EntryPoint : IDisposable
 	{
 		try
 		{
+			if (request.OptionalUpdatedFilesContent is { Count: > 0 } fileUpdates)
+			{
+				foreach (var file in fileUpdates)
+				{
+					var filePath = file.Key;
+					var fileContent = file.Value;
+
+					if (fileContent is not { Length: > 0 })
+					{
+						continue; // Skip empty content.
+					}
+
+					// Update the file content in the IDE using the DTE API.
+					var document = _dte2.Documents
+						.OfType<Document>()
+						.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
+
+					if (document?.Object("TextDocument") is TextDocument textDocument)
+					{
+						// Replace the content of the document with the new content.
+
+						// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+						// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+						const int flags = 0b0000_0011;
+
+						textDocument.StartPoint.CreateEditPoint()
+							.ReplaceText(textDocument.EndPoint, fileContent, flags);
+					}
+				}
+			}
+
+			// Programmatically trigger the "Apply Code Changes" command in Visual Studio.
+			// Which will trigger the hot reload.
 			_dte.ExecuteCommand("Debug.ApplyCodeChanges");
 
 			// Send a message back to indicate that the request has been received and acted upon.

@@ -430,7 +430,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
-					await RequestHotReloadToIde(hotReload.Id);
+					var filesContent =
+						message is { FilePath: { Length: > 0 } f, NewText: { Length: > 0 } t }
+							? new System.Collections.Generic.Dictionary<string, string> { { f, t } }
+							: null;
+					await RequestHotReloadToIde(hotReload.Id, filesContent, message.ForceSaveOnDisk && filesContent is not null);
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
@@ -563,9 +567,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task<bool> RequestHotReloadToIde(long sequenceId)
+		private async Task<bool> RequestHotReloadToIde(long sequenceId, IReadOnlyDictionary<string, string>? optionalUpdatedFilesContent = null, bool forceFileSave = false)
 		{
-			var hrRequest = new ForceHotReloadIdeMessage(sequenceId);
+			var hrRequest = new ForceHotReloadIdeMessage(sequenceId, optionalUpdatedFilesContent, forceFileSave);
 			var hrRequested = new TaskCompletionSource<Result>();
 
 			try

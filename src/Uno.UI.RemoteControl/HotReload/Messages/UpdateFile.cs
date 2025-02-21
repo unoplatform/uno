@@ -32,6 +32,15 @@ public class UpdateFile : IMessage
 	public string? NewText { get; set; }
 
 	/// <summary>
+	/// If true, the file will be saved on disk, even if the content is the same.
+	/// </summary>
+	/// <remarks>
+	/// Currently, this is only used for VisualStudio, because the update requires a file save on disk for other IDEs.
+	/// On VisualStudio, the save to disk is not required for doing Hot Reload.
+	/// </remarks>
+	public bool ForceSaveOnDisk { get; set; }
+
+	/// <summary>
 	/// Indicates if the file can be created or deleted.
 	/// </summary>
 	[JsonProperty]
