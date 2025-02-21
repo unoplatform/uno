@@ -11,7 +11,9 @@ namespace Uno.UI.Runtime.Skia;
 /// </summary>
 public sealed partial class BrowserHtmlElement : IDisposable
 {
+#if __SKIA__
 	private GCHandle? _gcHandle;
+#endif
 
 	/// <summary>
 	/// The native HTMLElement id.
