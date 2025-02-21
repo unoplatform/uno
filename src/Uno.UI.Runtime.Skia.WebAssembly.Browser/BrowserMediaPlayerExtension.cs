@@ -112,7 +112,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		_player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
 
-		HtmlElement = BrowserHtmlElement.CreateHtmlElement("uno-mpe-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
+		HtmlElement = BrowserHtmlElement.CreateHtmlElement("video");
 		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, this);
 
 		NativeMethods.SetupEvents(HtmlElement.ElementId);

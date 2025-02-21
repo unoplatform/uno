@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 namespace Uno.UI.Runtime.Skia;
 
@@ -10,10 +11,28 @@ namespace Uno.UI.Runtime.Skia;
 /// </summary>
 public sealed partial class BrowserHtmlElement : IDisposable
 {
+	private GCHandle? _gcHandle;
+
 	/// <summary>
 	/// The native HTMLElement id.
 	/// </summary>
 	public string ElementId { get; }
+
+	private BrowserHtmlElement()
+	{
+#if __SKIA__
+		if (!OperatingSystem.IsBrowser())
+#endif
+		{
+			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on the Wasm target with the skia backend.");
+		}
+
+#if __SKIA__
+		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+		var handle = GCHandle.ToIntPtr(_gcHandle.Value);
+		ElementId = "uno-" + handle;
+#endif
+	}
 
 	private BrowserHtmlElement(string elementId)
 	{
@@ -23,6 +42,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		{
 			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on the Wasm target with the skia backend.");
 		}
+
 #if __SKIA__
 		ElementId = elementId;
 #endif
@@ -49,8 +69,9 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	/// <returns>Element instance.</returns>
 	public static BrowserHtmlElement CreateHtmlElement(string tagName)
 	{
-		var id = new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10));
-		return CreateHtmlElement(id, tagName);
+		var element = new BrowserHtmlElement();
+		CreateHtmlElementAndAddToStore(element.ElementId, tagName);
+		return element;
 	}
 
 	/// <summary>
