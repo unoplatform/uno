@@ -68,8 +68,8 @@
 		<!-- And look for MTP version in there, and make sure MicrosoftTestingPlatformVersion is the same -->
 		<!-- Alternatively, migrate to MSTest.Sdk and let it handle the MTP versioning for you -->
 		<!-- In case of MSTest.Sdk, the TrxReport package will not be needed. It will be added automatically -->
-		<MSTestVersion>3.8.0</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.6.0</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>3.8.2</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.6.2</MicrosoftTestingPlatformVersion>
 
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
 		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
