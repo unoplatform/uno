@@ -18,7 +18,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
-		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />

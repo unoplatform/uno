@@ -20,14 +20,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 		[TestMethod]
 		public void When_Channel_Out_Of_Bounds()
 		{
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => new MidiProgramChangeMessage(16, 10));
 		}
 
 		[TestMethod]
 		public void When_Pressure_Out_Of_Bounds()
 		{
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => new MidiProgramChangeMessage(12, 128));
 		}
 	}

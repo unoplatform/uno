@@ -101,7 +101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				listView.Items.Add(2);
 			}
-			catch (Exception) // Instead of Assert.ThrowsException as Uno throws InvalidOperationException, while UWP throws a generic Exception
+			catch (Exception) // Instead of Assert.ThrowsExactly as Uno throws InvalidOperationException, while UWP throws a generic Exception
 			{
 				thrown = true;
 			}
