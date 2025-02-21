@@ -9,7 +9,7 @@ internal static class UnoSkiaApi
 	private const string SKIA = "libSkiaSharp";
 	private const string SKIA_Apple = "@rpath/libSkiaSharp.framework/libSkiaSharp";
 
-	static UnoSkiaApi()
+	internal static void Initialize()
 	{
 		NativeLibrary.SetDllImportResolver(typeof(UnoSkiaApi).Assembly, DllImportResolver);
 	}
