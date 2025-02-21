@@ -32,7 +32,7 @@ public class HtmlWebViewElement : UIElement, INativeWebView
 
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(HtmlId) ?? "";
 
-	private void OnNavigationCompleted(object sender, EventArgs e)
+	private void OnNavigationCompleted(object? sender, EventArgs e)
 	{
 		if (_coreWebView is null)
 		{
@@ -50,11 +50,11 @@ public class HtmlWebViewElement : UIElement, INativeWebView
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
-	public Task<string> ExecuteScriptAsync(string script, CancellationToken token) => Task.FromResult(NativeMethods.ExecuteScript(HtmlId, script));
+	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token) => Task.FromResult(NativeMethods.ExecuteScript(HtmlId, script));
 
-	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
+	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token) => Task.FromResult<string?>("");
 
-	private void ScheduleNavigationStarting(string url, Action loadAction)
+	private void ScheduleNavigationStarting(string? url, Action loadAction)
 	{
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
