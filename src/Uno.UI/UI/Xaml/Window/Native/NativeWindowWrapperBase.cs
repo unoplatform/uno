@@ -274,7 +274,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Hide() { }
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();
 #endif
 }
