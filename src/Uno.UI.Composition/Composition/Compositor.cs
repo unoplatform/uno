@@ -16,6 +16,13 @@ namespace Microsoft.UI.Composition
 
 		private static Lazy<CompositionEasingFunction> _defaultEasingFunction = new(() => new CubicBezierEasingFunction(GetSharedCompositor(), new(0.41f, 0.52f), new(0.0f, 0.94f)));
 
+		static Compositor()
+		{
+			Initialize();
+		}
+
+		private static partial void Initialize();
+
 		public Compositor()
 		{
 		}
