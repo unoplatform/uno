@@ -21,7 +21,7 @@ namespace Microsoft.UI.Composition
 			Initialize();
 		}
 
-		private static partial void Initialize();
+		static partial void Initialize();
 
 		public Compositor()
 		{
