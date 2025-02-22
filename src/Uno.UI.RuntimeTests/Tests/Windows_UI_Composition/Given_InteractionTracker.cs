@@ -256,7 +256,7 @@ public partial class Given_InteractionTracker
 				requestId: 0,
 				naturalRestingPosition: new(-50.0f, 0.0f, 0.0f),
 				modifiedRestingPosition: new(-50.0f, 0.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: OperatingSystem.IsAndroid() ? default : new(-0.0f, -0.0f, -0.0f)),
+				positionVelocityInPixelsPerSecond: new(-0.0f, -0.0f, -0.0f)),
 			helper.Current);
 
 		helper.Advance();
