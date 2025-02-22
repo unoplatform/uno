@@ -465,7 +465,7 @@ public class Given_WebView2
 #if !WINAPPSDK && !__ANDROID__
 	[DataRow(true)]
 	[DataRow(false)]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatform.SkiaWin32)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
