@@ -107,12 +107,13 @@ echo "Emulator started"
 # Install the app
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
-UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
+UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
+UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
 # Create the environment file for the app to read
 echo "UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP" > samplesapp-environment.txt
 echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
-echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
+echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" >> samplesapp-environment.txt
 
 # Push the environment file to the device
 $ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samplesapp-environment.txt
@@ -129,9 +130,9 @@ UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1
 TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
 END_TIME=$((SECONDS+TIMEOUT))
 
-echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
+echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_PATH to be available..."
 
-while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
+while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
     sleep 15
 
     # exit loop if the APP_PID is not running anymore
@@ -141,12 +142,12 @@ while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUT
     fi
 done
 
-$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $$UITEST_RUNTIME_AUTOSTART_RESULT_FILE || true
+$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME
+
+if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME" ]; then
+	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME does not exist (did nunit crash ?)"
+	exit 1
+fi
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
-
-if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
-	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILE does not exist (did nunit crash ?)"
-	exit 1
-fi
