@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
 		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
 		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
-		private static readonly char _passwordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? '\u2022' : '\u25CF';
+		internal static readonly char PasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? '\u2022' : '\u25CF';
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -220,7 +220,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string(_passwordChar, text.Length);
+				DisplayBlock.Text = new string(PasswordChar, text.Length);
 			}
 			else
 			{
