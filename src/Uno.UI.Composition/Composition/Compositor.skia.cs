@@ -14,7 +14,7 @@ public partial class Compositor
 	private List<CompositionAnimation> _runningAnimations = new();
 	private List<ColorBrushTransitionState> _backgroundTransitions = new();
 
-	private static partial void Initialize()
+	static partial void Initialize()
 	{
 		UnoSkiaApi.Initialize();
 	}
