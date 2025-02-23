@@ -20,7 +20,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Uno.UI.Samples.Controls.Sample("WebView", IgnoreInSnapshotTests = true)]
+	[Uno.UI.Samples.Controls.Sample("WebView")]
 	public sealed partial class WebView2_Basic : Page
 	{
 		public WebView2_Basic()

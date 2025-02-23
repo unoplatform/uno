@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "Javascript_AlertConfirmPrompt", IgnoreInSnapshotTests = true)]
+	[SampleControlInfo("WebView", "Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebViewControlJavaScriptAlertConfirmPrompt : UserControl
 	{
 #if HAS_UNO
