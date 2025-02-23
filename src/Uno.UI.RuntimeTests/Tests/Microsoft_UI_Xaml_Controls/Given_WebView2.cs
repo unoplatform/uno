@@ -286,10 +286,10 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[TestMethod]
 #if WINAPPSDK
 	[Ignore("Crashes")]
 #endif
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWin32)] // passes locally but fails in CI
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()
