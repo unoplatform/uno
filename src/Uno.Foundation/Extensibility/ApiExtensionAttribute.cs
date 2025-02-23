@@ -24,11 +24,26 @@ public sealed class ApiExtensionAttribute : Attribute
 	/// <param name="extendedType">The type to extend</param>
 	/// <param name="extensionType">The type to create an instance from</param>
 	/// <param name="ownerType">The owner type</param>
-	public ApiExtensionAttribute(Type extendedType, Type extensionType, Type ownerType = null)
+	public ApiExtensionAttribute(Type extendedType, Type extensionType, Type ownerType)
 	{
 		ExtensionType = extensionType;
 		ExtendedType = extendedType;
 		OwnerType = ownerType;
+	}
+
+	/// <summary>
+	/// Creates an instance.
+	/// </summary>
+	/// <param name="extendedType">The type to extend</param>
+	/// <param name="extensionType">The type to create an instance from</param>
+	/// <param name="ownerType">The owner type</param>
+	/// <param name="operatingSystemCondition">a string that is supplied as an argument to <see cref="System.OperatingSystem.IsOSPlatform"/></param>
+	public ApiExtensionAttribute(Type extendedType, Type extensionType, string operatingSystemCondition, Type ownerType = null)
+	{
+		ExtensionType = extensionType;
+		ExtendedType = extendedType;
+		OwnerType = ownerType;
+		OperatingSystemCondition = operatingSystemCondition;
 	}
 
 	/// <summary>
@@ -45,4 +60,9 @@ public sealed class ApiExtensionAttribute : Attribute
 	/// The Type to create
 	/// </summary>
 	public Type OwnerType { get; }
+
+	/// <summary>
+	/// The Type to create
+	/// </summary>
+	public string OperatingSystemCondition { get; }
 }

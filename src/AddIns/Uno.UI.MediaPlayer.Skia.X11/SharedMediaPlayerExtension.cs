@@ -19,9 +19,9 @@ using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 
 #if IS_MPE_WIN32
-[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension), typeof(MediaPlayer))]
+[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension), "windows", typeof(MediaPlayer))]
 #else
-[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension), typeof(MediaPlayer))]
+[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension), "linux", typeof(MediaPlayer))]
 #endif
 
 #if IS_MPE_WIN32
