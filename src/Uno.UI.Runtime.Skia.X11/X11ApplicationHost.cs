@@ -17,7 +17,6 @@ using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.Web.WebView2.Core;
 using Uno.Helpers.Theming;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -71,7 +70,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
-		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), xamlRoot => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)

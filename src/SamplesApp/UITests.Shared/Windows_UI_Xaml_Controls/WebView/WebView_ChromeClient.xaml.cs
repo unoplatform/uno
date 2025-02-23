@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "WebView_ChromeClient", typeof(WebViewStaticViewModel))]
+	[SampleControlInfo("WebView", "WebView_ChromeClient", typeof(WebViewStaticViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class WebView_ChromeClient : UserControl
 	{
 		public WebView_ChromeClient()

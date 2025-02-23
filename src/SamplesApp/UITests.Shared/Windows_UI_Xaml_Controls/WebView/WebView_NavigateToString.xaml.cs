@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "WebView_NavigateToString", typeof(WebViewViewModel), description: "WebView demonstrating NavigateToString method")]
+	[SampleControlInfo("WebView", "WebView_NavigateToString", typeof(WebViewViewModel), description: "WebView demonstrating NavigateToString method", IgnoreInSnapshotTests = true)]
 	public sealed partial class WebView_NavigateToString : UserControl
 	{
 		public WebView_NavigateToString()

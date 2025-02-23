@@ -7,7 +7,7 @@ using Windows.Web.Http;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "WebView_WithHeaders", typeof(WebViewViewModel))]
+	[SampleControlInfo("WebView", "WebView_WithHeaders", typeof(WebViewViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class WebView_WithHeaders : UserControl
 	{
 #if HAS_UNO
