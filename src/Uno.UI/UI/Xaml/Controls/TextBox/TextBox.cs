@@ -1363,9 +1363,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SelectAllPartial();
 
-		/// <summary>
-		/// Copies content from the OS clipboard into the text control.
-		/// </summary>
 		public void PasteFromClipboard()
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
@@ -1375,56 +1372,62 @@ namespace Microsoft.UI.Xaml.Controls
 				try
 				{
 					clipboardText = await content.GetTextAsync();
+					PasteFromClipboard(clipboardText);
 				}
 				catch (InvalidOperationException e)
 				{
-					clipboardText = "";
-
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
 					}
 				}
-				var selectionStart = SelectionStart;
-				var selectionLength = SelectionLength;
-				var currentText = Text;
+			});
+		}
 
-				if (selectionLength > 0)
-				{
-					currentText = currentText.Remove(selectionStart, selectionLength);
-				}
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		internal void PasteFromClipboard(string clipboardText)
+		{
+			var selectionStart = SelectionStart;
+			var selectionLength = SelectionLength;
+			var currentText = Text;
 
-				currentText = currentText.Insert(selectionStart, clipboardText);
+			if (selectionLength > 0)
+			{
+				currentText = currentText.Remove(selectionStart, selectionLength);
+			}
 
-				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+			currentText = currentText.Insert(selectionStart, clipboardText);
+
+			PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
 
 #if __SKIA__
-				try
-				{
-					_clearHistoryOnTextChanged = false;
-					_suppressCurrentlyTyping = true;
+			try
+			{
+				_clearHistoryOnTextChanged = false;
+				_suppressCurrentlyTyping = true;
 #else
-				{
+			{
 #endif
-					ProcessTextInput(currentText);
-				}
+				ProcessTextInput(currentText);
+			}
 #if __SKIA__
-				finally
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+				_clearHistoryOnTextChanged = true;
+				if (Text.IsNullOrEmpty())
 				{
-					_suppressCurrentlyTyping = false;
-					_clearHistoryOnTextChanged = true;
-					if (Text.IsNullOrEmpty())
-					{
-						// On WinUI, the caret never has thumbs if there is no text
-						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-					}
+					// On WinUI, the caret never has thumbs if there is no text
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				}
+			}
 #endif
 
 #if !IS_UNIT_TESTS
-				RaisePaste(new TextControlPasteEventArgs());
+			RaisePaste(new TextControlPasteEventArgs());
 #endif
-			});
 		}
 
 		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
