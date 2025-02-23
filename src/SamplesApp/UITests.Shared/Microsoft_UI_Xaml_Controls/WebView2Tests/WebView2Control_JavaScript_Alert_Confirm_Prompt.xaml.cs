@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[Sample("WebView", Name = "WebView2_Javascript_AlertConfirmPrompt", IgnoreInSnapshotTests = true)]
+	[Sample("WebView", Name = "WebView2_Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebView2ControlJavaScriptAlertConfirmPrompt : UserControl
 	{
 		public WebView2ControlJavaScriptAlertConfirmPrompt()
