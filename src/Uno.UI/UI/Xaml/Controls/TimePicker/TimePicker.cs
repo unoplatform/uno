@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(Header))]
 public partial class TimePicker : Control

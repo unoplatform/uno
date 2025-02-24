@@ -8,9 +8,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 using Color = Windows.UI.Color;
 
 namespace Uno.UI.Controls

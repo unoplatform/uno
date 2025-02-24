@@ -10,7 +10,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 partial class ScrollBar
 {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using System;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests;
 
@@ -16,7 +16,7 @@ public sealed partial class WebView2_Folder : Page
 		this.Loaded += WebView2_Folder_Loaded;
 	}
 
-	private async void WebView2_Folder_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	private async void WebView2_Folder_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		await Inline.EnsureCoreWebView2Async();
 		Inline.CoreWebView2?.SetVirtualHostNameToFolderMapping(

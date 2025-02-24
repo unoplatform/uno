@@ -2,7 +2,7 @@
 using Uno;
 using Uno.Extensions;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

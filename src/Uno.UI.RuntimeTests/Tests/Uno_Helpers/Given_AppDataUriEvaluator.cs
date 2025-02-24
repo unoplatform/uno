@@ -224,7 +224,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		[TestMethod]
 		public void When_NonExistent_Method_Check()
 		{
-			Assert.IsFalse(ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "IDontExist"));
+			Assert.IsFalse(ApiInformation.IsMethodPresent("Windows.UI.Composition.Compositor", "IDontExist"));
 		}
 	}
 }

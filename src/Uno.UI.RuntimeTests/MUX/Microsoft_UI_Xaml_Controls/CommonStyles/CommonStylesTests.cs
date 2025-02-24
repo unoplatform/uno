@@ -7,16 +7,16 @@ using System.Linq;
 using System.Threading;
 using Windows.Foundation.Metadata;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using PlatformConfiguration = Common.PlatformConfiguration;
 using OSVersion = Common.OSVersion;
 using System.Collections.Generic;
 using XamlControlsResources = Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using System;
 using System.Text;
 #if !HAS_UNO_WINUI
@@ -32,7 +32,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class CommonStylesApiTests : MUXApiTestBase

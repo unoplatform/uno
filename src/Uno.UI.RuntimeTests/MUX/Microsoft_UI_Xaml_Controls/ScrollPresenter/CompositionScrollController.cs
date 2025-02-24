@@ -4,13 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
 using Microsoft.UI.Dispatching;
 using Windows.Foundation;
 
@@ -1063,7 +1063,7 @@ public sealed partial class CompositionScrollController : Control, IScrollContro
 		return -1;
 	}
 
-	private void PanningFrameworkElement_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	private void PanningFrameworkElement_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 	{
 		Point pt = e.GetCurrentPoint(sender as UIElement).Position;
 		RaiseLogMessage("CompositionScrollController: PanningFrameworkElement_PointerPressed for Orientation=" + Orientation + ", position=" + pt);

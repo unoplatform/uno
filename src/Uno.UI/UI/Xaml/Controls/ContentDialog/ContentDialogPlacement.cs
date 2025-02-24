@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public enum ContentDialogPlacement
 	{

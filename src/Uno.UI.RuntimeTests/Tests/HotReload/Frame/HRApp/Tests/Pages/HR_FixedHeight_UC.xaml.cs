@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages
 {

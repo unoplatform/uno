@@ -6,7 +6,7 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
@@ -17,7 +17,7 @@ using _View = UIKit.UIView;
 using _View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
 	public partial class TransformGroup : Transform

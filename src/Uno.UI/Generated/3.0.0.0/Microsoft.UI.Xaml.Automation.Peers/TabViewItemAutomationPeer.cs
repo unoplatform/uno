@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TabViewItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer
+	public partial class TabViewItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.TabViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TabViewItemAutomationPeer.TabViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.TabViewItem)

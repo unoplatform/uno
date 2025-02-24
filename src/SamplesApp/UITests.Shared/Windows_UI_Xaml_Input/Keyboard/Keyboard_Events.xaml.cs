@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Input.Keyboard
@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 			SetupEvent(_btt1);
 			SetupEvent(_btt2);
 #if !HAS_UNO_WINUI
-			SetupEvent(global::Microsoft.UI.Xaml.Window.Current.CoreWindow);
+			SetupEvent(global::Windows.UI.Xaml.Window.Current.CoreWindow);
 #endif
 		}
 

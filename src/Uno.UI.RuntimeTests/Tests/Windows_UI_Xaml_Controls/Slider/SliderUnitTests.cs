@@ -2,7 +2,7 @@
 // MUX reference SliderUnitTests.cpp
 
 #if HAS_UNO
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests;
 using static Private.Infrastructure.TestServices;
 using Windows.System;

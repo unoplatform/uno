@@ -15,14 +15,14 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
-using Microsoft.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Atk;
 using System.Runtime.CompilerServices;
 

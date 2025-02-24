@@ -7,9 +7,9 @@ using System;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
-	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
+	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
 		internal UIView? NativeOwner { get; set; }
 

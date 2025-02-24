@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class DragCompletedEventArgs : RoutedEventArgs
 	{

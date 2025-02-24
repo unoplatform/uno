@@ -30,6 +30,6 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public SkiaHost Create(Func<Windows.UI.Xaml.Application> appBuilder)
 		=> new X11ApplicationHost(appBuilder, _renderFrameRate);
 }

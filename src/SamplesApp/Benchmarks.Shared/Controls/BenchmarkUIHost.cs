@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 namespace Benchmarks.Shared.Controls
 {

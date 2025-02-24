@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -22,7 +22,7 @@ using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
 #elif __SKIA__
-using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
+using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;
 using NativeSingle = System.Double;
 
 #elif __ANDROID__
@@ -30,11 +30,11 @@ using NativePath = Android.Graphics.Path;
 using NativeSingle = System.Double;
 
 #elif __WASM__
-using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
+using NativePath = Windows.UI.Xaml.Shapes.Shape;
 using NativeSingle = System.Double;
 #endif
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{

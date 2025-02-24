@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Text;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	public partial class Italic : Span
 	{

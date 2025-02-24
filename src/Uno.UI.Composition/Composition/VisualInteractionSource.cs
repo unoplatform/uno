@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 public partial class VisualInteractionSource : CompositionObject, ICompositionInteractionSource
 {

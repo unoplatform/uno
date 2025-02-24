@@ -1,8 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Uno;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 [NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__MACOS__")]
 public partial class CompositionStrokeDashArray : CompositionObject, IList<float>, IEnumerable<float>

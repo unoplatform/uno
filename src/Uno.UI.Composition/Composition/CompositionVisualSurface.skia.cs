@@ -6,7 +6,7 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{

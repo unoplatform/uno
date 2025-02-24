@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
-	public partial class ContainerVisual : global::Microsoft.UI.Composition.Visual
+	public partial class ContainerVisual : global::Windows.UI.Composition.Visual
 	{
 	}
 }

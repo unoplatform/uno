@@ -4,7 +4,7 @@ using System.Text;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

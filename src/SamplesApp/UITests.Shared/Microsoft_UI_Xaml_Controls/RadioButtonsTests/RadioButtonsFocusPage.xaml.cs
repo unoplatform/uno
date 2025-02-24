@@ -7,9 +7,9 @@ using Uno.UI.Samples.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MUXControlsTestApp;
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
@@ -35,7 +35,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 			//testFrame.ChangeBarVisibility(visibility);
 		}
 
-		private void TestRadioButtons_SelectionChanged(object sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e)
+		private void TestRadioButtons_SelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
 		{
 			var index = TestRadioButtons1.SelectedIndex;
 			SelectedIndexTextBlock1.Text = index.ToString();
@@ -50,7 +50,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 
 		}
 
-		private void TestRadioButtons2_SelectionChanged(object sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e)
+		private void TestRadioButtons2_SelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
 		{
 			var index = TestRadioButtons2.SelectedIndex;
 			SelectedIndexTextBlock2.Text = index.ToString();
