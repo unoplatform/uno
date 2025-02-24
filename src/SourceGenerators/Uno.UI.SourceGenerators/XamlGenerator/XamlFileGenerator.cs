@@ -615,9 +615,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::{registration.ElementAt(2).Value}>(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
 				}
+				else if (registration.Length == 4)
+				{
+					writer.AppendLineIndented($"if (OperatingSystem.IsOSPlatform({registration.ElementAt(2).Value}))");
+					writer.AppendLineIndented("{");
+					using (writer.Indent())
+					{
+						if (registration.ElementAt(3).Value is not null)
+						{
+							writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::{registration.ElementAt(2).Value}>(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+						}
+						else
+						{
+							writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+						}
+					}
+					writer.AppendLineIndented("}");
+				}
 				else
 				{
-					throw new InvalidOperationException($"ApiExtensionAttribute should takes 2 or 3 arguments.");
+					throw new InvalidOperationException($"ApiExtensionAttribute should takes 2 to 4 arguments.");
 				}
 			}
 		}
