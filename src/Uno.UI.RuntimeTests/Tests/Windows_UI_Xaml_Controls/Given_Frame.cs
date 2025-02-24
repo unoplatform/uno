@@ -392,7 +392,7 @@ public class Given_Frame
 	{
 		var SUT = new Frame();
 		SUT.Navigate(typeof(MyPage));
-		Assert.ThrowsException<ArgumentNullException>(
+		Assert.ThrowsExactly<ArgumentNullException>(
 			() => SUT.SourcePageType = null);
 	}
 
@@ -457,7 +457,7 @@ public class Given_Frame
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
+		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 #if HAS_UNO
 		if (FeatureConfiguration.Frame.UseWinUIBehavior)
@@ -487,7 +487,7 @@ public class Given_Frame
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
+		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 		Assert.IsTrue(navigationFailed);
 	}

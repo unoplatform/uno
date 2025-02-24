@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		[TestMethod]
 		public async Task When_EmailMessage_Is_Null()
 		{
-			await Assert.ThrowsExceptionAsync<ArgumentNullException>(
+			await Assert.ThrowsExactlyAsync<ArgumentNullException>(
 				async () => await EmailManager.ShowComposeNewEmailAsync(null));
 		}
 	}
