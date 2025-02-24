@@ -17,7 +17,9 @@ partial class ScrollBar
 	[ThreadStatic]
 	private static Orientation? _fixedOrientation;
 
+#if !__SKIA__
 	private bool? _hasFixedVisualStates;
+#endif
 
 	internal static IDisposable MaterializingFixed(Orientation orientation)
 	{
@@ -42,9 +44,17 @@ partial class ScrollBar
 
 	internal bool HasFixedVisualStates()
 	{
+#if __SKIA__
+		return false;
+#else
+		if (this.GetTemplateRoot() is not { } templateRoot)
+		{
+			return false;
+		}
+
 		if (_hasFixedVisualStates is null)
 		{
-			var groups = VisualStateManager.GetVisualStateGroups(this.GetTemplateRoot());
+			var groups = VisualStateManager.GetVisualStateGroups(templateRoot);
 			if (groups.FirstOrDefault(g => g.Name == "CommonStates") is { } commonStates)
 			{
 				_hasFixedVisualStates = commonStates.States?.Any(s => s.Name == "Vertical_Normal") ?? false;
@@ -56,6 +66,7 @@ partial class ScrollBar
 		}
 
 		return _hasFixedVisualStates.Value;
+#endif
 	}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
