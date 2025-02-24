@@ -438,6 +438,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
+					// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
+					// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
 					{ OldText: not null, NewText: not null } when !_isRunningInsideVisualStudio => await DoUpdate(message.OldText, message.NewText),
 					{ OldText: null, NewText: not null } => await DoWrite(message.NewText),
 					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDelete(),

@@ -40,6 +40,7 @@ public partial class ClientHotReloadProcessor
 		string FilePath,
 		string? OldText,
 		string? NewText,
+		bool ForceSaveToDisk = true, // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
 		bool WaitForHotReload = true)
 	{
 		/// <summary>
@@ -95,6 +96,9 @@ public partial class ClientHotReloadProcessor
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
+	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
+		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload, forceSaveToDisk), ct);
+
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
@@ -133,7 +137,7 @@ public partial class ClientHotReloadProcessor
 				NewText = req.NewText,
 				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
 				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts,
-				ForceSaveOnDisk = true,
+				ForceSaveOnDisk = req.ForceSaveToDisk,
 			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
