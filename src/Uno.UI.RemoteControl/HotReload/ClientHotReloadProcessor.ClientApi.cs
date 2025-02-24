@@ -132,7 +132,8 @@ public partial class ClientHotReloadProcessor
 				OldText = req.OldText,
 				NewText = req.NewText,
 				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
-				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts
+				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts,
+				ForceSaveOnDisk = true,
 			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 

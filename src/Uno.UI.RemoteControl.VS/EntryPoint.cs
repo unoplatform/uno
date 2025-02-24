@@ -24,6 +24,7 @@ using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
+using Constants = EnvDTE.Constants;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -556,16 +557,38 @@ public partial class EntryPoint : IDisposable
 						.OfType<Document>()
 						.FirstOrDefault(d => AbsolutePathComparer.ComparerIgnoreCase.Equals(d.FullName, filePath));
 
-					if (document?.Object("TextDocument") is TextDocument textDocument)
+					var textDocument = document?.Object("TextDocument") as TextDocument;
+
+					if (textDocument is null) // The document is not open in the IDE, so we need to open it.
 					{
-						// Replace the content of the document with the new content.
+						// Resolve the path to the document (in case it's not open in the IDE).
+						// The path may contain a mix of forward and backward slashes, so we normalize it by using Path.GetFullPath.
+						var adjustedPathForOpening = Path.GetFullPath(filePath);
 
-						// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-						// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-						const int flags = 0b0000_0011;
+						document = _dte2.Documents.Open(adjustedPathForOpening);
+						textDocument = document?.Object("TextDocument") as TextDocument;
+					}
 
-						textDocument.StartPoint.CreateEditPoint()
-							.ReplaceText(textDocument.EndPoint, fileContent, flags);
+					if (document is null || textDocument is null)
+					{
+						throw new InvalidOperationException($"Failed to open document {filePath}");
+					}
+
+					document.Activate(); // Sometimes the document is "soft closed", so we need to activate it for the user to see it.
+
+					// Replace the content of the document with the new content.
+
+					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
+					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
+					const int flags = 0b0000_0011;
+
+					textDocument.StartPoint.CreateEditPoint()
+						.ReplaceText(textDocument.EndPoint, fileContent, flags);
+
+					if (request.ForceFileSave)
+					{
+						// Save the document.
+						document.Save();
 					}
 				}
 			}
