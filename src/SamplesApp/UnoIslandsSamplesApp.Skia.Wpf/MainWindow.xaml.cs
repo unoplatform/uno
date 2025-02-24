@@ -23,7 +23,7 @@ namespace UnoIslandsSamplesApp.Skia.Wpf
 
 		private async void XamlHost_LoadedAsync(object sender, RoutedEventArgs e)
 		{
-			await SamplesApp.App.HandleRuntimeTests(string.Join(";", System.Environment.GetCommandLineArgs()));
+			await SamplesApp.App.HandleRuntimeTests(string.Join("&", System.Environment.GetCommandLineArgs()));
 		}
 	}
 }
