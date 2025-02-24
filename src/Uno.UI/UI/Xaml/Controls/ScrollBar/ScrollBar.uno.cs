@@ -3,9 +3,7 @@ using System.Linq;
 using Uno.Disposables;
 using static Uno.UI.FeatureConfiguration;
 
-
-#if HAS_UNO_WINUI
-#else
+#if !HAS_UNO_WINUI
 using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
@@ -19,7 +17,7 @@ partial class ScrollBar
 
 #if !__SKIA__
 	private bool? _hasFixedVisualStates;
-#else
+#endif
 
 	internal static IDisposable MaterializingFixed(Orientation orientation)
 	{
