@@ -19,8 +19,9 @@ public partial class CoreWebView2
 			return null;
 		}
 
-		var nativeWebView = new NativeWebView(this);
-		contentPresenter.Content = nativeWebView;
+		var htmlWebViewElement = new HtmlWebViewElement(this);
+		contentPresenter.Content = htmlWebViewElement;
+		var nativeWebView = new NativeWebView(this, htmlWebViewElement.HtmlId);
 		return nativeWebView;
 	}
 }

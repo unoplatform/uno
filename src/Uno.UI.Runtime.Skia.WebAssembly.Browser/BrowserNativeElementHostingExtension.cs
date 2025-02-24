@@ -54,9 +54,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	public object CreateSampleComponent(string text)
 	{
-		var id = new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10));
-		var element = BrowserHtmlElement.CreateHtmlElement(id, "div");
-		NativeMethods.CreateSampleComponent(id, text);
+		var element = BrowserHtmlElement.CreateHtmlElement("div");
+		NativeMethods.CreateSampleComponent(element.ElementId, text);
 		return element;
 	}
 

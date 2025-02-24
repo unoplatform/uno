@@ -24,6 +24,7 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.WebAssembly.Browser</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<DefineConstants>$(DefineConstants);WASM_SKIA</DefineConstants>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
@@ -64,8 +65,17 @@
 
 		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
 
+		<TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
+			<Link>ts\Runtime\WebView.ts</Link>
+		</TypeScriptCompile>
+
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.Interop.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Interop.wasm.cs" />
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -113,6 +123,10 @@
 
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+
 	</ItemGroup>
 
 </Project>

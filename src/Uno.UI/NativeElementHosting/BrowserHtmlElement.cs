@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 namespace Uno.UI.Runtime.Skia;
 
@@ -10,10 +11,30 @@ namespace Uno.UI.Runtime.Skia;
 /// </summary>
 public sealed partial class BrowserHtmlElement : IDisposable
 {
+#if __SKIA__
+	private GCHandle? _gcHandle;
+#endif
+
 	/// <summary>
 	/// The native HTMLElement id.
 	/// </summary>
 	public string ElementId { get; }
+
+	private BrowserHtmlElement()
+	{
+#if __SKIA__
+		if (!OperatingSystem.IsBrowser())
+#endif
+		{
+			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on the Wasm target with the skia backend.");
+		}
+
+#if __SKIA__
+		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+		var handle = GCHandle.ToIntPtr(_gcHandle.Value);
+		ElementId = "uno-" + handle;
+#endif
+	}
 
 	private BrowserHtmlElement(string elementId)
 	{
@@ -23,6 +44,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		{
 			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on the Wasm target with the skia backend.");
 		}
+
 #if __SKIA__
 		ElementId = elementId;
 #endif
@@ -40,6 +62,18 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	{
 		CreateHtmlElementAndAddToStore(elementId, tagName);
 		return new BrowserHtmlElement(elementId);
+	}
+
+	/// <summary>
+	/// Creates an element with the given tag name and a random id.
+	/// </summary>
+	/// <param name="tagName">Tag name.</param>
+	/// <returns>Element instance.</returns>
+	public static BrowserHtmlElement CreateHtmlElement(string tagName)
+	{
+		var element = new BrowserHtmlElement();
+		CreateHtmlElementAndAddToStore(element.ElementId, tagName);
+		return element;
 	}
 
 	/// <summary>

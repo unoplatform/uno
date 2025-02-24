@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.Media.Playback;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -61,6 +62,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
 		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
