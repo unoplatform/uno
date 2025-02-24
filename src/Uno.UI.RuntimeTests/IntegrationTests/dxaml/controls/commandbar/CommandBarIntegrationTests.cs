@@ -3043,6 +3043,9 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates the dynamic overflow moving order.")]
+#if __ANDROID__
+		[Ignore("Test is flaky on Android https://github.com/unoplatform/uno/issues/19585")]
+#endif
 		public async Task ValidateDynamicOverflowOrderBasic()
 		{
 			TestCleanupWrapper cleanup;
