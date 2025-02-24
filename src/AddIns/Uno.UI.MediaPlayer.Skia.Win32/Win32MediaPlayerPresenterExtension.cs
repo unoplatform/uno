@@ -14,9 +14,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
+
+[assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension), "windows", typeof(MediaPlayerPresenter))]
 
 namespace Uno.UI.MediaPlayer.Skia.Win32;
 
@@ -133,7 +136,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			}
 			else if (!_hwndToExtension.TryGetValue(hwnd, out ext))
 			{
-				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(ext)}.");
+				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToExtension)}.");
 			}
 
 			if (ext.TryGetTarget(out var target))

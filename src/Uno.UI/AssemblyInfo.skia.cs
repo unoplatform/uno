@@ -14,3 +14,4 @@ using global::System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
+[assembly: InternalsVisibleTo("SamplesApp.Skia.Generic")]

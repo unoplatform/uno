@@ -31,6 +31,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static void OnNativePaste(string clipboardText)
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
+		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		{
+			textBox.PasteFromClipboard(clipboardText);
+		}
+	}
+
+	[JSExport]
 	private static void OnSelectionChanged(int selectionStart, int selectionLength)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;

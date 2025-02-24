@@ -14,6 +14,11 @@ public partial class Compositor
 	private List<CompositionAnimation> _runningAnimations = new();
 	private List<ColorBrushTransitionState> _backgroundTransitions = new();
 
+	static partial void Initialize()
+	{
+		UnoSkiaApi.Initialize();
+	}
+
 	internal bool? IsSoftwareRenderer { get; set; }
 
 	internal void RegisterAnimation(CompositionAnimation animation)
