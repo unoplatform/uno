@@ -62,7 +62,7 @@ public class Given_DateTimeFormatter
 		var formatter = new DateTimeFormatter("longdate");
 		var dateToFormat = new DateTimeOffset(2024, 1, 15, 0, 0, 0, TimeSpan.Zero);
 
-		Assert.ThrowsException<NotSupportedException>(() =>
+		Assert.ThrowsExactly<NotSupportedException>(() =>
 			formatter.Format(dateToFormat, "UTC"));
 	}
 

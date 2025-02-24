@@ -154,6 +154,9 @@ dotnet_diagnostic.IDE0051.severity = warning
 # MSTEST0004: Public types should be test classes
 # dotnet_diagnostic.MSTEST0004.severity = warning
 
+# MSTEST0006: Avoid '[ExpectedException]'
+dotnet_diagnostic.MSTEST0006.severity = warning
+
 # MSTEST0007: Use test attributes only on test methods
 dotnet_diagnostic.MSTEST0007.severity = warning
 

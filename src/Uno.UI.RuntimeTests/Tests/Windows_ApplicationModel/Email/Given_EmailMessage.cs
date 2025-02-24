@@ -58,7 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Body_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailMessage.Body = null);
 		}
 
@@ -66,7 +66,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Subject_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailMessage.Subject = null);
 		}
 
@@ -83,7 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Null_To_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailMessage.To.Add(null));
 		}
 
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Null_CC_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailMessage.CC.Add(null));
 		}
 
@@ -99,7 +99,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Null_Bcc_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailMessage.Bcc.Add(null));
 		}
 	}

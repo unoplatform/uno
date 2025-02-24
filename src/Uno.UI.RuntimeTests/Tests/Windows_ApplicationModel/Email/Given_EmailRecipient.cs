@@ -15,14 +15,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		[TestMethod]
 		public void When_Address_Is_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => new EmailRecipient(null));
 		}
 
 		[TestMethod]
 		public void When_Name_Is_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => new EmailRecipient("someone@example.com", null));
 		}
 
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Address_Set_Null()
 		{
 			var emailRecipient = new EmailRecipient();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailRecipient.Address = null);
 		}
 
@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Name_Set_Null()
 		{
 			var emailRecipient = new EmailRecipient();
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => emailRecipient.Name = null);
 		}
 
