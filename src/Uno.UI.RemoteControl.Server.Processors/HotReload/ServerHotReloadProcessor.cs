@@ -47,6 +47,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public async Task ProcessFrame(Frame frame)
 		{
+			// Messages received from the CLIENT application
 			switch (frame.Name)
 			{
 				case ConfigureServer.Name:
@@ -64,14 +65,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// <inheritdoc />
 		public async Task ProcessIdeMessage(IdeMessage message, CancellationToken ct)
 		{
+			// Messages received from the IDE
 			switch (message)
 			{
-				case HotReloadRequestedIdeMessage hrRequested:
-					// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
-					await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
-					if (_pendingHotReloadRequestToIde.TryGetValue(hrRequested.RequestId, out var request))
+				case IdeResultMessage resultMessage:
+					if (_pendingRequestsToIde.TryGetValue(resultMessage.IdeCorrelationId, out var tcs))
 					{
-						request.TrySetResult(hrRequested.Result);
+						tcs.TrySetResult(resultMessage.Result);
 					}
 					break;
 
@@ -348,7 +348,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						await Task.Delay(_noChangesRetryDelay);
 					}
 
-					if (await _owner.RequestHotReloadToIde(Id))
+					if (await _owner.RequestHotReloadToIde())
 					{
 						return;
 					}
@@ -426,8 +426,39 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 		#endregion
 
+		#region SendAndWaitForResult
+		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingRequestsToIde = new();
+
+		private long _lasIdeCorrelationId;
+
+		private long GetNextIdeCorrelationId() => Interlocked.Increment(ref _lasIdeCorrelationId);
+
+		private async Task<Result> SendAndWaitForResult<TMessage>(TMessage message)
+			where TMessage : IdeMessageWithCorrelationId
+		{
+			var tcs = new TaskCompletionSource<Result>();
+			try
+			{
+				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
+
+				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
+				await _remoteControlServer.SendMessageToIDEAsync(message);
+
+				return await tcs.Task;
+			}
+			catch (Exception ex)
+			{
+				return Result.Fail(ex);
+			}
+			finally
+			{
+				_pendingRequestsToIde.TryRemove(message.CorrelationId, out _);
+			}
+		}
+		#endregion
+
 		#region UpdateFile
-		private readonly ConcurrentDictionary<long, TaskCompletionSource<Result>> _pendingHotReloadRequestToIde = new();
 
 		private async Task ProcessUpdateFile(UpdateFile message)
 		{
@@ -438,23 +469,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
-					// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
-					{ OldText: not null, NewText: not null } when !_isRunningInsideVisualStudio => await DoUpdate(message.OldText, message.NewText),
-					{ OldText: null, NewText: not null } => await DoWrite(message.NewText),
-					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDelete(),
+					{ OldText: not null, NewText: not null } => await (_isRunningInsideVisualStudio
+						? DoRemoteUpdateInIde(message.NewText)
+						: DoUpdateOnDisk(message.OldText, message.NewText)),
+					{ OldText: null, NewText: not null } => await (_isRunningInsideVisualStudio
+						? DoRemoteUpdateInIde(message.NewText)
+						: DoWriteToDisk(message.NewText)),
+					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDeleteFromDisk(),
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
 				};
+
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
-					var filesContent =
-						message is { FilePath: { Length: > 0 } f, NewText: { Length: > 0 } t }
-							? new System.Collections.Generic.Dictionary<string, string> { { f, t } }
-							: null;
 
-					var forceFileSaveInIde = _isRunningInsideVisualStudio && filesContent is not null;
-					await RequestHotReloadToIde(hotReload.Id, filesContent, forceFileSaveInIde);
+					await RequestHotReloadToIde();
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
@@ -465,7 +494,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			async ValueTask<(FileUpdateResult, string?)> DoUpdate(string oldText, string newText)
+			async Task<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
+			{
+				var saveToDisk = message.ForceSaveOnDisk ?? true; // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
+
+				// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
+				// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
+				var ideMsg = new UpdateFileIdeMessage(GetNextIdeCorrelationId(), message.FilePath, newText, saveToDisk);
+				var result = await SendAndWaitForResult(ideMsg);
+
+				return result.IsSuccess
+					? (FileUpdateResult.Success, null)
+					: (FileUpdateResult.Failed, result.Error);
+			}
+
+			async Task<(FileUpdateResult, string?)> DoUpdateOnDisk(string oldText, string newText)
 			{
 				if (!File.Exists(message.FilePath))
 				{
@@ -506,7 +549,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return (FileUpdateResult.Success, null);
 			}
 
-			async ValueTask<(FileUpdateResult, string?)> DoWrite(string newText)
+			async Task<(FileUpdateResult, string?)> DoWriteToDisk(string newText)
 			{
 				if (!message.IsCreateDeleteAllowed && !File.Exists(message.FilePath))
 				{
@@ -530,7 +573,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				return (FileUpdateResult.Success, null);
 			}
 
-			async ValueTask<(FileUpdateResult, string?)> DoDelete()
+			async ValueTask<(FileUpdateResult, string?)> DoDeleteFromDisk()
 			{
 				if (!File.Exists(message.FilePath))
 				{
@@ -587,29 +630,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private async Task<bool> RequestHotReloadToIde(long sequenceId, IReadOnlyDictionary<string, string>? optionalUpdatedFilesContent = null, bool forceFileSave = false)
+		private async Task<bool> RequestHotReloadToIde()
 		{
-			var hrRequest = new ForceHotReloadIdeMessage(sequenceId, optionalUpdatedFilesContent, forceFileSave);
-			var hrRequested = new TaskCompletionSource<Result>();
+			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
-			try
-			{
-				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-				await using var ctReg = cts.Token.Register(() => hrRequested.TrySetCanceled());
+			// Note: For now the IDE will notify the ProcessingFiles only in case of force hot reload request sent by client!
+			await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
 
-				_pendingHotReloadRequestToIde.TryAdd(hrRequest.CorrelationId, hrRequested);
-				await _remoteControlServer.SendMessageToIDEAsync(hrRequest);
-
-				return await hrRequested.Task is { IsSuccess: true };
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			finally
-			{
-				_pendingHotReloadRequestToIde.TryRemove(hrRequest.CorrelationId, out _);
-			}
+			return result.IsSuccess;
 		}
 		#endregion
 
