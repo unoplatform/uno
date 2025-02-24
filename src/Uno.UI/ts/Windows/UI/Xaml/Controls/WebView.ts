@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls {
 			(<HTMLIFrameElement>document.getElementById(htmlId)).setAttribute(name, value);
 		}
 
-		static getAttribute(htmlId: string, name: string) : string {
+		static getAttribute(htmlId: string, name: string): string {
 			return (<HTMLIFrameElement>document.getElementById(htmlId)).getAttribute(name);
 		}
 
@@ -48,19 +48,19 @@ namespace Microsoft.UI.Xaml.Controls {
 			(<HTMLIFrameElement>document.getElementById(htmlId)).style.backgroundColor = color;
 		}
 
-        static setupEvents(htmlId: string) {
+		static setupEvents(htmlId: string) {
 			const iframe = <HTMLIFrameElement>document.getElementById(htmlId);
 			iframe.addEventListener('load', WebView.onLoad);
-        }
+		}
 
-        static cleanupEvents(htmlId: string) {
+		static cleanupEvents(htmlId: string) {
 			const iframe = <HTMLIFrameElement>document.getElementById(htmlId);
 			iframe.removeEventListener('load', WebView.onLoad);
-        }
+		}
 
-        private static onLoad(event: Event) {
+		private static onLoad(event: Event) {
 			const iframe = event.currentTarget as HTMLIFrameElement;
 			WebView.unoExports.DispatchLoadEvent(iframe.id);
-        }
+		}
 	}
 }
