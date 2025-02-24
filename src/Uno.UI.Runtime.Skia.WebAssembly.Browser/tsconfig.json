@@ -14,6 +14,7 @@
   },
 	"include": [
 		"../Uno.UI/ts/types/**/*",
+		"../Uno.UI/ts/Windows/UI/Xaml/Controls/WebView.ts",
 		"ts/**/*",
 		"tsBindings/**/*"
 	]

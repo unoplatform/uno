@@ -6,7 +6,6 @@ using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -36,6 +35,9 @@ public partial class WebView2 : Control, IWebView
 		CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
 
 		Loaded += WebView2_Loaded;
+#if __SKIA__
+		Unloaded += WebView2_Unloaded;
+#endif
 	}
 
 	public CoreWebView2 CoreWebView2 { get; }
@@ -48,8 +50,21 @@ public partial class WebView2 : Control, IWebView
 
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
-	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) =>
-		EnsureCoreWebView2();
+	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	{
+		if (!_coreWebView2Initialized)
+		{
+			EnsureCoreWebView2();
+		}
+
+#if __SKIA__
+		CoreWebView2.OnLoaded();
+#endif
+	}
+
+#if __SKIA__
+	private void WebView2_Unloaded(object sender, RoutedEventArgs e) => CoreWebView2?.OnUnloaded();
+#endif
 
 	public IAsyncAction EnsureCoreWebView2Async() =>
 		AsyncAction.FromTask(ct =>
