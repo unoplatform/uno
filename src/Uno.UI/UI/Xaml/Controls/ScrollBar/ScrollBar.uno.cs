@@ -17,7 +17,9 @@ partial class ScrollBar
 	[ThreadStatic]
 	private static Orientation? _fixedOrientation;
 
+#if !__SKIA__
 	private bool? _hasFixedVisualStates;
+#else
 
 	internal static IDisposable MaterializingFixed(Orientation orientation)
 	{
