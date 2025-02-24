@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls.WebView.Native.Skia;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 #if WASM_SKIA
