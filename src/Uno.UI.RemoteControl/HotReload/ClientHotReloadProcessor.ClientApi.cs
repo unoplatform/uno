@@ -40,7 +40,7 @@ public partial class ClientHotReloadProcessor
 		string FilePath,
 		string? OldText,
 		string? NewText,
-		bool ForceSaveToDisk = true, // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
+		bool? ForceSaveToDisk = null,
 		bool WaitForHotReload = true)
 	{
 		/// <summary>

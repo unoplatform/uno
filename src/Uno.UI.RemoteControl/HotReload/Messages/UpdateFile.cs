@@ -38,7 +38,7 @@ public class UpdateFile : IMessage
 	/// Currently, this is only used for VisualStudio, because the update requires a file save on disk for other IDEs.
 	/// On VisualStudio, the save to disk is not required for doing Hot Reload.
 	/// </remarks>
-	public bool ForceSaveOnDisk { get; set; }
+	public bool? ForceSaveOnDisk { get; set; }
 
 	/// <summary>
 	/// Indicates if the file can be created or deleted.
