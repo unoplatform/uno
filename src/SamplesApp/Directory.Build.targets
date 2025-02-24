@@ -7,7 +7,7 @@
 		<Message Text="Building uno.ui.tasks" Importance="low" />
 		<MSBuild Projects="$(MsBuildThisFileDirectory)../SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj"
 				 Targets="Restore;Build"
-				 Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0" />
+				 Properties="Configuration=$(Configuration);TargetFramework=netstandard2.0;RuntimeIdentifier=" />
 	</Target>
 
 	<ItemGroup>

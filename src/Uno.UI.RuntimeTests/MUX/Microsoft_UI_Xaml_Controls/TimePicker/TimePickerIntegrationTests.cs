@@ -83,14 +83,15 @@ public class TimePickerIntegrationTests
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 		await TestServices.WindowHelper.WaitForIdle();
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
-		await TestServices.RunOnUIThread(() =>
+		if (!OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
 		{
-			var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
-			Assert.IsNotNull(timePickerFlyoutPresenter);
-			Assert.IsTrue(timePickerFlyoutPresenter.IsDefaultShadowEnabled);
-		});
-#endif
+			await TestServices.RunOnUIThread(() =>
+			{
+				var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
+				Assert.IsNotNull(timePickerFlyoutPresenter);
+				Assert.IsTrue(timePickerFlyoutPresenter.IsDefaultShadowEnabled);
+			});
+		}
 	}
 
 	[TestMethod]
@@ -265,6 +266,9 @@ public class TimePickerIntegrationTests
 	public async Task SelectingTimeSetsSelectedTime()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
+#if HAS_UNO
+		timePicker.UseNativeStyle = false;
+#endif
 		var targetTime = CreateTime(4, 30, 2);
 		targetTime.Second = 0;
 
@@ -351,6 +355,9 @@ public class TimePickerIntegrationTests
 	public async Task ValidateMinuteIncrementProperty()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
+#if HAS_UNO
+		timePicker.UseNativeStyle = false;
+#endif
 
 		var timeChangedEvent = false;
 		var timeChangedRegistration = CreateSafeEventRegistration<TimePicker, EventHandler<TimePickerValueChangedEventArgs>>("TimeChanged");

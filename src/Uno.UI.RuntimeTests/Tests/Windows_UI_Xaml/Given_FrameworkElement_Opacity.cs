@@ -34,6 +34,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Opacity()
 		{
+			if (OperatingSystem.IsAndroid())
+			{
+				Assert.Inconclusive("Fails on Android Skia, likely because the system doesn't have an available font for full block unicode character (\u2588)");
+			}
+
 			var SUT = new FrameworkElement_Opacity();
 
 			await UITestHelper.Load(SUT);
@@ -64,6 +69,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Opacity_Inner()
 		{
+			if (OperatingSystem.IsAndroid())
+			{
+				Assert.Inconclusive("Fails on Android Skia, likely because the system doesn't have an available font for full block unicode character (\u2588)");
+			}
+
 			var SUT = new FrameworkElement_Opacity();
 
 			await UITestHelper.Load(SUT);

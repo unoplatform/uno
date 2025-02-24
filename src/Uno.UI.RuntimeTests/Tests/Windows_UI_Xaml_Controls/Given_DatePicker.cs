@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				using (new TimeZoneModifier(TimeZoneInfo.CreateCustomTimeZone("FakeTestTimeZone", TimeSpan.FromHours(offset), "FakeTestTimeZone", "FakeTestTimeZone")))
 				{
 					var datePicker = new DatePicker();
+					datePicker.UseNativeStyle = false;
 					await UITestHelper.Load(datePicker);
 
 					await DateTimePickerHelper.OpenDateTimePicker(datePicker);

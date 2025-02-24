@@ -309,10 +309,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaIOS)]
-#if __ANDROID__
-		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
-#endif
+		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
