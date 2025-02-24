@@ -110,13 +110,13 @@ namespace Uno.UI.Controls
 			while (_stackUpdates.Any())
 			{
 				var navigation = _stackUpdates.Dequeue();
-				await UpdateStack(navigation.page, navigation.args.NavigationTransitionInfo);
+				await UpdateStack(navigation.page, navigation.args);
 			}
 
 			_isUpdatingStack = false;
 		}
 
-		private async Task UpdateStack(Page newPage, NavigationTransitionInfo transitionInfo)
+		private async Task UpdateStack(Page newPage, NavigationEventArgs args)
 		{
 			// When AndroidUnloadInactivePages is false, we keep the pages that are still a part of the navigation history
 			// (i.e. in BackStack or ForwardStack) as children and make then invisible instead of removing them. The order
@@ -133,11 +133,11 @@ namespace Uno.UI.Controls
 
 			var oldPage = _currentPage.page;
 			var oldTransitionInfo = _currentPage.transitionInfo;
-			_currentPage = (newPage, transitionInfo);
+			_currentPage = (newPage, args.NavigationTransitionInfo);
 
 			if (oldPage is not null)
 			{
-				if (GetIsAnimated(oldTransitionInfo))
+				if (args.NavigationMode is NavigationMode.Back && GetIsAnimated(oldTransitionInfo))
 				{
 					await oldPage.AnimateAsync(GetExitAnimation());
 					oldPage.ClearAnimation();
@@ -162,7 +162,7 @@ namespace Uno.UI.Controls
 				{
 					Children.Add(newPage);
 				}
-				if (GetIsAnimated(transitionInfo))
+				if (args.NavigationMode is not NavigationMode.Back && GetIsAnimated(args.NavigationTransitionInfo))
 				{
 					await newPage.AnimateAsync(GetEnterAnimation());
 					newPage.ClearAnimation();
