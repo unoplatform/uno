@@ -135,6 +135,34 @@ namespace Uno.UI.Controls
 			var oldTransitionInfo = _currentPage.transitionInfo;
 			_currentPage = (newPage, args.NavigationTransitionInfo);
 
+			if (newPage is not null)
+			{
+				if (Children.Contains(newPage))
+				{
+					newPage.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					if (args.NavigationMode is NavigationMode.Back)
+					{
+						// insert the new page underneath the old one so that
+						// when the old one animates out you see the new page
+						// without a time slice in between where neither
+						// the old nor the new page is visible.
+						Children.Insert(0, newPage);
+					}
+					else
+					{
+						Children.Add(newPage);
+					}
+				}
+				if (args.NavigationMode is not NavigationMode.Back && GetIsAnimated(args.NavigationTransitionInfo))
+				{
+					await newPage.AnimateAsync(GetEnterAnimation());
+					newPage.ClearAnimation();
+				}
+			}
+
 			if (oldPage is not null)
 			{
 				if (args.NavigationMode is NavigationMode.Back && GetIsAnimated(oldTransitionInfo))
@@ -149,23 +177,6 @@ namespace Uno.UI.Controls
 				else
 				{
 					oldPage.Visibility = Visibility.Collapsed;
-				}
-			}
-
-			if (newPage is not null)
-			{
-				if (Children.Contains(newPage))
-				{
-					newPage.Visibility = Visibility.Visible;
-				}
-				else
-				{
-					Children.Add(newPage);
-				}
-				if (args.NavigationMode is not NavigationMode.Back && GetIsAnimated(args.NavigationTransitionInfo))
-				{
-					await newPage.AnimateAsync(GetEnterAnimation());
-					newPage.ClearAnimation();
 				}
 			}
 
