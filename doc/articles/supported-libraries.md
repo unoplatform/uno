@@ -30,5 +30,6 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 ## Other libraries
 
 * [SkiaSharp](https://www.nuget.org/packages/SkiaSharp.Views.Uno)
+* [Shiny .NET](https://shinylib.net/mediator/extensions/unoplatform/)
 
 If we're missing a library here, [drop us a line](https://github.com/unoplatform/uno/issues/new/choose) or [create a Pull Request](https://github.com/unoplatform/uno/blob/master/doc/articles/supported-libraries.md)!
