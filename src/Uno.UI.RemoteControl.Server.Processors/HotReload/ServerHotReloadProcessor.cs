@@ -35,6 +35,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public string Scope => WellKnownScopes.HotReload;
 
+		private bool _isRunningInsideVisualStudio;
+
+		private void InterpretMsbuildProperties(IDictionary<string, string> properties)
+		{
+			// This is called from ProcessConfigureServer() during initialization.
+
+			_isRunningInsideVisualStudio = properties
+				.TryGetValue("BuildingInsideVisualStudio", out var vs) && vs.Equals("true", StringComparison.OrdinalIgnoreCase);
+		}
+
 		public async Task ProcessFrame(Frame frame)
 		{
 			switch (frame.Name)
@@ -397,7 +407,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Base project path: {configureServer.ProjectPath}");
 			}
 
-			if (InitializeMetadataUpdater(configureServer))
+			var properties = configureServer
+				.MSBuildProperties
+				.ToDictionary();
+
+			InterpretMsbuildProperties(properties);
+
+			if (InitializeMetadataUpdater(configureServer, properties))
 			{
 				this.Log().LogDebug($"Metadata updater initialized");
 			}
@@ -422,7 +438,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					{ OldText: not null, NewText: not null } => await DoUpdate(message.OldText, message.NewText),
+					{ OldText: not null, NewText: not null } when !_isRunningInsideVisualStudio => await DoUpdate(message.OldText, message.NewText),
 					{ OldText: null, NewText: not null } => await DoWrite(message.NewText),
 					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDelete(),
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
@@ -434,7 +450,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						message is { FilePath: { Length: > 0 } f, NewText: { Length: > 0 } t }
 							? new System.Collections.Generic.Dictionary<string, string> { { f, t } }
 							: null;
-					await RequestHotReloadToIde(hotReload.Id, filesContent, message.ForceSaveOnDisk && filesContent is not null);
+
+					var forceFileSaveInIde = _isRunningInsideVisualStudio && filesContent is not null;
+					await RequestHotReloadToIde(hotReload.Id, filesContent, forceFileSaveInIde);
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));

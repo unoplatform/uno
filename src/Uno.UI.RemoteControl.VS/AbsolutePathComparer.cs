@@ -22,7 +22,7 @@ internal class AbsolutePathComparer : IEqualityComparer<string?>
 
 	public static readonly AbsolutePathComparer Comparer = new(ignoreCase: false);
 	public static readonly AbsolutePathComparer ComparerIgnoreCase = new(ignoreCase: true);
-	
+
 	private enum PathType
 	{
 		Relative,
@@ -99,7 +99,7 @@ internal class AbsolutePathComparer : IEqualityComparer<string?>
 		var (type, drive, segments) = ParsePath(path.AsSpan());
 
 		var hash = 17;
-		
+
 		// Include the path type in the hash
 		hash = unchecked(hash * 79 + (int)type);
 
