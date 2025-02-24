@@ -206,7 +206,11 @@ namespace SamplesApp
 
 		private void SetupAndroidEnvironment()
 		{
-#if __ANDROID__
+			if (!OperatingSystem.IsAndroid())
+			{
+				return;
+			}
+
 			// Read a file from /sdcard/environment.txt and set the environment variables	
 			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
 			if (File.Exists(environmentFilePath))
@@ -224,7 +228,6 @@ namespace SamplesApp
 					}
 				}
 			}
-#endif
 		}
 
 

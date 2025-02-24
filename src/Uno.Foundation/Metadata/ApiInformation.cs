@@ -143,15 +143,34 @@ public partial class ApiInformation
 				return type;
 			}
 
-			foreach (var assembly in _assemblies)
+			var parts = typeName.Split(',');
+			if (parts.Length == 2)
 			{
-				type = assembly.GetType(typeName);
+				var fullyQualifierName = parts[0].Trim();
+				var assemblyName = parts[1].Trim();
+				var assembly = _assemblies.FirstOrDefault(a => a.FullName?.Split(',')[0] == assemblyName);
+
+				type = assembly?.GetType(fullyQualifierName);
 
 				if (type != null)
 				{
 					_typeCache[typeName] = type;
 
 					return type;
+				}
+			}
+			else
+			{
+				foreach (var assembly in _assemblies)
+				{
+					type = assembly.GetType(typeName);
+
+					if (type != null)
+					{
+						_typeCache[typeName] = type;
+
+						return type;
+					}
 				}
 			}
 

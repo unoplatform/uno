@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetCurrent)-android</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetCurrent)-android</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>

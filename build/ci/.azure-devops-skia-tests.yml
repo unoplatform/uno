@@ -73,7 +73,7 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-browserwasm --tfm net9.0-desktop'
+      UnoCheckParameters: '--tfm net9.0-browserwasm --tfm net9.0-desktop --tfm net9.0-android'
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -129,6 +129,27 @@ jobs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
       ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\build-skia-android.binlog
+    displayName: Build Skia Android Head
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android/publish
+      Contents: 'uno.platform.samplesapp.skia-Signed.apk'
+      TargetFolder: $(build.artifactstagingdirectory)/android
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-android-skia-build
+      ArtifactType: Container
+
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -194,7 +215,7 @@ jobs:
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
       $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
-    displayName: Build iOS Skia Head
+    displayName: Build Skia iOS Head
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
@@ -712,3 +733,113 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - Skia_Tests_Build_Apple
+
+##
+## Android Skia
+##
+
+- job: Android_Tests
+  displayName: 'Run Android Tests'
+  dependsOn:
+  - Skia_Tests_Build
+
+  timeoutInMinutes: 45
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  pool: ${{ parameters.vmLinuxPool }}
+
+  strategy:
+    matrix:
+
+      Android_9.0_RuntimeTests_0_net8:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      Android_9.0_RuntimeTests_1_net8:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      Android_9.0_RuntimeTests_2_net8:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      Android_9.0_RuntimeTests_3_net8:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      Android_9.0_RuntimeTests_4_net8:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 4
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
+
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download SamplesApp UnitTests'
+    inputs:
+        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+
+    displayName: Run Android Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME)/$(UITEST_RUNTIME_TEST_GROUP) Test Run'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: android-skia-results
+      ArtifactType: Container

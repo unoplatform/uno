@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.UI.Xaml.Controls;
@@ -8,7 +9,7 @@ using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
-	internal class SafeEventRegistration<TElement, TDelegate>
+	internal class SafeEventRegistration<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] TElement, TDelegate>
 		where TElement : class
 		where TDelegate : Delegate
 	{
