@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
 
-namespace Uno.UI.Xaml.Controls.WebView.Native.Skia;
+namespace Uno.UI.Xaml.Controls;
 
 internal interface ICleanableNativeWebView : INativeWebView
 {
