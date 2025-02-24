@@ -126,12 +126,6 @@ namespace Uno.UI.Samples.Tests
 #else
 				false;
 #endif
-
-			if (unitTestContentRoot.ActualWidth < 450)
-			{
-				// Reduce the size of outputColumn to just 50px so that unitTestContentRoot takes larger width
-				outputColumn.Width = new GridLength(50);
-			}
 		}
 
 		private static void OverrideDebugProviderAsserts()
