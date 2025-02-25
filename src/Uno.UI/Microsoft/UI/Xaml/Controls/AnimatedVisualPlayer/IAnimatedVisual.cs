@@ -6,26 +6,25 @@ using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+
+/// <summary>
+/// An animated Composition.Visual that can be used by other objects, such as an AnimatedVisualPlayer or AnimatedIcon.
+/// </summary>
+public partial interface IAnimatedVisual : IDisposable
 {
 	/// <summary>
-	/// An animated Composition.Visual that can be used by other objects, such as an AnimatedVisualPlayer or AnimatedIcon.
+	/// Gets the root Visual of the animated visual.
 	/// </summary>
-	public partial interface IAnimatedVisual : IDisposable
-	{
-		/// <summary>
-		/// Gets the root Visual of the animated visual.
-		/// </summary>
-		Visual RootVisual { get; }
+	Visual RootVisual { get; }
 
-		/// <summary>
-		/// Gets the size of the animated visual.
-		/// </summary>
-		Vector2 Size { get; }
+	/// <summary>
+	/// Gets the size of the animated visual.
+	/// </summary>
+	Vector2 Size { get; }
 
-		/// <summary>
-		/// Gets the duration of the animated visual.
-		/// </summary>
-		TimeSpan Duration { get; }
-	}
+	/// <summary>
+	/// Gets the duration of the animated visual.
+	/// </summary>
+	TimeSpan Duration { get; }
 }
