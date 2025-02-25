@@ -1370,6 +1370,73 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(newTwo, GetAllPanelChildren(SUT).Last());
 		}
 
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_SelectedContainer_Recycled_And_Reused_VisualState()
+		{
+			var SUT = (ListView)XamlReader.Load(
+			"""
+			<ListView xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="100">
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ListViewItem">
+									<Grid x:Name="RootGrid">
+										<VisualStateManager.VisualStateGroups>
+											<VisualStateGroup x:Name="CommonStates">
+												<VisualState x:Name="Normal" />
+												<VisualState x:Name="PointerOver">
+													<VisualState.Setters>
+														<Setter Target="RootGrid.Background"
+																Value="Silver" />
+													</VisualState.Setters>
+												</VisualState>
+												<VisualState x:Name="Pressed">
+													<Storyboard>
+														<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid"
+																					   Storyboard.TargetProperty="Background">
+															<DiscreteObjectKeyFrame KeyTime="0"
+																					Value="Gainsboro" />
+														</ObjectAnimationUsingKeyFrames>
+													</Storyboard>
+												</VisualState>
+											</VisualStateGroup>
+										</VisualStateManager.VisualStateGroups>
+
+										<TextBlock Text="{Binding}" />
+									</Grid>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListView.ItemContainerStyle>
+			</ListView>
+			""");
+			SUT.ItemsSource = Enumerable.Range(0, 100).ToList();
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+
+			mouse.Press(((SelectorItem)SUT.ContainerFromIndex(0)).GetAbsoluteBoundsRect().GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.ScrollIntoView(50);
+			await WindowHelper.WaitForIdle();
+			SUT.ScrollIntoView(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Colors.Gainsboro, ((SolidColorBrush)((SelectorItem)SUT.ContainerFromIndex(0)).FindFirstDescendant<Grid>().Background).Color);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Outer_ElementName_Binding()
