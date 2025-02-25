@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Images;
+using Uno.UI.RuntimeTests.ListViewPages;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -213,6 +215,107 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(img.ActualHeight > 0);
 		}
+
+		[RunsOnUIThread]
+		[TestMethod]
+		public async Task When_ImageUriVariationsPage()
+		{
+			var page = new ImageUriVariationsPage();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			try
+			{
+				await page.WaitForImagesToLoad();
+			}
+			catch (Exception ex)
+			{
+				Assert.Fail("Not all images raised Loaded or Failed events: " + ex);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("ms-appx:///dotnet_bot.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/dotnet_bot.png", true)]
+		[DataRow("ms-appx:///dotnet_bot_link.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/dotnet_bot_link.png", true)]
+		[DataRow("ms-appx:///dotnet_bot_targetpath.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/dotnet_bot_targetpath.png", true)]
+		[DataRow("ms-appx:///dotnet_bot_link_targetpath.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/dotnet_bot_link_targetpath.png", true)]
+
+		public Task Check_Image_When_Is_On_Root(string url, bool shouldBeVisible)
+		{
+			return CheckIfTheImageIsShowingForGivenPath(url, shouldBeVisible);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("ms-appx:///Assets/dotnet_bot_assets.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/dotnet_bot_assets.png", true)]
+		[DataRow("ms-appx:///Assets/dotnet_bot_link_assets.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/dotnet_bot_link_assets.png", true)]
+		[DataRow("ms-appx:///Assets/dotnet_bot_targetpath_assets.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/dotnet_bot_targetpath_assets.png", true)]
+		[DataRow("ms-appx:///Assets/dotnet_bot_link_targetpath_assets.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/dotnet_bot_link_targetpath_assets.png", true)]
+
+		public Task Check_Images_When_Is_On_Assets_Folder(string url, bool shouldBeVisible)
+		{
+			return CheckIfTheImageIsShowingForGivenPath(url, shouldBeVisible);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_assets_images.png", true)]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_link_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_assets_images.png", true)]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_targetpath_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_targetpath_assets_images.png", true)]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_link_targetpath_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_targetpath_assets_images.png", true)]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_link_targetpath_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_targetpath_assets_images.png", true)]
+		public Task Check_Images_When_Is_On_Nested_Folder_Inside_Assets_Folder(string url, bool shouldBeVisible)
+		{
+			return CheckIfTheImageIsShowingForGivenPath(url, shouldBeVisible);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("ms-appx:///Images/dotnet_bot_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_images.png", true)]
+		[DataRow("ms-appx:///Images/dotnet_bot_link_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_link_images.png", true)]
+		[DataRow("ms-appx:///Images/dotnet_bot_targetpath_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_targetpath_images.png", true)]
+		[DataRow("ms-appx:///Images/dotnet_bot_link_targetpath_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_link_targetpath_images.png", true)]
+		public Task Check_Images_When_Is_On_Folder_At_The_Root(string url, bool shouldBeVisible)
+		{
+			return CheckIfTheImageIsShowingForGivenPath(url, shouldBeVisible);
+		}
+
+		async Task CheckIfTheImageIsShowingForGivenPath(string url, bool shouldBeVisible)
+		{
+			var img = new Image();
+			var completion = new TaskCompletionSource<bool>();
+			img.ImageOpened += (_, _) => completion.TrySetResult(true);
+			img.ImageFailed += (_, _) => completion.TrySetResult(false);
+			var SUT = new BitmapImage(new Uri(url));
+			img.Source = SUT;
+
+			WindowHelper.WindowContent = img;
+
+			await WindowHelper.WaitForIdle();
+
+			var loaded = await completion.Task;
+			Assert.AreEqual(shouldBeVisible, loaded);
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]
