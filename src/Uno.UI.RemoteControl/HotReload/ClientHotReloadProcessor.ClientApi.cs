@@ -40,6 +40,7 @@ public partial class ClientHotReloadProcessor
 		string FilePath,
 		string? OldText,
 		string? NewText,
+		bool? ForceSaveToDisk = null,
 		bool WaitForHotReload = true)
 	{
 		/// <summary>
@@ -95,6 +96,9 @@ public partial class ClientHotReloadProcessor
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
+	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
+		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload, forceSaveToDisk), ct);
+
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
@@ -132,7 +136,8 @@ public partial class ClientHotReloadProcessor
 				OldText = req.OldText,
 				NewText = req.NewText,
 				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
-				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts
+				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts,
+				ForceSaveOnDisk = req.ForceSaveToDisk,
 			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
