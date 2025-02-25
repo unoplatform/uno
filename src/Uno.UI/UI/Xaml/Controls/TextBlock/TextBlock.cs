@@ -66,6 +66,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_selection = value;
 
 				OnSelectionChanged();
+
+				SelectionChanged?.Invoke(this, new(this));
 			}
 		}
 
