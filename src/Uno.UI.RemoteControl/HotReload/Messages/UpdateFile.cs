@@ -33,6 +33,7 @@ public class UpdateFile : IMessage
 
 	/// <summary>
 	/// If true, the file will be saved on disk, even if the content is the same.
+	/// NULL means the default behavior will be used according to the capabilities of the IDE (our integration).
 	/// </summary>
 	/// <remarks>
 	/// Currently, this is only used for VisualStudio, because the update requires a file save on disk for other IDEs.
