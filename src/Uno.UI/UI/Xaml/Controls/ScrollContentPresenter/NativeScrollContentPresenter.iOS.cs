@@ -210,6 +210,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_requiresMeasure = true;
 			Superview?.SetNeedsLayout();
+
+			if (_scrollViewer.TryGetTarget(out var scrollViewer))
+			{
+				scrollViewer.TryApplyPendingScrollTo();
+			}
 		}
 
 		#region Layouting

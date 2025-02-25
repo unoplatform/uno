@@ -149,6 +149,28 @@ public class Given_CalendarDatePicker
 		Assert.AreEqual(now.Month, calendarView.m_lastDisplayedDate.Month);
 		Assert.AreEqual(now.Year, calendarView.m_lastDisplayedDate.Year);
 	}
+
+	[TestMethod]
+	public async Task When_Default_Date_Displayed()
+	{
+		var now = DateTimeOffset.UtcNow;
+		var datePicker = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+
+		TestServices.WindowHelper.WindowContent = datePicker;
+
+		await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+		datePicker.IsCalendarOpen = true;
+
+		await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).Count > 0);
+		var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot).First();
+		var child = (FlyoutPresenter)popup.Child;
+		var calendarView = (CalendarView)child.Content;
+
+		await TestServices.WindowHelper.WaitFor(() => calendarView.ActualHeight > 0);
+
+		Assert.IsTrue(calendarView.TemplateSettings.HeaderText.EndsWith(now.Year.ToString(), StringComparison.Ordinal));
+	}
 #endif
 #endif
 }

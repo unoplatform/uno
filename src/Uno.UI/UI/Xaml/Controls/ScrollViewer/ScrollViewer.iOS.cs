@@ -21,6 +21,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
+		private (double? horizontal, double? vertical)? _pendingScrollTo;
+
 		/// <summary>
 		/// On iOS 10-, we set a flag on the view controller such that the CommandBar doesn't automatically affect ScrollViewer content 
 		/// placement. On iOS 11+, we set this behavior on the UIScrollView itself.
@@ -32,6 +34,17 @@ namespace Microsoft.UI.Xaml.Controls
 		/// multi-line TextBox we set it to <see cref="MultilineTextBoxView"/>.
 		/// </summary>
 		private IUIScrollView? _scrollableContainer;
+
+		internal void TryApplyPendingScrollTo()
+		{
+			if (_pendingScrollTo is { } pending)
+			{
+				ChangeViewNative(pending.horizontal, pending.vertical, null, disableAnimation: true);
+
+				// For safety we clear the state to avoid infinite attempt to scroll on an invalid offset
+				_pendingScrollTo = default;
+			}
+		}
 
 		partial void OnApplyTemplatePartial()
 		{
@@ -68,11 +81,26 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_pendingChangeView is { } req)
 			{
 				var success = ChangeViewNative(req.horizontal, req.vertical, null, req.disableAnimation);
-				if (success || !IsArrangeDirty)
+				if (success || !NeedsRetryChangeView())
 				{
 					_pendingChangeView = default;
 				}
 			}
+		}
+
+		private bool NeedsRetryChangeView()
+		{
+			if (_scrollableContainer is null || IsArrangeDirty)
+			{
+				return true;
+			}
+
+			if (_scrollableContainer is IFrameworkElement presenter)
+			{
+				return presenter.ActualWidth == 0 && presenter.ActualHeight == 0;
+			}
+
+			return false;
 		}
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
@@ -85,13 +113,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var clampedOffsets = new global::Windows.Foundation.Point(Math.Clamp(desiredOffsets.X, 0, limit.X), Math.Clamp(desiredOffsets.Y, 0, limit.Y));
 
 				var success = desiredOffsets == clampedOffsets;
+				var hasEmptySize = ActualHeight == 0 && ActualWidth == 0;
 
 				if (zoomFactor is { } zoom && _scrollableContainer.ZoomScale != zoom)
 				{
 					_scrollableContainer.ApplyZoomScale(zoomFactor!.Value, !disableAnimation);
 				}
 
-				if (!success && IsArrangeDirty)
+				if (!success && NeedsRetryChangeView())
 				{
 					// If the the requested offsets are out-of - bounds, but we actually does have our final bounds yet,
 					// we allow to set the desired offsets. If needed, they will then be clamped by the OnAfterArrange().
