@@ -26,6 +26,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
+		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
@@ -439,7 +440,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			var tcs = new TaskCompletionSource<Result>();
 			try
 			{
-				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+				using var cts = new CancellationTokenSource(_waitForIdeResultTimeout);
 				await using var ctReg = cts.Token.Register(() => tcs.TrySetCanceled());
 
 				_pendingRequestsToIde.TryAdd(message.CorrelationId, tcs);
@@ -622,7 +623,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				watcher.EnableRaisingEvents = true;
 
-				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(2))) != tcs.Task
+				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(5))) != tcs.Task
 					&& this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().LogDebug($"File update event not received for '{message.FilePath}', continuing anyway [{message.RequestId}].");
