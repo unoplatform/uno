@@ -591,8 +591,6 @@ public partial class EntryPoint : IDisposable
 					throw new InvalidOperationException($"Failed to open document {filePath}");
 				}
 
-				document.Activate(); // Sometimes the document is "soft closed", so we need to activate it for the user to see it.
-
 				// Replace the content of the document with the new content.
 
 				// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
