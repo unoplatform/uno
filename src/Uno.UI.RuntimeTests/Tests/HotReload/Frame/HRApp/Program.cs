@@ -7,10 +7,10 @@ public class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        App.InitializeLogging();
+        AppHead.InitializeLogging();
 
         var host = SkiaHostBuilder.Create()
-            .App(() => new App())
+            .App(() => new AppHead())
             .UseX11()
             .UseLinuxFrameBuffer()
             .UseMacOS()
