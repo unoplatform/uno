@@ -55,13 +55,13 @@
           Condition=" '$(TargetFramework)' == 'net8.0-windows10.0.19041' OR '$(TargetFramework)' == 'net8.0-desktop' ">
         <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
         <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-100.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-125.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-150.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-200.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-300.png" />
-        <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-400.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-100.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-125.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-150.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-200.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-300.png" />
+        <_AssetsToValidate Include="$(OutputPath)Assets\Images\logo.scale-400.png" />
 
         <!-- Validate json files handling -->
         <_AssetsToValidate Include="$(OutputPath)test_root_asset.json" />
@@ -77,13 +77,13 @@
           Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-100.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-125.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-150.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-200.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
-        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-100.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-125.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-150.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-200.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-300.png" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Images\logo.scale-400.png" />
 
         <!-- wwwroot -->
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\..\staticwebapp.config.json" />
