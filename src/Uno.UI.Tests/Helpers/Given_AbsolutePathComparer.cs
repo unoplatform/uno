@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Helpers;
 
+#pragma warning disable IDE0055 // Fix formatting
 namespace Uno.UI.Tests.Helpers;
 
 [TestClass]
