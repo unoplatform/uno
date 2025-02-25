@@ -1,0 +1,151 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Uno.Extensions.Specialized;
+using Uno.Storage;
+using Windows.Foundation.Collections;
+
+namespace Windows.Storage;
+
+/// <summary>
+/// Provides access to the settings in a settings container. The ApplicationDataContainer.Values
+/// property returns an object that can be cast to this type.
+/// </summary>
+public partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
+{
+	private readonly ApplicationDataContainer _container;
+	private readonly ApplicationDataLocality _locality;
+	private readonly NativeApplicationSettings _nativeApplicationSettings;
+
+	internal ApplicationDataContainerSettings(ApplicationDataContainer container, ApplicationDataLocality locality)
+	{
+		_container = container ?? throw new ArgumentNullException(nameof(container));
+		_locality = locality;
+
+		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
+	}
+
+	/// <summary>
+	/// Occurs when the map changes.
+	/// </summary>
+	public event MapChangedEventHandler<string, object> MapChanged;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="key"></param>
+	/// <returns></returns>
+	public object this[string key]
+	{
+		get => _nativeApplicationSettings[_container.GetSettingKey(key)];
+		set => _nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+	}
+
+	/// <summary>
+	/// Gets the number of related application settings.
+	/// </summary>
+	public uint Size => (uint)Count;
+
+	public int Count
+	{
+		get
+		{
+			// Public settings count is equal to the total number of settings in the container excluding internal settings.
+			var allSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(_container.ContainerPath).Count();
+			var internalSettingsPath = _container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix);
+			var internalSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(internalSettingsPath).Count();
+
+			return allSettingsCount - internalSettingsCount;
+		}
+	}
+
+	public bool IsReadOnly => false;
+
+	public ICollection<string> Keys => _nativeApplicationSettings
+		.GetKeysWithPrefix(_container.ContainerPath)
+		.Except(
+			_nativeApplicationSettings.GetKeysWithPrefix(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix))
+		);
+
+	public global::System.Collections.Generic.ICollection<object> Values
+	{
+		get
+		{
+			throw new global::System.NotSupportedException();
+		}
+	}
+
+	public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public void Add(string key, object value)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool ContainsKey(string key)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool Remove(string key)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
+
+	public bool TryGetValue(string key, out object value)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public void Clear()
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
+	{
+		throw new global::System.NotSupportedException();
+	}
+
+	internal void ClearIncludingInternal()
+	{
+		throw new NotImplementedException();
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private object DeserializeValue(string value) => DataTypeSerializer.Deserialize(value);
+
+	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
+}
