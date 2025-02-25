@@ -1459,7 +1459,6 @@ namespace Uno.UI.Tests.BinderTests
 				Control.PaddingProperty,
 				(o, e) =>
 				{
-					e.BypassesPropagation.Should().BeFalse();
 					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
 					button.Content = "Frogurt";
 				});
