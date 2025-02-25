@@ -62,7 +62,6 @@
 										  Opacity="1"
 										  AutomationProperties.AccessibilityView="Raw"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Margin="{TemplateBinding Padding}"
