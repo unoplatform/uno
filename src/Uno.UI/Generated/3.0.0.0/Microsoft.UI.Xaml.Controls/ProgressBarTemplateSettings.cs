@@ -9,69 +9,15 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ProgressBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property ClipRect
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double Container2AnimationEndPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.Container2AnimationEndPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.Container2AnimationEndPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double Container2AnimationStartPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.Container2AnimationStartPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.Container2AnimationStartPosition");
-			}
-		}
-#endif
+		// Skipping already declared property Container2AnimationEndPosition
+		// Skipping already declared property Container2AnimationStartPosition
 		// Skipping already declared property ContainerAnimationEndPosition
 		// Skipping already declared property ContainerAnimationMidPosition
 		// Skipping already declared property ContainerAnimationStartPosition
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double EllipseAnimationEndPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.EllipseAnimationEndPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.EllipseAnimationEndPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double EllipseAnimationWellPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.EllipseAnimationWellPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.EllipseAnimationWellPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double EllipseDiameter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.EllipseDiameter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.EllipseDiameter");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double EllipseOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ProgressBarTemplateSettings.EllipseOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressBarTemplateSettings.EllipseOffset");
-			}
-		}
-#endif
+		// Skipping already declared property EllipseAnimationEndPosition
+		// Skipping already declared property EllipseAnimationWellPosition
+		// Skipping already declared property EllipseDiameter
+		// Skipping already declared property EllipseOffset
 		// Skipping already declared property IndicatorLengthDelta
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationStartPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ContainerAnimationEndPosition.get
