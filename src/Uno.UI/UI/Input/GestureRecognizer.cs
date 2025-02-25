@@ -75,9 +75,9 @@ namespace Windows.UI.Input
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
 			if (_gestures.TryGetValue(value.PointerId, out var previousGesture))
 			{
-				if (_log.IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Information))
 				{
-					this.Log().Error($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
+					_log.LogInfo($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
 				}
 				previousGesture.ProcessComplete();
 			}
