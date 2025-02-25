@@ -482,12 +482,20 @@
           topicHref: implemented-views.md
         - name: Uno Specifics
           items:
+            - name: AdaptiveTrigger
+              href: xref:Uno.Features.AdaptiveTrigger
+            - name: Activities in Android
+              href: android-activities.md
             - name: ComboBox
               href: controls/ComboBox.md
             - name: CommandBar
               href: controls/CommandBar.md
             - name: DatePicker
               href: controls/DatePicker.md
+            - name: ElevatedView
+              href: features/ElevatedView.md
+            - name: Fluent icon font
+              href: uno-fluent-assets.md
             - name: Flyout
               href: controls/Flyout.md
             - name: Frame
@@ -498,6 +506,8 @@
               href: xref:Uno.Features.Image
             - name: ListView and GridView
               href: controls/ListViewBase.md
+            - name: Lottie animations
+              href: features/Lottie.md
             - name: MapControl
               href: controls/map-control-support.md
             - name: MediaPlayerElement
@@ -506,6 +516,10 @@
               href: controls/MenuFlyout.md
             - name: NavigationView
               href: controls/NavigationView.md
+            - name: Native control styles
+              href: native-styles.md
+            - name: Other features
+              href: xref:Uno.Development.AdditionalFeatures
             - name: Pivot
               href: controls/Pivot.md
             - name: Popup
@@ -524,30 +538,16 @@
               href: controls/TimePicker.md
             - name: ToggleSwitch
               href: controls/ToggleSwitch.md
-            - name: WebView (WebView2)
-              href: controls/WebView.md
-            - name: Fluent icon font
-              href: uno-fluent-assets.md
-            - name: Lottie animations
-              href: features/Lottie.md
-            - name: Using SVG images
-              href: features/svg.md
-            - name: Using pointer cursors
-              href: features/cursors.md
-            - name: ElevatedView
-              href: features/ElevatedView.md
-            - name: VisibleBoundsPadding
-              href: xref:Uno.Features.VisibleBoundsPadding
-            - name: AdaptiveTrigger
-              href: xref:Uno.Features.AdaptiveTrigger
-            - name: Other features
-              href: xref:Uno.Development.AdditionalFeatures
-            - name: Native control styles
-              href: native-styles.md
             - name: URI Protocol activation
               href: features/protocol-activation.md
-            - name: Activities in Android
-              href: android-activities.md
+            - name: Using pointer cursors
+              href: features/cursors.md
+            - name: Using SVG images
+              href: features/svg.md
+            - name: VisibleBoundsPadding
+              href: xref:Uno.Features.VisibleBoundsPadding
+            - name: WebView (WebView2)
+              href: controls/WebView.md
 
       - name: Features
         items:
@@ -557,6 +557,8 @@
           href: features/working-with-animations.md
         - name: Assets and image display
           href: features/working-with-assets.md
+        - name: Build telemetry
+          href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
         - name: Dialogs
@@ -567,6 +569,8 @@
           href: features/focus-management.md
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Markup Extensions
+          href: features/windows-ui-markup-extensions.md
         - name: Native frame navigation
           href: features/native-frame-nav.md
         - name: Orientation
@@ -577,22 +581,18 @@
           href: features/shapes-and-brushes.md
         - name: String resources and localization
           href: features/working-with-strings.md
+        - name: Succinct syntax
+          href: features/windows-ui-succinct-syntax.md
         - name: Themes
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
         - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
-        - name: x:Bind
-          href: features/windows-ui-xaml-xbind.md
-        - name: Succinct syntax
-          href: features/windows-ui-succinct-syntax.md
-        - name: Markup Extensions
-          href: features/windows-ui-markup-extensions.md
-        - name: Build telemetry
-          href: uno-toolchain-telemetry.md
         - name: Windowing
           href: features/windows-ui-xaml-window.md
+        - name: x:Bind
+          href: features/windows-ui-xbind.md
 
       - name: 3rd-party libraries
         href: supported-libraries.md
@@ -635,10 +635,10 @@
         href: features/windows-system-profile.md
       - name: E-mail
         href: features/windows-applicationmodel-email.md
-      - name: File Management
-        href: features/file-management.md
       - name: File and Folder Pickers
         href: features/windows-storage-pickers.md
+      - name: File Management
+        href: features/file-management.md
       - name: Flashlight
         href: features/flashlight.md
       - name: Gamepad
@@ -669,12 +669,12 @@
         href: features/windows-applicationmodel-calls.md
       - name: Proximity Sensor
         href: features/proximity-sensor.md
+      - name: Settings
+        href: features/settings.md
       - name: Sharing
         href: features/windows-applicationmodel-datatransfer.md
       - name: SMS
         href: features/windows-applicationmodel-chat.md
-      - name: Settings
-        href: features/settings.md
       - name: Speech Recognition
         href: features/SpeechRecognition.md
       - name: Step Counter
