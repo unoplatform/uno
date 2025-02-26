@@ -7,7 +7,9 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';mediaelement;'))"/>
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.WebAssembly"
+										   ProjectSystem="true"
+										   Condition="!$(UnoFeatures.Contains(';skiarenderer;')) AND $(UnoFeatures.Contains(';mediaelement;'))"/>
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.Compatibility" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap" ProjectSystem="true" />
@@ -47,4 +49,19 @@
 
 	</ItemGroup>
 	
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
+
+		<!-- 
+		Include the Wasm DOM runtime package to avoid transitive dependencies 
+		overriding the build targets with older versions of that package.
+		-->
+		<_UnoProjectSystemPackageReference 
+			Include="Uno.WinUI.Runtime.WebAssembly"
+			ProjectSystem="true"
+			IncludeAssets="none"
+			PrivateAssets="all"
+			ExcludeAssets="all"
+			Condition=" $(UnoFeatures.Contains(';skiarenderer;')) " />
+		
+	</ItemGroup>
 </Project>

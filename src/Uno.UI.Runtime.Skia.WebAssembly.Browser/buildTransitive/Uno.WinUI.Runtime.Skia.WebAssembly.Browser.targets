@@ -10,9 +10,22 @@
 			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WEBASSEMBLY_BROWSER;__WASM__</DefineConstants>
 		</PropertyGroup>
 
-		<Error 
-			Condition=" '$(UnoRuntimeIdentifier)' != '' "
-			Text="Unable to Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.UI.WebAssembly cannot be used at the same time." />
+	</Target>
+
+	<Target Name="_UnoValidateNoUnoWasmDOMRuntimeDependency"
+			AfterTargets="CopyFilesToOutputDirectory"
+			Condition=" '$(UnoDisableValidateNoUnoWasmDOMRuntimeDependency)' == '' ">
+
+		<ItemGroup>
+			<_UnoRuntimeWasmReferenceCopyLocalPaths
+				Include="@(ReferenceCopyLocalPaths)"
+				Condition="'%(Filename)' == 'Uno.UI.Runtime.WebAssembly'"/>
+		</ItemGroup>
+
+		<Error Condition=" '@(_UnoRuntimeWasmReferenceCopyLocalPaths)' != '' "
+			Text="A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected. See more information at https://aka.platform.uno/UNOB0017"
+			Code="UNOB0017"
+			HelpKeyword="UNOB0017" />
 
 	</Target>
 
