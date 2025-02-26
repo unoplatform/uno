@@ -49,4 +49,19 @@
 
 	</ItemGroup>
 	
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
+
+		<!-- 
+		Include the Wasm DOM runtime package to avoid transitive dependencies 
+		overriding the build targets with older versions of that package.
+		-->
+		<_UnoProjectSystemPackageReference 
+			Include="Uno.WinUI.Runtime.WebAssembly"
+			ProjectSystem="true"
+			IncludeAssets="none"
+			PrivateAssets="all"
+			ExcludeAssets="all"
+			Condition=" $(UnoFeatures.Contains(';skiarenderer;')) " />
+		
+	</ItemGroup>
 </Project>
