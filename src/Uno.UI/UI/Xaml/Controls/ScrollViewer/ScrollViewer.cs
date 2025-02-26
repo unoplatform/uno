@@ -1400,10 +1400,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		public void ScrollToHorizontalOffset(double offset)
-			=> ChangeView(offset, null, null, false);
+			=> ChangeView(offset, null, null, true);
 
 		public void ScrollToVerticalOffset(double offset)
-			=> ChangeView(null, offset, null, false);
+			=> ChangeView(null, offset, null, true);
 
 		/// <summary>
 		/// Scroll content by one page to the left.
