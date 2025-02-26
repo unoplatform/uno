@@ -4,7 +4,7 @@
 		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(UnoUIRuntimeIdentifier)' == 'WebAssembly' ">
+	<PropertyGroup Condition=" '$(UnoUIRuntimeIdentifier)' == 'WebAssembly' OR '$(UnoUIRuntimeIdentifier)' == '' ">
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
 	</PropertyGroup>
