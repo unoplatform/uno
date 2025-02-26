@@ -149,6 +149,12 @@ When publishing an app using ClickOnce on Windows, the `PublishProfile` file may
 
 This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with ClickOnce](xref:uno.publishing.desktop#windows-clickonce) documentation.
 
+### UNOB0017: A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected
+
+When the `SkiaRenderer` feature is enabled, the `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly.
+
+This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
+
 ## Compiler Errors
 
 ### UNO0001
