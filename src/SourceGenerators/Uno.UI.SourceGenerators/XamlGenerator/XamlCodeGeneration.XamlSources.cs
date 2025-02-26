@@ -10,8 +10,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator;
 
 partial class XamlCodeGeneration
 {
-	private SourceText GenerateEmbeddedXamlSources(XamlFileDefinition[] files)
+	private SourceText? GenerateEmbeddedXamlSources(XamlFileDefinition[] files)
 	{
+		var interestingFiles = new SortedSet<XamlFileDefinition>();
+
+		foreach (var file in files)
+		{
+			if (file.Content.Length > 0)
+			{
+				interestingFiles.Add(file);
+			}
+		}
+
+		if (interestingFiles.Count == 0)
+		{
+			return null;
+		}
+
 		const string embeddedXamlSourcesClassName = "EmbeddedXamlSourcesProvider";
 		var writer = new IndentedStringBuilder();
 
@@ -30,16 +45,6 @@ partial class XamlCodeGeneration
 		writer.AppendLine();
 		writer.AppendLineInvariantIndented("namespace {0}.__Sources__;", _defaultNamespace);
 		writer.AppendLine();
-
-		var interestingFiles = new SortedSet<XamlFileDefinition>();
-
-		foreach (var file in files)
-		{
-			if (file.Content.Length > 0)
-			{
-				interestingFiles.Add(file);
-			}
-		}
 
 		// Compute the checksum of all the files by hashing the content of the files, separated by a null character
 		var filesListHash = HashBuilder.Build(string.Join("\0", interestingFiles.Select(f => f.FilePath)));
