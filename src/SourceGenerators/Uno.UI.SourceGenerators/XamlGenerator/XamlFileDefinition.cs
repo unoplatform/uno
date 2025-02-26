@@ -11,17 +11,19 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>
+	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>
 	{
-		public XamlFileDefinition(string file, string targetFilePath, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string targetFilePath, string content, ImmutableArray<byte> checksum)
 		{
 			Namespaces = new List<NamespaceDeclaration>();
 			Objects = new List<XamlObjectDefinition>();
 			FilePath = file;
 			TargetFilePath = targetFilePath;
+			Content = content;
 
 			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
 
+			ChecksumBytes = [.. checksum];
 			Checksum = string.Concat(checksum.Select(c => c.ToString("x2", CultureInfo.InvariantCulture)));
 		}
 
@@ -35,6 +37,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public string FilePath { get; }
 
+		internal byte[] ChecksumBytes { get; }
+
 		public string Checksum { get; }
 
 		public string? SourceLink { get; internal set; }
@@ -43,6 +47,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Provides the path to the file using an actual target path in the project
 		/// </summary>
 		public string TargetFilePath { get; }
+
+		/// <summary>
+		/// The actual content of the file (XAML)
+		/// </summary>
+		public string Content { get; }
 
 		/// <summary>
 		/// Unique and human-readable file ID, used to name generated file.
@@ -57,7 +66,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return ReferenceEquals(this, other)
-				|| string.Equals(UniqueID, other.UniqueID, StringComparison.InvariantCultureIgnoreCase);
+				|| string.Equals(UniqueID, other.UniqueID, StringComparison.OrdinalIgnoreCase);
 
 		}
 
@@ -72,7 +81,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		public override int GetHashCode() => UniqueID != null
-			? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID)
+			? StringComparer.OrdinalIgnoreCase.GetHashCode(UniqueID)
 			: 0;
+
+		public int CompareTo(XamlFileDefinition? other)
+			=> ReferenceEquals(this, other)
+				? 0
+				: other is null ? 1 : string.Compare(FilePath, other.FilePath, StringComparison.OrdinalIgnoreCase);
 	}
 }
