@@ -466,9 +466,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					).GenerateFile()
 				)).ToList();
 
-				if (_generateXamlSourcesProvider)
+				if (_generateXamlSourcesProvider && GenerateEmbeddedXamlSources(files) is { } embeddedXamlSources)
 				{
-					outputFiles.Add(new KeyValuePair<string, SourceText>("EmbeddedXamlSources", GenerateEmbeddedXamlSources(files)));
+					outputFiles.Add(new KeyValuePair<string, SourceText>("EmbeddedXamlSources", embeddedXamlSources));
 				}
 
 				outputFiles.Add(new KeyValuePair<string, SourceText>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
