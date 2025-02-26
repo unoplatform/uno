@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
+
 namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-public record ForceHotReloadIdeMessage(long CorrelationId) : IdeMessage(WellKnownScopes.HotReload);
+public record ForceHotReloadIdeMessage(long CorrelationId) : IdeMessageWithCorrelationId(CorrelationId, WellKnownScopes.HotReload);
