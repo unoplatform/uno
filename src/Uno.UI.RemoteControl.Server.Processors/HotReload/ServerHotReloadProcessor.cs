@@ -480,11 +480,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
 				};
 
-				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
+				var isIdeSupportingHotReload = _isRunningInsideVisualStudio;
+
+				if (message.IsForceHotReloadDisabled is false && (int)result < 300)
 				{
 					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
 
-					await RequestHotReloadToIde();
+					if (isIdeSupportingHotReload)
+					{
+						await RequestHotReloadToIde();
+					}
 				}
 
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));

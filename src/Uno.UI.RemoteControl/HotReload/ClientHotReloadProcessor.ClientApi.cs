@@ -40,9 +40,17 @@ public partial class ClientHotReloadProcessor
 		string FilePath,
 		string? OldText,
 		string? NewText,
-		bool? ForceSaveToDisk = null,
 		bool WaitForHotReload = true)
 	{
+		/// <summary>
+		/// Indicates if the file should be saved to disk.
+		/// </summary>
+		/// <remarks>
+		/// Some IDE supports the ability to update the file in memory without saving it to disk.
+		/// Null means that the default behavior of the IDE should be used.
+		/// </remarks>
+		public bool? ForceSaveToDisk { get; init; }
+
 		/// <summary>
 		/// The max delay to wait for the server to process a file update request.
 		/// </summary>
@@ -97,7 +105,7 @@ public partial class ClientHotReloadProcessor
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
-		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload, forceSaveToDisk), ct);
+		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload) { ForceSaveToDisk = forceSaveToDisk }, ct);
 
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
