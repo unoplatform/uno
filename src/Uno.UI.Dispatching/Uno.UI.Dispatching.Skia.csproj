@@ -22,7 +22,7 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

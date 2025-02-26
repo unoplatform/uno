@@ -27,7 +27,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

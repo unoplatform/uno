@@ -21,7 +21,7 @@
 		<AndroidResgenNamespace>Uno.UI.Dispatching</AndroidResgenNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
