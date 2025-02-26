@@ -232,15 +232,17 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		_lastArrangeRect = arrangeRect;
+		var scale = presenter.XamlRoot?.RasterizationScale ?? 1;
+
+		_lastArrangeRect = new Rect(arrangeRect.X * scale, arrangeRect.Y * scale, arrangeRect.Width * scale, arrangeRect.Height * scale);
 
 		var success = PInvoke.SetWindowPos(
 				(HWND)window.Hwnd,
 				HWND.Null,
-				(int)arrangeRect.X,
-				(int)arrangeRect.Y,
-				(int)arrangeRect.Width,
-				(int)arrangeRect.Height,
+				(int)_lastArrangeRect.X,
+				(int)_lastArrangeRect.Y,
+				(int)_lastArrangeRect.Width,
+				(int)_lastArrangeRect.Height,
 				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		if (!success)
 		{
