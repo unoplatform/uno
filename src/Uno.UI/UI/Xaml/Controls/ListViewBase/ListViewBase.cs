@@ -1135,6 +1135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if __IOS__ || __ANDROID__
 		/// <summary>
 		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
 		/// </summary>
@@ -1147,6 +1148,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
 		}
+#endif
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);
 

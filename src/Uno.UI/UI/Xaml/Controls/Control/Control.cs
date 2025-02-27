@@ -571,8 +571,6 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsFocusableChanged();
 		}
 
-		partial void RegisterContentTemplateRoot();
-
 		#region Foreground Dependency Property
 
 		public
