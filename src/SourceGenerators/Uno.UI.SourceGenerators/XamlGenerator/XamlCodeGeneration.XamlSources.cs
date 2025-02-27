@@ -41,7 +41,7 @@ partial class XamlCodeGeneration
 		writer.AppendLineIndented("#pragma warning disable // Disable all warnings for this generated file");
 		writer.AppendLine();
 		writer.AppendLineIndented("// Register an embedded sources provider for Hot Reload");
-		writer.AppendLineInvariantIndented("[assembly: global::System.Reflection.AssemblyMetadata(\"Uno.HotDesign.HotReloadEmbeddedXamlSourceFilesProvider\", \"global::{0}.__Sources__.{1}\")]", _defaultNamespace, embeddedXamlSourcesClassName);
+		writer.AppendLineInvariantIndented("[assembly: global::System.Reflection.AssemblyMetadata(\"Uno.HotDesign.HotReloadEmbeddedXamlSourceFilesProvider\", \"{0}.__Sources__.{1}\")]", _defaultNamespace, embeddedXamlSourcesClassName);
 		writer.AppendLine();
 		writer.AppendLineInvariantIndented("namespace {0}.__Sources__;", _defaultNamespace);
 		writer.AppendLine();
@@ -65,6 +65,9 @@ partial class XamlCodeGeneration
 			writer.AppendLineIndented("// hash of all the paths");
 			writer.AppendLineIndented("private static volatile string? _filesListHash;");
 			writer.AppendLine();
+			writer.AppendLineIndented("// get the current value of the update counter");
+			writer.AppendLineIndented("private static volatile uint _updateCounter;");
+			writer.AppendLine();
 			writer.AppendLineIndented("// The content of this method only changes when the file list changes");
 			using (writer.BlockInvariant("private static IDictionary<string, Func<(string hash, string payload)>> EnsureInitialize()"))
 			{
@@ -81,17 +84,33 @@ partial class XamlCodeGeneration
 					writer.AppendLineIndented("// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support");
 					foreach (var f in interestingFiles)
 					{
-						writer.AppendLineInvariantIndented("xamlSources[\"{0}\"] = GetSources_{1};", f.FilePath, f.UniqueID);
+						writer.AppendLineInvariantIndented("xamlSources[NormalizePath(@\"{0}\")] = GetSources_{1};", f.FilePath, f.UniqueID);
 					}
 					writer.AppendLine();
 					using (writer.BlockInvariant("if (Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)"))
 					{
 						writer.AppendLineIndented("// The sources were updated successfully (no other thread modified them concurrently)");
 						writer.AppendLineIndented("_filesListHash = currentListHash;");
+						writer.AppendLineIndented("_updateCounter++;");
 					}
 				}
 				writer.AppendLine();
 				writer.AppendLineIndented("return _XamlSources;");
+			}
+			writer.AppendLine();
+			writer.AppendLineIndented("/// <summary>");
+			writer.AppendLineIndented("/// Gets the current update counter, used to detect changes in the sources.");
+			writer.AppendLineIndented("/// </summary>");
+			writer.AppendLineIndented("/// <remarks>");
+			writer.AppendLineIndented("/// This counter is incremented each time a Hot Reload sources update is detected.");
+			writer.AppendLineIndented("/// </remarks>");
+			using (writer.BlockInvariant("public static uint UpdateCounter"))
+			{
+				using(writer.BlockInvariant("get"))
+				{
+					writer.AppendLineIndented("EnsureInitialize();");
+					writer.AppendLineIndented("return _updateCounter;");
+				}
 			}
 			writer.AppendLine();
 			writer.AppendLineIndented("public static IReadOnlyList<string> GetXamlFilesList() => [.. EnsureInitialize().Keys];");
@@ -99,8 +118,11 @@ partial class XamlCodeGeneration
 			writer.AppendLineIndented("public static (string hash, string payload)? GetXamlFile(string filePath)");
 			using (writer.Indent())
 			{
-				writer.AppendLineIndented("=> EnsureInitialize().TryGetValue(filePath, out var sourcesGetter) ? sourcesGetter() : null;");
+				writer.AppendLineIndented("=> EnsureInitialize().TryGetValue(NormalizePath(filePath), out var sourcesGetter) ? sourcesGetter() : null;");
 			}
+
+			writer.AppendLine();
+			writer.AppendLineIndented(@"private static string NormalizePath(string path) => path.Replace('\\', '/');");
 
 			foreach (var f in interestingFiles)
 			{
