@@ -7,7 +7,7 @@ using System.Threading;
 #pragma warning disable // Disable all warnings for this generated file
 
 // Register an embedded sources provider for Hot Reload
-[assembly: global::System.Reflection.AssemblyMetadata("Uno.HotDesign.HotReloadEmbeddedXamlSourceFilesProvider", "global::MyProject.__Sources__.EmbeddedXamlSourcesProvider")]
+[assembly: global::System.Reflection.AssemblyMetadata("Uno.HotDesign.HotReloadEmbeddedXamlSourceFilesProvider", "MyProject.__Sources__.EmbeddedXamlSourcesProvider")]
 
 namespace MyProject.__Sources__;
 
@@ -27,6 +27,9 @@ internal static class EmbeddedXamlSourcesProvider
 	// hash of all the paths
 	private static volatile string? _filesListHash;
 
+	// get the current value of the update counter
+	private static volatile uint _updateCounter;
+
 	// The content of this method only changes when the file list changes
 	private static IDictionary<string, Func<(string hash, string payload)>> EnsureInitialize()
 	{
@@ -41,22 +44,40 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new Dictionary<string, Func<(string hash, string payload)>>(1, StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources["C:/Project/0/MainPage.xaml"] = GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d;
+			xamlSources[NormalizePath(@"C:/Project/0/MainPage.xaml")] = GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d;
 
 			if (Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
 				// The sources were updated successfully (no other thread modified them concurrently)
 				_filesListHash = currentListHash;
+				_updateCounter++;
 			}
 		}
 
 		return _XamlSources;
 	}
 
+	/// <summary>
+	/// Gets the current update counter, used to detect changes in the sources.
+	/// </summary>
+	/// <remarks>
+	/// This counter is incremented each time a Hot Reload sources update is detected.
+	/// </remarks>
+	public static uint UpdateCounter
+	{
+		get
+		{
+			EnsureInitialize();
+			return _updateCounter;
+		}
+	}
+
 	public static IReadOnlyList<string> GetXamlFilesList() => [.. EnsureInitialize().Keys];
 
 	public static (string hash, string payload)? GetXamlFile(string filePath)
-		=> EnsureInitialize().TryGetValue(filePath, out var sourcesGetter) ? sourcesGetter() : null;
+		=> EnsureInitialize().TryGetValue(NormalizePath(filePath), out var sourcesGetter) ? sourcesGetter() : null;
+
+	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
 	#region Sources for C:/Project/0/MainPage.xaml
 	private static (string hash, string payload) GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d()
