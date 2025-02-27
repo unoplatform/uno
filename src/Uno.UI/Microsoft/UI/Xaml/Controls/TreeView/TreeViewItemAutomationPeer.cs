@@ -227,20 +227,23 @@ public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IE
 		}
 	}
 
-	IRawElementProviderSimple ISelectionItemProvider.SelectionContainer()
+	IRawElementProviderSimple ISelectionItemProvider.SelectionContainer
 	{
-		IRawElementProviderSimple provider = null;
-		var listView = GetParentListView();
-		if (listView != null)
+		get
 		{
-			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
-			if (peer != null)
+			IRawElementProviderSimple provider = null;
+			var listView = GetParentListView();
+			if (listView != null)
 			{
-				provider = ProviderFromPeer(peer);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+				if (peer != null)
+				{
+					provider = ProviderFromPeer(peer);
+				}
 			}
-		}
 
-		return provider;
+			return provider;
+		}
 	}
 
 	void ISelectionItemProvider.AddToSelection()
