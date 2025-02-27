@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -36,7 +37,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private bool _useRoslynHotReload;
 
-		private bool InitializeMetadataUpdater(ConfigureServer configureServer)
+		private bool InitializeMetadataUpdater(ConfigureServer configureServer, Dictionary<string, string> properties)
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
@@ -49,7 +50,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				// of a missing path on assemblies loaded from a memory stream.
 				CompilationWorkspaceProvider.RegisterAssemblyLoader();
 
-				InitializeInner(configureServer);
+				InitializeInner(configureServer, properties);
 
 				return true;
 			}
@@ -59,7 +60,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer)
+		private void InitializeInner(ConfigureServer configureServer, Dictionary<string, string> properties)
 		{
 			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
 			{
@@ -80,10 +81,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				try
 				{
 					await Notify(HotReloadEvent.Initializing);
-
-					var properties = configureServer
-						.MSBuildProperties
-						.ToDictionary();
 
 					// Flag the current build as created for hot reload, which allows for running targets or settings
 					// props/items in the context of the hot reload workspace.
