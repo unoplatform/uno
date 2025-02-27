@@ -1355,16 +1355,16 @@ namespace Microsoft.UI.Xaml
 
 			return returnValue;
 		}
-#endif
-
-		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
-		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
-		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
 		private static double XcpRound(double x)
 		{
 			return Math.Round(x);
 		}
+#endif
+
+		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
+		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
+		internal double GetScaleFactorForLayoutRounding() => RootScale.GetRasterizationScaleForElement(this);
 
 		public XYFocusKeyboardNavigationMode XYFocusKeyboardNavigation
 		{
