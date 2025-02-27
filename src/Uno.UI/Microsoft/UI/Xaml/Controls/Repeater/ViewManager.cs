@@ -751,7 +751,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				args.Index = index;
 
 				return elementFactory.GetElement(args);
-			};
+			}
 
 			var element = GetElement();
 

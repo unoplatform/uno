@@ -568,8 +568,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
-		partial void PrepareNativeLayout(VirtualizingPanelLayout layout);
-
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling

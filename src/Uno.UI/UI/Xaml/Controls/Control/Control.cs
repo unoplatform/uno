@@ -78,8 +78,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		partial void UnregisterSubView();
+
 		partial void RegisterSubView(View child);
+#endif
 
 		#region IsEnabled DependencyProperty
 
