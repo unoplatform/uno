@@ -120,17 +120,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		[TestMethod]
 		public async Task When_RepeatForever_ShouldLoop()
 		{
-			async void Do()
+			async Task Do()
 			{
 				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
 				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
-				const int TimeResolutionScaling =
-#if !DEBUG && (__ANDROID__)
-				5;
+				int timeResolutionScaling =
+#if !DEBUG && __ANDROID__
+					5;
 #else
 					1;
 #endif
 
+#if !DEBUG && __SKIA__
+				if (OperatingSystem.IsMacOS())
+				{
+					timeResolutionScaling = 5;
+				}
+#endif
 				var target = new Microsoft.UI.Xaml.Shapes.Rectangle
 				{
 					Stretch = Stretch.Fill,
@@ -148,7 +154,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 					From = 0,
 					To = 50,
 					RepeatBehavior = RepeatBehavior.Forever,
-					Duration = TimeSpan.FromMilliseconds(500 * TimeResolutionScaling),
+					Duration = TimeSpan.FromMilliseconds(500 * timeResolutionScaling),
 				}.BindTo(target, nameof(Rectangle.Width));
 				animation.ToStoryboard().Begin();
 
@@ -157,7 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				for (int i = 0; i < 50; i++)
 				{
 					list.Add(NanToZero(target.Width));
-					await Task.Delay(100 * TimeResolutionScaling);
+					await Task.Delay(100 * timeResolutionScaling);
 				}
 
 				var delta = list.Zip(list.Skip(1), (a, b) => b - a).ToArray();

@@ -320,12 +320,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SetXamlRootForIslandsOrWinUI(SUT);
 
 			bool triggered = false;
+			var triggeredTwice = false;
 			bool hideSecondTime = false;
 
 			async void SUT_Closing(object sender, ContentDialogClosingEventArgs args)
 			{
-				// Closing should only be invoked once.
-				Assert.IsFalse(triggered);
+				triggeredTwice |= triggered;
 				triggered = true;
 				var deferral = args.GetDeferral();
 				await WindowHelper.WaitFor(() => hideSecondTime);
@@ -349,6 +349,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Closing -= SUT_Closing;
 				SUT.Hide();
 			}
+
+			await WindowHelper.WaitForIdle();
+
+			// Closing should only be invoked once.
+			// NOTE: the assert shouldn't be in SUT_Closing as it's async void.
+			Assert.IsFalse(triggeredTwice);
 		}
 
 		[TestMethod]

@@ -2569,7 +2569,7 @@ namespace Windows.UI.Tests.Enterprise
 #if __APPLE_UIKIT__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
+				expectedCommandBarWidth = WindowHelper.XamlRoot.HostWindow!.NativeWrapper!.GetWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 48;
@@ -3028,6 +3028,9 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates the dynamic overflow moving order.")]
+#if __ANDROID__
+		[Ignore("Test is flaky on Android https://github.com/unoplatform/uno/issues/19585")]
+#endif
 		public async Task ValidateDynamicOverflowOrderBasic()
 		{
 			TestCleanupWrapper cleanup;

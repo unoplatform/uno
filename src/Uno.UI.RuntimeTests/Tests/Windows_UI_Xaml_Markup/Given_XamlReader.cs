@@ -178,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_FrameworkElement_Resources_Nest_ResDictAndRes()
 		{
-			Assert.ThrowsException<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
+			Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
 				<Border>
 					<Border.Resources>
 			
@@ -195,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_FrameworkElement_Resources_Nest_ManyResDicts()
 		{
-			Assert.ThrowsException<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
+			Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
 				<Border>
 					<Border.Resources>
 			

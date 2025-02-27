@@ -242,7 +242,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var value = "something";
 			var secondValue = "somethingElse";
 			SUT.Values.Add(key, value);
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => SUT.Values.Add(key, secondValue));
 		}
 
@@ -264,7 +264,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var key = "test";
 			var value = "something";
 			SUT.Values.Add(key, value);
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => SUT.Values.Add(key, null));
 		}
 

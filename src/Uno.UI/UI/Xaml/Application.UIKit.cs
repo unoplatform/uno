@@ -32,8 +32,6 @@ namespace Microsoft.UI.Xaml
 			InitializeSystemTheme();
 
 			SetCurrentLanguage();
-
-			SubscribeBackgroundNotifications();
 		}
 
 		public Application(NativeHandle handle) : base(handle)
@@ -118,11 +116,7 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
-
-
 		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(10);
-
-
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -178,47 +172,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return userActivity != null;
-		}
-
-		private void SubscribeBackgroundNotifications()
-		{
-			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
-			{
-				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
-			}
-			else
-			{
-				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
-				NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
-			}
-		}
-
-		private void OnEnteredBackground(NSNotification notification)
-		{
-			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
-
-			RaiseEnteredBackground(() => RaiseSuspending());
-		}
-
-		private void OnLeavingBackground(NSNotification notification)
-		{
-			RaiseResuming();
-			RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
-		}
-
-		private void OnActivated(NSNotification notification)
-		{
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
-		}
-
-		private void OnDeactivated(NSNotification notification)
-		{
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		private void SetCurrentLanguage()

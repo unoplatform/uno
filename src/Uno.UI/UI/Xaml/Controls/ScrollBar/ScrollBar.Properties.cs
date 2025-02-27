@@ -1,56 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Disposables;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+public partial class ScrollBar
 {
-	public partial class ScrollBar
+	/// <summary>
+	/// Gets or sets a value that results in different input indicator modes for the ScrollBar.
+	/// </summary>
+	public ScrollingIndicatorMode IndicatorMode
 	{
-		public double ViewportSize
-		{
-			get => (double)GetValue(ViewportSizeProperty);
-			set => SetValue(ViewportSizeProperty, value);
-		}
+		get => (ScrollingIndicatorMode)GetValue(IndicatorModeProperty);
+		set => SetValue(IndicatorModeProperty, value);
+	}
 
-		public Controls.Orientation Orientation
-		{
-			get => (Controls.Orientation)GetValue(OrientationProperty);
-			set => SetValue(OrientationProperty, value);
-		}
-
-		public ScrollingIndicatorMode IndicatorMode
-		{
-			get => (ScrollingIndicatorMode)GetValue(IndicatorModeProperty);
-			set => SetValue(IndicatorModeProperty, value);
-		}
-
-		public static DependencyProperty IndicatorModeProperty { get; } =
+	/// <summary>
+	/// Identifies the IndicatorMode dependency property.
+	/// </summary>
+	public static DependencyProperty IndicatorModeProperty { get; } =
 		DependencyProperty.Register(
 			nameof(IndicatorMode),
 			typeof(ScrollingIndicatorMode),
 			typeof(ScrollBar),
-			new FrameworkPropertyMetadata(ScrollingIndicatorMode.None, propertyChangedCallback: (s, e) => (s as ScrollBar).RefreshTrackLayout()));
+			new FrameworkPropertyMetadata(ScrollingIndicatorMode.None));
 
-		public static DependencyProperty OrientationProperty { get; } =
+	/// <summary>
+	/// Gets or sets a value that indicates whether the ScrollBar is displayed horizontally or vertically.
+	/// </summary>
+	public Orientation Orientation
+	{
+		get => (Orientation)GetValue(OrientationProperty);
+		set => SetValue(OrientationProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the Orientation dependency property.
+	/// </summary>
+	public static DependencyProperty OrientationProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Orientation),
-			typeof(Controls.Orientation),
+			typeof(Orientation),
 			typeof(ScrollBar),
-			new FrameworkPropertyMetadata(Orientation.Vertical, propertyChangedCallback: (s, e) => (s as ScrollBar).OnOrientationChanged()));
+			new FrameworkPropertyMetadata(Orientation.Vertical)); // TODO:MZ: Default value should be Horizontal according to docs?
 
-		public static DependencyProperty ViewportSizeProperty { get; } =
+	/// <summary>
+	/// Gets or sets the amount of the scrollable content that is currently visible.
+	/// </summary>
+	/// <remarks>Default is 0.0.</remarks>
+	public double ViewportSize
+	{
+		get => (double)GetValue(ViewportSizeProperty);
+		set => SetValue(ViewportSizeProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the ViewportSize dependency property.
+	/// </summary>
+	public static DependencyProperty ViewportSizeProperty { get; } =
 		DependencyProperty.Register(
 			nameof(ViewportSize),
 			typeof(double),
 			typeof(ScrollBar),
 			new FrameworkPropertyMetadata(0.0));
 
-		public event ScrollEventHandler Scroll;
-	}
+	/// <summary>
+	/// Occurs one or more times as content scrolls in a ScrollBar when the user moves the Thumb by using the mouse.
+	/// </summary>
+	public event ScrollEventHandler Scroll;
+
+	internal event Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventHandler ThumbDragStarted;
+
+	internal event Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventHandler ThumbDragCompleted;
 }

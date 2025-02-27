@@ -394,7 +394,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("	Infinity")]
 		[DataRow("-Infinity ")]
 		[DataRow("	Infinity")]
-		[ExpectedException(typeof(ArgumentException))]
 #if !WINAPPSDK
 		[Ignore]
 #endif
@@ -403,10 +402,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new AssertionScope();
 
 			var sut = new ContentControl { Tag = variant };
-
-			sut.SetBinding(
-				FrameworkElement.WidthProperty,
-				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+			var binding = new Binding { Source = sut, Path = new PropertyPath("Tag") };
+			Assert.Throws<ArgumentException>(() => sut.SetBinding(FrameworkElement.WidthProperty, binding));
 		}
 
 		private sealed partial class MyPanel : Panel
@@ -639,9 +636,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Measure(new Size(42.0, double.NaN));
 				SUT.Measure(new Size(double.NaN, 42.0));
 #else
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
 #endif
 			});
 
@@ -1092,7 +1089,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.Loading += (snd, e) => loadingCount++;
 			sut.Loaded += (snd, e) => loadedCount++;
 
-			hostPanel.Loading += async (snd, e) =>
+			hostPanel.Loading += (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
 

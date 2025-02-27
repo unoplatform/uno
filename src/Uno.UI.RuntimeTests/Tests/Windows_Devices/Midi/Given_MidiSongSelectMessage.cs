@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 		[TestMethod]
 		public void When_Song_Out_Of_Bounds()
 		{
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => new MidiSongSelectMessage(128));
 		}
 	}

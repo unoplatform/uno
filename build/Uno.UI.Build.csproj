@@ -384,8 +384,7 @@
 		<ItemGroup>
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Foldable.$(NBGV_SemVer2).nupkg" />
-			<!-- TODO: Skip Package diff before released on Nuget -->
-			<!-- <_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" /> -->
+			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(NBGV_SemVer2).nupkg" />

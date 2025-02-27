@@ -485,6 +485,14 @@ public class Given_InputManager
 		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
 	}
 
+	[TestMethod]
+	public void Verify_Initialized()
+	{
+		var xamlRoot = TestServices.WindowHelper.XamlRoot;
+		var contentRoot = xamlRoot.VisualTree.ContentRoot;
+		Assert.IsTrue(contentRoot.InputManager.Initialized);
+	}
+
 	private CoreCursorType? GetCursorShape()
 	{
 		var cursor = TestServices.WindowHelper

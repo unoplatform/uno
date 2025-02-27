@@ -316,11 +316,32 @@
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
 						Command="{Binding RecordAllTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RunAll}"
-									   Margin="5,0" />
+						<u:PathControl Style="{StaticResource Icon_RunAll}" Margin="5,0" />
 					</Button>
 				</Grid>
 
+				<!-- Search -->
+				<StackPanel IsTabStop="True" Grid.Row="1" Spacing="4" Padding="4" BorderThickness="0,0,0,1"
+BorderBrush="{StaticResource Color05Brush}">
+					<AutoSuggestBox PlaceholderText="Search..."
+						TextChanged="SearchBox_TextChanged"
+						TextMemberPath="ControlName"
+						QueryIcon="Find"
+						ItemsSource="{Binding FilteredSamples}"
+						HorizontalAlignment="Stretch"
+						QuerySubmitted="SearchBox_QuerySubmitted"
+						SuggestionChosen="SearchBox_SuggestionChosen">
+						<AutoSuggestBox.ItemTemplate>
+							<DataTemplate x:DataType="entities:SampleChooserContent">
+								<TextBlock Text="{x:Bind ControlName}" />
+							</DataTemplate>
+						</AutoSuggestBox.ItemTemplate>
+					</AutoSuggestBox>
+
+
+					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
+							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
+				</StackPanel>
 
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="2"
@@ -368,29 +389,6 @@
 								Grid.Row="2"
 								Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource RecentSamplesList}" />
-
-				<StackPanel Grid.Row="1" Spacing="4" Padding="4" BorderThickness="0,0,0,1"
-BorderBrush="{StaticResource Color05Brush}">
-					<!-- Search -->
-					<AutoSuggestBox PlaceholderText="Search..."
-						TextChanged="SearchBox_TextChanged"
-						TextMemberPath="ControlName"
-						QueryIcon="Find"
-						ItemsSource="{Binding FilteredSamples}"
-						HorizontalAlignment="Stretch"
-						QuerySubmitted="SearchBox_QuerySubmitted"
-						SuggestionChosen="SearchBox_SuggestionChosen">
-						<AutoSuggestBox.ItemTemplate>
-							<DataTemplate x:DataType="entities:SampleChooserContent">
-								<TextBlock Text="{x:Bind ControlName}" />
-							</DataTemplate>
-						</AutoSuggestBox.ItemTemplate>
-					</AutoSuggestBox>
-
-
-					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
-							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
-				</StackPanel>
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"

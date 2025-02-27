@@ -21229,11 +21229,10 @@
     <Setter Property="BorderBrush" Value="{ThemeResource ScrollBarBorderBrush}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CornerRadius" Value="{ThemeResource ScrollBarCornerRadius}" />
-    <!-- UNO TODO: Doesn't appear in ScrollViewer because default visual states are incompatible with Uno fixed-orientation optimizations
-             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the
-             modifications made to the base UWP style on performance grounds should also be made here. -->
-    <win:Setter Property="Template">
-      <Setter.Value>
+    <!-- UNO TODO: Template is applied in case of Skia targets, where the performance limitations, which required
+        fixed orientation template are no longer relevant. -->
+    <skia:Setter Property="Template">
+      <skia:Setter.Value>
         <ControlTemplate TargetType="ScrollBar">
           <Grid x:Name="Root">
             <Grid.Resources>
@@ -21263,11 +21262,11 @@
                           <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ScrollBarButtonArrowForegroundPressed}" />
                           </ObjectAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
@@ -21306,11 +21305,11 @@
                           <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ScrollBarButtonArrowForegroundPressed}" />
                           </ObjectAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
@@ -21349,11 +21348,11 @@
                           <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ScrollBarButtonArrowForegroundPressed}" />
                           </ObjectAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
@@ -21392,11 +21391,11 @@
                           <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ScrollBarButtonArrowForegroundPressed}" />
                           </ObjectAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleX" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
-                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="ScaleY" RepeatBehavior="Forever">
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" RepeatBehavior="Forever">
                             <DiscreteDoubleKeyFrame KeyTime="0:0:0.016" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                             <DiscreteDoubleKeyFrame KeyTime="0:0:30" Value="{ThemeResource ScrollBarButtonArrowScalePressed}" />
                           </DoubleAnimationUsingKeyFrames>
@@ -21419,7 +21418,7 @@
                 </Grid>
               </ControlTemplate>
               <ControlTemplate x:Key="VerticalThumbTemplate" TargetType="Thumb">
-                <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{ThemeResource ScrollBarThumbStrokeThickness}" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}">
+                <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{ThemeResource ScrollBarThumbStrokeThickness}" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}">
                   <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="CommonStates">
                       <VisualState x:Name="Normal" />
@@ -21436,7 +21435,7 @@
                 </Rectangle>
               </ControlTemplate>
               <ControlTemplate x:Key="HorizontalThumbTemplate" TargetType="Thumb">
-                <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{ThemeResource ScrollBarThumbStrokeThickness}" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}">
+                <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{ThemeResource ScrollBarThumbStrokeThickness}" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}">
                   <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup x:Name="CommonStates">
                       <VisualState x:Name="Normal" />
@@ -21583,8 +21582,8 @@
                 </VisualStateGroup.Transitions>
                 <VisualState x:Name="Collapsed">
                   <VisualState.Setters>
-                    <Setter Target="HorizontalThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
-                    <Setter Target="VerticalThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
+                    <Setter Target="HorizontalThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackground}" />
+                    <Setter Target="VerticalThumb.Background" Value="{ThemeResource ScrollBarPanningThumbBackground}" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Expanded">
@@ -21696,7 +21695,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Grid x:Name="HorizontalRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid x:Name="HorizontalRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False" CornerRadius="{TemplateBinding CornerRadius}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -21704,10 +21703,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <Rectangle x:Name="HorizontalTrackRect" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" Opacity="0" Grid.ColumnSpan="5" Margin="0" StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}" Fill="{ThemeResource ScrollBarTrackFill}" Stroke="{ThemeResource ScrollBarTrackStroke}" />
+              <Rectangle x:Name="HorizontalTrackRect" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" Opacity="0" Grid.ColumnSpan="5" Margin="0" StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}" Fill="{ThemeResource ScrollBarTrackFill}" Stroke="{ThemeResource ScrollBarTrackStroke}" />
               <RepeatButton x:Name="HorizontalSmallDecrease" Grid.Column="0" Opacity="0" MinHeight="{StaticResource ScrollBarSize}" IsTabStop="False" Interval="50" Padding="{ThemeResource ScrollBarHorizontalDecreaseMargin}" Template="{StaticResource HorizontalDecrementTemplate}" Width="{StaticResource ScrollBarSize}" AllowFocusOnInteraction="False" VerticalAlignment="Center" />
               <RepeatButton x:Name="HorizontalLargeDecrease" Opacity="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsTabStop="False" Interval="50" Template="{StaticResource RepeatButtonTemplate}" Width="0" AllowFocusOnInteraction="False" />
-              <Thumb x:Name="HorizontalThumb" Opacity="0" Grid.Column="2" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderBrush="{ThemeResource ScrollBarThumbBorderBrush}" Template="{StaticResource HorizontalThumbTemplate}" Height="{StaticResource ScrollBarHorizontalThumbMinHeight}" MinWidth="{StaticResource ScrollBarHorizontalThumbMinWidth}" AutomationProperties.AccessibilityView="Raw" RenderTransformOrigin="0.5,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+              <Thumb x:Name="HorizontalThumb" Opacity="0" Grid.Column="2" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderBrush="{ThemeResource ScrollBarThumbBorderBrush}" Template="{StaticResource HorizontalThumbTemplate}" Height="{ThemeResource ScrollBarHorizontalThumbMinHeight}" MinWidth="{StaticResource ScrollBarHorizontalThumbMinWidth}" AutomationProperties.AccessibilityView="Raw" RenderTransformOrigin="0.5,1" CornerRadius="{TemplateBinding CornerRadius}">
                 <Thumb.RenderTransform>
                   <TranslateTransform x:Name="HorizontalThumbTransform" Y="{StaticResource ScrollBarThumbOffset}" />
                 </Thumb.RenderTransform>
@@ -21715,7 +21714,7 @@
               <RepeatButton x:Name="HorizontalLargeIncrease" Opacity="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsTabStop="False" Interval="50" AllowFocusOnInteraction="False" Template="{StaticResource RepeatButtonTemplate}" />
               <RepeatButton x:Name="HorizontalSmallIncrease" Grid.Column="4" Opacity="0" MinHeight="{StaticResource ScrollBarSize}" IsTabStop="False" Interval="50" Padding="{ThemeResource ScrollBarHorizontalIncreaseMargin}" Template="{StaticResource HorizontalIncrementTemplate}" Width="{StaticResource ScrollBarSize}" AllowFocusOnInteraction="False" VerticalAlignment="Center" />
             </Grid>
-            <Grid x:Name="HorizontalPanningRoot" MinWidth="24" Visibility="Collapsed" Opacity="0" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid x:Name="HorizontalPanningRoot" MinWidth="24" Visibility="Collapsed" Opacity="0" CornerRadius="{TemplateBinding CornerRadius}">
               <Border x:Name="HorizontalPanningThumb" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Height="2" MinWidth="32" Margin="0,2,0,2" />
             </Grid>
             <Grid x:Name="VerticalRoot" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
@@ -21726,10 +21725,10 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
-              <Rectangle x:Name="VerticalTrackRect" contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" contract7NotPresent:RadiusX="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" contract7NotPresent:RadiusY="{Binding Source={ThemeResource ScrollBarCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" Opacity="0" Grid.RowSpan="5" Margin="0" StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}" Fill="{ThemeResource ScrollBarTrackFill}" Stroke="{ThemeResource ScrollBarTrackStroke}" />
+              <Rectangle x:Name="VerticalTrackRect" RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter2x}}" RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter2x}}" Opacity="0" Grid.RowSpan="5" Margin="0" StrokeThickness="{ThemeResource ScrollBarTrackBorderThemeThickness}" Fill="{ThemeResource ScrollBarTrackFill}" Stroke="{ThemeResource ScrollBarTrackStroke}" />
               <RepeatButton x:Name="VerticalSmallDecrease" Grid.Row="0" Opacity="0" Height="{StaticResource ScrollBarSize}" MinWidth="{StaticResource ScrollBarSize}" IsTabStop="False" Interval="50" Padding="{ThemeResource ScrollBarVerticalDecreaseMargin}" Template="{StaticResource VerticalDecrementTemplate}" HorizontalAlignment="Center" />
               <RepeatButton x:Name="VerticalLargeDecrease" Opacity="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="0" IsTabStop="False" Interval="50" Grid.Row="1" AllowFocusOnInteraction="False" Template="{StaticResource RepeatButtonTemplate}" />
-              <Thumb x:Name="VerticalThumb" Opacity="0" Grid.Row="2" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderBrush="{ThemeResource ScrollBarThumbBorderBrush}" Template="{StaticResource VerticalThumbTemplate}" Width="{StaticResource ScrollBarVerticalThumbMinWidth}" MinHeight="{StaticResource ScrollBarVerticalThumbMinHeight}" AutomationProperties.AccessibilityView="Raw" RenderTransformOrigin="1,0.5" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+              <Thumb x:Name="VerticalThumb" Opacity="0" Grid.Row="2" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderBrush="{ThemeResource ScrollBarThumbBorderBrush}" Template="{StaticResource VerticalThumbTemplate}" Width="{ThemeResource ScrollBarVerticalThumbMinWidth}" MinHeight="{StaticResource ScrollBarVerticalThumbMinHeight}" AutomationProperties.AccessibilityView="Raw" RenderTransformOrigin="1,0.5" CornerRadius="{TemplateBinding CornerRadius}">
                 <Thumb.RenderTransform>
                   <TranslateTransform x:Name="VerticalThumbTransform" X="{StaticResource ScrollBarThumbOffset}" />
                 </Thumb.RenderTransform>
@@ -21737,13 +21736,13 @@
               <RepeatButton x:Name="VerticalLargeIncrease" Opacity="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsTabStop="False" Interval="50" Grid.Row="3" AllowFocusOnInteraction="False" Template="{StaticResource RepeatButtonTemplate}" />
               <RepeatButton x:Name="VerticalSmallIncrease" Grid.Row="4" Opacity="0" Height="{StaticResource ScrollBarSize}" MinWidth="{StaticResource ScrollBarSize}" IsTabStop="False" Interval="50" Padding="{ThemeResource ScrollBarVerticalIncreaseMargin}" Template="{StaticResource VerticalIncrementTemplate}" HorizontalAlignment="Center" />
             </Grid>
-            <Grid x:Name="VerticalPanningRoot" MinHeight="24" Visibility="Collapsed" Opacity="0" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid x:Name="VerticalPanningRoot" MinHeight="24" Visibility="Collapsed" Opacity="0" CornerRadius="{TemplateBinding CornerRadius}">
               <Border x:Name="VerticalPanningThumb" VerticalAlignment="Top" HorizontalAlignment="Right" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Width="2" MinHeight="32" Margin="2,0,2,0" />
             </Grid>
           </Grid>
         </ControlTemplate>
-      </Setter.Value>
-    </win:Setter>
+      </skia:Setter.Value>
+    </skia:Setter>
   </Style>
   <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
   <CornerRadius x:Key="SliderTrackCornerRadius">2</CornerRadius>

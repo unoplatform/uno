@@ -240,8 +240,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
-			Assert.ThrowsException<ArgumentException>(() => textBox.Select(0, -1));
-			Assert.ThrowsException<ArgumentException>(() => textBox.Select(-1, 0));
+			Assert.ThrowsExactly<ArgumentException>(() => textBox.Select(0, -1));
+			Assert.ThrowsExactly<ArgumentException>(() => textBox.Select(-1, 0));
 		}
 
 		[TestMethod]

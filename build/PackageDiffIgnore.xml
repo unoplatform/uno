@@ -2027,6 +2027,7 @@
 		</Properties>
 
 		<Methods>
+			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 		</Methods>
 	</IgnoreSet>
