@@ -1,4 +1,4 @@
-﻿#if !UNO_HAS_MANAGED_POINTERS
+﻿#if __ANDROID__ || __IOS__
 
 using System;
 using System.Collections.Generic;

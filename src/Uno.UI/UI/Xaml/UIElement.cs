@@ -1332,6 +1332,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+#if __SKIA__
 		private static double LayoutRound(double value, double scaleFactor)
 		{
 			double returnValue = value;
@@ -1354,6 +1355,7 @@ namespace Microsoft.UI.Xaml
 
 			return returnValue;
 		}
+#endif
 
 		// GetScaleFactorForLayoutRounding() returns the plateau scale in most cases. For ScrollContentPresenter children though,
 		// the plateau scale gets combined with the owning ScrollViewer's ZoomFactor if headers are present.
