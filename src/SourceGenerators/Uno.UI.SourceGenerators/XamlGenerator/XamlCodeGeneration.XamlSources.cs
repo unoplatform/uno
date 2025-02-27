@@ -60,7 +60,7 @@ partial class XamlCodeGeneration
 		using (writer.BlockInvariant("internal static class {0}", embeddedXamlSourcesClassName))
 		{
 			writer.AppendLineIndented("// key=absolute file path");
-			writer.AppendLineIndented("private static IDictionary<string, Func<(string hash, string payload)>>? _XamlSources;");
+			writer.AppendLineIndented("private static IDictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)>? _XamlSources;");
 			writer.AppendLine();
 			writer.AppendLineIndented("// hash of all the paths");
 			writer.AppendLineIndented("private static volatile string? _filesListHash;");
@@ -69,7 +69,7 @@ partial class XamlCodeGeneration
 			writer.AppendLineIndented("private static volatile uint _updateCounter;");
 			writer.AppendLine();
 			writer.AppendLineIndented("// The content of this method only changes when the file list changes");
-			using (writer.BlockInvariant("private static IDictionary<string, Func<(string hash, string payload)>> EnsureInitialize()"))
+			using (writer.BlockInvariant("private static IDictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)> EnsureInitialize()"))
 			{
 				writer.AppendLineInvariantIndented("const string currentListHash = \"{0}\"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation", filesListHash);
 				writer.AppendLine();
@@ -79,12 +79,12 @@ partial class XamlCodeGeneration
 				writer.AppendLine();
 				using (writer.BlockInvariant("if (needsUpdate)"))
 				{
-					writer.AppendLineInvariantIndented("var xamlSources = new Dictionary<string, Func<(string hash, string payload)>>({0}, StringComparer.OrdinalIgnoreCase);", interestingFiles.Count);
+					writer.AppendLineInvariantIndented("var xamlSources = new Dictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)>({0}, StringComparer.OrdinalIgnoreCase);", interestingFiles.Count);
 					writer.AppendLine();
 					writer.AppendLineIndented("// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support");
 					foreach (var f in interestingFiles)
 					{
-						writer.AppendLineInvariantIndented("xamlSources[NormalizePath(@\"{0}\")] = GetSources_{1};", f.FilePath, f.UniqueID);
+						writer.AppendLineInvariantIndented("xamlSources[NormalizePath(@\"{0}\")] = (NormalizePath(@\"{0}\"), GetSources_{1});", f.FilePath, f.UniqueID);
 					}
 					writer.AppendLine();
 					using (writer.BlockInvariant("if (Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)"))
@@ -114,11 +114,26 @@ partial class XamlCodeGeneration
 			}
 			writer.AppendLine();
 			writer.AppendLineIndented("public static IReadOnlyList<string> GetXamlFilesList() => [.. EnsureInitialize().Keys];");
+
 			writer.AppendLine();
-			writer.AppendLineIndented("public static (string hash, string payload)? GetXamlFile(string filePath)");
-			using (writer.Indent())
+			using (writer.BlockInvariant("public static string? GetNormalizedFileName(string path)"))
 			{
-				writer.AppendLineIndented("=> EnsureInitialize().TryGetValue(NormalizePath(filePath), out var sourcesGetter) ? sourcesGetter() : null;");
+				writer.AppendLineIndented("// Will return the normalized path if the file exists, or null if it doesn't.");
+				writer.AppendLineIndented("// (the returned value will be constant for the file and can be used in a dictionary using an ordinal comparer)");
+				writer.AppendLineIndented("var normalizedPath = NormalizePath(path);");
+				writer.AppendLineIndented("return EnsureInitialize().TryGetValue(normalizedPath, out var entry) ? entry.ActualPath : null;");
+			}
+
+			writer.AppendLine();
+			using (writer.BlockInvariant("public static (string ActualPath, string Hash, string Payload)? GetXamlFile(string path)"))
+			{
+				writer.AppendLineIndented("var normalizedPath = NormalizePath(path);");
+				using (writer.BlockInvariant("if (EnsureInitialize().TryGetValue(normalizedPath, out var entry))"))
+				{
+					writer.AppendLineIndented("var sources = entry.Getter();");
+					writer.AppendLineIndented("return (entry.ActualPath, sources.Hash, sources.Payload);");
+				}
+				writer.AppendLineIndented("return null;");
 			}
 
 			writer.AppendLine();
