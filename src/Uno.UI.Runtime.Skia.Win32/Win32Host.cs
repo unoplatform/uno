@@ -32,15 +32,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 {
 	private UIntPtr _gdiPlusToken;
 	private readonly Func<Application> _appBuilder;
-	private static readonly Win32EventLoop _eventLoop = new(a =>
-	{
-		var thread = new Thread(a) { Name = "Uno Event Loop", IsBackground = true };
-		// not setting the thread's threading model as STA will deadlock some COM functions like IFileDialog::Show
-		thread.SetApartmentState(ApartmentState.STA);
-		return thread;
-	});
 	[ThreadStatic] private static bool _isDispatcherThread;
-	private static readonly TaskCompletionSource _exitTcs = new();
+	private static volatile bool _allWindowsClosed;
 	private static int _openWindows;
 
 	static Win32Host()
@@ -85,7 +78,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	public Win32Host(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
-		_eventLoop.Schedule(() =>
+		Win32EventLoop.Schedule(() =>
 		{
 			_isDispatcherThread = true;
 			var hResult = PInvoke.OleInitialize();
@@ -111,36 +104,33 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 	protected override void Initialize()
 	{
-		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
+		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
 	protected override Task RunLoop()
 	{
-		_eventLoop.Schedule(() => Application.Start(_ =>
+		Win32EventLoop.Schedule(() => Application.Start(_ =>
 		{
 			var app = _appBuilder();
 			app.Host = this;
 		}), NativeDispatcherPriority.Normal);
 
-		_exitTcs.Task.GetAwaiter().GetResult();
+		// This will keep running until the event loop has no queued actions left and all the windows are closed
+		while (Win32EventLoop.RunOnce() || !_allWindowsClosed) { }
 		return Task.CompletedTask;
 	}
-
-	internal static void RunOnce() => _eventLoop.RunOnce();
 
 	internal static void RegisterWindow(HWND hwnd)
 	{
 		Interlocked.Increment(ref _openWindows);
-		_eventLoop.AddHwnd(hwnd);
 	}
 
 	internal static void UnregisterWindow(HWND hwnd)
 	{
-		_eventLoop.RemoveHwnd(hwnd);
 		if (Interlocked.Decrement(ref _openWindows) is 0)
 		{
-			_exitTcs.SetResult();
+			_allWindowsClosed = true;
 		}
 	}
 }

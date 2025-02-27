@@ -129,7 +129,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 
 		while (!tcs.Task.IsCompleted)
 		{
-			Win32Host.RunOnce();
+			Win32EventLoop.RunOnce();
 		}
 
 		_controller = tcs.Task.Result;
