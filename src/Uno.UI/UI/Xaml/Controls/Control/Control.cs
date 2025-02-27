@@ -571,6 +571,10 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsFocusableChanged();
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		partial void RegisterContentTemplateRoot();
+#endif
+
 		#region Foreground Dependency Property
 
 		public
