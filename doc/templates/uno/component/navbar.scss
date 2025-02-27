@@ -26,13 +26,13 @@
 #header-container {
   padding: 16px 32px;
   z-index: 9999;
-  background: #fff;
+  background: #eaf2f9;
 
   display: flex;
   position: fixed;
   width: 100%;
   min-height: 67px;
-  max-height: 67px;
+  max-height: 75px;
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
 
@@ -70,6 +70,16 @@
     }
   }
 
+  .navbar-collapse {
+    /*margin: 0 -30px !important;*/
+  }
+
+  @media (max-width: 1600px) {
+    .navbar-collapse {
+      margin: 0 -30px !important;
+    }
+  }
+
   .navbar-toggle {
     padding: 0;
     margin: 10px 0;
@@ -85,8 +95,12 @@
       margin-top: 3px;
     }
 
+
+
+
     @media (max-width: 1023px) {
       display: block !important;
+
     }
   }
 
@@ -97,7 +111,7 @@
   nav {
     a {
       padding: 10px;
-      font-size: 13px;
+      font-size: 17px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
@@ -117,23 +131,55 @@
       }
 
       // Media queries for font size and padding adjustments
+
+
+
       @media (min-width: 1024px) {
-        font-size: 14px;
-        /*line-height: 17px;*/
-        padding: .2rem !important;
+        font-size: 14px !important;
+
+        padding: .4rem !important;
       }
 
       @media (min-width: 1280px) {
-        font-size: 16px;
-        /*line-height: 17px;*/
-        padding: .2rem !important;
+        font-size: 16px !important;
+
+        padding: .8rem !important;
       }
 
-      @media (min-width: 1366px) {
-        font-size: 18px;
-        /*line-height: 17px;*/
-        padding: .2rem !important;
+      /*@media (max-width: 1025px) {
+        font-size: 14.5px !important;
+
+
       }
+
+      @media (max-width: 1280px) {
+        font-size: 14px !important;;
+
+        padding: .8rem !important;
+      }*/
+
+      @media (min-width: 1366px) {
+        font-size: 16px !important;
+
+        padding: 1.12rem !important;
+      }
+
+      @media (min-width: 1600px) {
+        font-size: 18px !important;
+
+        padding: 1.12rem 1.28rem !important;
+      }
+
+      /*@media (min-width: 1600px) {
+        font-size: 18px !important;
+        padding: 1.12rem 1.28rem !important;
+      }
+
+      @media (max-width: 1600px) {
+        font-size: 16px !important;
+        padding: 1.12rem !important;
+      }*/
+
     }
     /**
      * Top level menu items
@@ -146,7 +192,7 @@
       }
 
       @include media-breakpoint-up(navbar) {
-        margin: 0 16px;
+        /*margin: 0 16px; */
       }
       /**
        * menu-item-has-children means there is a submenu
@@ -301,13 +347,10 @@
       border-radius: 8px;
 
       margin-left: 0;
-      /*padding: 8px 32px;*/
-      padding: 1.2rem 2.4rem !important;
 
-      /*font-size: 16px;*/
       line-height: 24px;
       font-weight: 700;
-      min-width: 125px;
+      /*min-width: 125px;*/
       text-align: center;
       text-transform: none;
       color: $black;
@@ -317,6 +360,7 @@
       background-size: 100% 200%;
       background-position: left top;
       transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
+      padding: 1.2rem 2.5rem !important;
 
       &:hover {
         color: $white;
@@ -325,16 +369,22 @@
 
       @media (min-width: 1024px) {
         font-size: 14px;
-
+        padding: 1.2rem 2.1rem !important;
       }
 
       @media (min-width: 1280px) {
-        font-size: 16px;
+        /*font-size: 16px;*/
 
       }
 
       @media (min-width: 1366px) {
-        font-size: 18px;
+        /*font-size: 16px;*/
+
+      }
+
+      @media (min-width: 1600px) {
+        /*font-size: 16px !important;*/
+
 
       }
 
@@ -344,28 +394,43 @@
   .custom-login-item {
     a {
       border: 2px solid rgba(21, 155, 255, 1);
-      margin-left: 20px !important;
-      width: 90% !important;
+
+      width: 100% !important;
       text-transform: none !important;
       color: rgba(21, 155, 255, 1) !important;
       border-radius: 13px;
-      padding: 1.2rem 1.6rem !important;
 
+      padding: 1rem 1.6rem !important;
+
+      @media (max-width: 1023px) {
+        padding: 1.8rem 2.3rem !important;
+      }
 
       @media (min-width: 1024px) {
-        font-size: 14px;
-
+        /*font-size: 14px;*/
+        margin-left: 0px !important;
+        padding: 1.2rem 1.6rem !important;
       }
 
       @media (min-width: 1280px) {
-        font-size: 16px;
+        /*font-size: 16px;*/
+        margin-left: 14px !important;
 
       }
 
       @media (min-width: 1366px) {
-        font-size: 18px;
+        /*font-size: 16px !important;*/
+        margin-left: 14px !important;
 
       }
+
+      @media (min-width: 1600px) {
+        /*font-size: 18px !important;*/
+        margin-left: 14px !important;
+        padding: 1rem 1.6rem !important;
+
+      }
+
 
     }
   }
@@ -380,7 +445,7 @@
     margin: 0;
     padding: 0;
 
-    padding-top: 67px;
+    padding-top: 40px;
     left: 0;
 
     text-align: left;
@@ -393,6 +458,7 @@
     &.collapse {
       height: 67px !important;
       display: none !important;
+      margin: 0 !important;
     }
 
     &.collapse.in {
@@ -417,29 +483,28 @@
           align-items: center;*/
           width: 100%;
           margin-bottom: 10px;
+          margin-top: 20px
         }
 
-        &.get-started-btn {
+        &.get-started-btn, &.custom-login-item {
           padding: 0 2rem;
         }
 
-        &.custom-login-item {
-          padding: 0;
-        }
+
 
         &.get-started-btn a,
         &.custom-login-item a {
-          font-size: 20px !important;
+          font-size: 17px !important;
 
-          padding: 12px 25px !important;
-          /*text-align: center !important;*/
-          line-height: 30px !important;
+          /*padding: 12px 25px !important;
+          text-align: center !important;
+          line-height: 30px !important;*/
           border-radius: 10px !important;
         }
         &.custom-login-item a {
-
+          font-size: 20px !important;
           font-weight: 600;
-          width: 95% !important;
+          width: 100% !important;
 
         }
         &.get-started-btn a {
@@ -482,7 +547,7 @@
 
       a {
         display: block;
-        padding: 10px 25px;
+        padding: 14px 25px;
       }
     }
   }
@@ -492,13 +557,12 @@
   position: fixed;
   top: 67px;
   width: 100%;
-  left: 0;
-  z-index: 9;
 
-  background: $lightblue;
-  padding: 10px 0;
+  z-index: 999;
+  background: #f8f8f8;
+
 
   @include media-breakpoint-up(lg) {
-    display: none;
+    /*display: none;*/
   }
 }
