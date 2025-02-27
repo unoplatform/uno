@@ -22,7 +22,7 @@ namespace MyProject.__Sources__;
 internal static class EmbeddedXamlSourcesProvider
 {
 	// key=absolute file path
-	private static IDictionary<string, Func<(string hash, string payload)>>? _XamlSources;
+	private static IDictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)>? _XamlSources;
 
 	// hash of all the paths
 	private static volatile string? _filesListHash;
@@ -31,7 +31,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static volatile uint _updateCounter;
 
 	// The content of this method only changes when the file list changes
-	private static IDictionary<string, Func<(string hash, string payload)>> EnsureInitialize()
+	private static IDictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)> EnsureInitialize()
 	{
 		const string currentListHash = "d6cd66944958ced0c513e0a04797b51d"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation
 
@@ -41,10 +41,10 @@ internal static class EmbeddedXamlSourcesProvider
 
 		if (needsUpdate)
 		{
-			var xamlSources = new Dictionary<string, Func<(string hash, string payload)>>(1, StringComparer.OrdinalIgnoreCase);
+			var xamlSources = new Dictionary<string, (string ActualPath, Func<(string Hash, string Payload)> Getter)>(1, StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/MainPage.xaml")] = GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d;
+			xamlSources[NormalizePath(@"C:/Project/0/MainPage.xaml")] = (NormalizePath(@"C:/Project/0/MainPage.xaml"), GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d);
 
 			if (Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -74,8 +74,24 @@ internal static class EmbeddedXamlSourcesProvider
 
 	public static IReadOnlyList<string> GetXamlFilesList() => [.. EnsureInitialize().Keys];
 
-	public static (string hash, string payload)? GetXamlFile(string filePath)
-		=> EnsureInitialize().TryGetValue(NormalizePath(filePath), out var sourcesGetter) ? sourcesGetter() : null;
+	public static string? GetNormalizedFileName(string path)
+	{
+		// Will return the normalized path if the file exists, or null if it doesn't.
+		// (the returned value will be constant for the file and can be used in a dictionary using an ordinal comparer)
+		var normalizedPath = NormalizePath(path);
+		return EnsureInitialize().TryGetValue(normalizedPath, out var entry) ? entry.ActualPath : null;
+	}
+
+	public static (string ActualPath, string Hash, string Payload)? GetXamlFile(string path)
+	{
+		var normalizedPath = NormalizePath(path);
+		if (EnsureInitialize().TryGetValue(normalizedPath, out var entry))
+		{
+			var sources = entry.Getter();
+			return (entry.ActualPath, sources.Hash, sources.Payload);
+		}
+		return null;
+	}
 
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
