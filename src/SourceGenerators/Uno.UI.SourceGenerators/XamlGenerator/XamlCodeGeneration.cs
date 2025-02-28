@@ -229,7 +229,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isHotReloadEnabled = _isDebug;
 			}
 
-			if(!bool.TryParse(context.GetMSBuildPropertyValue("UnoGenerateXamlSourcesProvider"), out _generateXamlSourcesProvider))
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoGenerateXamlSourcesProvider"), out _generateXamlSourcesProvider))
 			{
 				_generateXamlSourcesProvider = _isHotReloadEnabled; // Default to the presence of Hot Reload feature
 			}
