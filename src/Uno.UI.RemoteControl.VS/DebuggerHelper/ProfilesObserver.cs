@@ -98,7 +98,7 @@ internal class ProfilesObserver : IDisposable
 	{
 		if (_dte.Solution.SolutionBuild.StartupProjects is object[] newStartupProjects)
 		{
-			if (_existingStartupProjects is { Length: 0 })
+			if (_existingStartupProjects.Length == 0)
 			{
 				// We're starting up, no need to re-create the observer
 				_existingStartupProjects = newStartupProjects;
