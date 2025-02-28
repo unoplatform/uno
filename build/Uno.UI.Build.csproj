@@ -384,7 +384,7 @@
 		<ItemGroup>
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Foldable.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other=".$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(NBGV_SemVer2).nupkg" />
