@@ -21,6 +21,8 @@
 		<PackageReference Include="NunitXml.TestLogger" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" />
+		<!-- TODO: Align on which test result format to use -->
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="Xamarin.UITest" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
