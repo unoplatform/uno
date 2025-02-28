@@ -399,7 +399,7 @@
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost" Other="$(PackageNamePrefix).XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost.Skia.Wpf" Other="$(PackageNamePrefix).XamlHost.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).WebAssembly" Other="$(PackageNamePrefix).WebAssembly.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other=".$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
