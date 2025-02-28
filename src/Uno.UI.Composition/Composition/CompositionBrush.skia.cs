@@ -11,5 +11,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal virtual bool CanPaint() => false;
+
+		internal virtual bool RequiresRepaintOnEveryFrame => false;
 	}
 }

@@ -18,5 +18,6 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal override bool CanPaint() => Source?.CanPaint() ?? false;
+		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 	}
 }

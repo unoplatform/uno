@@ -125,7 +125,8 @@ public partial class Compositor
 
 	partial void InvalidateRenderPartial(Visual visual)
 	{
-		visual.SetMatrixDirty();
+		visual.SetMatrixDirty(); // TODO: only invalidate matrix when specific properties are changed
+		visual.InvalidatePaint(); // TODO: only repaint when "dependent" properties are changed
 		CoreApplication.QueueInvalidateRender(visual.CompositionTarget);
 	}
 }

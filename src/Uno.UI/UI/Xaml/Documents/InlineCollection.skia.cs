@@ -724,11 +724,9 @@ namespace Microsoft.UI.Xaml.Documents
 					glyphs.CopyTo(run1.GetGlyphSpan(segmentSpan.GlyphsLength));
 
 					// Roughly equivalent to:
-					//   using var textBlob = _textBlobBuilder.Build();
-					//   canvas.DrawText(textBlob, 0f, y, paint);
+					using var textBlob = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob, 0f, y, paint);
 					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 				}
 			}
 			else
@@ -774,9 +772,9 @@ namespace Microsoft.UI.Xaml.Documents
 					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
 					positions.Slice(0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
 					glyphs.Slice(0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+
+					using var textBlob = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob, 0f, y, paint);
 				}
 
 				if (endOfSelection - startOfSelection > 0) // selection
@@ -786,9 +784,8 @@ namespace Microsoft.UI.Xaml.Documents
 					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
 					var color = paint.Color;
 					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					using var textBlob = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob, 0f, y, paint);
 					paint.Color = color;
 				}
 
@@ -797,9 +794,8 @@ namespace Microsoft.UI.Xaml.Documents
 					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
 					positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
 					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					using var textBlob = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob, 0f, y, paint);
 				}
 			}
 		}

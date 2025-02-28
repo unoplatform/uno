@@ -20,8 +20,15 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	private SKRect _currentBounds;
 	private SKImageFilter? _filter;
+	private bool _hasBackdropBrushInput;
 
-	internal bool HasBackdropBrushInput { get; private set; }
+	internal bool HasBackdropBrushInput
+	{
+		get => _hasBackdropBrushInput;
+		private set => SetProperty(ref _hasBackdropBrushInput, value);
+	}
+
+	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
 	internal bool UseBlurPadding { get; set; }
 

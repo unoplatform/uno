@@ -176,11 +176,14 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	}
 
 	private protected override SKPath? GetPostPaintingClipping()
-		=> _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
+	{
+		UpdatePathsAndCornerClip();
+		return _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
 			? base.GetPostPaintingClipping() is { } baseClip
 				? path.Op(baseClip, SKPathOp.Intersect)
 				: path
 			: base.GetPostPaintingClipping();
+	}
 
 	private void UpdatePathsAndCornerClip()
 	{
@@ -360,6 +363,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(BackgroundBrush?.CanPaint() ?? false) ||
 		(BorderBrush?.CanPaint() ?? false) ||
 		base.CanPaint();
+
+	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
 	internal override bool HitTest(Point point)
 	{
