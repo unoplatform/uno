@@ -228,9 +228,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
-				// We do not synchronously Paint on the spot to prevent the Normal queue from being endlessly
-				// hogged in case of a continuous animation. see When_Child_Empty
-				NativeDispatcher.Main.Enqueue(Paint, NativeDispatcherPriority.Idle);
+				Paint();
 				break;
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");

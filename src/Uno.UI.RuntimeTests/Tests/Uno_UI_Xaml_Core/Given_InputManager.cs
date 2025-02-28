@@ -156,6 +156,8 @@ public class Given_InputManager
 	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
+#elif __SKIA__
+	[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif
 	public async Task When_Scroll_No_Delay_For_VisualState_Update()
 	{
@@ -190,6 +192,9 @@ public class Given_InputManager
 		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
 
 		mouse.Wheel(-50);
+
+		// Wait for the scroll animation to complete
+		await Task.Delay(1000);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);

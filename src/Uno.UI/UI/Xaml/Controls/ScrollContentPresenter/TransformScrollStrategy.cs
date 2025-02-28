@@ -12,13 +12,13 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	internal class TransformScrollStrategy : IScrollStrategy
 	{
-		public static TransformScrollStrategy Instance { get; } = new TransformScrollStrategy();
+		public static TransformScrollStrategy Instance { get; } = new();
 
 		private TransformScrollStrategy() { }
 
 		public void Initialize(ScrollContentPresenter presenter) { }
 
-		public void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, bool disableAnimation)
+		public void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
 		{
 			var transform = view.RenderTransform as CompositeTransform ?? (CompositeTransform)(view.RenderTransform = new CompositeTransform());
 
