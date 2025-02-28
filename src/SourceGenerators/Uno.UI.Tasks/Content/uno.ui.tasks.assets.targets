@@ -282,12 +282,25 @@
 		</UnoGenerateAssetsManifestDependsOn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<UnoGenerateAssetsManifestDependsOn>
+			$(UnoGenerateAssetsManifestDependsOn);
+			_UnoAssetsGetCopyToPublishDirectoryItems
+		</UnoGenerateAssetsManifestDependsOn>
+
+		<_UnoAssetsGetCopyToPublishDirectoryItemsDependsOn>
+			$(_UnoAssetsGetCopyToPublishDirectoryItemsDependsOn);
+			_UnoGetCopyToOutputItems;
+			GenerateUnoWasmAssets; <!-- Required for 9.0.102 and later to get WasmShellOutputPackagePath -->
+		</_UnoAssetsGetCopyToPublishDirectoryItemsDependsOn>
+	</PropertyGroup>
+
 	<!--
 	Ensure that project transitive references are copied to the publish directory, as well
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectoryItems"
-			DependsOnTargets="_UnoGetCopyToOutputItems"
+			DependsOnTargets="$(_UnoAssetsGetCopyToPublishDirectoryItemsDependsOn)"
 			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' == 'true' ">
 
 		<ItemGroup Condition=" @(UnoAllCopyToOutputItems->Count()) > 0">
