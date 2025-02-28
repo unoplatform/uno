@@ -23,7 +23,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
 
-			ChecksumBytes = [.. checksum];
 			Checksum = string.Concat(checksum.Select(c => c.ToString("x2", CultureInfo.InvariantCulture)));
 		}
 
@@ -36,8 +35,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
 		public string FilePath { get; }
-
-		internal byte[] ChecksumBytes { get; }
 
 		public string Checksum { get; }
 
@@ -66,7 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return ReferenceEquals(this, other)
-				|| string.Equals(UniqueID, other.UniqueID, StringComparison.OrdinalIgnoreCase);
+				|| string.Equals(UniqueID, other.UniqueID, StringComparison.InvariantCultureIgnoreCase);
 
 		}
 
@@ -81,12 +78,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		public override int GetHashCode() => UniqueID != null
-			? StringComparer.OrdinalIgnoreCase.GetHashCode(UniqueID)
+			? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID)
 			: 0;
 
 		public int CompareTo(XamlFileDefinition? other)
 			=> ReferenceEquals(this, other)
 				? 0
-				: other is null ? 1 : string.Compare(FilePath, other.FilePath, StringComparison.OrdinalIgnoreCase);
+				: other is null ? 1 : string.Compare(FilePath, other.FilePath, StringComparison.InvariantCultureIgnoreCase);
 	}
 }

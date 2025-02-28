@@ -553,13 +553,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (xamlFile != null
 					&& xamlFile.GetText() is { } xamlText
-					&& xamlParsingException is { LineNumber: { } ln, LinePosition: { } lp })
+					&& xamlParsingException.LineNumber.HasValue
+					&& xamlParsingException.LinePosition.HasValue)
 				{
-					var linePosition = new LinePosition(Math.Max(0, ln - 1), Math.Max(0, lp - 1));
+					var linePosition = new LinePosition(
+						Math.Max(0, xamlParsingException.LineNumber.Value - 1),
+						Math.Max(0, xamlParsingException.LinePosition.Value - 1)
+					);
 
 					return Location.Create(
 						xamlFile.Path,
-						xamlText.Lines.ElementAtOrDefault(ln - 1).Span,
+						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value - 1).Span,
 						new LinePositionSpan(linePosition, linePosition)
 					);
 				}
