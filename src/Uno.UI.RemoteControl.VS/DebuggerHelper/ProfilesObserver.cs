@@ -118,6 +118,15 @@ internal class ProfilesObserver : IDisposable
 				_ = ObserveProfilesAsync();
 			}
 		}
+		else
+		{
+			if (_existingStartupProjects.Length > 0)
+			{
+				_ = _onStartupProjectChanged();
+			}
+
+			_existingStartupProjects = [];
+		}
 	}
 
 	public async Task ObserveProfilesAsync()
