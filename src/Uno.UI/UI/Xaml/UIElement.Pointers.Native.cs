@@ -56,7 +56,9 @@ partial class UIElement
 		return handledInManaged;
 	}
 
+#if __IOS__
 	private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
+#endif
 
 	private bool OnNativePointerUp(PointerRoutedEventArgs args) => OnPointerUp(args);
 	private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);
@@ -74,9 +76,11 @@ partial class UIElement
 		return OnPointerCancel(args);
 	}
 
+#if __IOS__
 	private bool OnNativePointerWheel(PointerRoutedEventArgs args)
 	{
 		return RaisePointerEvent(PointerWheelChangedEvent, args);
 	}
+#endif
 }
 #endif

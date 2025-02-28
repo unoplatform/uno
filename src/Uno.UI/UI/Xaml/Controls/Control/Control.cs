@@ -42,6 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _suppressIsEnabled;
 
+#if !__NETSTD_REFERENCE__
 		private void InitializeControl()
 		{
 			SubscribeToOverridenRoutedEvents();
@@ -49,6 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
+#endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
