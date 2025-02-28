@@ -314,6 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+#if !__NETSTD_REFERENCE__
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
@@ -450,6 +451,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
+#endif
 
 		private protected override void OnLoaded()
 		{
