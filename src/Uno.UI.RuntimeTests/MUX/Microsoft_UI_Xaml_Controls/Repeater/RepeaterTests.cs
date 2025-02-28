@@ -467,7 +467,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				for (int i = 0; i < 100; i++)
 				{
 					itemsSource.Add(new ObservableCollection<int>(Enumerable.Range(0, 5)));
-				};
+				}
 
 				rootRepeater.ItemsSource = itemsSource;
 			});
