@@ -4,10 +4,11 @@ parameters:
   XAML_FLAVOR_BUILD: ''
 
 jobs:
-- job: netcoremobile_win_build
-  displayName: '.NET Mobile Package Binaries'
+- job: binaries_win_build
+  displayName: 'Build Binaries'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -53,7 +54,29 @@ jobs:
     inputs:
       workingDirectory: Build
       arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building package binaries
+    displayName: Building Mobile binaries
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Skia Binaries
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Wasm Binaries
 
   - task: MSBuild@1
     inputs:
@@ -89,12 +112,12 @@ jobs:
       rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-bin-$(XAML_FLAVOR_BUILD).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)
+      ArtifactName: NugetPackages-Artifacts-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
