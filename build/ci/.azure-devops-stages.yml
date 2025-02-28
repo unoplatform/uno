@@ -23,29 +23,10 @@ stages:
   dependsOn:
     - Setup
 
-  jobs: 
+  jobs:
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-  
-  - template: .azure-devops-package-wasm.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-  - template: .azure-devops-package-reference.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-  - template: .azure-devops-package-skia.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
