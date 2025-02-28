@@ -28,7 +28,7 @@ stages:
     parameters:
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-      macOSImageName: ${{ parameters.macOSImageName }}
+      macOSImageName: '$(macOSVMImage)'
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
