@@ -776,7 +776,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TrySetDataContextFromContent(newValue);
+		// We need to overrides the local value of DataContext with Content's value here.
+		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
+		// Then we can't do so, because updating the DC will cause the binding to evaluate again, and yield invalid value.
+		if (GetBindingExpression(ContentProperty) is not { } expression ||
+			expression.IsExplicitlySourced ||
+			expression.ParentBinding.IsTemplateBinding)
+		{
+			TrySetDataContextFromContent(newValue);
+		}
 
 		TryRegisterNativeElement(oldValue, newValue);
 
@@ -977,7 +985,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// the DataContext to null (or the inherited value) and then back to
 			// the content and have two-way bindings propagating the null value
 			// back to the source.
-			if (!ReferenceEquals(DataContext, Content))
+			if (!ReferenceEquals(DataContext, Content) &&
+				this.GetCurrentHighestValuePrecedence(DataContextProperty) != DependencyPropertyValuePrecedences.Inheritance)
 			{
 				// On first load UWP clears the local value of a ContentPresenter.
 				// The reason for this behavior is unknown.
