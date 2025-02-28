@@ -85,20 +85,6 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-  jobs:
-  - template: .azure-devops-skia-tests.yml
-    parameters:
-      vmImage: '$(windows2022HostedVMImage)'
-      vmMacImage: '$(macOSVMImage)'
-      vmLinuxImage: '$(linuxVMImage)'
-      vmLinuxPool: '$(linuxScaledPool)'
-      vmMacImageTest: '$(macOSVMImage_UITests)'
-      poolName: '$(windowsScaledPool)'
-      xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
-
 - stage: skia_tests_winui
   displayName: Tests - Skia WinUI
   dependsOn:
