@@ -2777,8 +2777,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior when two accelerators are shared and the first is disabled.")]
 	public async Task VerifyParentOfDisabledControlCanBeInvoked()
 	{
-		// Introducing a use of FrameworkElement.set_AllowFocusWhenDisabled so that the linker doesn't remove it :/
-		var workaround = new Button() { AllowFocusWhenDisabled = true };
+		await TestServices.RunOnUIThread(async () =>
+		{
+			// Introducing a use of FrameworkElement.set_AllowFocusWhenDisabled so that the linker doesn't remove it :/
+			new Button() { AllowFocusWhenDisabled = true };
+		});
 		const string rootPanelXaml =
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
                         <StackPanel x:Name='parentPanel'>
