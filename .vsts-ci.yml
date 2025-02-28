@@ -69,5 +69,3 @@ variables:
 
 stages:
 - template: build/ci/.azure-devops-stages.yml
-  parameters:
-    UWPBuildEnabled: false

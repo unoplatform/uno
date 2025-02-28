@@ -1,6 +1,5 @@
 parameters:
   poolName: ''
-  UWPBuildEnabled: 'true'
   artifactsToDownload:
     - "NugetPackages-Artifacts-netcoremobile"
     - "NugetPackages-Artifacts-reference"
@@ -15,11 +14,6 @@ jobs:
 
   strategy:
     matrix:
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        UWP:
-          UNO_UWP_BUILD: true
-          XAML_FLAVOR_BUILD: UWP
-
       WinUI:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
@@ -38,8 +32,6 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-
-  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
 

@@ -21,8 +21,6 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/download-winui-converted-tree.yml
-
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

@@ -1,6 +1,3 @@
-parameters:
-  UWPBuildEnabled: true
-
 stages:
 - stage: Setup
   displayName: Setup
@@ -20,65 +17,6 @@ stages:
   - template: .azure-devops-pipeline-validations.yml
     parameters:
       vmImage: '$(linuxVMImage)'
-
-- stage: convert_tree
-  displayName: UWP Tree Conversion
-  dependsOn:
-    - Setup
-  ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-    jobs:
-    - template: .azure-devops-uwp-convert.yml
-      parameters:
-        poolName: '$(windowsScaledPool)'
-
-  ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
-    jobs:
-    - job:
-      displayName: 'UWP Build is disabled'
-      steps:
-      - checkout: none
-      - pwsh: echo "Skipping UWP tree conversion"
-
-- stage: binaries_build_uwp
-  displayName: Build Binaries UWP
-  dependsOn:
-    - Setup
-    - convert_tree
-
-  ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-    jobs: 
-    - template: .azure-devops-package-netcoremobile.yml
-      parameters:
-        poolName: '$(windowsScaledPool)'
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-  
-    - template: .azure-devops-package-wasm.yml
-      parameters:
-        poolName: '$(linuxScaledPool)'
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-    - template: .azure-devops-package-reference.yml
-      parameters:
-        poolName: '$(linuxScaledPool)'
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-    - template: .azure-devops-package-skia.yml
-      parameters:
-        poolName: '$(linuxScaledPool)'
-        macOSImageName: '$(macOSVMImage)'
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-  ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
-    jobs:
-    - job:
-      displayName: 'UWP Build is disabled'
-      steps:
-      - checkout: none
-      - pwsh: echo "Skipping UWP Content"
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
@@ -114,14 +52,12 @@ stages:
 - stage: packages_build
   displayName: Generate Packages
   dependsOn:
-    - binaries_build_uwp
     - binaries_build_winui
 
   jobs: 
   - template: .azure-devops-package.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: packages_tests
   displayName: Test Packages
@@ -136,40 +72,28 @@ stages:
       vmPoolLinux: '$(linuxScaledPool)'
       macOSImageName: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: unit_tests
   displayName: Tests - Unit
   dependsOn:
-    - binaries_build_uwp
     - binaries_build_winui
-    - convert_tree
 
   jobs:
 
   - template: .azure-devops-unit-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly
   dependsOn:
-    - convert_tree
+    - Setup
 
   jobs:
   
   - template: .azure-devops-wasm-uitests.yml
     parameters:
       poolName: '$(linuxScaledPool)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
-
-- stage: skia_tests_uwp
-  displayName: Tests - Skia UWP
-  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
-  dependsOn:
-    - Setup
-    - convert_tree
 
   jobs:
   - template: .azure-devops-skia-tests.yml
@@ -217,7 +141,6 @@ stages:
       vmMacOSImage: '$(macOSVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
   
 - stage: ios_tests
   displayName: Tests - iOS
@@ -231,7 +154,6 @@ stages:
       vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK  
@@ -256,7 +178,6 @@ stages:
   - template: .azure-devops-screenshot-compare.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 ##
 ## Publishing

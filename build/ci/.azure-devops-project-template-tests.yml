@@ -3,7 +3,6 @@ parameters:
   vmImageWindows: ''
   vmImageLinux: ''
   macOSImageName: ''
-  UWPBuildEnabled: 'true'
 
 jobs:
 
@@ -16,9 +15,6 @@ jobs:
 
   strategy:
     matrix:
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        group_0:
-          TestGroup: '0'
       group_1:
         TestGroup: '1'
       group_2:
@@ -54,7 +50,6 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -74,9 +69,6 @@ jobs:
 
   strategy:
     matrix:
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        group_0:
-          TestGroup: '0'
       group_1:
         TestGroup: '1'
       group_2:
@@ -120,7 +112,6 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -149,7 +140,6 @@ jobs:
   variables:
     # don't validate transitive dependencies for template tests
     NuGetAuditMode: direct
-    UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -193,7 +183,6 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
-      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

@@ -1,6 +1,5 @@
 parameters:
   vmImage: ''
-  UWPBuildEnabled: false
 
 jobs:
 - job: Unit_Tests
@@ -12,11 +11,6 @@ jobs:
 
   strategy:
     matrix:
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        UWP:
-          UNO_UWP_BUILD: true
-          XAML_FLAVOR_BUILD: UWP
-
       WinUI:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
@@ -31,8 +25,6 @@ jobs:
   steps:
   - checkout: self
     clean: true
-
-  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
     parameters:

@@ -49,39 +49,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         $dotnetBuildConfigurations += , @("Skia.WPF", "", "");
     }
 
-    # Debug Config
-    pushd UnoAppAll
-
-    for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
-    {
-        $platform=$dotnetBuildConfigurations[$i][0];
-        & dotnet build -c Debug $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:../binlogs/UnoAppAll.$platform/debug/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        & $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
-        Assert-ExitCodeIsZero
-    }
-
-    for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
-    {
-        $platform=$dotnetBuildConfigurations[$i][0];
-        & dotnet build -c Release $default $dotnetBuildConfigurations[$i][1] $dotnetBuildConfigurations[$i][2] "UnoAppAll.$platform\UnoAppAll.$platform.csproj" -bl:../binlogs/UnoAppAll.$platform/release/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        & $msbuild $debug "UnoAppAll.UWP\UnoAppAll.UWP.csproj"
-        Assert-ExitCodeIsZero
-    }
-
-    CleanupTree
-
-    popd
-
     $dotnetBuildNet6Configurations =
     @(
         @("Mobile", "-f:net8.0-android", ""),

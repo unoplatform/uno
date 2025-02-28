@@ -68,8 +68,6 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/download-winui-converted-tree.yml
-
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-windows.yml
     parameters:
@@ -188,8 +186,6 @@ jobs:
   steps:
   - checkout: self
     clean: true
-
-  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-mac.yml
@@ -333,8 +329,6 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-
-  - template: templates/download-winui-converted-tree.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -567,8 +561,6 @@ jobs:
 
   steps:
 
-  - template: templates/download-winui-converted-tree.yml
-
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
@@ -612,8 +604,6 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-
-  - template: templates/download-winui-converted-tree.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:

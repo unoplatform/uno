@@ -33,7 +33,6 @@ jobs:
     clean: true
 
   - template: templates/linux-install-zip.yml
-  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
     parameters:
