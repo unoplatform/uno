@@ -26,9 +26,10 @@ stages:
   jobs:
   - template: .azure-devops-package-skia-native-assets.yml
     parameters:
-      UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
+
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
