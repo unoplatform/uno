@@ -2,6 +2,7 @@
 #if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -34,9 +35,13 @@ namespace Windows.UI.Input
 		// IsEmpty is intentionally not included in equality since it's calculated from the other fields.
 		internal bool IsEmpty => Translation == Point.Zero && Rotation == 0 && Scale == 1 && Expansion == 0;
 
-		internal ManipulationDelta Add(ManipulationDelta right) => Add(this, right);
+		[Pure]
+		internal ManipulationDelta Add(ManipulationDelta right)
+			=> Add(this, right);
+
+		[Pure]
 		internal static ManipulationDelta Add(ManipulationDelta left, ManipulationDelta right)
-			=> new ManipulationDelta
+			=> new()
 			{
 				Translation = new Point(
 					left.Translation.X + right.Translation.X,
@@ -46,6 +51,7 @@ namespace Windows.UI.Input
 				Expansion = left.Expansion + right.Expansion
 			};
 
+		[Pure]
 		// Note: We should apply a velocity factor to thresholds to determine if isSignificant
 		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Translation.X) >= thresholds.TranslateX
@@ -54,19 +60,23 @@ namespace Windows.UI.Input
 			|| Math.Abs(Expansion) >= thresholds.Expansion;
 
 		/// <inheritdoc />
+		[Pure]
 		public override string ToString()
 			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
 
 		#region Equality Members
-		public override bool Equals(object obj) => obj is ManipulationDelta delta && Equals(delta);
+		[Pure]
+		public override bool Equals(object obj)
+			=> obj is ManipulationDelta delta && Equals(delta);
 
+		[Pure]
 		public bool Equals(ManipulationDelta other)
-		{
-			return EqualityComparer<Point>.Default.Equals(Translation, other.Translation) &&
-				Scale == other.Scale && Rotation == other.Rotation &&
-				Expansion == other.Expansion;
-		}
+			=> EqualityComparer<Point>.Default.Equals(Translation, other.Translation)
+				&& Scale == other.Scale
+				&& Rotation == other.Rotation
+				&& Expansion == other.Expansion;
 
+		[Pure]
 		public override int GetHashCode()
 		{
 			var hashCode = 626270564;

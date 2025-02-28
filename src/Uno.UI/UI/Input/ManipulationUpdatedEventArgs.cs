@@ -14,6 +14,7 @@ namespace Windows.UI.Input
 	public partial class ManipulationUpdatedEventArgs
 	{
 		internal ManipulationUpdatedEventArgs(
+			GestureRecognizer.Manipulation manipulation,
 			PointerIdentifier[] pointers,
 			Point position,
 			ManipulationDelta delta,
@@ -25,6 +26,7 @@ namespace Windows.UI.Input
 		{
 			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
+			Manipulation = manipulation;
 			Pointers = pointers;
 			PointerDeviceType = (PointerDeviceType)pointers[0].Type;
 			Position = position;
@@ -35,6 +37,8 @@ namespace Windows.UI.Input
 			ContactCount = contactCount;
 			CurrentContactCount = currentContactCount;
 		}
+
+		internal GestureRecognizer.Manipulation Manipulation { get; }
 
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).

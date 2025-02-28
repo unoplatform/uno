@@ -212,6 +212,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
+#endif
 		public async Task When_Item_Margins_And_Scrolled()
 		{
 			var SUT = new ListView
@@ -350,6 +353,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __WASM__
 		[Ignore("Test is flaky")]
+#elif __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif
 		public async Task When_ItemsPresenter_MinHeight()
 		{
@@ -534,7 +539,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				for (double d = current + increment; d < vOffset; d += increment)
 				{
-					sv.ChangeView(null, d, null);
+					sv.ChangeView(null, d, null, true);
 					await Task.Delay(10);
 				}
 			}
@@ -542,12 +547,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				for (double d = current - increment; d > vOffset; d -= increment)
 				{
-					sv.ChangeView(null, d, null);
+					sv.ChangeView(null, d, null, true);
 					await Task.Delay(10);
 				}
 			}
 
-			sv.ChangeView(null, vOffset, null);
+			sv.ChangeView(null, vOffset, null, true);
 		}
 
 		public class When_Item_Changes_Measure_Count_ItemViewModel : System.ComponentModel.INotifyPropertyChanged
