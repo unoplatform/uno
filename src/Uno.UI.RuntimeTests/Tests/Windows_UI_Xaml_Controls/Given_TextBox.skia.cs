@@ -1562,6 +1562,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
+#endif
 		public async Task When_Paste_While_Pointer_Held()
 		{
 			if (OperatingSystem.IsBrowser())
