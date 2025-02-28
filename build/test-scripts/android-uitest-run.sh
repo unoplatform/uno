@@ -15,12 +15,7 @@ then
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
 then
-	export TEST_FILTERS="\
-		Namespace !~ SamplesApp.UITests.Snap\
-		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests\
-		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests\
-		& Category~testBucket:$UNO_UITEST_BUCKET_ID
-	";
+	export TEST_FILTERS="Namespace !~ SamplesApp.UITests.Snap & FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests & FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests & Category~testBucket:$UNO_UITEST_BUCKET_ID";
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 
