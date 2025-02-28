@@ -75,12 +75,5 @@ partial class UIElement
 		args.CanceledByDirectManipulation = isSwallowedBySystem;
 		return OnPointerCancel(args);
 	}
-
-#if __IOS__
-	private bool OnNativePointerWheel(PointerRoutedEventArgs args)
-	{
-		return RaisePointerEvent(PointerWheelChangedEvent, args);
-	}
-#endif
 }
 #endif
