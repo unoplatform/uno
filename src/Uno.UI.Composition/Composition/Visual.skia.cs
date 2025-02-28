@@ -16,6 +16,8 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly SKPath _spareRenderPath = new SKPath();
+
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
@@ -201,16 +203,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// Render a visual as if it's the root visual.
 	/// </summary>
-	/// <param name="surface">The surface on which this visual should be rendered.</param>
+	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
+	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
 			return;
 		}
-
-		var canvas = surface.Canvas;
 
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
@@ -234,7 +235,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		_factory.CreateInstance(this,
-						  surface,
 						  canvas,
 						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
 						  opacity: 1.0f,
@@ -247,8 +247,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		canvas.Restore();
 	}
-
-	private static SKPath _spareRenderPath = new SKPath();
 
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
@@ -362,7 +360,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
-		_factory.CreateInstance(this, parentSession.Surface, canvas, ref rootTransform, opacity, out session);
+		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
 
 		Matrix4x4 totalMatrix;
 

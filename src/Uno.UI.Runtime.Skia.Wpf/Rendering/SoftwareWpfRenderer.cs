@@ -90,7 +90,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = true;
 
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
+					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
 
 					if (_host.NativeOverlayLayer is { } nativeLayer)
 					{

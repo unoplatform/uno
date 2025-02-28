@@ -58,7 +58,7 @@ internal partial class Win32WindowWrapper
 			try
 			{
 				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
 				RenderingNegativePathChanged?.Invoke(this, path);
 			}
 			finally

@@ -13,38 +13,17 @@ internal static class SkiaRenderHelper
 	private static readonly SKPath _clipPath = new SKPath();
 
 	/// <summary>
-	/// Does a rendering cycle, clips to the total area that was drawn
-	/// and returns this area or null if the entire window is drawn.
-	/// </summary>
-	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ContainerVisual rootVisual, SKSurface surface)
-	{
-		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-		if (path is not null)
-		{
-			// we clear the "negative" of what was drawn
-			var negativePath = new SKPath();
-			negativePath.AddRect(new SKRect(0, 0, width, height));
-			negativePath = negativePath.Op(path, SKPathOp.Difference);
-			var canvas = surface.Canvas;
-			canvas.Save();
-			canvas.ClipPath(negativePath);
-			canvas.Clear(SKColors.Transparent);
-			canvas.Restore();
-		}
-	}
-
-	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn. Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
+	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
 	{
-		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
 		var negativePath = new SKPath();
 		if (path is not null)
 		{
 			negativePath.AddRect(new SKRect(0, 0, width, height));
-			negativePath.Transform(surface.Canvas.TotalMatrix);
+			negativePath.Transform(canvas.TotalMatrix);
 			negativePath = negativePath.Op(path, SKPathOp.Difference);
 		}
 
@@ -57,17 +36,17 @@ internal static class SkiaRenderHelper
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn.
 	/// </summary>
-	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
+	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
 	{
 		if (!ContentPresenter.HasNativeElements())
 		{
-			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, null);
+			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, null);
 			return null;
 		}
 		else
 		{
 			SKPath? mainPath = null;
-			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (canvas, visual) =>
+			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, (canvas, visual) =>
 			{
 				// the entire viewport
 				if (visual == rootVisual)

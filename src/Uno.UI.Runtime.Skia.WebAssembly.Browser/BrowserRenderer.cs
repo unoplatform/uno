@@ -122,7 +122,7 @@ internal partial class BrowserRenderer
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface);
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface.Canvas);
 				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
 				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
 				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.

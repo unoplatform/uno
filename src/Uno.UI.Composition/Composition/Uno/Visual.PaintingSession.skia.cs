@@ -9,30 +9,25 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		void CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session);
+		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session);
 	}
 
 	/// <summary>
 	/// Represents the "context" in which a visual draws.
 	/// </summary>
-	/// <remarks>
-	/// Accessing Surface.Canvas is slow due to SkiaSharp interop.
-	/// Avoid using .Surface.Canvas and use .Canvas right away.
-	/// </remarks>
 	internal readonly ref struct PaintingSession
 	{
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			void IPrivateSessionFactory.CreateInstance(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, out PaintingSession session)
 			{
-				session = new PaintingSession(visual, surface, canvas, ref rootTransform, opacity);
+				session = new PaintingSession(visual, canvas, ref rootTransform, opacity);
 			}
 		}
 
-		private PaintingSession(Visual visual, SKSurface surface, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity)
+		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity)
 		{
-			Surface = surface;
 			Canvas = canvas;
 			RootTransform = ref rootTransform;
 			Opacity = opacity;
@@ -41,8 +36,6 @@ public partial class Visual
 		}
 
 		public void Dispose() => Canvas.RestoreToCount(_saveCount);
-
-		public readonly SKSurface Surface;
 
 		public readonly SKCanvas Canvas;
 
