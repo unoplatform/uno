@@ -439,6 +439,9 @@ internal static partial class NativeUno
 	internal static partial nint uno_mediaplayer_create();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_set_notifications(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_mediaplayer_is_video(nint media);
 

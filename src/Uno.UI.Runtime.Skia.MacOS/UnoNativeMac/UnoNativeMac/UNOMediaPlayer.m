@@ -88,6 +88,11 @@ id uno_mediaplayer_create(void)
     return player;
 }
 
+void uno_mediaplayer_set_notifications(UNOMediaPlayer *media)
+{
+    [media setNotifications];
+}
+
 bool uno_mediaplayer_is_video(UNOMediaPlayer *media)
 {
 #if DEBUG_MEDIAPLAYER
@@ -310,6 +315,13 @@ id timeObserver;
     NSLog(@"UNOMediaPlayer %p %@ %@", self, self.player, self.videoLayer);
 #endif
 
+    [players addObject:self];
+    return self;
+}
+
+// doing this inside `init` means some notifications can get to (managed code) before
+// we're ready to dispatch them (missing events and confusing warnings in the logs)
+- (void)setNotifications {
     [self.videoLayer addObserver:self forKeyPath:@"videoRect" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:(__bridge void * _Nullable)(self.videoLayer)];
     [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:(__bridge void * _Nullable)(self.player)];
 
@@ -333,9 +345,6 @@ id timeObserver;
 #endif
         }
     }];
-
-    [players addObject:self];
-    return self;
 }
 
 - (void)dealloc {

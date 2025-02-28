@@ -38,6 +38,8 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 			_player = player;
 			_nativePlayer = NativeUno.uno_mediaplayer_create();
 			_natives.Add(_nativePlayer, new WeakReference<MacOSMediaPlayerExtension>(this));
+			// `_nativePlayer` is now in `_natives` and ready to dispatch notifications
+			NativeUno.uno_mediaplayer_set_notifications(_nativePlayer);
 		}
 		else
 		{
