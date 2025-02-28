@@ -106,7 +106,7 @@ partial class XamlCodeGeneration
 			writer.AppendLineIndented("/// </remarks>");
 			using (writer.BlockInvariant("public static uint UpdateCounter"))
 			{
-				using(writer.BlockInvariant("get"))
+				using (writer.BlockInvariant("get"))
 				{
 					writer.AppendLineIndented("EnsureInitialize();");
 					writer.AppendLineIndented("return _updateCounter;");
