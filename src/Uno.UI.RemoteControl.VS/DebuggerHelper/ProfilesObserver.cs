@@ -34,6 +34,8 @@ internal class ProfilesObserver : IDisposable
 	private readonly Func<string?, string, Task> _onDebugFrameworkChanged;
 	private readonly Func<string?, string, Task> _onDebugProfileChanged;
 	private Func<Task> _onStartupProjectChanged;
+	private object[] _existingStartupProjects = [];
+
 
 	private string? _lastActiveDebugProfile;
 	private string? _lastActiveDebugFramework;
@@ -82,9 +84,6 @@ internal class ProfilesObserver : IDisposable
 		_ = ObserveStartupProjectAsync();
 	}
 
-	object[]? _existingStartupProjects = [];
-
-
 	private async Task ObserveStartupProjectAsync()
 	{
 		while (!_isDisposed)
@@ -99,7 +98,12 @@ internal class ProfilesObserver : IDisposable
 	{
 		if (_dte.Solution.SolutionBuild.StartupProjects is object[] newStartupProjects)
 		{
-			if (!newStartupProjects.SequenceEqual(_existingStartupProjects))
+			if (_existingStartupProjects is { Length: 0 })
+			{
+				// We're starting up, no need to re-create the observer
+				_existingStartupProjects = newStartupProjects;
+			}
+			else if (!newStartupProjects.SequenceEqual(_existingStartupProjects))
 			{
 				_debugLog("Startup projects have changed, reloading observer");
 
