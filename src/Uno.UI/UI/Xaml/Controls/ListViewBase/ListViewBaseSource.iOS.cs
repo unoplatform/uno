@@ -498,13 +498,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// obvious what it would be in the case of a list).
 			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeZoom((float)Owner.ZoomScale);
 		}
-#endif
 
 		private void OnAnimatedScrollEnded()
 		{
 			_isInAnimatedScroll = false;
 			InvokeOnScroll();
 		}
+#endif
 
 		private void InvokeOnScroll()
 		{
