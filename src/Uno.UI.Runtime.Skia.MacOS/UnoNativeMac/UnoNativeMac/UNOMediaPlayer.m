@@ -518,7 +518,7 @@ id timeObserver;
 #if DEBUG
     NSLog(@"detach mediaplayer %p", self);
 #endif
-    [self removeFromSuperview];
+//    [self removeFromSuperview];
 }
 
 - (void)layout {
