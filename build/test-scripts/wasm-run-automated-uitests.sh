@@ -75,7 +75,7 @@ echo "  Test filters: $UNO_TESTS_FILTER"
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run the tests
-dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
+dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
 
 echo "Killing dotnet serve"
 
