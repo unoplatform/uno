@@ -53,7 +53,7 @@ stages:
 - stage: unit_tests
   displayName: Tests - Unit
   dependsOn:
-    - binaries_build_winui
+    - Setup
 
   jobs:
 
