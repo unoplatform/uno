@@ -386,7 +386,7 @@
 			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Foldable.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Gtk" Other="$(PackageNamePrefix).Skia.Gtk.$(NBGV_SemVer2).nupkg" />
