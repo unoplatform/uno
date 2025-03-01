@@ -28,7 +28,8 @@ export UNO_UITEST_PLATFORM=Browser
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/wasm-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-wasm-automated-$SITE_SUFFIX.xml
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
-export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
+export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
@@ -74,14 +75,7 @@ echo "  Test filters: $UNO_TESTS_FILTER"
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run the tests
-dotnet test \
-	-c Release \
-	-l:"console;verbosity=normal" \
-	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-	-v m \
-	|| true
+dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
 
 echo "Killing dotnet serve"
 

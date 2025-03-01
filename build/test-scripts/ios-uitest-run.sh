@@ -85,7 +85,8 @@ mkdir -p $LOG_FILEPATH
 export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
-export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
+export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
@@ -233,14 +234,7 @@ else
 	echo "  Test filters: $UNO_TESTS_FILTER"
 
 	## Run tests
-	dotnet test \
-		-c Release \
-		-l:"console;verbosity=normal" \
-		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-		--filter "$UNO_TESTS_FILTER" \
-		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-		-v m \
-		|| true
+	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
 fi
 
 # export the simulator logs
