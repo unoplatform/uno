@@ -18,6 +18,7 @@
 		<EnableNUnitRunner>true</EnableNUnitRunner>
 
 		<TestingPlatformDotNetTestSupport>true</TestingPlatformDotNetTestSupport>
+		<TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

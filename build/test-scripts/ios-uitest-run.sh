@@ -30,7 +30,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests \
 			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated \
-			| Namespace = SamplesApp.UITests.MessageDialogTests
+			| Namespace = SamplesApp.UITests.MessageDialogTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
 	then
@@ -42,7 +42,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests \
 			| Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];
 	then
@@ -54,7 +54,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests \
 			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '4' ];
 	then

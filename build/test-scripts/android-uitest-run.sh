@@ -15,8 +15,12 @@ then
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
 then
-	export TEST_FILTERS="Namespace !~ SamplesApp.UITests.Snap & FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests & FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests & Category~testBucket:$UNO_UITEST_BUCKET_ID";
-
+	export TEST_FILTERS="\
+		Namespace !~ SamplesApp.UITests.Snap\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests\
+		& Category~testBucket:$UNO_UITEST_BUCKET_ID\
+	";
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
@@ -230,7 +234,7 @@ else
 	# Response file for testing to avoid the command line length limitation
 	# new parameters must include the ":" to separate parameter options
 	# the response file contains only the filters, in order to get proper stderr
-	echo "--filter \"$UNO_TESTS_FILTER\"" > tests.rsp
+	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
 
 	## Run NUnit tests
 	dotnet run -c Release -bl:$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/android-test.binlog -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings @tests.rsp || true
