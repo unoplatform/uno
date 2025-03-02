@@ -71,7 +71,7 @@
 	</Target>
 
 	<Target Name="BuildCIMobile">
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(NBGV_SemVer2)"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
 			Projects="filters\Uno.UI-packages-netcoremobile.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
@@ -82,7 +82,7 @@
 	<Target Name="BuildCIWasm">
 
 		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(NBGV_SemVer2)"
+			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
 			Projects="filters\Uno.UI-packages-wasm.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
@@ -93,7 +93,7 @@
 	<Target Name="BuildCISkia">
 
 		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(NBGV_SemVer2)"
+			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
 			Projects="filters\Uno.UI-packages-skia.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
@@ -104,7 +104,7 @@
 	<Target Name="BuildCIReference">
 
 		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(NBGV_SemVer2)"
+			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
 			Projects="filters\Uno.UI-packages-reference.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
@@ -383,30 +383,30 @@
 
 		<ItemGroup>
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Foldable.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Foldable.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).GooglePlay" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).GooglePlay.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Maps.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Gtk" Other="$(PackageNamePrefix).Skia.Gtk.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Gtk" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Gtk.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Gtk" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Gtk.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Other="$(PackageNamePrefix).Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
 			<!-- <_diffPackage Include="$(PackageNamePrefix).Skia.MacOS" Other="$(PackageNamePrefix).Skia.MacOS.$(NBGV_SemVer2).nupkg" /> -->
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Wpf" Other="$(PackageNamePrefix).Skia.Wpf.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Wpf" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Wpf" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost" Other="$(PackageNamePrefix).XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost.Skia.Wpf" Other="$(PackageNamePrefix).XamlHost.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).WebAssembly" Other="$(PackageNamePrefix).WebAssembly.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\$(PackageNamePrefix).Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.Foundation.Logging" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
 			<!--
-			TODO Restore after release
-			<_diffPackage Include="Uno.Foundation" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\Uno.Foundation.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinRT" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\Uno.WinRT.$(NBGV_SemVer2).nupkg" />
+			TODO Restore after 6.0 release
+			<_diffPackage Include="Uno.Foundation" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinRT" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinRT.$(NBGV_SemVer2).nupkg" />
 			-->
 		</ItemGroup>
 

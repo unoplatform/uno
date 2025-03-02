@@ -1,6 +1,5 @@
 parameters:
   vmImage: ''
-  UWPBuildEnabled: 'true'
 
 jobs:
 - job: Wasm_UITests_Build
@@ -14,11 +13,6 @@ jobs:
 
   strategy:
     matrix:
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        UWP:
-          UNO_UWP_BUILD: true
-          XAML_FLAVOR_BUILD: UWP
-
       WinUI:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
@@ -26,8 +20,6 @@ jobs:
   steps:
   - checkout: self
     clean: true
-
-  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-linux.yml
@@ -146,36 +138,6 @@ jobs:
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
-
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        net9_uwp_runtimetests_group_00:
-          SITE_SUFFIX: 'net9.0-UWP'
-          UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-          UITEST_TEST_TIMEOUT: '20m'
-          UITEST_RUNTIME_TEST_GROUP: 0
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-          IS_RUNTIME_TESTS: true
-          IS_UI_TESTS: false
-
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        net9_uwp_runtimetests_group_01:
-          SITE_SUFFIX: 'net9.0-UWP'
-          UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-          UITEST_TEST_TIMEOUT: '20m'
-          UITEST_RUNTIME_TEST_GROUP: 1
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-          IS_RUNTIME_TESTS: true
-          IS_UI_TESTS: false
-
-      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
-        net9_uwp_runtimetests_group_02:
-          SITE_SUFFIX: 'net9.0-UWP'
-          UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-          UITEST_TEST_TIMEOUT: '20m'
-          UITEST_RUNTIME_TEST_GROUP: 2
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-          IS_RUNTIME_TESTS: true
-          IS_UI_TESTS: false
 
       net9_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net9.0-WinUI'

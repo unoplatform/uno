@@ -4,10 +4,11 @@ parameters:
   XAML_FLAVOR_BUILD: ''
 
 jobs:
-- job: netcoremobile_win_build
-  displayName: '.NET Mobile Package Binaries'
+- job: binaries_win_build
+  displayName: 'Build Binaries'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -35,8 +36,6 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/download-winui-converted-tree.yml
-
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
@@ -55,9 +54,32 @@ jobs:
     inputs:
       workingDirectory: Build
       arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(NBGV_SemVer2)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building package binaries
+    displayName: Building Mobile binaries
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Reference Binaries
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCISkia "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-skia-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Skia Binaries
+
+  - powershell: |
+      Set-PSDebug -Trace 1
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIWasm "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Wasm Binaries
 
   - task: MSBuild@1
+    displayName: Building WinAppSDK/UWP package binaries
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
@@ -68,35 +90,75 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-    displayName: Building WinAppSDK/UWP package binaries
 
   - task: MSBuild@1
+    displayName: Building WinAppSDK Graphics3DGL package binaries
     condition: and(succeeded(), eq(variables.UNO_UWP_BUILD, false))
     inputs:
       solution: src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest-netcoremobile /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-    displayName: Building WinAppSDK Graphics3DGL package binaries
 
-  - template: templates/copy-package-assets.yml
-
-  - task: ArchiveFiles@2
+  - task: MSBuild@1
+    displayName: Generate NuGet Packages
     inputs:
-      rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-bin-$(XAML_FLAVOR_BUILD).zip'
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /v:m /t:BuildNuGetPackage "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(XAML_FLAVOR_BUILD)-$(NBGV_SemVer2)-generate-packages.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: CopyFiles@2
+    displayName: Copy built packages
+    condition: always()
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/Build
+      Contents: '*.nupkg'
+      TargetFolder: $(build.artifactstagingdirectory)/vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: Copy generic build packages
+    condition: always()
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/
+      Contents: |
+        NugetPackages-Artifacts*/vslatest*/*.nupkg
+        NugetPackages-Artifacts*/vslatest*/*.vsix
+        !NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
+      TargetFolder: $(build.artifactstagingdirectory)/vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: true
+
+  - task: PowerShell@2
+    displayName: Authenticode Sign Packages
+    inputs:
+      filePath: build/Sign-Package.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      SignPackageName: "Uno Platform"
+      SignPackageDescription: "The Uno Platform"
+      ArtifactDirectory: $(build.artifactstagingdirectory)/vslatest
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)
+      ArtifactName: 'Nuget_Packages'
       ArtifactType: Container
