@@ -84,54 +84,23 @@ jobs:
       artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\logs\build-gtk.binlog
     displayName: Build GTK Head
 
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net8.0
-      ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\logs\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net8.0-windows
-      ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net8.0 -f net8.0 /bl:$(build.artifactstagingdirectory)\build-generic.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net8.0 -f net8.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
     displayName: Build Generic Skia Head
 
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0
-      ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 /bl:$(build.artifactstagingdirectory)\build-skia-wasm-browser.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 /bl:$(build.artifactstagingdirectory)\logs\build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
 
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
-      ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\logs\build-skia-android.binlog
     displayName: Build Skia Android Head
 
   - task: CopyFiles@2
+    displayName: 'Copy Generated Android APK'
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android/publish
       Contents: 'uno.platform.samplesapp.skia-Signed.apk'
@@ -140,32 +109,48 @@ jobs:
       OverWrite: false
       flattenFolders: false
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Gtk Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net8.0
+      artifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish WebAssembly Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
+      artifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Generic Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0
+      artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Wpf Islands Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net8.0-windows
+      artifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Android Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/android
       ArtifactName: uitests-android-skia-build
-      ArtifactType: Container
-
-
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-ios-skia-build
-      ArtifactType: Container
-
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
+      PathtoPublish: $(build.artifactstagingdirectory)\logs
       ArtifactName: skia-samples-app-binlog
       ArtifactType: Container
-
 
 - job: Skia_Tests_Build_Apple
   displayName: 'Build Apple Skia Samples App UI Tests'
@@ -216,24 +201,21 @@ jobs:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
-
   - task: CopyFiles@2
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
-      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish iOS Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
+      targetPath: $(build.artifactstagingdirectory)/bin
       ArtifactName: uitests-ios-skia-build
-      ArtifactType: Container
-
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -273,10 +255,12 @@ jobs:
 
   steps:
   - checkout: none
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/gtk-install-windows.yml
 
@@ -330,10 +314,11 @@ jobs:
 
   steps:
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
   - template: templates/gtk-install-windows.yml
@@ -399,10 +384,12 @@ jobs:
 
   steps:
   - checkout: none
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - script: |
         cd $(SamplesAppArtifactPath)
@@ -436,10 +423,12 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
 
@@ -476,10 +465,12 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
 
@@ -521,10 +512,12 @@ jobs:
 
   steps:
   - checkout: none
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/linux-install-deps.yml
 
@@ -561,10 +554,11 @@ jobs:
 
   steps:
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
   - template: templates/linux-install-deps.yml
@@ -605,10 +599,12 @@ jobs:
 
   steps:
 
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
 
@@ -665,10 +661,12 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
-  - task: DownloadBuildArtifacts@0
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - template: templates/dotnet-install.yml
 
@@ -804,11 +802,11 @@ jobs:
         sudo udevadm trigger --name-match=kvm
     displayName: 'Enable KVM'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download SamplesApp UnitTests'
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
 
   - template: templates/dotnet-install.yml
 
