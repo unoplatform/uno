@@ -365,7 +365,6 @@ public class Given_WebView2
 #endif
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
-	[TestMethod]
 	public async Task When_WebMessageReceived()
 	{
 		var border = new Border();
