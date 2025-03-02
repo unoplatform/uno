@@ -33,11 +33,11 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS Samples App'
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading iOS Samples App
     inputs:
-        artifactName: '${{ parameters.SamplesAppArtifactName }}'
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: ${{ parameters.SamplesAppArtifactName }}
+      path: $(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)

@@ -802,11 +802,11 @@ jobs:
         sudo udevadm trigger --name-match=kvm
     displayName: 'Enable KVM'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download SamplesApp UnitTests'
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
     inputs:
-        artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
-        downloadPath: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
 
   - template: templates/dotnet-install.yml
 
