@@ -43,7 +43,6 @@
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="UnoPlatformIDE" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
-		<CompilerVisibleProperty Include="UnoGenerateXamlSourcesProvider" />
 		<CompilerVisibleProperty Include="UnoForceHotReloadCodeGen" />
 		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />
 		<CompilerVisibleProperty Include="UnoForceIncludeServerProcessorsConfiguration" />

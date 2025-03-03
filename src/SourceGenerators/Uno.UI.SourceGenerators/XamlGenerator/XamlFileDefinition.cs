@@ -11,15 +11,14 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>
+	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>
 	{
-		public XamlFileDefinition(string file, string targetFilePath, string content, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string targetFilePath, ImmutableArray<byte> checksum)
 		{
 			Namespaces = new List<NamespaceDeclaration>();
 			Objects = new List<XamlObjectDefinition>();
 			FilePath = file;
 			TargetFilePath = targetFilePath;
-			Content = content;
 
 			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
 
@@ -44,11 +43,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Provides the path to the file using an actual target path in the project
 		/// </summary>
 		public string TargetFilePath { get; }
-
-		/// <summary>
-		/// The actual content of the file (XAML)
-		/// </summary>
-		public string Content { get; }
 
 		/// <summary>
 		/// Unique and human-readable file ID, used to name generated file.
@@ -80,10 +74,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public override int GetHashCode() => UniqueID != null
 			? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID)
 			: 0;
-
-		public int CompareTo(XamlFileDefinition? other)
-			=> ReferenceEquals(this, other)
-				? 0
-				: other is null ? 1 : string.Compare(FilePath, other.FilePath, StringComparison.InvariantCultureIgnoreCase);
 	}
 }

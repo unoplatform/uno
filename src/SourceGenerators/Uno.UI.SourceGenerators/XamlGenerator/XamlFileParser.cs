@@ -116,7 +116,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file, sourceText, targetFilePath, cancellationToken);
+						var xamlFileDefinition = Visit(reader, file, targetFilePath, cancellationToken);
 						if (!reader.DisableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -246,14 +246,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, SourceText sourceText,
-			string targetFilePath, CancellationToken cancellationToken)
+		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
-			var sourceTextString = sourceText.ToString();
-
-			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, sourceTextString, sourceText.GetChecksum());
+			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, source.GetText(cancellationToken)?.GetChecksum() ?? ImmutableArray<byte>.Empty);
 
 			do
 			{
