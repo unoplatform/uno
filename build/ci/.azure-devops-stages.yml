@@ -147,7 +147,7 @@ stages:
 ##
 - stage: Publish_Dev
   displayName: 'Publish Dev NuGet'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
   - template: .azure-devops-publish-nuget-dev.yml
