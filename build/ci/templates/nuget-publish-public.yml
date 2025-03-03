@@ -1,5 +1,6 @@
 steps:
   - task: NuGetCommand@2
+    condition: and(succeeded(), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
     displayName: 'Publish to nuget.org'
     inputs:
       command: 'push'
