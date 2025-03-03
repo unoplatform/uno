@@ -504,7 +504,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_isInAnimatedScroll = false;
 			InvokeOnScroll();
 		}
-#endif
 
 		private void InvokeOnScroll()
 		{
@@ -515,6 +514,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Owner.ContentOffset.Clamp(CGPoint.Empty, Owner.UpperScrollLimit);
 			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
+#endif
 
 #if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void WillEndDragging(UIScrollView scrollView, CGPoint velocity, ref CGPoint targetContentOffset)
