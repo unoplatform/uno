@@ -312,10 +312,16 @@ public class Given_HotReloadEnabledInBuild
 					"""
 					using Microsoft.UI.Xaml;
 					using Microsoft.UI.Xaml.Controls;
-					namespace TestRepro;
-					public sealed partial class MainPage : Page
+
+					namespace TestRepro
 					{
-						public MainPage() => InitializeComponent();
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
 					}
 					"""
 				}
