@@ -20,10 +20,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class AppBarButton
 {
-	internal void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow)
-	{
+	internal void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow) =>
 		m_inputDeviceTypeUsedToOpenOverflow = inputDeviceTypeUsedToOpenOverflow;
-	}
 
 	bool ISubMenuOwner.IsSubMenuPositionedAbsolutely => false;
 

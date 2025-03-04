@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class AppBarToggleButton
 {
-	private void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow) =>
+	internal void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow) =>
 		m_inputDeviceTypeUsedToOpenOverflow = inputDeviceTypeUsedToOpenOverflow;
 
 	// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
