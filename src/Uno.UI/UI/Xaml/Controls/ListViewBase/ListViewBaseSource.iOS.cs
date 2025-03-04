@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// The furthest item in the source which has already been materialized. Items up to this point can safely be retrieved.
 		/// </summary>
 		private NSIndexPath _lastMaterializedItem = NSIndexPath.FromRowSection(0, 0);
-		
+
 #if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		/// <summary>
 		/// Is the UICollectionView currently undergoing animated scrolling, either user-initiated or programmatic.
