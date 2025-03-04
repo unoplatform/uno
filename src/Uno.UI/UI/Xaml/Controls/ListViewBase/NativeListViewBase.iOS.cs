@@ -627,10 +627,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
 			base.SetContentOffset(contentOffset, animated);
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 			if (animated)
 			{
 				Source?.SetIsAnimatedScrolling();
 			}
+#endif
 		}
 
 		/// <summary>

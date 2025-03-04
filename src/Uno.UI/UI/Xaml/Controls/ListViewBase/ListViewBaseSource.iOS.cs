@@ -75,11 +75,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// The furthest item in the source which has already been materialized. Items up to this point can safely be retrieved.
 		/// </summary>
 		private NSIndexPath _lastMaterializedItem = NSIndexPath.FromRowSection(0, 0);
-
+		
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		/// <summary>
 		/// Is the UICollectionView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
 		private bool _isInAnimatedScroll;
+#endif
 		#endregion
 
 		public ListViewBaseSource()
@@ -456,9 +458,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return supplementaryView;
 		}
 
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		internal void SetIsAnimatedScrolling() => _isInAnimatedScroll = true;
 
-#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 		public override void Scrolled(UIScrollView scrollView)
 		{
 			InvokeOnScroll();
