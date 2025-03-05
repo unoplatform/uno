@@ -83,7 +83,7 @@
                         Text="Maximum power" />
 
                     <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                        <NumberBox
+                        <muxc:NumberBox
                             Width="160"
                             AutomationProperties.Name="NumberBox with spin button"
                             LargeChange="100"
