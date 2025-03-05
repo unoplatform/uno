@@ -73,6 +73,8 @@ echo "  Test filters: $UNO_TESTS_FILTER"
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
+dotnet test --list-tests -c Release --filter "$UNO_TESTS_FILTER"
+
 ## Run the tests
 dotnet test \
 	-c Release \
@@ -80,6 +82,7 @@ dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
 	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+	--diag logs.txt
 	-v m \
 	|| true
 
