@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Android.Content;
 using Android.OS;
 using Android.Telephony;
@@ -32,10 +33,19 @@ namespace Windows.ApplicationModel.Calls
 			}
 			else
 			{
-				_telephonyManager.RegisterTelephonyCallback(ContextHelper.Current.MainExecutor, new CallCallback());
+				TryRegisterTelephonyCallbackAsync();
 			}
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
+		}
+
+		private static async void TryRegisterTelephonyCallbackAsync()
+		{
+			if (await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState) ||
+				await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState))
+			{
+				_telephonyManager.RegisterTelephonyCallback(ContextHelper.Current.MainExecutor, new CallCallback());
+			}
 		}
 
 		public static event EventHandler<object> CallStateChanged;
