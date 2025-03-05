@@ -33,19 +33,23 @@ namespace Windows.ApplicationModel.Calls
 			}
 			else
 			{
-				TryRegisterTelephonyCallbackAsync();
+				RegisterTelephonyCallbackAsync();
 			}
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
 
-		private static async void TryRegisterTelephonyCallbackAsync()
+		private static async void RegisterTelephonyCallbackAsync()
 		{
+#pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
 			if (await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState) ||
 				await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState))
 			{
 				_telephonyManager.RegisterTelephonyCallback(ContextHelper.Current.MainExecutor, new CallCallback());
 			}
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
 
 		public static event EventHandler<object> CallStateChanged;
