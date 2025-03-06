@@ -9,6 +9,8 @@ namespace DirectUI;
 
 internal static class XboxUtility
 {
+	internal static bool IsOnXbox => false;
+
 	internal static bool IsGamepadNavigationInput(VirtualKey key)
 	{
 		return (int)key >= (int)VirtualKey.GamepadA && (int)key <= (int)VirtualKey.GamepadRightThumbstickLeft;
