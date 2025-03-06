@@ -91,7 +91,7 @@ partial class AppBar
 	private FrameworkElement? m_overlayElement;
 	private SerialDisposable m_overlayElementPointerPressedEventHandler = new();
 
-	private ManagedWeakReference m_savedFocusedElementWeakRef;
+	private ManagedWeakReference? m_savedFocusedElementWeakRef;
 	private FocusState m_savedFocusState;
 
 	private bool m_isInOverlayState;
