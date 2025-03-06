@@ -209,7 +209,7 @@ internal static class AppBarButtonHelpers<TButton>
 			var useOverflowStyle = button.UseOverflowStyle;
 			var keyboardAcceleratorText = button.KeyboardAcceleratorTextOverride;
 
-			if (!useOverflowStyle && keyboardAcceleratorText is null)
+			if (!useOverflowStyle && !string.IsNullOrEmpty(keyboardAcceleratorText))
 			{
 				// If we're in the primary section of the app bar or command bar and have accelerator text,
 				// then we should give ourselves a tool tip showing the label plus the accelerator text.
@@ -218,8 +218,7 @@ internal static class AppBarButtonHelpers<TButton>
 				string toolTipFormatString = DXamlCore.Current.GetLocalizedResourceString("KEYBOARD_ACCELERATOR_TEXT_TOOLTIP");
 
 				// format is %s (%s)
-				// Uno specific: The format string is "C++ style" format string, using StringUtil.
-				var toolTipString = StringUtil.FormatString(toolTipFormatString, labelText, keyboardAcceleratorText);
+				var toolTipString = StringUtil.Swprintf_s(toolTipFormatString, labelText, keyboardAcceleratorText);
 
 				button.SetValue(ToolTipService.ToolTipProperty, toolTipString);
 			}
