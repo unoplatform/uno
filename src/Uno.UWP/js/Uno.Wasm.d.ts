@@ -1,3 +1,28 @@
+declare enum ContactProperty {
+    Address = "address",
+    Email = "email",
+    Icon = "icon",
+    Name = "name",
+    Tel = "tel"
+}
+declare class ContactInfo {
+    address: PaymentAddress[];
+    email: string[];
+    name: string;
+    tel: string;
+}
+declare class ContactsManager {
+    select(props: ContactProperty[], options: any): Promise<ContactInfo[]>;
+}
+interface Navigator {
+    contacts: ContactsManager;
+}
+declare namespace Windows.ApplicationModel.Contacts {
+    class ContactPicker {
+        static isSupported(): boolean;
+        static pickContacts(pickMultiple: boolean): Promise<string>;
+    }
+}
 declare namespace Windows.ApplicationModel.Core {
     /**
      * Support file for the Windows.ApplicationModel.Core
@@ -31,6 +56,17 @@ declare namespace Uno.Utils {
         static setText(text: string): string;
         static getText(): Promise<string>;
         private static onClipboardChanged;
+    }
+}
+interface NavigatorDataTransferManager {
+    share(data: any): Promise<void>;
+}
+interface Navigator extends NavigatorDataTransferManager {
+}
+declare namespace Windows.ApplicationModel.DataTransfer {
+    class DataTransferManager {
+        static isSupported(): boolean;
+        static showShareUI(title: string, text: string, url: string): Promise<string>;
     }
 }
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
@@ -171,6 +207,20 @@ declare namespace Uno.UI.Dispatching {
         static WakeUp(force: boolean): void;
     }
 }
+declare namespace Windows.Gaming.Input {
+    class Gamepad {
+        private static dispatchGamepadAdded;
+        private static dispatchGamepadRemoved;
+        static getConnectedGamepadIds(): string;
+        static getReading(id: number): string;
+        static startGamepadAdded(): void;
+        static endGamepadAdded(): void;
+        static startGamepadRemoved(): void;
+        static endGamepadRemoved(): void;
+        private static onGamepadConnected;
+        private static onGamepadDisconnected;
+    }
+}
 declare namespace Windows.Graphics.Display {
     enum DisplayOrientations {
         None = 0,
@@ -215,6 +265,28 @@ declare namespace Uno.Helpers.Theming {
         static observeSystemTheme(): void;
     }
 }
+interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+}
+declare namespace Windows.Media {
+    class SpeechRecognizer {
+        private static dispatchResult;
+        private static dispatchHypothesis;
+        private static dispatchStatus;
+        private static dispatchError;
+        private static instanceMap;
+        private managedId;
+        private recognition;
+        private constructor();
+        static initialize(managedId: string, culture: string): void;
+        static recognize(managedId: string): boolean;
+        static removeInstance(managedId: string): void;
+        private onResult;
+        private onSpeechStart;
+        private onError;
+    }
+}
 declare namespace Windows.Networking.Connectivity {
     class ConnectionProfile {
         static hasInternetAccess(): boolean;
@@ -226,6 +298,25 @@ declare namespace Windows.Networking.Connectivity {
         static startStatusChanged(): void;
         static stopStatusChanged(): void;
         static networkStatusChanged(): void;
+    }
+}
+interface Navigator {
+    webkitVibrate(pattern: number | number[]): boolean;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+}
+declare namespace Windows.Phone.Devices.Notification {
+    class VibrationDevice {
+        static initialize(): boolean;
+        static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.Security.Authentication.Web {
+    class WebAuthenticationBroker {
+        static getReturnUrl(): string;
+        static authenticateUsingIframe(iframeId: string, urlNavigate: string, urlRedirect: string, timeout: number): Promise<string>;
+        static authenticateUsingWindow(urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number, timeout: number): Promise<string>;
+        private static startMonitoringRedirect;
     }
 }
 declare namespace Windows.Storage {
@@ -518,6 +609,16 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+interface Navigator {
+    setAppBadge(value: number): void;
+    clearAppBadge(): void;
+}
+declare namespace Windows.UI.Notifications {
+    class BadgeUpdater {
+        static setNumber(value: number): void;
+        static clear(): void;
     }
 }
 declare namespace Windows.UI.ViewManagement {
