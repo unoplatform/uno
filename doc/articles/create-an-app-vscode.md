@@ -67,10 +67,20 @@ Uno Platform provides integrated support for debugging your app on Windows, macO
 
 ### [**WebAssembly**](#tab/Wasm)
 
+> [!NOTE]
+> VS Code's built-in JavaScript debugger currently **[only supports](https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md)**:
+>
+> * **Google Chrome**
+> * **Microsoft Edge (Chromium-based)**
+>
+> To debug WebAssembly with VS Code, **one of these browsers must be installed**.
+>
+> Safari, Firefox, and other browsers are **not directly supported** via VS Code at the moment.
+
 In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
-1. Set the debugger launch to `Debug (Chrome, WebAssembly)`
+1. Set the debugger launch to `Uno Platform WebAssembly Debug (Chrome)` or `Uno Platform WebAssembly Debug (Edge)`
 
 ![VS Code UI](Assets/quick-start/vs-code-chrome-debug.png)
 
