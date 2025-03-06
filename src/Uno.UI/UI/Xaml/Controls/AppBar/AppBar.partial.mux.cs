@@ -45,71 +45,18 @@ using Windows.UI.Core;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
-#if HAS_NATIVE_COMMANDBAR
-		, ICustomClippingElement
-#endif
 	{
-		public event EventHandler<object>? Opened;
-		public event EventHandler<object>? Opening;
-		public event EventHandler<object>? Closed;
-		public event EventHandler<object>? Closing;
 
 		private const string TEXT_HUB_SEE_MORE = nameof(TEXT_HUB_SEE_MORE);
 		private const string TEXT_HUB_SEE_LESS = nameof(TEXT_HUB_SEE_LESS);
 		private const string UIA_MORE_BUTTON = nameof(UIA_MORE_BUTTON);
 		private const string UIA_LESS_BUTTON = nameof(UIA_LESS_BUTTON);
 
-		protected Grid? m_tpLayoutRoot;
-		protected FrameworkElement? m_tpContentRoot;
-		protected ButtonBase? m_tpExpandButton;
-		protected WeakReference<VisualStateGroup?>? m_tpDisplayModesStateGroupRef;
-
-		protected double m_compactHeight;
-		protected double m_minimalHeight;
-
-		AppBarMode m_Mode;
-
-		// Owner, if this AppBar is owned by a Page using TopAppBar/BottomAppBar.
-		WeakReference<Page>? m_wpOwner;
-
-		SerialDisposable m_contentRootSizeChangedEventHandler = new SerialDisposable();
-		SerialDisposable m_windowSizeChangedEventHandler = new SerialDisposable();
-		SerialDisposable m_expandButtonClickEventHandler = new SerialDisposable();
-		SerialDisposable m_displayModeStateChangedEventHandler = new SerialDisposable();
-
-#pragma warning disable CS0414
-#pragma warning disable CS0649
-#pragma warning disable CS0169
-		// Focus state to be applied on loaded.
-		FocusState m_onLoadFocusState;
-		//UIElement? m_layoutTransitionElement;
-		UIElement? m_overlayLayoutTransitionElement;
-		private bool _isNativeTemplate;
-		//UIElement m_parentElementForLTEs;
-#pragma warning restore CS0414
-#pragma warning restore CS0649
-#pragma warning restore CS0169
-
-
-		FrameworkElement? m_overlayElement;
-		SerialDisposable m_overlayElementPointerPressedEventHandler = new SerialDisposable();
-
-		WeakReference<DependencyObject>? m_savedFocusedElementWeakRef;
-		FocusState m_savedFocusState;
-
-		bool m_isInOverlayState;
-		bool m_isChangingOpenedState;
-		bool m_hasUpdatedTemplateSettings;
-
-		// We refresh this value in the OnSizeChanged() & OnContentSizeChanged() handlers.
-		double m_contentHeight;
-
-		bool m_isOverlayVisible;
-		Storyboard? m_overlayOpeningStoryboard;
-		Storyboard? m_overlayClosingStoryboard;
-
 		protected double ContentHeight => m_contentHeight;
 
+		/// <summary>
+		/// Initializes a new instance of the AppBar class.
+		/// </summary>
 		public AppBar()
 		{
 			m_Mode = AppBarMode.Inline;
