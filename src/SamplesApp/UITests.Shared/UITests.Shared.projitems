@@ -658,6 +658,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\FontTests\FontAlignmentTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\Midi\MidiDeviceOutput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -9895,6 +9899,11 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\CaptureTests\OverlappedControls.xaml.cs">
       <DependentUpon>OverlappedControls.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\FontTests\FontAlignmentTests.xaml.cs">
+      <DependentUpon>FontAlignmentTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
