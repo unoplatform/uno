@@ -70,6 +70,22 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\CommandBarFlyoutMainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\CommandBarFlyoutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\ExtraCommandBarFlyoutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\TextCommandBarFlyoutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>            
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\ExpanderColorValidationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5581,6 +5597,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarTests\CommandBar_Primary_And_Secondary.xaml.cs">
       <DependentUpon>CommandBar_Primary_And_Secondary.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\CommandBarFlyoutMainPage.xaml.cs">
+      <DependentUpon>CommandBarFlyoutMainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\CommandBarFlyoutPage.xaml.cs">
+      <DependentUpon>CommandBarFlyoutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\ExtraCommandBarFlyoutPage.xaml.cs">
+      <DependentUpon>ExtraCommandBarFlyoutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\CommandBarFlyoutTests\TextCommandBarFlyoutPage.xaml.cs">
+      <DependentUpon>TextCommandBarFlyoutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ExpanderTests\ExpanderColorValidationPage.xaml.cs">
       <DependentUpon>ExpanderColorValidationPage.xaml</DependentUpon>
     </Compile>
@@ -5858,6 +5886,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewAlignment.xaml.cs">
       <DependentUpon>TreeViewAlignment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TestAppUtils\FrameExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewBasics.xaml.cs">
       <DependentUpon>TreeViewBasics.xaml</DependentUpon>
     </Compile>
