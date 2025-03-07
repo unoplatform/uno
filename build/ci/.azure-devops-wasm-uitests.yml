@@ -269,7 +269,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      testRunTitle: 'WebAssembly Test Run 1 $(SITE_SUFFIX) - $(UITEST_AUTOMATED_GROUP)'
+      testRunTitle: 'WebAssembly Test Run 2 $(SITE_SUFFIX) - $(UITEST_AUTOMATED_GROUP)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
       # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.

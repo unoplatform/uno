@@ -34,22 +34,14 @@
 			"IsMono": false,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				},
 				{
 					"MetadataUpdates": 0,
 					"Diagnostics": [
-						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" }
+						// MainPage_3bf279c8105476b2552069fbee1f5193.cs(156,42): error ENC0009: Updating the type of delegate requires restarting the application., expected
+						{ "Id": "ENC0009" }
 					]
 				}
 			]
@@ -59,22 +51,14 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				},
 				{
 					"MetadataUpdates": 0,
 					"Diagnostics": [
-						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" },
-						{ "Id": "ENC0053" }
+						// MainPage_3bf279c8105476b2552069fbee1f5193.cs(156,42): error ENC0009: Updating the type of delegate requires restarting the application., expected
+						{ "Id": "ENC0009" }
 					]
 				}
 			]

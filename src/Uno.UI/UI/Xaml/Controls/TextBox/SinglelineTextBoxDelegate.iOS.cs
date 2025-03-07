@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// is lower or equal to the allowed length (TextBox.MaxLength)
 					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
 					return newLength <= textBox.MaxLength;
-				};
+				}
 			}
 
 			return true;

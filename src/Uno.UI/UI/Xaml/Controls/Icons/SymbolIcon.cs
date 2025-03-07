@@ -298,7 +298,7 @@ public sealed partial class SymbolIcon : IconElement, IThemeChangeAware
 			case 0xE1A3: return (char)(0xE71E); // Zoom
 			case 0xE12E: return (char)(0xE8A3); // ZoomIn
 			case 0xE1A4: return (char)(0xE71F); // ZoomOut
-		};
+		}
 
 		return (char)(symbolValue);
 	}

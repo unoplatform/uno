@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Media
 				using (StreamGeometryContext ctx = streamGeometry.Open())
 				{
 					ctx.Write(geometry);
-				};
+				}
 			}
 
 			return streamGeometry;
