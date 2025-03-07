@@ -771,10 +771,10 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		#region Helpers
-		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
+		internal static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
 
-		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> SkipUntil(UIElement element)
+		internal static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> SkipUntil(UIElement element)
 			=> children => SkipUntilCore(element, children);
 
 		private static IEnumerable<UIElement> SkipUntilCore(UIElement element, IEnumerable<UIElement> children)

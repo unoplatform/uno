@@ -67,7 +67,7 @@ jobs:
       ArtifactType: Container
 
   - pwsh: |
-      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build -- --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build -- --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
 
   - task: PublishTestResults@2
@@ -80,3 +80,11 @@ jobs:
       mergeTestResults: true
     continueOnError: true
     condition: always()
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: unit-tests-binlogs-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container

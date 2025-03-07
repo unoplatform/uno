@@ -107,6 +107,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void PrepareNativeLayout(VirtualizingPanelLayout layout);
+
 		protected internal override void CleanUpInternalItemsPanel(_ViewGroup panel)
 		{
 			if (panel is NativeListViewBase nativePanel)

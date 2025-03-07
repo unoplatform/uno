@@ -331,7 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitFor(() => hideSecondTime);
 				deferral.Complete();
 				triggered = false;
-			};
+			}
 
 			SUT.Closing += SUT_Closing;
 
@@ -483,7 +483,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				e.Cancel = true;
 				sender.Hide();
-			};
+			}
 
 			switch (buttonType)
 			{

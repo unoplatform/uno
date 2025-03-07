@@ -515,7 +515,7 @@ public class TimePickerIntegrationTests
 				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
 
 				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0);
-			};
+			}
 
 			validatePlaceholder(hourTextBlock, "hour");
 			validatePlaceholder(minuteTextBlock, "minute");
@@ -537,7 +537,7 @@ public class TimePickerIntegrationTests
 				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
 
 				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) != 0);
-			};
+			}
 
 			validateValue(hourTextBlock, "hour");
 			validateValue(minuteTextBlock, "minute");

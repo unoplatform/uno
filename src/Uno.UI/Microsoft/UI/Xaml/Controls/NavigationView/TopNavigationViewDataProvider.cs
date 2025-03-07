@@ -152,7 +152,7 @@ internal partial class TopNavigationViewDataProvider : SplitDataSourceBase<objec
 		foreach (var index in indexes)
 		{
 			MoveItemToVector(index, vectorID);
-		};
+		}
 	}
 
 	internal int GetPrimaryListSize()

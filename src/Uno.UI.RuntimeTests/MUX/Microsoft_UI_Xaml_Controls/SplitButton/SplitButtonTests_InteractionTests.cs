@@ -157,17 +157,19 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			Verify.AreEqual("0", clickCountTextBlock.Text);
 			Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
 
-			Log.Comment("Click primary button to open flyout in touch mode");
+			Log.Comment("Click primary button in touch mode");
 			// ClickPrimaryButton(splitButton);
 			await ClickPrimaryButton(splitButton, finger);
 			await WindowHelper.WaitForIdle();
 
-			// Uno TODO: the test outputs 1 and 0 instead of 1 and 0
-			// This works correctly when manually testing by hand, but fails in the runtime tests.
-			// Verify.AreEqual("0", clickCountTextBlock.Text);
-			// Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
 			Verify.AreEqual("1", clickCountTextBlock.Text);
 			Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
+
+			Log.Comment("Click secondary button in touch mode");
+			await ClickSecondaryButton(splitButton, finger);
+
+			Verify.AreEqual("1", clickCountTextBlock.Text);
+			Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
 
 			Log.Comment("Close flyout by clicking over the button");
 			// splitButton.Click();

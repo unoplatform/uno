@@ -845,10 +845,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_presenter.CanVerticallyScroll = allowed;
 
-			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
-			//		 auto materialization due to databound visibility.
-			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
-			//		 as we wouldn't have set the IsFixedOrientation flag yet.
 			MaterializeVerticalScrollBarIfNeeded(computedVisibility);
 
 			ComputedVerticalScrollBarVisibility = computedVisibility;
@@ -882,10 +878,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_presenter.CanHorizontallyScroll = allowed;
 
-			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
-			//		 auto materialization due to databound visibility.
-			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
-			//		 as we wouldn't have set the IsFixedOrientation flag yet.
 			MaterializeHorizontalScrollBarIfNeeded(computedVisibility);
 
 			ComputedHorizontalScrollBarVisibility = computedVisibility;
@@ -1092,18 +1084,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			using (ScrollBar.MaterializingFixed(Orientation.Vertical))
-			{
-				_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
-				_isVerticalScrollBarMaterialized = true;
-			}
+			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
+			_isVerticalScrollBarMaterialized = true;
 
 			if (_verticalScrollbar is null)
 			{
 				return;
 			}
 
-			_verticalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
@@ -1115,18 +1103,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			using (ScrollBar.MaterializingFixed(Orientation.Horizontal))
-			{
-				_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
-				_isHorizontalScrollBarMaterialized = true;
-			}
+			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
+			_isHorizontalScrollBarMaterialized = true;
 
 			if (_horizontalScrollbar is null)
 			{
 				return;
 			}
 
-			_horizontalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
