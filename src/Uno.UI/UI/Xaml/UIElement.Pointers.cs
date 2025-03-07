@@ -1010,28 +1010,6 @@ namespace Microsoft.UI.Xaml
 			return handledInManaged;
 		}
 
-			if (!ctx.IsInternal && isOverOrCaptured)
-			{
-				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
-				// we don't raise the 'move' event
-
-				args.Handled = false;
-				handledInManaged |= RaisePointerEvent(PointerMovedEvent, args);
-			}
-
-			if (IsGestureRecognizerCreated)
-			{
-				var gestures = GestureRecognizer;
-				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
-				if (gestures.IsDragging)
-				{
-					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
-				}
-			}
-
-			return handledInManaged;
-		}
-
 		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 
 		internal bool OnPointerMove(PointerRoutedEventArgs args, BubblingContext ctx = default)
@@ -1174,7 +1152,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
-
 		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			if (ctx.IsInternal || ctx.IsCleanup)

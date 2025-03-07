@@ -49,7 +49,7 @@ partial class UIElement
 			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 			if (gestures.IsDragging)
 			{
-				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 			}
 		}
 
