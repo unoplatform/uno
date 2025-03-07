@@ -56,7 +56,7 @@ partial class UIElement
 		return handledInManaged;
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 #endif
 

@@ -1010,8 +1010,6 @@ namespace Microsoft.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
-
 		internal bool OnPointerMove(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;

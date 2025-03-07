@@ -1135,7 +1135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		/// <summary>
 		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
 		/// </summary>
