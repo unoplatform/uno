@@ -74,6 +74,7 @@ namespace Microsoft.UI.Xaml
 			UpdateHitTest();
 		}
 
+#if __SKIA__ || __WASM__
 		private void OnChildAdded(UIElement child)
 		{
 			if (!child._isFrameworkElement)
@@ -107,6 +108,7 @@ namespace Microsoft.UI.Xaml
 			child.Leave(leaveParams);
 #endif
 		}
+#endif
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);

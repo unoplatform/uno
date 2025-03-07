@@ -596,7 +596,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					break;
 
 				default: throw new NotSupportedException($"{completedInfo} is not supported");
-			};
+			}
 
 			ReleaseCoreAnimation();
 			UntrackCurrentInstance();

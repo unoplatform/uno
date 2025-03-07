@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var index in indexes)
 			{
 				MoveItemToVector(index, vectorID);
-			};
+			}
 		}
 
 		public int GetPrimaryListSize()
