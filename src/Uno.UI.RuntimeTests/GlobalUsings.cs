@@ -2,5 +2,5 @@
 
 #if WINAPPSDK
 global using Microsoft.UI;
-global using Microsoft.UI.Text;
+global using Windows.UI.Text;
 #endif

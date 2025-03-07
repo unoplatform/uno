@@ -10,7 +10,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
@@ -19,7 +19,7 @@ using Android.Views.Animations;
 
 using Point = Windows.Foundation.Point;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public abstract partial class VirtualizingPanelLayout : RecyclerView.LayoutManager, DependencyObject
 #if !MONOANDROID6_0 && !MONOANDROID7_0
@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return 0;
 			}
 		}
@@ -242,7 +242,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return 0;
 			}
 		}
@@ -255,7 +255,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return false;
 			}
 		}
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 				return false;
 			}
 		}
@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 
@@ -516,7 +516,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 			}
 		}
 

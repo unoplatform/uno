@@ -1,7 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;

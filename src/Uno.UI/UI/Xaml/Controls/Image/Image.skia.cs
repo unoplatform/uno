@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement
 	{

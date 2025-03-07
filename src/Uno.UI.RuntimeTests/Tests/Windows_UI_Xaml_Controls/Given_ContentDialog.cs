@@ -11,14 +11,14 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await ShowDialog(SUT);
 
-				SUT.ContentScrollViewer.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				SUT.ContentScrollViewer.Background = new SolidColorBrush(Windows.UI.Colors.Red);
 
 				await WindowHelper.WaitForIdle();
 

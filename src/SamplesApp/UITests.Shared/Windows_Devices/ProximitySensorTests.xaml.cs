@@ -7,8 +7,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Private.Infrastructure;
 
 namespace UITests.Windows_Devices;
@@ -28,7 +28,7 @@ public sealed partial class ProximitySensorTests : Page
 		DataContextChanged += ProximitySensorTests_DataContextChanged;
 	}
 
-	private async void ProximitySensorTests_DataContextChanged(Microsoft.UI.Xaml.FrameworkElement sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+	private async void ProximitySensorTests_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 	{
 		var viewModel = (ProximitySensorTestsViewModel)DataContext;
 		if (viewModel is null)

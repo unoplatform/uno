@@ -8,7 +8,7 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 {

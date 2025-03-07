@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
 
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml;
 
-namespace Uno.UI.Controls.Legacy;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that indicates that an operation is ongoing. The typical visual appearance is a ring-shaped "spinner" that cycles an animation as progress continues.

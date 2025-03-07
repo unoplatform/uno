@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// TransitionCollection : Based on WinRT TransitionCollection

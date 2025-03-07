@@ -8,12 +8,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno;
 using Uno.Collections;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{

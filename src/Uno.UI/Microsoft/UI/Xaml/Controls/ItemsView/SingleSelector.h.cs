@@ -3,7 +3,7 @@
 
 // MUX Reference SingleSelector.h, tag winui3/release/1.5.0
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class SingleSelector : SelectorBase
 {

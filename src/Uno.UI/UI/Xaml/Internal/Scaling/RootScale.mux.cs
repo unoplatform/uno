@@ -6,7 +6,7 @@
 
 using System;
 using Microsoft.UI.Content;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Windows.Graphics.Display;
 using static Uno.UI.Xaml.Internal.Inlined;

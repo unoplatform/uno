@@ -6,7 +6,7 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using static Uno.UI.Xaml.Input.XYFocusAlgorithmHelper;
 using static Uno.Helpers.MathHelpers;
 

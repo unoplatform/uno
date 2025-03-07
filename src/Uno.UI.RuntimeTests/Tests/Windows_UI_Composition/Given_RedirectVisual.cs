@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 

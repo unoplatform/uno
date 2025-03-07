@@ -5,9 +5,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class NameScope : INameScope

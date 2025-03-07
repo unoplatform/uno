@@ -4,7 +4,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal partial class RenderingLoopAnimator
 	{
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		internal static partial class NativeMethods
 		{
-			[JSImport("globalThis.Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.setEnabled")]
+			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.setEnabled")]
 			internal static partial void SetEnabled(bool enabled);
 		}
 	}

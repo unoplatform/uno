@@ -3,7 +3,7 @@
 
 using System;
 using System.ComponentModel;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace MUXControlsTestApp.Samples.Model;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation;
@@ -22,7 +22,7 @@ public sealed partial class Canvas_DependentAnimation : Page
 			RepeatBehavior = RepeatBehavior.Forever,
 		};
 		Storyboard.SetTargetName(doubleAnimation, "bouncingBall");
-		Storyboard.SetTargetProperty(doubleAnimation, "(Microsoft.UI.Xaml.Controls:Canvas.Top)");
+		Storyboard.SetTargetProperty(doubleAnimation, "(Windows.UI.Xaml.Controls:Canvas.Top)");
 		Storyboard.SetTarget(doubleAnimation, bouncingBall);
 		var storyboard = new Storyboard
 		{

@@ -66,7 +66,7 @@ public class Given_MvvmGeneratedMembers
 				Sources =
 				{
 					$$"""
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml.Controls;
 					using CommunityToolkit.Mvvm.ComponentModel;
 
 					namespace TestRepro
@@ -121,7 +121,7 @@ public class Given_MvvmGeneratedMembers
 				Sources =
 				{
 					$$"""
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml.Controls;
 					using CommunityToolkit.Mvvm.ComponentModel;
 
 					namespace TestRepro
@@ -174,7 +174,7 @@ public class Given_MvvmGeneratedMembers
 				Sources =
 				{
 					$$"""
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml.Controls;
 					using CommunityToolkit.Mvvm.ComponentModel;
 
 					namespace TestRepro
@@ -238,7 +238,7 @@ public class Given_MvvmGeneratedMembers
 				Sources =
 				{
 					$$"""
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml.Controls;
 					using CommunityToolkit.Mvvm.ComponentModel;
 
 					namespace TestRepro

@@ -8,16 +8,16 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Hosting;
 using System.Numerics;
 using Windows.UI;
 using Windows.Foundation.Metadata;
@@ -55,12 +55,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			CustomImages.PlaceholderValue = 1.5;
 
 			var imageInfo = new RatingItemImageInfo();
-			imageInfo.Image = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_set.png"));
-			imageInfo.UnsetImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_unset.png")); ;
-			imageInfo.PlaceholderImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_placeholder.png")); ;
-			imageInfo.DisabledImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_disabled.png")); ;
-			imageInfo.PointerOverImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverset.png")); ;
-			imageInfo.PointerOverPlaceholderImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverplaceholder.png"));
+			imageInfo.Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_set.png"));
+			imageInfo.UnsetImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_unset.png")); ;
+			imageInfo.PlaceholderImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_placeholder.png")); ;
+			imageInfo.DisabledImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_disabled.png")); ;
+			imageInfo.PointerOverImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverset.png")); ;
+			imageInfo.PointerOverPlaceholderImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverplaceholder.png"));
 
 			CustomImagesTwo.ItemInfo = imageInfo;
 			CustomImagesTwo.Value = 3.0;
@@ -84,9 +84,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			//FrameDetails.Text = Window.Current.Bounds.ToString() + " " + cb.IsChecked.ToString();
 
 #if !HAS_UNO
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.RatingControl"))
+			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.RatingControl"))
 			{
-				var wuxcRatingControl = new Microsoft.UI.Xaml.Controls.RatingControl();
+				var wuxcRatingControl = new Windows.UI.Xaml.Controls.RatingControl();
 				wuxcRatingControl.Name = "WUXC RatingControl";
 				wuxcRatingControl.Caption = "WUXC RatingControl";
 				AutomationProperties.SetAutomationId(wuxcRatingControl, "wuxcRatingControl");
@@ -221,7 +221,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			DependencyObject obj = FindVisualChildByName(CustomImages, "RatingBackgroundStackPanel");
 			var child = VisualTreeHelper.GetChild(obj, 0);
 			AutomationProperties.SetAutomationId(child, "CustomImages_FirstImageItem");
-			AutomationProperties.SetAccessibilityView(child, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Control);
+			AutomationProperties.SetAccessibilityView(child, Windows.UI.Xaml.Automation.Peers.AccessibilityView.Control);
 
 			CustomImagesLoadedCheckBox.IsChecked = true;
 		}
@@ -242,26 +242,26 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 				DependencyObject obj = FindVisualChildByName(CustomImagesTwo, "RatingBackgroundStackPanel");
 				var child = VisualTreeHelper.GetChild(obj, 0);
 				AutomationProperties.SetAutomationId(child, "CustomImagesTwo_FirstTextItem");
-				AutomationProperties.SetAccessibilityView(child, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Control);
+				AutomationProperties.SetAccessibilityView(child, Windows.UI.Xaml.Automation.Peers.AccessibilityView.Control);
 
 				CustomImagesTwoLoadedStageTwoCheckBox.IsChecked = true;
 			}
 			else
 			{
 				var imageInfo = new RatingItemImageInfo();
-				imageInfo.Image = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_set.png"));
-				imageInfo.UnsetImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_unset.png")); ;
-				imageInfo.PlaceholderImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_placeholder.png")); ;
-				imageInfo.DisabledImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_disabled.png")); ;
-				imageInfo.PointerOverImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverset.png")); ;
-				imageInfo.PointerOverPlaceholderImage = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverplaceholder.png"));
+				imageInfo.Image = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_set.png"));
+				imageInfo.UnsetImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_unset.png")); ;
+				imageInfo.PlaceholderImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_placeholder.png")); ;
+				imageInfo.DisabledImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_disabled.png")); ;
+				imageInfo.PointerOverImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverset.png")); ;
+				imageInfo.PointerOverPlaceholderImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:/Assets/rating_mouseoverplaceholder.png"));
 
 				CustomImagesTwo.ItemInfo = imageInfo;
 
 				DependencyObject obj = FindVisualChildByName(CustomImagesTwo, "RatingBackgroundStackPanel");
 				var child = VisualTreeHelper.GetChild(obj, 0);
 				AutomationProperties.SetAutomationId(child, "CustomImagesTwo_FirstImageItem_Again");
-				AutomationProperties.SetAccessibilityView(child, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Control);
+				AutomationProperties.SetAccessibilityView(child, Windows.UI.Xaml.Automation.Peers.AccessibilityView.Control);
 
 				CustomImagesTwoLoadedStageThreeCheckBox.IsChecked = true;
 			}
@@ -272,7 +272,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			DependencyObject obj = FindVisualChildByName(CustomImagesTwo, "RatingBackgroundStackPanel");
 			var child = VisualTreeHelper.GetChild(obj, 0);
 			AutomationProperties.SetAutomationId(child, "CustomImagesTwo_FirstImageItem");
-			AutomationProperties.SetAccessibilityView(child, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView.Control);
+			AutomationProperties.SetAccessibilityView(child, Windows.UI.Xaml.Automation.Peers.AccessibilityView.Control);
 
 			CustomImagesTwoLoadedStageOneCheckBox.IsChecked = true;
 		}
@@ -415,14 +415,14 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 				if (!this.IsRenderingHooked)
 				{
 					this.IsRenderingHooked = true;
-					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+					Windows.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 				}
 			}
 			else
 			{
 				if (this.IsRenderingHooked)
 				{
-					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+					Windows.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
 					this.IsRenderingHooked = false;
 				}
 			}
@@ -474,7 +474,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			var child = VisualTreeHelper.GetChild(obj, 0);
 			Image image = child as Image;
 			var source = image.Source;
-			Microsoft.UI.Xaml.Media.Imaging.BitmapImage bitImage = source as Microsoft.UI.Xaml.Media.Imaging.BitmapImage;
+			Windows.UI.Xaml.Media.Imaging.BitmapImage bitImage = source as Windows.UI.Xaml.Media.Imaging.BitmapImage;
 
 			String uri = bitImage.UriSource.ToString();
 			if (uri.Equals(expectedUri))

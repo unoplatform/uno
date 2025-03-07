@@ -6,7 +6,7 @@
 using System;
 using Microsoft.UI.Input;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
@@ -14,7 +14,7 @@ using Windows.UI.Core;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ItemsView
 {

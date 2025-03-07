@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	[Flags]
 	internal enum ResourceUpdateReason

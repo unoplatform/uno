@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {

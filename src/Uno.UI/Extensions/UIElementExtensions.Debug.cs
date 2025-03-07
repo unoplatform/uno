@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Extensions;
 

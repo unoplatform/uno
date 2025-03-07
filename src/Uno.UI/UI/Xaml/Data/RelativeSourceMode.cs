@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Data
+﻿namespace Windows.UI.Xaml.Data
 {
 	/// <summary>
 	/// Defines constants that describe the location of the binding source relative to the position of the binding target.

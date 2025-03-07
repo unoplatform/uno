@@ -2,9 +2,9 @@
 using System.Drawing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class StackPanel
 	{

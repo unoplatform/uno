@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Devices.Geolocation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;

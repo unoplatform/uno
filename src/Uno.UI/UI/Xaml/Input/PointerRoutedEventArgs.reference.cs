@@ -6,7 +6,7 @@ using Microsoft.UI.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{

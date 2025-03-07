@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;

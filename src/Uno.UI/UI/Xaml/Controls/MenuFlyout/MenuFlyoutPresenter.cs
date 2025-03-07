@@ -7,14 +7,14 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -23,7 +23,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutPresenter : ItemsControl, IMenuPresenter
 	{

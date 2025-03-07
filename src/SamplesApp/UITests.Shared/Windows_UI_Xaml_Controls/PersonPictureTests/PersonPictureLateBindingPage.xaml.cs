@@ -17,9 +17,9 @@ namespace MUXControlsTestApp
 		"The PersonPicture control image is set after 1 second delay. \n" +
 		"The image should be displayed after the delay.",
 		isManualTest: true)]
-#pragma warning disable UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning disable UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	public sealed partial class PersonPictureLateBindingPage
-#pragma warning restore UXAML0002 // does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+#pragma warning restore UXAML0002 // does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 	{
 		public string ImagePath { get; } = "ms-appx:///Assets/ingredient2.png";
 

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent

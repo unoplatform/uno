@@ -16,18 +16,18 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

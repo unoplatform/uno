@@ -5,11 +5,11 @@
 #nullable enable
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Media;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class SelectorBarItem
 {
