@@ -4868,6 +4868,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, "ListView is not scrolled to the end.");
 		}
+
+		[TestMethod]
+		public async Task When_SelectionChanged_DuringRefresh()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 4).Select(x => $"Item {x}"));
+			var sut = new ListView
+			{
+				Height = source.Count * 29 * 1.5, // give ample room
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
+
+			source.Move(1, 2); // swap: 0[1]23 -> 02[1]3
+			sut.SelectedItem = source[2]; // select "Item 1" (at index 2)
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
+
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
+			Assert.AreEqual(4, sut.ItemsPanelRoot.Children.OfType<ListViewItem>().Count(), "There should be only 4 materialized container.");
+#endif
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
