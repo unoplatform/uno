@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Runtime.CompilerServices;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 
@@ -26,16 +27,20 @@ public sealed partial class XamlRoot
 
 	internal void RaiseChangedEvent() => Changed?.Invoke(this, new());
 
-	internal static XamlRoot? GetForElement(DependencyObject element)
+	internal static XamlRoot? GetForElement(DependencyObject element, bool createIfNotExist = true)
 	{
 		XamlRoot? result = null;
 
 		var visualTree = VisualTree.GetForElement(element);
 		if (visualTree is not null)
 		{
-			result = visualTree.GetOrCreateXamlRoot();
+			result = createIfNotExist ? visualTree.GetOrCreateXamlRoot() : visualTree.XamlRoot;
 		}
 
 		return result;
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static XamlRoot? GetImplementationForElement(DependencyObject element, bool createIfNotExist = true) =>
+		GetForElement(element, createIfNotExist);
 }
