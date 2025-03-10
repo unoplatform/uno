@@ -194,11 +194,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (newIndex != -1 && IsInLiveTree)
 			{
 				if (this is ListViewBase lvb
+#pragma warning disable IDE0055 // Fix formatting: comment needs to align with the next line, which may or may not be here
+					// scrolling too early or during middle of a refresh
+					// can sometime leave a blank space in the list of items.
 #if __IOS__
-					// workaround to prevent scrolling when it is not ready
-					// without this, the ios TabView could render blank if the selection happens too early.
 					&& ContainerFromIndex(newIndex) is FrameworkElement { IsLoaded: true }
+#elif __CROSSRUNTIME__
+					&& !IsMeasureDirty && ItemsPanelRoot?.IsMeasureDirty == false
 #endif
+#pragma warning restore IDE0055
 				)
 				{
 #if __IOS__ || __ANDROID__
