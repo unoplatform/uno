@@ -20,6 +20,9 @@ The output of the webassembly build is generally immutable and can be cached ind
 - `_framework/blazor.boot.json`
 - `_framework/dotnet.js`
 - `index.html`
+- Other files at the root of the output package
+
+These files should be refreshed regularly in order to avoid app files inconsistencies.
 
 ## Nginx
 
