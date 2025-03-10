@@ -13,9 +13,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
-#if WINAPPSDK
-using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
