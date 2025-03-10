@@ -450,7 +450,8 @@ BorderBrush="{StaticResource Color05Brush}">
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<!-- CONTENT -->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}" ColumnSpacing="4">
+				<Grid x:Name="TitleBarGrid" Background="Transparent" />
+				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="50" />
 						<ColumnDefinition Width="*" />
