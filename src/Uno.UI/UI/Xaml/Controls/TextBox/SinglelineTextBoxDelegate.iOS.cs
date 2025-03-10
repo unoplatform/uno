@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (textField is SinglelineTextBoxView textBoxView)
 			{
-				if (_textBox.GetTarget() is not TextBox textBox)
+				if (_textBox.GetTarget() is not { } textBox)
 				{
 					return false;
 				}
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// When replacing text from pasting (multiple characters at once)
 					// we should only allow it (return true) when the new text length
 					// is lower or equal to the allowed length (TextBox.MaxLength)
-					var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
+					var newLength = textBoxView.Text?.Length + replacementString.Length - range.Length;
 					return newLength <= textBox.MaxLength;
 				}
 			}
