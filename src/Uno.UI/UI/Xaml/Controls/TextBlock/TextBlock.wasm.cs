@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Documents;
-using Uno.Extensions;
-using Uno.Foundation;
-using System.Linq;
-
-using Windows.UI.Text;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using static __Uno.UI.Xaml.Controls.TextBlock;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Media;
@@ -73,6 +67,20 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				condition = false;
 				action();
+			}
+		}
+
+		/// <summary>
+		/// Copies the selected content to the Windows clipboard.
+		/// </summary>
+		public void CopySelectionToClipboard()
+		{
+			if (Selection.start != Selection.end)
+			{
+				var text = NativeMethods.GetSelectedText(HtmlId);
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(text);
+				Clipboard.SetContent(dataPackage);
 			}
 		}
 
@@ -232,6 +240,14 @@ namespace Microsoft.UI.Xaml.Controls
 			IsTextTrimmed =
 				IsTextTrimmable &&
 				WindowManagerInterop.GetIsOverflowing(HtmlId);
+		}
+
+		partial void OnSelectionChanged()
+		{
+			if (IsTextSelectionEnabled && Selection.start != Selection.end)
+			{
+				NativeMethods.Select(HtmlId, Selection.start, Selection.end - Selection.start);
+			}
 		}
 	}
 }

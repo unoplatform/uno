@@ -323,6 +323,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Copies the selected content to the Windows clipboard.
+		/// </summary>
 		public void CopySelectionToClipboard()
 		{
 			if (Selection.start != Selection.end)
@@ -336,9 +339,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SelectAll() => Selection = new Range(0, Text.Length);
-
-		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platform
 		public SolidColorBrush SelectionHighlightColor
 		{
 			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
