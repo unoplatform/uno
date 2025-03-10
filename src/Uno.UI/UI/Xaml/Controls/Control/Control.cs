@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _suppressIsEnabled;
 
+#if !__NETSTD_REFERENCE__
 		private void InitializeControl()
 		{
 			SubscribeToOverridenRoutedEvents();
@@ -43,6 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
+#endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
@@ -72,8 +74,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		partial void UnregisterSubView();
+
 		partial void RegisterSubView(View child);
+#endif
 
 		#region IsEnabled DependencyProperty
 
@@ -301,6 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+#if !__NETSTD_REFERENCE__
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
@@ -437,6 +443,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
+#endif
 
 		private protected override void OnLoaded()
 		{
@@ -560,7 +567,9 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsFocusableChanged();
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		partial void RegisterContentTemplateRoot();
+#endif
 
 		#region Foreground Dependency Property
 

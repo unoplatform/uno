@@ -53,7 +53,7 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 				// is lower or equal to the allowed length (TextBox.MaxLength)
 				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
 				return newLength <= textBox.MaxLength;
-			};
+			}
 		}
 
 		return true;

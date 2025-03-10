@@ -234,7 +234,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// and must be released before core releases its main render target on
 		/// shutdown.
 		/// </summary>
-		private void ReleaseFocusRectManagerResources()
+		internal void ReleaseFocusRectManagerResources()
 		{
 			// Releases references on UIElements held by CFocusRectManager
 			_focusRectManager.ReleaseResources(isDeviceLost: false, cleanupDComp: false, clearPCData: true);
@@ -244,7 +244,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// Cleans up device related resources.
 		/// </summary>
 		/// <param name="cleanupDComp">Cleanup.</param>
-		void CleanupDeviceRelatedResources(bool cleanupDComp) =>
+		internal void CleanupDeviceRelatedResources(bool cleanupDComp) =>
 			_focusRectManager.ReleaseResources(isDeviceLost: true, cleanupDComp, clearPCData: false);
 
 		/// <summary>
@@ -678,7 +678,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="isReverseDirection">Is shift pressed?</param>
 		/// <returns>Value indicating whether the request was handled.</returns>
-		private bool ProcessTabStop(bool isReverseDirection)
+		internal bool ProcessTabStop(bool isReverseDirection)
 		{
 			var bHandled = false;
 
@@ -2566,7 +2566,7 @@ namespace Microsoft.UI.Xaml.Input
 			_focusRectManager.OnFocusedElementKeyReleased();
 		}
 
-		private void RenderFocusRectForElementIfNeeded(UIElement element, IContentRenderer? renderer)
+		internal void RenderFocusRectForElementIfNeeded(UIElement element, IContentRenderer? renderer)
 		{
 			if (element == _focusTarget)
 			{
@@ -2578,7 +2578,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// Call when properties of focus visual change. Specifically called when Application.FocusVisualKind
 		/// changes.
 		/// </summary>
-		private void SetFocusVisualDirty()
+		internal void SetFocusVisualDirty()
 		{
 			DependencyObject? focusedObject = _focusedElement;
 			UIElement? focusedElement = focusedObject as UIElement;
@@ -2599,7 +2599,7 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 
-		private void OnAccessKeyDisplayModeChanged()
+		internal void OnAccessKeyDisplayModeChanged()
 		{
 			// We should update the caret to visible/collapsed depending on if AK mode is active
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && _focusedElement is TextBox pTextBox)
@@ -2868,7 +2868,7 @@ namespace Microsoft.UI.Xaml.Input
 		// decide a good focus state based on a recently-used input device type.  This function assumes focus is
 		// actually being set, so it won't return "Unfocued" as a FocusState.
 		/*static*/
-		private FocusState GetFocusStateFromInputDeviceType(InputDeviceType inputDeviceType)
+		internal FocusState GetFocusStateFromInputDeviceType(InputDeviceType inputDeviceType)
 		{
 			switch (inputDeviceType)
 			{
@@ -2888,7 +2888,7 @@ namespace Microsoft.UI.Xaml.Input
 			return FocusState.Programmatic;
 		}
 
-		private bool TrySetAsyncOperation(FocusAsyncOperation asyncOperation)
+		internal bool TrySetAsyncOperation(FocusAsyncOperation asyncOperation)
 		{
 			if (_asyncOperation != null)
 			{
@@ -2961,7 +2961,7 @@ namespace Microsoft.UI.Xaml.Input
 			return focusState;
 		}
 
-		private void SetWindowFocus(bool isFocused, bool isShiftDown)
+		internal void SetWindowFocus(bool isFocused, bool isShiftDown)
 		{
 			Guid correlationId = Guid.NewGuid();
 

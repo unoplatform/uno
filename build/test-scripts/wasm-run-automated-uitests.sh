@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
@@ -35,10 +35,10 @@ export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 if [ "$UITEST_AUTOMATED_GROUP" == 'Default' ];
 then
 	export TEST_FILTERS=" \
-		Namespace != SamplesApp.UITests.Snap \
+		FullyQualifiedName !~ SamplesApp.UITests.Snap \
 		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests \
 		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests \
-	"
+"
 
 elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then

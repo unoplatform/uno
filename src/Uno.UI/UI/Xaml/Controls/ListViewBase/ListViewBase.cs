@@ -568,8 +568,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ApplyMultiSelectStateToCachedItems();
 
-		partial void PrepareNativeLayout(VirtualizingPanelLayout layout);
-
 		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
@@ -1137,6 +1135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if __APPLE_UIKIT__ || __ANDROID__
 		/// <summary>
 		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
 		/// </summary>
@@ -1149,6 +1148,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
 		}
+#endif
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);
 

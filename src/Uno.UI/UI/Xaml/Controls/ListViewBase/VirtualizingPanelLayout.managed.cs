@@ -926,7 +926,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Refresh();
 		}
 
-		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
+		internal Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			return GetFirstMaterializedLine()?.FirstItem ?? Uno.UI.IndexPath.NotFound;
 		}
@@ -936,12 +936,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return GetLastMaterializedLine()?.LastItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
-		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
+		internal IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
 		{
 			throw new NotImplementedException(); //TODO: snap points support
 		}
 
-		private float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
+		internal float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
 
 		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{

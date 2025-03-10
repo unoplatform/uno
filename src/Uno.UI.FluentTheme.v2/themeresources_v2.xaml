@@ -21229,10 +21229,8 @@
     <Setter Property="BorderBrush" Value="{ThemeResource ScrollBarBorderBrush}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CornerRadius" Value="{ThemeResource ScrollBarCornerRadius}" />
-    <!-- UNO TODO: Template is applied in case of Skia targets, where the performance limitations, which required
-        fixed orientation template are no longer relevant. -->
-    <skia:Setter Property="Template">
-      <skia:Setter.Value>
+    <Setter Property="Template">
+      <Setter.Value>
         <ControlTemplate TargetType="ScrollBar">
           <Grid x:Name="Root">
             <Grid.Resources>
@@ -21741,8 +21739,8 @@
             </Grid>
           </Grid>
         </ControlTemplate>
-      </skia:Setter.Value>
-    </skia:Setter>
+      </Setter.Value>
+    </Setter>
   </Style>
   <Thickness x:Key="SliderTopHeaderMargin">0,0,0,4</Thickness>
   <CornerRadius x:Key="SliderTrackCornerRadius">2</CornerRadius>

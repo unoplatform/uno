@@ -916,9 +916,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnItemsSourceGroupsVectorChanged(object sender, IVectorChangedEventArgs args)
 			=> OnItemsSourceGroupsChanged(sender, args.ToNotifyCollectionChangedEventArgs());
 
-		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args)
-			=> OnItemsSourceCollectionChanged(sender, args.ToNotifyCollectionChangedEventArgs());
-
 		/// <summary>
 		/// Called when a collection change occurs within a single group, or within the entire source if it is ungrouped.
 		/// </summary>

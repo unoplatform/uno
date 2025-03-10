@@ -109,7 +109,7 @@ namespace Uno.Roslyn
 				}
 
 				type = type?.BaseType;
-			};
+			}
 
 			return false;
 		}
@@ -173,7 +173,7 @@ namespace Uno.Roslyn
 				}
 
 				type = type.BaseType;
-			};
+			}
 
 			return null;
 		}
