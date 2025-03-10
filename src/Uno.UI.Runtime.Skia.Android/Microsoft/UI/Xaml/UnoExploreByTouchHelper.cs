@@ -94,6 +94,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override void GetVisibleVirtualViews(IList<Integer>? virtualViewIds)
 	{
+		if (Microsoft.UI.Xaml.Window.CurrentSafe is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogWarning("No current window could be found.");
+			}
+
+			return;
+		}
+
 		var focusManager = VisualTree.GetFocusManagerForElement(_host.RootElement);
 		if (focusManager == null)
 		{
