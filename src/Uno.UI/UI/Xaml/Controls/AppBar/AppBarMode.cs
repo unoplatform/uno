@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+internal enum AppBarMode
 {
-	internal enum AppBarMode
-	{
-		Floating,
-		Top,
-		Bottom,
-		Inline,
-	}
+	Floating,
+	Top,
+	Bottom,
+	Inline, // Similar to floating, except it doesn't register with appbarservice.
 }
