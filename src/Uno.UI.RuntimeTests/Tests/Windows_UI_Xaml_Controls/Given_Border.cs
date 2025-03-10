@@ -123,7 +123,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task Check_Border_Transparent_Null()
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_Non_Empty_Null_Border()
 		{
 			static Border CreateBorder(Color color)
 			{
