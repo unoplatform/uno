@@ -2,7 +2,7 @@
 
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	public partial interface ISupportIncrementalLoading
 	{

@@ -3,7 +3,7 @@
 using Windows.Graphics.Effects;
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class CompositionEffectBrush : CompositionBrush
 {

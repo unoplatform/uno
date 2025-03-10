@@ -3,11 +3,11 @@ using System;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using static Android.App.TimePickerDialog;
 using Windows.ApplicationModel.Core;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class NativeTimePickerFlyout
 {

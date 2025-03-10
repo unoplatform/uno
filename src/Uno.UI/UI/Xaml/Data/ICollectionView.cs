@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	public partial interface ICollectionView : IEnumerable<object>, IObservableVector<object>, IList<object>
 	{

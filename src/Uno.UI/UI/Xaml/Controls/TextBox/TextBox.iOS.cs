@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using Windows.System;
 using Uno.UI;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 using Foundation;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{

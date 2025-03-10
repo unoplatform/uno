@@ -2,9 +2,9 @@
 using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using ObjCRuntime;
 using Foundation;
 using UIKit;

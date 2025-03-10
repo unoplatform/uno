@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Controls;
+﻿namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data when the user enters custom text into the ComboBox.

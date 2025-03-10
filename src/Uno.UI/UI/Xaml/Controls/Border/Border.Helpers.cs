@@ -4,7 +4,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Border
 {

@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
 using Microsoft.Graph.Models;
 using System;
 

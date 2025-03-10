@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsStackPanel : Panel, IVirtualizingPanel, IInsertionPanel
 	{

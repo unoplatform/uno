@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using System.IO;
 using Uno.UI.Samples.Controls;
 using Windows.Media.Capture;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_Media;
 

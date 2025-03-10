@@ -6,16 +6,16 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TabViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class TabViewItemTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IconElement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Media.Geometry TabGeometry
+		public global::Windows.UI.Xaml.Media.Geometry TabGeometry
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Media.Geometry)this.GetValue(TabGeometryProperty);
+				return (global::Windows.UI.Xaml.Media.Geometry)this.GetValue(TabGeometryProperty);
 			}
 			set
 			{
@@ -26,11 +26,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IconElementProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TabGeometryProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TabGeometry), typeof(global::Microsoft.UI.Xaml.Media.Geometry),
+		public static global::Windows.UI.Xaml.DependencyProperty TabGeometryProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TabGeometry), typeof(global::Windows.UI.Xaml.Media.Geometry),
 			typeof(global::Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Geometry)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()

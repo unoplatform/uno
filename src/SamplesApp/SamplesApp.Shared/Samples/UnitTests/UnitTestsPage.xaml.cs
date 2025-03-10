@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Samples.UnitTests
 {

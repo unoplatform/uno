@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml
+﻿namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Specifies the interaction experiences for non-pointer

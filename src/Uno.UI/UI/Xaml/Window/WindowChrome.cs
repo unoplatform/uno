@@ -1,18 +1,18 @@
 ﻿#nullable enable
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal sealed partial class WindowChrome : ContentControl
 {
-	public WindowChrome(Microsoft.UI.Xaml.Window parent)
+	public WindowChrome(Windows.UI.Xaml.Window parent)
 	{
-		HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
-		VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
-		HorizontalContentAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
-		VerticalContentAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
+		HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
+		VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
+		HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
+		VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
 
 		IsTabStop = false;
 	}

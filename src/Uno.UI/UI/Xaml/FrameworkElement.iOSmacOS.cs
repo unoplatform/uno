@@ -17,7 +17,7 @@ using _View = AppKit.NSView;
 using ObjCRuntime;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

@@ -1,10 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarSeparator : Control, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement
 	{

@@ -77,20 +77,8 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForVisual(global::Windows.UI.Composition.Visual visual)
-		{
-			throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForVisual(Visual visual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreIndependentInputSourceController%20CoreIndependentInputSourceController.CreateForVisual%28Visual%20visual%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForIVisualElement(global::Windows.UI.Composition.IVisualElement visualElement)
-		{
-			throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForIVisualElement(IVisualElement visualElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreIndependentInputSourceController%20CoreIndependentInputSourceController.CreateForIVisualElement%28IVisualElement%20visualElement%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSourceController.CreateForVisual(Windows.UI.Composition.Visual)
+		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSourceController.CreateForIVisualElement(Windows.UI.Composition.IVisualElement)
 		// Processing: System.IDisposable
 	}
 }

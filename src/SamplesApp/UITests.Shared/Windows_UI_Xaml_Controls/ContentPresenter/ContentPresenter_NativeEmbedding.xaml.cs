@@ -1,5 +1,5 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using Windows.UI.Core;
 using Uno.UI.Samples.Controls;
 
@@ -27,7 +27,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 				{
 					if (this_.IsLoaded)
 					{
-						this_.Content = this_.FindFirstChild<Microsoft.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
+						this_.Content = this_.FindFirstChild<Windows.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
 					}
 					else
 					{
@@ -35,7 +35,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 						RoutedEventHandler onLoaded = null;
 						onLoaded = (_, _) =>
 						{
-							this_.Content = this_.FindFirstChild<Microsoft.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
+							this_.Content = this_.FindFirstChild<Windows.UI.Xaml.Controls.ContentPresenter>().CreateSampleComponent(text);
 							this_.Loaded -= onLoaded;
 						};
 

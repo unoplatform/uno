@@ -13,11 +13,11 @@ using System.Text;
 using Windows.Devices.Input;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
 
@@ -34,16 +34,16 @@ using Font = UIKit.UIFont;
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
+using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
 #else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
+using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{

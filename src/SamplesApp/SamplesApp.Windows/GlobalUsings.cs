@@ -1,4 +1,4 @@
-global using Microsoft.UI;
-global using Microsoft.UI.Text;
-global using Colors = Microsoft.UI.Colors;
-global using FontWeights = Microsoft.UI.Text.FontWeights;
+﻿global using Microsoft.UI;
+global using Windows.UI.Text;
+global using Colors = Windows.UI.Colors;
+global using FontWeights = Windows.UI.Text.FontWeights;

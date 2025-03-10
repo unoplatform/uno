@@ -5,7 +5,7 @@
 #nullable enable
 
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls
 {

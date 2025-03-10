@@ -1,6 +1,6 @@
-using System.Linq;
+﻿using System.Linq;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Control
 {

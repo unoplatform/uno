@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Defines constants that specify the preferred location for positioning a ToolTip relative to a visual element.
