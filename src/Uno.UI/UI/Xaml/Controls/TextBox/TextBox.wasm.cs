@@ -9,6 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
+		private EnterKeyHint? _enterKeyHint;
 
 		internal TextBoxView TextBoxView => _textBoxView;
 
@@ -53,6 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
+
+			ApplyEnterKeyHint();
 		}
 
 		partial void OnTappedPartial()
@@ -203,6 +206,30 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 		{
 			base.OnRightTapped(e);
+		}
+		
+		partial void OnEnterKeyHintChangedPartial(EnterKeyHint enterKeyHint)
+		{
+			_enterKeyHint = enterKeyHint;
+			ApplyEnterKeyHint();
+		}
+
+		private void ApplyEnterKeyHint()
+		{
+			if (_enterKeyHint is not { } enterKeyHint ||
+				TextBoxView is not { } textBoxView)
+			{
+				return;
+			}
+
+			var enterKeyHintValue = enterKeyHint switch
+			{
+				EnterKeyHint.Default => "",
+				_ when Enum.IsDefined(typeof(EnterKeyHint), enterKeyHint) => enterKeyHint.ToString().ToLowerInvariant(),
+				_ => throw new ArgumentOutOfRangeException($"Invalid value of EnterKeyHint ({enterKeyHint})"),
+			};
+
+			textBoxView.SetAttribute("enterkeyhint", enterKeyHintValue);
 		}
 	}
 }
