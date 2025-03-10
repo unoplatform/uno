@@ -25,6 +25,7 @@
 			<TextBox Header="WebLink" Text="{x:Bind ViewModel.WebLink, Mode=TwoWay}" />
 
 			<Button Command="{x:Bind ViewModel.ShowUICommand}" Content="Show share UI" />
+			<Button Command="{x:Bind ViewModel.ShowUIWithoutOptionsCommand}" Content="Show share UI without options" />
 		</StackPanel>
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>
