@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Uno.Extensions;
@@ -12,8 +13,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
-using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
