@@ -242,6 +242,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\MenuBarTests\MenuBarTestsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressRing\ProgressRingHeightTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5710,6 +5714,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PipsPagerTests\PipsPagerPage.xaml.cs">
       <DependentUpon>PipsPagerPage.xaml</DependentUpon>
     </Compile>
+      <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\MenuBarTests\MenuBarTestsPage.xaml.cs">
+          <DependentUpon>MenuBarTestsPage.xaml</DependentUpon>
+      </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\DoubleToThicknessConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ProgressBar\WinUIProgressBarSimple.xaml.cs">
       <DependentUpon>WinUIProgressBarSimple.xaml</DependentUpon>
