@@ -34,5 +34,14 @@ public class Given_xUid
 		var SUT = new When_xUid_On_Root();
 		Assert.AreEqual("en-US Value for When_xUid_Root.Title", SUT.Title);
 	}
+
+	[TestMethod]
+	public void When_xUid_Conflicts_With_AttachedProperty_Named_Uid()
+	{
+		var SUT = new When_xUid_Conflicts_With_AttachedProperty_Named_Uid();
+		Assert.AreEqual("en-US Value for When_xUid_Conflicts_With_AttachedProperty_Named_Uid", SUT.xUidTextBlock.Text);
+		var attachedPropertyUidValue = Uids.GetUid(SUT.attachedPropertyUidTextBlock);
+		Assert.AreEqual("AttachedPropertyUid", attachedPropertyUidValue);
+	}
 }
 #endif
