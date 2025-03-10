@@ -123,6 +123,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task Check_Border_Transparent_Null()
+		{
+			static Border CreateBorder(Color color)
+			{
+				return new Border()
+				{
+					Width = 40,
+					Height = 40,
+					Background = new SolidColorBrush(color),
+				};
+			}
+			var container = new StackPanel() { Spacing = 10 };
+			var transparentParent = CreateBorder(Colors.Green);
+			var transparentBorder = CreateBorder(Colors.Red);
+			transparentBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
+			transparentBorder.BorderThickness = new Thickness(4);
+			transparentParent.Child = transparentBorder;
+
+			var nullParent = CreateBorder(Colors.Green);
+			var nullBorder = CreateBorder(Colors.Red);
+			nullBorder.BorderBrush = null;
+			nullBorder.BorderThickness = new Thickness(4);
+			nullParent.Child = nullBorder;
+
+			var noParent = CreateBorder(Colors.Green);
+			var noBorder = CreateBorder(Colors.Red);
+			noBorder.BorderThickness = new Thickness(0);
+			noParent.Child = noBorder;
+
+			container.Children.Add(transparentParent);
+			container.Children.Add(nullParent);
+			container.Children.Add(noParent);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			// screenshot of nullBorder should be the same of transparentBorder
+			var transparentBorderScreenshot = await UITestHelper.ScreenShot(transparentParent);
+			var nullBorderScreenshot = await UITestHelper.ScreenShot(nullParent);
+			await ImageAssert.AreEqualAsync(transparentBorderScreenshot, nullBorderScreenshot);
+
+			// screenshot of noBorder should be different
+			var noBorderScreenshot = await UITestHelper.ScreenShot(noParent);
+			await ImageAssert.AreNotEqualAsync(nullBorderScreenshot, noBorderScreenshot);
+		}
+
+		[TestMethod]
 #if __ANDROID__
 		[Ignore("It doesn't yet work properly on Android")]
 #endif
