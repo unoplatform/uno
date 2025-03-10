@@ -5568,6 +5568,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\AnimatedIconTests\AnimatedIconPage.xaml.cs">
       <DependentUpon>AnimatedIconPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\AnimatedVisualPlayer\Checkmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\BreadcrumbTests\BreadcrumbBarPage.xaml.cs">
       <DependentUpon>BreadcrumbBarPage.xaml</DependentUpon>
     </Compile>
