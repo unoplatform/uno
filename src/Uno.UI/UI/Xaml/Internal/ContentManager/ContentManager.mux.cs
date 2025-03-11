@@ -1,4 +1,12 @@
-﻿namespace Uno.UI.Xaml.Controls;
+﻿using DirectUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Windows.UI;
+
+namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
@@ -7,68 +15,62 @@ partial class ContentManager
 		if (m_RootScrollViewer is null)
 		{
 			// nothing to do
-			goto Cleanup;
+			return;
 		}
 
-		if (m_tokRootScrollViewerSizeChanged.value)
+		if (m_tokRootScrollViewerSizeChanged.Disposable is not null)
 		{
 			// remove our SizeChanged event handler from the current RSV
-			ScrollViewer pScrollViewer = (ScrollViewer)(m_RootScrollViewer);
-			pScrollViewer.remove_SizeChanged(m_tokRootScrollViewerSizeChanged);
-			m_tokRootScrollViewerSizeChanged.value = 0;
+			m_tokRootScrollViewerSizeChanged.Disposable = null;
 		}
 
 		if (m_isUwpWindowContent)
 		{
 			// clear core's reference to the current RSV
-			CoreImports.Application_SetRootScrollViewer(DXamlCore.GetCurrent().GetHandle(), null /*pRootScrollViewer*/, null/*pRootScrollContentPresenter*/);
+			CoreImports.Application_SetRootScrollViewer(DXamlCore.Current.GetHandle(), null /*pRootScrollViewer*/, null/*pRootScrollContentPresenter*/);
 		}
 
 		m_owner.RemovePtrValue(m_RootScrollViewer);
-		m_RootScrollViewer.Clear();
+		m_RootScrollViewer = null;
 
-		if (m_RootSVContentPresenter)
+		if (m_RootSVContentPresenter is not null)
 		{
 			m_owner.RemovePtrValue(m_RootSVContentPresenter);
-			m_RootSVContentPresenter.Clear();
+			m_RootSVContentPresenter = null;
 		}
 	}
 
-	private void CreateRootScrollViewer(UIElement* pContent)
+	private void CreateRootScrollViewer(UIElement pContent)
 	{
-		wf.Rect windowBounds;
-		RootScrollViewer spRootScrollViewer;
 		ScrollContentPresenter spRootSVContentPresenter;
-		Border spRootBorder;
 		FrameworkElement spContentAsFE;
-		ISizeChangedEventHandler spRootScrollViewerSizeChangedHandler;
+		SizeChangedEventHandler spRootScrollViewerSizeChangedHandler;
 		SolidColorBrush spTransparentBrush;
-		wu.Color transparentColor;
-		UIElement* pRootScrollViewerNativePeerNoRef = null;
+		Color transparentColor;
 
-		IFCEXPECT_MUX_ASSERT(!m_RootScrollViewer);
-		IFCEXPECT_MUX_ASSERT(!m_RootSVContentPresenter);
+		MUX_ASSERT(m_RootScrollViewer is null);
+		MUX_ASSERT(m_RootSVContentPresenter is null);
 
-		DXamlCore.GetCurrent().GetContentBoundsForElement(m_owner.GetHandle(), &windowBounds);
+		var windowBounds = DXamlCore.Current.GetContentBoundsForElement(m_owner);
 
 		// Create a new ScrollViewer and set it as root
-		spRootScrollViewer = new();
+		RootScrollViewer spRootScrollViewer = new();
 
-		pRootScrollViewerNativePeerNoRef = (UIElement*)(spRootScrollViewer.GetHandle());
+		UIElement pRootScrollViewerNativePeerNoRef = spRootScrollViewer;
 
 		// Create the ScrollContentPresenter for the root ScrollViewer.
 		spRootSVContentPresenter = new();
 
 		// Create the root border to ensure the content position under ScrollViewer.
 		// Without the border, the content can be compressed by changing the ScrollViewer height.
-		spRootBorder = new();
+		Border spRootBorder = new();
 
 		// Set appropriate properties of the RSV
-		spRootScrollViewer.ZoomMode = (ZoomMode_Disabled);
-		spRootScrollViewer.VerticalScrollMode = (ScrollMode_Disabled);
-		spRootScrollViewer.HorizontalScrollMode = (ScrollMode_Disabled);
-		spRootScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility_Hidden;
-		spRootScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility_Hidden;
+		spRootScrollViewer.ZoomMode = ZoomMode.Disabled;
+		spRootScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+		spRootScrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+		spRootScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+		spRootScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
 		spRootScrollViewer.IsTabStop = true;
 
 		if (SUCCEEDED(ctl.do_query_interface(spContentAsFE, pContent)))
@@ -76,19 +78,15 @@ partial class ContentManager
 			// Specify the root ScrollViewer and Border width/height with Windows size.
 			spRootScrollViewer.Height = windowBounds.Height;
 			spRootScrollViewer.Width = windowBounds.Width;
-			spRootScrollViewer.HorizontalContentAlignment = HorizontalAlignment_Left;
-			spRootScrollViewer.VerticalContentAlignment = VerticalAlignment_Top;
+			spRootScrollViewer.HorizontalContentAlignment = HorizontalAlignment.Left;
+			spRootScrollViewer.VerticalContentAlignment = VerticalAlignment.Top;
 
 			var runtimeEnabledFeatureDetector = RuntimeFeatureBehavior.GetRuntimeEnabledFeatureDetector();
 			if (!runtimeEnabledFeatureDetector.IsFeatureEnabled(RuntimeFeatureBehavior.RuntimeEnabledFeature.DoNotSetRootScrollViewerBackground))
 			{
 				// Create the transparent brush to set it on the Border as the background property.
-				spTransparentBrush = new();
-				transparentColor.A = 0;
-				transparentColor.R = 255;
-				transparentColor.G = 255;
-				transparentColor.B = 255;
-				spTransparentBrush.Color = transparentColor;
+				transparentColor = Color.FromArgb(0, 255, 255, 255);
+				spTransparentBrush = new() { Color = transparentColor };
 				spRootBorder.Background = spTransparentBrush;
 			}
 
@@ -104,15 +102,11 @@ partial class ContentManager
 		spRootScrollViewer.SetRootScrollContentPresenter(spRootSVContentPresenter);
 
 		// Set the content of root ScrollViewer
-		spRootScrollViewer.Content = ctl.as_iinspectable(spRootBorder);
+		spRootScrollViewer.Content = spRootBorder;
 
 		// Attach the RootVisual size changed event handler
-		spRootScrollViewerSizeChangedHandler.Attach(
-			new StaticMemberEventHandler<
-				ISizeChangedEventHandler,
-				object,
-				ISizeChangedEventArgs>(&ContentManager.OnRootScrollViewerSizeChanged));
-		spRootScrollViewer.add_SizeChanged(spRootScrollViewerSizeChangedHandler, &m_tokRootScrollViewerSizeChanged);
+		spRootScrollViewer.SizeChanged += OnRootScrollViewerSizeChanged;
+		m_tokRootScrollViewerSizeChanged.Disposable = Disposable.Create(() => spRootScrollViewer.SizeChanged -= OnRootScrollViewerSizeChanged);
 
 		// Root SV will apply the template to bind the content with page content when the root SV is entered in the tree.
 		// This is for firing the loaded event on the right time stead of delaying with Measure happening.
@@ -142,24 +136,22 @@ partial class ContentManager
 			// UnpegNoRef is necessary because we did a CreateInstance and didn't add the ScrollContentPresenter to the tree.
 			spRootSVContentPresenter.UnpegNoRef();
 		}
-
-		RRETURN(hr);
 	}
 
 	private void OnWindowSizeChanged()
 	{
 
-		var pCore = DXamlCore.GetCurrent();
-		if (!pCore)
+		var pCore = DXamlCore.Current;
+		if (pCore is null)
 		{
 			// The XamlCore is gone.
 			// This can happen at shutdown when multiple CoreWindows are active in a single process.
-			return S_OK;
+			return;
 		}
 
-		wf.Rect windowBounds = default;
+		Rect windowBounds = default;
 		FrameworkElement spRootScrollViewerAsFE;
-		IContentControl spRootScrollViewerAsCC;
+		ContentControl spRootScrollViewerAsCC;
 		UIElement spRootScrollViewerAsUE;
 
 		// Note that when calling get_Bounds in the scope of a window size changed event,
@@ -167,14 +159,14 @@ partial class ContentManager
 		pCore.GetContentBoundsForElement(m_owner.GetHandle(), &windowBounds);
 
 		spRootScrollViewerAsFE = m_RootScrollViewer.AsOrNull<FrameworkElement>();
-		if (spRootScrollViewerAsFE)
+		if (spRootScrollViewerAsFE is not null)
 		{
 			spRootScrollViewerAsFE.Height = windowBounds.Height;
 			spRootScrollViewerAsFE.Width = windowBounds.Width;
 		}
 
 		spRootScrollViewerAsCC = m_RootScrollViewer.AsOrNull<IContentControl>();
-		if (spRootScrollViewerAsCC)
+		if (spRootScrollViewerAsCC is not null)
 		{
 			object spContent;
 			IBorder spRootBorder;
@@ -204,23 +196,17 @@ partial class ContentManager
 				true /* window size changed */));
 			CoreImports.ScrollContentControl_SetRootScrollViewerOriginalHeight((CScrollContentControl*)(pRootScrollViewerNativePeerNoRef), windowBounds.Height);
 		}
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
 	private void OnRootScrollViewerSizeChanged(
 		 object pSender,
-		 ISizeChangedEventArgs* pArgs)
+		 SizeChangedEventArgs pArgs)
 	{
-
-		UIElement spRootScrollViewerAsUE;
-
-		if (SUCCEEDED(ctl.do_query_interface(spRootScrollViewerAsUE, pSender)))
+		if (pSender is UIElement spRootScrollViewerAsUE)
 		{
 			bool bIsProcessWindowSizeChanged = false;
 
-			UIElement* pRootScrollViewerNativePeerNoRef = (UIElement*)(spRootScrollViewerAsUE.Cast<DirectUI.UIElement>().GetHandle());
+			UIElement pRootScrollViewerNativePeerNoRef = spRootScrollViewerAsUE;
 
 			(CoreImports.ScrollContentControl_GetRootScrollViewerSetting(
 					(CScrollContentControl*)(pRootScrollViewerNativePeerNoRef),
