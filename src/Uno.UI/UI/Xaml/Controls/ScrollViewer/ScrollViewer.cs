@@ -607,7 +607,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// This is a temporary workaround until the NativeSCP knows its managed SCP and will most probably been removed in a near .
 		/// Try to avoid usage of this property as much as possible!
 		/// </remarks>
-		internal ScrollContentPresenter? Presenter { get; private set; }
+		internal ScrollContentPresenter? Presenter { get; set; }
 
 		/// <summary>
 		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last measure
