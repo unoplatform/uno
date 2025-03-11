@@ -97,6 +97,11 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 		EGL14.EglSwapBuffers(_eglDisplay, _eglWindowSurface);
 	}
 
+	public override bool OnCheckIsTextEditor()
+
+		// Required for the InputConnection to be created
+		=> true;
+
 	protected override bool DispatchHoverEvent(MotionEvent? e)
 	{
 		if (e is null)
@@ -134,7 +139,7 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 			return;
 		}
 
-		TextInputPlugin.OnProvideAutofillVirtualStructure(structure);
+		TextInputPlugin?.OnProvideAutofillVirtualStructure(structure);
 	}
 
 	public override void Autofill(SparseArray values)
@@ -152,10 +157,7 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 	}
 
 	public override IInputConnection? OnCreateInputConnection(EditorInfo? outAttrs)
-	{
-		TextInputPlugin.OnCreateInputConnection(outAttrs!);
-		return base.OnCreateInputConnection(outAttrs);
-	}
+		=> TextInputPlugin.OnCreateInputConnection(outAttrs!);
 
 	void ISurfaceHolderCallback.SurfaceCreated(ISurfaceHolder holder)
 	{
