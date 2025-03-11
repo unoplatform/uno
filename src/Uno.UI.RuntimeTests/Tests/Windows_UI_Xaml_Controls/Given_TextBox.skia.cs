@@ -4237,6 +4237,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
 		}
 
+		[TestMethod]
+		public async Task When_MaxLine_Paste()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				MaxLength = 10,
+				Text = "0123456789",
+				SelectionStart = 4,
+				SelectionLength = 2
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "abcdefgh";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("0123ab6789", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
