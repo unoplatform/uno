@@ -432,7 +432,9 @@ internal partial class InputManager
 				return;
 			}
 
-			var (originalSource, _) = HitTest(args);
+			var hasCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out _);
+			var stalePredicate = hasCapture && (PointerDeviceType)args.CurrentPoint.Pointer.Type is not PointerDeviceType.Touch ? _isOver : default(StalePredicate?); // If captured, we will have to raise enter/leave after the released event
+			var (originalSource, staleBranch) = HitTest(args, stalePredicate);
 
 			var isOutOfWindow = originalSource is null;
 
@@ -471,12 +473,19 @@ internal partial class InputManager
 				SetSourceCursor(originalSource);
 			}
 
-			if ((PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
-			{
-				Raise(Leave, originalSource, routedArgs);
-			}
-
 			ClearPressedState(routedArgs);
+
+			switch ((PointerDeviceType)args.CurrentPoint.Pointer.Type)
+			{
+				case PointerDeviceType.Touch:
+					result += Raise(Leave, originalSource, routedArgs);
+					break;
+
+				case PointerDeviceType.Mouse:
+				case PointerDeviceType.Pen when args.CurrentPoint.Properties.IsInRange:
+					result += RaiseEnterLeave(staleBranch, ref originalSource, args, routedArgs);
+					break;
+			}
 
 			args.DispatchResult = result;
 		}
@@ -488,7 +497,9 @@ internal partial class InputManager
 				return;
 			}
 
-			var (originalSource, staleBranch) = HitTest(args, _isOver);
+			var hasCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out _);
+			var stalePredicate = hasCapture ? default(StalePredicate?) : _isOver; // If captured, we don't have to raise enter/leave
+			var (originalSource, staleBranch) = HitTest(args, stalePredicate);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
@@ -512,30 +523,14 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 			var result = default(PointerEventDispatchResult);
 
-			// First raise the PointerExited events on the stale branch
-			if (staleBranch.HasValue)
+			// If the pointer is captured, we do not want to raise the enter event. If needed events will be raised in OnPointerReleased (after having released the captures).
+			if (!hasCapture)
 			{
-				var leaveResult = Raise(Leave, staleBranch.Value, routedArgs);
-				result += leaveResult;
-				if (leaveResult is { VisualTreeAltered: true })
-				{
-					// The visual tree has been modified in a way that requires performing a new hit test.
-					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
-				}
-			}
-
-			// Second (try to) raise the PointerEnter on the OriginalSource
-			// Note: This won't do anything if already over.
-			var enterResult = Raise(Enter, originalSource, routedArgs);
-			result += enterResult;
-			if (enterResult is { VisualTreeAltered: true })
-			{
-				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+				result += RaiseEnterLeave(staleBranch, ref originalSource, args, routedArgs);
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
+			result += RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
 
 			args.DispatchResult = result;
 		}
@@ -638,6 +633,36 @@ internal partial class InputManager
 				var ctx = new BubblingContext { IsInternal = true, IsCleanup = true };
 				pressedLeaf.OnPointerUp(routedArgs, ctx);
 			}
+		}
+
+		private PointerEventDispatchResult RaiseEnterLeave(VisualTreeHelper.Branch? staleBranch, ref UIElement originalSource, Windows.UI.Core.PointerEventArgs args, PointerRoutedEventArgs routedArgs)
+		{
+			var result = default(PointerEventDispatchResult);
+
+			// First raise the PointerExited events on the stale branch
+			if (staleBranch.HasValue)
+			{
+				var leaveResult = Raise(Leave, staleBranch.Value, routedArgs);
+				result += leaveResult;
+				if (leaveResult is { VisualTreeAltered: true })
+				{
+					// The visual tree has been modified in a way that requires performing a new hit test.
+					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+				}
+			}
+
+			// Second (try to) raise the PointerEnter on the OriginalSource
+			// Note: This won't do anything if already over.
+			var enterResult = Raise(Enter, originalSource, routedArgs);
+			result += enterResult;
+
+			if (enterResult is { VisualTreeAltered: true })
+			{
+				// The visual tree has been modified in a way that requires performing a new hit test.
+				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			}
+
+			return result;
 		}
 
 		#region Helpers

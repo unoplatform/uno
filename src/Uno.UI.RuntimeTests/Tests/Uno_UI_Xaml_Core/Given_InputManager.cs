@@ -132,6 +132,49 @@ public class Given_InputManager
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	public async Task When_LeaveElementWithCapture_Then_NoPointerLeave()
+	{
+		Border sut;
+		var ui = new Grid
+		{
+			Width = 128,
+			Height = 128,
+			Children =
+			{
+				(sut = new Border
+				{
+					Name = "SUT-Border",
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Width = 32,
+					Height = 32,
+					Background = new SolidColorBrush(Colors.DeepPink),
+				}),
+			}
+		};
+
+		await UITestHelper.Load(ui);
+
+		sut.PointerPressed += (snd, e) => sut.CapturePointer(e.Pointer);
+
+		var exited = false;
+		sut.PointerExited += (snd, e) => exited = true;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetMouse();
+
+		finger.Press(sut.GetAbsoluteBounds().GetCenter());
+		finger.MoveBy(0, 64);
+		exited.Should().BeFalse();
+
+		finger.Release();
+		exited.Should().BeTrue("pointer exited event should raised when the capture is lost.");
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Hover_No_Delay_For_VisualState_Update()
 	{
 		var comboxBoxItem = new ComboBoxItem()
