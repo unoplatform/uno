@@ -19,8 +19,7 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 
 #if __IOS__
-using SkiaCanvas = SkiaSharp.Views.iOS.SKMetalView;
-using SkiaEventArgs = SkiaSharp.Views.iOS.SKPaintMetalSurfaceEventArgs;
+using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 #else
 using SkiaSharp.Views.tvOS;
 using SkiaCanvas = SkiaSharp.Views.tvOS.SKCanvasView;
@@ -71,13 +70,16 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		_textInputLayer = new UIView();
 		_skCanvasView = new SkiaCanvas();
 #if !__TVOS__
+		_skCanvasView.SetOwner(this);
 		_skCanvasView.Paused = false;
 		_skCanvasView.EnableSetNeedsDisplay = false;
 		_skCanvasView.FramebufferOnly = false;
 #endif
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
+#if __TVOS__
 		_skCanvasView.PaintSurface += OnPaintSurface;
+#endif
 		View!.AddSubview(_textInputLayer);
 		View!.AddSubview(_skCanvasView);
 
@@ -110,13 +112,23 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
+#if __TVOS__
 	private void OnPaintSurface(object? sender, SkiaEventArgs e)
+	{
+		var surface = e.Surface;
+
+		OnPaintSurfaceInner(surface, surface.Canvas);
+	}
+#endif
+
+	internal void OnPaintSurfaceInner(SKSurface surface, SKCanvas canvas)
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
-			var surface = e.Surface;
-			surface.Canvas.Clear(SKColors.Transparent);
-			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
+			canvas.Clear(SKColors.Transparent);
+
+			canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
+
 			if (rootElement.Visual is { } rootVisual)
 			{
 				int width = (int)View!.Frame.Width;
