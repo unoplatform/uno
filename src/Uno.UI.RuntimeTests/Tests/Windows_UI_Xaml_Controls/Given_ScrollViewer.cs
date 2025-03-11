@@ -1433,5 +1433,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(200, SUT.ScrollableHeight);
 
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ContentHasNoBackground_Then_StillTouchScrollable()
+		{
+			var sut = new ScrollViewer()
+			{
+				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous, // Make sure the VerticalOffset is being updated without any delay
+				Width = 100,
+				Height = 100,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+				HorizontalScrollMode = ScrollMode.Auto,
+				VerticalScrollMode = ScrollMode.Auto,
+				Content = new Grid()
+				{
+					Background = null,
+					Width = 100,
+					Height = 200
+				}
+			};
+
+			await UITestHelper.Load(sut);
+
+			Assert.AreEqual(0, sut.VerticalOffset);
+
+			// Scroll using touch
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(sut.GetAbsoluteBounds().GetCenter());
+			finger.MoveBy(0, -50, steps: 50);
+			finger.Release();
+
+			Assert.AreNotEqual(0, sut.VerticalOffset);
+		}
 	}
 }
