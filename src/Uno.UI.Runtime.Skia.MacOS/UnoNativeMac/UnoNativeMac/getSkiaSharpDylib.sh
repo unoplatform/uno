@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=${VERSION:-2.88.7}
+VERSION=${VERSION:-3.119.0-preview.0.11}
 
 filename="skiasharp_"${VERSION}"_nativeassets"
 if [ ! -f "${filename}"/runtimes/osx/native/libSkiaSharp.dylib ]; then
