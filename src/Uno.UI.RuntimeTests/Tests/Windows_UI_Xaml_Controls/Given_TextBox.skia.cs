@@ -3737,6 +3737,150 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
 		}
 
+<<<<<<< HEAD
+=======
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		public async Task When_PasswordBox_Focus_Changes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var stackPanel = new StackPanel()
+			{
+				Padding = new Thickness(10),
+				Spacing = 8
+			};
+			var button = new Button()
+			{
+				Content = "Focus"
+			};
+			var passwordBox = new PasswordBox
+			{
+				IsPasswordRevealButtonEnabled = false,
+				Width = 150
+			};
+
+			stackPanel.Children.Add(passwordBox);
+			stackPanel.Children.Add(button);
+
+			await UITestHelper.Load(stackPanel);
+
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			var screenshotEmpty = await UITestHelper.ScreenShot(passwordBox);
+
+			passwordBox.Password = "1234567890";
+			await WindowHelper.WaitForIdle();
+
+			var screenshotFilled = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreNotEqualAsync(screenshotEmpty, screenshotFilled);
+
+			button.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			var screenshotRefocused = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreEqualAsync(screenshotRefocused, screenshotFilled);
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		public async Task When_TextBox_Touch_Tapped_At_End()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
+		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
+		{
+			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "longer text",
+				TextWrapping = TextWrapping.Wrap,
+				AcceptsReturn = true
+			};
+
+			SUT.KeyUp += (_, e) =>
+			{
+				SUT.Text = "shorter";
+				e.Handled = true;
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.RaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+		}
+
+		[TestMethod]
+		public async Task When_MaxLine_Paste()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				MaxLength = 10,
+				Text = "0123456789",
+				SelectionStart = 4,
+				SelectionLength = 2
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "abcdefgh";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("0123ab6789", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+>>>>>>> 1d80eed04e (test: add When_MaxLine_Paste)
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
