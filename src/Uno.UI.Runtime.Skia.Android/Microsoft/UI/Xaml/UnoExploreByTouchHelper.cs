@@ -177,7 +177,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
 
-			var peer = uiElement.GetOrCreateAutomationPeer()!;
+			var peer = uiElement.GetOrCreateAutomationPeer();
+
+			if (peer is null)
+			{
+				// No automation peer available for this element.
+				return;
+			}
+
 			// TODO: Scrolling?
 
 			var isClickable = peer is IInvokeProvider or IToggleProvider or ISelectionItemProvider;
