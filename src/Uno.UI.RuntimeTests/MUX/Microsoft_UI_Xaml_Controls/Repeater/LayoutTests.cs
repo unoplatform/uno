@@ -386,7 +386,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Verify.IsTrue(true);
 		}
 
+#if HAS_UNO_WINUI
 		[TestMethod]
+#endif
 		public async Task VerifyUniformGridLayoutDoesntHangWhenTryingToScrollToStart()
 		{
 			ItemsRepeater itemsRepeater = null;
