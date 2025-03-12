@@ -69,41 +69,41 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			_strategy.Initialize(this);
-
-			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
 		}
 
 		private void HookScrollEvents(ScrollViewer sv)
 		{
 			UnhookScrollEvents(sv);
 
+			sv.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+
 			// Note: the way WinUI does scrolling is very different, and doesn't use
-			// PointerWheelChanged changes, etc.
-			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
-			// the way hit-testing works (see #16201), the SCP will not receive any pointer
-			// events. On WinUI, this is also the case: pointer presses are received on the SV,
-			// not on the SCP.
+			//		PointerWheelChanged changes, etc.
+			// Note 2: We subscribe on the ScrollViewer so no matter if the content of the SCP is hit-testable or not
+			//		as the root Grid of the SV is hit-testable, we get the events.
+			//		On WinUI, this is also the case: pointer presses are received on the SV, not on the SCP.
+			// Note 2: All of those should probably be moved to the SV directly!
 
 			// Mouse wheel support
 			sv.PointerWheelChanged += PointerWheelScroll;
 
 			// Touch scroll support
 			// Note: Events are hooked on the SCP itself, not the ScrollViewer
-			ManipulationStarting += PrepareTouchScroll;
-			ManipulationStarted += StartTouchScroll;
-			ManipulationDelta += UpdateTouchScroll;
-			ManipulationInertiaStarting += StartInertialTouchScroll;
-			ManipulationCompleted += CompleteTouchScroll;
+			sv.ManipulationStarting += PrepareTouchScroll;
+			sv.ManipulationStarted += StartTouchScroll;
+			sv.ManipulationDelta += UpdateTouchScroll;
+			sv.ManipulationInertiaStarting += StartInertialTouchScroll;
+			sv.ManipulationCompleted += CompleteTouchScroll;
 
 			_eventSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				sv.PointerWheelChanged -= PointerWheelScroll;
 
-				ManipulationStarting -= PrepareTouchScroll;
-				ManipulationStarted -= StartTouchScroll;
-				ManipulationDelta -= UpdateTouchScroll;
-				ManipulationInertiaStarting -= StartInertialTouchScroll;
-				ManipulationCompleted -= CompleteTouchScroll;
+				sv.ManipulationStarting -= PrepareTouchScroll;
+				sv.ManipulationStarted -= StartTouchScroll;
+				sv.ManipulationDelta -= UpdateTouchScroll;
+				sv.ManipulationInertiaStarting -= StartInertialTouchScroll;
+				sv.ManipulationCompleted -= CompleteTouchScroll;
 			});
 		}
 
@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
 		{
-			if (e.Container != this)
+			if (e.Container != Scroller)
 			{
 				// This gesture is coming from a nested element, we just ignore it!
 				return;
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void StartTouchScroll(object sender, ManipulationStartedRoutedEventArgs e)
 		{
-			if (e.Container != this)
+			if (e.Container != Scroller)
 			{
 				// This gesture is coming from a nested element, we just ignore it!
 				return;
@@ -266,13 +266,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (e.PointerDeviceType == _PointerDeviceType.Touch)
 			{
 				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
-				this.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
+				Scroller.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 			}
 		}
 
 		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
 		{
-			if (e.Container != this) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
+			if (e.Container != Scroller) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
 			{
 				// This gesture is coming from a nested element, we just ignore it!
 				return;
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void StartInertialTouchScroll(object sender, ManipulationInertiaStartingRoutedEventArgs e)
 		{
-			if (e.Container != this)
+			if (e.Container != Scroller)
 			{
 				return;
 			}
@@ -332,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
-			if (e.Container != this || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
+			if (e.Container != Scroller || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
 			}
@@ -354,7 +354,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// If inertial the pointer as already been captured, and the LastPointerEvent can now be a new one!
 				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
-				this.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
+				Scroller.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
 			}
 		}
 
