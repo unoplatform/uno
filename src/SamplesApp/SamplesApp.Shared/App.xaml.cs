@@ -310,7 +310,6 @@ namespace SamplesApp
 #endif
 			_mainWindow!.Activate();
 			_wasActivated = true;
-			_isSuspended = false;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
 
