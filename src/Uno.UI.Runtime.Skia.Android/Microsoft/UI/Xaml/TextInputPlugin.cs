@@ -239,7 +239,7 @@ internal sealed class TextInputPlugin
 
 			_endingBatch = false;
 
-			return true;
+			return false;
 		}
 
 		public override bool SetSelection(int start, int end)
