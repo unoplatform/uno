@@ -1434,6 +1434,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
+#if HAS_UNO // ScrollViewerUpdatesMode is Uno-specific
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
@@ -1470,5 +1471,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreNotEqual(0, sut.VerticalOffset);
 		}
+#endif
 	}
 }
