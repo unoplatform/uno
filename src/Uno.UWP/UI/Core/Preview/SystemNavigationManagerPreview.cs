@@ -1,5 +1,4 @@
-﻿#if __SKIA__
-using System;
+﻿using System;
 
 namespace Windows.UI.Core.Preview;
 
@@ -52,4 +51,3 @@ public partial class SystemNavigationManagerPreview
 
 	partial void CloseApp();
 }
-#endif
