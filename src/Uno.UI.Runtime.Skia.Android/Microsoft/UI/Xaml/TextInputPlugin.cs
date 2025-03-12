@@ -233,7 +233,7 @@ internal sealed class TextInputPlugin
 
 			if (ActiveTextBox is not null)
 			{
-				ActiveTextBox.Text = Editable?.ToString() ?? string.Empty;
+				ActiveTextBox.ProcessTextInput(Editable?.ToString() ?? string.Empty);
 				ActiveTextBox.Select(selectionStart, selectionEnd - selectionStart);
 			}
 
