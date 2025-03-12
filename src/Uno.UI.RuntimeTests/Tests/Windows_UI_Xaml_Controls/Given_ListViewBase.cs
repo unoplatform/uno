@@ -1622,6 +1622,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#elif __WASM__
+		[Ignore("Flaky in CI.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
 		{

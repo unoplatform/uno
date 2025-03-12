@@ -447,14 +447,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_GetFile_File_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await rootFolder.GetFileAsync("a.txt"));
+			await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await rootFolder.GetFileAsync("a.txt"));
 		}
 
 		[TestMethod]
 		public async Task When_GetFolder_Folder_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await rootFolder.GetFolderAsync("a"));
+			await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await rootFolder.GetFolderAsync("a"));
 		}
 
 		[TestMethod]
@@ -466,7 +466,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			try
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(fileName);
-				await Assert.ThrowsExceptionAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFileAsync(fileName));
+				await Assert.ThrowsExactlyAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFileAsync(fileName));
 			}
 			finally
 			{
@@ -484,7 +484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			try
 			{
 				createdFile = await rootFolder.CreateFileAsync(folderName);
-				await Assert.ThrowsExceptionAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFolderAsync(folderName));
+				await Assert.ThrowsExactlyAsync<UnmatchedItemTypeException>(async () => await rootFolder.GetFolderAsync(folderName));
 			}
 			finally
 			{
@@ -535,14 +535,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		public async Task When_GetItem_File_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await rootFolder.GetItemAsync("a.txt"));
+			await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await rootFolder.GetItemAsync("a.txt"));
 		}
 
 		[TestMethod]
 		public async Task When_GetItem_Folder_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
-			await Assert.ThrowsExceptionAsync<FileNotFoundException>(async () => await rootFolder.GetItemAsync("a"));
+			await Assert.ThrowsExactlyAsync<FileNotFoundException>(async () => await rootFolder.GetItemAsync("a"));
 		}
 
 		[TestMethod]

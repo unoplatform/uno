@@ -46,10 +46,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(SUT);
 
+			var expectedGlyph = SymbolIcon.ConvertSymbolValueToGlyph((int)Symbol.Home);
+
 #if __SKIA__ || __WASM__
-			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
+			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == expectedGlyph);
 #else
-			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == (char)Symbol.Home);
+			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == expectedGlyph);
 #endif
 
 			Assert.AreEqual(12, tb.FontSize);
@@ -1165,6 +1167,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+		}
+#endif
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		public async Task When_Popup_Above_AutoSuggestBox_And_SuggestionsList_changes()
+		{
+			var SUT = new AutoSuggestBox()
+			{
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+			var suggestions = new List<string> { "ab1", "ab2", "ac" };
+			SUT.ItemsSource = suggestions;
+
+			SUT.TextChanged += (sender, args) =>
+			{
+				if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					var filteredSuggestions =
+						suggestions.Where(s => s.StartsWith(sender.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+					sender.ItemsSource = filteredSuggestions;
+				}
+			};
+
+			WindowHelper.WindowContent = new Border()
+			{
+				Height = WindowHelper.XamlRoot.Content.ActualSize.Y - 100,
+				Child = SUT
+			};
+			await WindowHelper.WaitForIdle();
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			textBox.ProcessTextInput("a");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0];
+			var oldPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
+
+			textBox.ProcessTextInput("ab");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			var newPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
+
+			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
 #endif
 	}

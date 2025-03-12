@@ -782,7 +782,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TrySetDataContextFromContent(newValue);
+		// We need to overrides the local value of DataContext with Content's value here.
+		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
+		// Then we can't do so, because updating the DC will cause the binding to evaluate again, and yield invalid value.
+		if (GetBindingExpression(ContentProperty) is not { } expression ||
+			expression.IsExplicitlySourced ||
+			expression.ParentBinding.IsTemplateBinding)
+		{
+			TrySetDataContextFromContent(newValue);
+		}
 
 		TryRegisterNativeElement(oldValue, newValue);
 
@@ -983,7 +991,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// the DataContext to null (or the inherited value) and then back to
 			// the content and have two-way bindings propagating the null value
 			// back to the source.
-			if (!ReferenceEquals(DataContext, Content))
+			if (!ReferenceEquals(DataContext, Content) &&
+				this.GetCurrentHighestValuePrecedence(DataContextProperty) != DependencyPropertyValuePrecedences.Inheritance)
 			{
 				// On first load UWP clears the local value of a ContentPresenter.
 				// The reason for this behavior is unknown.
@@ -1088,50 +1097,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		ContentTemplateRoot = textBlock;
 		IsUsingDefaultTemplate = true;
-	}
-
-	private bool _isBoundImplicitlyToContent;
-
-	private void SetImplicitContent()
-	{
-		if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-		{
-			return;
-		}
-
-		if (GetTemplatedParent() is not ContentControl)
-		{
-			ClearImplicitBindings();
-			return; // Not applicable: no TemplatedParent or it's not a ContentControl
-		}
-
-		// Check if the Content is set to something
-		var store = ((IDependencyObjectStoreProvider)this).Store;
-		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
-		{
-			ClearImplicitBindings();
-			return; // Nope, there's a value somewhere
-		}
-
-		// Check if the Content property is bound to something
-		var b = GetBindingExpression(ContentProperty);
-		if (b != null)
-		{
-			ClearImplicitBindings();
-			return; // Yep, there's a binding: a value "will" come eventually
-		}
-
-		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
-		_isBoundImplicitlyToContent = true;
-
-		void ClearImplicitBindings()
-		{
-			if (_isBoundImplicitlyToContent)
-			{
-				SetBinding(ContentProperty, new Binding());
-			}
-		}
 	}
 
 	partial void RegisterContentTemplateRoot();

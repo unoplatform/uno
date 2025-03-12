@@ -102,6 +102,7 @@ namespace Uno.UWPSyncGenerator
 				Directory.CreateDirectory(Path.Combine(DocPath, ImplementedPath));
 
 				var tocSB = new StringBuilder();
+				var entries = new Dictionary<string, string>();
 
 				foreach (var group in _viewsGrouped)
 				{
@@ -251,10 +252,16 @@ namespace Uno.UWPSyncGenerator
 							fileWriter.Write(_sb.ToString());
 						}
 
-						// Build TOC in implemented folder
-						tocSB.AppendLineInvariant($"- name: {viewName}");
-						tocSB.AppendLineInvariant($"  href: ../{GetImplementedMembersFilename(view.UAPSymbol)}");
+						// Collect entries before sorting
+						entries.Add(viewName, GetImplementedMembersFilename(view.UAPSymbol));
 					}
+				}
+
+				// Build TOC ordered by name in implemented folder
+				foreach (var kvp in entries.OrderBy(x => x.Key))
+				{
+					tocSB.AppendLineInvariant($"- name: {kvp.Key}");
+					tocSB.AppendLineInvariant($"  href: ../{kvp.Value}");
 				}
 
 #if DEBUG
@@ -294,7 +301,7 @@ namespace Uno.UWPSyncGenerator
 							.ToList();
 						_sb.AppendCells(cells);
 					}
-				};
+				}
 			}
 		}
 

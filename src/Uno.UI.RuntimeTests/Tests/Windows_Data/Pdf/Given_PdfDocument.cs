@@ -121,31 +121,33 @@ public class Given_PdfDocument
 	}
 
 	[TestMethod]
-#if XAMARIN_ANDROID
-	[ExpectedException(typeof(NotImplementedException))]
-#endif
 	public async Task When_LoadFromStreamAsync_With_Valid_Password()
 	{
 		var stream = GetSreamFromResource(PdfDocument_Name_Protected)?.AsRandomAccessStream();
 		Assert.IsNotNull(stream, "Not valid stream");
 
-		PdfDocument? pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
+#if __ANDROID__
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
+#else
+		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
+#endif
 	}
 
 	[TestMethod]
-#if XAMARIN_ANDROID
-	[ExpectedException(typeof(NotImplementedException))]
-#elif !HAS_UNO
-	[ExpectedException(typeof(Exception))]
-#endif
 	public async Task When_LoadFromStreamAsync_With_Wrong_Password()
 	{
 		var stream = GetSreamFromResource(PdfDocument_Name_Protected)?.AsRandomAccessStream();
 		Assert.IsNotNull(stream, "Not valid stream");
 
-		PdfDocument? pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid);
+#if __ANDROID__
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
+#elif !HAS_UNO
+		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
+#else
+		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
+#endif
 	}
 
 
@@ -166,9 +168,6 @@ public class Given_PdfDocument
 	}
 
 	[TestMethod]
-#if XAMARIN_ANDROID
-	[ExpectedException(typeof(NotImplementedException))]
-#endif
 	public async Task When_LoadFromFileAsync_Valid_Password()
 	{
 		var testFolderName = Guid.NewGuid().ToString();
@@ -180,16 +179,16 @@ public class Given_PdfDocument
 			Assert.IsNotNull(source);
 			await source.CopyToAsync(ws);
 		}
+
+#if __ANDROID__
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
+#else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
+#endif
 	}
 
 	[TestMethod]
-#if XAMARIN_ANDROID
-	[ExpectedException(typeof(NotImplementedException))]
-#elif !HAS_UNO
-	[ExpectedException(typeof(Exception))]
-#endif
 	public async Task When_LoadFromFileAsync_Wrong_Password()
 	{
 		var testFolderName = Guid.NewGuid().ToString();
@@ -201,8 +200,15 @@ public class Given_PdfDocument
 			Assert.IsNotNull(source);
 			await source.CopyToAsync(ws);
 		}
+
+#if __ANDROID__
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
+#elif !HAS_UNO
+		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
+#else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
+#endif
 	}
 
 	[TestMethod]

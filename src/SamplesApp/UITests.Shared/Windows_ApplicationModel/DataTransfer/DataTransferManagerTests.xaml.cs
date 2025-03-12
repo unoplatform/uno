@@ -2,13 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-using Private.Infrastructure;
 
 namespace UITests.Windows_ApplicationModel.DataTransfer
 {
@@ -56,6 +55,8 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 		public ObservableCollection<string> EventLog { get; } = new ObservableCollection<string>();
 
 		public ICommand ShowUICommand => GetOrCreateCommand(ShowUI);
+
+		public ICommand ShowUIWithoutOptionsCommand => GetOrCreateCommand(ShowUIWithoutOptions);
 
 		public ICommand ClearEventLogCommand => GetOrCreateCommand(ClearEventLog);
 
@@ -133,6 +134,8 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 		{
 			Theme = GetTheme()
 		});
+
+		private void ShowUIWithoutOptions() => DataTransferManager.ShowShareUI();
 
 		private ShareUITheme GetTheme()
 		{

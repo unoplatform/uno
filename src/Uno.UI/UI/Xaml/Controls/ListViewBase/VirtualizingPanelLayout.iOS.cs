@@ -68,6 +68,14 @@ namespace Microsoft.UI.Xaml.Controls
 			public const int ListViewBaseLayout_PrepareLayoutStop = 2;
 		}
 
+		private double GroupPaddingExtentStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Top : GroupPadding.Left;
+
+		private double GroupPaddingExtentEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Bottom : GroupPadding.Right;
+
+		private double GroupPaddingBreadthStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Left : GroupPadding.Top;
+
+		private double GroupPaddingBreadthEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Right : GroupPadding.Bottom;
+
 		private NativeListViewBase? Owner => CollectionView as NativeListViewBase;
 
 		private enum DirtyState

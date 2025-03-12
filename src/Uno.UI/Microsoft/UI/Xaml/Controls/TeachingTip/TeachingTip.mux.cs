@@ -1382,7 +1382,7 @@ public partial class TeachingTip : ContentControl
 						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipNotificationWithoutAppName),
 						AutomationProperties.GetName(m_popup));
 				}
-			};
+			}
 
 			var notificationString = GetNotificationString();
 			teachingTipPeer.RaiseWindowOpenedEvent(notificationString);

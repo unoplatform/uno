@@ -341,7 +341,7 @@ public partial class TreeView : Control
 				{
 					return null;
 				}
-			};
+			}
 			var newSelectedItem = GetNewSelectedItem(args);
 
 			if (SelectedItem != newSelectedItem)

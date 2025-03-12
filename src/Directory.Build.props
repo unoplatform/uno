@@ -14,6 +14,12 @@
 		<!-- Enable the MSTest runner, this is an opt-in feature when not using MSTest.Sdk -->
 		<EnableMSTestRunner>true</EnableMSTestRunner>
 
+		<!-- Enable the NUnit runner, this is an opt-in feature -->
+		<EnableNUnitRunner>true</EnableNUnitRunner>
+
+		<TestingPlatformDotNetTestSupport>true</TestingPlatformDotNetTestSupport>
+		<TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -48,7 +54,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.12.0-1.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.13.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>

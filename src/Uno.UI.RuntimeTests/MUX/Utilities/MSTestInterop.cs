@@ -163,12 +163,12 @@ namespace Common
 
 		public static void Throws<T>(Action action, string message) where T : Exception
 		{
-			Assert.ThrowsException<T>(action, message);
+			Assert.ThrowsExactly<T>(action, message);
 		}
 
 		public static void Throws<T>(Action action) where T : Exception
 		{
-			Assert.ThrowsException<T>(action);
+			Assert.ThrowsExactly<T>(action);
 		}
 	}
 }

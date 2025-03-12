@@ -217,7 +217,7 @@ public partial class Given_ContentPresenter // test cases
 	}
 
 	[TestMethod]
-	public async Task When_ContentPresenter_Content()
+	public async Task When_ContentPresenter_ContentBindingNonPath()
 	{
 		var setup = new ContentPresenter_ContentBindings();
 
@@ -298,16 +298,9 @@ public partial class Given_ContentPresenter // test cases
 		12			ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
 		13				ImplicitTextBlock // DC=TestData, Text='TestData'
 		14		Button#Button_ControlTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
-		15			ContentPresenter // DC=String, Content=String, Content.Binding=[Path=Text, RelativeSource=]
-		16				ImplicitTextBlock // DC=String, Text='lalala~'
+		15			ContentPresenter // DC=TestData, Content=String, Content.Binding=[Path=Text, RelativeSource=]
+		16				ImplicitTextBlock // DC=TestData, Text='lalala~'
 		""";
-#if __ANDROID__ || __IOS__
-		// not sure why this has different data-context, but we mostly care about the Text value here.
-		expectedTree = expectedTree.Replace(
-			"16\t\t\t\tImplicitTextBlock // DC=String, Text='lalala~'",
-			"16\t\t\t\tImplicitTextBlock // DC=TestData, Text='lalala~'");
-#endif
-
 		// fixme:
 		//N+0		ContentControl#CP_ContentTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
 		//N+1			ContentPresenter // DC=TestData, Content=TestData
@@ -319,6 +312,20 @@ public partial class Given_ContentPresenter // test cases
 		//N+3					ImplicitTextBlock // DC=String, Text=''
 
 		TreeAssert.VerifyTree(expectedTree, setup.Content, describe: Describe);
+	}
+
+	[TestMethod]
+	public async Task When_ContentPresenter_ContentBindingPath()
+	{
+		var setup = new ContentPresenter_ContentBindingPath();
+
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		var sutCP = setup.FindFirstDescendantOrThrow<ContentPresenter>("SutContentPresenter");
+		var implicitTB = sutCP.FindFirstDescendantOrThrow</*Implicit*/TextBlock>();
+
+		Assert.AreEqual("Asd", sutCP.Content);
+		Assert.AreEqual("Asd", implicitTB.Text);
 	}
 
 	public static IEnumerable<object[]> GetAlignments()

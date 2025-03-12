@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		[TestMethod]
 		public void When_Arguments_Are_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => JumpListItem.CreateWithArguments(null, "Hello"));
 		}
 
@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		[TestMethod]
 		public void When_DisplayName_Is_Null()
 		{
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => JumpListItem.CreateWithArguments("Hello", null));
 		}
 
@@ -58,7 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		public void When_Description_Is_Set_To_Null()
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "test");
-			Assert.ThrowsException<ArgumentNullException>(
+			Assert.ThrowsExactly<ArgumentNullException>(
 				() => item.Description = null);
 		}
 
@@ -76,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		public void When_Logo_Uri_Is_Web()
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "Test");
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => item.Logo = new Uri("https://www.example.com/image.png"));
 		}
 
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		public void When_Logo_Uri_Is_File_Path()
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "Test");
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => item.Logo = new Uri("C:\\Dev\\Hello.png"));
 		}
 
@@ -100,7 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		public void When_Logo_Uri_Is_ms_appdata()
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "Test");
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => item.Logo = new Uri("ms-appdata:///Test.png"));
 		}
 

@@ -40,11 +40,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
-		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-3.final" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.12.0-3.final" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
