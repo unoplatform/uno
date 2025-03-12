@@ -1,16 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ProgressBar.h, tag winui3/release/1.4.2
+// MUX reference ProgressBar.h, tag winui3/release/1.7-stable
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
-
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 public partial class ProgressBar
 {
-	private Grid m_layoutRoot;
+	private MUXC.Grid m_layoutRoot;
 	private Rectangle m_determinateProgressBarIndicator;
 	private Rectangle m_indeterminateProgressBarIndicator;
 	private Rectangle m_indeterminateProgressBarIndicator2;

@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ProgressBar.cpp, tag winui3/release/1.4.2
+// MUX reference ProgressBar.cpp, tag winui3/release/1.7-stable
 
 #nullable enable
 
@@ -8,10 +8,10 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -25,8 +25,6 @@ public partial class ProgressBar : RangeBase
 
 		//LayoutUpdated += (snd, evt) => OnSizeChange();
 
-
-
 		// NOTE: This is necessary only because Value isn't one of OUR properties, it's implemented in RangeBase.
 		// If it was one of ProgressBar's properties, defined in the IDL, you'd do it differently (see IsIndeterminate).
 		RegisterPropertyChangedCallback(ValueProperty, OnIndicatorWidthComponentChanged);
@@ -38,39 +36,46 @@ public partial class ProgressBar : RangeBase
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ProgressBarAutomationPeer(this);
-  
-		private Grid? m_layoutRoot;
-		private Rectangle? m_determinateProgressBarIndicator;
-		private Rectangle? m_indeterminateProgressBarIndicator;
-		private Rectangle? m_indeterminateProgressBarIndicator2;
-		private Size? m_previousMeasuredWidths;
+
+	private Size? m_previousMeasuredWidths;
 
 	protected override void OnApplyTemplate()
 	{
-		m_layoutRoot = GetTemplateChild(s_LayoutRootName) as Grid;
-
 		// NOTE: Example of how named parts are loaded from the template. Important to remember that it's possible for
 		// any of them not to be found, since devs can replace the template with their own.
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-			// Uno-specific: TODO: Investigate why we need this. It's a quite very old workaround from 2020
-			// https://github.com/unoplatform/uno/commit/641bbc9483f33c64d5eddc474f069c07b79039ba
-			// So, maybe it's no longer needed.
-			// For now, we're sure it's no longer needed with enhanced lifecycle (actually, it's problematic if it exists there)
-			// Note: LayoutUpdated event isn't really tied to a specific element. It really means that some element in the visual tree had a layout update.
-			// So, this event subscription is wrong because it will cause the ProgressBar to transition to Updating visual state then back
-			// to a state based on its properties (e.g, Indeterminate) every time any element in the visual tree has a layout update.
-			// So it will cause some bad flickers in ProgressBar, and will also get us into a cycle in case there is a listener
-			// to CurrentStateChanged event where the listener does something that updates the layout.
-			LayoutUpdated += (snd, evt) => OnSizeChange();
+		// Uno-specific: TODO: Investigate why we need this. It's a quite very old workaround from 2020
+		// https://github.com/unoplatform/uno/commit/641bbc9483f33c64d5eddc474f069c07b79039ba
+		// So, maybe it's no longer needed.
+		// For now, we're sure it's no longer needed with enhanced lifecycle (actually, it's problematic if it exists there)
+		// Note: LayoutUpdated event isn't really tied to a specific element. It really means that some element in the visual tree had a layout update.
+		// So, this event subscription is wrong because it will cause the ProgressBar to transition to Updating visual state then back
+		// to a state based on its properties (e.g, Indeterminate) every time any element in the visual tree has a layout update.
+		// So it will cause some bad flickers in ProgressBar, and will also get us into a cycle in case there is a listener
+		// to CurrentStateChanged event where the listener does something that updates the layout.
+		LayoutUpdated += (snd, evt) => OnSizeChange();
 #endif
+
+		m_layoutRoot = GetTemplateChild<MUXC.Grid>(s_LayoutRootName);
+		m_determinateProgressBarIndicator = GetTemplateChild<Rectangle>(s_DeterminateProgressBarIndicatorName);
+		m_indeterminateProgressBarIndicator = GetTemplateChild<Rectangle>(s_IndeterminateProgressBarIndicatorName);
+		m_indeterminateProgressBarIndicator2 = GetTemplateChild<Rectangle>(s_IndeterminateProgressBarIndicator2Name);
 
 		UpdateStates();
 	}
 
 	private void OnSizeChange()
 	{
-		SetProgressBarIndicatorWidth();
+#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
+		if (m_layoutRoot is not null &&
+			m_determinateProgressBarIndicator is not null &&
+			m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
+#endif
+		{
+			SetProgressBarIndicatorWidth();
+		}
+
 		UpdateWidthBasedTemplateSettings();
 	}
 
@@ -95,17 +100,6 @@ public partial class ProgressBar : RangeBase
 		if (dependencyobject is ProgressBar progressBar)
 		{
 			progressBar.UpdateStates();
-      
-#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
-			if (m_layoutRoot is not null &&
-				m_determinateProgressBarIndicator is not null &&
-				m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
-#endif
-			{
-				SetProgressBarIndicatorWidth();
-			}
-
-			UpdateWidthBasedTemplateSettings();
 		}
 	}
 
