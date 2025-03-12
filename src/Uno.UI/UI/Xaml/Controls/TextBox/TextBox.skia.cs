@@ -381,7 +381,11 @@ public partial class TextBox
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.RenderSelection = isFocused;
 			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			inlines.RenderCaret = isFocused && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly;
+			inlines.RenderCaret =
+				isFocused &&
+				caretShowing &&
+				(CaretMode is CaretDisplayMode.CaretWithThumbsBothEndsShowing || !IsReadOnly) && // If read only, we only show carets on touch.
+				!FeatureConfiguration.TextBox.HideCaret;
 		}
 	}
 
