@@ -432,10 +432,7 @@ internal partial class InputManager
 				return;
 			}
 
-			var hasCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out _);
-			var stalePredicate = hasCapture && (PointerDeviceType)args.CurrentPoint.Pointer.Type is not PointerDeviceType.Touch ? _isOver : default(StalePredicate?); // If captured, we will have to raise enter/leave after the released event
-			var (originalSource, staleBranch) = HitTest(args, stalePredicate);
-
+			var (originalSource, _) = HitTest(args);
 			var isOutOfWindow = originalSource is null;
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
@@ -459,6 +456,7 @@ internal partial class InputManager
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
+			var hadCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out var capture) && capture.IsImplicitOnly is false;
 
 			var result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
 
@@ -481,9 +479,18 @@ internal partial class InputManager
 					result += Raise(Leave, originalSource, routedArgs);
 					break;
 
-				case PointerDeviceType.Mouse:
-				case PointerDeviceType.Pen when args.CurrentPoint.Properties.IsInRange:
-					result += RaiseEnterLeave(staleBranch, ref originalSource, args, routedArgs);
+				// If we had capture, we might not have raise the pointer enter on the originalSource.
+				// Make sure to raise it now the pointer has been release / capture has been removed (for pointers that supports overing).
+				case PointerDeviceType.Mouse when hadCapture:
+				case PointerDeviceType.Pen when hadCapture && args.CurrentPoint.Properties.IsInRange:
+					(originalSource, var overStaleBranch) = HitTest(args, _isOver);
+					if (overStaleBranch is not null)
+					{
+						var leaveResult = Raise(Leave, overStaleBranch.Value, routedArgs);
+						AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource!);
+					}
+
+					result += Raise(Enter, originalSource!, routedArgs);
 					break;
 			}
 
@@ -497,9 +504,7 @@ internal partial class InputManager
 				return;
 			}
 
-			var hasCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out _);
-			var stalePredicate = hasCapture ? default(StalePredicate?) : _isOver; // If captured, we don't have to raise enter/leave
-			var (originalSource, staleBranch) = HitTest(args, stalePredicate);
+			var (originalSource, overStaleBranch) = HitTest(args, _isOver);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
@@ -523,10 +528,54 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 			var result = default(PointerEventDispatchResult);
 
-			// If the pointer is captured, we do not want to raise the enter event. If needed events will be raised in OnPointerReleased (after having released the captures).
-			if (!hasCapture)
+			// First, if the pointer is captured, we want to publicly raise the enter / leave event ONLY on the capture element itself.
+			var hasCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out var capture) && capture.IsImplicitOnly is false;
+			if (hasCapture)
 			{
-				result += RaiseEnterLeave(staleBranch, ref originalSource, args, routedArgs);
+				var captureTarget = capture!.ExplicitTarget!;
+				var isLeavingCaptureElementBounds = overStaleBranch?.Contains(captureTarget) is true;
+				var isEnteringCaptureElementBounds = !isLeavingCaptureElementBounds && VisualTreeHelper.Branch.ToPublicRoot(originalSource).Contains(captureTarget);
+
+				if (isLeavingCaptureElementBounds)
+				{
+					// First we raise **publicly** the leave event on the capture target
+					var leaveCaptureResult = Raise(Leave, captureTarget, routedArgs, new BubblingContext { Mode = BubblingMode.IgnoreParents });
+					AddIntermediate(ref result, Leave, routedArgs, leaveCaptureResult, ref originalSource);
+				}
+				if (overStaleBranch is not null)
+				{
+					// Second, we raise again the leave but starting from the originalSource and **silently**.
+					// This is to make sure to not leave element flagged as IsOver = true.
+					// Note: This means that, public listener of the exit events will **never** be raised for those elements.
+					// Note 2: This will try to also raise the exited event on the capture.ExplicitTarget (if any), but this will have no effect as we already did it!
+					var leaveResult = Raise(Leave, overStaleBranch.Value.Leaf, routedArgs, new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble, Root = overStaleBranch.Value.Root });
+					AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
+				}
+
+				if (isEnteringCaptureElementBounds)
+				{
+					// Note: we set the flag IsOver true **ONLY** for the capture element branch
+					//		 for all other elements, we wait for the PointerReleased
+
+					// First we raise **publicly** the enter event on the capture target
+					var enterResult = Raise(Enter, captureTarget, routedArgs, new BubblingContext { Mode = BubblingMode.IgnoreParents });
+					AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
+
+					// Second we make sure to also flag as IsOver true all elements in teh branch
+					enterResult = Raise(Enter, originalSource, routedArgs, new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble });
+					AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
+				}
+			}
+			else
+			{
+				if (overStaleBranch is not null)
+				{
+					var leaveResult = Raise(Leave, overStaleBranch.Value, routedArgs);
+					AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
+				}
+
+				var enterResult = Raise(Enter, originalSource, routedArgs);
+				AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
@@ -635,36 +684,6 @@ internal partial class InputManager
 			}
 		}
 
-		private PointerEventDispatchResult RaiseEnterLeave(VisualTreeHelper.Branch? staleBranch, ref UIElement originalSource, Windows.UI.Core.PointerEventArgs args, PointerRoutedEventArgs routedArgs)
-		{
-			var result = default(PointerEventDispatchResult);
-
-			// First raise the PointerExited events on the stale branch
-			if (staleBranch.HasValue)
-			{
-				var leaveResult = Raise(Leave, staleBranch.Value, routedArgs);
-				result += leaveResult;
-				if (leaveResult is { VisualTreeAltered: true })
-				{
-					// The visual tree has been modified in a way that requires performing a new hit test.
-					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
-				}
-			}
-
-			// Second (try to) raise the PointerEnter on the OriginalSource
-			// Note: This won't do anything if already over.
-			var enterResult = Raise(Enter, originalSource, routedArgs);
-			result += enterResult;
-
-			if (enterResult is { VisualTreeAltered: true })
-			{
-				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
-			}
-
-			return result;
-		}
-
 		#region Helpers
 		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTest(PointerEventArgs args, StalePredicate? isStale = null, [CallerMemberName] string caller = "")
 		{
@@ -674,6 +693,17 @@ internal partial class InputManager
 			}
 
 			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager.ContentRoot.XamlRoot, isStale: isStale);
+		}
+
+		private void AddIntermediate(ref PointerEventDispatchResult globalResult, PointerEvent evt, PointerRoutedEventArgs args, PointerEventDispatchResult intermediateResult, ref UIElement originalSource, [CallerMemberName] string caller = "")
+		{
+			if (intermediateResult is { VisualTreeAltered: true })
+			{
+				// The visual tree has been modified in a way that requires performing a new hit test.
+				originalSource = HitTest(args.CoreArgs, caller: caller + "_post_" + evt.Name).element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			}
+
+			globalResult += intermediateResult;
 		}
 
 		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
@@ -688,29 +718,21 @@ internal partial class InputManager
 		private static readonly PointerEvent Cancelled = new((elt, args, ctx) => elt.OnPointerCancel(args, ctx));
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
-		{
-			using var dispatch = StartDispatch(evt, routedArgs);
-
-			if (_trace)
-			{
-				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to original source [{originalSource.GetDebugName()}]");
-			}
-
-			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
-
-			return dispatch.End();
-		}
+			=> Raise(evt, originalSource, routedArgs, BubblingContext.Bubble);
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
+			=> Raise(evt, branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
+
+		private PointerEventDispatchResult Raise(PointerEvent evt, UIElement element, PointerRoutedEventArgs routedArgs, BubblingContext ctx)
 		{
 			using var dispatch = StartDispatch(evt, routedArgs);
 
 			if (_trace)
 			{
-				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to branch [{branch}]");
+				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to element [{element.GetDebugName()}] with context {ctx}");
 			}
 
-			evt.Invoke(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
+			evt.Invoke(element, routedArgs, ctx);
 
 			return dispatch.End();
 		}
@@ -722,7 +744,36 @@ internal partial class InputManager
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
 				var targets = capture.Targets.ToList();
-				if (capture.IsImplicitOnly)
+				if (capture.ExplicitTarget is { } explicitTarget)
+				{
+					if (_trace)
+					{
+						Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{explicitTarget.GetDebugName()}]");
+					}
+
+					evt.Invoke(explicitTarget, routedArgs, BubblingContext.Bubble);
+
+					foreach (var target in targets)
+					{
+						if (target.Element == explicitTarget)
+						{
+							continue;
+						}
+
+						if (_trace)
+						{
+							Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to alternative (implicit) target [{explicitTarget.GetDebugName()}] (-- no bubbling--)");
+						}
+
+						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
+					}
+
+					if (setCursor)
+					{
+						SetSourceCursor(explicitTarget);
+					}
+				}
+				else
 				{
 					if (_trace)
 					{
@@ -744,37 +795,6 @@ internal partial class InputManager
 					if (setCursor)
 					{
 						SetSourceCursor(originalSource);
-					}
-				}
-				else
-				{
-					var explicitTarget = targets.Find(c => c.Kind.HasFlag(PointerCaptureKind.Explicit))!;
-
-					if (_trace)
-					{
-						Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{explicitTarget.Element.GetDebugName()}]");
-					}
-
-					evt.Invoke(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
-
-					foreach (var target in targets)
-					{
-						if (target == explicitTarget)
-						{
-							continue;
-						}
-
-						if (_trace)
-						{
-							Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to alternative (implicit) target [{explicitTarget.Element.GetDebugName()}] (-- no bubbling--)");
-						}
-
-						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
-					}
-
-					if (setCursor)
-					{
-						SetSourceCursor(explicitTarget.Element);
 					}
 				}
 			}

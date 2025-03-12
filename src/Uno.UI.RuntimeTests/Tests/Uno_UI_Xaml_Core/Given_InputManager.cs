@@ -116,9 +116,10 @@ public class Given_InputManager
 		finger.MoveBy(0, 50, steps: 50);
 		transform.Y.Should().NotBe(0, "Manipulation should have started");
 
-		// Leave the element (Note: we should not get a pointer leave since the pointer is captured)
+		// Cause a fast move that will trigger a pointer leave
 		exited.Should().BeFalse();
 		finger.MoveBy(0, 50, steps: 0);
+		exited.Should().BeTrue();
 
 		// Confirm that even if we got a leave, pointer is still captured and we are still receiving manipulation events
 		var intermediatePosition = transform.Y;
@@ -130,24 +131,49 @@ public class Given_InputManager
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	public async Task When_LeaveElementWithCapture_Then_NoPointerLeave()
+	public async Task When_LeaveElementWithCapture_Then_PointerEnterLeaveOnlyOnCapturedElement_And_EnterRaisedOnCaptureLost()
 	{
-		Border sut;
+		Border sut, sutParent, sutChild, sutSibling;
 		var ui = new Grid
 		{
 			Width = 128,
 			Height = 128,
 			Children =
 			{
-				(sut = new Border
+				(sutParent = new Border
 				{
-					Name = "SUT-Border",
-					HorizontalAlignment = HorizontalAlignment.Center,
+					HorizontalAlignment = HorizontalAlignment.Left,
 					VerticalAlignment = VerticalAlignment.Center,
-					Width = 32,
-					Height = 32,
-					Background = new SolidColorBrush(Colors.DeepPink),
+					Width = 36,
+					Height = 36,
+					Background = new SolidColorBrush(Colors.DeepSkyBlue),
+					Child = (sut = new Border
+					{
+						Name = "SUT-Border",
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+						Width = 32,
+						Height = 32,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						Child = (sutChild = new Border
+						{
+							Name = "SUT-Border",
+							HorizontalAlignment = HorizontalAlignment.Center,
+							VerticalAlignment = VerticalAlignment.Center,
+							Width = 28,
+							Height = 28,
+							Background = new SolidColorBrush(Colors.Chartreuse),
+						})
+					})
 				}),
+				(sutSibling = new Border
+				{
+					HorizontalAlignment = HorizontalAlignment.Right,
+					VerticalAlignment = VerticalAlignment.Center,
+					Width = 36,
+					Height = 36,
+					Background = new SolidColorBrush(Colors.Orange)
+				})
 			}
 		};
 
@@ -155,18 +181,55 @@ public class Given_InputManager
 
 		sut.PointerPressed += (snd, e) => sut.CapturePointer(e.Pointer);
 
-		var exited = false;
-		sut.PointerExited += (snd, e) => exited = true;
+		int parentEntered = 0, sutEntered = 0, childEntered = 0, siblingEntered = 0;
+		sutParent.PointerEntered += (snd, e) => parentEntered++;
+		sut.PointerEntered += (snd, e) => sutEntered++;
+		sutChild.PointerEntered += (snd, e) => childEntered++;
+		sutSibling.PointerEntered += (snd, e) => siblingEntered++;
+
+		int parentExited = 0, sutExited = 0, childExited = 0, siblingExited = 0;
+		sutParent.PointerExited += (snd, e) => parentExited++;
+		sut.PointerExited += (snd, e) => sutExited++;
+		sutChild.PointerExited += (snd, e) => childExited++;
+		sutSibling.PointerExited += (snd, e) => siblingExited++;
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetMouse();
 
 		finger.Press(sut.GetAbsoluteBounds().GetCenter());
-		finger.MoveBy(0, 64);
-		exited.Should().BeFalse();
+		finger.MoveTo(sutSibling.GetAbsoluteBounds().GetCenter());
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(1);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(0);
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(1);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
+
+		finger.MoveTo(sut.GetAbsoluteBounds().GetCenter());
+		finger.MoveTo(sutSibling.GetAbsoluteBounds().GetCenter());
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(2);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(0);
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(2);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
 
 		finger.Release();
-		exited.Should().BeTrue("pointer exited event should raised when the capture is lost.");
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(2);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(1, because: "enter event should be raised on element under the mouse when the capture is released");
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(2);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
 	}
 
 	[TestMethod]

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.Devices.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -80,7 +81,13 @@ internal partial class PointerCapture
 	/// Determines if this capture was made only for an implicit kind
 	/// (So we should not use it to filter out some events on other controls)
 	/// </summary>
-	public bool IsImplicitOnly { get; private set; } = true;
+	[MemberNotNullWhen(false, nameof(ExplicitTarget))]
+	public bool IsImplicitOnly => ExplicitTarget is null;
+
+	/// <summary>
+	/// The explicit target of the capture, if any.
+	/// </summary>
+	public UIElement? ExplicitTarget { get; private set; }
 
 	public IEnumerable<PointerCaptureTarget> Targets => _targets.Values;
 
@@ -106,29 +113,33 @@ internal partial class PointerCapture
 			this.Log().Debug($"{element.GetDebugName()}: Capturing ({kind}) pointer {Pointer} (options: {opts})");
 		}
 
-		if (_targets.TryGetValue(element, out var target))
+		// Only one explicit capture can be active at a time
+		if (kind is PointerCaptureKind.Explicit && ExplicitTarget is not null && ExplicitTarget != element)
+		{
+			return PointerCaptureResult.Failed;
+		}
+
+		ref var target = ref CollectionsMarshal.GetValueRefOrAddDefault(_targets, element, out var exists);
+		if (exists)
 		{
 			// Validate if the requested kind is not already handled
-			if (target.Kind.HasFlag(kind))
+			if (target!.Kind.HasFlag(kind))
 			{
 				UpdateOptions(opts);
 
 				return PointerCaptureResult.AlreadyCaptured;
 			}
-			else
-			{
-				// Add the new kind to the target
-				target.Kind |= kind;
-			}
+			
+			// Add the new kind to the target and continue capture
+			target.Kind |= kind;
 		}
 		else
 		{
 			target = new PointerCaptureTarget(element, kind);
-			_targets.Add(element, target);
 
 			// If the capture is made while raising an event (usually captures are made in PointerPressed handlers)
 			// we re-use the current event args (if they match) to init the target.LastDispatched property.
-			// Note:  we don't check the sender as we may capture on another element but the frame ID is still correct.
+			// Note: we don't check the sender as we may capture on another element but the frame ID is still correct.
 			if (relatedArgs?.Pointer == Pointer)
 			{
 				Update(target, relatedArgs);
@@ -143,9 +154,9 @@ internal partial class PointerCapture
 		}
 
 		// If we added an explicit capture, we update the PointerCapturesBackingField of the target element
-		if (kind == PointerCaptureKind.Explicit)
+		if (kind is PointerCaptureKind.Explicit)
 		{
-			IsImplicitOnly = false;
+			ExplicitTarget = element;
 			element.PointerCapturesBackingField.Add(Pointer);
 		}
 
@@ -211,7 +222,7 @@ internal partial class PointerCapture
 			_targets.Remove(target.Element);
 		}
 
-		IsImplicitOnly = _targets.None(t => t.Value.Kind.HasFlag(PointerCaptureKind.Explicit));
+		ExplicitTarget = _targets.SingleOrDefault(t => t.Value.Kind.HasFlag(PointerCaptureKind.Explicit)).Key;
 
 		// Validate / update the state of this capture
 		ClearOptions(); // Before the EnsureEffectiveCaptureState so _nativeCaptureElement is not yet reset to null
@@ -244,7 +255,7 @@ internal partial class PointerCapture
 
 			return true;
 		}
-		else if (IsImplicitOnly)
+		else if (ExplicitTarget is null)
 		{
 			// If the capture is implicit, we should not filter out events for children elements.
 

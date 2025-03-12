@@ -858,7 +858,8 @@ namespace Microsoft.UI.Xaml
 
 			/// <summary>
 			/// Used only with managed pointers to indicate that the bubbling is for cleanup.
-			/// In that case even interpreted events should be muted.
+			/// In that case even interpreted events (i.e. GestureRecognizer) should also be muted
+			/// (while the IsInternal will only mute the raw event, e.g. enter/move/pressed).
 			/// </summary>
 			public bool IsCleanup { get; set; }
 
@@ -869,7 +870,7 @@ namespace Microsoft.UI.Xaml
 				=> (Mode & flag) != 0;
 
 			public override string ToString()
-				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
+				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(IsCleanup ? " *cleanup*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
 		}
 #nullable restore
 
