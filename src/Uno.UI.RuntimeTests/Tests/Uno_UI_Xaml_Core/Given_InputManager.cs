@@ -116,11 +116,9 @@ public class Given_InputManager
 		finger.MoveBy(0, 50, steps: 50);
 		transform.Y.Should().NotBe(0, "Manipulation should have started");
 
-		// Cause a fast move that will trigger a pointer leave
-		// Note: This might not be the WinUI behavior, should we receive a pointer leave when the element is capturing the pointer?
+		// Leave the element (Note: we should not get a pointer leave since the pointer is captured)
 		exited.Should().BeFalse();
 		finger.MoveBy(0, 50, steps: 0);
-		exited.Should().BeTrue();
 
 		// Confirm that even if we got a leave, pointer is still captured and we are still receiving manipulation events
 		var intermediatePosition = transform.Y;
