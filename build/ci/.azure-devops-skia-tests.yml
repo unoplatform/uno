@@ -56,7 +56,6 @@ jobs:
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-    GTK_RUNTIME_URL: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
@@ -105,13 +104,6 @@ jobs:
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
-
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Gtk Binaries'
-    retryCountOnTaskFailure: 3
-    inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net8.0
-      artifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish WebAssembly Binaries'
