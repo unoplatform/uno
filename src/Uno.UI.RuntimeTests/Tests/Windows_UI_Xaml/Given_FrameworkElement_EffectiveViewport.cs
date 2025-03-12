@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,6 +25,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
 using EffectiveViewportChangedEventArgs = Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -70,7 +72,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				return new Point(x, y);
 			}
 		}
-
+	}
+	public partial class Given_FrameworkElement_EffectiveViewport // test cases
+	{
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task EffectiveViewport_When_BottomRightAligned()
@@ -178,7 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task EVP_When_Unconstrained()
+		public async Task EVP_When_UnconstrainedNotClipped()
 		{
 			/*
 			<local:HeadedContent Header="Unconstrained" Background="#FF0018">
@@ -1148,6 +1152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 #if !__SKIA__
 		[Ignore("Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child.")]
 #endif
@@ -1168,21 +1173,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			await UITestHelper.Load(sv);
+			await UITestHelper.WaitForIdle();
 
 			var scp = sv.FindVisualChildByType<ScrollContentPresenter>();
 
-			var changedCount = 0;
-			var childChangedCount = 0;
-			scp.EffectiveViewportChanged += (_, _) => changedCount++;
-			border.EffectiveViewportChanged += (_, _) => childChangedCount++;
+			var scpVP = VP(scp);
+			var borderVP = VP(border);
 
 			sv.ScrollToVerticalOffset(100);
 			await WaitForIdle();
 
-			Assert.AreEqual(1, changedCount);
-			Assert.AreEqual(2, childChangedCount);
+			Assert.AreEqual(1, scpVP.Args.Count);
+			Assert.AreEqual(1, borderVP.Args.Count);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_EVP_Initial_Proc_Base()
+		{
+			Border sut;
+			var setup = new StackPanel
+			{
+				Children =
+				{
+					new Border { Width = 50, Height = 200 }, // filler
+					(sut = new Border { Name = "sut", Width = 50, Height = 50 }),
+				}
+			};
+
+			using var vp = VP(sut);
+
+			await UITestHelper.Load(setup);
+
+			var context = vp.Args.Any()
+				? string.Join(", ", vp.Args.Select((x, i) => $"{i}={PrettyPrint.FormatRect(x.EffectiveViewport)}"))
+				: "(the event never proc'd)";
+			Assert.AreEqual(1, vp.Args.Count, $"EVPChanged should only ever proc once: {context}");
+
+			// without a ScrollViewer or a known SV in the Border#sut's ancestry,
+			// the EffectiveViewport values won't be deterministic to be validated.
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_EVP_Initial_Proc_SVNested()
+		{
+			Border filler, sut;
+			var setup = new ScrollViewer
+			{
+				Width = 50,
+				Height = 100,
+
+				Content = new StackPanel
+				{
+					Children =
+					{
+						(filler = new Border { Width = 50, Height = 200 }),
+						(sut = new Border { Name = "sut", Width = 50, Height = 50 }),
+					}
+				}
+			};
+
+			using var vp = VP(sut);
+
+			await UITestHelper.Load(setup);
+
+			var context = vp.Args.Any()
+				? string.Join(", ", vp.Args.Select((x, i) => $"{i}={PrettyPrint.FormatRect(x.EffectiveViewport)}"))
+				: "(the event never proc'd)";
+			Assert.AreEqual(1, vp.Args.Count, $"EVPChanged should only ever proc once: {context}");
+
+			// We can't really count on the EVP values to be deterministic here either...
+			// Since the device size, or the horizontal gridspliiter can impact the result
+			// by pushing/shrinking the scrollviewer.
+			//Assert.AreEqual(new Rect(0, -filler.Height, setup.Width, setup.Height), procs[0].Args.EffectiveViewport, "Invalid EVP values.");
+		}
+	}
+	public partial class Given_FrameworkElement_EffectiveViewport
+	{
 		private async Task RetryAssert(Action assertion)
 		{
 			var attempt = 0;
@@ -1212,6 +1280,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task RetryAssert(string scope, Action assertion)
 		{
+#if HAS_UNO && false
+			using var _ = new AssertionScope(scope);
+			assertion();
+
+			await Task.CompletedTask;
+#else
 			var attempt = 0;
 			while (true)
 			{
@@ -1236,6 +1310,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					await Task.Delay(10);
 				}
 			}
+#endif
 		}
 
 		private static double X(FrameworkElement element, double? available = null)
@@ -1264,24 +1339,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private EVPTreeListener VPTree(FrameworkElement root, FrameworkElement leaf)
 			=> new EVPTreeListener(root, leaf);
 
+		[DebuggerDisplay("{ToString(),nq}")]
 		private class EVPListener : IDisposable
 		{
 			private readonly List<EffectiveViewportChangedEventArgs> _args = new List<EffectiveViewportChangedEventArgs>();
 			private readonly FrameworkElement _elt;
+			private bool _isConnected = false;
 
-			public EVPListener(FrameworkElement elt)
+			public EVPListener(FrameworkElement elt, bool isConnected = true)
 			{
 				_elt = elt;
-				elt.EffectiveViewportChanged += OnEVPChanged;
+				IsConnected = isConnected;
 			}
+
+			public IReadOnlyList<EffectiveViewportChangedEventArgs> Args => _args;
 
 			public Rect Effective => _args.Last().EffectiveViewport;
 
-			private void OnEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
-				=> _args.Add(args);
+			public Rect? EVP => _args.LastOrDefault()?.EffectiveViewport;
 
-			public void Dispose()
-				=> _elt.EffectiveViewportChanged -= OnEVPChanged;
+			public bool IsConnected
+			{
+				get => _isConnected;
+				set
+				{
+					_elt.EffectiveViewportChanged -= OnEVPChanged;
+					if (_isConnected = value)
+					{
+						_elt.EffectiveViewportChanged += OnEVPChanged;
+					}
+				}
+			}
+
+			public override string ToString() =>
+				$"Count={_args.Count}, EVP={EVP}";
+
+			private void OnEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args) =>
+				_args.Add(args);
+
+			public void Dispose() =>
+				IsConnected = false;
 		}
 
 		private class EVPTreeListener : IDisposable
