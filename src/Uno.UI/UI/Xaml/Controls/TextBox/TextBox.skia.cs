@@ -537,6 +537,14 @@ public partial class TextBox
 					ReleasePointerCaptures();
 				}
 				break;
+			case VirtualKey.LeftShift:
+			case VirtualKey.RightShift:
+			case VirtualKey.Shift:
+			case VirtualKey.Control:
+			case VirtualKey.LeftControl:
+			case VirtualKey.RightControl:
+				// No-op when pressing these key specifically.
+				break;
 			default:
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{

@@ -315,6 +315,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Shift, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello world", SUT.Text);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_Home_End()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
