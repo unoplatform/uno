@@ -17,6 +17,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class ProgressBar : RangeBase
 {
+#if __ANDROID__
+	private Size? m_previousMeasuredWidths;
+#endif
+
 	public ProgressBar()
 	{
 		DefaultStyleKey = typeof(ProgressBar);
@@ -36,8 +40,6 @@ public partial class ProgressBar : RangeBase
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ProgressBarAutomationPeer(this);
-
-	private Size? m_previousMeasuredWidths;
 
 	protected override void OnApplyTemplate()
 	{

@@ -13,7 +13,6 @@ public partial class ProgressBar
 	private Rectangle m_determinateProgressBarIndicator;
 	private Rectangle m_indeterminateProgressBarIndicator;
 	private Rectangle m_indeterminateProgressBarIndicator2;
-	//private Size? m_previousMeasuredWidths;
 
 	private const string s_LayoutRootName = "LayoutRoot";
 	private const string s_DeterminateProgressBarIndicatorName = "DeterminateProgressBarIndicator";
