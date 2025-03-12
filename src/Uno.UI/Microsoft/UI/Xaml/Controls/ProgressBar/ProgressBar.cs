@@ -150,7 +150,9 @@ public partial class ProgressBar : RangeBase
 	private void SetProgressBarIndicatorWidth()
 	{
 		var templateSettings = TemplateSettings;
-
+#if __ANDROID__ // Uno workaround for #12312
+		m_previousMeasuredWidths = new Size(double.NaN, double.NaN);
+#endif
 		var progressBar = m_layoutRoot;
 
 		if (progressBar != null)
