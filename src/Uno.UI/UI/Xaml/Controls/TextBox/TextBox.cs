@@ -1389,6 +1389,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal void PasteFromClipboard(string clipboardText)
 		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
 			var selectionStart = SelectionStart;
 			var selectionLength = SelectionLength;
 			var currentText = Text;
@@ -1451,6 +1456,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CutSelectionToClipboard()
 		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
 #if __SKIA__
