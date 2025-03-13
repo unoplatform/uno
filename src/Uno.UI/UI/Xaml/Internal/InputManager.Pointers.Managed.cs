@@ -484,13 +484,14 @@ internal partial class InputManager
 				case PointerDeviceType.Mouse when hadCapture:
 				case PointerDeviceType.Pen when hadCapture && args.CurrentPoint.Properties.IsInRange:
 					(originalSource, var overStaleBranch) = HitTest(args, _isOver);
+					originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 					if (overStaleBranch is not null)
 					{
 						var leaveResult = Raise(Leave, overStaleBranch.Value, routedArgs);
-						AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource!);
+						AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
 					}
 
-					result += Raise(Enter, originalSource!, routedArgs);
+					result += Raise(Enter, originalSource, routedArgs);
 					break;
 			}
 
