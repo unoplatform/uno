@@ -105,7 +105,7 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					var imageShader = scs.Image.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
+					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
 					{
