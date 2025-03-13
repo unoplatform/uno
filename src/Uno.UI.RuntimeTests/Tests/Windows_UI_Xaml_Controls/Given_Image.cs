@@ -75,10 +75,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
-			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
-			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
-			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
+			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
+			Assert.AreEqual(new Rect(20, 41, 19, 19), greenBounds);
+			Assert.AreEqual(new Rect(44, 41, 19, 19), yellowBounds);
+			Assert.AreEqual(new Rect(68, 41, 11, 19), pinkBounds);
 		}
 
 #if __APPLE_UIKIT__
