@@ -49,15 +49,7 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender() => Invalidate();
-
-	private void Invalidate()
-	{
-		NativeMethods.SetEnableRenderLoop(_nativeSwapChainPanel, true);
-	}
-
-	private void DoEnableRenderLoop(bool enable) =>
-		NativeMethods.SetEnableRenderLoop(_nativeSwapChainPanel, enable);
+	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
 
 	private void RenderFrame()
 	{
@@ -199,7 +191,7 @@ internal partial class BrowserRenderer
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createContextStatic")]
 		internal static partial JSObject CreateContextInternal(JSObject nativeSwapChainPanel, string canvasId);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setEnableRenderLoop")]
-		internal static partial void SetEnableRenderLoop(JSObject nativeSwapChainPanel, bool enable);
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
+		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
 	}
 }
