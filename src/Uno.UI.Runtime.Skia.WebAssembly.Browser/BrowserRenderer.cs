@@ -1,9 +1,6 @@
-﻿#nullable enable
-
-using SkiaSharp;
+﻿using SkiaSharp;
 using MUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
 using System.Diagnostics;
@@ -15,7 +12,6 @@ internal partial class BrowserRenderer
 {
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
-	private DisplayInformation? _displayInformation;
 	private bool _isWindowInitialized;
 
 	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
@@ -31,7 +27,6 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
-	private bool _enableRenderLoop;
 
 	private SKSizeI? _lastSize;
 
@@ -62,19 +57,6 @@ internal partial class BrowserRenderer
 	private void DoEnableRenderLoop(bool enable) =>
 		NativeMethods.SetEnableRenderLoop(_nativeSwapChainPanel, enable);
 
-	public bool EnableRenderLoop
-	{
-		get => _enableRenderLoop;
-		set
-		{
-			if (_enableRenderLoop != value)
-			{
-				_enableRenderLoop = value;
-				DoEnableRenderLoop(_enableRenderLoop);
-			}
-		}
-	}
-
 	private void RenderFrame()
 	{
 		if (!_jsInfo.IsValid)
@@ -99,15 +81,13 @@ internal partial class BrowserRenderer
 			_context.SetResourceCacheLimit(ResourceCacheBytes);
 		}
 
-		_displayInformation ??= DisplayInformation.GetForCurrentView();
-
-		var scale = _displayInformation.RawPixelsPerViewPixel;
+		var scale = WebAssemblyManager.XamlRootMap.GetRootForHost(_host)?.RasterizationScale ?? 1;
 
 		// get the new surface size
 		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
 
 		// manage the drawing surface
-		if (_renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
+		if (_surface == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -128,18 +108,15 @@ internal partial class BrowserRenderer
 			_renderTarget?.Dispose();
 			_renderTarget = new GRBackendRenderTarget((int)(newCanvasSize.Width * scale), (int)(newCanvasSize.Height * scale), _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
 
+			// create the surface
+			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
+			_canvas = _surface.Canvas;
+
 			if (!_isWindowInitialized)
 			{
 				_isWindowInitialized = true;
 				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
 			}
-		}
-
-		// create the surface
-		if (_surface == null)
-		{
-			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
-			_canvas = _surface.Canvas;
 		}
 
 		using (new SKAutoCanvasRestore(_canvas, true))
@@ -160,12 +137,6 @@ internal partial class BrowserRenderer
 		// update the control
 		_canvas?.Flush();
 		_context.Flush();
-
-		// stop the render loop if it has been disabled
-		if (!EnableRenderLoop)
-		{
-			DoEnableRenderLoop(false);
-		}
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
