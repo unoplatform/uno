@@ -1750,9 +1750,6 @@
 		<Properties>
 			<Member fullName="Windows.UI.Color Microsoft.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
-		  	<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 		</Properties>
 
 		<Methods>
@@ -1992,7 +1989,7 @@
 		</Methods>
 	</IgnoreSet>
     
-  <IgnoreSet baseVersion="5.7">
+  <IgnoreSet baseVersion="5.6">
 		<Assemblies>
 		</Assemblies>
 
@@ -2006,6 +2003,9 @@
 		</Fields>
 
 		<Properties>
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 		</Properties>
 
 		<Methods>
