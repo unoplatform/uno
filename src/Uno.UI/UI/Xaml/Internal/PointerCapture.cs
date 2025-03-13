@@ -129,7 +129,7 @@ internal partial class PointerCapture
 
 				return PointerCaptureResult.AlreadyCaptured;
 			}
-			
+
 			// Add the new kind to the target and continue capture
 			target.Kind |= kind;
 		}
