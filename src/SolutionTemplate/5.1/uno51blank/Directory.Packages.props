@@ -20,7 +20,6 @@
     <PackageVersion Include="SkiaSharp.Skottie" Version="3.119.0-preview.0.11" />
     <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0-preview.0.11" />
     <PackageVersion Include="SkiaSharp.Views" Version="3.119.0-preview.0.11" />
-    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="3.119.0-preview.0.11" />
     <PackageVersion Include="OpenTK" Version="3.1.0" />
     <PackageVersion Include="OpenTK.GLControl" Version="3.1.0" />
     <PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
