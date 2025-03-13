@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Mono.Options;
 using Newtonsoft.Json;
-using NUnit.Engine.Services;
 using Uno.UI.TestComparer;
 using Uno.UI.TestComparer.Comparer;
 

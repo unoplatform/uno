@@ -15,6 +15,15 @@ Regardless of the web server (or reverse proxy) software used, the support the f
 - `application/octet-stream`
 - `application/font-woff`
 
+The output of the webassembly build is generally immutable and can be cached indefinitely, with some notable exceptions:
+
+- `_framework/blazor.boot.json`
+- `_framework/dotnet.js`
+- `index.html`
+- Other files at the root of the output package
+
+These files should be refreshed regularly in order to avoid app files inconsistencies.
+
 ## Nginx
 
 Below contains a performance tuned version of *nginx* fitting WebAssembly deployments. The MIME types have been extended on top of the base *nginx* MIME types with WASM support.
