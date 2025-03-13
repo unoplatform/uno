@@ -10,17 +10,17 @@
     <PackageVersion Include="Microsoft.Windows.Compatibility" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.4.240211001" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
-    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.Skottie" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.Views" Version="3.119.0-preview.0.11" />
+    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="3.119.0-preview.0.11" />
     <PackageVersion Include="OpenTK" Version="3.1.0" />
     <PackageVersion Include="OpenTK.GLControl" Version="3.1.0" />
     <PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
