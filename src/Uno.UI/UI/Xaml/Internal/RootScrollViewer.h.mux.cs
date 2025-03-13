@@ -11,7 +11,7 @@ internal partial class RootScrollViewer : ScrollViewer
 		m_isAllowImplicitStyle = true;
 	}
 
-	private void SetRootScrollContentPresenter(ScrollContentPresenter pScrollContentPresenter)
+	internal void SetRootScrollContentPresenter(ScrollContentPresenter pScrollContentPresenter)
 	{
 		Presenter = null;
 		Presenter = pScrollContentPresenter;
@@ -23,6 +23,7 @@ internal partial class RootScrollViewer : ScrollViewer
 
 	private protected override bool IsInputPaneShow => m_isInputPaneShow;
 
+#pragma warning disable CS0649
 	// Indicates the root ScrollViewer for InputPane
 	private bool m_isInputPaneShow;
 	private bool m_isInputPaneTransit;
