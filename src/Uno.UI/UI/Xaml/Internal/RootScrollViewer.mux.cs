@@ -12,68 +12,69 @@ internal partial class RootScrollViewer
 {
 	private void NotifyInputPaneStateChange(InputPaneState inputPaneState, Rect inputPaneBounds)
 	{
-		IApplicationBarService applicationBarService;
-		FlyoutMetadata spFlyoutMetadata;
-		IFlyoutBase spOpenFlyout;
-		FrameworkElement spOpenFlyoutPlacementTarget;
-		XamlRoot xamlRoot = XamlRoot.GetForElement(this);
-		bool isInputPaneShow = inputPaneState != InputPaneState.Hidden;
+		// TODO: MZ:
+//		ApplicationBarService applicationBarService;
+//		FlyoutMetadata spFlyoutMetadata;
+//		IFlyoutBase spOpenFlyout;
+//		FrameworkElement spOpenFlyoutPlacementTarget;
+//		XamlRoot xamlRoot = XamlRoot.GetForElement(this);
+//		bool isInputPaneShow = inputPaneState != InputPaneState.Hidden;
 
-		if (inputPaneState == InputPaneState.Showing || inputPaneState == InputPaneState.Hidden)
-		{
-			if (m_trElementScrollContentPresenter is ScrollContentPresenter scrollContentPresenter)
-			{
-				scrollContentPresenter.NotifyInputPaneStateChange(isInputPaneShow);
-			}
+//		if (inputPaneState == InputPaneState.Showing || inputPaneState == InputPaneState.Hidden)
+//		{
+//			if (m_trElementScrollContentPresenter is ScrollContentPresenter scrollContentPresenter)
+//			{
+//				scrollContentPresenter.NotifyInputPaneStateChange(isInputPaneShow);
+//			}
 
-			if (isInputPaneShow && !m_isInputPaneShow)
-			{
-				m_preInputPaneOffsetX = HorizontalOffset;
-				m_preInputPaneOffsetY = VerticalOffset;
-			}
+//			if (isInputPaneShow && !m_isInputPaneShow)
+//			{
+//				m_preInputPaneOffsetX = HorizontalOffset;
+//				m_preInputPaneOffsetY = VerticalOffset;
+//			}
 
-			if (isInputPaneShow)
-			{
-				// Set VerticalScrollMode/HorizontalScrollMode to Enabled so the content can be scrolled while the input pane is shown.
-				VerticalScrollMode = ScrollMode.Enabled;
-				HorizontalScrollMode = ScrollMode.Enabled;
-#if DBG
-            // IsVerticalRailEnabled/IsHorizontalRailEnabled are expected to be True
-            bool isRailEnabled = false;
-            get_IsVerticalRailEnabled(&isRailEnabled);
-            MUX_ASSERT(isRailEnabled);
-            get_IsHorizontalRailEnabled(&isRailEnabled);
-            MUX_ASSERT(isRailEnabled);
-#endif // DBG
-			}
-			else
-			{
-				// Disabled the ScrollMode when IHM is closed
-				VerticalScrollMode = ScrollMode.Disabled;
-				HorizontalScrollMode = ScrollMode.Disabled;
-			}
+//			if (isInputPaneShow)
+//			{
+//				// Set VerticalScrollMode/HorizontalScrollMode to Enabled so the content can be scrolled while the input pane is shown.
+//				VerticalScrollMode = ScrollMode.Enabled;
+//				HorizontalScrollMode = ScrollMode.Enabled;
+//#if DBG
+//            // IsVerticalRailEnabled/IsHorizontalRailEnabled are expected to be True
+//            bool isRailEnabled = false;
+//            get_IsVerticalRailEnabled(&isRailEnabled);
+//            MUX_ASSERT(isRailEnabled);
+//            get_IsHorizontalRailEnabled(&isRailEnabled);
+//            MUX_ASSERT(isRailEnabled);
+//#endif // DBG
+//			}
+//			else
+//			{
+//				// Disabled the ScrollMode when IHM is closed
+//				VerticalScrollMode = ScrollMode.Disabled;
+//				HorizontalScrollMode = ScrollMode.Disabled;
+//			}
 
-			if (xamlRoot is not null)
-			{
-				xamlRoot.TryGetApplicationBarService(applicationBarService);
+//			if (xamlRoot is not null)
+//			{
+//				xamlRoot.TryGetApplicationBarService(applicationBarService);
 
-				if (applicationBarService)
-				{
-					applicationBarService.OnBoundsChanged(true);
-				}
-			}
-		}
+//				if (applicationBarService)
+//				{
+//					applicationBarService.OnBoundsChanged(true);
+//				}
+//			}
+//		}
 
-		// Ensure Flyout size and position properly with showing/hiding IHM.
-		DXamlCore.GetCurrent().GetFlyoutMetadata(&spFlyoutMetadata);
-		MUX_ASSERT(spFlyoutMetadata != null);
-		spFlyoutMetadata.GetOpenFlyout(&spOpenFlyout, &spOpenFlyoutPlacementTarget);
-		if (spOpenFlyout)
-		{
-			spOpenFlyout.Cast<FlyoutBase>().NotifyInputPaneStateChange(inputPaneState, inputPaneBounds);
-		}
+//		// Ensure Flyout size and position properly with showing/hiding IHM.
+//		DXamlCore.GetCurrent().GetFlyoutMetadata(&spFlyoutMetadata);
+//		MUX_ASSERT(spFlyoutMetadata != null);
+//		spFlyoutMetadata.GetOpenFlyout(&spOpenFlyout, &spOpenFlyoutPlacementTarget);
+//		if (spOpenFlyout)
+//		{
+//			spOpenFlyout.Cast<FlyoutBase>().NotifyInputPaneStateChange(inputPaneState, inputPaneBounds);
+//		}
 
-		m_isInputPaneShow = isInputPaneShow;
+		//m_isInputPaneShow = isInputPaneShow;
 	}
 
 	/// <summary>
@@ -83,10 +84,11 @@ internal partial class RootScrollViewer
 	{
 		m_isInputPaneTransit = isInputPaneTransitionEnabled;
 
-		if (m_trElementScrollContentPresenter is ScrollContentPresenter scrollContentPresente)
-		{
-			scrollContentPresente.ApplyInputPaneTransition(isInputPaneTransitionEnabled);
-		}
+		// TODO: MZ:
+		//if (m_trElementScrollContentPresenter is ScrollContentPresenter scrollContentPresenter)
+		//{
+		//	scrollContentPresenter.ApplyInputPaneTransition(isInputPaneTransitionEnabled);
+		//}
 
 		// InputPane is hiding
 		if (!m_isInputPaneShow)
@@ -115,7 +117,7 @@ internal partial class RootScrollViewer
 	}
 
 	// Update the InputPane horizontal offset.
-	private void UpdateInputPaneOffsetX()
+	private protected override void UpdateInputPaneOffsetX()
 	{
 		if (m_isInputPaneTransit)
 		{
@@ -125,7 +127,7 @@ internal partial class RootScrollViewer
 	}
 
 	// Update the InputPane vertical offset.
-	private void UpdateInputPaneOffsetY()
+	private protected override void UpdateInputPaneOffsetY()
 	{
 		if (m_isInputPaneTransit)
 		{
@@ -135,7 +137,7 @@ internal partial class RootScrollViewer
 	}
 
 	// Update the InputPane transition status
-	private void UpdateInputPaneTransition()
+	private protected override void UpdateInputPaneTransition()
 	{
 		if (m_isInputPaneTransitionCompleted)
 		{
