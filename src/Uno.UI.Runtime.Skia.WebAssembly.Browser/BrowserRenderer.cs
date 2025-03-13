@@ -1,6 +1,7 @@
 ﻿using SkiaSharp;
 using MUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
+using Windows.Graphics.Display;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ internal partial class BrowserRenderer
 {
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
+	private DisplayInformation? _displayInformation;
 	private bool _isWindowInitialized;
 
 	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
@@ -81,7 +83,9 @@ internal partial class BrowserRenderer
 			_context.SetResourceCacheLimit(ResourceCacheBytes);
 		}
 
-		var scale = WebAssemblyManager.XamlRootMap.GetRootForHost(_host)?.RasterizationScale ?? 1;
+		_displayInformation ??= DisplayInformation.GetForCurrentView();
+
+		var scale = _displayInformation.RawPixelsPerViewPixel;
 
 		// get the new surface size
 		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
