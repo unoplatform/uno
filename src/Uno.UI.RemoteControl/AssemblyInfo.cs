@@ -2,4 +2,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
-[assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp")]
+[assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
