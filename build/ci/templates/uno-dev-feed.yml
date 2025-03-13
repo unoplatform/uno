@@ -5,7 +5,3 @@ steps:
 
   - pwsh: dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
     displayName: Add dev feed source
-
-  # To remove when SkiaSharp 3 will have been updated to 3.119 or later
-  - pwsh: dotnet nuget add source https://aka.ms/skiasharp-eap/index.json -n "SkiaSharp EAP"
-    displayName: Add SkiaSharp EAP feed source
