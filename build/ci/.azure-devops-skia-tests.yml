@@ -272,6 +272,7 @@ jobs:
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -314,7 +315,6 @@ jobs:
   variables:
     SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-    UnoEnableHRuntimeTests: true
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -426,7 +426,6 @@ jobs:
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
-      UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
 
   - task: PublishTestResults@2
     condition: always()
