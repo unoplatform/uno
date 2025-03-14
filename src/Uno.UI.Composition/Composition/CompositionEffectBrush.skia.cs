@@ -947,7 +947,7 @@ $$"""
 				}
 			}
 
-			return SKImageFilter.CreateMerge((ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.Mitchell), sourceFilter)], bounds);
+			return SKImageFilter.CreateMerge((ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), sourceFilter)], bounds);
 		}
 
 		return null;

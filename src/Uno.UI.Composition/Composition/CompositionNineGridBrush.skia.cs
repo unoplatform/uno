@@ -80,7 +80,7 @@ namespace Microsoft.UI.Composition
 					_offlineSurface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
 				}
 
-				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, new SKSamplingOptions(SKCubicResampler.Mitchell).Filter, _filterPaint);
+				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, new SKSamplingOptions(SKCubicResampler.CatmullRom).Filter, _filterPaint);
 
 				paint.IsAntialias = true;
 				paint.IsDither = true;

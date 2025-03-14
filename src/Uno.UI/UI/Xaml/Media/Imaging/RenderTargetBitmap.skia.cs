@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				var scaledBitmap = bitmap.Resize(
 					new SKImageInfo((int)scaledSize.Value.Width, (int)scaledSize.Value.Height, SKColorType.Bgra8888, SKAlphaType.Premul),
-					new SKSamplingOptions(SKCubicResampler.Mitchell));
+					new SKSamplingOptions(SKCubicResampler.CatmullRom));
 				bitmap.Dispose();
 				bitmap = scaledBitmap;
 				(width, height) = (bitmap.Width, bitmap.Height);
