@@ -388,6 +388,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 #if HAS_UNO_WINUI
 		[TestMethod]
+#else
+		[Ignore]
 #endif
 		public async Task VerifyUniformGridLayoutDoesntHangWhenTryingToScrollToStart()
 		{
