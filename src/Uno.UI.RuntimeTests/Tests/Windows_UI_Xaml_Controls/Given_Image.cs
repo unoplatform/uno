@@ -73,9 +73,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
 			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
-			Assert.AreEqual(new Rect(20, 41, 19, 19), greenBounds);
-			Assert.AreEqual(new Rect(44, 41, 19, 19), yellowBounds);
-			Assert.AreEqual(new Rect(68, 41, 11, 19), pinkBounds);
+			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
+			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
+			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
 		}
 
 #if __APPLE_UIKIT__
