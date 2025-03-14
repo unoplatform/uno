@@ -1256,10 +1256,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
 		internal string ProcessTextInput(string newText)
 		{
-			if (string.Equals(newText, Text, StringComparison.Ordinal))
-			{
-				return newText;
-			}
+			var isCurrentlyModifying = _isInputModifyingText;
 
 			try
 			{
@@ -1280,7 +1277,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			finally
 			{
-				_isInputModifyingText = false;
+				if (!isCurrentlyModifying)
+				{
+					// The all to ProcessTextInput may be recursing, we only want to restore
+					// the state on the last one.
+					_isInputModifyingText = false;
+				}
 			}
 
 			return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
