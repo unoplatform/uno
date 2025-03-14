@@ -727,7 +727,7 @@ jobs:
 ##
 
 - job: Android_Tests
-  displayName: 'Run Android Tests'
+  displayName: 'Run Skia Android Tests'
   dependsOn:
   - Skia_Tests_Build
 
@@ -814,12 +814,12 @@ jobs:
       chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
-    displayName: Run Android Tests
+    displayName: Run Skia Android Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME)/$(UITEST_RUNTIME_TEST_GROUP) Test Run'
+      testRunTitle: 'Skia Android Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
