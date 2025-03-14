@@ -70,10 +70,14 @@ namespace Uno.UI.Runtime.Skia.Win32
 		{
 			if (msg == UnoWin32DispatcherMsg)
 			{
+				Action action;
 				lock (_actions)
 				{
-					_actions.Dequeue().Invoke();
+					// It's important not to keep the lock when we invoke the action, as it will deadlock in some cases,
+					// specifically when running the Given_ListViewBase tests in a call to GC.WaitForPendingFinalizers.
+					action = _actions.Dequeue();
 				}
+				action.Invoke();
 				return new LRESULT(0);
 			}
 			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
