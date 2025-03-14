@@ -33,9 +33,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("TODO: Fix on other platforms")]
-#endif
 		[RequiresScaling(1f)]
 		public async Task When_Parent_Has_BorderThickness()
 		{
@@ -592,7 +589,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var skBitmapScaled = new SKBitmap(skBitmap.Info with { Width = 100, Height = 100 });
 
-			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, new SKSamplingOptions(SKCubicResampler.Mitchell)));
+			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, new SKSamplingOptions(SKCubicResampler.CatmullRom)));
 
 			for (int x = 0; x < 100; x++)
 			{
