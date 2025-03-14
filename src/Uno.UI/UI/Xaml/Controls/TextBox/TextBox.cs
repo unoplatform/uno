@@ -1256,6 +1256,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
 		internal string ProcessTextInput(string newText)
 		{
+			if (string.Equals(newText, Text, StringComparison.Ordinal))
+			{
+				return newText;
+			}
+
 			try
 			{
 				_isInputModifyingText = true;
