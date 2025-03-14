@@ -53,10 +53,12 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
+#if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
 			windowType = WindowType.CoreWindow;
 		}
+#endif
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
