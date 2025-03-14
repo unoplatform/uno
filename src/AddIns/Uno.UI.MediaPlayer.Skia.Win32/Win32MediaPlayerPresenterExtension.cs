@@ -19,7 +19,11 @@ using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 
-[assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension), "windows", typeof(MediaPlayerPresenter))]
+[assembly: ApiExtension(
+	typeof(IMediaPlayerPresenterExtension),
+	typeof(Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension),
+	ownerType: typeof(MediaPlayerPresenter),
+	operatingSystemCondition: "windows")]
 
 namespace Uno.UI.MediaPlayer.Skia.Win32;
 
