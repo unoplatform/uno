@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition;
 public partial class Compositor
 {
 	private List<CompositionAnimation> _runningAnimations = new();
-	private List<ColorBrushTransitionState> _backgroundTransitions = new();
+	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
 
 	static partial void Initialize()
 	{
@@ -39,11 +39,14 @@ public partial class Compositor
 
 	internal void DeactivateBackgroundTransition(BorderVisual visual)
 	{
-		for (int i = 0; i < _backgroundTransitions.Count; i++)
+		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{
-			if (_backgroundTransitions[i].Visual == visual)
+			var transition = current.Value;
+			var transitionVisual = transition.Visual;
+
+			if (transitionVisual == visual)
 			{
-				_backgroundTransitions[i] = _backgroundTransitions[i] with { IsActive = false };
+				current.Value = transition with { IsActive = false };
 				break;
 			}
 		}
@@ -54,9 +57,11 @@ public partial class Compositor
 		var start = TimestampInTicks;
 		var end = start + duration.Ticks;
 
-		for (int i = 0; i < _backgroundTransitions.Count; i++)
+		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{
-			var transition = _backgroundTransitions[i];
+			var transition = current.Value;
+			var transitionVisual = transition.Visual;
+
 			if (transition.Visual == visual)
 			{
 				// when the background changes when already in a transition, the new transition
@@ -66,17 +71,17 @@ public partial class Compositor
 
 				if (!transition.IsActive)
 				{
-					_backgroundTransitions[i] = transition with { IsActive = true };
+					current.Value = transition with { IsActive = true };
 					return;
 				}
 
 				fromColor = transition.CurrentColor;
-				_backgroundTransitions.RemoveAt(i);
+				_backgroundTransitions.Remove(current);
 				break;
 			}
 		}
 
-		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end, true));
+		_backgroundTransitions.AddLast(new ColorBrushTransitionState(visual, fromColor, toColor, start, end, true));
 	}
 
 	internal bool TryGetEffectiveBackgroundColor(CompositionSpriteShape shape, out Color color)
@@ -115,9 +120,20 @@ public partial class Compositor
 
 		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
 
-		var removedCount = _backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
+		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
+		{
+			var transition = current.Value;
+			var transitionVisual = transition.Visual;
 
-		if (_runningAnimations.Count > 0 || _backgroundTransitions.Count > 0 || removedCount > 0)
+			transitionVisual.InvalidatePaint();
+
+			if (TimestampInTicks >= transition.EndTimestamp)
+			{
+				_backgroundTransitions.Remove(current);
+			}
+		}
+
+		if (_runningAnimations.Count > 0)
 		{
 			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
 		}
