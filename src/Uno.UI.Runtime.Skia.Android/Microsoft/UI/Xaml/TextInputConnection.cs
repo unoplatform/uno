@@ -395,7 +395,7 @@ class TextInputConnection : BaseInputConnection
 		if (composingStart >= 0 && composingEnd > composingStart)
 		{
 			_cursorAnchorInfoBuilder.SetComposingText(
-				composingStart, _editable.ToString().Substring(composingStart, composingEnd));
+				composingStart, _editable.SubSequence(composingStart, composingEnd));
 		}
 		else
 		{
