@@ -26,6 +26,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TimePicker
 	{
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_TimePickerFlyout_Placed_Outside_Window()
+		{
+			var btn = new Button
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Content = "Open Flyout",
+				Flyout = new TimePickerFlyout()
+			};
+
+			await UITestHelper.Load(btn);
+			btn.ProgrammaticClick();
+			await UITestHelper.WaitForIdle();
+
+			var presenter = (TimePickerFlyoutPresenter)VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot)[0].Child;
+			Assert.IsTrue(presenter.GetAbsoluteBoundsRect().IntersectWith(TestServices.WindowHelper.XamlRoot.VisualTree.VisibleBounds).Equals(presenter.GetAbsoluteBoundsRect()));
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_MinuteIncrement_In_Range_Should_Be_Set_Properly()
 		{
