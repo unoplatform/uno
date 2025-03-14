@@ -742,7 +742,7 @@ jobs:
   strategy:
     matrix:
 
-      Android_9.0_RuntimeTests_0_net8:
+      'Runtime Tests 0':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -752,7 +752,7 @@ jobs:
         TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_RuntimeTests_1_net8:
+      'Runtime Tests 1':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -762,7 +762,7 @@ jobs:
         TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_RuntimeTests_2_net8:
+      'Runtime Tests 2':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -772,7 +772,7 @@ jobs:
         TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_RuntimeTests_3_net8:
+      'Runtime Tests 3':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
@@ -782,7 +782,7 @@ jobs:
         TARGETPLATFORM_NAME: net9
         UITEST_TEST_TIMEOUT: '2600s'
 
-      Android_9.0_RuntimeTests_4_net8:
+      'Runtime Tests 4':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
