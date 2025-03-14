@@ -275,8 +275,9 @@ class TextInputConnection : BaseInputConnection
 					|| evt.KeyCode == Keycode.NumpadEnter)
 				&& (InputTypes.TextFlagMultiLine & _editorInfo.InputType) == 0)
 			{
-				PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
-				return true;
+				// editor actions are not supported yet
+				// PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
+				return false;
 			}
 			else
 			{
