@@ -28,8 +28,6 @@ kind/documentation:
 
 area/skia ✏️:
   - '**/*.skia.cs'
-  - src/Uno.UI.Runtime.Skia.Gtk/*
-  - src/Uno.UI.Runtime.Skia.Gtk/**/*
   - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/*
   - src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/**/*
   - src/Uno.UI.Runtime.Skia.Tizen/*

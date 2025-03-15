@@ -11,7 +11,7 @@ In principle, the native control hosting places the native control in an overlay
 > [!NOTE]
 > As of Uno Platform 5.2, X11 and macOS targets does not yet support native controls embedding.
 
-## Using embedded native controls (Skia.Gtk)
+## Using embedded native controls (Skia.Gtk legacy)
 
 To embedded native controls in your Skia heads, you will need to set the native control as `Content` of a `ContentControl`, either via code or XAML.
 

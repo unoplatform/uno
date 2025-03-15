@@ -25,7 +25,11 @@ using Thread = System.Threading.Thread;
 using Value = JavaScript.Value;
 using Window = Gtk.Window;
 
-[assembly: ApiExtension(typeof(INativeWebViewProvider), typeof(Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider), "linux", typeof(CoreWebView2))]
+[assembly: ApiExtension(
+	typeof(INativeWebViewProvider),
+	typeof(Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider),
+	ownerType: typeof(CoreWebView2),
+	operatingSystemCondition: "linux")]
 
 namespace Uno.UI.WebView.Skia.X11;
 

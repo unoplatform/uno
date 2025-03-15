@@ -21,7 +21,7 @@ namespace UnoApp50
 		/// <summary>
 		/// Configures global Uno Platform logging.
 		/// </summary>
-		private static void InitializeLogging()
+		internal static void InitializeLogging()
 		{
 			// Logging is disabled by default for release builds, as it incurs a significant
 			// initialization cost from Microsoft.Extensions.Logging setup. If startup performance

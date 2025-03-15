@@ -65,7 +65,6 @@
     <PackageVersion Include="Uno.WinUI" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.Lottie" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" />
-    <PackageVersion Include="Uno.WinUI.Skia.Gtk" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.Skia.Wpf" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.WebAssembly" Version="$(UnoVersion)" />
