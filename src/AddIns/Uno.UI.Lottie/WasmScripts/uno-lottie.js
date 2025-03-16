@@ -27,7 +27,7 @@ var Uno;
             }
             static stop(elementId) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         const a = currentAnimation.animation;
                         a.stop();
@@ -38,7 +38,7 @@ var Uno;
             }
             static play(elementId, fromProgress, toProgress, looped) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         const a = currentAnimation.animation;
                         a.loop = looped;
@@ -54,7 +54,7 @@ var Uno;
             }
             static kill(elementId) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         currentAnimation.animation.destroy();
                         delete Lottie._runningAnimations[elementId];
@@ -64,7 +64,7 @@ var Uno;
             }
             static pause(elementId) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         const a = currentAnimation.animation;
                         a.pause();
@@ -75,7 +75,7 @@ var Uno;
             }
             static resume(elementId) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         const a = currentAnimation.animation;
                         a.play();
@@ -86,7 +86,7 @@ var Uno;
             }
             static setProgress(elementId, progress) {
                 Lottie.withPlayer(p => {
-                    let currentAnimation = Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
                     if (currentAnimation) {
                         const animation = currentAnimation.animation;
                         let frame = Lottie._numberOfFrames * progress;
@@ -200,7 +200,7 @@ var Uno;
                     loop: true,
                     autoplay: properties.autoplay,
                     name: `Lottie-${properties.elementId}`,
-                    renderer: "svg",
+                    renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
                     container: containerElement,
                     rendererSettings: {
                         // https://github.com/airbnb/lottie-web/wiki/Renderer-Settings
