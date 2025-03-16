@@ -48,7 +48,11 @@ public class NativeWebView : UIElement, INativeWebView
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
-	public Task<string> ExecuteScriptAsync(string script, CancellationToken token) => Task.FromResult(NativeMethods.ExecuteScript(HtmlId, script));
+	public async Task<string> ExecuteScriptAsync(string script, CancellationToken token)
+	{
+		await Task.Yield();
+		return NativeMethods.ExecuteScript(HtmlId, script);
+	}
 
 	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
 
