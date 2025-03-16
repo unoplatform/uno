@@ -11,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_WebView
+public class Given_WebView2
 {
 	[TestMethod]
 	public async Task When_InvokeScriptAsync()
@@ -37,11 +37,13 @@ public class Given_WebView
 			// may be set to true too early on wasm.
 			color = await webView.ExecuteScriptAsync(
 				"""
-				let testElement = document.getElementById('test');
-				if(testElement){
-					return testElement.style.backgroundColor.toString();
-				}
-				return "";
+				(function () {
+					let testElement = document.getElementById('test');
+					if(testElement){
+						return testElement.style.backgroundColor.toString();
+					}
+					return "";
+				})()
 				""");
 
 		} while (sw.Elapsed < TimeSpan.FromSeconds(5) && string.IsNullOrEmpty(color));
