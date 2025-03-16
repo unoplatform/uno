@@ -63,9 +63,12 @@ namespace Uno.UI {
 
 		public static stop(elementId: number): string {
 			Lottie.withPlayer(p => {
-				const a = Lottie._runningAnimations[elementId].animation;
-				a.stop();
-				Lottie.raiseState(a);
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation) {
+					const a = currentAnimation.animation;
+					a.stop();
+					Lottie.raiseState(a);					
+				}
 			});
 
 			return "ok";
@@ -73,16 +76,19 @@ namespace Uno.UI {
 
 		public static play(elementId: number, fromProgress: number, toProgress: number, looped: boolean): string {
 			Lottie.withPlayer(p => {
-				const a = Lottie._runningAnimations[elementId].animation;
-				a.loop = looped;
-
-				const fromFrame = fromProgress * Lottie._numberOfFrames;
-				const toFrame = toProgress * Lottie._numberOfFrames;
-
-				//Set forceFlag to true in order to force animation to start right away
-				//Ensures calling play multiple times in quick succession plays the animation properly
-				a.playSegments([fromFrame, toFrame], true);
-				Lottie.raiseState(a);
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation){
+					const a = currentAnimation.animation;
+					a.loop = looped;
+	
+					const fromFrame = fromProgress * Lottie._numberOfFrames;
+					const toFrame = toProgress * Lottie._numberOfFrames;
+	
+					//Set forceFlag to true in order to force animation to start right away
+					//Ensures calling play multiple times in quick succession plays the animation properly
+					a.playSegments([fromFrame, toFrame], true);
+					Lottie.raiseState(a);
+				}
 			});
 
 			return "ok";
@@ -90,8 +96,11 @@ namespace Uno.UI {
 
 		public static kill(elementId: number): string {
 			Lottie.withPlayer(p => {
-				Lottie._runningAnimations[elementId].animation.destroy();
-				delete Lottie._runningAnimations[elementId];
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation) {
+					currentAnimation.animation.destroy();
+					delete Lottie._runningAnimations[elementId];
+				}
 			});
 
 			return "ok";
@@ -99,9 +108,12 @@ namespace Uno.UI {
 
 		public static pause(elementId: number): string {
 			Lottie.withPlayer(p => {
-				const a = Lottie._runningAnimations[elementId].animation;
-				a.pause();
-				Lottie.raiseState(a);
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation) {
+					const a = currentAnimation.animation;
+					a.pause();
+					Lottie.raiseState(a);
+				}
 			});
 
 			return "ok";
@@ -109,9 +121,12 @@ namespace Uno.UI {
 
 		public static resume(elementId: number): string {
 			Lottie.withPlayer(p => {
-				const a = Lottie._runningAnimations[elementId].animation;
-				a.play();
-				Lottie.raiseState(a);
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation) {
+					const a = currentAnimation.animation;
+					a.play();
+					Lottie.raiseState(a);					
+				}
 			});
 
 			return "ok";
@@ -119,16 +134,18 @@ namespace Uno.UI {
 
 		public static setProgress(elementId: number, progress: number): string {
 			Lottie.withPlayer(p => {
-				const animation = Lottie._runningAnimations[elementId].animation;
-				let frame = Lottie._numberOfFrames * progress;
-				if (frame < (animation as any).firstFrame) {
-					frame = frame - (animation as any).firstFrame
-				} else {
-					frame = animation.getDuration(true) * progress;
+				const currentAnimation = Lottie._runningAnimations[elementId];
+				if (currentAnimation) {
+					const animation = currentAnimation.animation;
+					let frame = Lottie._numberOfFrames * progress;
+					if (frame < (animation as any).firstFrame) {
+						frame = frame - (animation as any).firstFrame
+					} else {
+						frame = animation.getDuration(true) * progress;
+					}
+					animation.goToAndStop(frame, true);
+					Lottie.raiseState(animation);
 				}
-				animation.goToAndStop(frame, true);
-				Lottie.raiseState(animation);
-
 			});
 
 			return "ok";
