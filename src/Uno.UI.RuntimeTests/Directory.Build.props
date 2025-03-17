@@ -1,0 +1,5 @@
+﻿<Project>
+	<PropertyGroup>
+		<UnoGenerateXamlSourcesProvider>True</UnoGenerateXamlSourcesProvider>
+	</PropertyGroup>
+</Project>
