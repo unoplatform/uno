@@ -117,8 +117,17 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}), NativeDispatcherPriority.Normal);
 
 		// This will keep running until the event loop has no queued actions left and all the windows are closed
-		while (Win32EventLoop.RunOnce() || !_allWindowsClosed) { }
-		return Task.CompletedTask;
+		while (true)
+		{
+			while (Win32EventLoop.RunOnce()) { }
+
+			if (_allWindowsClosed)
+			{
+				return Task.CompletedTask;
+			}
+
+			SpinWait.SpinUntil(Win32EventLoop.HasMessages);
+		}
 	}
 
 	internal static void RegisterWindow(HWND hwnd)
