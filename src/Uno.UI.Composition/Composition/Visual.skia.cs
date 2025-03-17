@@ -331,7 +331,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					_picture = _recorder.EndRecording();
 				}
 
-				session.Canvas.DrawPicture(_picture);
+				session.Canvas.DrawPicture(_picture, new SKPaint() { ColorFilter = session.OpacityColorFilter });
 			}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
