@@ -6,6 +6,7 @@ using Windows.Media.Capture;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.UI.Helpers;
 
 namespace UITests.Windows_Media;
 
@@ -17,7 +18,7 @@ public sealed partial class CameraCaptureUISample : Page
 		this.InitializeComponent();
 	}
 
-	private bool IsTargetSupported() => OperatingSystem.IsIOS() || OperatingSystem.IsAndroid();
+	private bool IsTargetSupported() => DeviceTargetHelper.IsMobile();
 
 	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
 	{
