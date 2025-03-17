@@ -18,7 +18,12 @@ public sealed partial class CameraCaptureUISample : Page
 		this.InitializeComponent();
 	}
 
-	private bool IsTargetSupported() => DeviceTargetHelper.IsMobile();
+	private bool IsTargetSupported() =>
+#if HAS_UNO
+		DeviceTargetHelper.IsMobile();
+#else
+		true;
+#endif
 
 	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
 	{
