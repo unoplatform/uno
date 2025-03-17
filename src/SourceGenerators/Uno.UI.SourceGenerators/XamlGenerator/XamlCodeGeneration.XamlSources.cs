@@ -143,15 +143,17 @@ partial class XamlCodeGeneration
 				writer.AppendLine();
 				writer.AppendLineInvariantIndented("#region Sources for {0}", f.FilePath);
 
+				var rawStringDelimiter = GetRawStringDelimiter(f.Content.AsSpan());
+
 				using (writer.BlockInvariant("private static (string hash, string payload) GetSources_{0}()", f.UniqueID))
 				{
 					writer.AppendLineIndented("return (");
 					using (writer.Indent())
 					{
 						writer.AppendLineInvariantIndented("\"{0}\", // hash", f.Checksum);
-						writer.AppendLineIndented("_utf8.GetString(\"\"\"");
+						writer.AppendLineInvariantIndented("_utf8.GetString({0}", rawStringDelimiter);
 						writer.AppendMultiLineIndented(f.Content);
-						writer.AppendLineIndented("\"\"\"u8)); // Stored as UTF8 to minimize impact on assembly size / limitations"); // Is there a better way to do this?
+						writer.AppendLineInvariantIndented("{0}u8)); // Stored as UTF8 to minimize impact on assembly size / limitations", rawStringDelimiter);
 					}
 				}
 				writer.AppendLineIndented("#endregion");
@@ -159,5 +161,41 @@ partial class XamlCodeGeneration
 		}
 
 		return new StringBuilderBasedSourceText(writer.Builder);
+	}
+
+	private static string GetRawStringDelimiter(ReadOnlySpan<char> content)
+	{
+		var nbQuotes = 3; // Minimum triple quotes
+
+		var i = 0;
+		while (i < content.Length)
+		{
+			// Find the next occurrence of a quote
+			var nextQuote = content.Slice(i).IndexOf('"');
+			if (nextQuote == -1)
+			{
+				break; // No more quotes to process
+			}
+
+			i += nextQuote; // Move to the found quote
+
+			var start = i;
+			while (i + 1 < content.Length && content[i + 1] == '"')
+			{
+				i++;
+			}
+
+			var count = i - start + 1 + 1; // +1 for the zero-based index, +1 for the number of quotes required for escaping
+			if (count > nbQuotes)
+			{
+				nbQuotes = count;
+			}
+
+			i++; // Move to the next character after the quote sequence
+		}
+
+		return nbQuotes == 3
+			? "\"\"\"" // No need to escape, use triple quotes
+			: new string('"', nbQuotes);
 	}
 }
