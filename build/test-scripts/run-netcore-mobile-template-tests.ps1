@@ -40,7 +40,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-ios", ""),
         @("Mobile", "-f:net8.0-maccatalyst", ""),
         @("Wasm", "", ""),
-        @("Skia.Gtk", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )
 
@@ -56,7 +55,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-maccatalyst", ""),
         @("Wasm", "", ""),
         @("Server", "", ""),
-        @("Skia.Gtk", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )
 
@@ -195,7 +193,6 @@ $projects =
     # 5.1 Blank
     #
     @(1, "5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", @("macOS", "NetCore")),
-    @(1, "5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", @("macOS", "NetCore")),
     @(1, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", @("macOS", "NetCore")),
     @(1, "5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", @("NetCore")),
     @(1, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", @("NetCore")),
@@ -211,7 +208,6 @@ $projects =
     # disabled on windows until android 35 is supported in the installed VS instance
     # @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", @()),
 
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", @("macOS", "NetCore")),
     @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", @("macOS", "NetCore")),
     @(1, "5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", @("NetCore")),
     @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", @("NetCore")),

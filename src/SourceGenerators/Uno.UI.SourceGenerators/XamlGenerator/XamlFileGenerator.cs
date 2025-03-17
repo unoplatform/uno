@@ -617,7 +617,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else if (registration.Length == 4)
 				{
-					writer.AppendLineIndented($"if (OperatingSystem.IsOSPlatform({registration.ElementAt(2).Value}))");
+					writer.AppendLineIndented($"if (OperatingSystem.IsOSPlatform(\"{registration.ElementAt(3).Value}\"))");
 					writer.AppendLineIndented("{");
 					using (writer.Indent())
 					{

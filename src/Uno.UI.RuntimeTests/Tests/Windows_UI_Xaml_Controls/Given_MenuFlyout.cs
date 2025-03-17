@@ -405,6 +405,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var flyout = (MenuFlyout)button.Flyout;
 			var subItem = (MenuFlyoutSubItem)flyout.Items.Single();
+			await WindowHelper.WaitForLoaded(subItem);
 			try
 			{
 				subItem.Open();

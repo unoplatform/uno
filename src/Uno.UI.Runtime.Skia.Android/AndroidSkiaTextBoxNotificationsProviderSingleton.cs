@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Android.Text;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -21,7 +22,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (UnoSKCanvasView.Instance is { } canvasView)
 		{
-			canvasView.TextInputPlugin.ShowTextInput(InputTypes.TextVariationNormal/*TODO: Properly provide this based on textBox.InputScope. This should also respect AcceptsReturn and IsSpellCheckEnabled*/);
+			canvasView.TextInputPlugin.ShowTextInput(textBox);
 			canvasView.TextInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}

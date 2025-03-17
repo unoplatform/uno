@@ -2,11 +2,11 @@
 	<PropertyGroup>
 		<!-- Ensure that the app logs the console -->
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
-		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Gtk/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
 
 		<!-- CI runtime test job -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
@@ -47,7 +47,6 @@
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
-		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.8.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.7" />
@@ -56,8 +55,8 @@
 		-->
 	</ItemGroup>
 	
-	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
 
