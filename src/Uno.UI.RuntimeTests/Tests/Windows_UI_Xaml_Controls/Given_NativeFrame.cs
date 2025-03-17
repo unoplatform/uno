@@ -51,7 +51,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.GoBack();
 
-			await SUT.WaitForPages(1);
+			await SUT.WaitForPages(2);
 		}
 
 
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.GoBack();
 
-			await SUT.WaitForPages(1);
+			await SUT.WaitForPages(2); // the 2 pages are page 1 and page 3
 		}
 #endif
 #if __IOS__
