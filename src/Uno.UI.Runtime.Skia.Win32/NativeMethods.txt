@@ -171,10 +171,12 @@ MonitorFromWindow
 OleInitialize
 OpenClipboard
 PeekMessage
+PostMessage
 RegGetValue
 RegisterClassEx
 RegisterDragDrop
 RegisterTouchWindow
+RegisterWindowMessage
 RegNotifyChangeKeyValue
 RegOpenKeyEx
 ReleaseDC
