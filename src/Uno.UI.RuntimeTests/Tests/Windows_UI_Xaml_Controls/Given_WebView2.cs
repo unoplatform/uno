@@ -48,13 +48,13 @@ public class Given_WebView2
 
 		} while (sw.Elapsed < TimeSpan.FromSeconds(5) && string.IsNullOrEmpty(color));
 
-		Assert.AreEqual("blue", color);
+		Assert.AreEqual("\"blue\"", color);
 
 		// Change color to red
 		await webView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor = 'red'");
 		color = await webView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor.toString()");
 
-		Assert.AreEqual("red", color);
+		Assert.AreEqual("\"red\"", color);
 	}
 }
 #endif

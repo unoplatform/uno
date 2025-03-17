@@ -51,7 +51,10 @@ public class NativeWebView : UIElement, INativeWebView
 	public async Task<string> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		await Task.Yield();
-		return NativeMethods.ExecuteScript(HtmlId, script);
+		var result = NativeMethods.ExecuteScript(HtmlId, script);
+
+		// String needs to be wrapped in quotes to match Windows behavior
+		return $"\"{result.Replace("\"", "\\\"")}\"";
 	}
 
 	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
