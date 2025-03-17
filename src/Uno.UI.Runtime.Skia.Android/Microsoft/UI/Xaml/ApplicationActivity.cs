@@ -31,6 +31,7 @@ using Uno.UI.Helpers;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.Storage.Pickers;
 using AndroidX.Activity;
+using Windows.Extensions;
 
 
 namespace Microsoft.UI.Xaml
@@ -81,6 +82,8 @@ namespace Microsoft.UI.Xaml
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
+
+			Uno.UI.Extensions.PermissionsHelper.Initialize();
 		}
 
 		public override void OnAttachedToWindow()
