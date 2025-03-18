@@ -1,0 +1,6 @@
+﻿<Project>
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+	<PropertyGroup>
+		<UnoGenerateXamlSourcesProvider>True</UnoGenerateXamlSourcesProvider>
+	</PropertyGroup>
+</Project>
