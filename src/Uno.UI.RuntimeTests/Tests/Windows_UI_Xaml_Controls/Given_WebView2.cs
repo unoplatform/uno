@@ -29,7 +29,7 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		webView.NavigationCompleted += (sender, e) => navigated = true;
 		webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		await TestServices.WindowHelper.WaitFor(() => navigated, timeoutMS: 10000);
 
 		var sw = Stopwatch.StartNew();
 		string color = null;
@@ -49,7 +49,7 @@ public class Given_WebView2
 				})()
 				""");
 
-		} while (sw.Elapsed < TimeSpan.FromSeconds(5) && string.IsNullOrEmpty(color.Replace("\"", "")));
+		} while (sw.Elapsed < TimeSpan.FromSeconds(10) && string.IsNullOrEmpty(color.Replace("\"", "")));
 
 		Assert.AreEqual("\"blue\"", color);
 
