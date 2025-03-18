@@ -218,7 +218,9 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 
-		internal Manipulation PendingManipulation => _manipulation;
+#nullable enable
+		internal Manipulation? PendingManipulation => _manipulation;
+#nullable restore
 		#endregion
 
 		#region Tap (includes DoubleTap and RightTap)

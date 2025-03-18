@@ -92,8 +92,6 @@ namespace Microsoft.UI.Xaml
 				var oldMode = (ManipulationModes)args.OldValue;
 				var newMode = (ManipulationModes)args.NewValue;
 
-				newMode.LogIfNotSupported(elt.Log());
-
 				elt.UpdateManipulations(newMode, elt.HasManipulationHandler);
 				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
