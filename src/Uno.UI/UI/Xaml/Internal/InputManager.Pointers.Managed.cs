@@ -195,7 +195,7 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirected(args.CurrentPoint.Pointer))
+			if (IsRedirectedToDirectManipulation(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
@@ -261,7 +261,7 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirected(args.CurrentPoint.Pointer))
+			if (IsRedirectedToDirectManipulation(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
@@ -281,7 +281,7 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirected(args.CurrentPoint.Pointer))
+			if (IsRedirectedToDirectManipulation(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
@@ -326,7 +326,7 @@ internal partial class InputManager
 				return;
 			}
 
-			if (TryRedirectPointerPress(args))
+			if (TryRedirectPressToDirectManipulation(args))
 			{
 				return;
 			}
@@ -352,7 +352,7 @@ internal partial class InputManager
 			_pressedElements[routedArgs.Pointer] = originalSource;
 			var result = Raise(Pressed, originalSource, routedArgs);
 
-			TryRedirectPointerPress2(args);
+			EndPressForDirectManipulation(args);
 
 			args.DispatchResult = result;
 		}
@@ -366,7 +366,7 @@ internal partial class InputManager
 				return;
 			}
 
-			if (TryRedirectPointerRelease(args))
+			if (TryRedirectReleaseToDirectManipulation(args))
 			{
 				return;
 			}
@@ -420,14 +420,14 @@ internal partial class InputManager
 					break;
 			}
 
-			TryClearPointerRedirection(args.CurrentPoint.Pointer);
+			TryClearDirectManipulationRedirection(args.CurrentPoint.Pointer);
 
 			args.DispatchResult = result;
 		}
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (TryRedirectPointerMove(args))
+			if (TryRedirectMoveToDirectManipulation(args))
 			{
 				return;
 			}
@@ -499,7 +499,7 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
 		{
-			if (TryClearPointerRedirection(args.CurrentPoint.Pointer))
+			if (TryClearDirectManipulationRedirection(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
