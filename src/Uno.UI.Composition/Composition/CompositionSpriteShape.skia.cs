@@ -47,7 +47,7 @@ namespace Microsoft.UI.Composition
 
 					fillPaint.Reset();
 
-					PrepareTempPaint(fillPaint, isStroke: false);
+					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -87,8 +87,8 @@ namespace Microsoft.UI.Composition
 					fillPaint.Reset();
 					strokePaint.Reset();
 
-					PrepareTempPaint(fillPaint, isStroke: false);
-					PrepareTempPaint(strokePaint, isStroke: true);
+					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
+					PrepareTempPaint(strokePaint, isStroke: true, session.OpacityColorFilter);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -138,15 +138,18 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private static void PrepareTempPaint(SKPaint paint, bool isStroke)
+		private static void PrepareTempPaint(SKPaint paint, bool isStroke, SKColorFilter? colorFilter)
 		{
 			paint.IsAntialias = true;
+			paint.ColorFilter = colorFilter;
 
 			paint.IsStroke = isStroke;
 
 			// uno-specific defaults
 			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
 			paint.IsAntialias = true;
+
+			paint.ColorFilter = colorFilter;
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -202,7 +205,7 @@ namespace Microsoft.UI.Composition
 
 					strokePaint.Reset();
 
-					PrepareTempPaint(strokePaint, isStroke: true);
+					PrepareTempPaint(strokePaint, isStroke: true, null);
 
 					strokePaint.StrokeWidth = StrokeThickness;
 

@@ -99,11 +99,14 @@ public class Given_AcrylicBrush
 	{
 		// making sure the viewport is big enough for elements to fully render (and also accounting for DPI calculations)
 		var expectedElm = new Grid { Width = 500, Height = 500, Children = { expected }, Background = new SolidColorBrush(Windows.UI.Colors.White) };
-		await UITestHelper.Load(expectedElm);
-		var expectedImg = await UITestHelper.ScreenShot(expectedElm);
-
 		var actualElm = new Grid { Width = 500, Height = 500, Children = { actual }, Background = new SolidColorBrush(Windows.UI.Colors.White) };
-		await UITestHelper.Load(actualElm);
+		await UITestHelper.Load(new StackPanel()
+		{
+			Spacing = 10,
+			Orientation = Orientation.Horizontal,
+			Children = { actualElm, expectedElm }
+		});
+		var expectedImg = await UITestHelper.ScreenShot(expectedElm);
 		var actualImg = await UITestHelper.ScreenShot(actualElm);
 
 		return (expectedImg, actualImg);

@@ -516,7 +516,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: scbColor.R,
 							green: scbColor.G,
 							blue: scbColor.B,
-							alpha: (byte)(scbColor.A * scb.Opacity));
+							alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
 					}
 					else if (inline.Foreground is GradientBrush gb)
 					{
@@ -525,7 +525,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: gbColor.R,
 							green: gbColor.G,
 							blue: gbColor.B,
-							alpha: (byte)(gbColor.A));
+							alpha: (byte)(gbColor.A * session.Opacity));
 					}
 					else if (inline.Foreground is XamlCompositionBrushBase xcbb)
 					{
@@ -534,7 +534,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: gbColor.R,
 							green: gbColor.G,
 							blue: gbColor.B,
-							alpha: gbColor.A);
+							alpha: (byte)(gbColor.A * session.Opacity));
 					}
 
 					// TODO: Consider using a stackalloc for small values of GlyphsLength.

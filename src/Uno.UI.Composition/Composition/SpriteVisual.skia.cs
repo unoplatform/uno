@@ -49,6 +49,8 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 
+			_paint.ColorFilter = session.OpacityColorFilter;
+
 			if (Brush is CompositionEffectBrush { HasBackdropBrushInput: true })
 			{
 				session.Canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _paint.ImageFilter });
