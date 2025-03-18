@@ -14,6 +14,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_WebView2
 {
 	[TestMethod]
+#if __SKIA__
+	[Ignore("WebView2 is not yet supported on skia targets")]
+#endif
 	public async Task When_InvokeScriptAsync()
 	{
 		var border = new Border();
@@ -46,7 +49,7 @@ public class Given_WebView2
 				})()
 				""");
 
-		} while (sw.Elapsed < TimeSpan.FromSeconds(5) && string.IsNullOrEmpty(color));
+		} while (sw.Elapsed < TimeSpan.FromSeconds(5) && string.IsNullOrEmpty(color.Replace("\"", "")));
 
 		Assert.AreEqual("\"blue\"", color);
 
