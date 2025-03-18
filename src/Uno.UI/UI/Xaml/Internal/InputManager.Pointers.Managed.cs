@@ -793,10 +793,9 @@ internal partial class InputManager
 		private static void Trace(string text)
 		{
 			_log.Trace(text);
-			Debug.WriteLine(text);
 
 		}
-#endregion
+		#endregion
 	}
 }
 #endif
