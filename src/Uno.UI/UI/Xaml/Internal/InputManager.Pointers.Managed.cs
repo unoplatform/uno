@@ -1,9 +1,11 @@
 ﻿#if UNO_HAS_MANAGED_POINTERS
+//#define TRACE_HIT_TESTING // Note: this should also be set in the VisualTreeHelper.cs file
 #nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -193,31 +195,15 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			if (IsRedirected(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
 
 			var (originalSource, _) = HitTest(args);
-
-			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerWheel ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerWheelChanged [{originalSource.GetDebugName()}]");
 			}
 
 #if __SKIA__ // Currently, only Skia supports interaction tracker.
@@ -244,7 +230,7 @@ internal partial class InputManager
 			var result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
-			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
+			(originalSource, var staleBranch) = HitTest(args, reason: "after_wheel", isStale: _isOver);
 			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			// Second raise the PointerExited events on the stale branch
@@ -255,7 +241,7 @@ internal partial class InputManager
 				if (leaveResult is { VisualTreeAltered: true })
 				{
 					// The visual tree has been modified in a way that requires performing a new hit test.
-					originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+					originalSource = HitTest(args, reason: "after_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
 				}
 			}
 
@@ -275,31 +261,15 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			if (IsRedirected(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
 
 			var (originalSource, _) = HitTest(args);
-
-			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerEntered ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerEntered [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -311,7 +281,7 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			if (IsRedirected(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
@@ -329,19 +299,9 @@ internal partial class InputManager
 			}
 
 			var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
-			if (overBranchLeaf is null)
+			if (!ValidateSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerExited ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -361,16 +321,7 @@ internal partial class InputManager
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			// If 2+ mouse buttons are pressed, we only respond to the first.
-			var buttonsPressed = 0;
-			var properties = args.CurrentPoint.Properties;
-			if (properties.IsLeftButtonPressed) { buttonsPressed++; }
-			if (properties.IsRightButtonPressed) { buttonsPressed++; }
-			if (properties.IsMiddleButtonPressed) { buttonsPressed++; }
-			if (properties.IsXButton1Pressed) { buttonsPressed++; }
-			if (properties.IsXButton2Pressed) { buttonsPressed++; }
-			if (properties.IsBarrelButtonPressed) { buttonsPressed++; }
-
-			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && buttonsPressed > 1)
+			if (args.CurrentPoint is { PointerDeviceType: PointerDeviceType.Mouse, Properties.HasMultipleButtonsPressed: true })
 			{
 				return;
 			}
@@ -382,24 +333,10 @@ internal partial class InputManager
 
 			var (originalSource, _) = HitTest(args);
 
-			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			// Note: Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -409,11 +346,13 @@ internal partial class InputManager
 			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args, caller: "OnPointerPressed_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+				originalSource = HitTest(args, reason: "after_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
 			}
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
 			var result = Raise(Pressed, originalSource, routedArgs);
+
+			TryRedirectPointerPress2(args);
 
 			args.DispatchResult = result;
 		}
@@ -435,24 +374,10 @@ internal partial class InputManager
 			var (originalSource, _) = HitTest(args);
 			var isOutOfWindow = originalSource is null;
 
-			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			// Note: Even if impossible for the Release, we are fallbacking on the RootElement for safety
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerReleased ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerReleased [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -483,17 +408,19 @@ internal partial class InputManager
 				// Make sure to raise it now the pointer has been release / capture has been removed (for pointers that supports overing).
 				case PointerDeviceType.Mouse when hadCapture:
 				case PointerDeviceType.Pen when hadCapture && args.CurrentPoint.Properties.IsInRange:
-					(originalSource, var overStaleBranch) = HitTest(args, _isOver);
+					(originalSource, var overStaleBranch) = HitTest(args, _isOver, reason: "for_touch_leave");
 					originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 					if (overStaleBranch is not null)
 					{
 						var leaveResult = Raise(Leave, overStaleBranch.Value, routedArgs);
-						AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
+						AddIntermediate(ref result, routedArgs, leaveResult, ref originalSource, reason: "after_touch_leave");
 					}
 
 					result += Raise(Enter, originalSource, routedArgs);
 					break;
 			}
+
+			TryClearPointerRedirection(args.CurrentPoint.Pointer);
 
 			args.DispatchResult = result;
 		}
@@ -506,24 +433,9 @@ internal partial class InputManager
 			}
 
 			var (originalSource, overStaleBranch) = HitTest(args, _isOver);
-
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerMoved ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerMoved [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -541,7 +453,7 @@ internal partial class InputManager
 				{
 					// First we raise **publicly** the leave event on the capture target
 					var leaveCaptureResult = Raise(Leave, captureTarget, routedArgs, new BubblingContext { Mode = BubblingMode.IgnoreParents });
-					AddIntermediate(ref result, Leave, routedArgs, leaveCaptureResult, ref originalSource);
+					AddIntermediate(ref result, routedArgs, leaveCaptureResult, ref originalSource, reason: "after_leave_capture");
 				}
 				if (overStaleBranch is not null)
 				{
@@ -550,7 +462,7 @@ internal partial class InputManager
 					// Note: This means that, public listener of the exit events will **never** be raised for those elements.
 					// Note 2: This will try to also raise the exited event on the capture.ExplicitTarget (if any), but this will have no effect as we already did it!
 					var leaveResult = Raise(Leave, overStaleBranch.Value.Leaf, routedArgs, new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble, Root = overStaleBranch.Value.Root });
-					AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
+					AddIntermediate(ref result, routedArgs, leaveResult, ref originalSource, reason: "after_leave_silent");
 				}
 
 				if (isEnteringCaptureElementBounds)
@@ -560,11 +472,11 @@ internal partial class InputManager
 
 					// First we raise **publicly** the enter event on the capture target
 					var enterResult = Raise(Enter, captureTarget, routedArgs, new BubblingContext { Mode = BubblingMode.IgnoreParents });
-					AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
+					AddIntermediate(ref result, routedArgs, enterResult, ref originalSource, reason: "after_enter_capture");
 
 					// Second we make sure to also flag as IsOver true all elements in teh branch
 					enterResult = Raise(Enter, originalSource, routedArgs, new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble });
-					AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
+					AddIntermediate(ref result, routedArgs, enterResult, ref originalSource, reason: "after_enter_silent");
 				}
 			}
 			else
@@ -572,11 +484,11 @@ internal partial class InputManager
 				if (overStaleBranch is not null)
 				{
 					var leaveResult = Raise(Leave, overStaleBranch.Value, routedArgs);
-					AddIntermediate(ref result, Leave, routedArgs, leaveResult, ref originalSource);
+					AddIntermediate(ref result, routedArgs, leaveResult, ref originalSource, reason: "after_leave");
 				}
 
 				var enterResult = Raise(Enter, originalSource, routedArgs);
-				AddIntermediate(ref result, Enter, routedArgs, enterResult, ref originalSource);
+				AddIntermediate(ref result, routedArgs, enterResult, ref originalSource, reason: "after_enter");
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
@@ -587,30 +499,15 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
 		{
-			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
+			if (TryClearPointerRedirection(args.CurrentPoint.Pointer))
 			{
 				return;
 			}
 
 			var (originalSource, _) = HitTest(args);
-
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
-			// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			if (originalSource is null)
+			if (!EnsureSourceAndTrace(args, ref originalSource))
 			{
-				if (_trace)
-				{
-					Trace($"PointerCancelled ({args.CurrentPoint.Position}) **undispatched**");
-				}
-
 				return;
-			}
-
-			if (_trace)
-			{
-				Trace($"PointerCancelled [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
@@ -686,22 +583,78 @@ internal partial class InputManager
 		}
 
 		#region Helpers
-		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTest(PointerEventArgs args, StalePredicate? isStale = null, [CallerMemberName] string caller = "")
+		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTest(
+			PointerEventArgs args,
+			StalePredicate? isStale = null,
+			string reason = ""
+#if TRACE_HIT_TESTING
+			, [CallerMemberName] string caller = ""
+			, [CallerLineNumber] int line = -1
+#endif
+			)
 		{
 			if (_inputManager.ContentRoot.XamlRoot is null)
 			{
 				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testing.");
 			}
 
+#if TRACE_HIT_TESTING
+			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager.ContentRoot.XamlRoot, isStale: isStale, caller: $"{caller}@{line}_{reason}");
+#else
 			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager.ContentRoot.XamlRoot, isStale: isStale);
+#endif
 		}
 
-		private void AddIntermediate(ref PointerEventDispatchResult globalResult, PointerEvent evt, PointerRoutedEventArgs args, PointerEventDispatchResult intermediateResult, ref UIElement originalSource, [CallerMemberName] string caller = "")
+		private bool EnsureSourceAndTrace(Windows.UI.Core.PointerEventArgs args, [NotNullWhen(true)] ref UIElement? element, [CallerMemberName] string caller = "")
+		{
+			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+			// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
+			element ??= _inputManager.ContentRoot.VisualTree.RootElement;
+
+			return ValidateSourceAndTrace(args, ref element, caller);
+		}
+
+		private bool ValidateSourceAndTrace(Windows.UI.Core.PointerEventArgs args, [NotNullWhen(true)] ref UIElement? element, [CallerMemberName] string caller = "")
+		{
+			if (element is null)
+			{
+				if (_trace)
+				{
+					Trace($"{caller} ({args.CurrentPoint.Position}) **undispatched** (root element not set yet).");
+				}
+
+				return false;
+			}
+
+			if (_trace)
+			{
+				Trace($"{caller} [{element.GetDebugName()}]");
+			}
+
+			return true;
+		}
+
+		private void AddIntermediate(
+			ref PointerEventDispatchResult globalResult,
+			PointerRoutedEventArgs args,
+			PointerEventDispatchResult intermediateResult,
+			ref UIElement originalSource,
+			string reason
+#if TRACE_HIT_TESTING
+			, [CallerMemberName] string caller = ""
+			, [CallerLineNumber] int line = -1
+#endif
+			)
 		{
 			if (intermediateResult is { VisualTreeAltered: true })
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args.CoreArgs, caller: caller + "_post_" + evt.Name).element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+#if TRACE_HIT_TESTING
+				originalSource = HitTest(args.CoreArgs, reason: reason, caller: caller, line: line).element
+#else
+				originalSource = HitTest(args.CoreArgs, reason: reason).element
+#endif
+					?? _inputManager.ContentRoot.VisualTree.RootElement;
 			}
 
 			globalResult += intermediateResult;
@@ -840,8 +793,10 @@ internal partial class InputManager
 		private static void Trace(string text)
 		{
 			_log.Trace(text);
+			Debug.WriteLine(text);
+
 		}
-		#endregion
+#endregion
 	}
 }
 #endif

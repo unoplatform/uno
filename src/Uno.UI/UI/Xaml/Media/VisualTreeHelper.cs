@@ -1,5 +1,5 @@
 ﻿#nullable disable // Not supported by WinUI yet
-//#define TRACE_HIT_TESTING
+//#define TRACE_HIT_TESTING // Note: This flag should also be set in the InputManager.Pointers.Managed.cs file
 
 using System;
 using System.Collections.Generic;
@@ -895,7 +895,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				_trace.Append(_traceSubject.GetDebugIndent(subLine: true));
 				_trace.Append(' ');
-				_trace.Append(msg.ToStringInvariant());
+				_trace.Append(Uno.Extensions.FormattableExtensions.ToStringInvariant(msg));
 				_trace.Append("\r\n");
 			}
 #endif

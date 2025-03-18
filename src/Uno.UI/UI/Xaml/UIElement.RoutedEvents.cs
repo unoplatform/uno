@@ -906,9 +906,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static bool IsHandled(RoutedEventArgs args)
-		{
-			return args is IHandleableRoutedEventArgs cancellable && cancellable.Handled;
-		}
+			=> args is IHandleableRoutedEventArgs { Handled: true };
 
 		private bool IsBubblingInManagedCode(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
