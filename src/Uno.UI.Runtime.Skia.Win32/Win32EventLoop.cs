@@ -102,7 +102,11 @@ namespace Uno.UI.Runtime.Skia.Win32
 
 		public static bool RunOnce()
 		{
-			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
+			// We prioritize WM_PAINT messages so that we keep painting as fast
+			// as Windows needs us to even if the message queue is full of other
+			// messages.
+			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_PAINT)
+				|| PInvoke.PeekMessage(out msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
 			{
 				PInvoke.TranslateMessage(msg);
 				PInvoke.DispatchMessage(msg);
