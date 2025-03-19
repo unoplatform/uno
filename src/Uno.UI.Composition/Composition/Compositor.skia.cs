@@ -115,29 +115,11 @@ public partial class Compositor
 
 		rootVisual.RenderRootVisual(surface, null, postRenderAction);
 
-		RecursiveDispatchAnimationFrames();
-
 		var removedCount = _backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
 
-		if (removedCount > 0 || _backgroundTransitions.Count > 0)
+		if (_runningAnimations.Count > 0 || _backgroundTransitions.Count > 0 || removedCount > 0)
 		{
 			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
-		}
-	}
-
-	private void RecursiveDispatchAnimationFrames()
-	{
-		if (_runningAnimations.Count > 0)
-		{
-			foreach (var animation in _runningAnimations.ToArray())
-			{
-				animation.RaiseAnimationFrame();
-			}
-
-			if (_runningAnimations.Count > 0)
-			{
-				NativeDispatcher.Main.Enqueue(RecursiveDispatchAnimationFrames, NativeDispatcherPriority.Idle);
-			}
 		}
 	}
 
