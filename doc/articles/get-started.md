@@ -4,8 +4,14 @@ uid: Uno.GetStarted
 
 ## Quick Start
 
-1. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites
-2. Download the Uno Platform extension for your IDE:
+> [!TIP]
+> In case your targeted IDE is Visual Studio, you can skip the following steps 1 & 2 as the Visual Studio Extension does already install and run Uno.Check for you!
+
+1. Install the [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/latest) to get `dotnet` available in your commandline.
+2. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites.
+   a. Detailed [Configuration Options](https://platform.uno/docs/articles/external/uno.check/doc/configuring-uno-check.html) for Uno-Check
+   b. If you run into issues with it, see [Troubleshooting Uno-Check](https://platform.uno/docs/articles/external/uno.check/doc/troubleshooting-uno-check.html)
+3. Download the Uno Platform extension for your IDE:
 
    <!-- markdownlint-disable MD001 MD009 -->
 
@@ -89,6 +95,12 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 4. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
 5. Agent support is coming soon
 
+**Choose the IDE you want to use:**
+
+- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)
+
 # [**macOS**](#tab/macos)
 
 You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
@@ -119,6 +131,11 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.Ios#developing-on-older-mac-hardware).
 
+**Choose the IDE you want to use:**
+
+- [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
+
 # [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
@@ -148,6 +165,11 @@ To help you choose the appropriate IDE or Agent, the following table shows the c
 2. [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
 3. Agent support is coming soon
 
+**Choose the IDE you want to use:**
+
+- [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
+
 ---
 
 ## Supported Agents Features
@@ -169,9 +191,10 @@ Choosing the right agent for your development depends on your needs and environm
 
 1. VS Hot Reload support in agents is coming soon
 
-## Questions
+## See Also
 
-For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Development.FAQ) or see the [troubleshooting section](xref:Uno.UI.CommonIssues) for common issues and their solutions.
+- Questions about Uno Platform: [FAQ](xref:Uno.Development.FAQ)
+- Common issues and their solutions: [Troubleshooting](xref:Uno.UI.CommonIssues).
 
 ## Next Steps
 
