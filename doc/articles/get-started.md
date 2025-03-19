@@ -90,11 +90,6 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
-**Choose the IDE you want to use:**
-
-- [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Get started with Rider](xref:Uno.GetStarted.Rider)
-
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
 |                                   | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
@@ -108,14 +103,14 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS and Mac Catalyst targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.IosCatalyst#developing-on-older-mac-hardware).
 
+**Choose the IDE you want to use:**
+
+- [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
+
 # [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
-
-**Choose the IDE you want to use:**
-
-- [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Get started with Rider](xref:Uno.GetStarted.Rider)
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
@@ -131,6 +126,11 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 **Notes:**
 
 - † [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+
+**Choose the IDE you want to use:**
+
+- [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
 
 ---
 
