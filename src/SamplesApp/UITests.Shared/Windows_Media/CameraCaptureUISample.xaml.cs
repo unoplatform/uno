@@ -6,10 +6,11 @@ using Windows.Media.Capture;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.UI.Helpers;
 
 namespace UITests.Windows_Media;
 
-[Sample("CameraCapture", IsManualTest = true)]
+[Sample("CameraCapture", IsManualTest = true, Description = "Only available on iOS and Android.")]
 public sealed partial class CameraCaptureUISample : Page
 {
 	public CameraCaptureUISample()
@@ -17,9 +18,20 @@ public sealed partial class CameraCaptureUISample : Page
 		this.InitializeComponent();
 	}
 
-#if __ANDROID__ || __APPLE_UIKIT__
+	private bool IsTargetSupported() =>
+#if HAS_UNO
+		DeviceTargetHelper.IsMobile();
+#else
+		true;
+#endif
+
 	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
 	{
+		if (!IsTargetSupported())
+		{
+			return;
+		}
+
 		try
 		{
 			var captureUI = new CameraCaptureUI();
@@ -46,6 +58,11 @@ public sealed partial class CameraCaptureUISample : Page
 
 	private async void CaptureVideo_Click(object sender, RoutedEventArgs e)
 	{
+		if (!IsTargetSupported())
+		{
+			return;
+		}
+
 		var captureUI = new CameraCaptureUI();
 
 		var result = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Video);
@@ -59,5 +76,4 @@ public sealed partial class CameraCaptureUISample : Page
 			videoSize.Text = "Nothing was selected";
 		}
 	}
-#endif
 }
