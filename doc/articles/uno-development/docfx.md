@@ -71,7 +71,7 @@ And that's how they would render:
 
 ### Tabs
 
-DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#tabbed-content) precisely.
+DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html) precisely.
 
 #### Example
 
