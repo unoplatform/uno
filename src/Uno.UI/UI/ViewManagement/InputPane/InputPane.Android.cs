@@ -15,26 +15,42 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
-		partial void TryShowPartial()
+		private bool TryShowPlatform()
 		{
 			var activity = (ContextHelper.Current as Activity);
+			if (activity is null)
+			{
+				return false;
+			}
+
 			var view = activity.CurrentFocus;
 			if (view != null)
 			{
 				var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
 				imm.ShowSoftInput(view, ShowFlags.Forced);
+				return true;
 			}
+
+			return false;
 		}
 
-		partial void TryHidePartial()
+		private bool TryHidePlatform()
 		{
 			var activity = (ContextHelper.Current as Activity);
+			if (activity is null)
+			{
+				return false;
+			}
+
 			var view = activity.CurrentFocus;
 			if (view != null)
 			{
 				var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
 				imm.HideSoftInputFromWindow(view.WindowToken, HideSoftInputFlags.None);
+				return true;
 			}
+
+			return false;
 		}
 
 		partial void EnsureFocusedElementInViewPartial()

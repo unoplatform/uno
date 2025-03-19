@@ -16,9 +16,12 @@ namespace Windows.UI.ViewManagement
 		internal Uno.UI.Controls.Window Window { get; set; }
 
 #if __APPLE_UIKIT__
-		partial void TryHidePartial()
+		private bool TryShowPlatform() => false;
+
+		private bool TryHidePlatform()
 		{
 			UIKit.UIApplication.SharedApplication.KeyWindow.EndEditing(true);
+			return true;
 		}
 
 
