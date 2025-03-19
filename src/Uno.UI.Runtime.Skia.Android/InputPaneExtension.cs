@@ -16,5 +16,5 @@ internal class InputPaneExtension : IInputPaneExtension
 {
 	public bool TryShow() => InputPaneInterop.TryShow(ContextHelper.Current as Activity);
 
-	public void TryHide() => InputPaneInterop.TryHide(ContextHelper.Current as Activity);
+	public bool TryHide() => InputPaneInterop.TryHide(ContextHelper.Current as Activity);
 }
