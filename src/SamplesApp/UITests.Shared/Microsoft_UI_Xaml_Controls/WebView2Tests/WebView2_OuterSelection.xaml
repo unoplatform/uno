@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 	xmlns:unoControls="using:Uno.UI.Samples.Controls"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -10,7 +11,7 @@
 	<StackPanel HorizontalAlignment="Center"
 				VerticalAlignment="Center">
 
-		<WebView2 Width="640"
+		<mux:WebView2 Width="640"
 				  Height="480"
 				  Source="https://platform.uno"></WebView2>
 
