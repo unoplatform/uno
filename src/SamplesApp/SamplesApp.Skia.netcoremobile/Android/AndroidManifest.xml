@@ -6,4 +6,11 @@
 		<!-- Set an API key locally to test the MapControl - https://developers.google.com/maps/documentation/android-sdk/get-api-key -->
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR API KEY" />
 	</application>
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<category android:name="android.intent.category.BROWSABLE" />
+			<data android:scheme="https" />
+		</intent>
+	</queries>
 </manifest>
