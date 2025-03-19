@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Windows.UI.Input;
 
 namespace Windows.UI.ViewManagement
 {
@@ -15,43 +16,9 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
-		private bool TryShowPlatform()
-		{
-			var activity = (ContextHelper.Current as Activity);
-			if (activity is null)
-			{
-				return false;
-			}
+		private bool TryShowPlatform() => InputPaneInterop.TryShowPlatform(ContextHelper.Current as Activity);
 
-			var view = activity.CurrentFocus;
-			if (view != null)
-			{
-				var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
-				imm.ShowSoftInput(view, ShowFlags.Forced);
-				return true;
-			}
-
-			return false;
-		}
-
-		private bool TryHidePlatform()
-		{
-			var activity = (ContextHelper.Current as Activity);
-			if (activity is null)
-			{
-				return false;
-			}
-
-			var view = activity.CurrentFocus;
-			if (view != null)
-			{
-				var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
-				imm.HideSoftInputFromWindow(view.WindowToken, HideSoftInputFlags.None);
-				return true;
-			}
-
-			return false;
-		}
+		private bool TryHidePlatform() => InputPaneInterop.TryHidePlatform(ContextHelper.Current as Activity);
 
 		partial void EnsureFocusedElementInViewPartial()
 		{

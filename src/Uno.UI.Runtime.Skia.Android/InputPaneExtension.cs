@@ -7,35 +7,14 @@ using Android.App;
 using Android.Content;
 using Android.Views.InputMethods;
 using Uno.UI;
+using Windows.UI.Input;
 using Windows.UI.ViewManagement;
 
 namespace Uno.WinUI.Runtime.Skia.Android;
 
 internal class InputPaneExtension : IInputPaneExtension
 {
-	public void TryShow()
-	{
-		var activity = (ContextHelper.Current as Activity);
-		if (activity is null)
-		{
-			return;
-		}
-		var view = activity.CurrentFocus;
-		if (view != null)
-		{
-			var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
-			imm.ShowSoftInput(view, ShowFlags.Forced);
-		}
-	}
+	public bool TryShow() => InputPaneInterop.TryShow(ContextHelper.Current as Activity);
 
-	public void TryHide()
-	{
-		var activity = (ContextHelper.Current as Activity);
-		var view = activity.CurrentFocus;
-		if (view != null)
-		{
-			var imm = (InputMethodManager)activity.GetSystemService(Context.InputMethodService);
-			imm.HideSoftInputFromWindow(view.WindowToken, HideSoftInputFlags.None);
-		}
-	}
+	public void TryHide() => InputPaneInterop.TryHide(ContextHelper.Current as Activity);
 }

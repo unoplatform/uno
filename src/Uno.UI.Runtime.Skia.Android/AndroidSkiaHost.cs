@@ -7,7 +7,9 @@ using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.WinUI.Runtime.Skia.Android;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -39,6 +41,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
 			ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());
 			ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
+			ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
 			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
 
 			void CreateApp(ApplicationInitializationCallbackParams _)

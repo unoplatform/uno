@@ -4,38 +4,28 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Foundation;
-
-#if __APPLE_UIKIT__
 using UIKit;
-#endif
+using Windows.UI.Input;
 
-namespace Windows.UI.ViewManagement
+namespace Windows.UI.ViewManagement;
+
+public partial class InputPane
 {
-	public partial class InputPane
+	internal Uno.UI.Controls.Window Window { get; set; }
+
+	private bool TryShowPlatform() => InputPaneInterop.TryShow();
+
+	private bool TryHidePlatform() => InputPaneInterop.TryShow();
+
+	partial void EnsureFocusedElementInViewPartial()
 	{
-		internal Uno.UI.Controls.Window Window { get; set; }
-
-#if __APPLE_UIKIT__
-		private bool TryShowPlatform() => false;
-
-		private bool TryHidePlatform()
+		if (Visible)
 		{
-			UIKit.UIApplication.SharedApplication.KeyWindow.EndEditing(true);
-			return true;
+			Window?.MakeFocusedViewVisible(isOpeningKeyboard: false);
 		}
-
-
-		partial void EnsureFocusedElementInViewPartial()
+		else
 		{
-			if (Visible)
-			{
-				Window?.MakeFocusedViewVisible(isOpeningKeyboard: false);
-			}
-			else
-			{
-				Window?.RestoreFocusedViewVisibility();
-			}
+			Window?.RestoreFocusedViewVisibility();
 		}
-#endif
 	}
 }
