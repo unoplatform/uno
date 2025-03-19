@@ -101,6 +101,12 @@ Html output:
 
 ---
 
+> [!NOTE]
+> Use `---` in the Markdown sample is Important, to not include more Content in the tabbed area than actually wanted, but will not be rendered in the served documentation.
+
+> [!TIP]
+> It is possible to use `***` alternativly for the same Task.
+
 ### TOC checker script
 
 The [`check_toc` script](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC. At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
