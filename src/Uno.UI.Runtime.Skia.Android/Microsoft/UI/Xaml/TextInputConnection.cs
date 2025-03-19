@@ -80,7 +80,6 @@ class TextInputConnection : BaseInputConnection
 			if (_activeTextBox is not null)
 			{
 				_activeTextBox.SelectionChanged -= OnActiveTextBoxSelectionChanged;
-				_activeTextBox.TextChanged -= OnActiveTextBoxTextChanged;
 			}
 
 			_activeTextBox = value;
@@ -92,12 +91,11 @@ class TextInputConnection : BaseInputConnection
 				Selection.SetSelection(_editable, _activeTextBox.SelectionStart, _activeTextBox.SelectionStart + _activeTextBox.SelectionLength);
 
 				_activeTextBox.SelectionChanged += OnActiveTextBoxSelectionChanged;
-				_activeTextBox.TextChanged += OnActiveTextBoxTextChanged;
 			}
 		}
 	}
 
-	private void OnActiveTextBoxTextChanged(object sender, Microsoft.UI.Xaml.Controls.TextChangedEventArgs e)
+	internal void OnTextBoxTextChanged()
 	{
 		if (_activeTextBox is not null && _editable is not null)
 		{

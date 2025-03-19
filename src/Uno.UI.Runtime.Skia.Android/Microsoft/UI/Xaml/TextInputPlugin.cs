@@ -104,6 +104,7 @@ internal sealed class TextInputPlugin
 		this.LogDebug()?.Debug($"NotifyValueChanged: {newValue}");
 
 		_afm.NotifyValueChanged(_view, virtualId, AutofillValue.ForText(newValue));
+		_inputConnection?.OnTextBoxTextChanged();
 	}
 
 	internal void ShowTextInput(TextBox textBox)

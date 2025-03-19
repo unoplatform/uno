@@ -12,6 +12,10 @@ using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
 using Private.Infrastructure;
+using System.Net.Sockets;
+using System.Diagnostics;
+
+
 
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
@@ -118,7 +122,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				asyncOperation.Cancel();
 			}
 
-			await WindowHelper.WaitForIdle();
+			// Wait for the cancelled status to happen, regardless of the dispatcher idle status
+			var sw = Stopwatch.StartNew();
+			while (asyncOperation.Status != AsyncStatus.Canceled && sw.Elapsed < TimeSpan.FromSeconds(3))
+			{
+				await Task.Delay(100);
+			}
 
 			Assert.AreEqual(AsyncStatus.Canceled, asyncOperation.Status);
 		}
