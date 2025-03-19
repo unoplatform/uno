@@ -2006,6 +2006,8 @@
 		</Properties>
 
 		<Methods>
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Microsoft.UI.Xaml.DependencyObject element, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
+			<Member fullName="System.Void Windows.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
 			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
 		</Methods>
 	</IgnoreSet>
