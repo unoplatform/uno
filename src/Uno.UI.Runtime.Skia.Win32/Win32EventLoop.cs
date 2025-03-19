@@ -1,178 +1,123 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-// This is same as Uno.Helpers.EventLoop, except that before each Run() iteration, it checks if there are
-// Win32 messages first and dispatches them before getting to the action queue.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Uno.Collections;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Win32
 {
-	internal sealed class Win32EventLoop : IDisposable
+	internal static class Win32EventLoop
 	{
-		/// <summary>
-		/// Gate to protect data structures, including the work queue and the ready list.
-		/// </summary>
-		private readonly object _gate;
+		public static readonly uint UnoWin32DispatcherMsg;
 
-		/// <summary>
-		/// Semaphore to count requests to re-evaluate the queue, from either Schedule requests or when a timer
-		/// expires and moves on to the next item in the queue.
-		/// </summary>
-		private readonly SemaphoreSlim _evt;
+		// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
+		// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+		private static readonly WNDCLASSEXW _windowClass;
+		private static readonly HWND _hwnd;
 
-		/// <summary>
-		/// Queue holding items that are ready to be run as soon as possible. Protected by the gate.
-		/// </summary>
-		private readonly Queue<Action> _readyList;
+		private static readonly Queue<Action> _actions = new();
 
-		// It's important to also include HWND.Null here because some messages will only show up with HWND.Null.
-		// Specifically, system messages like Alt-Shift (to change the keyboard layout) will only show up with HWND.Null.
-		private readonly MaterializableList<HWND> _hwnds = [HWND.Null];
-
-		/// <summary>
-		/// Flag indicating whether the event loop should quit. When set, the event should be signaled as well to
-		/// wake up the event loop thread, which will subsequently abandon all work.
-		/// </summary>
-		private bool _disposed;
-
-		/// <summary>
-		/// Creates an object that schedules units of work on a designated thread, using the specified factory to control thread creation options.
-		/// </summary>
-		/// <param name="threadFactory">Factory function for thread creation.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="threadFactory"/> is <c>null</c>.</exception>
-		public Win32EventLoop(Func<ThreadStart, Thread> threadFactory)
+		static unsafe Win32EventLoop()
 		{
-			var thread = threadFactory(Run);
-			_gate = new object();
+			UnoWin32DispatcherMsg = PInvoke.RegisterWindowMessage(nameof(UnoWin32DispatcherMsg));
+			if (UnoWin32DispatcherMsg == 0)
+			{
+				throw new InvalidOperationException($"Failed to register Dispatcher Win32 message: {Win32Helper.GetErrorMessage()}");
+			}
 
-			_evt = new SemaphoreSlim(0);
-			_readyList = new Queue<Action>();
+			using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String("UnoPlatformDispatcherWindow");
+			using var windowTitle = new Win32Helper.NativeNulTerminatedUtf16String("");
 
-			thread.Start();
+			_windowClass = new WNDCLASSEXW
+			{
+				cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
+				lpfnWndProc = &WndProc,
+				hInstance = Win32Helper.GetHInstance(),
+				lpszClassName = lpClassName,
+			};
+
+			var classAtom = PInvoke.RegisterClassEx(_windowClass);
+			if (classAtom is 0)
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			_hwnd = PInvoke.CreateWindowEx(
+				0,
+				lpClassName,
+				windowTitle,
+				WINDOW_STYLE.WS_OVERLAPPED,
+				0,
+				0,
+				0,
+				0,
+				HWND.HWND_MESSAGE,
+				HMENU.Null,
+				Win32Helper.GetHInstance(),
+				null);
+
+			if (_hwnd == HWND.Null)
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
+			}
 		}
 
-		public void Schedule(Action action, NativeDispatcherPriority p)
+		[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+		internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
+		{
+			if (msg == UnoWin32DispatcherMsg)
+			{
+				Action action;
+				lock (_actions)
+				{
+					// It's important not to keep the lock when we invoke the action, as it will deadlock in some cases,
+					// specifically when running the Given_ListViewBase tests in a call to GC.WaitForPendingFinalizers.
+					action = _actions.Dequeue();
+				}
+				action.Invoke();
+				return new LRESULT(0);
+			}
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+		}
+
+		public static void Schedule(Action action, NativeDispatcherPriority p)
 		{
 			if (action == null)
 			{
 				throw new ArgumentNullException(nameof(action));
 			}
 
-			lock (_gate)
+			lock (_actions)
 			{
-				_readyList.Enqueue(action);
-				_evt.Release();
+				_actions.Enqueue(action);
 			}
+			_ = PInvoke.PostMessage(_hwnd, UnoWin32DispatcherMsg, new WPARAM(), new LPARAM());
 		}
 
-		public void AddHwnd(HWND hwnd)
+		public static bool HasMessages()
+			=> PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE);
+
+		public static bool RunOnce()
 		{
-			lock (_gate)
+			// We prioritize WM_PAINT messages so that we keep painting as fast
+			// as Windows needs us to even if the message queue is full of other
+			// messages. Similarly, we need input messages to "skip ahead" in some
+			// cases like wheel scrolling where we don't want to wait for the
+			// queue to be empty before continuing to scroll.
+			if (PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_PAINT | PEEK_MESSAGE_REMOVE_TYPE.PM_QS_INPUT)
+				|| PInvoke.PeekMessage(out msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE))
 			{
-				_hwnds.Add(hwnd);
+				PInvoke.TranslateMessage(msg);
+				PInvoke.DispatchMessage(msg);
+				return true;
 			}
-		}
-
-		public void RemoveHwnd(HWND hwnd)
-		{
-			lock (_gate)
+			else
 			{
-				_hwnds.Remove(hwnd);
+				return false;
 			}
-		}
-
-		/// <summary>
-		/// Ends the thread associated with this scheduler. All remaining work in the scheduler queue is abandoned.
-		/// </summary>
-		public void Dispose()
-		{
-			lock (_gate)
-			{
-				if (!_disposed)
-				{
-					_disposed = true;
-					_evt.Release();
-				}
-			}
-		}
-
-		internal void RunOnce()
-		{
-			SpinWait.SpinUntil(() =>
-			{
-				bool aHwndHasAMessage;
-				lock (_gate)
-				{
-					aHwndHasAMessage = !_hwnds.TrueForAll(static hwnd =>
-						!PInvoke.PeekMessage(out _, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE));
-				}
-
-				// ReSharper disable once AccessToDisposedClosure
-				return _evt.CurrentCount > 0 || aHwndHasAMessage;
-			});
-
-			Action[]? ready = null;
-
-			lock (_gate)
-			{
-				while (_evt.CurrentCount > 0)
-				{
-					_evt.Wait();
-				}
-
-				if (_disposed)
-				{
-					_evt.Dispose();
-					return;
-				}
-
-				var foundAMessage = true;
-				while (foundAMessage)
-				{
-					foundAMessage = false;
-					foreach (var hwnd in _hwnds)
-					{
-						if (PInvoke.PeekMessage(out var msg, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0)
-						{
-							foundAMessage = true;
-							PInvoke.TranslateMessage(msg);
-							PInvoke.DispatchMessage(msg);
-						}
-					}
-				}
-
-				if (_readyList.Count > 0)
-				{
-					ready = _readyList.ToArray();
-					_readyList.Clear();
-				}
-			}
-
-			if (ready != null)
-			{
-				foreach (var item in ready)
-				{
-					item.Invoke();
-				}
-			}
-		}
-
-		private void Run()
-		{
-			while (true)
-			{
-				RunOnce();
-			}
-			// ReSharper disable once FunctionNeverReturns
 		}
 	}
 }

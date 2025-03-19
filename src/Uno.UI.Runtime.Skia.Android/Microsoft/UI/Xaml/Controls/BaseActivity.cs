@@ -20,6 +20,8 @@ using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.WindowManagement;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using Android.Content.PM;
+using Uno.UI.ViewManagement;
 
 namespace Uno.UI
 {
@@ -395,6 +397,36 @@ namespace Uno.UI
 			{
 				this.Log().ErrorFormat("Failed to dispose view", e);
 			}
+		}
+
+		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+		{
+			var handler = RequestPermissionsResultWithResults;
+			if (handler != null)
+			{
+				handler.Invoke(this, new RequestPermissionsResultWithResultsEventArgs(requestCode, permissions, grantResults));
+			}
+
+			base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+
+		/// <summary>
+		/// Occurs when <see cref="OnRequestPermissionsResult"/> is invoked on the activity.
+		/// </summary>
+		internal event EventHandler<RequestPermissionsResultWithResultsEventArgs>? RequestPermissionsResultWithResults;
+
+		internal class RequestPermissionsResultWithResultsEventArgs
+		{
+			public RequestPermissionsResultWithResultsEventArgs(int requestCode, string[] permissions, Permission[] grantResults)
+			{
+				RequestCode = requestCode;
+				Permissions = permissions;
+				GrantResults = grantResults;
+			}
+
+			public int RequestCode { get; }
+			public string[] Permissions { get; }
+			public Permission[] GrantResults { get; }
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace Uno.UI.Runtime.Skia {
 			element.addEventListener('wheel', (e) => {
 				// When scrolling with wheel, we want to prevent scroll events.
 				e.preventDefault();
-			});
+			}, {passive:false});
 
 			element.addEventListener('scroll', (e) => {
 				let element = e.target as HTMLElement;

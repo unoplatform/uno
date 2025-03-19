@@ -80,7 +80,6 @@ class TextInputConnection : BaseInputConnection
 			if (_activeTextBox is not null)
 			{
 				_activeTextBox.SelectionChanged -= OnActiveTextBoxSelectionChanged;
-				_activeTextBox.TextChanged -= OnActiveTextBoxTextChanged;
 			}
 
 			_activeTextBox = value;
@@ -92,12 +91,11 @@ class TextInputConnection : BaseInputConnection
 				Selection.SetSelection(_editable, _activeTextBox.SelectionStart, _activeTextBox.SelectionStart + _activeTextBox.SelectionLength);
 
 				_activeTextBox.SelectionChanged += OnActiveTextBoxSelectionChanged;
-				_activeTextBox.TextChanged += OnActiveTextBoxTextChanged;
 			}
 		}
 	}
 
-	private void OnActiveTextBoxTextChanged(object sender, Microsoft.UI.Xaml.Controls.TextChangedEventArgs e)
+	internal void OnTextBoxTextChanged()
 	{
 		if (_activeTextBox is not null && _editable is not null)
 		{
@@ -126,11 +124,20 @@ class TextInputConnection : BaseInputConnection
 			return;
 		}
 
+		// In managed, we only use \r and convert all \n's to \r's to
+		// match WinUI, so when copying from managed to native, we convert
+		// \r to \n so that in the case of typing two newlines in a row,
+		// we get \n\n from native and not \r\n (the first converted by
+		// managed, the second was just typed
+		// before conversion) which looks like a single newline.
+		// cf. https://github.com/unoplatform/uno-private/issues/965
+		var text = _activeTextBox.Text.Replace('\r', '\n');
+
 		_duringTextBoxSelectionChanged = true;
-		if (!string.Equals(_activeTextBox.Text, _editable.ToString(), StringComparison.Ordinal))
+		if (!string.Equals(text, _editable.ToString(), StringComparison.Ordinal))
 		{
 			_editable.Clear();
-			_editable.Append(_activeTextBox.Text);
+			_editable.Append(text);
 		}
 
 		var length = _editable.Length() + 1;

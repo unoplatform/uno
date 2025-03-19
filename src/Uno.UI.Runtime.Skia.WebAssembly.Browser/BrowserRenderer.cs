@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using SkiaSharp;
+﻿using SkiaSharp;
 using MUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
@@ -23,6 +21,7 @@ internal partial class BrowserRenderer
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
 	private readonly JSObject _nativeSwapChainPanel;
+	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 
 	private GRGlInterface? _glInterface;
 	private GRContext? _context;
@@ -31,7 +30,6 @@ internal partial class BrowserRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
 	private SKCanvas? _canvas;
-	private bool _enableRenderLoop;
 
 	private SKSizeI? _lastSize;
 
@@ -52,28 +50,7 @@ internal partial class BrowserRenderer
 		_jsInfo = NativeMethods.CreateContext(this, _nativeSwapChainPanel, WebAssemblyWindowWrapper.Instance?.CanvasId ?? "invalid");
 	}
 
-	internal void InvalidateRender() => Invalidate();
-
-	private void Invalidate()
-	{
-		NativeMethods.SetEnableRenderLoop(_nativeSwapChainPanel, true);
-	}
-
-	private void DoEnableRenderLoop(bool enable) =>
-		NativeMethods.SetEnableRenderLoop(_nativeSwapChainPanel, enable);
-
-	public bool EnableRenderLoop
-	{
-		get => _enableRenderLoop;
-		set
-		{
-			if (_enableRenderLoop != value)
-			{
-				_enableRenderLoop = value;
-				DoEnableRenderLoop(_enableRenderLoop);
-			}
-		}
-	}
+	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeSwapChainPanel);
 
 	private void RenderFrame()
 	{
@@ -82,7 +59,7 @@ internal partial class BrowserRenderer
 			Initialize();
 		}
 
-		var sw = Stopwatch.StartNew();
+		_renderStopwatch.Restart();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -107,7 +84,7 @@ internal partial class BrowserRenderer
 		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
 
 		// manage the drawing surface
-		if (_renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
+		if (_surface == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -128,18 +105,15 @@ internal partial class BrowserRenderer
 			_renderTarget?.Dispose();
 			_renderTarget = new GRBackendRenderTarget((int)(newCanvasSize.Width * scale), (int)(newCanvasSize.Height * scale), _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
 
+			// create the surface
+			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
+			_canvas = _surface.Canvas;
+
 			if (!_isWindowInitialized)
 			{
 				_isWindowInitialized = true;
 				// Microsoft.UI.Xaml.Window.Current.OnNativeWindowCreated();
 			}
-		}
-
-		// create the surface
-		if (_surface == null)
-		{
-			_surface = SKSurface.Create(_context, _renderTarget, surfaceOrigin, colorType);
-			_canvas = _surface.Canvas;
 		}
 
 		using (new SKAutoCanvasRestore(_canvas, true))
@@ -161,15 +135,9 @@ internal partial class BrowserRenderer
 		_canvas?.Flush();
 		_context.Flush();
 
-		// stop the render loop if it has been disabled
-		if (!EnableRenderLoop)
-		{
-			DoEnableRenderLoop(false);
-		}
-
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Render time: {sw.Elapsed}");
+			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
 		}
 	}
 
@@ -224,7 +192,7 @@ internal partial class BrowserRenderer
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.createContextStatic")]
 		internal static partial JSObject CreateContextInternal(JSObject nativeSwapChainPanel, string canvasId);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setEnableRenderLoop")]
-		internal static partial void SetEnableRenderLoop(JSObject nativeSwapChainPanel, bool enable);
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
+		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
 	}
 }

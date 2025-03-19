@@ -1,11 +1,7 @@
 namespace Uno.UI.Runtime.Skia {
 	export class BrowserRenderer {
-		static activeInstances = {};
-
 		managedHandle: number;
 		canvas: any;
-		renderLoop: boolean;
-		currentRequest: number;
 		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
@@ -13,8 +9,6 @@ namespace Uno.UI.Runtime.Skia {
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
 			this.canvas = undefined;
-			this.renderLoop = false;
-			this.currentRequest = 0;
 			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
 			window.addEventListener("resize", x => this.setCanvasSize());
@@ -35,34 +29,6 @@ namespace Uno.UI.Runtime.Skia {
 			return new BrowserRenderer(managedHandle);
 		}
 
-		public requestAnimationFrame(renderLoop?: boolean) {
-			// optionally update the render loop
-			if (renderLoop !== undefined && this.renderLoop !== renderLoop) {
-				this.setEnableRenderLoopInternal(renderLoop);
-			}
-
-			// skip because we have a render loop
-			if (this.currentRequest !== 0)
-				return;
-
-			// add the draw to the next frame
-			this.currentRequest = window.requestAnimationFrame(() => {
-
-				if (this.requestRender) {
-					// make current for this canvas instance
-					(<any>window).GL.makeContextCurrent(this.glCtx);
-
-					this.requestRender();
-				}
-
-				this.currentRequest = 0;
-
-				// we may want to draw the next frame
-				if (this.renderLoop)
-					this.requestAnimationFrame();
-			});
-		}
-
 		private setCanvasSize() {
 			var scale = window.devicePixelRatio || 1;
 			var width = document.documentElement.clientWidth;
@@ -77,22 +43,23 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.canvas.style.width = `${width}px`;
 			this.canvas.style.height = `${height}px`;
+
+			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
+			// blank and will cause a flickering effect when you drag the window's border to resize.
+			// See also https://github.com/unoplatform/uno-private/issues/902.
+			BrowserRenderer.invalidate(this);
 		}
 
-		static setEnableRenderLoop(instance: BrowserRenderer, enable: boolean) {
-			instance.setEnableRenderLoopInternal(enable);
-		}
+		static invalidate(instance: BrowserRenderer) {
+			// add the draw to the next frame
+			window.requestAnimationFrame(() => {
+				if (instance.requestRender) {
+					// make current for this canvas instance
+					(<any>window).GL.makeContextCurrent(instance.glCtx);
 
-		private setEnableRenderLoopInternal(enable: boolean) {
-			this.renderLoop = enable;
-
-			// either start the new frame or cancel the existing one
-			if (enable) {
-				this.requestAnimationFrame();
-			} else if (this.currentRequest !== 0) {
-				window.cancelAnimationFrame(this.currentRequest);
-				this.currentRequest = 0;
-			}
+					instance.requestRender();
+				}
+			});
 		}
 
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {

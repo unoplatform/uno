@@ -95,7 +95,6 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		// No need to unregister. This class lasts the lifetime on the app.
 		var success = PInvoke.AddClipboardFormatListener(_hwnd);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}"); }
-		Win32Host.RegisterWindow(_hwnd);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -315,7 +314,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			var task = view.GetTextAsync().AsTask();
 			while (!task.IsCompleted)
 			{
-				Win32Host.RunOnce();
+				Win32EventLoop.RunOnce();
 			}
 
 			if (!task.IsCompletedSuccessfully)
@@ -364,7 +363,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var task = view.GetBitmapAsync().AsTask();
 		while (!task.IsCompleted)
 		{
-			Win32Host.RunOnce();
+			Win32EventLoop.RunOnce();
 		}
 
 		if (!task.IsCompletedSuccessfully)
@@ -376,7 +375,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var task2 = task.Result.OpenReadAsync().AsTask();
 		while (!task2.IsCompleted)
 		{
-			Win32Host.RunOnce();
+			Win32EventLoop.RunOnce();
 		}
 
 		if (!task2.IsCompletedSuccessfully)
