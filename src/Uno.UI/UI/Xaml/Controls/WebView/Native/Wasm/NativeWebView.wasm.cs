@@ -69,8 +69,14 @@ public partial class NativeWebView : ICleanableNativeWebView
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
-	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token) =>
-		Task.FromResult(NativeMethods.ExecuteScript(_elementId, script));
+	public async Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
+	{
+		await Task.Yield();
+		var result = NativeMethods.ExecuteScript(HtmlId, script);
+
+		// String needs to be wrapped in quotes to match Windows behavior
+		return $"\"{result.Replace("\"", "\\\"")}\"";
+	}
 
 	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token) =>
 		throw new NotSupportedException("InvokeScriptAsync with arguments is not yet supported on this platform.");
