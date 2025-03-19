@@ -23,6 +23,7 @@ internal partial class BrowserRenderer
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
 	private readonly JSObject _nativeSwapChainPanel;
+	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 
 	private GRGlInterface? _glInterface;
 	private GRContext? _context;
@@ -82,7 +83,7 @@ internal partial class BrowserRenderer
 			Initialize();
 		}
 
-		var sw = Stopwatch.StartNew();
+		_renderStopwatch.Restart();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -169,7 +170,7 @@ internal partial class BrowserRenderer
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Render time: {sw.Elapsed}");
+			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
 		}
 	}
 
