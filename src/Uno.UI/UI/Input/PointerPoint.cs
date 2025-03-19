@@ -42,7 +42,7 @@ namespace Windows.UI.Input
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 		private global::Windows.UI.Input.PointerPoint? _wuxPoint;
 
-		private PointerPoint(global::Windows.UI.Input.PointerPoint point)
+		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
 		{
 			_wuxPoint = point;
 			point._muxPoint = this;
