@@ -28,7 +28,7 @@ partial class InputPane
 
 	private bool TryShowPlatform() => _inputPaneExtension?.Value?.TryShow() ?? false;
 
-	private bool TryHidePartial() => _inputPaneExtension?.Value?.TryHide() ?? false;
+	private bool TryHidePlatform() => _inputPaneExtension?.Value?.TryHide() ?? false;
 
 	partial void EnsureFocusedElementInViewPartial()
 	{
