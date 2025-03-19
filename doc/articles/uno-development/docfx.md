@@ -107,9 +107,12 @@ Html output:
 > [!TIP]
 > It is possible to use `***` alternativly for the same Task.
 
-### TOC checker script
+## TOC checker script
 
-The [`check_toc` script](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC. At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
+The script [`check_toc`](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC.
+
+> [!NOTE]
+> At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
 
 <!-- TODO: ## Anchor links -->
 
@@ -124,7 +127,7 @@ To run DocFX locally and check the resulting html:
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
-4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.'
+<!-- 4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.' UNDONE: DocFx.console is depreciated and not longer available, see more Information to this here: https://github.com/dotnet/docfx/issues/9100-->
 5. Open the latest DocFX version and open the `tools` folder.
 6. Open a Powershell window in the `tools` folder.
 7. Run the following command: `.\docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository.
