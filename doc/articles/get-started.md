@@ -4,8 +4,11 @@ uid: Uno.GetStarted
 
 ## Quick Start
 
-1. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites
-2. Download the Uno Platform extension for your IDE:
+1. Install the [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/latest) to get `dotnet` available in your commandline.
+2. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites.
+   a. Detailed [Configuration Options](https://platform.uno/docs/articles/external/uno.check/doc/configuring-uno-check.html) for Uno-Check
+   b. If you run into issues with it, see [Troubleshooting Uno-Check](https://platform.uno/docs/articles/external/uno.check/doc/troubleshooting-uno-check.html)
+3. Download the Uno Platform extension for your IDE:
 
    <!-- markdownlint-disable MD001 MD009 -->
 
@@ -65,12 +68,6 @@ If you're developing on Windows, we recommend you use [**Visual Studio 2022**](x
 
 If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
-**Choose the IDE you want to use:**
-
-- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
-- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Rider](xref:Uno.GetStarted.Rider)
-
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
 |                                   | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
@@ -85,6 +82,12 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 - † You will need to be connected to a Mac to run and debug iOS apps from Windows.
 - †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 - ††† [WebAssembly debugging](https://youtrack.jetbrains.com/issue/RIDER-103346/Uno-Platform-for-WebAssembly-debugger-support) is not yet supported
+
+**Choose the IDE you want to use:**
+
+- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)
 
 # [**macOS**](#tab/macos)
 
