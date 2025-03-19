@@ -140,11 +140,3 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 ## Questions
 
 For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Development.FAQ) or see the [troubleshooting section](xref:Uno.UI.CommonIssues) for common issues and their solutions.
-
-## Next Steps
-
-Choose the IDE to Learn more about:
-
-- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
-- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-- [Rider](xref:Uno.GetStarted.Rider)
