@@ -8,7 +8,7 @@ namespace Windows.UI.Input;
 
 internal static class InputPaneInterop
 {
-	internal static bool TryShow(Activity activity)
+	internal static bool TryShow(Activity? activity)
 	{
 		var view = activity?.CurrentFocus;
 		if (view is not null)
@@ -24,7 +24,7 @@ internal static class InputPaneInterop
 		return false;
 	}
 
-	internal static bool TryHide(Activity activity)
+	internal static bool TryHide(Activity? activity)
 	{
 		var view = activity?.CurrentFocus;
 		if (view is not null)
