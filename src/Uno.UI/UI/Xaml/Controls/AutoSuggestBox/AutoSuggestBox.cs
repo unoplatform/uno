@@ -177,6 +177,11 @@ namespace Microsoft.UI.Xaml.Controls
 					IsSuggestionListOpen = true;
 					_suggestionsList.ItemsSource = GetItems();
 				}
+
+				// We need to layout the popup again after the list changes to account for the
+				// changed height and/or width when the popup is above or to the left of the
+				// ASB respectively.
+				LayoutPopup();
 			}
 		}
 

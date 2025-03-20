@@ -905,7 +905,12 @@ namespace Microsoft.UI.Xaml.Documents
 				characterCount++;
 			}
 
-			if (ignoreEndingSpace && span == line.SegmentSpans[^1] && span.GlyphsStart + span.GlyphsLength > 0 && char.IsWhiteSpace(segment.Text[span.GlyphsStart + span.GlyphsLength - 1]))
+			if (ignoreEndingSpace
+				&& span == line.SegmentSpans[^1]
+				&& line != _renderLines[^1]
+				&& ((IBlock)_collection.GetParent()).TextWrapping != TextWrapping.NoWrap
+				&& span.GlyphsStart + span.GlyphsLength > 0
+				&& char.IsWhiteSpace(segment.Text[span.GlyphsStart + span.GlyphsLength - 1]))
 			{
 				// in cases like clicking at the end of a line that ends in a wrapping space, we actually want the character right before the space
 				characterCount--;

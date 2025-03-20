@@ -24,7 +24,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 
-[TestClass]
+[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaMobile)]
 public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
