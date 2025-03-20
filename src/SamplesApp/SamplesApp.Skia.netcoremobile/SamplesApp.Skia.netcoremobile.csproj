@@ -217,6 +217,10 @@
 			</ItemGroup>
 
 			<ItemGroup>
+				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
+			</ItemGroup>
+
+			<ItemGroup>
 				<AndroidAsset Include="Assets\sound.mp3" />
 				<AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
 				<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
