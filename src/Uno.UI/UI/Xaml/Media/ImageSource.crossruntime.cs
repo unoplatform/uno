@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 			else if (_subscriptions.Count == 1)
 			{
-				RequestOpen();
+				_ = Open(CancellationToken.None);
 			}
 
 			return Disposable.Create(() => _subscriptions.Remove(onSourceOpened));
@@ -88,30 +88,7 @@ namespace Microsoft.UI.Xaml.Media
 			_imageData = default;
 			if (_subscriptions.Count > 0 || this is SvgImageSource)
 			{
-				RequestOpen();
-			}
-		}
-
-		private protected void RequestOpen()
-		{
-			try
-			{
-				if (TryOpenSourceSync(null, null, out var img))
-				{
-					OnOpened(img);
-				}
-				else
-				{
-					_opening.Disposable = null;
-
-					_opening.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
-						ct => _ = Open(ct));
-				}
-			}
-			catch (Exception error)
-			{
-				this.Log().Error($"Error loading image: {error}");
-				OnOpened(ImageData.FromError(error));
+				_ = Open(CancellationToken.None);
 			}
 		}
 
