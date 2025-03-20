@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Foldable</AssemblyName>
@@ -25,8 +25,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
@@ -35,10 +35,8 @@
 
 	<ItemGroup>
 		<!-- Make the package installable on net7.0 targets as a noop -->
-		<None Include="..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
+		<None Include="..\..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
 	</ItemGroup>
-
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoDualScreenOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
@@ -63,6 +61,6 @@
 	</Target>
 
 	<ItemGroup>
-		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+		<None Include=".\..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
 	</ItemGroup>
 </Project>
