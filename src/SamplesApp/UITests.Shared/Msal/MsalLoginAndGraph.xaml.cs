@@ -19,6 +19,7 @@ using Prompt = Microsoft.Identity.Client.Prompt;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Graph;
+using System.Runtime.InteropServices;
 #endif
 
 namespace UITests.Msal
@@ -30,18 +31,31 @@ namespace UITests.Msal
 #endif
 	{
 #if !DISABLE_GRAPH
-		private const string CLIENT_ID = "a74f513b-2d8c-45c0-a15a-15e63f7a7862";
-		private const string TENANT_ID = "6d53ef61-b6d1-4150-ae0b-43b90e75e0cd";
+		private const string CLIENT_ID = "03c890e9-d868-4d90-9c0a-919eff5b4d27";
+		private const string TENANT_ID = "a297d6c0-b635-41a3-b1e3-558efe71e413";
 
-#if __WASM__
-		private const string REDIRECT_URI = "http://localhost:55838/authentication/login-callback.htm";
-#elif __IOS__
-		private const string REDIRECT_URI = "msal" + CLIENT_ID + "://auth";
-#elif __ANDROID__
-		private const string REDIRECT_URI = "msauth://SamplesApp.Droid/BUWXtvbCbxw6rdZidSYhNH6gLvA%3D";
-#else
-		private const string REDIRECT_URI = "https://login.microsoftonline.com/common/oauth2/nativeclient";
-#endif
+		public string RedirectUri
+		{
+			get
+			{
+				if (OperatingSystem.IsOSPlatform("android"))
+				{
+					return "msauth://SamplesApp.Droid/BUWXtvbCbxw6rdZidSYhNH6gLvA%3D";
+				}
+				else if (OperatingSystem.IsOSPlatform("ios"))
+				{
+					return "msal" + CLIENT_ID + "://auth";
+				}
+				else if (OperatingSystem.IsOSPlatform("browser"))
+				{
+					return "http://localhost:55838/authentication/login-callback.htm";
+				}
+				else
+				{
+					return "https://login.microsoftonline.com/common/oauth2/nativeclient";
+				}
+			}
+		}
 
 		private readonly string[] SCOPES = new[] { "https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/email", "https://graph.microsoft.com/profile" };
 
@@ -56,7 +70,7 @@ namespace UITests.Msal
 			_app = PublicClientApplicationBuilder
 				.Create(CLIENT_ID)
 				.WithTenantId(TENANT_ID)
-				.WithRedirectUri(REDIRECT_URI)
+				.WithRedirectUri(RedirectUri)
 				.WithUnoHelpers()
 				.Build();
 #endif

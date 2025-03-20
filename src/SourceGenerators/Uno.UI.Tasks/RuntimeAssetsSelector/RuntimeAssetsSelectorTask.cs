@@ -481,6 +481,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 										var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
 										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
 										{
+											// We only need to retarget packages that are explicitly referencing Uno.UI
+											// Other packages that are referencing Uno to access WinRT APIs do not need
+											// to be retargeted.
 											this.Log.LogMessage($"Skipping {originalAssembly} replacement");
 											continue;
 										}

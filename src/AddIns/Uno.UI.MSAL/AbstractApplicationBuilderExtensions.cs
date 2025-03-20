@@ -15,7 +15,9 @@ namespace Uno.UI.MSAL
 #if __ANDROID__
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => ContextHelper.Current as Android.App.Activity);
 #elif __APPLE_UIKIT__
-			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Microsoft.UI.Xaml.Window.Current.Content.Window.RootViewController);
+#pragma warning disable CA1422 // Validate platform compatibility
+			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => UIKit.UIApplication.SharedApplication?.KeyWindow?.RootViewController);
+#pragma warning restore CA1422 // Validate platform compatibility
 #elif __WASM__
 			builder.WithHttpClientFactory(WasmHttpFactory.Instance);
 #endif

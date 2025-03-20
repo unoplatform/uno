@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Java.Interop;
+using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
 using Uno.UI;
 using Windows.UI.ViewManagement;
@@ -34,6 +35,25 @@ namespace SamplesApp.Droid
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : ApplicationActivity
+	{
+		// Required for the MSAL sample "MsalLoginAndGraph"
+		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+		}
+	}
+
+	// Required for the MSAL sample "MsalLoginAndGraph"
+	[Activity(Exported = true)]
+	[IntentFilter(
+		[Android.Content.Intent.ActionView],
+		Categories = [
+			Android.Content.Intent.CategoryDefault,
+			Android.Content.Intent.CategoryBrowsable
+		],
+		DataScheme = "msauth")]
+	public class MsalActivity : BrowserTabActivity
 	{
 	}
 }
