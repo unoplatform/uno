@@ -60,14 +60,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_applyOpened = true;
 
-				_inner.Indent(_source.CurrentLevel);
-
 				IDisposable? blockDisposable;
 
 				var delegateString = !_delegateType.IsNullOrEmpty() ? "(" + _delegateType + ")" : "";
 
 				if (_applyPrefix != null)
 				{
+					_inner.Indent(_source.CurrentLevel);
 					blockDisposable = _source.BlockInvariant(".{0}_XamlApply({2}({1} => ", _applyPrefix, _closureName, delegateString);
 				}
 				else if (_exposeContext)
@@ -79,6 +78,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
+					_inner.Indent(_source.CurrentLevel);
 					blockDisposable = _source.BlockInvariant(".GenericApply({1}(({0}) => ", _closureName, delegateString);
 				}
 
@@ -86,16 +86,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (_applyPrefix != null || !_exposeContext)
 					{
+						// lambda block
 						_source.Append(_inner.ToString());
 						blockDisposable.Dispose();
+						_source.AppendLineIndented("))");
 					}
 					else if (_exposeContext)
 					{
+						// named method
+						_source.Append("))");
+						_source.AppendLine();
+
 						blockDisposable.Dispose();
 						_onRegisterApplyMethodBody(_inner.ToString());
 					}
-
-					_source.AppendLineIndented("))");
+					else
+					{
+						_source.AppendLineIndented("))");
+					}
 				});
 			}
 		}
