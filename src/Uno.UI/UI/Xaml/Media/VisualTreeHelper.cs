@@ -1,5 +1,5 @@
 ﻿#nullable disable // Not supported by WinUI yet
-//#define TRACE_HIT_TESTING // Note: This flag should also be set in the InputManager.Pointers.Managed.cs file
+//#define TRACE_HIT_TESTING
 
 using System;
 using System.Collections.Generic;
@@ -437,13 +437,35 @@ namespace Microsoft.UI.Xaml.Media
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
 			XamlRoot? xamlRoot,
+			GetHitTestability? getTestability,
+			StalePredicate? isStale,
+			string tracingEntryPoint,
+			int tracingEntryLine,
+			string? tracingReason)
+		{
+#if TRACE_HIT_TESTING
+			using var _ = BEGIN_TRACE();
+			TRACE($"HIT_TEST [{tracingEntryPoint!.ToUpperInvariant()}@{tracingEntryLine}{(tracingReason is null ? "" : "--" + tracingReason)}] @{position.ToDebugString()}");
+#endif
+
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			{
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
+			}
+
+			return default;
+		}
+
+		internal static (UIElement? element, Branch? stale) HitTest(
+			Point position,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
 			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
 			, [CallerMemberName] string caller = "")
 		{
 			using var _ = BEGIN_TRACE();
-			TRACE($"[{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
+			TRACE($"HIT_TEST [{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
 #else
 			)
 		{

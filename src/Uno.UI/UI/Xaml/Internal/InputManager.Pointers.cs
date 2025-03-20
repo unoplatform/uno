@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using static Microsoft.UI.Xaml.UIElement;
 
 #if HAS_UNO_WINUI
 using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
@@ -213,15 +214,27 @@ partial class InputManager
 		#endregion
 
 		#region Misc helpers
-		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
+		private PointerEventDispatchResult ReleaseCaptures(PointerRoutedEventArgs routedArgs)
 		{
-			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+			var result = default(PointerEventDispatchResult);
+			UIElement.BeginPointerEventDispatch();
+			try
 			{
-				foreach (var target in capture.Targets.ToList())
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 				{
-					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+					foreach (var target in capture.Targets.ToList())
+					{
+						target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+
+					}
 				}
 			}
+			finally
+			{
+				result += UIElement.EndPointerEventDispatch();
+			}
+
+			return result;
 		}
 		#endregion
 	}

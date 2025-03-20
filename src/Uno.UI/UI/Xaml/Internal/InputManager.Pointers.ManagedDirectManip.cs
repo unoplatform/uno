@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Devices.Input;
 using Uno.UI.Extensions;
+using System.Runtime.CompilerServices;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Input;
@@ -83,6 +84,11 @@ partial class InputManager
 				manip = new DirectManipulation(this) { Handlers = { directManipulationTarget } };
 			}
 
+			if (_trace)
+			{
+				Trace($"[DirectManipulation] [{pointer}] Redirection requested to {directManipulationTarget.GetDebugName()}");
+			}
+
 			return manip;
 		}
 
@@ -95,8 +101,14 @@ partial class InputManager
 			//		 We should try to re-use an existing recognizer (for same kind of pointers ?) to see if it accepts the new pointer.
 			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) == true)
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer (@{args.CurrentPoint.Position.ToDebugString()}).");
+				}
+
 				using var _ = AsCurrentForDirectManipulation(args);
 				manip.Recognizer.ProcessDownEvent(args.CurrentPoint);
+
 				return true;
 			}
 
@@ -111,6 +123,11 @@ partial class InputManager
 			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true
 				&& manip.Recognizer.PendingManipulation?.IsActive(args.CurrentPoint.Pointer) is not true)
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer --POST DISPATCH-- (@{args.CurrentPoint.Position.ToDebugString()}).");
+				}
+
 				using var _ = AsCurrentForDirectManipulation(args);
 				manip.Recognizer.ProcessDownEvent(args.CurrentPoint);
 			}
@@ -120,6 +137,11 @@ partial class InputManager
 		{
 			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true)
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Handling move (@{args.CurrentPoint.Position.ToDebugString()}).");
+				}
+
 				using var _ = AsCurrentForDirectManipulation(args);
 				manip.Recognizer.ProcessMoveEvents([args.CurrentPoint]);
 
@@ -133,6 +155,11 @@ partial class InputManager
 		{
 			if (_directManipulations?.Remove(args.CurrentPoint.Pointer, out var manip) is true)
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer (@{args.CurrentPoint.Position.ToDebugString()}).");
+				}
+
 				using var _ = AsCurrentForDirectManipulation(args);
 				manip.Recognizer.ProcessUpEvent(args.CurrentPoint);
 
@@ -144,6 +171,14 @@ partial class InputManager
 
 		private bool TryClearDirectManipulationRedirection(PointerIdentifier pointerId)
 			=> _directManipulations?.Remove(pointerId) is true;
+
+		private void TraceIgnoredForDirectManipulation(Windows.UI.Core.PointerEventArgs args, [CallerMemberName] string caller = "")
+		{
+			if (_trace)
+			{
+				Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Is redirected, ignore the {caller} (Event is NOT being forwarded to the visual tree).");
+			}
+		}
 
 		private sealed class DirectManipulation
 		{
@@ -181,6 +216,11 @@ partial class InputManager
 
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnDirectManipulationStarting = (sender, args) =>
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.Pointer}] Starting");
+				}
+
 				// TODO: Make sure ManipulationStarting is fired on UIElement.
 
 				var manipulation = (DirectManipulation)sender.Owner;
@@ -192,6 +232,11 @@ partial class InputManager
 				}
 
 				args.Settings = supportedMode.ToGestureSettings();
+
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.Pointer}] Starting ==> Final configured mode is {supportedMode}.");
+				}
 			};
 
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnDirectManipulationStarted = (sender, args) =>
@@ -203,14 +248,13 @@ partial class InputManager
 					return;
 				}
 
-				var (originalSource, _) = manager.HitTest(pointerArgs);
-				if (!manager.EnsureSourceAndTrace(pointerArgs, ref originalSource))
+				if (_trace)
 				{
-					return;
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Started on @={args.Position.ToDebugString()}");
 				}
 
 				that.HasStarted = true;
-				originalSource.OnPointerCancel(new PointerRoutedEventArgs(pointerArgs, originalSource) { CanceledByDirectManipulation = true });
+				manager.CancelPointer(pointerArgs, isDirectManipulation: true);
 
 				foreach (var handler in that.Handlers)
 				{
@@ -220,9 +264,13 @@ partial class InputManager
 
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnDirectManipulationUpdated = (sender, args) =>
 			{
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta}){(args.IsInertial ? " *inertial*" : "")}");
+				}
+
 				var that = (DirectManipulation)sender.Owner;
 				var unhandledDelta = args.Delta;
-
 				foreach (var handler in that.Handlers)
 				{
 					handler.OnUpdated(sender, args, ref unhandledDelta);
@@ -232,6 +280,11 @@ partial class InputManager
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnDirectManipulationInertiaStarting = (sender, args) =>
 			{
 				var that = (DirectManipulation)sender.Owner;
+
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Inertia starting @={args.Position.ToDebugString()} | Δ=({args.Delta}) | v=({args.Velocities})");
+				}
 
 				foreach (var handler in that.Handlers)
 				{
@@ -243,6 +296,11 @@ partial class InputManager
 			{
 				var that = (DirectManipulation)sender.Owner;
 				that._pointerManager._directManipulations!.Remove(args.Pointers[0]);
+
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Completed @={args.Position.ToDebugString()}");
+				}
 
 				foreach (var handler in that.Handlers)
 				{
