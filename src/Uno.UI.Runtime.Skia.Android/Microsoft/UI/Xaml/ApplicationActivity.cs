@@ -91,12 +91,6 @@ namespace Microsoft.UI.Xaml
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)
 		{
-			if (Window != null && !Window!.Attributes!.SoftInputMode.HasFlag(SoftInput.AdjustNothing))
-			{
-				// We assume the system already ensured the focused element is in view
-				// using either SoftInput.AdjustResize or SoftInput.AdjustPan.
-				args.EnsuredFocusedElementInView = true;
-			}
 		}
 
 		protected override void InitializeComponent()
