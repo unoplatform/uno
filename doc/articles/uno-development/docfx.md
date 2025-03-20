@@ -52,9 +52,26 @@ The following note types are supported:
 
 ```
 
+And that's how they would render:
+
+> [!NOTE]
+> ...
+
+> [!TIP]
+> ...
+
+> [!WARNING]
+> ...
+
+> [!IMPORTANT]
+> ...
+
+> [!CAUTION]
+> ...
+
 ### Tabs
 
-DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#tabbed-content) precisely.
+DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html) precisely.
 
 #### Example
 
@@ -84,9 +101,18 @@ Html output:
 
 ---
 
-### TOC checker script
+> [!NOTE]
+> Use `---` in the Markdown sample is Important, to not include more Content in the tabbed area than actually wanted, but will not be rendered in the served documentation.
 
-The [`check_toc` script](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC. At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
+> [!TIP]
+> It is possible to use `***` alternativly for the same Task.
+
+## TOC checker script
+
+The script [`check_toc`](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC.
+
+> [!NOTE]
+> At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
 
 <!-- TODO: ## Anchor links -->
 
@@ -101,11 +127,10 @@ To run DocFX locally and check the resulting html:
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
-4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.'
-5. Open the latest DocFX version and open the `tools` folder.
-6. Open a Powershell window in the `tools` folder.
-7. Run the following command: `.\docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository.
-8. When DocFX runs successfully, it will create the html output at `C:\src\Uno.UI\docs-local-dist\_site`, which you can now view or mount on a local server.
+4. Open the latest DocFX version and open the `tools` folder.
+5. Open a Powershell window in the `tools` folder.
+6. Run the following command: `.\docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository.
+7. When DocFX runs successfully, it will create the html output at `C:\src\Uno.UI\docs-local-dist\_site`, which you can now view or mount on a local server.
 
 ### Use a local server
 
