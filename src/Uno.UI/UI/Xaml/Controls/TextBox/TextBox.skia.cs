@@ -309,6 +309,7 @@ public partial class TextBox
 				{
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
 				}
+				_timer.Stop();
 			}
 			UpdateDisplaySelection();
 		}
