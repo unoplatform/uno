@@ -99,7 +99,7 @@
 	},
 	{
 	  "group": "SkiaSharp",
-	  "version": "2.88.9",
+	  "version": "3.119.0-preview.0.11",
 	  "packages": [
 		"SkiaSharp.Skottie",
 		"SkiaSharp.Views.Uno.WinUI",

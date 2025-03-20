@@ -16,15 +16,23 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly SKPath _spareRenderPath = new SKPath();
+
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
+
+	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
+	// If we move to a UI-thread-per-window model, then we need multiple recorders.
+	[ThreadStatic]
+	private static SKPictureRecorder? _recorder;
 
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+	private SKPicture? _picture;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -67,8 +75,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	/// <summary>Whether or not this Visual has something to draw.</summary>
+	/// <summary>
+	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
+	/// paint on their own (even though they might contain other Visuals that do).
+	/// This is a temporary optimization to reduce unnecessary SkPicture allocations.
+	/// In the future, we should accurately set <see cref="_requiresRepaint"/> to
+	/// only be true when we really have something to paint (and that painting needs to be updated).
+	/// </summary>
 	internal virtual bool CanPaint() => false;
+
+	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
+	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -155,6 +172,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal string TotalMatrixString => $"{((_flags & VisualFlags.MatrixDirty) != 0 ? "-dirty-" : "")}{_totalMatrix}";
 #endif
 
+	/// <remarks>
+	/// This should only be called from <see cref="Compositor.InvalidateRenderPartial"/>
+	/// </remarks>
+	internal void InvalidatePaint()
+	{
+		_picture?.Dispose();
+		_picture = null;
+		_flags |= VisualFlags.PaintDirty;
+	}
+
 	public CompositionClip? Clip
 	{
 		get => _clip;
@@ -201,16 +228,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// Render a visual as if it's the root visual.
 	/// </summary>
-	/// <param name="surface">The surface on which this visual should be rendered.</param>
+	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
+	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
 			return;
 		}
-
-		var canvas = surface.Canvas;
 
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
@@ -234,7 +260,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		_factory.CreateInstance(this,
-						  surface,
 						  canvas,
 						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
 						  opacity: 1.0f,
@@ -247,8 +272,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		canvas.Restore();
 	}
-
-	private static SKPath _spareRenderPath = new SKPath();
 
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
@@ -289,7 +312,27 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
-			Paint(in session);
+
+			if (RequiresRepaintOnEveryFrame)
+			{
+				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				Paint(session);
+			}
+			else
+			{
+				if ((_flags & VisualFlags.PaintDirty) != 0)
+				{
+					_flags &= ~VisualFlags.PaintDirty;
+					_recorder ??= new SKPictureRecorder();
+					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+					_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+					Paint(in recorderSession);
+					_picture = _recorder.EndRecording();
+				}
+
+				session.Canvas.DrawPicture(_picture);
+			}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
 #endif
@@ -362,7 +405,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
-		_factory.CreateInstance(this, parentSession.Surface, canvas, ref rootTransform, opacity, out session);
+		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
 
 		Matrix4x4 totalMatrix;
 
@@ -375,19 +418,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			totalMatrix = TotalMatrix * rootTransform;
 		}
 
-		var skMatrix = stackalloc float[9];
-
-		skMatrix[0] = totalMatrix.M11;
-		skMatrix[1] = totalMatrix.M21;
-		skMatrix[2] = totalMatrix.M41;
-		skMatrix[3] = totalMatrix.M12;
-		skMatrix[4] = totalMatrix.M22;
-		skMatrix[5] = totalMatrix.M42;
-		skMatrix[6] = totalMatrix.M14;
-		skMatrix[7] = totalMatrix.M24;
-		skMatrix[8] = totalMatrix.M44;
-
-		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix*)skMatrix);
+		// this avoids the matrix copying in canvas.SetMatrix()
+		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
 	}
 
 	[Flags]
@@ -396,6 +428,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		IsNativeHostVisualSet = 1, // Is the IsNativeHostVisual bit valid?
 		IsNativeHostVisual = 2,
 		IsNativeHostVisualInherited = 4,
-		MatrixDirty = 16
+		MatrixDirty = 8,
+		PaintDirty = 16,
 	}
 }

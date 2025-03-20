@@ -78,7 +78,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (host.RootElement?.Visual is { } rootVisual)
 				{
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
 					if (path is not null)
 					{
 						_airspaceHelper.XShapeClip(path);

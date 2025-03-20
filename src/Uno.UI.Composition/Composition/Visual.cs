@@ -164,6 +164,22 @@ namespace Microsoft.UI.Composition
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);
+#if __SKIA__
+			if (propertyName == nameof(Opacity))
+			{
+				RecursiveInvalidate(this);
+			}
+
+			void RecursiveInvalidate(Visual visual)
+			{
+				visual.InvalidatePaint();
+				var children = visual.GetChildrenInRenderOrder();
+				foreach (var child in children)
+				{
+					RecursiveInvalidate(child);
+				}
+			}
+#endif
 		}
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
