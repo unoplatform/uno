@@ -2015,6 +2015,7 @@
 			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
 			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Uno.UI.GooglePlay.GlobalStaticResources" reason="Should not be generated" />
 		</Types>
 
 		<Events>
