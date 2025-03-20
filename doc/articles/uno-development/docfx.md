@@ -149,7 +149,9 @@ To run DocFX locally and check the resulting html:
 5. Install docfx globally: `dotnet tool install -g docfx`
 <!--5. Run the following command: `docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository. <!-- UNDONE: Decide if Uno.UI here as placeholder should be exchanged with src? Using Uno.UI here could lead to missunderstanding it as src\Uno.UI which would not only make no sense in this context, but also will cause avoidable Issues by building and serving docfx locally!-->
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
-7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve on a [local server](#use-a-local-server).
+7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following commands:
+   a. `docfx serve doc/docfx.json`
+   a. [local server](#use-a-local-server).
 
 ### Use a local server
 
