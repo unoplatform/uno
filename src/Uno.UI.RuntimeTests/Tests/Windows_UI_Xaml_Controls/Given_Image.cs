@@ -34,6 +34,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresScaling(1f)]
+#if __WASM__
+		[Ignore("Not supported on WebAssembly")]
+#endif
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
