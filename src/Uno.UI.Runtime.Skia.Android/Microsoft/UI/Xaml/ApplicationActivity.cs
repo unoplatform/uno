@@ -227,7 +227,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -240,7 +239,7 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
-			SetContentView(RelativeLayout);
+			FindViewById(global::Android.Views.Window.IdAndroidContent)!.ViewTreeObserver!.AddOnPreDrawListener(new ActivationPreDrawListener());
 		}
 
 		protected override void OnStart()
@@ -450,6 +449,24 @@ namespace Microsoft.UI.Xaml
 				{
 					canvas.ClipPath(PathParser.CreatePathFromPathData(Path.ToSvgPathData()));
 				}
+			}
+		}
+
+		private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+		{
+			public bool OnPreDraw()
+			{
+				// Only add the RelativeLayout to the activity after we're ready to draw.
+				// Otherwise, the splash screen ends too early (even if you return false here).
+				if (Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.IsLoaded ?? false)
+				{
+					var applicationActivity = ApplicationActivity.Instance;
+					applicationActivity.SetContentView(applicationActivity.RelativeLayout);
+					applicationActivity.FindViewById(global::Android.Views.Window.IdAndroidContent)!.ViewTreeObserver!.RemoveOnPreDrawListener(this);
+					return true;
+				}
+
+				return false;
 			}
 		}
 	}

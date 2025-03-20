@@ -8,5 +8,7 @@
 		<item name="windowNoTitle">true</item>
 		<item name="android:windowNoTitle">true</item>
 
+		<item name="android:windowSplashScreenAnimatedIcon">@drawable/uno</item>
+
 	</style>
  </resources>

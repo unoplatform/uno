@@ -22,14 +22,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
-	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 
 	private Rect _previousTrueVisibleBounds;
 
 	public NativeWindowWrapper()
 	{
-		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
@@ -53,8 +51,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	internal int SystemUiVisibility { get; set; }
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
-
-	internal void OnActivityCreated() => AddPreDrawListener();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
@@ -95,7 +91,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	protected override void ShowCore()
 	{
 		ApplySystemOverlaysTheming();
-		RemovePreDrawListener();
 	}
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
@@ -272,40 +267,5 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
-	}
-
-	private void AddPreDrawListener()
-	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
-		{
-			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
-		}
-	}
-
-	private void RemovePreDrawListener()
-	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
-		{
-			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
-		}
-	}
-
-	private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
-	{
-		private readonly NativeWindowWrapper _windowWrapper;
-
-		public ActivationPreDrawListener(NativeWindowWrapper windowWrapper)
-		{
-			_windowWrapper = windowWrapper;
-		}
-
-		public ActivationPreDrawListener(IntPtr handle, JniHandleOwnership transfer)
-			: base(handle, transfer)
-		{
-		}
-
-		public bool OnPreDraw() => _windowWrapper.IsVisible;
 	}
 }
