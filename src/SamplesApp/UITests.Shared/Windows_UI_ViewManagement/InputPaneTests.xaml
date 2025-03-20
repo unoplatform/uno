@@ -15,8 +15,8 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Padding="12" Spacing="12">
                 <Button Click="{x:Bind TryShow}">Try show</Button>
@@ -24,8 +24,15 @@
                 <CheckBox x:Name="SimulateKeyboardCheckBox" IsChecked="{x:Bind SimulateKeyboard, Mode=TwoWay}">Simulate keyboard</CheckBox>
                 <TextBlock x:Name="OccludedRectTextBlock" />
             </StackPanel>
-
-            <TextBox Grid.Row="1" PlaceholderText="Write here..." />
+            <ScrollViewer Grid.Row="1">
+                <StackPanel>
+                    <Rectangle
+                        Width="50"
+                        Height="1000"
+                        Fill="Red" />
+                    <TextBox PlaceholderText="Write here..." />
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
         <TextBox Grid.Row="1" PlaceholderText="Write here..." />
     </Grid>
