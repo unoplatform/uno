@@ -145,7 +145,7 @@ To run DocFX locally and check the resulting html:
 <!-- 4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.' UNDONE: DocFx.console is depreciated and not longer available, see more Information to this here: https://github.com/dotnet/docfx/issues/9100
 5. Open the latest DocFX version and open the `tools` folder. UNDONE: tools\DocFx.exe is now nested in .dotnet folder and available throught `dotnet tool`
 6. Open a Powershell window in the `tools` folder. UNDONE: Terminal in the IDE is enough -->
-4. Open a Terminal, inside or external of your IDE, at the Root Directory or your locally cloned Uno Repository.
+4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
 5. Install docfx globally: `dotnet tool install -g docfx`
 <!--5. Run the following command: `docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository. <!-- UNDONE: Decide if Uno.UI here as placeholder should be exchanged with src? Using Uno.UI here could lead to missunderstanding it as src\Uno.UI which would not only make no sense in this context, but also will cause avoidable Issues by building and serving docfx locally!-->
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
