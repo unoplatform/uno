@@ -71,8 +71,8 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		_skCanvasView = new SkiaCanvas();
 #if !__TVOS__
 		_skCanvasView.SetOwner(this);
-		_skCanvasView.Paused = false;
-		_skCanvasView.EnableSetNeedsDisplay = false;
+		_skCanvasView.Paused = true;
+		_skCanvasView.EnableSetNeedsDisplay = true;
 		_skCanvasView.FramebufferOnly = false;
 #endif
 		_skCanvasView.Frame = View!.Bounds;
@@ -259,7 +259,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		return coord;
 	}
 
-	public void InvalidateRender() => _skCanvasView?.LayoutSubviews();
+	public void InvalidateRender() =>
+#if !__TVOS__
+		_skCanvasView?.SetNeedsDisplay();
+#else
+		_skCanvasView?.LayoutSubviews();
+#endif
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
