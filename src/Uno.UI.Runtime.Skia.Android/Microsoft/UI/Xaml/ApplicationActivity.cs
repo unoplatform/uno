@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml
 		private void OnKeyboardChanged(Rect keyboard)
 		{
 			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
-			//_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
+			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
 		protected override void OnCreate(Bundle? bundle)
