@@ -2,18 +2,12 @@
 
 This guide walks through the process of implementing Firebase Cloud Messaging (FCM) for push notifications in an Uno Platform application targeting Android.
 
-## Prerequisites
-
-- An Uno Platform application project
-- A Firebase account and project
-- Basic understanding of Uno Platform and C#
-
 ## Step 1: Set Up Firebase Project
 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Create a new project or use an existing one
 3. Add an Android app to your Firebase project:
-   - Package name should match your application ID in the .csproj file (e.g., `com.companyname.FCMtest`)
+   - Package name should match your application ID in the .csproj file (e.g., `com.companyname.UnoFCM`)
    - Download the `google-services.json` file
 
 ## Step 2: Add Required NuGet Packages
