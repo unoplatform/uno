@@ -200,7 +200,7 @@ public partial class SvgProvider : ISvgProvider
 			}
 
 			canvas.Clear(SKColors.Transparent);
-			canvas.DrawPicture(_skSvg.Picture, ref scaleMatrix);
+			canvas.DrawPicture(_skSvg.Picture, in scaleMatrix);
 			_skBitmap = bitmap;
 			changed = true;
 		}

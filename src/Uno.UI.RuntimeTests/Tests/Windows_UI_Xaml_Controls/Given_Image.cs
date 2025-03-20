@@ -33,10 +33,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("TODO: Fix on other platforms")]
-#endif
 		[RequiresScaling(1f)]
+#if __WASM__
+		[Ignore("Not supported on WebAssembly")]
+#endif
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
@@ -75,10 +75,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
-			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
-			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
-			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
+			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
+			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
+			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
+			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
 		}
 
 #if __APPLE_UIKIT__
@@ -592,7 +592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var skBitmapScaled = new SKBitmap(skBitmap.Info with { Width = 100, Height = 100 });
 
-			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, SKFilterQuality.High));
+			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, new SKSamplingOptions(SKCubicResampler.CatmullRom)));
 
 			for (int x = 0; x < 100; x++)
 			{

@@ -29,7 +29,7 @@ internal static class UnoSkiaApi
 	internal static extern void sk_canvas_draw_text_blob(IntPtr canvas, IntPtr textBlob, float x, float y, IntPtr paint);
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
-	internal static extern unsafe void sk_canvas_set_matrix(IntPtr canvas, SKMatrix* matrix);
+	internal static extern unsafe void sk_canvas_set_matrix(IntPtr canvas, SKMatrix44* matrix);
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
 	internal static extern unsafe void sk_rrect_set_rect_radii(IntPtr rrect, SKRect* rect, SKPoint* radii);

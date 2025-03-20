@@ -23,6 +23,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
 			_sourcePaint ??= paint.Clone();

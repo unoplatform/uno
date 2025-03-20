@@ -121,7 +121,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 			{
 				int width = (int)View!.Frame.Width;
 				int height = (int)View!.Frame.Height;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
 				if (path is { })
 				{
 					var svgPath = path.ToSvgPathData();

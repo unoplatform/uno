@@ -286,7 +286,7 @@ namespace Microsoft.UI.Xaml
 					canvas.Clear(SKColors.Transparent);
 					var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 					canvas.Scale((float)scale);
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, surface);
+					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, surface.Canvas);
 					if (_nativeLayerHost is { })
 					{
 						_nativeLayerHost.Path = negativePath;

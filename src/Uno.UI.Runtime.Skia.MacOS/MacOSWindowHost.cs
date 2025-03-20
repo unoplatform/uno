@@ -85,7 +85,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
 				if (path is { })
 				{
 					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, path.ToSvgPathData());

@@ -70,11 +70,7 @@ namespace Microsoft.UI.Composition
 
 					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
-						// workaround until SkiaSharp adds support for SaveLayerRec
-						fillPaint.FilterQuality = SKFilterQuality.High;
-						session.Canvas.SaveLayer(fillPaint);
-						session.Canvas.Scale(1.0f / session.Canvas.TotalMatrix.ScaleX);
-						session.Canvas.DrawSurface(session.Surface, new(-session.Canvas.TotalMatrix.TransX, -session.Canvas.DeviceClipBounds.Top + session.Canvas.LocalClipBounds.Top));
+						session.Canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = fillPaint.ImageFilter });
 						session.Canvas.Restore();
 					}
 					else
@@ -151,14 +147,9 @@ namespace Microsoft.UI.Composition
 
 			// uno-specific defaults
 			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
-			paint.IsAutohinted = true;
-			// paint.IsAntialias = true; // IMPORTANT: don't set this to true by default. It breaks canvas clipping on Linux for some reason.
+			paint.IsAntialias = true;
 
 			paint.ColorFilter = colorFilter;
-			if (CompositionConfiguration.UseBrushAntialiasing)
-			{
-				paint.FilterQuality = SKFilterQuality.High;
-			}
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

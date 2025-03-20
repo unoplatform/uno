@@ -506,7 +506,6 @@ namespace Microsoft.UI.Xaml.Documents
 
 					paint.Reset();
 
-					paint.TextEncoding = SKTextEncoding.Utf16;
 					paint.IsStroke = false;
 					paint.IsAntialias = true;
 
