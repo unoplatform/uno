@@ -42,6 +42,8 @@ jobs:
     displayName: Install Android 34
 
   - template: templates/dotnet-mobile-install-mac.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-android'
 
   - template: templates/nuget-cache.yml
     parameters:
