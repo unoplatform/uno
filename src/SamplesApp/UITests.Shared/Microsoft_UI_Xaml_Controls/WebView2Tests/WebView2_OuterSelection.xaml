@@ -13,7 +13,7 @@
 
 		<mux:WebView2 Width="640"
 				  Height="480"
-				  Source="https://platform.uno"></WebView2>
+				  Source="https://platform.uno" />
 
 		<Slider  Orientation="Horizontal"
 				 AllowDrop="False"
