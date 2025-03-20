@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
-using Microsoft.UI.Composition;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
@@ -36,19 +28,43 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			try
 			{
 				var uri = UriSource;
-				if (uri is not null)
+				if (uri is null)
+				{
+					if (_stream is null)
+					{
+						return ImageData.Empty;
+					}
+					else
+					{
+						var clonedStream = _stream.CloneStream().AsStreamForRead();
+						var tcs = new TaskCompletionSource<ImageData>();
+						_ = Task.Run(async () =>
+						{
+							tcs.TrySetResult(await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct));
+						}, ct);
+
+						return await tcs.Task;
+					}
+				}
+				else
 				{
 					if (!uri.IsAbsoluteUri)
 					{
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					if (uri.IsLocalResource())
+					var tcs = new TaskCompletionSource<ImageData>();
+					_ = Task.Run(async () =>
 					{
-						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
-					}
+						if (uri.IsLocalResource())
+						{
+							uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+						}
 
-					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
+						tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
+					}, ct);
+
+					var imageData = await tcs.Task;
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						PixelWidth = 0;
@@ -65,17 +81,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 					return imageData;
 				}
-				else if (_stream != null)
-				{
-					return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(_stream.AsStream(), ct);
-				}
 			}
 			catch (Exception e)
 			{
 				return ImageData.FromError(e);
 			}
-
-			return default;
 		}
 
 		private static readonly int[] KnownScales =
