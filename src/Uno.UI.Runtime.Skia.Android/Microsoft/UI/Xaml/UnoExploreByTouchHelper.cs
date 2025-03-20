@@ -181,87 +181,96 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 			if (peer is null)
 			{
-				// No automation peer available for this element.
-				return;
+				// No automation peer available for this element
+				// anymore due to visibility changes.
+				// The next frame will rebuild the accessiblity tree,
+				// so we can temporarily mark this as unspecified.
+				node.ContentDescription = "N/A";
+				node.Enabled = false;
+				node.Editable = false;
+				node.ClassName = "android.view.View";
 			}
-
-			// TODO: Scrolling?
-
-			var isClickable = peer is IInvokeProvider or IToggleProvider or ISelectionItemProvider;
-
-			if (isClickable)
+			else
 			{
-				node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
+
+				// TODO: Scrolling?
+
+				var isClickable = peer is IInvokeProvider or IToggleProvider or ISelectionItemProvider;
+
+				if (isClickable)
+				{
+					node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
+				}
+
+				var automationControlType = peer!.GetAutomationControlType();
+
+				node.ContentDescription = peer.GetName();
+				node.Password = peer.IsPassword();
+				node.Enabled = peer.IsEnabled();
+				node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
+				node.Checkable = peer is IToggleProvider;
+				node.Clickable = isClickable;
+				node.Editable = automationControlType == AutomationControlType.Edit;
+
+				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
+					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
+				{
+					node.SetLabeledBy(_host, (int)labeledByVirtualId);
+				}
+
+				node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;
+				node.HintText = peer.GetHelpText();
+				var controlType = peer.GetAutomationControlType();
+				// TalkBack appears to rely on the native qualified name. So, we have to transform common class names.
+				// TODO: Is it correct to rely on AutomationControlType? or should we rely on our GetClassName? or a mix of both?
+				var androidClassName = controlType switch
+				{
+					AutomationControlType.AppBar => "android.view.View",
+					AutomationControlType.Button => "android.widget.Button",
+					AutomationControlType.CheckBox => "android.widget.CheckBox",
+					AutomationControlType.Calendar => "android.view.View",
+					AutomationControlType.ComboBox => "android.widget.Spinner",
+					AutomationControlType.Edit => "android.widget.EditText",
+					AutomationControlType.Hyperlink => "android.view.View",
+					AutomationControlType.Image => "android.widget.ImageView",
+					AutomationControlType.ListItem => "android.view.View",
+					AutomationControlType.List => "android.view.View",
+					AutomationControlType.Menu => "android.view.View",
+					AutomationControlType.MenuBar => "android.view.View",
+					AutomationControlType.MenuItem => "android.view.View",
+					AutomationControlType.ProgressBar => "android.view.View",
+					AutomationControlType.RadioButton => "android.widget.RadioButton",
+					AutomationControlType.ScrollBar => "android.view.View",
+					AutomationControlType.Slider => "android.widget.SeekBar",
+					AutomationControlType.Spinner => "android.view.View",
+					AutomationControlType.StatusBar => "android.view.View",
+					AutomationControlType.Tab => "android.view.View",
+					AutomationControlType.TabItem => "android.view.View",
+					AutomationControlType.Text => "android.view.View",
+					AutomationControlType.ToolBar => "android.view.View",
+					AutomationControlType.ToolTip => "android.view.View",
+					AutomationControlType.Tree => "android.view.View",
+					AutomationControlType.TreeItem => "android.view.View",
+					AutomationControlType.Custom => "android.view.View",
+					AutomationControlType.Group => "android.view.View",
+					AutomationControlType.Thumb => "android.view.View",
+					AutomationControlType.DataGrid => "android.view.View",
+					AutomationControlType.DataItem => "android.view.View",
+					AutomationControlType.Document => "android.view.View",
+					AutomationControlType.SplitButton => "android.view.View",
+					AutomationControlType.Window => "android.view.View",
+					AutomationControlType.Pane => "android.view.View",
+					AutomationControlType.Header => "android.view.View",
+					AutomationControlType.HeaderItem => "android.view.View",
+					AutomationControlType.Table => "android.view.View",
+					AutomationControlType.TitleBar => "android.view.View",
+					AutomationControlType.Separator => "android.view.View",
+					AutomationControlType.SemanticZoom => "android.view.View",
+					_ => "android.view.View",
+				};
+
+				node.ClassName = androidClassName;
 			}
-
-			var automationControlType = peer.GetAutomationControlType();
-
-			node.ContentDescription = peer.GetName();
-			node.Password = peer.IsPassword();
-			node.Enabled = peer.IsEnabled();
-			node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
-			node.Checkable = peer is IToggleProvider;
-			node.Clickable = isClickable;
-			node.Editable = automationControlType == AutomationControlType.Edit;
-
-			if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
-				_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
-			{
-				node.SetLabeledBy(_host, (int)labeledByVirtualId);
-			}
-
-			node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;
-			node.HintText = peer.GetHelpText();
-			var controlType = peer.GetAutomationControlType();
-			// TalkBack appears to rely on the native qualified name. So, we have to transform common class names.
-			// TODO: Is it correct to rely on AutomationControlType? or should we rely on our GetClassName? or a mix of both?
-			var androidClassName = controlType switch
-			{
-				AutomationControlType.AppBar => "android.view.View",
-				AutomationControlType.Button => "android.widget.Button",
-				AutomationControlType.CheckBox => "android.widget.CheckBox",
-				AutomationControlType.Calendar => "android.view.View",
-				AutomationControlType.ComboBox => "android.widget.Spinner",
-				AutomationControlType.Edit => "android.widget.EditText",
-				AutomationControlType.Hyperlink => "android.view.View",
-				AutomationControlType.Image => "android.widget.ImageView",
-				AutomationControlType.ListItem => "android.view.View",
-				AutomationControlType.List => "android.view.View",
-				AutomationControlType.Menu => "android.view.View",
-				AutomationControlType.MenuBar => "android.view.View",
-				AutomationControlType.MenuItem => "android.view.View",
-				AutomationControlType.ProgressBar => "android.view.View",
-				AutomationControlType.RadioButton => "android.widget.RadioButton",
-				AutomationControlType.ScrollBar => "android.view.View",
-				AutomationControlType.Slider => "android.widget.SeekBar",
-				AutomationControlType.Spinner => "android.view.View",
-				AutomationControlType.StatusBar => "android.view.View",
-				AutomationControlType.Tab => "android.view.View",
-				AutomationControlType.TabItem => "android.view.View",
-				AutomationControlType.Text => "android.view.View",
-				AutomationControlType.ToolBar => "android.view.View",
-				AutomationControlType.ToolTip => "android.view.View",
-				AutomationControlType.Tree => "android.view.View",
-				AutomationControlType.TreeItem => "android.view.View",
-				AutomationControlType.Custom => "android.view.View",
-				AutomationControlType.Group => "android.view.View",
-				AutomationControlType.Thumb => "android.view.View",
-				AutomationControlType.DataGrid => "android.view.View",
-				AutomationControlType.DataItem => "android.view.View",
-				AutomationControlType.Document => "android.view.View",
-				AutomationControlType.SplitButton => "android.view.View",
-				AutomationControlType.Window => "android.view.View",
-				AutomationControlType.Pane => "android.view.View",
-				AutomationControlType.Header => "android.view.View",
-				AutomationControlType.HeaderItem => "android.view.View",
-				AutomationControlType.Table => "android.view.View",
-				AutomationControlType.TitleBar => "android.view.View",
-				AutomationControlType.Separator => "android.view.View",
-				AutomationControlType.SemanticZoom => "android.view.View",
-				_ => "android.view.View",
-			};
-
-			node.ClassName = androidClassName;
 		}
 	}
 }
