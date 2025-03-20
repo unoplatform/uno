@@ -2,6 +2,7 @@
   "solution": {
     "path": "Uno.UI.sln",
     "projects": [
+      "AddIns\\Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "AddIns\\Uno.UI.GooglePlay\\Uno.UI.GooglePlay.netcoremobile.csproj",
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
@@ -13,7 +14,6 @@
       "AddIns\\Uno.UI.WebView.Skia.X11\\Uno.UI.WebView.Skia.X11.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.csproj",
       "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
-      "AddIns\\Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",
