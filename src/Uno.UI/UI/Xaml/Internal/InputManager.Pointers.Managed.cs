@@ -465,7 +465,7 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource)
 			{
-				IsInjected = isInjected, 
+				IsInjected = isInjected,
 				CanceledByDirectManipulation = isDirectManipulation
 			};
 			var result = default(PointerEventDispatchResult);
@@ -743,18 +743,6 @@ internal partial class InputManager
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
 			element ??= _inputManager.ContentRoot.VisualTree.RootElement;
-
-			return element is not null;
-		}
-
-		private bool HitTest(
-			PointerEventArgs args,
-			[NotNullWhen(true)] out UIElement? element,
-			string? reason = null,
-			[CallerMemberName] string entryPoint = "",
-			[CallerLineNumber] int entryLine = -1)
-		{
-			(element, _) = HitTestCore(args, null, entryPoint, entryLine, reason);
 
 			return element is not null;
 		}
