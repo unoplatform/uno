@@ -125,7 +125,7 @@ To use it, follow this Steps:
    > [!IMPORTANT]
    > This execution Directory is important to get the correct links for the TOC!
  
-1. Run the script with `& check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
+1. Run the script with `& .\check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
 1. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
 
 <!-- TODO: ## Anchor links -->
