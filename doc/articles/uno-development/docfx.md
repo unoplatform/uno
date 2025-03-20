@@ -34,40 +34,39 @@ Use pre-formatted blockquotes when you want to call special attention to particu
 
 The following note types are supported:
 
-```md
+```markdown
 > [!NOTE]
-> ...
+> Information the user should notice even if skimming.
 
 > [!TIP]
-> ...
-
-> [!WARNING]
-> ...
+> Optional information to help a user be more successful.
 
 > [!IMPORTANT]
-> ...
+> Essential information required for user success.
 
 > [!CAUTION]
-> ...
+> Negative potential consequences of an action.
 
+> [!WARNING]
+> Dangerous certain consequences of an action.
 ```
 
-And that's how they would render:
+They look like this in rendered page:
 
 > [!NOTE]
-> ...
+> Information the user should notice even if skimming.
 
 > [!TIP]
-> ...
-
-> [!WARNING]
-> ...
+> Optional information to help a user be more successful.
 
 > [!IMPORTANT]
-> ...
+> Essential information required for user success.
 
 > [!CAUTION]
-> ...
+> Negative potential consequences of an action.
+
+> [!WARNING]
+> Dangerous certain consequences of an action.
 
 ### Tabs
 
