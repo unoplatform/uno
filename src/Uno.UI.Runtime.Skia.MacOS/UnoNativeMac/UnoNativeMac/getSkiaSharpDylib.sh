@@ -6,6 +6,7 @@ VERSION=${VERSION:-3.119.0-preview.0.11}
 
 filename="skiasharp_"${VERSION}"_nativeassets"
 build_dir="${filename}-tmp-build"
+NUGET_PACKAGES=${NUGET_PACKAGES:-~/.nuget/packages}
 
 if [ ! -f "${filename}"/libSkiaSharp.dylib ]; then
     # download the SkiaSharp.NativeAssets.macOS using the configured nuget feeds
@@ -18,6 +19,6 @@ if [ ! -f "${filename}"/libSkiaSharp.dylib ]; then
     rm -fr "${build_dir}"
     rm -fr "${filename}"
     mkdir -p "${filename}"
-    cp -r ~/.nuget/packages/skiasharp.nativeassets.macos/${VERSION}/runtimes/osx/native/* "${filename}"
+    cp -r ${NUGET_PACKAGES}/skiasharp.nativeassets.macos/${VERSION}/runtimes/osx/native/* "${filename}"
 fi
 cp "${filename}/libSkiaSharp.dylib" .
