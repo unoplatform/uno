@@ -170,3 +170,7 @@ To run the script on Windows:
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
 3. Go to the uno\build folder (not the uno\src\build folder)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions
+
+## Import Uno Extensions and Tools docs
+
+[!INCLUDE https://github.com/unoplatform/uno.extensions/blob/main/doc/README.md]
