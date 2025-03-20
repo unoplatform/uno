@@ -114,6 +114,21 @@ The script [`check_toc`](https://github.com/unoplatform/uno/blob/master/doc/arti
 > [!NOTE]
 > At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
 
+To use it, follow this Steps:
+
+1. Open a Power-Shell Terminal at the Root Directory of your locally cloned Uno Repository.
+1. Navigate to the `articles` Directory of your local Uno.UI Repository:
+
+   ```ps
+   cd doc/articles
+   ```
+
+   > [!IMPORTANT]
+   > This execution Directory is important to get the correct links for the TOC!
+ 
+1. Run the script with `& check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
+1. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
+
 <!-- TODO: ## Anchor links -->
 
 ## Building docs website locally with DocFX
