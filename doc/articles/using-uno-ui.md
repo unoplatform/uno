@@ -69,3 +69,11 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 * [Hot Reload](xref:Uno.Features.HotReload)
 * [Troubleshooting build errors](uno-builds-troubleshooting.md)
 * [Debugging C# on WASM](debugging-wasm.md)
+
+## IDE Specifics
+
+### Visual Studio Code
+
+* [Explore Commands and Snippets provided by the VS Code Extension](xref:Uno.vscode.additional)
+* [Common Issues VS Code](xref:Uno.UI.CommonIssues.vscode)
+* [Updating an existing application to work with VS Code](xref:Uno.vscode.additional#updating-an-existing-application-to-work-with-vs-code)
