@@ -220,6 +220,7 @@
 
 			<ItemGroup>
 				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
+				<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
 			</ItemGroup>
 
 			<ItemGroup>
