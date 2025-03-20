@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -839,7 +839,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var applyMethod in CurrentScope.ExplicitApplyMethods)
 			{
-				writer.AppendLineIndented(applyMethod);
+				writer.AppendMultiLineIndented(applyMethod);
 			}
 		}
 
