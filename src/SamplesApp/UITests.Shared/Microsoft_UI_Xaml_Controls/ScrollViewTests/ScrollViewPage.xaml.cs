@@ -15,19 +15,6 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace MUXControlsTestApp;
 
-public static class FrameExtensions
-{
-	public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType)
-	{
-		frame.Navigate(sourcePageType, new SuppressNavigationTransitionInfo());
-	}
-
-	public static void NavigateWithoutAnimation(this Frame frame, Type sourcePageType, object parameter)
-	{
-		frame.Navigate(sourcePageType, parameter, new SuppressNavigationTransitionInfo());
-	}
-}
-
 [Sample("Scrolling")]
 public sealed partial class ScrollViewPage : TestPage
 {
