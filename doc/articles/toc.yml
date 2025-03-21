@@ -607,6 +607,8 @@
         href: features/windows-ui-startscreen.md
       - name: App Close Handler
         href: features/app-close-handler.md
+      - name: App Links
+        href: features/app-links.md
       - name: App Suspension
         href: features/windows-ui-xaml-application.md
       - name: Application Data and Settings
