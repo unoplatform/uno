@@ -499,6 +499,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ms-appx:///Assets/couch.svg")]
 		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg")]
 		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/help.svg")]
+#if __SKIA__
+		[Ignore("Disable for Skia 3 https://github.com/unoplatform/uno-private/issues/1031")]
+#endif
 		public async Task When_SVGImageSource(string imagePath)
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -514,6 +517,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("Disable for Skia 3 https://github.com/unoplatform/uno-private/issues/1031")]
+#endif
 		public async Task When_SVGImageSource_Uri_Is_Null()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -529,6 +535,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("Disable for Skia 3 https://github.com/unoplatform/uno-private/issues/1031")]
+#endif
 		public async Task When_SVGImageSource_Uri_Is_Set_Null()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
