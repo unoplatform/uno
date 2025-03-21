@@ -4238,7 +4238,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			}
 
 			sourceAsDO = VisualTreeHelper.GetParent(sourceAsDO);
-		};
+		}
 
 #if DEBUG
 		DumpMinMaxPositions();

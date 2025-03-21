@@ -604,53 +604,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private UICollectionViewScrollPosition ConvertSnapPointsAlignmentToScrollPosition()
-		{
-			var snapPointsType = (CollectionViewLayout as VirtualizingPanelLayout)?.SnapPointsType;
-
-			if (snapPointsType != SnapPointsType.MandatorySingle)
-			{
-				return UICollectionViewScrollPosition.None;
-			}
-
-			var scrollDirection = ScrollOrientation;
-			var snapPointsAlignment = (CollectionViewLayout as VirtualizingPanelLayout)?.SnapPointsAlignment;
-
-			switch (scrollDirection)
-			{
-				case Orientation.Horizontal:
-					{
-						switch (snapPointsAlignment)
-						{
-							case SnapPointsAlignment.Center:
-								return UICollectionViewScrollPosition.CenteredHorizontally;
-							case SnapPointsAlignment.Near:
-								return UICollectionViewScrollPosition.Left;
-							case SnapPointsAlignment.Far:
-								return UICollectionViewScrollPosition.Right;
-						}
-
-						throw new InvalidOperationException();
-					}
-				case Orientation.Vertical:
-					{
-						switch (snapPointsAlignment)
-						{
-							case SnapPointsAlignment.Center:
-								return UICollectionViewScrollPosition.CenteredVertically;
-							case SnapPointsAlignment.Near:
-								return UICollectionViewScrollPosition.Top;
-							case SnapPointsAlignment.Far:
-								return UICollectionViewScrollPosition.Bottom;
-						}
-
-						throw new InvalidOperationException();
-					}
-			}
-
-			return UICollectionViewScrollPosition.None;
-		}
-
 		private UICollectionViewScrollPosition ConvertScrollAlignmentForGroups(ScrollIntoViewAlignment alignment)
 		{
 			if (alignment == ScrollIntoViewAlignment.Default && this.Log().IsEnabled(LogLevel.Warning))
@@ -674,10 +627,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
 			base.SetContentOffset(contentOffset, animated);
+#if !MACCATALYST  // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 			if (animated)
 			{
 				Source?.SetIsAnimatedScrolling();
 			}
+#endif
 		}
 
 		/// <summary>

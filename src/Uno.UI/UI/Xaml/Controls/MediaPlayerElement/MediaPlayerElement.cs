@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
-			};
+			}
 		}
 
 		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)

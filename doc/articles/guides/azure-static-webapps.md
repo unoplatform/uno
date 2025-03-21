@@ -70,11 +70,43 @@ You will need to [enable fallback routes](https://learn.microsoft.com/azure/stat
     "navigationFallback": {
       "rewrite": "/index.html",
       "exclude": ["/package_*"]
-    }
+    },
+    "routes": [
+      {
+        "route": "/_framework/blazor.boot.*",
+        "headers": {
+          "cache-control": "must-revalidate, max-age=3600"
+        }
+      },
+      {
+        "route": "/_framework/dotnet.js",
+        "headers": {
+          "cache-control": "must-revalidate, max-age=3600"
+        }
+      },
+      {
+        "route": "/_framework/*",
+        "headers": {
+          "cache-control": "public, immutable, max-age=31536000"
+        }
+      },
+      {
+        "route": "/package_*",
+        "headers": {
+          "cache-control": "public, immutable, max-age=31536000"
+        }
+      },
+      {
+        "route": "/*",
+        "headers": {
+          "cache-control": "must-revalidate, max-age=3600"
+        }
+      }
+    ]
   }
   ```
 
-- In your application, You'll need to get the active url of the browser this way:
+- In your application, you'll need to get the active url of the browser this way:
 
   ```csharp
   if (System.Uri.TryCreate(

@@ -209,7 +209,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		internal void UpdateVisualStates(bool useTransitions = true)
 		{
 			// place the secondary button
-			if (m_lastPointerDeviceType == PointerDeviceType.Touch || m_isKeyDown)
+			if (m_isKeyDown)
 			{
 				VisualStateManager.GoToState(this, "SecondaryButtonSpan", useTransitions);
 			}

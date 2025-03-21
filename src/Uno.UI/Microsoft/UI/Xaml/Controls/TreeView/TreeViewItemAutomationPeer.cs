@@ -19,7 +19,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes TreeViewItem types to Microsoft UI Automation.
 /// </summary>
-public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider
+public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider, ISelectionItemProvider
 {
 	/// <summary>
 	/// Initializes a new instance of the TreeViewItemAutomationPeer class.
@@ -218,7 +218,7 @@ public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IE
 	}
 
 	// ISelectionItemProvider
-	private bool IsSelected
+	bool ISelectionItemProvider.IsSelected
 	{
 		get
 		{
@@ -227,33 +227,36 @@ public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IE
 		}
 	}
 
-	private IRawElementProviderSimple SelectionContainer()
+	IRawElementProviderSimple ISelectionItemProvider.SelectionContainer
 	{
-		IRawElementProviderSimple provider = null;
-		var listView = GetParentListView();
-		if (listView != null)
+		get
 		{
-			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
-			if (peer != null)
+			IRawElementProviderSimple provider = null;
+			var listView = GetParentListView();
+			if (listView != null)
 			{
-				provider = ProviderFromPeer(peer);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+				if (peer != null)
+				{
+					provider = ProviderFromPeer(peer);
+				}
 			}
-		}
 
-		return provider;
+			return provider;
+		}
 	}
 
-	private void AddToSelection()
+	void ISelectionItemProvider.AddToSelection()
 	{
 		UpdateSelection(true);
 	}
 
-	private void RemoveFromSelection()
+	void ISelectionItemProvider.RemoveFromSelection()
 	{
 		UpdateSelection(false);
 	}
 
-	private void Select()
+	void ISelectionItemProvider.Select()
 	{
 		UpdateSelection(true);
 	}

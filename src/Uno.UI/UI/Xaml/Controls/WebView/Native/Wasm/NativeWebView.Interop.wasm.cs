@@ -20,7 +20,7 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.goForward")]
 		internal static partial void GoForward(IntPtr htmlId);
 
-		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.executeScriptAsync")]
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.executeScript")]
 		internal static partial string ExecuteScript(IntPtr htmlId, string script);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getDocumentTitle")]

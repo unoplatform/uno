@@ -277,15 +277,8 @@ partial class BorderLayerRenderer
 					GC.KeepAlive(color);
 				};
 
-				if (borderBrush is null)
-				{
-					onInvalidateRender();
-				}
-				else
-				{
-					onInvalidateRender();
-					borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
-				}
+				onInvalidateRender();
+				borderBrush?.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 			}
 
 			parent.Mask = new CAShapeLayer()
@@ -412,7 +405,7 @@ partial class BorderLayerRenderer
 					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
 
 					onInvalidateRender();
-					borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
+					borderBrush?.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 				}
 			}
 

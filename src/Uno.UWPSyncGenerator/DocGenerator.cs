@@ -301,7 +301,7 @@ namespace Uno.UWPSyncGenerator
 							.ToList();
 						_sb.AppendCells(cells);
 					}
-				};
+				}
 			}
 		}
 

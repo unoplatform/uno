@@ -332,7 +332,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					{
 						m_queuedStates.Dequeue();
 					}
-				};
+				}
 			};
 			TransitionStates(fromState, toState, cleanupAction, playbackMultiplier);
 			cleanupAction();

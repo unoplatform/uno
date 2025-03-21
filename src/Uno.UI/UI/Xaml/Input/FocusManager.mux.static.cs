@@ -408,7 +408,7 @@ namespace Microsoft.UI.Xaml.Input
 			return candidate as UIElement;
 		}
 
-		private object? FindNextFocusWithSearchRootIgnoreEngagementImpl(FocusNavigationDirection focusNavigationDirection, object? pSearchRoot)
+		internal object? FindNextFocusWithSearchRootIgnoreEngagementImpl(FocusNavigationDirection focusNavigationDirection, object? pSearchRoot)
 		{
 			object? spScope = pSearchRoot;
 			DependencyObject? spScopeDO = spScope as DependencyObject;
@@ -462,7 +462,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// <param name="isProcessingTab">Is tab being processed?</param>
 		/// <param name="isShiftPressed">Is shift pressed?</param>
 		/// <returns>True if focus successfully transitioned.</returns>
-		private bool SetFocusedElement(
+		internal bool SetFocusedElement(
 			 DependencyObject pElement,
 			 FocusState focusState,
 			 bool animateIfBringIntoView,

@@ -321,6 +321,12 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnStartupProjectChangedAsync()
 	{
+		if (_dte.Solution.SolutionBuild.StartupProjects is null)
+		{
+			// The user unloaded all projects, we need to reset the state
+			_isFirstProfileTfmChange = true;
+		}
+
 		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");

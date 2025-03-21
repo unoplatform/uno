@@ -225,7 +225,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					.Select(LoadAssembly)
 					.Where(p => p != null)
 					.FirstOrDefault();
-			};
+			}
 
 			AppDomain.CurrentDomain.AssemblyResolve += (snd, e) => Load(e.Name);
 			AppDomain.CurrentDomain.TypeResolve += (snd, e) => Load(e.Name);

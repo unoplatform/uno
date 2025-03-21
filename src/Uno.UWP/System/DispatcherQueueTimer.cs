@@ -187,8 +187,6 @@ public partial class DispatcherQueueTimer
 		}
 	}
 
-	partial void ScheduleNextTick();
-
 	~DispatcherQueueTimer()
 	{
 		Stop();

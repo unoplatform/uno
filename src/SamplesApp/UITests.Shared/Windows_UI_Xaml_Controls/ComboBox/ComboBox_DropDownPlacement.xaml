@@ -17,7 +17,7 @@
 
 	<not_win:Grid
 		BorderBrush="DarkRed"
-		wasm:BorderThickness="2,2,2,100"
+		wasm:BorderThickness="2,100,2,100"
 		not_wasm:BorderThickness="2,50,2,100">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
