@@ -1,6 +1,4 @@
-﻿// #define FPS_DISPLAY
-
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Android.App;
 using Android.Content;
@@ -11,11 +9,8 @@ using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
-using AndroidX.Core.View;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using SkiaSharp.Views.Android;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
@@ -39,13 +34,6 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
-#if FPS_DISPLAY
-		private long _counter = 0;
-		private DateTime _time = DateTime.UtcNow;
-		private string _fpsText = "0";
-#endif
-
-		private DisplayInformation? _cachedDisplayInformation;
 		private UnoSKCanvasView? _skCanvasView;
 		private ClippedRelativeLayout? _nativeLayerHost;
 
@@ -62,7 +50,7 @@ namespace Microsoft.UI.Xaml
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
-		internal RelativeLayout? NativeLayerHost => _nativeLayerHost;
+		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -257,13 +245,10 @@ namespace Microsoft.UI.Xaml
 			{
 				_started = true;
 
-				_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
-
 				_skCanvasView = new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
-				_skCanvasView.PaintSurface += OnPaintSurface;
 				RelativeLayout.AddView(_skCanvasView);
 
 				_nativeLayerHost = new ClippedRelativeLayout(this);
@@ -271,41 +256,6 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
-			}
-		}
-
-		private void OnPaintSurface(object? sender, SKSurface surface)
-		{
-			var canvas = surface.Canvas;
-			using (new SKAutoCanvasRestore(canvas, true))
-			{
-				if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
-				{
-					_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
-
-					canvas.Clear(SKColors.Transparent);
-					var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
-					canvas.Scale((float)scale);
-					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, surface.Canvas);
-					if (_nativeLayerHost is { })
-					{
-						_nativeLayerHost.Path = negativePath;
-						_nativeLayerHost.Invalidate();
-					}
-
-#if FPS_DISPLAY
-					// This naively calculates the difference in time every 100 frames, so to get
-					// a usable number, open a sample with a continuously-running animation.
-					_counter++;
-					if (_counter % 100 == 0)
-					{
-						var newTime = DateTime.UtcNow;
-						_fpsText = $"{100 / (newTime - _time).TotalSeconds}";
-						_time = newTime;
-					}
-					canvas.DrawText(_fpsText, new SKPoint((int)window.Bounds.Width / 2, (int)window.Bounds.Height / 2), new SKPaint(new SKFont(SKTypeface.Default, size: 20F)) { Color = SKColors.Red});
-#endif
-				}
 			}
 		}
 
@@ -465,7 +415,7 @@ namespace Microsoft.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName!;
 
-		private class ClippedRelativeLayout : RelativeLayout
+		internal class ClippedRelativeLayout : RelativeLayout
 		{
 			private SKPath? _path;
 

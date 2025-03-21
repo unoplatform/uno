@@ -20,9 +20,12 @@ namespace Uno.UI.Runtime.Skia.Android;
 internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 {
 	private readonly UnoSKCanvasView _host;
+	private UIElement? _rootElement;
 	private ConditionalWeakTable<DependencyObject, object> _cwtElementToId = new();
 	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
 	private int _currentId;
+
+	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 
 	public UnoExploreByTouchHelper(UnoSKCanvasView host) : base(host)
 	{
@@ -49,12 +52,12 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	protected override int GetVirtualViewAt(float x, float y)
 	{
-		if (_host.RootElement is null)
+		if (RootElement is null)
 		{
 			return ExploreByTouchHelper.HostId;
 		}
-		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), _host.RootElement.XamlRoot);
-		element ??= _host.RootElement;
+		var (element, _) = VisualTreeHelper.HitTest(new Windows.Foundation.Point(x, y).PhysicalToLogicalPixels(), RootElement.XamlRoot);
+		element ??= RootElement;
 		try
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = true;
@@ -104,7 +107,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		var focusManager = VisualTree.GetFocusManagerForElement(_host.RootElement);
+		var focusManager = VisualTree.GetFocusManagerForElement(RootElement);
 		if (focusManager == null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -124,7 +127,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = true;
 
-			var current = focusManager.GetNextTabStop(_host.RootElement);
+			var current = focusManager.GetNextTabStop(RootElement);
 			var firstFocusable = current;
 			while (current is not null)
 			{
