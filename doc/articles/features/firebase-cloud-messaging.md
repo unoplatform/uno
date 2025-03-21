@@ -1,3 +1,7 @@
+---
+Uno.Features.FirebaseCloudMessaging
+---
+
 # Implementing Firebase Cloud Messaging (FCM) in Uno Platform Apps
 
 This guide walks through the process of implementing Firebase Cloud Messaging (FCM) for push notifications in an Uno Platform application targeting Android.
@@ -218,8 +222,8 @@ namespace YourAppNamespace.Platforms.Android
 To get and handle the FCM token for sending notifications to specific devices:
 
 1. The token is generated in the `OnNewToken` method of your Firebase Messaging Service
-2. You can log it for development purposes or send it to your server
-3. To manually retrieve the current token, you can add a method like this:
+1. You can log it for development purposes or send it to your server
+1. To manually retrieve the current token, you can add a method like this:
 
 ```csharp
 public static async Task<string> GetFCMTokenAsync()
@@ -235,11 +239,11 @@ public static async Task<string> GetFCMTokenAsync()
 You can test your implementation using the Firebase Console:
 
 1. Go to your Firebase project console
-2. Navigate to "Messaging" in the left sidebar
-3. Click "Create your first campaign" or "Send your first message"
-4. Choose "Test on Android"
-5. Add your FCM token (that was printed in the debug output)
-6. Fill in notification details and send
+1. Navigate to "Messaging" in the left sidebar
+1. Click "Create your first campaign" or "Send your first message"
+1. Choose "Test on Android"
+1. Add your FCM token (that was printed in the debug output)
+1. Fill in notification details and send
 
 ## Advanced Usage
 
@@ -317,14 +321,14 @@ protected override void OnCreate(Bundle savedInstanceState)
    - Check if notification channels are properly set up for Android 8.0+
    - Verify FCM token is correctly received and used
 
-2. **Firebase initialization issues**:
+1. **Firebase initialization issues**:
    - Make sure `google-services.json` has the correct package name
    - Ensure Firebase is initialized before any Firebase-related operations
 
-3. **Permission issues on Android 13+**:
+1. **Permission issues on Android 13+**:
    - Make sure to explicitly request `POST_NOTIFICATIONS` permission
 
-4. **Token not generated**:
+1. **Token not generated**:
    - Ensure Google Play Services are up to date on the test device
    - Check internet connectivity
 
