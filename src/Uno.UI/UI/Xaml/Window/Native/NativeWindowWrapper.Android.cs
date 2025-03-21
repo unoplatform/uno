@@ -22,12 +22,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
+#if __ANDROID__ // android/skia handles PreDrawListener in ApplicationAcitivity.cs
+	private readonly ActivationPreDrawListener _preDrawListener;
+#endif
 	private readonly DisplayInformation _displayInformation;
 
 	private Rect _previousTrueVisibleBounds;
 
 	public NativeWindowWrapper()
 	{
+#if __ANDROID__ // android/skia handles PreDrawListener in ApplicationAcitivity.cs
+		_preDrawListener = new ActivationPreDrawListener(this);
+#endif
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
@@ -51,6 +57,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	internal int SystemUiVisibility { get; set; }
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
+
+#if __ANDROID__ // android/skia handles PreDrawListener in ApplicationAcitivity.cs
+	internal void OnActivityCreated() => AddPreDrawListener();
+#endif
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
@@ -91,6 +101,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	protected override void ShowCore()
 	{
 		ApplySystemOverlaysTheming();
+#if __ANDROID__ // android/skia handles PreDrawListener in ApplicationAcitivity.cs
+		RemovePreDrawListener();
+#endif
 	}
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
@@ -268,4 +281,41 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 	}
+
+#if __ANDROID__ // android/skia handles PreDrawListener in ApplicationAcitivity.cs
+	private void AddPreDrawListener()
+	{
+		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+			activity.Window.DecorView is { } decorView)
+		{
+			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
+		}
+	}
+
+	private void RemovePreDrawListener()
+	{
+		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+			activity.Window.DecorView is { } decorView)
+		{
+			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
+		}
+	}
+
+	private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+	{
+		private readonly NativeWindowWrapper _windowWrapper;
+
+		public ActivationPreDrawListener(NativeWindowWrapper windowWrapper)
+		{
+			_windowWrapper = windowWrapper;
+		}
+
+		public ActivationPreDrawListener(IntPtr handle, JniHandleOwnership transfer)
+			: base(handle, transfer)
+		{
+		}
+
+		public bool OnPreDraw() => _windowWrapper.IsVisible;
+	}
+#endif
 }
