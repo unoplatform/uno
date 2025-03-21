@@ -33,7 +33,7 @@ stages:
 - stage: runtime_tests_skia_browser
   displayName: Browser Skia Runtime Tests
   dependsOn:
-    - runtime_tests_skia_build
+    - Setup
 
   jobs:
   - template: .azure-devops-skia-tests-build-browser.yml
