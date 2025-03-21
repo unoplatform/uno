@@ -104,6 +104,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				imageIconSource = new ImageIconSource();
 				var imageUri = new Uri("https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg");
 				imageIconSource.ImageSource = new SvgImageSource(imageUri);
+#else
+				imageIconSource.ImageSource = null;
 #endif
 
 				pathIconSource = new PathIconSource();
