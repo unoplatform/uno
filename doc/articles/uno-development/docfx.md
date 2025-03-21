@@ -34,27 +34,43 @@ Use pre-formatted blockquotes when you want to call special attention to particu
 
 The following note types are supported:
 
-```md
+```markdown
 > [!NOTE]
-> ...
+> Information the user should notice even if skimming.
 
 > [!TIP]
-> ...
-
-> [!WARNING]
-> ...
+> Optional information to help a user be more successful.
 
 > [!IMPORTANT]
-> ...
+> Essential information required for user success.
 
 > [!CAUTION]
-> ...
+> Negative potential consequences of an action.
 
+> [!WARNING]
+> Dangerous certain consequences of an action.
 ```
+
+They look like this in rendered page:
+
+> [!NOTE]
+> Information the user should notice even if skimming.
+
+> [!TIP]
+> Optional information to help a user be more successful.
+
+> [!IMPORTANT]
+> Essential information required for user success.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
+> [!WARNING]
+> Dangerous certain consequences of an action.
 
 ### Tabs
 
-DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#tabbed-content) precisely.
+DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html) precisely.
 
 #### Example
 
@@ -84,9 +100,42 @@ Html output:
 
 ---
 
-### TOC checker script
+> [!NOTE]
+> Use `---` in the Markdown sample is Important, to not include more Content in the tabbed area than actually wanted, but will not be rendered in the served documentation.
 
-The [`check_toc` script](https://github.com/unoplatform/uno/blob/master/doc/articles/check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the 'articles' folder that are not part of the TOC. At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
+> [!TIP]
+> It is possible to use `***` alternativly for the same Task.
+
+## TOC checker script
+
+The script [`check_toc`](../check_toc.ps1) checks for dead links in the TOC, as well as Markdown files in the `articles` folder that are not part of the TOC.
+
+> [!NOTE]
+> At the moment it's not part of the CI, but contributors can run it locally and fix any bad or missing links.
+
+To use it, follow this Steps:
+
+1. Open a Power-Shell Terminal at the Root Directory of your locally cloned Uno Repository.
+1. Navigate to the `articles` Directory of your local Uno.UI Repository:
+
+   ```ps
+   cd doc/articles
+   ```
+
+   > [!IMPORTANT]
+   > This execution Directory is important to get the correct links for the TOC!
+ 
+1. Run the script with `& .\check_toc.ps1`, which will create a file named `toc_additions.yml` in the same directory as it has been executed from.
+
+   > [!TIP]
+   > If you run into Issues while this, you can also use the `-Verbose` Flag, see you can see how far it's coming before the unexpected behavior.
+ 
+1. Open the file and add the missing links to [toc.yml](..\toc.yml) in the **appropriate** category.
+
+   > [!NOTE]
+   > Visual Studio 2022 does not show the generated file by default.
+   > To open it, see these Steps:
+   > ![check-toc-find-toc-additions](assets\check-toc-find-toc-additions-file.gif)
 
 <!-- TODO: ## Anchor links -->
 
@@ -101,11 +150,16 @@ To run DocFX locally and check the resulting html:
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
 3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
-4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.'
-5. Open the latest DocFX version and open the `tools` folder.
-6. Open a Powershell window in the `tools` folder.
-7. Run the following command: `.\docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository.
-8. When DocFX runs successfully, it will create the html output at `C:\src\Uno.UI\docs-local-dist\_site`, which you can now view or mount on a local server.
+<!-- 4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.' UNDONE: DocFx.console is depreciated and not longer available, see more Information to this here: https://github.com/dotnet/docfx/issues/9100
+5. Open the latest DocFX version and open the `tools` folder. UNDONE: tools\DocFx.exe is now nested in .dotnet folder and available throught `dotnet tool`
+6. Open a Powershell window in the `tools` folder. UNDONE: Terminal in the IDE is enough -->
+4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
+5. Install docfx globally: `dotnet tool install -g docfx`
+<!--5. Run the following command: `docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository. <!-- UNDONE: Decide if Uno.UI here as placeholder should be exchanged with src? Using Uno.UI here could lead to missunderstanding it as src\Uno.UI which would not only make no sense in this context, but also will cause avoidable Issues by building and serving docfx locally!-->
+6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
+7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following commands:
+   a. `docfx serve doc/docfx.json`
+   a. [local server](#use-a-local-server).
 
 ### Use a local server
 
@@ -125,3 +179,7 @@ To run the script on Windows:
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
 3. Go to the uno\build folder (not the uno\src\build folder)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions
+
+## Import Uno Extensions and Tools docs
+
+[!INCLUDE https://github.com/unoplatform/uno.extensions/blob/main/doc/README.md]
