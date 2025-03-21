@@ -11,10 +11,10 @@ stages:
     - checkout: self
       clean: true
 
+    - template: templates/gitversion-run.yml
     - template: .azure-devops-commitsar.yml
     - template: .azure-devops-spell-check.yml
     - template: .azure-devops-markdown-lint.yml
-    - template: templates/gitversion-run.yml
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI

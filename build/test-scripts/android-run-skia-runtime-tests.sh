@@ -111,8 +111,8 @@ UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
 # Create the environment file for the app to read
-echo "UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP" > samplesapp-environment.txt
-echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
+echo "UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}" > samplesapp-environment.txt
+echo "UITEST_RUNTIME_TEST_GROUP_COUNT=${UITEST_RUNTIME_TEST_GROUP_COUNT:-}" >> samplesapp-environment.txt
 echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" >> samplesapp-environment.txt
 
 # Push the environment file to the device
