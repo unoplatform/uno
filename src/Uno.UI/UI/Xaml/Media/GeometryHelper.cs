@@ -5,7 +5,7 @@ using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Media;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	internal static class GeometryHelper
 	{

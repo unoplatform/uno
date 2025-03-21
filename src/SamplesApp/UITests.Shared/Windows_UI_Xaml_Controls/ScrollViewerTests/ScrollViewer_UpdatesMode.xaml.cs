@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 #if !WINAPPSDK
 using _UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode;

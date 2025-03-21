@@ -25,16 +25,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string FailureReportFolderPath
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Environment.FailureReportFolderPath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Environment.FailureReportFolderPath");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string UserDataFolder
 		{
 			get
@@ -48,35 +38,6 @@ namespace Microsoft.Web.WebView2.Core
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions CreateCoreWebView2ControllerOptions()
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2ControllerOptions CoreWebView2Environment.CreateCoreWebView2ControllerOptions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerOptions%20CoreWebView2Environment.CreateCoreWebView2ControllerOptions%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.FailureReportFolderPath.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer CreateSharedBuffer(ulong Size)
-		{
-			throw new global::System.NotImplementedException("The member CoreWebView2SharedBuffer CoreWebView2Environment.CreateSharedBuffer(ulong Size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2SharedBuffer%20CoreWebView2Environment.CreateSharedBuffer%28ulong%20Size%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo>> GetProcessExtendedInfosAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CoreWebView2ProcessExtendedInfo>> CoreWebView2Environment.GetProcessExtendedInfosAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CCoreWebView2ProcessExtendedInfo%3E%3E%20CoreWebView2Environment.GetProcessExtendedInfosAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle CreateWebFileSystemFileHandle(string Path, global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandlePermission Permission)
-		{
-			throw new global::System.NotImplementedException("The member CoreWebView2FileSystemHandle CoreWebView2Environment.CreateWebFileSystemFileHandle(string Path, CoreWebView2FileSystemHandlePermission Permission) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FileSystemHandle%20CoreWebView2Environment.CreateWebFileSystemFileHandle%28string%20Path%2C%20CoreWebView2FileSystemHandlePermission%20Permission%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle CreateWebFileSystemDirectoryHandle(string Path, global::Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandlePermission Permission)
-		{
-			throw new global::System.NotImplementedException("The member CoreWebView2FileSystemHandle CoreWebView2Environment.CreateWebFileSystemDirectoryHandle(string Path, CoreWebView2FileSystemHandlePermission Permission) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FileSystemHandle%20CoreWebView2Environment.CreateWebFileSystemDirectoryHandle%28string%20Path%2C%20CoreWebView2FileSystemHandlePermission%20Permission%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -155,13 +116,6 @@ namespace Microsoft.Web.WebView2.Core
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse CreateWebResourceResponse(global::Windows.Storage.Streams.IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2WebResourceResponse CoreWebView2Environment.CreateWebResourceResponse(IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceResponse%20CoreWebView2Environment.CreateWebResourceResponse%28IRandomAccessStream%20Content%2C%20int%20StatusCode%2C%20string%20ReasonPhrase%2C%20string%20Headers%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetAvailableBrowserVersionString(string browserExecutableFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
-		{
-			throw new global::System.NotImplementedException("The member string CoreWebView2Environment.GetAvailableBrowserVersionString(string browserExecutableFolder, CoreWebView2EnvironmentOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Environment.GetAvailableBrowserVersionString%28string%20browserExecutableFolder%2C%20CoreWebView2EnvironmentOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

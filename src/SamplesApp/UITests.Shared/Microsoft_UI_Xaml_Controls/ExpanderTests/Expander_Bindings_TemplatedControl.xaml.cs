@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
 using System;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236

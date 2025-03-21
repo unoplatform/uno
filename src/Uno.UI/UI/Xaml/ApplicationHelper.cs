@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI;
 
@@ -51,17 +51,17 @@ public class ApplicationHelper
 	public static void ReapplyApplicationTheme()
 		=> Application.Current.OnRequestedThemeChanged();
 
-	public static IReadOnlyList<Microsoft.UI.Xaml.Window> Windows => _windows.AsReadOnly();
+	public static IReadOnlyList<Windows.UI.Xaml.Window> Windows => _windows.AsReadOnly();
 
 	// Exposing as a List internally to avoid enumerator boxing allocations.
-	internal static List<Microsoft.UI.Xaml.Window> WindowsInternal => _windows;
+	internal static List<Windows.UI.Xaml.Window> WindowsInternal => _windows;
 
 	public static bool IsLoadableComponent(Uri resource)
 	{
 		return Application.Current?.IsLoadableComponent(resource) ?? false;
 	}
 
-	internal static void AddWindow(Microsoft.UI.Xaml.Window window) => _windows.Add(window);
+	internal static void AddWindow(Windows.UI.Xaml.Window window) => _windows.Add(window);
 
-	internal static void RemoveWindow(Microsoft.UI.Xaml.Window window) => _windows.Remove(window);
+	internal static void RemoveWindow(Windows.UI.Xaml.Window window) => _windows.Remove(window);
 }

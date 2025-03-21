@@ -1,6 +1,6 @@
 ﻿using Uno;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{

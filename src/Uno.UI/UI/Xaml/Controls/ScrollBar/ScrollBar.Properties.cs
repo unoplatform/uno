@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class ScrollBar
 {
@@ -65,7 +65,7 @@ public partial class ScrollBar
 	/// </summary>
 	public event ScrollEventHandler Scroll;
 
-	internal event Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventHandler ThumbDragStarted;
+	internal event Windows.UI.Xaml.Controls.Primitives.DragStartedEventHandler ThumbDragStarted;
 
-	internal event Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventHandler ThumbDragCompleted;
+	internal event Windows.UI.Xaml.Controls.Primitives.DragCompletedEventHandler ThumbDragCompleted;
 }

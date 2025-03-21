@@ -3,14 +3,14 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft.UI.Xaml.Tests.Common;
+namespace Windows.UI.Xaml.Tests.Common;
 
 internal static class ComboBoxHelper
 {

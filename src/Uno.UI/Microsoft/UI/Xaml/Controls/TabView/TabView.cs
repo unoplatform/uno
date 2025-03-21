@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TabView.cpp, commit ed31e13
 
@@ -20,15 +20,15 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -884,12 +884,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			TabDragStarting?.Invoke(this, myArgs);
 		}
 
-		private void OnListViewDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs args)
+		private void OnListViewDragOver(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDragOver?.Invoke(this, args);
 		}
 
-		void OnListViewDrop(object sender, Microsoft.UI.Xaml.DragEventArgs args)
+		void OnListViewDrop(object sender, Windows.UI.Xaml.DragEventArgs args)
 		{
 			TabStripDrop?.Invoke(this, args);
 		}

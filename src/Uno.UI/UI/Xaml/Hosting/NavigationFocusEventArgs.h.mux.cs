@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Hosting;
+namespace Windows.UI.Xaml.Hosting;
 
 internal class NavigationLosingFocusEventArgs : DesktopWindowXamlSourceTakeFocusRequestedEventArgs
 {

@@ -1,9 +1,9 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class FadeInThemeAnimation : DoubleAnimation, ITimeline
 	{

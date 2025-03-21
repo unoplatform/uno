@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.Media.Core;
@@ -17,7 +17,7 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
-using _View = Microsoft.UI.Xaml.DependencyObject;
+using _View = Windows.UI.Xaml.DependencyObject;
 #endif
 
 namespace Uno.UI.RuntimeTests.Helpers;

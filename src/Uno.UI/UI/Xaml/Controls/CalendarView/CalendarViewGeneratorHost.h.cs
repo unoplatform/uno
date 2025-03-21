@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewGeneratorHost : IDirectManipulationStateChangeHandler
 	{

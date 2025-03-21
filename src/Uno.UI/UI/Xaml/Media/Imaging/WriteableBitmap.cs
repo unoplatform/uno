@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	public partial class WriteableBitmap : BitmapSource
 	{

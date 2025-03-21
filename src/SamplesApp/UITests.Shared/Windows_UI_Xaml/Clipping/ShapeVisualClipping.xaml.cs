@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.Clipping;
@@ -32,7 +32,7 @@ public sealed partial class ShapeVisualClipping : UserControl
 						{
 							Height = 40,
 							Width = 40,
-							Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+							Background = new SolidColorBrush(Windows.UI.Colors.Red)
 						};
 
 						var elementVisual = ElementCompositionPreview.GetElementVisual(element);
@@ -43,7 +43,7 @@ public sealed partial class ShapeVisualClipping : UserControl
 						spriteShape.Geometry = compositor.CreateRectangleGeometry();
 						((CompositionRectangleGeometry)spriteShape.Geometry).Size = new Vector2(40, 40);
 						spriteShape.Offset = new Vector2(spriteOffset, spriteOffset);
-						spriteShape.FillBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Blue);
+						spriteShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.Blue);
 						shapeVisual.Shapes.Add(spriteShape);
 						shapeVisual.Size = new Vector2(shapeVisualSize, shapeVisualSize);
 						shapeVisual.ViewBox = compositor.CreateViewBox();

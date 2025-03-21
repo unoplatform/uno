@@ -16,7 +16,7 @@
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 		<Deterministic>true</Deterministic>
 
-		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
+		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 
 		<NetCurrent>net9.0</NetCurrent>
 		<NetPrevious>net8.0</NetPrevious>

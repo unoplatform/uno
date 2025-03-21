@@ -11,10 +11,10 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 using Uno.Foundation.Logging;
 

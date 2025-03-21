@@ -7,7 +7,7 @@ using Android.Graphics;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Android.Graphics.Drawables;
 using Android.Views.Animations;
 using Windows.Foundation;
@@ -17,7 +17,7 @@ using Uno.UI;
 
 using Rect = Windows.Foundation.Rect;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush
 	{

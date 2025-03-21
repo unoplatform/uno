@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.UIElement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
+using static Windows.UI.Xaml.UIElement;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 partial class UIElement
 {
 	private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);

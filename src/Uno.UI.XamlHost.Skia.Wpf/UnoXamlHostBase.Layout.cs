@@ -5,10 +5,10 @@
 
 using System;
 using System.Windows;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Hosting;
 using Uno.UI.XamlHost.Extensions;
 using Windows.Security.Cryptography.Certificates;
-using WUX = Microsoft.UI.Xaml;
+using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {

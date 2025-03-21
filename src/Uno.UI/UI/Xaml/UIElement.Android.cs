@@ -9,17 +9,17 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using AndroidX.Core.View;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views;
-using Matrix = Microsoft.UI.Xaml.Media.Matrix;
+using Matrix = Windows.UI.Xaml.Media.Matrix;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{

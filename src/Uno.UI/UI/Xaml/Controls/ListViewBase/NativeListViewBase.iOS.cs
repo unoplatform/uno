@@ -12,11 +12,11 @@ using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using Uno.UI;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
 
 using Foundation;
@@ -31,7 +31,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : UICollectionView
 	{

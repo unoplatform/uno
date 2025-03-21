@@ -7,15 +7,15 @@
 using System;
 using System.Runtime.CompilerServices;
 using DirectUI;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Page
 {

@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class FlyoutBase
 {

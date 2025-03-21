@@ -1,9 +1,9 @@
 ﻿using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a bitmap as its content.

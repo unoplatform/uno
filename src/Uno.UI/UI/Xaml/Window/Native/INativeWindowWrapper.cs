@@ -4,7 +4,7 @@ using System;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Microsoft.UI.Windowing.Native;
 using Microsoft.UI.Content;
 

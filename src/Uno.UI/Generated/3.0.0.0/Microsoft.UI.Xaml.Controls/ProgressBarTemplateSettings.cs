@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProgressBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class ProgressBarTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property ClipRect
 		// Skipping already declared property Container2AnimationEndPosition

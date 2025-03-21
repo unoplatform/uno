@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using Uno;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -15,7 +15,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{

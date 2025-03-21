@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.Enterprise
+namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	public abstract class BaseDxamlTestClass
 	{

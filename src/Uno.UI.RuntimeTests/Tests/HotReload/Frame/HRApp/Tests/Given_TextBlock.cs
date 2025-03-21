@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft/* UWP don't rename */.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.RemoteControl;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;

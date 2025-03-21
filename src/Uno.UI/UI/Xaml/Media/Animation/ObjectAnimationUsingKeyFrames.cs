@@ -5,13 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Core;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	public sealed partial class ObjectAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
