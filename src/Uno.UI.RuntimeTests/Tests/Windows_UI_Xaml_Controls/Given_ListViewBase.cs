@@ -2243,35 +2243,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var scroll = list.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scroll);
-			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
-			ScrollTo(list, ElementHeight);
+			int expectedMaterialized = 0, expectedDCChanged = 0;
+			int[] previouslyMaterializedItems = [];
+			async Task ScrollAndValidate(string context, double? scrollTo)
+			{
+				if (scrollTo is { } voffset)
+				{
+					ScrollTo(list, voffset);
+				}
+				await WindowHelper.WaitForIdle();
 
-			await WindowHelper.WaitForIdle();
+#if HAS_UNO && !(__IOS__ || __ANDROID__)
+				var evpScaling = (list.ItemsPanelRoot as IVirtualizingPanel).GetLayouter().CacheLength * VirtualizingPanelLayout.ExtendedViewportScaling;
+#else
+				var evpScaling = 0.5;
+#endif
 
-			materialized.Should().BeLessThan(12, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {dataContextChanged}");
+				var offset = scroll.VerticalOffset;
+				var max = scroll.ExtentHeight;
+				var vp = scroll.ViewportHeight;
 
-			ScrollTo(list, ElementHeight * 3);
+				var evpStart = Math.Clamp(offset - vp * evpScaling, 0, max);
+				var evpEnd = Math.Clamp(offset + vp + vp * evpScaling, 0, max);
 
-			await WindowHelper.WaitForIdle();
+				var firstIndex = (int)Math.Round(evpStart / ElementHeight, 0, MidpointRounding.ToNegativeInfinity);
+				var lastIndex = (int)Math.Round(evpEnd / ElementHeight, 0, MidpointRounding.ToPositiveInfinity) - 1;
+				var itemsInEVP = Enumerable.Range(firstIndex, lastIndex - firstIndex + 1).ToArray();
+				var newItemsInEVP = itemsInEVP.Except(previouslyMaterializedItems).ToArray();
 
-			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {dataContextChanged}");
+				// materialized starts with +1 extra, since we use it to determine whether the DataTemplate itself is a self-container
+				// Math.Max to count the historical highest, since "materialization" doesnt "unhappen" (we dont count tear-down).
+				expectedMaterialized = Math.Max(expectedMaterialized, 1 + itemsInEVP.Length);
+				// dc-changed counts the total items prepared and "re-entrancy"(out of effective-viewport and back in).
+				// we just need to add the new items since last time
+				expectedDCChanged += newItemsInEVP.Length;
+				previouslyMaterializedItems = itemsInEVP;
 
-			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
+				materialized.Should().BeLessOrEqualTo(expectedMaterialized, $"[{context}] materialized {materialized}");
+				dataContextChanged.Should().BeLessOrEqualTo(expectedDCChanged, $"[{context}] dataContextChanged {dataContextChanged}");
+			}
 
-			await WindowHelper.WaitForIdle();
-
-			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {dataContextChanged}");
-
-			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
-
-			await WindowHelper.WaitForIdle();
-
-			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {dataContextChanged}");
+			await ScrollAndValidate("initial state", null);
+			await ScrollAndValidate("scrolled past element#0", ElementHeight);
+			await ScrollAndValidate("scrolled past element#2", ElementHeight * 3);
+			await ScrollAndValidate("scrolled to 1/2", scroll.ExtentHeight / 2);
+			await ScrollAndValidate("scrolled back to 1/4", scroll.ExtentHeight / 4);
 		}
 #endif
 
@@ -4867,6 +4884,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 1), "Container#n-1 is null");
 
 			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, "ListView is not scrolled to the end.");
+		}
+
+		[TestMethod]
+		public async Task When_SelectionChanged_DuringRefresh()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 4).Select(x => $"Item {x}"));
+			var sut = new ListView
+			{
+				Height = source.Count * 29 * 1.5, // give ample room
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
+
+			source.Move(1, 2); // swap: 0[1]23 -> 02[1]3
+			sut.SelectedItem = source[2]; // select "Item 1" (at index 2)
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
+
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
+			Assert.AreEqual(4, sut.ItemsPanelRoot.Children.OfType<ListViewItem>().Count(), "There should be only 4 materialized container.");
+#endif
 		}
 	}
 
