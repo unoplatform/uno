@@ -437,13 +437,35 @@ namespace Microsoft.UI.Xaml.Media
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
 			XamlRoot? xamlRoot,
+			GetHitTestability? getTestability,
+			StalePredicate? isStale,
+			string tracingEntryPoint,
+			int tracingEntryLine,
+			string? tracingReason)
+		{
+#if TRACE_HIT_TESTING
+			using var _ = BEGIN_TRACE();
+			TRACE($"HIT_TEST [{tracingEntryPoint!.ToUpperInvariant()}@{tracingEntryLine}{(tracingReason is null ? "" : "--" + tracingReason)}] @{position.ToDebugString()}");
+#endif
+
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			{
+				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
+			}
+
+			return default;
+		}
+
+		internal static (UIElement? element, Branch? stale) HitTest(
+			Point position,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
 			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
 			, [CallerMemberName] string caller = "")
 		{
 			using var _ = BEGIN_TRACE();
-			TRACE($"[{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
+			TRACE($"HIT_TEST [{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
 #else
 			)
 		{
@@ -895,7 +917,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				_trace.Append(_traceSubject.GetDebugIndent(subLine: true));
 				_trace.Append(' ');
-				_trace.Append(msg.ToStringInvariant());
+				_trace.Append(Uno.Extensions.FormattableExtensions.ToStringInvariant(msg));
 				_trace.Append("\r\n");
 			}
 #endif

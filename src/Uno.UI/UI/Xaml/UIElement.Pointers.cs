@@ -92,8 +92,6 @@ namespace Microsoft.UI.Xaml
 				var oldMode = (ManipulationModes)args.OldValue;
 				var newMode = (ManipulationModes)args.NewValue;
 
-				newMode.LogIfNotSupported(elt.Log());
-
 				elt.UpdateManipulations(newMode, elt.HasManipulationHandler);
 				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
@@ -1002,7 +1000,7 @@ namespace Microsoft.UI.Xaml
 #if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
-					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventOSSteal, args);
+					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventDirectManipulation, args);
 				}
 #endif
 			}
@@ -1399,7 +1397,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
-			return Capture(pointer, PointerCaptureKind.Explicit, PointerCaptureOptions.None, _pendingRaisedEvent.args) is PointerCaptureResult.Added;
+			return Capture(pointer, PointerCaptureKind.Explicit, PointerCaptureOptions.None, _pendingRaisedEvent.args) is not PointerCaptureResult.Failed;
 		}
 
 		internal PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind = PointerCaptureKind.Explicit, PointerCaptureOptions options = PointerCaptureOptions.None)

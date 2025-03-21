@@ -47,29 +47,6 @@ namespace Microsoft.UI.Xaml.Input
 
 	internal static class ManipulationModesExtensions
 	{
-		private const ManipulationModes _unsupported =
-			ManipulationModes.TranslateRailsX
-			| ManipulationModes.TranslateRailsY
-			| ManipulationModes.TranslateInertia
-			| ManipulationModes.RotateInertia
-			| ManipulationModes.ScaleInertia;
-
-		public static bool IsSupported(this ManipulationModes mode)
-			=> mode == ManipulationModes.All
-			|| (mode & _unsupported) == 0;
-
-		public static void LogIfNotSupported(this ManipulationModes mode, Logger log)
-		{
-			if (!mode.IsSupported() && log.IsEnabled(LogLevel.Information))
-			{
-				log.Warn(
-					$"The ManipulationMode '{mode}' is not supported by Uno. "
-					+ "Only 'None', 'All', 'System', 'TranslateX', 'TranslateY', 'Rotate', and 'Scale' are supported. "
-					+ "Using any other mode will not cause an error, but the corresponding manipulation event will not be generated. "
-					+ "Note that with Uno the 'All' and 'System' are handled the same way.");
-			}
-		}
-
 		/// <summary>
 		/// Converts the given <see cref="ManipulationModes"/> to a <see cref="GestureSettings"/>. cf. remarks.
 		/// </summary>

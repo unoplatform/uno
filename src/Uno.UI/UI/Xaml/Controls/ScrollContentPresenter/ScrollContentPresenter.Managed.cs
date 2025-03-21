@@ -3,10 +3,13 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
-using Windows.Devices.Input;
 using Windows.Foundation;
+using Microsoft.UI.Input;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using static Uno.UI.Xaml.Core.InputManager.PointerManager;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -16,7 +19,7 @@ using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		, ICustomClippingElement
 #endif
@@ -71,47 +74,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_strategy.Initialize(this);
 		}
 
-		private void HookScrollEvents(ScrollViewer sv)
-		{
-			UnhookScrollEvents(sv);
-
-			sv.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
-
-			// Note: the way WinUI does scrolling is very different, and doesn't use
-			//		PointerWheelChanged changes, etc.
-			// Note 2: We subscribe on the ScrollViewer so no matter if the content of the SCP is hit-testable or not
-			//		as the root Grid of the SV is hit-testable, we get the events.
-			//		On WinUI, this is also the case: pointer presses are received on the SV, not on the SCP.
-			// Note 2: All of those should probably be moved to the SV directly!
-
-			// Mouse wheel support
-			sv.PointerWheelChanged += PointerWheelScroll;
-
-			// Touch scroll support
-			// Note: Events are hooked on the SCP itself, not the ScrollViewer
-			sv.ManipulationStarting += PrepareTouchScroll;
-			sv.ManipulationStarted += StartTouchScroll;
-			sv.ManipulationDelta += UpdateTouchScroll;
-			sv.ManipulationInertiaStarting += StartInertialTouchScroll;
-			sv.ManipulationCompleted += CompleteTouchScroll;
-
-			_eventSubscriptions.Disposable = Disposable.Create(() =>
-			{
-				sv.PointerWheelChanged -= PointerWheelScroll;
-
-				sv.ManipulationStarting -= PrepareTouchScroll;
-				sv.ManipulationStarted -= StartTouchScroll;
-				sv.ManipulationDelta -= UpdateTouchScroll;
-				sv.ManipulationInertiaStarting -= StartInertialTouchScroll;
-				sv.ManipulationCompleted -= CompleteTouchScroll;
-			});
-		}
-
-		private void UnhookScrollEvents(ScrollViewer sv)
-		{
-			_eventSubscriptions.Disposable = null;
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -128,6 +90,36 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+		}
+
+		private void HookScrollEvents(ScrollViewer sv)
+		{
+			UnhookScrollEvents(sv);
+
+			// Note: the way WinUI does scrolling is very different, and doesn't use PointerWheelChanged changes, etc.
+			// Note 2: We subscribe on the ScrollViewer so no matter if the content of the SCP is hit-testable or not
+			//		as the root Grid of the SV is hit-testable, we get the events.
+			//		On WinUI, this is also the case: pointer presses are received on the SV, not on the SCP.
+			// Note 2: All of those should probably be moved to the SV directly!
+			// Note 3: We should also consider to use the new ScrollPresenter under the hood to re-use all the composition tracking logic.
+
+			// Mouse wheel support
+			sv.PointerWheelChanged += PointerWheelScroll;
+
+			// Touch and pen scroll support
+			var handler = new PointerEventHandler(TryEnableDirectManipulation);
+			sv.AddHandler(PointerPressedEvent, handler, handledEventsToo: true);
+
+			_eventSubscriptions.Disposable = Disposable.Create(() =>
+			{
+				sv.PointerWheelChanged -= PointerWheelScroll;
+				sv.RemoveHandler(PointerPressedEvent, handler);
+			});
+		}
+
+		private void UnhookScrollEvents(ScrollViewer sv)
+		{
+			_eventSubscriptions.Disposable = null;
 		}
 
 		/// <inheritdoc />
@@ -170,7 +162,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (horizontalOffset is double hOffset)
 			{
 				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
-
 				var scrollX = ValidateInputOffset(hOffset, 0, maxOffset);
 
 				success &= scrollX == hOffset;
@@ -219,72 +210,75 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateViewport();
 		}
 
-		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
+		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
-			if (e.Container != Scroller)
+			if (args.Pointer.PointerDeviceType is not (_PointerDeviceType.Pen or _PointerDeviceType.Touch))
 			{
-				// This gesture is coming from a nested element, we just ignore it!
 				return;
 			}
 
-			if (e.Pointer.Type != PointerDeviceType.Touch
-				|| (PointerCapture.TryGet(e.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventOSSteal)))
+			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.RegisterDirectManipulationTarget(args.Pointer.UniqueId, this);
+		}
+
+		/// <inheritdoc />
+		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
+		{
+			if (args.Pointer.Type is not (PointerDeviceType.Pen or PointerDeviceType.Touch)
+				|| (PointerCapture.TryGet(args.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventDirectManipulation)))
 			{
-				e.Mode = ManipulationModes.None;
-				return;
+				return ManipulationModes.None;
 			}
 
-			if (Scroller is
+			var mode = ManipulationModes.None;
+			if (CanVerticallyScroll && ExtentHeight > 0)
+			{
+				mode |= ManipulationModes.TranslateY;
+			}
+
+			if (CanHorizontallyScroll && ExtentWidth > 0)
+			{
+				mode |= ManipulationModes.TranslateX;
+			}
+
+			if (Scroller is { } sv)
+			{
+				if (sv is
+					{
+						IsScrollInertiaEnabled: true,
+						HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
+						VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
+					})
 				{
-					IsScrollInertiaEnabled: true,
-					HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
-					VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
-				})
-			{
-				e.Mode |= ManipulationModes.TranslateInertia;
+					mode |= ManipulationModes.TranslateInertia;
+				}
+
+				if (sv.IsHorizontalRailEnabled)
+				{
+					mode |= ManipulationModes.TranslateRailsX;
+				}
+
+				if (sv.IsVerticalRailEnabled)
+				{
+					mode |= ManipulationModes.TranslateRailsY;
+				}
 			}
 
-			if (!CanVerticallyScroll || ExtentHeight <= 0)
-			{
-				e.Mode &= ~ManipulationModes.TranslateY;
-			}
-
-			if (!CanHorizontallyScroll || ExtentWidth <= 0)
-			{
-				e.Mode &= ~ManipulationModes.TranslateX;
-			}
+			return mode;
 		}
 
-		private void StartTouchScroll(object sender, ManipulationStartedRoutedEventArgs e)
+		/// <inheritdoc />
+		void IDirectManipulationHandler.OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta)
 		{
-			if (e.Container != Scroller)
+			if (args.IsInertial)
 			{
-				// This gesture is coming from a nested element, we just ignore it!
-				return;
-			}
+				// When inertia is running, we do not want to chain the scroll to the parent SV
+				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
-			if (e.PointerDeviceType == _PointerDeviceType.Touch)
-			{
-				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
-				Scroller.CapturePointer(PointerRoutedEventArgs.LastPointerEvent.Pointer);
-			}
-		}
-
-		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
-		{
-			if (e.Container != Scroller) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
-			{
-				// This gesture is coming from a nested element, we just ignore it!
-				return;
-			}
-
-			if (e.IsInertial)
-			{
 				if (_touchInertiaOptions is null
-					|| e.Manipulation.GetInertiaNextTick() is not { } next)
+					|| args.Manipulation.GetInertiaNextTick() is not { } next)
 				{
 					// A scroll to has been requested (e.g. snap points?), abort the manipulation.
-					e.Complete();
+					recognizer.CompleteGesture();
 					return;
 				}
 
@@ -297,25 +291,43 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				var hOffset = HorizontalOffset;
+				var vOffset = VerticalOffset;
+				var deltaX = Math.Clamp(-unhandledDelta.Translation.X, -hOffset, Math.Max(0, ExtentWidth - ViewportWidth) - hOffset);
+				var deltaY = Math.Clamp(-unhandledDelta.Translation.Y, -vOffset, Math.Max(0, ExtentHeight - ViewportHeight) - vOffset);
+
+				unhandledDelta.Translation.X += deltaX;
+				unhandledDelta.Translation.Y += deltaY;
+
 				Set(
-					horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
-					verticalOffset: VerticalOffset - e.Delta.Translation.Y,
+					horizontalOffset: hOffset + deltaX,
+					verticalOffset: vOffset + deltaY,
 					disableAnimation: true,
 					isIntermediate: true);
+
+				if (Scroller is { } sv)
+				{
+					if (!sv.IsHorizontalScrollChainingEnabled)
+					{
+						unhandledDelta.Translation.X = 0;
+					}
+
+					if (!sv.IsVerticalScrollChainingEnabled)
+					{
+						unhandledDelta.Translation.Y = 0;
+					}
+				}
 			}
 		}
-		private void StartInertialTouchScroll(object sender, ManipulationInertiaStartingRoutedEventArgs e)
-		{
-			if (e.Container != Scroller)
-			{
-				return;
-			}
 
+		/// <inheritdoc />
+		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer _, ManipulationInertiaStartingEventArgs args)
+		{
 			// As we run animation by our own, we request to have pretty long delay between ticks to avoid too many updates.
-			e.Interval = TimeSpan.FromMilliseconds(100);
+			args.Manipulation.Inertia!.Interval = TimeSpan.FromMilliseconds(100);
 
 			// Once the Interval is set, we try to begin animation up to the next (i.e. first) tick
-			if (e.Manipulation.GetInertiaNextTick() is { } next)
+			if (args.Manipulation.GetInertiaNextTick() is { } next)
 			{
 				// First we configure custom scrolling options to match what we just configured on the processor
 				// Note: We configure animation to run a bit longer that a single tick to make sure to not have delay between animations
@@ -330,14 +342,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
+		/// <inheritdoc />
+		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs args)
 		{
-			if (e.Container != Scroller || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
+			if ((PointerDeviceType)args.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
 			}
 
-			if (e.IsInertial)
+			if (args.IsInertial)
 			{
 				if (_touchInertiaOptions is null)
 				{
@@ -349,13 +362,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_touchInertiaOptions = null;
 
 			Set(disableAnimation: true, isIntermediate: false);
-
-			if (!e.IsInertial)
-			{
-				// If inertial the pointer as already been captured, and the LastPointerEvent can now be a new one!
-				Debug.Assert(PointerRoutedEventArgs.LastPointerEvent.Pointer.UniqueId == e.Pointers[0]);
-				Scroller.ReleasePointerCapture(PointerRoutedEventArgs.LastPointerEvent.Pointer);
-			}
 		}
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
