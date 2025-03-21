@@ -87,8 +87,17 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	[JSExport]
 	private static async Task PrefetchFonts()
 	{
-		await FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
-		await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+		var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
+		if (textFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
+		}
+
+		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+		if (symbolsFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
+		}
 	}
 
 	internal string CanvasId
