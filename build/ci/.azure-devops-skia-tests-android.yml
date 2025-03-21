@@ -17,8 +17,6 @@ jobs:
 
 - job: Android_Tests
   displayName: 'Run Skia Android Tests'
-  dependsOn:
-  - Skia_Tests_Build
 
   timeoutInMinutes: 45
 

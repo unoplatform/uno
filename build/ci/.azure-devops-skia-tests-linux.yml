@@ -23,7 +23,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
 
-  dependsOn: Skia_Tests_Build
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
@@ -64,8 +63,6 @@ jobs:
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
-
-  dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
@@ -109,8 +106,6 @@ jobs:
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}
-
-  dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)

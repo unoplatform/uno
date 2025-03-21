@@ -23,7 +23,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Skia_Tests_Build
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
@@ -63,8 +62,6 @@ jobs:
 
   pool:
     vmImage: ${{ parameters.vmImage }}
-
-  dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
@@ -117,8 +114,6 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
   pool:
     vmImage: ${{ parameters.vmImage }}
-
-  dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-WinUI

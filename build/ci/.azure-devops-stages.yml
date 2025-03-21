@@ -129,7 +129,11 @@ stages:
     - wasm_tests
     - ios_tests
     - android_tests
-    - skia_tests_winui
+    - runtime_tests_skia_browser
+    - runtime_tests_skia_android
+    - runtime_tests_skia_ios
+    - runtime_tests_skia_linux
+    - runtime_tests_skia_windows
 
   jobs:
   - template: .azure-devops-screenshot-compare.yml
