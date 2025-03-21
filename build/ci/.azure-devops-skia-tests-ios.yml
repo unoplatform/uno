@@ -11,7 +11,7 @@ parameters:
   XAML_FLAVOR_BUILD: ''
 
   # Runtime Test Groups
-  IOS_RUNTIME_TEST_GROUP_COUNT: 8
+  IOS_RUNTIME_TEST_GROUP_COUNT: 3
   IOS_RUNTIME_TESTS_GROUPS:
   - key: '0'
     value: '01'
@@ -19,16 +19,6 @@ parameters:
     value: '02'
   - key: '2'
     value: '03'
-  - key: '3'
-    value: '04'
-  - key: '4'
-    value: '05'
-  - key: '5'
-    value: '06'
-  - key: '6'
-    value: '07'
-  - key: '7'
-    value: '08'
 
 jobs:
 ##
