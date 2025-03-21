@@ -6,5 +6,20 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
 
-	<TextBox Text="{x:Bind VM.Asd, Mode=TwoWay}" />
+	<Page.Resources>
+		<ControlTemplate x:Key="AsdButtonTemplate" TargetType="Button">
+			<ContentPresenter Tag="{x:Bind Content, Mode=TwoWay}" />
+		</ControlTemplate>
+	</Page.Resources>
+
+	<StackPanel>
+
+		<TextBox Text="{x:Bind VM.Asd, Mode=TwoWay}" />
+
+		<ContentControl x:Name="LazyLoadedHost" x:Load="false">
+			<TextBox Text="{x:Bind VM.Asd, Mode=TwoWay}" />
+		</ContentControl>
+
+	</StackPanel>
+
 </Page>
