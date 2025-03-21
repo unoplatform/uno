@@ -59,7 +59,7 @@ jobs:
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net8.0 -f net8.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net9.0 -f net9.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
     displayName: Build Generic Skia Head
 
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\logs\build-skia-android.binlog
@@ -79,7 +79,7 @@ jobs:
     displayName: 'Publish Generic Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0\publish
       artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
 
   - task: PublishPipelineArtifact@1
