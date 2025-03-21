@@ -409,30 +409,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (MaxLength > 0 && baseString.Length > MaxLength)
 			{
+				// Reject the new string if it's longer than the MaxLength
+#if __SKIA__
+				_pendingSelection = null;
+#endif
 				return DependencyProperty.UnsetValue;
 			}
 
-#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
-				if (_pendingSelection is { } selection)
-				{
-					var start = Math.Min(selection.start, baseString.Length);
-					var end = Math.Min(selection.start + selection.length, baseString.Length);
-					_pendingSelection = (start, end - start);
-				}
 			}
+#if __SKIA__
 			else if (_isSkiaTextBox)
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
 				baseString = RemoveLF(baseString);
 			}
-#else
-			if (!AcceptsReturn)
+
+			// make sure this coercion doesn't cause the pending selection to be out of range
+			if (_pendingSelection is { } selection2)
 			{
-				baseString = GetFirstLine(baseString);
+				var start = Math.Min(selection2.start, baseString.Length);
+				var end = Math.Min(selection2.start + selection2.length, baseString.Length);
+				_pendingSelection = (start, end - start);
 			}
 #endif
 
@@ -1353,15 +1354,21 @@ namespace Microsoft.UI.Xaml.Controls
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
 				var currentText = Text;
+				var adjustedClipboardText = clipboardText;
 
 				if (selectionLength > 0)
 				{
 					currentText = currentText.Remove(selectionStart, selectionLength);
 				}
 
-				currentText = currentText.Insert(selectionStart, clipboardText);
+				if (MaxLength > 0)
+				{
+					var clipboardRangeToBePasted = Math.Max(0, Math.Min(clipboardText.Length, MaxLength - currentText.Length));
+					adjustedClipboardText = clipboardText[..clipboardRangeToBePasted];
+				}
 
-				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+				currentText = currentText.Insert(selectionStart, adjustedClipboardText);
+				PasteFromClipboardPartial(adjustedClipboardText, selectionStart, currentText);
 
 #if __SKIA__
 				try
@@ -1392,7 +1399,7 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
-		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
+		partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
