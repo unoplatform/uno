@@ -303,3 +303,8 @@ input::-ms-clear {
   height: 100%;
   user-select: none;
 }
+  
+.title-bar-area {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
