@@ -1,18 +1,28 @@
 ﻿
 using Uno;
 using Microsoft.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives;
+
+public partial class AppBarButtonTemplateSettings : DependencyObject, IAppBarButtonTemplateSettings
 {
-	public partial class AppBarButtonTemplateSettings : DependencyObject
+	public double KeyboardAcceleratorTextMinWidth
 	{
-		public double KeyboardAcceleratorTextMinWidth
-		{
-			get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
-			internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, value);
-		}
+		get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
+		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, value);
+	}
 
-		internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
-			DependencyProperty.Register("KeyboardAcceleratorTextMinWidth", typeof(double), typeof(AppBarButtonTemplateSettings), new FrameworkPropertyMetadata(0.0));
+	internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
+		DependencyProperty.Register(
+			nameof(KeyboardAcceleratorTextMinWidth),
+			typeof(double),
+			typeof(AppBarButtonTemplateSettings),
+			new FrameworkPropertyMetadata(0.0));
+
+	double IAppBarButtonTemplateSettings.KeyboardAcceleratorTextMinWidth
+	{
+		get => KeyboardAcceleratorTextMinWidth;
+		set => KeyboardAcceleratorTextMinWidth = value;
 	}
 }

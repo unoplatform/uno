@@ -841,10 +841,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Identifies the IsFocusEngaged dependency property.
 		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = false, ChangedCallback = true)]
+		[GeneratedDependencyProperty(DefaultValue = false)]
 		public static DependencyProperty IsFocusEngagedProperty { get; } = CreateIsFocusEngagedProperty();
-
-		private void OnIsFocusEngagedChanged(bool oldValue, bool newValue) => SetFocusEngagement();
 
 		/// <summary>
 		/// Get or sets a value that indicates whether focus can be constrained within
@@ -861,8 +859,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = false)]
 		public static DependencyProperty IsFocusEngagementEnabledProperty { get; } = CreateIsFocusEngagementEnabledProperty();
-
-		private void OnIsFocusEngagementEnabledChanged(bool oldValue, bool newValue) => RemoveFocusEngagement();
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
