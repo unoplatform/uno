@@ -432,6 +432,11 @@ partial class ClientHotReloadProcessor
 				var oldStore = ((IDependencyObjectStoreProvider)instanceFE).Store;
 				var newStore = ((IDependencyObjectStoreProvider)newInstanceFE).Store;
 				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
+
+				if (instanceFE.DebugParseContext is { } debugParseContext)
+				{
+					newInstanceFE.SetBaseUri(instanceFE.BaseUri.OriginalString, debugParseContext.LocalFileUri, debugParseContext.LineNumber, debugParseContext.LinePosition);
+				}
 #endif
 
 				foreach (var handler in handlers)
