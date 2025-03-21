@@ -5,7 +5,7 @@ stages:
   - job: Validations
   
     pool:
-      vmImage: ${{ parameters.vmImage }}
+      vmImage: $(linuxVMImage)
 
     steps:
     - checkout: self
