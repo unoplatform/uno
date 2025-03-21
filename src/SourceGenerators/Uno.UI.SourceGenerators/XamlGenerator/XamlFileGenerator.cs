@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -839,7 +839,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var applyMethod in CurrentScope.ExplicitApplyMethods)
 			{
-				writer.AppendLineIndented(applyMethod);
+				writer.AppendMultiLineIndented(applyMethod);
 			}
 		}
 
@@ -1062,22 +1062,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// Casting to FrameworkElement or Window is important to avoid issues when there
 				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
-
-				string callbackSignature;
+				string setupCallbackSignature;
+				string? teardownCallbackSignature = null;
 				if (isFrameworkElement)
 				{
-					callbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
+					setupCallbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;");
+
+					if (hasXBindExpressions)
+					{
+						teardownCallbackSignature = "private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)";
+						writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;");
+					}
 				}
 				else
 				{
-					callbackSignature = "private void __UpdateBindingsAndResources(object s, global::Microsoft.UI.Xaml.WindowActivatedEventArgs e)";
+					setupCallbackSignature = "private void __UpdateBindingsAndResources(object s, global::Microsoft.UI.Xaml.WindowActivatedEventArgs e)";
 					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.Window)this).Activated += __UpdateBindingsAndResources;");
 				}
 
 				CurrentScope.CallbackMethods.Add(eventWriter =>
 				{
-					using (eventWriter.BlockInvariant(callbackSignature))
+					using (eventWriter.BlockInvariant(setupCallbackSignature))
 					{
 						if (hasXBindExpressions)
 						{
@@ -1087,6 +1093,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						eventWriter.AppendLineIndented("this.Bindings.UpdateResources();");
 					}
 				});
+				if (!string.IsNullOrEmpty(teardownCallbackSignature))
+				{
+					CurrentScope.CallbackMethods.Add(eventWriter =>
+					{
+						using (eventWriter.BlockInvariant(teardownCallbackSignature))
+						{
+							eventWriter.AppendLineIndented("this.Bindings.StopTracking();");
+						}
+					});
+				}
 			}
 		}
 
@@ -1100,16 +1116,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe)"))
 				{
 					writer.AppendLineIndented("__fe.Loading += __UpdateBindingsAndResources;");
+					writer.AppendLineIndented("__fe.Unloaded += __StopTracking;");
 
 					CurrentScope.CallbackMethods.Add(eventWriter =>
 					{
 						using (writer.BlockInvariant("private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
 						{
-							eventWriter.AppendLineIndented("var owner = this;");
-
-							BuildComponentResouceBindingUpdates(eventWriter);
+							BuildComponentResourceBindingUpdates(eventWriter);
 							BuildXBindApply(eventWriter);
 							BuildxBindEventHandlerInitializers(eventWriter, CurrentScope.xBindEventsHandlers);
+						}
+					});
+					CurrentScope.CallbackMethods.Add(eventWriter =>
+					{
+						using (writer.BlockInvariant("private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)"))
+						{
+							BuildXBindSuspend(eventWriter);
 						}
 					});
 				}
@@ -1132,7 +1154,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildComponentResouceBindingUpdates(IIndentedStringBuilder writer)
+		private void BuildComponentResourceBindingUpdates(IIndentedStringBuilder writer, string prefix = "")
 		{
 			for (var i = 0; i < CurrentScope.Components.Count; i++)
 			{
@@ -1140,20 +1162,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (HasMarkupExtensionNeedingComponent(component.XamlObject) && IsDependencyObject(component.XamlObject))
 				{
-					writer.AppendLineIndented($"{component.MemberName}.UpdateResourceBindings();");
+					var contextProvider = component.ResourceContext is { } context
+						? $"resourceContextProvider: {prefix}{context.MemberName}"
+						: "";
+
+					writer.AppendLineIndented($"{prefix}{component.MemberName}.UpdateResourceBindings({contextProvider});");
 				}
 			}
 		}
 
-		private void BuildXBindApply(IIndentedStringBuilder writer)
+		private void BuildXBindApply(IIndentedStringBuilder writer, string prefix = "")
 		{
 			for (var i = 0; i < CurrentScope.Components.Count; i++)
 			{
 				var component = CurrentScope.Components[i];
 
-				if (HasXBindMarkupExtension(component.XamlObject) && IsDependencyObject(component.XamlObject))
+				if (HasXBindMarkupExtension(component.XamlObject))
 				{
-					writer.AppendLineIndented($"{component.MemberName}.ApplyXBind();");
+					var isDO = IsDependencyObject(component.XamlObject);
+					var wrap = !isDO ? ".GetDependencyObjectForXBind()" : "";
+
+					writer.AppendLineIndented($"{prefix}{component.MemberName}{wrap}.ApplyXBind();");
+				}
+			}
+		}
+
+		private void BuildXBindSuspend(IIndentedStringBuilder writer, string prefix = "")
+		{
+			for (var i = 0; i < CurrentScope.Components.Count; i++)
+			{
+				var component = CurrentScope.Components[i];
+
+				if (HasXBindMarkupExtension(component.XamlObject))
+				{
+					var isDO = IsDependencyObject(component.XamlObject);
+					var wrap = !isDO ? ".GetDependencyObjectForXBind()" : "";
+
+					writer.AppendLineIndented($"{prefix}{component.MemberName}{wrap}.SuspendXBind();");
 				}
 			}
 		}
@@ -1286,43 +1331,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
-
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Initialize()")) { }
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Update()"))
 					{
 						writer.AppendLineIndented($"var owner = Owner;");
 
-						for (var i = 0; i < CurrentScope.Components.Count; i++)
-						{
-							var component = CurrentScope.Components[i];
-
-							if (HasXBindMarkupExtension(component.XamlObject))
-							{
-								var isDependencyObject = IsDependencyObject(component.XamlObject);
-
-								var wrapInstance = isDependencyObject ? "" : ".GetDependencyObjectForXBind()";
-
-								writer.AppendLineIndented($"owner.{component.MemberName}{wrapInstance}.ApplyXBind();");
-							}
-
-							BuildxBindEventHandlerInitializers(writer, CurrentScope.xBindEventsHandlers, "owner.");
-						}
+						BuildXBindApply(writer, "owner.");
+						BuildxBindEventHandlerInitializers(writer, CurrentScope.xBindEventsHandlers, "owner.");
 					}
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.UpdateResources()"))
 					{
 						writer.AppendLineIndented($"var owner = Owner;");
 
-						for (var i = 0; i < CurrentScope.Components.Count; i++)
-						{
-							var component = CurrentScope.Components[i];
-
-							if (HasMarkupExtensionNeedingComponent(component.XamlObject) && IsDependencyObject(component.XamlObject))
-							{
-								writer.AppendLineIndented($"owner.{component.MemberName}.UpdateResourceBindings({(component.ResourceContext is { } ctx ? $"resourceContextProvider: owner.{ctx.MemberName}" : "")});");
-							}
-						}
+						BuildComponentResourceBindingUpdates(writer, "owner.");
 					}
-					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()"))
+					{
+						writer.AppendLineIndented($"var owner = Owner;");
+
+						BuildXBindSuspend(writer, "owner.");
+					}
 				}
 			}
 		}

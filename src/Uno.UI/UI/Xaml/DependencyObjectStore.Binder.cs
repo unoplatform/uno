@@ -153,6 +153,10 @@ namespace Microsoft.UI.Xaml
 		public void ApplyCompiledBindings()
 			=> _properties.ApplyCompiledBindings();
 
+		public void SuspendCompiledBindings()
+			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
+			=> _properties.SuspendCompiledBindings();
+
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
