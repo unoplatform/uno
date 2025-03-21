@@ -2,21 +2,19 @@ stages:
 - stage: Setup
   displayName: Setup
   jobs:
-  - template: .azure-devops-commitsar.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+  - job: Validations
+  
+    pool:
+      vmImage: ${{ parameters.vmImage }}
 
-  - template: .azure-devops-spell-check.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    steps:
+    - checkout: self
+      clean: true
 
-  - template: .azure-devops-markdown-lint.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-pipeline-validations.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    - template: .azure-devops-commitsar.yml
+    - template: .azure-devops-spell-check.yml
+    - template: .azure-devops-markdown-lint.yml
+    - template: templates/gitversion-run.yml
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
