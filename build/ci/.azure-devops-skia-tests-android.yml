@@ -1,0 +1,77 @@
+parameters:
+  vmImage: ''
+  vmMacImage: ''
+  vmMacImageTest: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
+  xCodeRootTest: ''
+  xCodeRootBuild: ''
+  poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+##
+## Android Skia
+##
+
+- job: Android_Tests
+  displayName: 'Run Skia Android Tests'
+  dependsOn:
+  - Skia_Tests_Build
+
+  timeoutInMinutes: 45
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+    ANDROID_SIMULATOR_APILEVEL: 28
+    UITEST_TEST_MODE_NAME: RuntimeTests
+    UNO_UITEST_BUCKET_ID: RuntimeTests
+    TARGETPLATFORM_NAME: net9
+    UITEST_TEST_TIMEOUT: '2600s'
+    SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+
+  pool: ${{ parameters.vmLinuxPool }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SAMPLEAPP_ARTIFACT_NAME)
+      path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
+
+  - template: templates/dotnet-install.yml
+
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
+
+    displayName: Run Skia Android Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia Android Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: android-skia-results
+      ArtifactType: Container
