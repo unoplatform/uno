@@ -402,6 +402,7 @@ namespace SamplesApp
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
 				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+				//vm.SetSelectedSample(CancellationToken.None, "Unit Tests", "Unit Tests Runner");
 			}
 		}
 

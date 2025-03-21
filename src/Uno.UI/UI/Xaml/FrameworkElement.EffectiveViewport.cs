@@ -14,12 +14,13 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
 
 #if __IOS__
