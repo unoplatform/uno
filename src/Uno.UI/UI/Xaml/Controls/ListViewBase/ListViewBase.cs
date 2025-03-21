@@ -605,8 +605,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			void SingleSelectionCase()
 			{
+				//The `ISelectionInfo` handled directly by the `ItemsSource` has precedence over the `ICollectionView`.
+				//If an object implements both interfaces, as WinUI, we make sure to use only the `ISelectionInfo` to avoid conflicting interaction.
 
-				if (ItemsSource is ICollectionView collectionView)
+				// Ensure that we do not alter the selection if ISelectionInfo is in use
+				if (ItemsSource is ISelectionInfo)
+				{
+					// The selection will be managed by ISelectionInfo, so we do nothing here.
+					// This prevents ICollectionView from interfering with the selection logic.
+					return;
+				}
+
+				if (ItemsSource is ICollectionView collectionView && !(ItemsSource is ISelectionInfo))
 				{
 					//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
 					collectionView.MoveCurrentToPosition(clickedIndex);
