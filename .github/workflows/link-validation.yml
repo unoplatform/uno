@@ -1,0 +1,14 @@
+name: "Check links with linkcheck"
+on:
+- pull_request
+
+jobs:
+  triage:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - uses: filiph/linkcheck@f2c15a0be0d9c83def5df3edcc0f2d6582845f2d #3.0.0
+      with:
+        arguments: -i https://docs.platform.uno
+           
