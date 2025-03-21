@@ -9,6 +9,11 @@ $tempFileName = 'toc_additions.yml.tmp'
 $allMdFiles = Get-ChildItem -Recurse -Filter *.md | Resolve-Path -Relative | Where-Object {$_.IndexOf('\implemented\') -lt 0}
 $toc = Get-Content -Path .\toc.yml 
 $allMdLinks = $toc | foreach {$_ -split ":"} | foreach {$_.Trim(' ')} | foreach {'.\' + $_} | foreach {$_ -replace '/', '\'} | Where-Object {$_.EndsWith(".md")}
+
+# Extract all xref: links from toc.yml
+$allXrefLinksInToc = $toc | Where-Object { $_ -match 'xref:\S+' | Out-Null ; $matches[1] } | Sort-Object -Unique
+
+# Check for any link in TOC that is pointing to a not existing file that should exist
 $badLinks = $allMdLinks | Where-Object {-not (Test-Path -Path $_)} | Where-Object {-not ($expectedMissingLinks -contains $_)}
 $unlinkedFiles = $allMdFiles | Where-Object {-not ($allMdLinks -contains $_)} | Where-Object {-not ($expectedUnlinked -contains $_)}
 if ($badLinks.Length -gt 0) {
@@ -17,10 +22,32 @@ if ($badLinks.Length -gt 0) {
 else {
 	Write-Host 'No bad links found in toc.yml'
 }
-if ($unlinkedFiles.Length -gt 0) {
-	Write-Host ".md files not linked in toc.yml: $unlinkedFiles"
+
+# Extract all uids and filenames from the unlinked files
+$allUnlinkedMdUids = @()
+$allUnlinkedMdFiles = @()
+
+$unlinkedFiles | ForEach-Object {
+	$content = Get-Content $_
+	$hasUid = $false
+	$content | ForEach-Object {
+		if($_ -match 'uid:\s*(\S+)')
+			$uid = $matches[1]
+			if(-not ($allXrefLinksInToc -contains $uid)) {
+				$allUnlinkedMdUids += $uid
+				$hasUid = $true
+			}
+		}
+		if(-not $hasUid){
+			$allUnlinkedMdFiles += $_
+		}
+	}
+}
+
+if ($allUnlinkedFiles.Length -gt 0) {
+	Write-Host ".md files not linked in toc.yml: $allUnlinkedFiles"
 	'# UNLINKED .MD FILES: Add to toc.yml in appropriate category' | Out-File $tempFileName
-	$unlinkedFiles | foreach {
+	$allUnlinkedFiles | foreach {
 		$header = Get-Content $_ | Where-Object {$_.StartsWith('#')}[0] | foreach {$_.Trim('#').Trim(' ')} | Select -First 1
 		"    - name: $header" | Out-File $tempFileName -Append
 		$link = $_.Trim('.').Trim('\')
