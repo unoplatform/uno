@@ -30,6 +30,7 @@ sleep 10
 
 RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
 RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
+UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
 rawurlencode "$RESULTS_FILE"
 

@@ -24,6 +24,16 @@ jobs:
 
   dependsOn: Skia_Tests_Build_Browser
 
+  strategy:
+    matrix:
+      GROUP_0:
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 2
+
+      GROUP_1:
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 2
+
   variables:
     SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)

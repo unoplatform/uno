@@ -25,14 +25,30 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-    ANDROID_SIMULATOR_APILEVEL: 28
-    UITEST_TEST_MODE_NAME: RuntimeTests
-    UNO_UITEST_BUCKET_ID: RuntimeTests
-    TARGETPLATFORM_NAME: net9
-    UITEST_TEST_TIMEOUT: '2600s'
-    SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
-
   pool: ${{ parameters.vmLinuxPool }}
+
+  strategy:
+    matrix:
+
+      'Runtime Tests 0':
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 2
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
+
+      'Runtime Tests 1':
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 2
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-skia-build
+        TARGETPLATFORM_NAME: net9
+        UITEST_TEST_TIMEOUT: '2600s'
 
   steps:
   - checkout: self

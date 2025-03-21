@@ -10,23 +10,47 @@ parameters:
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
+  # Runtime Test Groups
+  IOS_RUNTIME_TEST_GROUP_COUNT: 8
+  IOS_RUNTIME_TESTS_GROUPS:
+  - key: '0'
+    value: '01'
+  - key: '1'
+    value: '02'
+  - key: '2'
+    value: '03'
+  - key: '3'
+    value: '04'
+  - key: '4'
+    value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
+
 jobs:
 ##
 ## Runtime tests
 ##
-- template: .azure-devops-ios-tests-run.yml
-  parameters:
-    nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'Skia_iOS_Runtime_Tests'
-    JobDisplayName: 'Skia iOS Runtime Tests'
-    JobTimeoutInMinutes: 90
-    vmImage: ${{ parameters.vmMacImageTest }}
-    SamplesAppArtifactName: 'uitests-ios-skia-build'
-    UITEST_SNAPSHOTS_ONLY: false
-    UITEST_TEST_TIMEOUT: '90m'
-    UITEST_AUTOMATED_GROUP: RuntimeTests
-    UITEST_ALLOW_RERUN: 'false'
-    SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
-    UITEST_VARIANT: 'skia'
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
-    dependsOn: Skia_Tests_Build_iOS
+- ${{ each RuntimeTestGroup in parameters.IOS_RUNTIME_TESTS_GROUPS }}:
+  - template: .azure-devops-ios-tests-run.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+      JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Skia iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobTimeoutInMinutes: 90
+      vmImage: ${{ parameters.vmMacImageTest }}
+      SamplesAppArtifactName: 'uitests-ios-skia-build'
+      UITEST_SNAPSHOTS_ONLY: false
+      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_AUTOMATED_GROUP: RuntimeTests
+      UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.IOS_RUNTIME_TEST_GROUP_COUNT }}
+      UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
+      UITEST_VARIANT: 'skia'
+      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - Skia_Tests_Build_iOS
