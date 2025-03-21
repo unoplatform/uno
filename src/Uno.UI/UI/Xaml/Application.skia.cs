@@ -107,21 +107,26 @@ namespace Microsoft.UI.Xaml
 			);
 
 			// Force a schedule to let the dotnet exports be initialized properly
-			DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+			DispatcherQueue.Main.TryEnqueue(InvokeOnLaunched);
 		}
 
-		private void InvokeOnLaunched()
+		private static void InvokeOnLaunched()
 		{
-			InitializeSystemTheme();
-
-			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
+			if (_current is null)
 			{
-				InitializationCompleted();
+				throw new InvalidOperationException("Application.Current must be set before calling OnLaunched");
+			}
+
+			_current.InitializeSystemTheme();
+
+			using (_current.WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
+			{
+				_current.InitializationCompleted();
 
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
 				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
+					_current.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
 				}
 			}
 		}
