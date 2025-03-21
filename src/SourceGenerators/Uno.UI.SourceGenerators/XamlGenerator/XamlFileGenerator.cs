@@ -2416,7 +2416,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										{
 											// At the time of writing, if useBase is true, setterPrefix will be empty.
 											// This assertion serves as reminder to re-evaluate the logic if setterPrefix becomes a non-null.
-											Debug.Assert(!useBase || setterPrefix.Length == 0);
+											Trace.Assert(!useBase || setterPrefix.Length == 0);
 											writer.AppendLineIndented((useBase ? "base." : string.Empty) + setterPrefix + contentProperty.Name + " = ");
 
 											if (implicitContentChild.Objects.Count > 1)

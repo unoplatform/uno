@@ -89,7 +89,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
 		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 
-		Debug.Assert(_tempPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
+		Trace.Assert(_tempPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
 		GpPath* gpPath = null;
 		var status = PInvoke.GdipCreatePath(_tempPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
 		if (status != Status.Ok)

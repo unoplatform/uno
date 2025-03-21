@@ -7,7 +7,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.OpenGL;
-using Windows.Win32.System.Diagnostics.Debug;
+using Windows.Win32.System.Diagnostics.Trace;
 using Windows.Win32.System.Memory;
 using Uno.Disposables;
 using Uno.Foundation.Logging;

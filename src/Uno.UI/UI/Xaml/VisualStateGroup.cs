@@ -230,7 +230,7 @@ namespace Microsoft.UI.Xaml
 			bool useTransitions,
 			Action onStateChanged)
 		{
-			global::System.Diagnostics.Debug.Assert(state is null || States.Contains(state));
+			global::System.Diagnostics.Trace.Assert(state is null || States.Contains(state));
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

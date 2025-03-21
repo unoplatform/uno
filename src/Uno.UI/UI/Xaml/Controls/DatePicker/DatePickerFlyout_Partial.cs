@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_tpAcceptButton is { })
 			{
-				//global.System.Diagnostics.Debug.Assert(spAcceptButtonAsUIE);
+				//global.System.Diagnostics.Trace.Assert(spAcceptButtonAsUIE);
 				//(_tpAcceptButton.add_Click(
 				//	wrl.Callback<xaml.IRoutedEventHandler>(this, &global::DatePickerFlyout.OnAcceptClick),
 				//	&_acceptClickToken));
@@ -203,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_tpDismissButton is { })
 			{
-				//global.System.Diagnostics.Debug.Assert(spDismissButtonAsUIE);
+				//global.System.Diagnostics.Trace.Assert(spDismissButtonAsUIE);
 				//(_tpDismissButton.add_Click(
 				//	wrl.Callback<xaml.IRoutedEventHandler>(this, &global::DatePickerFlyout.OnDismissClick),
 				//	&_dismissClickToken));
@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 				//spAutomationPropertiesStatics.SetName(spButtonAsDO, strAutomationName);
 			}
 
-			Debug.Assert(_tpPresenter != null);
+			Trace.Assert(_tpPresenter != null);
 
 			//(spFlyoutPresenterAsUIE.add_KeyDown(
 			//	wrl.Callback<xaml_input.IKeyEventHandler>(this, &global::DatePickerFlyout.OnKeyDown),

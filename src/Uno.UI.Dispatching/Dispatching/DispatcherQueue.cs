@@ -17,7 +17,7 @@ namespace Windows.System
 
 		private DispatcherQueue()
 		{
-			Debug.Assert(
+			Trace.Assert(
 				(int)DispatcherQueuePriority.High == 10 &&
 				(int)DispatcherQueuePriority.Normal == 0 &&
 				(int)DispatcherQueuePriority.Low == -10 &&

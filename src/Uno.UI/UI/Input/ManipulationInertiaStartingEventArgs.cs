@@ -21,7 +21,7 @@ namespace Windows.UI.Input
 			ManipulationVelocities velocities,
 			uint contactCount)
 		{
-			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
+			global::System.Diagnostics.Trace.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
 			Pointers = pointers;
 			PointerDeviceType = (PointerDeviceType)pointers[0].Type;

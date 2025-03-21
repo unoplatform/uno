@@ -14,7 +14,7 @@ namespace Uno.Buffers
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static int SelectBucketIndex(int bufferSize)
 		{
-			Debug.Assert(bufferSize > 0);
+			Trace.Assert(bufferSize > 0);
 
 			uint bitsRemaining = ((uint)bufferSize - 1) >> 4;
 
@@ -32,7 +32,7 @@ namespace Uno.Buffers
 		internal static int GetMaxSizeForBucket(int binIndex)
 		{
 			int maxSize = 16 << binIndex;
-			Debug.Assert(maxSize >= 0);
+			Trace.Assert(maxSize >= 0);
 			return maxSize;
 		}
 	}

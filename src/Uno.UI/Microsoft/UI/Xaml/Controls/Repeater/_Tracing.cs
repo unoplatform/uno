@@ -54,6 +54,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		[Conditional("DEBUG")]
 		public static void MUX_ASSERT(bool assertion, string message = null)
-			=> global::System.Diagnostics.Debug.Assert(assertion, message);
+			=> global::System.Diagnostics.Trace.Assert(assertion, message);
 	}
 }

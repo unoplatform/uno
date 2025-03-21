@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 				LayoutReference referenceInformation,
 				Rect windowConstraint)
 		{
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 
 			// Nongrouping, this is exact and we don't even need the reference position
 			return GetItemBounds(elementIndex);
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Rect windowConstraint,
 				Size finalSize)
 		{
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 			// For calendar item, the arrange bound is same as measure bound so we can always call GetItemBounds
 			// to get the arrange bounds, but we can simply use measure bound (containerBounds) because they are same.
 
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// make sure the measure bound is arrange bound for non-garbage.
 				var bounds = GetItemBounds(elementIndex);
-				global::System.Diagnostics.Debug.Assert(bounds.X == containerBounds.X
+				global::System.Diagnostics.Trace.Assert(bounds.X == containerBounds.X
 					&& bounds.Y == containerBounds.Y
 					&& bounds.Width == containerBounds.Width
 					&& bounds.Height == containerBounds.Height);
@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			bool shouldContinue = false;
 
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 
 			if (referenceInformation.RelativeLocation == ReferenceIdentity.Myself)
 			{
@@ -161,13 +161,13 @@ namespace Microsoft.UI.Xaml.Controls
 			pReturnValue = -1;
 			int totalItems = 0;
 
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 			totalItems = GetLayoutDataInfoProviderNoRef.GetTotalItemCount();
 
 			int maxStackingLines = (totalItems > 0) ? DetermineMaxStackingLine() : 1;
 
 			// We are non-grouped, this is an exact calculation
-			global::System.Diagnostics.Debug.Assert(maxStackingLines > 0);
+			global::System.Diagnostics.Trace.Assert(maxStackingLines > 0);
 
 			// How many virtualizing lines does it take to get from the start to here?
 			float virtualizingDistanceFromStart = Math.Max(0.0f, PointFromRectInVirtualizingDirection(window));
@@ -211,9 +211,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			int totalItems;
 
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 			totalItems = GetLayoutDataInfoProviderNoRef.GetTotalItemCount();
-			global::System.Diagnostics.Debug.Assert(0 <= elementIndex && elementIndex < totalItems);
+			global::System.Diagnostics.Trace.Assert(0 <= elementIndex && elementIndex < totalItems);
 
 			int maxStackingLines;
 			int virtualizingLine;
@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var visualIndex = m_indexCorrectionTable.ActualIndexToVisualIndex(elementIndex);
 			DetermineLineInformation(visualIndex, out maxStackingLines, out virtualizingLine, out stackingLine);
-			global::System.Diagnostics.Debug.Assert(maxStackingLines > 0);
+			global::System.Diagnostics.Trace.Assert(maxStackingLines > 0);
 
 			SetPointFromRectInVirtualizingDirection(ref pReturnValue, virtualizingLine * SizeInVirtualizingDirection(m_cellSize));
 			SetPointFromRectInNonVirtualizingDirection(ref pReturnValue, GetItemStackingPosition(stackingLine));
@@ -244,7 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 			int maxStackingLine = DetermineMaxStackingLine();
-			global::System.Diagnostics.Debug.Assert(maxStackingLine > 0);
+			global::System.Diagnostics.Trace.Assert(maxStackingLine > 0);
 
 			//actual panel size
 			SetSizeInVirtualizingDirection(ref pExtent, GetVirtualizedExtentOfItems(totalItems, maxStackingLine));
@@ -271,8 +271,8 @@ namespace Microsoft.UI.Xaml.Controls
 			totalItems = GetLayoutDataInfoProviderNoRef.GetTotalItemCount();
 			totalGroups = GetLayoutDataInfoProviderNoRef.GetTotalGroupCount();
 
-			global::System.Diagnostics.Debug.Assert(0 <= elementIndex && elementIndex < totalItems);
-			global::System.Diagnostics.Debug.Assert(elementType == ElementType.ItemContainer);
+			global::System.Diagnostics.Trace.Assert(0 <= elementIndex && elementIndex < totalItems);
+			global::System.Diagnostics.Trace.Assert(elementType == ElementType.ItemContainer);
 
 			pTargetElementType = ElementType.ItemContainer;
 
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			global::System.Diagnostics.Debug.Assert(0 <= pTargetElementIndex && pTargetElementIndex < totalItems);
+			global::System.Diagnostics.Trace.Assert(0 <= pTargetElementIndex && pTargetElementIndex < totalItems);
 
 			return;
 		}
@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml.Controls
 			out bool hasSnapPointOnElement)
 		{
 			hasSnapPointOnElement = false;
-			global::System.Diagnostics.Debug.Assert(m_snapPointFilterFunction is { });
+			global::System.Diagnostics.Trace.Assert(m_snapPointFilterFunction is { });
 
 			hasSnapPointOnElement = m_snapPointFilterFunction(elementIndex);
 
@@ -370,14 +370,14 @@ namespace Microsoft.UI.Xaml.Controls
 				case Orientation.Vertical:
 					return m_cols;
 				default:
-					global::System.Diagnostics.Debug.Assert(false);
+					global::System.Diagnostics.Trace.Assert(false);
 					return 0;
 			}
 		}
 
 		private float GetVirtualizedExtentOfItems(int itemCount, int maxStackingLine)
 		{
-			global::System.Diagnostics.Debug.Assert(maxStackingLine > 0);
+			global::System.Diagnostics.Trace.Assert(maxStackingLine > 0);
 
 			// Get virtualizing lines, rounding up the fractional ones
 			float extent = 0;
@@ -413,8 +413,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// The newSize should be always greater than or equal to the minSize. 
 			// However under some scale factors, we need to use "close to" to replace "equal to".
 			float epsilon = 0.0001f;
-			global::System.Diagnostics.Debug.Assert(newWidth > m_cellMinSize.Width || DoubleUtil.AreWithinTolerance(newWidth, m_cellMinSize.Width, epsilon));
-			global::System.Diagnostics.Debug.Assert(newHeight > m_cellMinSize.Height || DoubleUtil.AreWithinTolerance(newHeight, m_cellMinSize.Height, epsilon));
+			global::System.Diagnostics.Trace.Assert(newWidth > m_cellMinSize.Width || DoubleUtil.AreWithinTolerance(newWidth, m_cellMinSize.Width, epsilon));
+			global::System.Diagnostics.Trace.Assert(newHeight > m_cellMinSize.Height || DoubleUtil.AreWithinTolerance(newHeight, m_cellMinSize.Height, epsilon));
 
 			if (newWidth != m_cellSize.Width || newHeight != m_cellSize.Height)
 			{
@@ -468,28 +468,28 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			public void SetCorrectionEntryForSkippedDay(int index, int correction)
 			{
-				global::System.Diagnostics.Debug.Assert(index >= 0);
-				global::System.Diagnostics.Debug.Assert(correction >= 0); // it is a skip day, so the correction must be non-negative number.
+				global::System.Diagnostics.Trace.Assert(index >= 0);
+				global::System.Diagnostics.Trace.Assert(correction >= 0); // it is a skip day, so the correction must be non-negative number.
 				m_indexCorrectionTable[1].first = index;
 				m_indexCorrectionTable[1].second = correction;
 			}
 
 			public void SetCorrectionEntryForElementStartAt(int correction)
 			{
-				global::System.Diagnostics.Debug.Assert(correction >= 0);
+				global::System.Diagnostics.Trace.Assert(correction >= 0);
 				m_indexCorrectionTable[0].first = 0; // this is always 0, which means this correction applies for all items.
 				m_indexCorrectionTable[0].second = correction;
 			}
 
 			public int VisualIndexToActualIndex(int visualIndex)
 			{
-				global::System.Diagnostics.Debug.Assert(m_indexCorrectionTable[0].first <= m_indexCorrectionTable[1].first); // always in order.
+				global::System.Diagnostics.Trace.Assert(m_indexCorrectionTable[0].first <= m_indexCorrectionTable[1].first); // always in order.
 				int actualIndex = visualIndex;
 				foreach (var entry in m_indexCorrectionTable)
 				{
 					if (actualIndex >= entry.first)
 					{
-						global::System.Diagnostics.Debug.Assert(actualIndex >= entry.first + entry.second);
+						global::System.Diagnostics.Trace.Assert(actualIndex >= entry.first + entry.second);
 						actualIndex -= entry.second;
 					}
 					else
@@ -503,7 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public int ActualIndexToVisualIndex(int actualIndex)
 			{
-				global::System.Diagnostics.Debug.Assert(m_indexCorrectionTable[0].first <= m_indexCorrectionTable[1].first); // always in order.
+				global::System.Diagnostics.Trace.Assert(m_indexCorrectionTable[0].first <= m_indexCorrectionTable[1].first); // always in order.
 				int visualIndex = actualIndex;
 				foreach (var entry in m_indexCorrectionTable)
 				{

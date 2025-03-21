@@ -58,7 +58,7 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 	internal void FontLoaded(SKTypeface? skTypeFace)
 	{
 		// this method should only be called once.
-		global::System.Diagnostics.Debug.Assert(CanChange);
+		global::System.Diagnostics.Trace.Assert(CanChange);
 		CanChange = false;
 
 		if (skTypeFace is not null)

@@ -46,7 +46,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			else if (nextPhase == VirtualizationInfo.PhaseNotSpecified)
 			{
 				// If virtInfo.Phase is not specified, virtInfo.DataTemplateComponent cannot be valid.
-				global::System.Diagnostics.Debug.Assert(dataTemplateComponent == null);
+				global::System.Diagnostics.Trace.Assert(dataTemplateComponent == null);
 				// ItemsRepeater might be using a custom view generator in which case, virtInfo would not be bootstrapped.
 				// In this case, fallback to querying for the data template component and setup virtualization info now.
 				dataTemplateComponent = XamlBindingHelper.GetDataTemplateComponent(element);
@@ -174,7 +174,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			if (!m_registeredForCallback)
 			{
-				global::System.Diagnostics.Debug.Assert(m_pendingElements.Count != 0);
+				global::System.Diagnostics.Trace.Assert(m_pendingElements.Count != 0);
 				m_registeredForCallback = true;
 				BuildTreeScheduler.RegisterWork(
 						m_pendingElements[m_pendingElements.Count - 1].VirtInfo.Phase,  // Use the phase of the last one in the sorted list

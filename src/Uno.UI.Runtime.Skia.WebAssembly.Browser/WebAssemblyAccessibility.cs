@@ -164,7 +164,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	internal void CreateAOM(UIElement rootElement)
 	{
-		Debug.Assert(IsAccessibilityEnabled);
+		Trace.Assert(IsAccessibilityEnabled);
 
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
@@ -180,7 +180,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child)
 	{
-		Debug.Assert(IsAccessibilityEnabled);
+		Trace.Assert(IsAccessibilityEnabled);
 
 		var handle = child.Visual.Handle;
 
@@ -273,7 +273,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	private void OnAutomationNameChanged(UIElement element, string automationId)
 	{
-		Debug.Assert(IsAccessibilityEnabled);
+		Trace.Assert(IsAccessibilityEnabled);
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
 	}
 

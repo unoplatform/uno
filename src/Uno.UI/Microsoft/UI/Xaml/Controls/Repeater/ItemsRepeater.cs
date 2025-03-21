@@ -483,7 +483,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		/* static */
 		internal static VirtualizationInfo CreateAndInitializeVirtualizationInfo(UIElement element)
 		{
-			global::System.Diagnostics.Debug.Assert(TryGetVirtualizationInfo(element) == null);
+			global::System.Diagnostics.Trace.Assert(TryGetVirtualizationInfo(element) == null);
 			var result = new VirtualizationInfo();
 			element.SetValue(VirtualizationInfoProperty, result);
 			return result;

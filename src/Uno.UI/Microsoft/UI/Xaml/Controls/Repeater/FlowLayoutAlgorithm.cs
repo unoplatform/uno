@@ -143,7 +143,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			m_elementManager.ClearRealizedRange();
 			// FlowLayout requires that the anchor is the first element in the row.
 			var internalAnchor = m_algorithmCallbacks.Algorithm_GetAnchorForTargetElement(index, availableSize, context);
-			global::System.Diagnostics.Debug.Assert(internalAnchor.Index <= index);
+			global::System.Diagnostics.Trace.Assert(internalAnchor.Index <= index);
 
 			// No need to set the position of the anchor.
 			// (0,0) is fine for now since the extent can
@@ -236,7 +236,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 						// SuggestedAnchor will be 1 (used to be 0) and GetAnchorForTargetElement will return 0 (left most item in row). However 0 is not in the
 						// realized range yet. In this case we realize the gap between the target anchor and the suggested anchor.
 						int firstRealizedDataIndex = m_elementManager.GetDataIndexFromRealizedRangeIndex(0);
-						global::System.Diagnostics.Debug.Assert(anchorIndex < firstRealizedDataIndex);
+						global::System.Diagnostics.Trace.Assert(anchorIndex < firstRealizedDataIndex);
 						for (int i = firstRealizedDataIndex - 1; i >= anchorIndex; --i)
 						{
 							m_elementManager.EnsureElementRealized(false /*forward*/, i, layoutId);
@@ -269,7 +269,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 
 			REPEATER_TRACE_INFO("%*s: \tPicked anchor:%d \n", context.Indent, layoutId, anchorIndex);
-			global::System.Diagnostics.Debug.Assert(anchorIndex == -1 || m_elementManager.IsIndexValidInData(anchorIndex));
+			global::System.Diagnostics.Trace.Assert(anchorIndex == -1 || m_elementManager.IsIndexValidInData(anchorIndex));
 			m_firstRealizedDataIndexInsideRealizationWindow = m_lastRealizedDataIndexInsideRealizationWindow = anchorIndex;
 			if (m_elementManager.IsIndexValidInData(anchorIndex))
 			{
@@ -559,7 +559,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				int realizedElementCount = m_elementManager.GetRealizedElementCount;
 				if (realizedElementCount > 0)
 				{
-					global::System.Diagnostics.Debug.Assert(m_firstRealizedDataIndexInsideRealizationWindow != -1 && m_lastRealizedDataIndexInsideRealizationWindow != -1);
+					global::System.Diagnostics.Trace.Assert(m_firstRealizedDataIndexInsideRealizationWindow != -1 && m_lastRealizedDataIndexInsideRealizationWindow != -1);
 					int countInLine = 0;
 					var previousElementBounds = m_elementManager.GetLayoutBoundsForDataIndex(m_firstRealizedDataIndexInsideRealizationWindow);
 					var currentLineOffset = MajorStart(previousElementBounds);
@@ -746,7 +746,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			{
 				// Should have 0 origin for non-virtualizing layout since we always start from
 				// the first item
-				global::System.Diagnostics.Debug.Assert(m_lastExtent.X == 0 && m_lastExtent.Y == 0);
+				global::System.Diagnostics.Trace.Assert(m_lastExtent.X == 0 && m_lastExtent.Y == 0);
 			}
 		}
 

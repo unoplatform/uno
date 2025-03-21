@@ -34,7 +34,7 @@ namespace Uno.Disposables
 		/// <param name="dispose">Disposal action which will be run upon calling Dispose.</param>
 		public AnonymousDisposable(Action dispose)
 		{
-			System.Diagnostics.Debug.Assert(dispose != null);
+			System.Diagnostics.Trace.Assert(dispose != null);
 
 			_dispose = dispose;
 		}

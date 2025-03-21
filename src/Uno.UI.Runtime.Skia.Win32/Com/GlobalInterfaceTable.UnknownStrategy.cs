@@ -44,7 +44,7 @@ internal static unsafe partial class GlobalInterfaceTable
 
 		void* IIUnknownStrategy.CreateInstancePointer(void* unknown)
 		{
-			Debug.Assert(_cookie == 0, "A cookie has already been generated for this instance.");
+			Trace.Assert(_cookie == 0, "A cookie has already been generated for this instance.");
 			_cookie = RegisterInterface((IUnknown*)unknown);
 			return unknown;
 		}

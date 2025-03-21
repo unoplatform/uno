@@ -339,7 +339,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Control spSubMenuFlyoutPresenterAsControl;
 			DependencyObject spThisAsDO = this;
 
-			global::System.Diagnostics.Debug.Assert(pOwnerMenuFlyout != null && pParentMenuFlyoutPresenter != null && pSubMenuFlyoutPresenter != null);
+			global::System.Diagnostics.Trace.Assert(pOwnerMenuFlyout != null && pParentMenuFlyoutPresenter != null && pSubMenuFlyoutPresenter != null);
 
 			spSubMenuFlyoutPresenterAsControl = spSubMenuFlyoutPresenter;
 
@@ -752,8 +752,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			EnsurePopupAndPresenter();
 
-			global::System.Diagnostics.Debug.Assert(m_tpPopup != null);
-			global::System.Diagnostics.Debug.Assert(m_tpPresenter != null);
+			global::System.Diagnostics.Trace.Assert(m_tpPopup != null);
+			global::System.Diagnostics.Trace.Assert(m_tpPresenter != null);
 		}
 
 		void ISubMenuOwner.OpenSubMenu(Point position)

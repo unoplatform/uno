@@ -14,14 +14,14 @@ namespace Uno.UI.Dispatching
 
 		private bool GetHasThreadAccess()
 		{
-			Debug.Assert(HasThreadAccessOverride != null, "HasThreadAccessOverride must be set.");
+			Trace.Assert(HasThreadAccessOverride != null, "HasThreadAccessOverride must be set.");
 
 			return HasThreadAccessOverride();
 		}
 
 		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
-			Debug.Assert(DispatchOverride != null, "DispatchOverride must be set.");
+			Trace.Assert(DispatchOverride != null, "DispatchOverride must be set.");
 
 			DispatchOverride(NativeDispatcher.DispatchItems, priority);
 		}

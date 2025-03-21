@@ -1310,7 +1310,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			_recycledItems.Push(pItem);
 
 			// Removing from the visual tree is expensive. Place offscreen instead.
-			//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
+			//NT_global.System.Diagnostics.Trace.Assert(_spCanvasStatics);
 			//_spCanvasStatics.SetLeft(spItemAsUI, -10000);
 			Canvas.SetLeft(spItemAsUI, -10000);
 		}
@@ -1414,7 +1414,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				if (_isScrollViewerInitialized && !_isSetupPending)
 				{
-					global::System.Diagnostics.Debug.Assert(_tpScrollViewer != null);
+					global::System.Diagnostics.Trace.Assert(_tpScrollViewer != null);
 					verticalOffsetBeforeArrangeImpl = _tpScrollViewer.VerticalOffset;
 				}
 
@@ -1720,7 +1720,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				spChild = iter;
 				//spChild.As(spChildAsUI);
 				spChildAsUI = spChild;
-				//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
+				//NT_global.System.Diagnostics.Trace.Assert(_spCanvasStatics);
 				//_spCanvasStatics.GetTop(spChildAsUI, &currentPosition);
 				currentPosition = Canvas.GetTop(spChildAsUI);
 				//_spCanvasStatics.SetTop(spChildAsUI, currentPosition + delta);
@@ -1935,7 +1935,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		void SetPosition(UIElement pitem, double offset)
 		{
-			//NT_global.System.Diagnostics.Debug.Assert(_spCanvasStatics);
+			//NT_global.System.Diagnostics.Trace.Assert(_spCanvasStatics);
 			//_spCanvasStatics.SetTop(pitem, offset);
 			Canvas.SetTop(pitem, offset);
 			// Items are set offset with a large left offset

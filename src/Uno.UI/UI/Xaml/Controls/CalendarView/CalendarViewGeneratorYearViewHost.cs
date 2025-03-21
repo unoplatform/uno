@@ -222,7 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 						pCalendar.AddYears(1);
 					}
 
-					global::System.Diagnostics.Debug.Assert(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
+					global::System.Diagnostics.Trace.Assert(lengthOfLongestYear == 13 || lengthOfLongestYear == 12);
 					pCalendar.SetDateTime(longestYear);
 					month = pCalendar.FirstMonthInThisYear;
 					pCalendar.Month = month;

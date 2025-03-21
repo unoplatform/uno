@@ -193,7 +193,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
-		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+		Trace.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:

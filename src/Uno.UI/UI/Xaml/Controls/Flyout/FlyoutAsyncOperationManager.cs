@@ -291,7 +291,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					//NT_ASSERT(asyncStatus == wf::AsyncStatus::Started);
-					Debug.Assert(asyncStatus == AsyncStatus.Started);
+					Trace.Assert(asyncStatus == AsyncStatus.Started);
 					m_pAssociatedFlyoutNoRef.ShowAt(m_tpTargetForDeferredShowAt);
 					m_isShowAtForCurrentOperationDeferred = false;
 					m_tpTargetForDeferredShowAt = null;
@@ -313,9 +313,9 @@ namespace Microsoft.UI.Xaml.Controls
 			//NT_ASSERTMSG(
 			//	"Operation must have an associated flyout",
 			//	m_pAssociatedFlyoutNoRef || !m_isInitialized);
-			Debug.Assert(m_spCurrentOperation != null || (m_tpTargetForDeferredShowAt == null && !m_isShowAtForCurrentOperationDeferred));
+			Trace.Assert(m_spCurrentOperation != null || (m_tpTargetForDeferredShowAt == null && !m_isShowAtForCurrentOperationDeferred));
 
-			Debug.Assert(m_pAssociatedFlyoutNoRef != null || !m_isInitialized);
+			Trace.Assert(m_pAssociatedFlyoutNoRef != null || !m_isInitialized);
 		}
 
 		private void AssertCompleteOperationPreconditions()
@@ -330,12 +330,12 @@ namespace Microsoft.UI.Xaml.Controls
 			//NT_ASSERTMSG(
 			//	"Attempting to complete an operation that's already been completed.",
 			//	status != wf::AsyncStatus::Completed);
-			//Debug.Assert(status == AsyncStatus.Completed);
+			//Trace.Assert(status == AsyncStatus.Completed);
 
 			//NT_ASSERTMSG(
 			//	"Attempting to complete an operation but still waiting to show flyout",
 			//	!m_isShowAtForCurrentOperationDeferred || status == wf::AsyncStatus::Canceled);
-			Debug.Assert(!m_isShowAtForCurrentOperationDeferred || status == AsyncStatus.Canceled);
+			Trace.Assert(!m_isShowAtForCurrentOperationDeferred || status == AsyncStatus.Canceled);
 		}
 	}
 }

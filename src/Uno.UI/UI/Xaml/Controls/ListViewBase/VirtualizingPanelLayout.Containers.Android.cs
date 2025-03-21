@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public void AddLine(Line newLine, GeneratorDirection fillDirection)
 			{
-				Debug.Assert(_lines.None(l => l.FirstItem == newLine.FirstItem), "Duplicate line detected");
+				Trace.Assert(_lines.None(l => l.FirstItem == newLine.FirstItem), "Duplicate line detected");
 				if (fillDirection == GeneratorDirection.Forward)
 				{
 					_lines.AddToBack(newLine);

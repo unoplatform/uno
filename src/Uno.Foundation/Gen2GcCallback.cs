@@ -70,7 +70,7 @@ internal sealed class Gen2GcCallback
 			// Execute the callback method.
 			try
 			{
-				Debug.Assert(_callback1 != null);
+				Trace.Assert(_callback1 != null);
 				if (!_callback1!(targetObj))
 				{
 					// If the callback returns false, this callback object is no longer needed.
@@ -92,7 +92,7 @@ internal sealed class Gen2GcCallback
 			// Execute the callback method.
 			try
 			{
-				Debug.Assert(_callback0 != null);
+				Trace.Assert(_callback0 != null);
 				if (!_callback0!())
 				{
 					// If the callback returns false, this callback object is no longer needed.

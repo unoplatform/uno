@@ -623,7 +623,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Control pPresenter,
 			Style pStyle)
 		{
-			Debug.Assert(pPresenter != null);
+			Trace.Assert(pPresenter != null);
 
 			if (pStyle != null)
 			{
@@ -649,8 +649,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			bool isMenuFlyout = this is MenuFlyout;
 			bool preferTopPlacement = false;
 
-			Debug.Assert(_popup != null);
-			Debug.Assert(m_isTargetPositionSet);
+			Trace.Assert(_popup != null);
+			Trace.Assert(m_isTargetPositionSet);
 
 			horizontalOffset = m_targetPoint.X;
 			verticalOffset = m_targetPoint.Y;
@@ -739,7 +739,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//if (m_isPositionedAtPoint)
 			//{
 			//	targetFlowDirection = (m_tpPlacementTarget.FlowDirection);
-			//	Debug.Assert(flowDirection == targetFlowDirection);
+			//	Trace.Assert(flowDirection == targetFlowDirection);
 			//}
 
 			//bool isRTL = (flowDirection == xaml.FlowDirection_RightToLeft);

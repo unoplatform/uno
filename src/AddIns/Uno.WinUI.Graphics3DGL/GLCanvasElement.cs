@@ -303,7 +303,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		global::System.Diagnostics.Debug.Assert(_gl is not null); // because OnLoaded creates _gl
+		global::System.Diagnostics.Trace.Assert(_gl is not null); // because OnLoaded creates _gl
 
 #if WINAPPSDK
 		Marshal.FreeHGlobal(_pixels);
@@ -355,7 +355,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		global::System.Diagnostics.Debug.Assert(_gl is not null);
+		global::System.Diagnostics.Trace.Assert(_gl is not null);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -389,7 +389,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		global::System.Diagnostics.Debug.Assert(_gl is not null && _details is not null && _backBuffer is not null);
+		global::System.Diagnostics.Trace.Assert(_gl is not null && _details is not null && _backBuffer is not null);
 
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 

@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				{
 					pOwnerNoRef.GetParentNoRef(out pLoopingSelectorNoRef);
 
-					//NT_global.System.Diagnostics.Debug.Assert(pLoopingSelectorNoRef);
+					//NT_global.System.Diagnostics.Trace.Assert(pLoopingSelectorNoRef);
 
 					//(wf.GetActivationFactory(
 					//	wrl_wrappers.Hstring(

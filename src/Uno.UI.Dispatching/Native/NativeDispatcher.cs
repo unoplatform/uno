@@ -46,7 +46,7 @@ namespace Uno.UI.Dispatching
 
 		private NativeDispatcher()
 		{
-			Debug.Assert(
+			Trace.Assert(
 				(int)NativeDispatcherPriority.High == 0 &&
 				(int)NativeDispatcherPriority.Normal == 1 &&
 				(int)NativeDispatcherPriority.Low == 2 &&
@@ -87,7 +87,7 @@ namespace Uno.UI.Dispatching
 			var @this = NativeDispatcher.Main;
 			if (@this.Rendering != null)
 			{
-				Debug.Assert(@this.RenderingEventArgsGenerator != null);
+				Trace.Assert(@this.RenderingEventArgsGenerator != null);
 
 				@this.Rendering.Invoke(null, @this.RenderingEventArgsGenerator.Invoke(Stopwatch.GetElapsedTime(@this._startTime)));
 			}
@@ -385,7 +385,7 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
+			Trace.Assert((int)priority >= 0 && (int)priority <= 3);
 
 			bool shouldEnqueue;
 

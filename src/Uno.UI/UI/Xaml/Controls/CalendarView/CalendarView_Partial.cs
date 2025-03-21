@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 					isNewStretched = (VerticalAlignment)(args.NewValue) == VerticalAlignment.Stretch;
 					break;
 				default:
-					global::System.Diagnostics.Debug.Assert(false);
+					global::System.Diagnostics.Trace.Assert(false);
 					break;
 			}
 
@@ -844,7 +844,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpDecadeViewScrollViewer = spDecadeViewScrollViewer;
 			}
 
-			global::System.Diagnostics.Debug.Assert(!m_areDirectManipulationStateChangeHandlersHooked);
+			global::System.Diagnostics.Trace.Assert(!m_areDirectManipulationStateChangeHandlersHooked);
 
 			ForeachHost(pHost =>
 			{
@@ -920,11 +920,11 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnPrimaryPanelDesiredSizeChanged(CalendarViewGeneratorHost pHost)
 		{
 			// monthpanel is the only primary panel
-			global::System.Diagnostics.Debug.Assert(pHost == m_tpMonthViewItemHost);
+			global::System.Diagnostics.Trace.Assert(pHost == m_tpMonthViewItemHost);
 
 			var pMonthViewPanel = pHost.Panel;
 
-			global::System.Diagnostics.Debug.Assert(pMonthViewPanel is { });
+			global::System.Diagnostics.Trace.Assert(pMonthViewPanel is { });
 
 			Size desiredViewportSize = default;
 			desiredViewportSize = pMonthViewPanel.GetDesiredViewportSize();
@@ -1144,7 +1144,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RegisterItemHosts()
 		{
-			global::System.Diagnostics.Debug.Assert(!m_itemHostsConnected);
+			global::System.Diagnostics.Trace.Assert(!m_itemHostsConnected);
 
 			m_itemHostsConnected = true;
 
@@ -1457,7 +1457,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				global::System.Diagnostics.Debug.Assert(false, "header button should be disabled already in decade view mode.");
+				global::System.Diagnostics.Trace.Assert(false, "header button should be disabled already in decade view mode.");
 			}
 
 		}
@@ -1551,7 +1551,7 @@ namespace Microsoft.UI.Xaml.Controls
 								// targetDate should be still in valid range.
 								var temp = targetDate;
 								CoerceDate(temp);
-								global::System.Diagnostics.Debug.Assert(temp.UniversalTime == targetDate.UniversalTime);
+								global::System.Diagnostics.Trace.Assert(temp.UniversalTime == targetDate.UniversalTime);
 							}
 
 #endif
@@ -1581,7 +1581,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// API name to be reviewed.
 		public void SetYearDecadeDisplayDimensions(int columns, int rows)
 		{
-			global::System.Diagnostics.Debug.Assert(columns > 0 && rows > 0);
+			global::System.Diagnostics.Trace.Assert(columns > 0 && rows > 0);
 
 			// note once this is set, developer can't unset it
 			m_areYearDecadeViewDimensionsSet = true;
@@ -1649,8 +1649,8 @@ namespace Microsoft.UI.Xaml.Controls
 			int index = 0;
 
 			index = pHost.CalculateOffsetFromMinDate(date);
-			global::System.Diagnostics.Debug.Assert(index >= 0);
-			global::System.Diagnostics.Debug.Assert(pHost.Panel is { });
+			global::System.Diagnostics.Trace.Assert(index >= 0);
+			global::System.Diagnostics.Trace.Assert(pHost.Panel is { });
 			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
@@ -1689,10 +1689,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// 1. compute the target index.
 				index = pHost.CalculateOffsetFromMinDate(date);
-				global::System.Diagnostics.Debug.Assert(index >= 0);
+				global::System.Diagnostics.Trace.Assert(index >= 0);
 
 				cols = pCalendarPanel.Cols;
-				global::System.Diagnostics.Debug.Assert(cols > 0);
+				global::System.Diagnostics.Trace.Assert(cols > 0);
 
 				// cols should not be 0 at this point. If it is, perhaps
 				// the calendar view has not been fully brought up yet.
@@ -1705,7 +1705,7 @@ namespace Microsoft.UI.Xaml.Controls
 					spFirstVisibleItemAsI = pCalendarPanel.ContainerFromIndex(firstVisibleIndex);
 					spFirstVisibleItem = (CalendarViewBaseItem)spFirstVisibleItemAsI;
 
-					global::System.Diagnostics.Debug.Assert(spFirstVisibleItem.GetVirtualizationInformation() is { });
+					global::System.Diagnostics.Trace.Assert(spFirstVisibleItem.GetVirtualizationInformation() is { });
 
 					// 3. based on the first visible item's bounds, compute the target item's offset
 					var bounds = spFirstVisibleItem.GetVirtualizationInformation().Bounds;
@@ -1737,7 +1737,7 @@ namespace Microsoft.UI.Xaml.Controls
 						spVerticalOffsetReference,
 						null /*zoomFactor*/,
 						false /*disableAnimation*/);
-					global::System.Diagnostics.Debug.Assert(handled);
+					global::System.Diagnostics.Trace.Assert(handled);
 				}
 			}
 
@@ -1798,7 +1798,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// m_dateSourceChanged being true means the current m_minDate or m_maxDate is
 			// out of dated.
 
-			global::System.Diagnostics.Debug.Assert(!m_dateSourceChanged);
+			global::System.Diagnostics.Trace.Assert(!m_dateSourceChanged);
 			if (m_dateComparer.LessThan(date, m_minDate))
 			{
 				date = m_minDate;
@@ -1825,7 +1825,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var pCalendarPanel = pHost.Panel;
 
-			global::System.Diagnostics.Debug.Assert(pCalendarPanel is { });
+			global::System.Diagnostics.Trace.Assert(pCalendarPanel is { });
 
 			// We explicitly call UpdateLayout in OnDisplayModeChanged, this will ocassionaly make CalendarPanelType invalid,
 			// which causes CalendarPanel to skip the row&col calculations.
@@ -1836,7 +1836,7 @@ namespace Microsoft.UI.Xaml.Controls
 				startIndex = pCalendarPanel.StartIndex;
 				numberOfItemsInCol = pCalendarPanel.Cols;
 
-				global::System.Diagnostics.Debug.Assert(startIndex < numberOfItemsInCol);
+				global::System.Diagnostics.Trace.Assert(startIndex < numberOfItemsInCol);
 
 				firstVisibleIndex = pCalendarPanel.FirstVisibleIndexBase;
 				lastVisibleIndex = pCalendarPanel.LastVisibleIndexBase;
@@ -2186,7 +2186,7 @@ namespace Microsoft.UI.Xaml.Controls
 				firstVisibleIndex = pPreviousPanel.FirstVisibleIndexBase;
 				lastVisibleIndex = pPreviousPanel.LastVisibleIndexBase;
 
-				global::System.Diagnostics.Debug.Assert(firstVisibleIndex != -1 && lastVisibleIndex != -1);
+				global::System.Diagnostics.Trace.Assert(firstVisibleIndex != -1 && lastVisibleIndex != -1);
 
 				spChildAsIDO = pPreviousPanel.ContainerFromIndex(firstVisibleIndex);
 				spChildAsI = spChildAsIDO as CalendarViewBaseItem;
@@ -2225,7 +2225,7 @@ namespace Microsoft.UI.Xaml.Controls
 							// in this case firstVisibleDate must be in scope (i.e. it must be less than or equals to the maxDateOfCurrentScope).
 							int temp = 0;
 							temp = spPreviousHost.CompareDate(firstVisibleDate, spPreviousHost.GetMaxDateOfCurrentScope());
-							global::System.Diagnostics.Debug.Assert(temp <= 0);
+							global::System.Diagnostics.Trace.Assert(temp <= 0);
 						}
 #endif
 						firstVisibleInscopeDate = firstVisibleDate;
@@ -2416,7 +2416,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				m_monthViewStartIndex = (m_weekDayOfMinDate - firstDayOfWeek + s_numberOfDaysInWeek) % s_numberOfDaysInWeek;
 
-				global::System.Diagnostics.Debug.Assert(m_monthViewStartIndex >= 0 && m_monthViewStartIndex < s_numberOfDaysInWeek);
+				global::System.Diagnostics.Trace.Assert(m_monthViewStartIndex >= 0 && m_monthViewStartIndex < s_numberOfDaysInWeek);
 
 				pMonthPanel.StartIndex = m_monthViewStartIndex;
 			}
@@ -2451,7 +2451,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				global::System.Diagnostics.Debug.Assert(false);
+				global::System.Diagnostics.Trace.Assert(false);
 				throw new InvalidOperationException();
 			}
 		}
@@ -2578,7 +2578,7 @@ namespace Microsoft.UI.Xaml.Controls
 			int col = 0;
 			pCanPanelShowFullScope = false;
 
-			global::System.Diagnostics.Debug.Assert(pCalendarPanel is { });
+			global::System.Diagnostics.Trace.Assert(pCalendarPanel is { });
 
 			row = pCalendarPanel.Rows;
 			col = pCalendarPanel.Cols;
@@ -2635,7 +2635,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CalendarViewBaseItem pItem,
 			Style pStyle)
 		{
-			global::System.Diagnostics.Debug.Assert(pItem is CalendarViewDayItem);
+			global::System.Diagnostics.Trace.Assert(pItem is CalendarViewDayItem);
 			if (pStyle is { })
 			{
 				pItem.Style = pStyle;
@@ -2712,7 +2712,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						global::System.Diagnostics.Debug.Assert(mode == CalendarViewDisplayMode.Year);
+						global::System.Diagnostics.Trace.Assert(mode == CalendarViewDisplayMode.Year);
 						headerName = FormatYearName(itemDate);
 					}
 
@@ -2722,7 +2722,7 @@ namespace Microsoft.UI.Xaml.Controls
 					m_currentHeaderPeer = peer;
 				}
 
-				global::System.Diagnostics.Debug.Assert(m_currentHeaderPeer is { } || m_previousHeaderPeer is { });
+				global::System.Diagnostics.Trace.Assert(m_currentHeaderPeer is { } || m_previousHeaderPeer is { });
 
 				var peerToUse =
 					usePreviousHeaderPeer ? m_previousHeaderPeer : m_currentHeaderPeer;

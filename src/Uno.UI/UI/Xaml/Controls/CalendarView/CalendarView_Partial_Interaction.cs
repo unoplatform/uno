@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 									break;
 								default:
-									global::System.Diagnostics.Debug.Assert(false);
+									global::System.Diagnostics.Trace.Assert(false);
 									break;
 							}
 
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				lastFocusedIndex = spHost.CalculateOffsetFromMinDate(m_lastDisplayedDate);
 
-				global::System.Diagnostics.Debug.Assert(lastFocusedIndex >= 0);
+				global::System.Diagnostics.Trace.Assert(lastFocusedIndex >= 0);
 				int newFocusedIndex = lastFocusedIndex;
 				switch (key)
 				{
@@ -178,7 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							var newFocusedDate = key == VirtualKey.Home ? spHost.GetMinDateOfCurrentScope() : spHost.GetMaxDateOfCurrentScope();
 							newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
-							global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
+							global::System.Diagnostics.Trace.Assert(newFocusedIndex >= 0);
 						}
 						break;
 					// PageUp/PageDown goes to the previous/next scope
@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 								// probably beyond {min, max}, let's make sure.
 								CoerceDate(ref newFocusedDate);
 								newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
-								global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
+								global::System.Diagnostics.Trace.Assert(newFocusedIndex >= 0);
 
 							}
 							catch
@@ -224,7 +224,7 @@ namespace Microsoft.UI.Xaml.Controls
 							bool actionValidForSourceIndex = false;
 
 							TranslateKeyToKeyNavigationAction(key, out action, out isValidKey);
-							global::System.Diagnostics.Debug.Assert(isValidKey);
+							global::System.Diagnostics.Trace.Assert(isValidKey);
 							pPanel.GetTargetIndexFromNavigationAction(
 								lastFocusedIndex,
 								ElementType.ItemContainer,
@@ -235,7 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 								out newFocusedType,
 								out actionValidForSourceIndex);
 
-							global::System.Diagnostics.Debug.Assert(newFocusedType == ElementType.ItemContainer);
+							global::System.Diagnostics.Trace.Assert(newFocusedType == ElementType.ItemContainer);
 
 							if (actionValidForSourceIndex)
 							{
@@ -244,7 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 						break;
 					default:
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 						break;
 				}
 
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			pFocused = false;
 
-			global::System.Diagnostics.Debug.Assert(index >= 0);
+			global::System.Diagnostics.Trace.Assert(index >= 0);
 
 			date = pHost.GetDateAt((uint)index);
 			FocusItem(pHost, date, index, focusState, out pFocused);
@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			global::System.Diagnostics.Debug.Assert(spItemAsI is { });
+			global::System.Diagnostics.Trace.Assert(spItemAsI is { });
 			spItem = (CalendarViewBaseItem)spItemAsI;
 
 			pFocused = spItem.FocusSelfOrChild(focusState);
@@ -433,7 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 									spContainer = pPanel.ContainerFromIndex(index);
 
-									global::System.Diagnostics.Debug.Assert(spContainer is { });
+									global::System.Diagnostics.Trace.Assert(spContainer is { });
 
 									newTabStop = spContainer;
 									isCandidateTabStopOverridden = true;

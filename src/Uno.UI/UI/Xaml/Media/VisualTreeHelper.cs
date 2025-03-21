@@ -670,7 +670,7 @@ namespace Microsoft.UI.Xaml.Media
 									using var ___ = SET_TRACE_SUBJECT(child.Current);
 									if (isChildStale.Value.Method(child.Current))
 									{
-										//Debug.Assert(false);
+										//Trace.Assert(false);
 										TRACE($"- Is {isChildStale.Value.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
 									}
 									TRACE($"> Ignored since leaf and stale branch has already been found.");

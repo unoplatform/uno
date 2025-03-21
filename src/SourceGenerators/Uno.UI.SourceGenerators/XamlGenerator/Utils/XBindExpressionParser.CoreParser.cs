@@ -35,7 +35,7 @@ internal partial class XBindExpressionParser
 
 		public XBindRoot ParseXBind()
 		{
-			Debug.Assert(_position == 0, "ParseXBind should be called on the whole expression.");
+			Trace.Assert(_position == 0, "ParseXBind should be called on the whole expression.");
 			if (string.IsNullOrWhiteSpace(_xBind))
 			{
 				return null;

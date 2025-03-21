@@ -35,7 +35,7 @@ namespace Windows.UI.Core
 
 		private CoreDispatcher()
 		{
-			Debug.Assert(
+			Trace.Assert(
 				(int)CoreDispatcherPriority.High == 1 &&
 				(int)CoreDispatcherPriority.Normal == 0 &&
 				(int)CoreDispatcherPriority.Low == -1 &&

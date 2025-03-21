@@ -288,7 +288,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					var it = m_candidates.Any(c => c.Element == elem);
 					if (it)
 					{
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 					}
 
 #endif // _DEBUG
@@ -348,7 +348,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void ApplyPendingChangeView(ScrollViewer scrollViewer)
 		{
 			var bringIntoView = m_pendingBringIntoView;
-			global::System.Diagnostics.Debug.Assert(!bringIntoView.ChangeViewCalled);
+			global::System.Diagnostics.Trace.Assert(!bringIntoView.ChangeViewCalled);
 
 			bringIntoView.ChangeViewCalled = true;
 

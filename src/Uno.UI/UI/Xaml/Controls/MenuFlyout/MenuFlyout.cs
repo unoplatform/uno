@@ -336,8 +336,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UIElement pCoreTarget,
 		   Point point)
 		{
-			Debug.Assert(pCoreMenuFlyout != null);
-			Debug.Assert(pCoreTarget != null);
+			Trace.Assert(pCoreMenuFlyout != null);
+			Trace.Assert(pCoreTarget != null);
 
 			DependencyObject target = pCoreTarget;
 

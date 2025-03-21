@@ -1067,7 +1067,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			Debug.Assert(seenWhitespace || seenComma);
+			Trace.Assert(seenWhitespace || seenComma);
 
 			return s.Slice(i);
 		}

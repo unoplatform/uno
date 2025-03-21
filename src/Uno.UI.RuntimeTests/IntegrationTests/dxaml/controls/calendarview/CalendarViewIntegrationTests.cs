@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task CanSelectOutOfRangeDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -3192,7 +3192,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task CanSetDayItemStyle()
 		{
 			TestCleanupWrapper cleanup;
@@ -3441,42 +3441,42 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHebrewCalendarMonthBoundaries()
 		{
 			await VerifyBoundaries("HebrewCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHebrewCalendarYearBoundaries()
 		{
 			await VerifyBoundaries("HebrewCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHebrewCalendarDecadeBoundaries()
 		{
 			await VerifyBoundaries("HebrewCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHijriCalendarMonthBoundaries()
 		{
 			await VerifyBoundaries("HijriCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHijriCalendarYearBoundaries()
 		{
 			await VerifyBoundaries("HijriCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyHijriCalendarDecadeBoundaries()
 		{
 			await VerifyBoundaries("HijriCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
@@ -3504,28 +3504,28 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyJulianCalendarMonthBoundaries()
 		{
 			await VerifyBoundaries("JulianCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyJulianCalendarYearBoundaries()
 		{
 			await VerifyBoundaries("JulianCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyJulianCalendarDecadeBoundaries()
 		{
 			await VerifyBoundaries("JulianCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyKoreanCalendarMonthBoundaries()
 		{
 			await VerifyBoundaries("KoreanCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
@@ -3588,21 +3588,21 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyUmAlQuraCalendarMonthBoundaries()
 		{
 			await VerifyBoundaries("UmAlQuraCalendar", "MonthViewPanel", CalendarViewDisplayMode.Month);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyUmAlQuraCalendarYearBoundaries()
 		{
 			await VerifyBoundaries("UmAlQuraCalendar", "YearViewPanel", CalendarViewDisplayMode.Year);
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyUmAlQuraCalendarDecadeBoundaries()
 		{
 			await VerifyBoundaries("UmAlQuraCalendar", "DecadeViewPanel", CalendarViewDisplayMode.Decade);
@@ -4056,7 +4056,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task CanFocusOnCorrectItemWithTap()
 		{
 			TestCleanupWrapper cleanup;
@@ -4142,7 +4142,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public async Task VerifyRenderLayers()
 		{
 			TestCleanupWrapper cleanup;
@@ -5382,70 +5382,70 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyPersianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("PersianCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyGregorianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("GregorianCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyHebrewCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("HebrewCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyHijriCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("HijriCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyJapaneseCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("JapaneseCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyJulianCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("JulianCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyKoreanCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("KoreanCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyTaiwanCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("TaiwanCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO-TODO: Test fails Debug.Assert()")]
+		[Ignore("UNO-TODO: Test fails Trace.Assert()")]
 		public Task VerifyThaiCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("ThaiCalendar");
 		}
 
 		[TestMethod]
-		[Ignore("UNO TODO - Test fails Debug.Assert()")]
+		[Ignore("UNO TODO - Test fails Trace.Assert()")]
 		public Task VerifyUmAlQuraCalendarBoundariesByTapping()
 		{
 			return VerifyCalendarBoundariesByTappingByTappingNavigationButton("UmAlQuraCalendar");

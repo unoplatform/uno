@@ -114,14 +114,14 @@ namespace Microsoft.CodeAnalysis.PooledObjects
 
 		internal ObjectPool(Factory factory, int size)
 		{
-			Debug.Assert(size >= 1);
+			Trace.Assert(size >= 1);
 			_factory = factory;
 			_items = new Element[size - 1];
 		}
 
 		internal ObjectPool(Func<ObjectPool<T>, T> factory, int size)
 		{
-			Debug.Assert(size >= 1);
+			Trace.Assert(size >= 1);
 			_factory = () => factory(this);
 			_items = new Element[size - 1];
 		}
@@ -272,9 +272,9 @@ namespace Microsoft.CodeAnalysis.PooledObjects
 		[Conditional("DEBUG")]
 		private void Validate(object obj)
 		{
-			Debug.Assert(obj != null, "freeing null?");
+			Trace.Assert(obj != null, "freeing null?");
 
-			Debug.Assert(_firstItem != obj, "freeing twice?");
+			Trace.Assert(_firstItem != obj, "freeing twice?");
 
 			var items = _items;
 			for (var i = 0; i < items.Length; i++)
@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis.PooledObjects
 					return;
 				}
 
-				Debug.Assert(value != obj, "freeing twice?");
+				Trace.Assert(value != obj, "freeing twice?");
 			}
 		}
 	}

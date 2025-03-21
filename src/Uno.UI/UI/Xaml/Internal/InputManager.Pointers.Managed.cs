@@ -119,7 +119,7 @@ internal partial class InputManager
 				Event = @event;
 
 				// Before any dispatch, we make sure to reset the event to it's original state
-				Debug.Assert(args.CanBubbleNatively == PointerRoutedEventArgs.PlatformSupportsNativeBubbling);
+				global::System.Diagnostics.Trace.Assert(args.CanBubbleNatively == PointerRoutedEventArgs.PlatformSupportsNativeBubbling);
 				args.Reset();
 
 				// Set us as the current dispatching
@@ -613,7 +613,7 @@ internal partial class InputManager
 
 					// If this fails, it means we have to update HitTest to capture the list of elements tonto which the event should be raised,
 					// and update the event bubbling logic to use that list instead of relying on dynamic parent discovery!
-					Debug.Assert(leaveCaptureResult.VisualTreeAltered is false);
+					global::System.Diagnostics.Trace.Assert(leaveCaptureResult.VisualTreeAltered is false);
 
 					isOriginalSourceStale |= leaveCaptureResult.VisualTreeAltered;
 					result += leaveCaptureResult;
@@ -649,7 +649,7 @@ internal partial class InputManager
 
 					// If this fails, it means we have to update HitTest to capture the list of elements tonto which the event should be raised,
 					// and update the event bubbling logic to use that list instead of relying on dynamic parent discovery!
-					Debug.Assert(enterCaptureResult.VisualTreeAltered is false);
+					global::System.Diagnostics.Trace.Assert(enterCaptureResult.VisualTreeAltered is false);
 
 					isOriginalSourceStale |= enterCaptureResult.VisualTreeAltered;
 					result += enterCaptureResult;

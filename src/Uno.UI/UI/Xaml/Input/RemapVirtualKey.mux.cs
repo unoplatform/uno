@@ -61,7 +61,7 @@ internal static class RemapVirtualKeyHelper
 		if (@in >= s_gamepadArray[0].raw && @in <= s_gamepadArray[^1].raw)
 		{
 			var index = @in - s_gamepadArray[0].raw;
-			Debug.Assert(s_gamepadArray[index].raw == @in);
+			Trace.Assert(s_gamepadArray[index].raw == @in);
 			return s_gamepadArray[index].mapped;
 		}
 

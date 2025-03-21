@@ -18,8 +18,8 @@ namespace Windows.UI.Input
 			ManipulationDelta cumulative,
 			uint contactCount)
 		{
-			global::System.Diagnostics.Debug.Assert(contactCount == pointers.Length, "We should have the same number of pointers for the manip start.");
-			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
+			global::System.Diagnostics.Trace.Assert(contactCount == pointers.Length, "We should have the same number of pointers for the manip start.");
+			global::System.Diagnostics.Trace.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
 			Pointers = pointers;
 			PointerDeviceType = (PointerDeviceType)pointers[0].Type;

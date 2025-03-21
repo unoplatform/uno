@@ -20,7 +20,7 @@ namespace Windows.Storage.Streams
 		/// </summary>
 		public RandomAccessStreamWithContentType(IRandomAccessStream stream, string contentType = DefaultContentType)
 		{
-			Debug.Assert(!(stream is IRandomAccessStreamWithContentType));
+			Trace.Assert(!(stream is IRandomAccessStreamWithContentType));
 
 			ContentType = contentType;
 			_stream = stream;

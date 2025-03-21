@@ -24,7 +24,7 @@ namespace Windows.UI.Input
 			uint contactCount,
 			uint currentContactCount)
 		{
-			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
+			global::System.Diagnostics.Trace.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
 			Manipulation = manipulation;
 			Pointers = pointers;

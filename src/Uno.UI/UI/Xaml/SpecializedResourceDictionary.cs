@@ -191,14 +191,14 @@ namespace Microsoft.UI.Xaml
 			set
 			{
 				bool modified = TryInsert(key, value, InsertionBehavior.OverwriteExisting, out _);
-				Debug.Assert(modified);
+				Trace.Assert(modified);
 			}
 		}
 
 		public void Add(in ResourceKey key, object value)
 		{
 			bool modified = TryInsert(key, value, InsertionBehavior.ThrowOnExisting, out _);
-			Debug.Assert(modified); // If there was an existing key and the Add failed, an exception will already have been thrown.
+			Trace.Assert(modified); // If there was an existing key and the Add failed, an exception will already have been thrown.
 		}
 
 		public void AddOrUpdate(in ResourceKey key, object value, out object previousValue)
@@ -211,8 +211,8 @@ namespace Microsoft.UI.Xaml
 			int count = _count;
 			if (count > 0)
 			{
-				Debug.Assert(_buckets != null, "_buckets should be non-null");
-				Debug.Assert(_entries != null, "_entries should be non-null");
+				Trace.Assert(_buckets != null, "_buckets should be non-null");
+				Trace.Assert(_entries != null, "_entries should be non-null");
 
 				Array.Clear(_buckets);
 
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_buckets != null)
 			{
-				Debug.Assert(_entries != null, "expected entries to be != null");
+				Trace.Assert(_entries != null, "expected entries to be != null");
 
 				uint hashCode = key.HashCode;
 				int i = GetBucket(hashCode);
@@ -348,10 +348,10 @@ namespace Microsoft.UI.Xaml
 				Initialize(0);
 			}
 
-			Debug.Assert(_buckets != null);
+			Trace.Assert(_buckets != null);
 
 			Entry[] entries = _entries;
-			Debug.Assert(entries != null, "expected entries to be non-null");
+			Trace.Assert(entries != null, "expected entries to be non-null");
 
 			uint hashCode = key.HashCode;
 
@@ -401,7 +401,7 @@ namespace Microsoft.UI.Xaml
 			if (_freeCount > 0)
 			{
 				index = _freeList;
-				Debug.Assert((StartOfFreeList - entries[_freeList].next) >= -1, "shouldn't overflow because `next` cannot underflow");
+				Trace.Assert((StartOfFreeList - entries[_freeList].next) >= -1, "shouldn't overflow because `next` cannot underflow");
 				_freeList = StartOfFreeList - entries[_freeList].next;
 				_freeCount--;
 			}
@@ -435,9 +435,9 @@ namespace Microsoft.UI.Xaml
 		private void Resize(int newSize, bool forceNewHashCodes)
 		{
 			// Value types never rehash
-			Debug.Assert(!forceNewHashCodes || !typeof(object).IsValueType);
-			Debug.Assert(_entries != null, "_entries should be non-null");
-			Debug.Assert(newSize >= _entries.Length);
+			Trace.Assert(!forceNewHashCodes || !typeof(object).IsValueType);
+			Trace.Assert(_entries != null, "_entries should be non-null");
+			Trace.Assert(newSize >= _entries.Length);
 
 			Entry[] entries = new Entry[newSize];
 
@@ -473,7 +473,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_buckets != null)
 			{
-				Debug.Assert(_entries != null, "entries should be non-null");
+				Trace.Assert(_entries != null, "entries should be non-null");
 				uint collisionCount = 0;
 				uint hashCode = key.HashCode;
 				ref int bucket = ref GetBucket(hashCode);
@@ -495,7 +495,7 @@ namespace Microsoft.UI.Xaml
 							entries[last].next = entry.next;
 						}
 
-						Debug.Assert((StartOfFreeList - _freeList) < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+						Trace.Assert((StartOfFreeList - _freeList) < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
 						entry.next = StartOfFreeList - _freeList;
 
 						//if (RuntimeHelpers.IsReferenceOrContainsReferences<object>())
@@ -536,7 +536,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_buckets != null)
 			{
-				Debug.Assert(_entries != null, "entries should be non-null");
+				Trace.Assert(_entries != null, "entries should be non-null");
 				uint collisionCount = 0;
 				uint hashCode = key.HashCode;
 				ref int bucket = ref GetBucket(hashCode);
@@ -560,7 +560,7 @@ namespace Microsoft.UI.Xaml
 
 						value = entry.value;
 
-						Debug.Assert((StartOfFreeList - _freeList) < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+						Trace.Assert((StartOfFreeList - _freeList) < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
 						entry.next = StartOfFreeList - _freeList;
 
 						//if (RuntimeHelpers.IsReferenceOrContainsReferences<object>())
@@ -679,14 +679,14 @@ namespace Microsoft.UI.Xaml
 			_version++;
 			Initialize(newSize);
 
-			Debug.Assert(!(oldEntries is null));
+			Trace.Assert(!(oldEntries is null));
 
 			CopyEntries(oldEntries, oldCount);
 		}
 
 		private void CopyEntries(Entry[] entries, int count)
 		{
-			Debug.Assert(!(_entries is null));
+			Trace.Assert(!(_entries is null));
 
 			Entry[] newEntries = _entries;
 			int newCount = 0;
@@ -1357,7 +1357,7 @@ namespace Microsoft.UI.Xaml
 			// Note that this check works even when _items.Length overflowed thanks to the (uint) cast
 			if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
 			{
-				Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
+				Trace.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
 				return MaxPrimeArrayLength;
 			}
 
@@ -1376,13 +1376,13 @@ namespace Microsoft.UI.Xaml
 		{
 			// We use modified Daniel Lemire's fastmod algorithm (https://github.com/dotnet/runtime/pull/406),
 			// which allows to avoid the long multiplication if the divisor is less than 2**31.
-			Debug.Assert(divisor <= int.MaxValue);
+			Trace.Assert(divisor <= int.MaxValue);
 
 			// This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
 			// is faster than BigMul currently because we only need the high bits.
 			uint highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
 
-			Debug.Assert(highbits == value % divisor);
+			Trace.Assert(highbits == value % divisor);
 			return highbits;
 		}
 	}

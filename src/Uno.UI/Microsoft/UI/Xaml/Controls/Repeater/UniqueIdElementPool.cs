@@ -26,7 +26,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void Add(UIElement element)
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
+			global::System.Diagnostics.Trace.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
 
 			var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
 			var key = virtInfo.UniqueId;
@@ -41,7 +41,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public UIElement Remove(int index)
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
+			global::System.Diagnostics.Trace.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
 
 			// Check if there is already a element in the mapping and if so, use it.
 			UIElement element = null;
@@ -56,7 +56,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void Clear()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
+			global::System.Diagnostics.Trace.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
 			m_elementMap.Clear();
 		}
 

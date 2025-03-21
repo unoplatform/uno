@@ -47,7 +47,7 @@ internal sealed partial class EventManager
 
 	private void AddToLoadedEventList(UIElement element)
 	{
-		Debug.Assert(!_loadedEventList.Contains(element));
+		Trace.Assert(!_loadedEventList.Contains(element));
 		_loadedEventList.Add(element);
 	}
 
@@ -56,7 +56,7 @@ internal sealed partial class EventManager
 		_loadedEventList.Remove(element);
 
 		// Remove will only remove the first occurrence. Could it happen we have multiple occurrences of the same element?
-		Debug.Assert(!_loadedEventList.Contains(element));
+		Trace.Assert(!_loadedEventList.Contains(element));
 	}
 
 	internal void RequestRaiseLoadedEventOnNextTick()
@@ -67,7 +67,7 @@ internal sealed partial class EventManager
 
 	internal void RaiseLoadedEvent()
 	{
-		Debug.Assert(ShouldRaiseLoadedEvent);
+		Trace.Assert(ShouldRaiseLoadedEvent);
 
 		if (!ShouldRaiseLoadedEvent)
 		{

@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO UNO
 		//private void AddTemplateChild(UIElement pUI)
 		//{
-		//	global::System.Diagnostics.Debug.Assert(GetFirstChildNoAddRef() == null);
+		//	global::System.Diagnostics.Trace.Assert(GetFirstChildNoAddRef() == null);
 
 		//	return InsertChild(0, pUI);
 		//}
@@ -406,7 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsLabel(TextBlock pTextBlock)
 		{
-			global::System.Diagnostics.Debug.Assert(pTextBlock is { } && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
+			global::System.Diagnostics.Trace.Assert(pTextBlock is { } && (pTextBlock == m_pLabelTextBlock || pTextBlock == m_pMainTextBlock), "the textblock should be main textblock or label textblock.");
 
 			return pTextBlock == m_pLabelTextBlock;
 		}
@@ -682,7 +682,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			cVal = GetValue(Control.BackgroundProperty);
 
-			//global::System.Diagnostics.Debug.Assert(cVal.GetType() == ValueType.valueObject);
+			//global::System.Diagnostics.Trace.Assert(cVal.GetType() == ValueType.valueObject);
 			var pBrush = (Brush)(cVal);
 
 			if (pBrush is { })
@@ -705,7 +705,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetOwner(CalendarView pOwner)
 		{
-			global::System.Diagnostics.Debug.Assert(!(m_wrOwner?.TryGetTarget(out _) ?? false));
+			global::System.Diagnostics.Trace.Assert(!(m_wrOwner?.TryGetTarget(out _) ?? false));
 			m_wrOwner = new WeakReference<CalendarView>(pOwner);
 		}
 
@@ -905,7 +905,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Brush pBrush = GetTextBlockForeground();
 
-			global::System.Diagnostics.Debug.Assert(pTextBlock is { });
+			global::System.Diagnostics.Trace.Assert(pTextBlock is { });
 
 			pTextBlock.SetValue(TextBlock.ForegroundProperty, pBrush);
 
@@ -916,7 +916,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			double opacity = GetTextBlockForegroundOpacity();
 
-			global::System.Diagnostics.Debug.Assert(pTextBlock is { });
+			global::System.Diagnostics.Trace.Assert(pTextBlock is { });
 
 			if (IsLabel(pTextBlock) && !m_hasLabel)
 			{
@@ -931,7 +931,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			TextBlockFontProperties properties;
 
-			global::System.Diagnostics.Debug.Assert(pTextBlock is { });
+			global::System.Diagnostics.Trace.Assert(pTextBlock is { });
 
 			if (GetTextBlockFontProperties(
 				IsLabel(pTextBlock),
@@ -957,7 +957,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			TextBlockAlignments alignments;
 
-			global::System.Diagnostics.Debug.Assert(pTextBlock is { });
+			global::System.Diagnostics.Trace.Assert(pTextBlock is { });
 
 			if (GetTextBlockAlignments(
 				IsLabel(pTextBlock),
@@ -1039,7 +1039,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				global::System.Diagnostics.Debug.Assert(!m_hasLabel);
+				global::System.Diagnostics.Trace.Assert(!m_hasLabel);
 			}
 
 		}
@@ -1140,7 +1140,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (forFocus)
 					{
-						global::System.Diagnostics.Debug.Assert(m_isKeyboardFocused);
+						global::System.Diagnostics.Trace.Assert(m_isKeyboardFocused);
 						pBrush = pOwner.m_pFocusBorderBrush;
 					}
 					else
@@ -1171,7 +1171,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// for Selected+Today inner border.
 		private Brush GetItemInnerBorderBrush()
 		{
-			global::System.Diagnostics.Debug.Assert(m_isToday && m_isSelected);
+			global::System.Diagnostics.Trace.Assert(m_isToday && m_isSelected);
 
 			var pOwner = GetOwner();
 			if (pOwner is { })

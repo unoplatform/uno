@@ -117,7 +117,7 @@ internal sealed partial class EventManager
 				tmp[index] = item;
 			}
 
-			Debug.Assert(index == 0);
+			Trace.Assert(index == 0);
 
 			_sizeChangedQueue.Clear();
 

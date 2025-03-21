@@ -23,7 +23,7 @@ using UIKit;
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
-using _Debug = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Trace;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;

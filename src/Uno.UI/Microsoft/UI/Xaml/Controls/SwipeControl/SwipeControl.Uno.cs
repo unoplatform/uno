@@ -128,7 +128,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (PointerCapture.TryGet(pointer, out var capture))
 				{
 					var targets = capture.GetTargets(PointerCaptureKind.Explicit).ToList();
-					global::System.Diagnostics.Debug.Assert(targets.Count <= 1);
+					global::System.Diagnostics.Trace.Assert(targets.Count <= 1);
 					foreach (var target in targets)
 					{
 						target.Element.ReleasePointerCapture(capture.Pointer);
@@ -423,7 +423,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 						m_blockFarContent = false;
 						break;
 					default:
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 						break;
 				}
 			}

@@ -41,7 +41,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal void SetAsNativeHostVisual(bool? isNativeHostVisual) => SetAsNativeHostVisual(isNativeHostVisual, false);
 	private void SetAsNativeHostVisual(bool? isNativeHostVisual, bool inherited)
 	{
-		Debug.Assert(!inherited || isNativeHostVisual is { }, "Only non-null values should be inherited.");
+		Trace.Assert(!inherited || isNativeHostVisual is { }, "Only non-null values should be inherited.");
 		var oldValue = IsNativeHostVisual;
 
 		if (inherited)
@@ -334,7 +334,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				session.Canvas.DrawPicture(_picture);
 			}
 #if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
+			Trace.Assert(saveCount == canvas.SaveCount);
 #endif
 
 			postRenderAction?.Invoke(canvas, this);

@@ -633,7 +633,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else // RootX11Window
 		{
-			Debug.Assert(x11Window == RootX11Window);
+			Trace.Assert(x11Window == RootX11Window);
 
 			SpinWait.SpinUntil(() => _synchronizedShutDownTopWindowIdleCounter == 10);
 			if (x11Window == RootX11Window)

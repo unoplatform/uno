@@ -1049,7 +1049,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// This assertion fails because we don't release pointer captures on PointerExited in InputManager
 			// TODO: make it such that this assertion doesn't fail
-			// global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
+			// global::System.Diagnostics.Trace.Assert(that._hyperlinkOver == null);
 
 			var hyperlink = that.FindHyperlinkAt(e);
 
@@ -1098,7 +1098,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+			global::System.Diagnostics.Trace.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1152,7 +1152,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var hasHyperlink = _hyperlinks.Count > 0;
 
-				global::System.Diagnostics.Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
+				global::System.Diagnostics.Trace.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
 
 				return hasHyperlink;
 			}

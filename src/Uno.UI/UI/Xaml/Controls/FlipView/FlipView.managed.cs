@@ -375,12 +375,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (isVertical)
 			{
 				bounds.Y = bounds.Height * index;
-				global::System.Diagnostics.Debug.Assert(bounds.X == 0);
+				global::System.Diagnostics.Trace.Assert(bounds.X == 0);
 			}
 			else
 			{
 				bounds.X = bounds.Width * index;
-				global::System.Diagnostics.Debug.Assert(bounds.Y == 0);
+				global::System.Diagnostics.Trace.Assert(bounds.Y == 0);
 			}
 
 			return bounds;

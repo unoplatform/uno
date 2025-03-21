@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 				spBuildTree.RegisterWork(this);
 			}
 
-			global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
+			global::System.Diagnostics.Trace.Assert(m_isRegisteredForCallbacks);
 
 
 		}
@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml.Controls
 						pCalendar.AddMonths(1);
 					}
 
-					global::System.Diagnostics.Debug.Assert(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
+					global::System.Diagnostics.Trace.Assert(lengthOfLongestMonth == 30 || lengthOfLongestMonth == 31);
 					pCalendar.SetDateTime(longestMonth);
 					day = pCalendar.FirstDayInThisMonth;
 					pCalendar.Day = day;

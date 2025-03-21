@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 				out var irregularSnapPoints);
 
 
-			global::System.Diagnostics.Debug.Assert(!areSnapPointsOptional);
+			global::System.Diagnostics.Trace.Assert(!areSnapPointsOptional);
 
 			var useCurrentOffsetForMandatorySingleSnapPoints =
 				snapPointsType == SnapPointsType.MandatorySingle &&
@@ -364,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 			float zoomFactor,
 			float staticZoomFactor)
 		{
-			global::System.Diagnostics.Debug.Assert(staticZoomFactor == 1f || staticZoomFactor == zoomFactor);
+			global::System.Diagnostics.Trace.Assert(staticZoomFactor == 1f || staticZoomFactor == zoomFactor);
 
 			if (snapPoints is null)
 			{

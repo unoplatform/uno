@@ -121,7 +121,7 @@ namespace Uno.Analyzers
 					data.ConstructorArguments.FirstOrDefault() is TypedConstant constant
 					&& constant.Kind != TypedConstantKind.Error)
 				{
-					Debug.Assert(constant.Kind == TypedConstantKind.Array);
+					Trace.Assert(constant.Kind == TypedConstantKind.Array);
 
 					var notImplementedPlatforms = constant.Values.Select(v => v.Value?.ToString()).ToArray();
 

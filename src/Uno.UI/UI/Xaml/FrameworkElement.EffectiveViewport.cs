@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport child)
 		{
-			global::System.Diagnostics.Debug.Assert(
+			global::System.Diagnostics.Trace.Assert(
 				Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child)
 				|| (child as _View)?.FindFirstAncestor<IFrameworkElement_EffectiveViewport>() == this);
 
@@ -269,7 +269,7 @@ namespace Microsoft.UI.Xaml
 
 		private ViewportInfo GetEffectiveViewport(ViewportInfo parentViewport)
 		{
-			global::System.Diagnostics.Debug.Assert(parentViewport.Reference == this || parentViewport.Reference == null);
+			global::System.Diagnostics.Trace.Assert(parentViewport.Reference == this || parentViewport.Reference == null);
 
 			if (IsVisualTreeRoot)
 			{

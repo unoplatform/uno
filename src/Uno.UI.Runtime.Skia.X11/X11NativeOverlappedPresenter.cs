@@ -148,7 +148,7 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 			return Array.Empty<IntPtr>();
 		}
 
-		Debug.Assert(actual_format == 32);
+		Trace.Assert(actual_format == 32);
 		var span = new Span<IntPtr>(prop.ToPointer(), (int)nItems);
 
 		return span.ToArray();

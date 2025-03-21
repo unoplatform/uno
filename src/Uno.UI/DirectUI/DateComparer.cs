@@ -101,7 +101,7 @@ namespace DirectUI
 			int sign = 1;
 			var pResult = 1;
 
-			global::System.Diagnostics.Debug.Assert(m_spCalendar is { });
+			global::System.Diagnostics.Trace.Assert(m_spCalendar is { });
 
 			long delta = lhs.UniversalTime - rhs.UniversalTime;
 			if (delta < 0)

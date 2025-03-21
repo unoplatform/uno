@@ -678,37 +678,37 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
 				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				global::System.Diagnostics.Trace.Assert(pdpTarget is { });
 				var store = ((IDependencyObjectStoreProvider)this).Store;
 				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 					!store.IsPropertyTemplateBound(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+					global::System.Diagnostics.Trace.Assert(pdpSource is { });
 
 					store.SetTemplateBinding(pdpTarget, pdpSource);
 					// needsRefresh = true;
 				}
 
 				pdpTarget = ContentPresenter.ContentTemplateProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				global::System.Diagnostics.Trace.Assert(pdpTarget is { });
 				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 					!store.IsPropertyTemplateBound(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+					global::System.Diagnostics.Trace.Assert(pdpSource is { });
 
 					store.SetTemplateBinding(pdpTarget, pdpSource);
 					// needsRefresh = true;
 				}
 
 				pdpTarget = ContentPresenter.ContentProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				global::System.Diagnostics.Trace.Assert(pdpTarget is { });
 				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 					!store.IsPropertyTemplateBound(pdpTarget))
 				{
 					DependencyProperty pdpSource = ContentControl.ContentProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+					global::System.Diagnostics.Trace.Assert(pdpSource is { });
 
 					store.SetTemplateBinding(pdpTarget, pdpSource);
 					// needsRefresh = true;

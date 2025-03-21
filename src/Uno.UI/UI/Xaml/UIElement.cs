@@ -1083,8 +1083,8 @@ namespace Microsoft.UI.Xaml
 			get => Visibility == Visibility.Collapsed ? new Size() : m_size;
 			internal set
 			{
-				global::System.Diagnostics.Debug.Assert(value.Width >= 0, $"Invalid width ({value.Width})");
-				global::System.Diagnostics.Debug.Assert(value.Height >= 0, $"Invalid height ({value.Height})");
+				global::System.Diagnostics.Trace.Assert(value.Width >= 0, $"Invalid width ({value.Width})");
+				global::System.Diagnostics.Trace.Assert(value.Height >= 0, $"Invalid height ({value.Height})");
 				var previousSize = m_size;
 				m_size = value;
 				if (m_size != previousSize)

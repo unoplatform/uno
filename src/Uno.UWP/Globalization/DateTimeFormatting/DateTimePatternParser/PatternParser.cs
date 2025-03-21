@@ -485,7 +485,7 @@ internal sealed class PatternParser
 		// We want to return true if we are at "{word".
 		// Note that we don't check for the "}" here
 		// This is because some callsites will continue parsing something between word and "}".
-		Debug.Assert(_pattern[i] == '{');
+		Trace.Assert(_pattern[i] == '{');
 
 		int wordLength = word.Length;
 		if (i + wordLength >= _pattern.Length)

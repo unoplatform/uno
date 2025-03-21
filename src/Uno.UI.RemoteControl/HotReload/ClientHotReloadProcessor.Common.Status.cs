@@ -175,13 +175,13 @@ public partial class ClientHotReloadProcessor
 
 		internal void SetCurrent()
 		{
-			Debug.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
+			Trace.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
 			_opForCurrentUiThread = this;
 		}
 
 		internal void ResignCurrent()
 		{
-			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for teh current UI thread.");
+			Trace.Assert(_opForCurrentUiThread == this, "Another operation has been started for teh current UI thread.");
 			_opForCurrentUiThread = null;
 		}
 		#endregion

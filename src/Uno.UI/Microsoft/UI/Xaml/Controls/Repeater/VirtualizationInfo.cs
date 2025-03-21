@@ -88,7 +88,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		public void MoveOwnershipToLayoutFromElementFactory(int index, string uniqueId)
 		{
 			// Uno specific - this assert is failing - issue #4691
-			//global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.ElementFactory);
+			//global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.ElementFactory);
 
 			m_owner = ElementOwner.Layout;
 			m_index = index;
@@ -97,22 +97,22 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void MoveOwnershipToLayoutFromUniqueIdResetPool()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.UniqueIdResetPool);
+			global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.UniqueIdResetPool);
 
 			m_owner = ElementOwner.Layout;
 		}
 
 		public void MoveOwnershipToLayoutFromPinnedPool()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.PinnedPool);
-			global::System.Diagnostics.Debug.Assert(IsPinned);
+			global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.PinnedPool);
+			global::System.Diagnostics.Trace.Assert(IsPinned);
 
 			m_owner = ElementOwner.Layout;
 		}
 
 		public void MoveOwnershipToElementFactory()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner != ElementOwner.ElementFactory);
+			global::System.Diagnostics.Trace.Assert(m_owner != ElementOwner.ElementFactory);
 
 			m_owner = ElementOwner.ElementFactory;
 
@@ -124,7 +124,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void MoveOwnershipToUniqueIdResetPoolFromLayout()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.Layout);
+			global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.Layout);
 
 			m_owner = ElementOwner.UniqueIdResetPool;
 
@@ -137,7 +137,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// During a unique id reset, some elements might get removed.
 			// Their ownership will go from the UniqueIdResetPool to the Animator.
 			// The common path though is for ownership to go from Layout to Animator.
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.Layout || m_owner == ElementOwner.UniqueIdResetPool);
+			global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.Layout || m_owner == ElementOwner.UniqueIdResetPool);
 
 			m_owner = ElementOwner.Animator;
 			m_index = -1;
@@ -146,7 +146,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void MoveOwnershipToPinnedPool()
 		{
-			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.Layout);
+			global::System.Diagnostics.Trace.Assert(m_owner == ElementOwner.Layout);
 
 			m_owner = ElementOwner.PinnedPool;
 		}
@@ -183,7 +183,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public void UpdateIndex(int newIndex)
 		{
-			global::System.Diagnostics.Debug.Assert(IsRealized);
+			global::System.Diagnostics.Trace.Assert(IsRealized);
 
 			m_index = newIndex;
 		}

@@ -67,7 +67,7 @@ namespace Windows.UI.Input
 						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
 						&& Abs(velocities.Expansion) > _owner._inertiaThresholds.Expansion;
 
-					global::System.Diagnostics.Debug.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
+					global::System.Diagnostics.Trace.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
 
 					// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
 					_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;

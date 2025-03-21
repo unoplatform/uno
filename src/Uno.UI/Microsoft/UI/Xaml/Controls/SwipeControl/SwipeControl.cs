@@ -133,7 +133,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					//		case CreatedContent.None:
 					//			break;
 					//		default:
-					//			global::System.Diagnostics.Debug.Assert(false);
+					//			global::System.Diagnostics.Trace.Assert(false);
 					//			break;
 					//	}
 
@@ -158,7 +158,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					//	case CreatedContent.None:
 					//		break;
 					//	default:
-					//		global::System.Diagnostics.Debug.Assert(false);
+					//		global::System.Diagnostics.Trace.Assert(false);
 					//		break;
 					//}
 
@@ -622,7 +622,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			SWIPECONTROL_TRACE_INFO(this/*, TRACE_MSG_METH, METH_NAME, this*/);
 
-			//global::System.Diagnostics.Debug.Assert(m_loadedToken.value == 0);
+			//global::System.Diagnostics.Trace.Assert(m_loadedToken.value == 0);
 			if (isUnoUnfinalizer) // Uno workaround: We detach from event on unload and re-attach on loaded
 			{
 				OnLoaded(this, null);
@@ -633,10 +633,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				m_hasInitialLoadedEventFired = false;
 			}
 
-			//global::System.Diagnostics.Debug.Assert(m_onSizeChangedToken.value == 0);
+			//global::System.Diagnostics.Trace.Assert(m_onSizeChangedToken.value == 0);
 			SizeChanged += OnSizeChanged;
 
-			//global::System.Diagnostics.Debug.Assert(m_onSwipeContentStackPanelSizeChangedToken.value == 0);
+			//global::System.Diagnostics.Trace.Assert(m_onSwipeContentStackPanelSizeChangedToken.value == 0);
 			m_swipeContentStackPanel.SizeChanged += OnSwipeContentStackPanelSizeChanged;
 
 			// also get any action from any inside button, or a clickable/tappable control
@@ -646,7 +646,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				AddHandler(UIElement.PointerPressedEvent, m_onPointerPressedEventHandler, true);
 			}
 
-			//global::System.Diagnostics.Debug.Assert(m_inputEaterTappedToken.value == 0);
+			//global::System.Diagnostics.Trace.Assert(m_inputEaterTappedToken.value == 0);
 			m_inputEater.Tapped += InputEaterGridTapped;
 
 			// Uno workaround:
@@ -1304,7 +1304,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 							break;
 						}
 					default:
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 						break;
 				}
 			}
@@ -1343,7 +1343,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (m_currentItems.Mode == SwipeMode.Execute)
 			{
-				//global::System.Diagnostics.Debug.Assert((m_createdContent != CreatedContent.None));
+				//global::System.Diagnostics.Trace.Assert((m_createdContent != CreatedContent.None));
 				//m_executeExpressionAnimation.SetBooleanParameter(s_isNearContentPropertyName, m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top);
 				//if (IsTranslationFacadeAvailableForSwipeControl(m_swipeContentStackPanel))
 				//{
@@ -1582,7 +1582,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 							break;
 						}
 					default:
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 						break;
 				}
 			}
@@ -1765,7 +1765,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 							_isNearOpen = false;
 							break;
 						default:
-							global::System.Diagnostics.Debug.Assert(false);
+							global::System.Diagnostics.Trace.Assert(false);
 							break;
 					}
 
@@ -1903,7 +1903,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				case CreatedContent.None:
 					return "";
 				default:
-					global::System.Diagnostics.Debug.Assert(false);
+					global::System.Diagnostics.Trace.Assert(false);
 					return "";
 			}
 		}

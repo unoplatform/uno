@@ -272,12 +272,12 @@ public partial class TextBox
 
 		if (_selection.length == 0)
 		{
-			Debug.Assert(caret == _selectionEndThumbfulCaret);
+			Trace.Assert(caret == _selectionEndThumbfulCaret);
 			Select(index, 0);
 		}
 		else
 		{
-			Debug.Assert(CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing);
+			Trace.Assert(CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing);
 			var (start, end) = (_selection.start, _selection.start + _selection.length);
 			if (sender == _selectionStartThumbfulCaret)
 			{

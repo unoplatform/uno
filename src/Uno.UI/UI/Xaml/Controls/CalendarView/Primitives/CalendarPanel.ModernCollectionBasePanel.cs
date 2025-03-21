@@ -91,9 +91,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					throw new InvalidOperationException("Host not set yet");
 				}
-				global::System.Diagnostics.Debug.Assert(_generationStartIndex == -1);
-				global::System.Diagnostics.Debug.Assert(_generationCurrentIndex == -1);
-				global::System.Diagnostics.Debug.Assert(_generationEndIndex == -1);
+				global::System.Diagnostics.Trace.Assert(_generationStartIndex == -1);
+				global::System.Diagnostics.Trace.Assert(_generationCurrentIndex == -1);
+				global::System.Diagnostics.Trace.Assert(_generationEndIndex == -1);
 
 				_generationStartIndex = startIndex;
 				_generationCurrentIndex = startIndex;
@@ -110,14 +110,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_generationUnusedInRange = (startEntryIndex, endEntryIndex - startEntryIndex);
 				_generationRecyclableAfter = (endEntryIndex, Math.Max(0, _entries.Count - endEntryIndex));
 
-				global::System.Diagnostics.Debug.Assert(
+				global::System.Diagnostics.Trace.Assert(
 					(_generationRecyclableAfter.at == _entries.Count && _generationRecyclableAfter.count == 0) // Nothing to recycle at the end
 					|| (_generationRecyclableAfter.at + _generationRecyclableAfter.count == _entries.Count)); // The last recycle item does exists!
 			}
 
 			internal IEnumerable<CacheEntry> CompleteGeneration(int endIndex)
 			{
-				global::System.Diagnostics.Debug.Assert(_generationCurrentIndex - 1 == endIndex); // endIndex is inclusive while _generationCurrentIndex is the next index to use
+				global::System.Diagnostics.Trace.Assert(_generationCurrentIndex - 1 == endIndex); // endIndex is inclusive while _generationCurrentIndex is the next index to use
 
 				var unusedEntriesCount = _generationRecyclableBefore.count
 					+ _generationUnusedInRange.count
@@ -156,7 +156,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						removed += _generationRecyclableBefore.count;
 					}
 
-					global::System.Diagnostics.Debug.Assert(removed == unusedEntriesCount);
+					global::System.Diagnostics.Trace.Assert(removed == unusedEntriesCount);
 
 					unusedEntries = removedEntries;
 				}
@@ -170,10 +170,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				FirstIndex = _entries[0].Index;
 				LastIndex = _entries[_entries.Count - 1].Index;
 
-				global::System.Diagnostics.Debug.Assert(_generationStartIndex == FirstIndex);
-				global::System.Diagnostics.Debug.Assert(endIndex == LastIndex);
-				global::System.Diagnostics.Debug.Assert(FirstIndex + _entries.Count - 1 == LastIndex);
-				global::System.Diagnostics.Debug.Assert(_entries.Skip(1).Select((e, i) => _entries[i].Index + 1 == e.Index).AllTrue());
+				global::System.Diagnostics.Trace.Assert(_generationStartIndex == FirstIndex);
+				global::System.Diagnostics.Trace.Assert(endIndex == LastIndex);
+				global::System.Diagnostics.Trace.Assert(FirstIndex + _entries.Count - 1 == LastIndex);
+				global::System.Diagnostics.Trace.Assert(_entries.Skip(1).Select((e, i) => _entries[i].Index + 1 == e.Index).AllTrue());
 
 				_generationStartIndex = -1;
 				_generationCurrentIndex = -1;
@@ -184,10 +184,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			internal (CacheEntry entry, CacheEntryKind kind) GetOrCreate(int index)
 			{
-				global::System.Diagnostics.Debug.Assert(_host is { });
-				global::System.Diagnostics.Debug.Assert(_generationStartIndex <= index);
-				global::System.Diagnostics.Debug.Assert(_generationCurrentIndex == index);
-				// We do not validate global::System.Diagnostics.Debug.Assert(_generationEndIndex >= index); as the generationEndIndex is only an estimate
+				global::System.Diagnostics.Trace.Assert(_host is { });
+				global::System.Diagnostics.Trace.Assert(_generationStartIndex <= index);
+				global::System.Diagnostics.Trace.Assert(_generationCurrentIndex == index);
+				// We do not validate global::System.Diagnostics.Trace.Assert(_generationEndIndex >= index); as the generationEndIndex is only an estimate
 
 				_generationCurrentIndex++;
 
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 								_generationUnusedInRange.count--;
 							}
 
-							global::System.Diagnostics.Debug.Assert(entry.Index == index);
+							global::System.Diagnostics.Trace.Assert(entry.Index == index);
 
 							return (entry, CacheEntryKind.Kept);
 						}
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 								_generationRecyclableAfter.count--;
 
-								global::System.Diagnostics.Debug.Assert(entry.Index > index || _generationUnusedInRange.count == 0);
+								global::System.Diagnostics.Trace.Assert(entry.Index > index || _generationUnusedInRange.count == 0);
 							}
 							else
 							{
@@ -667,9 +667,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						Children.Remove(unusedEntry.Container);
 					}
 
-					global::System.Diagnostics.Debug.Assert(_cache.FirstIndex <= FirstVisibleIndex || FirstVisibleIndex == -1);
-					global::System.Diagnostics.Debug.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
-					global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
+					global::System.Diagnostics.Trace.Assert(_cache.FirstIndex <= FirstVisibleIndex || FirstVisibleIndex == -1);
+					global::System.Diagnostics.Trace.Assert(_cache.LastIndex >= LastVisibleIndex || LastVisibleIndex == -1);
+					global::System.Diagnostics.Trace.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 				}
 				catch
 				{
@@ -716,7 +716,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			var layout = new LayoutReference(); // Empty layout which will actually drive the ShouldContinueFillingUpSpace to always return true
 			var window = new Rect(default, finalSize);
 
-			global::System.Diagnostics.Debug.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
+			global::System.Diagnostics.Trace.Assert(Children.Count == _cache.LastIndex - _cache.FirstIndex + 1 || (_cache.LastIndex == -1 && _cache.LastIndex == -1));
 
 			var children = 0;
 			foreach (var entry in _cache)

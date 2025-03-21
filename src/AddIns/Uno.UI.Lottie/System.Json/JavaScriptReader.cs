@@ -22,7 +22,7 @@ namespace System.Runtime.Serialization.Json
 
 		public JavaScriptReader(TextReader reader)
 		{
-			Debug.Assert(reader != null);
+			Trace.Assert(reader != null);
 
 			_r = reader;
 		}

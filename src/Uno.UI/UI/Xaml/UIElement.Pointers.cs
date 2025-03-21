@@ -889,7 +889,7 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_MANAGED_POINTERS
 					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root" (a.k.a. UpTo) element.
 					// If we are here, it means that we just have to update private state and let the bubbling algorithm do its job!
-					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
+					// Trace.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #else
 #if __APPLE_UIKIT__

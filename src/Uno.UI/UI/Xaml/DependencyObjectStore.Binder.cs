@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
-				Debug.Assert(IsCandidateChild(child));
+				Trace.Assert(IsCandidateChild(child));
 
 				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
 

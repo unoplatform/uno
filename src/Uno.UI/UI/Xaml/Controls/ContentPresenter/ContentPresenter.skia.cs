@@ -123,7 +123,7 @@ partial class ContentPresenter
 	partial void AttachNativeElement()
 	{
 #if DEBUG
-		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
+		global::System.Diagnostics.Trace.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
 		_nativeElementAttached = true;
 #endif
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
@@ -140,7 +140,7 @@ partial class ContentPresenter
 	partial void DetachNativeElement(object content)
 	{
 #if DEBUG
-		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
+		global::System.Diagnostics.Trace.Assert(IsNativeHost && _nativeElementAttached);
 		_nativeElementAttached = false;
 #endif
 		_nativeHosts.Remove(this);
@@ -152,7 +152,7 @@ partial class ContentPresenter
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		global::System.Diagnostics.Trace.Assert(IsNativeHost);
 		return _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
 	}
 
@@ -186,7 +186,7 @@ partial class ContentPresenter
 
 	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 	{
-		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		global::System.Diagnostics.Trace.Assert(IsNativeHost);
 		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
 		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
 		DispatcherQueue.TryEnqueue(ArrangeNativeElement);

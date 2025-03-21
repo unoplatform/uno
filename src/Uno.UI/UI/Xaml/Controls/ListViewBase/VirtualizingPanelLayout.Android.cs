@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			try
 			{
-				Debug.Assert(ScrollOrientation == Orientation.Vertical, "ScrollOrientation == Orientation.Vertical");
+				Trace.Assert(ScrollOrientation == Orientation.Vertical, "ScrollOrientation == Orientation.Vertical");
 
 				var actualOffset = ScrollBy(dy, recycler, state);
 				OffsetChildrenVertical(-actualOffset);
@@ -234,7 +234,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			try
 			{
-				Debug.Assert(ScrollOrientation == Orientation.Horizontal, "ScrollOrientation == Orientation.Horizontal");
+				Trace.Assert(ScrollOrientation == Orientation.Horizontal, "ScrollOrientation == Orientation.Horizontal");
 
 				var actualOffset = ScrollBy(dx, recycler, state);
 				OffsetChildrenHorizontal(-actualOffset);
@@ -528,7 +528,7 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				base.OffsetChildrenHorizontal(dx);
-				Debug.Assert(ScrollOrientation == Orientation.Horizontal);
+				Trace.Assert(ScrollOrientation == Orientation.Horizontal);
 				ApplyOffset(dx);
 			}
 			catch (Exception e)
@@ -545,7 +545,7 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				base.OffsetChildrenVertical(dy);
-				Debug.Assert(ScrollOrientation == Orientation.Vertical);
+				Trace.Assert(ScrollOrientation == Orientation.Vertical);
 				ApplyOffset(dy);
 			}
 			catch (Exception e)
@@ -798,8 +798,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
-			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
-			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
+			Trace.Assert(range > 0, "Must report a non-negative scroll range.");
+			Trace.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
 			return Math.Max(range, ItemsPresenterMinExtent);
 		}
 
@@ -1097,7 +1097,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_layouter.ArrangeChild(child, frame);
 
 			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
-			Debug.Assert(direction == GeneratorDirection.Forward || Math.Abs(GetChildEndWithMargin(child) - extentOffset) < 2, GetAssertMessage("Extent offset not applied correctly"));
+			Trace.Assert(direction == GeneratorDirection.Forward || Math.Abs(GetChildEndWithMargin(child) - extentOffset) < 2, GetAssertMessage("Extent offset not applied correctly"));
 		}
 
 		/// <summary>
@@ -1132,7 +1132,7 @@ namespace Microsoft.UI.Xaml.Controls
 				viewIndex = ChildCount;
 			}
 			AddView(child, viewIndex);
-			Debug.Assert(GetChildAt(viewIndex) == child, "GetChildAt(viewIndex) == child");
+			Trace.Assert(GetChildAt(viewIndex) == child, "GetChildAt(viewIndex) == child");
 			if (viewType == ViewType.GroupHeader)
 			{
 				GroupHeaderViewCount++;
@@ -1196,7 +1196,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// This invariant is only enforced by SetConstantVelocities() when scrolling toward the start of the list.
 				&& actualOffset < 0)
 			{
-				Debug.Assert(actualOffset == _pendingReorderScrollAdjustment, $"Different scroll than expected while reordering, actual={actualOffset}, expected={_pendingReorderScrollAdjustment}");
+				Trace.Assert(actualOffset == _pendingReorderScrollAdjustment, $"Different scroll than expected while reordering, actual={actualOffset}, expected={_pendingReorderScrollAdjustment}");
 			}
 			_pendingReorderScrollAdjustment = 0;
 
@@ -1263,7 +1263,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			XamlParent?.TryLoadMoreItems(LastVisibleIndex);
 
-			Debug.Assert(ContentOffset + actualOffset >= 0, "actualOffset must not push ContentOffset negative");
+			Trace.Assert(ContentOffset + actualOffset >= 0, "actualOffset must not push ContentOffset negative");
 
 			return actualOffset;
 		}
@@ -1441,7 +1441,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var group = GetTrailingGroup(direction);
 				if (group != null)
 				{
-					Debug.Assert(group.Lines.Count == 0, "group.Lines.Count == 0");
+					Trace.Assert(group.Lines.Count == 0, "group.Lines.Count == 0");
 
 					// Updating after a ScrapLayout, remove previous header extent before we apply new header extent.
 					if (_previousHeaderExtent.HasValue)
@@ -1795,13 +1795,13 @@ namespace Microsoft.UI.Xaml.Controls
 		[Conditional("DEBUG")]
 		private void AssertValidState()
 		{
-			Debug.Assert(GroupHeaderViewCount >= 0, "GroupHeaderViewCount >= 0");
-			Debug.Assert(ItemViewCount >= 0, "ItemViewCount >= 0");
-			Debug.Assert(HeaderViewCount >= 0, "HeaderViewCount >= 0");
-			Debug.Assert(HeaderViewCount <= 1, "HeaderViewCount <= 1");
-			Debug.Assert(FooterViewCount >= 0, "FooterViewCount >= 0");
-			Debug.Assert(FooterViewCount <= 1, "FooterViewCount <= 1");
-			Debug.Assert(ItemViewCount + GroupHeaderViewCount + HeaderViewCount + FooterViewCount == ChildCount,
+			Trace.Assert(GroupHeaderViewCount >= 0, "GroupHeaderViewCount >= 0");
+			Trace.Assert(ItemViewCount >= 0, "ItemViewCount >= 0");
+			Trace.Assert(HeaderViewCount >= 0, "HeaderViewCount >= 0");
+			Trace.Assert(HeaderViewCount <= 1, "HeaderViewCount <= 1");
+			Trace.Assert(FooterViewCount >= 0, "FooterViewCount >= 0");
+			Trace.Assert(FooterViewCount <= 1, "FooterViewCount <= 1");
+			Trace.Assert(ItemViewCount + GroupHeaderViewCount + HeaderViewCount + FooterViewCount == ChildCount,
 				"ItemViewCount + GroupHeaderViewCount + HeaderViewCount + FooterViewCount == ChildCount");
 
 			if (XamlParent?.CanReorderItems ?? false)
@@ -1815,11 +1815,11 @@ namespace Microsoft.UI.Xaml.Controls
 					var previousRow = materializedNormalLines[i - 1].LastItem.Row;
 					if (_pendingReorder?.index is { } reorderIndex && currentRow == reorderIndex.Row + 1)
 					{
-						Debug.Assert(currentRow == previousRow + 2, $"Non-reordering items after and before reordering item: current={currentRow}, previous={previousRow}");
+						Trace.Assert(currentRow == previousRow + 2, $"Non-reordering items after and before reordering item: current={currentRow}, previous={previousRow}");
 					}
 					else
 					{
-						Debug.Assert(currentRow == previousRow + 1, $"Non-reordering items must be contiguous: current={currentRow}, previous={previousRow}");
+						Trace.Assert(currentRow == previousRow + 1, $"Non-reordering items must be contiguous: current={currentRow}, previous={previousRow}");
 					}
 				}
 			}
@@ -2622,7 +2622,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void RemoveTrailingGroup(GeneratorDirection fillDirection, RecyclerView.Recycler recycler, bool detachOnly = false)
 		{
-			Debug.Assert(GetTrailingGroup(fillDirection).Lines.Count == 0, "No lines remaining in group being removed");
+			Trace.Assert(GetTrailingGroup(fillDirection).Lines.Count == 0, "No lines remaining in group being removed");
 
 			if (!detachOnly)
 			{
@@ -2690,7 +2690,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Format a message to pass to Debug.Assert.
+		/// Format a message to pass to Trace.Assert.
 		/// </summary>
 		protected string GetAssertMessage(string message = "", [CallerMemberName] string name = null, [CallerLineNumber] int lineNumber = 0)
 		{

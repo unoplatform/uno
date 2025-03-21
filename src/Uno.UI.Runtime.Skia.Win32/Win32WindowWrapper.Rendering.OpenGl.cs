@@ -145,13 +145,13 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.StartPaint()
 		{
-			Debug.Assert(_paintDisposable == null);
+			Trace.Assert(_paintDisposable == null);
 			_paintDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 		}
 
 		void IRenderer.EndPaint()
 		{
-			Debug.Assert(_paintDisposable != null);
+			Trace.Assert(_paintDisposable != null);
 			_paintDisposable?.Dispose();
 			_paintDisposable = null;
 		}

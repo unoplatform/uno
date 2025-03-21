@@ -23,7 +23,7 @@ namespace DirectUI
 		internal void SetCalendarForComparison(Calendar pCalendar)
 		{
 			// addedDates and removedDates must be empty while we could change the comparison function.
-			global::System.Diagnostics.Debug.Assert(m_addedDates.Empty() && m_removedDates.Empty());
+			global::System.Diagnostics.Trace.Assert(m_addedDates.Empty() && m_removedDates.Empty());
 
 			m_dateComparer.SetCalendarForComparison(pCalendar);
 
@@ -43,7 +43,7 @@ namespace DirectUI
 
 			//	foreach (var it in m_addedDates)
 			//	{
-			//		global::System.Diagnostics.Debug.Assert(!m_removedDates.Any(d => m_lessThanComparer(it, d))); // TODO UNO d, it ?
+			//		global::System.Diagnostics.Trace.Assert(!m_removedDates.Any(d => m_lessThanComparer(it, d))); // TODO UNO d, it ?
 			//	}
 			//}
 #endif

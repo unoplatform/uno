@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml
 				if (_visual is null)
 				{
 					_visual = CreateElementVisual();
-					Debug.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
+					Trace.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
 						"Border info providers are expected to override CreateElementVisual and return BorderVisual, and types returning BorderVisual should be IBorderInfoProviders");
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";

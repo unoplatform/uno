@@ -50,7 +50,7 @@ partial class InputManager
 
 		private CurrentArgSubscription AsCurrentForDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			Debug.Assert(_directManipulationsCurrentPointerArgs is null);
+			global::System.Diagnostics.Trace.Assert(_directManipulationsCurrentPointerArgs is null);
 			_directManipulationsCurrentPointerArgs = args;
 			return new CurrentArgSubscription(this);
 		}

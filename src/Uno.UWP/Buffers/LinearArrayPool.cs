@@ -60,7 +60,7 @@ namespace Uno.Buffers
 
 		public T[] Rent(int multipleOfBaseSize)
 		{
-			Debug.Assert(multipleOfBaseSize >= 0 && (multipleOfBaseSize % _baseArraySize) == 0);
+			Trace.Assert(multipleOfBaseSize >= 0 && (multipleOfBaseSize % _baseArraySize) == 0);
 
 			if (multipleOfBaseSize != 0)
 			{
@@ -83,7 +83,7 @@ namespace Uno.Buffers
 			{
 				if (array.Length != 0)
 				{
-					Debug.Assert(array.Length % _baseArraySize == 0);
+					Trace.Assert(array.Length % _baseArraySize == 0);
 
 					var index = (array.Length / _baseArraySize) - 1;
 

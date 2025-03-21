@@ -385,7 +385,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		}
 
 		var stream = task2.Result;
-		Debug.Assert(stream.CanRead);
+		Trace.Assert(stream.CanRead);
 		stream.Seek(0);
 
 		var readStream = stream.AsStreamForRead();

@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+			Trace.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
 
 			IDisposable? localPrecedenceDisposable = null;
 

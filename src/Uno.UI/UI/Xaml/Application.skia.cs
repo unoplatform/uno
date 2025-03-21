@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml
 
 			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
-				Debug.Assert(compositionTarget is null or CompositionTarget);
+				Trace.Assert(compositionTarget is null or CompositionTarget);
 
 				if (compositionTarget is CompositionTarget { Root: { } root })
 				{

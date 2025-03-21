@@ -307,7 +307,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CalendarView pSender,
 			CalendarViewSelectedDatesChangedEventArgs pArgs)
 		{
-			global::System.Diagnostics.Debug.Assert(m_tpCalendarView is { } && pSender == m_tpCalendarView);
+			global::System.Diagnostics.Trace.Assert(m_tpCalendarView is { } && pSender == m_tpCalendarView);
 
 			if (!m_isSelectedDatesChangingInternally)
 			{
@@ -325,7 +325,7 @@ namespace Microsoft.UI.Xaml.Controls
 					spAddedDates = pArgs.AddedDates;
 					addedDatesSize = spAddedDates.Count;
 
-					global::System.Diagnostics.Debug.Assert(addedDatesSize <= 1);
+					global::System.Diagnostics.Trace.Assert(addedDatesSize <= 1);
 
 					if (addedDatesSize == 1)
 					{

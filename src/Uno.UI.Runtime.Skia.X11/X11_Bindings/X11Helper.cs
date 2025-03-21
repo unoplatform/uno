@@ -271,7 +271,7 @@ internal static partial class X11Helper
 		}
 		else
 		{
-			Debug.Assert(actual_format == 32 && nItems == 5);
+			Trace.Assert(actual_format == 32 && nItems == 5);
 			new Span<IntPtr>(prop.ToPointer(), 5).CopyTo(new Span<IntPtr>(arr, 0, 5));
 		}
 

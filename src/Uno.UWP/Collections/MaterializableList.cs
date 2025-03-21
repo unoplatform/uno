@@ -63,7 +63,7 @@ namespace Uno.Collections
 		/// </remarks>
 		internal MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
 		{
-			Debug.Assert(keySelector.Target is null);
+			Trace.Assert(keySelector.Target is null);
 			if (_materializedSorted is null || !ReferenceEquals(_lastSortingFunc, keySelector))
 			{
 				_materializedSorted = _innerList.OrderBy(keySelector).ToList();

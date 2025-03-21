@@ -104,7 +104,7 @@ internal partial class PointerCapture
 
 	internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerCaptureOptions opts, PointerRoutedEventArgs? relatedArgs = null)
 	{
-		global::System.Diagnostics.Debug.Assert(
+		global::System.Diagnostics.Trace.Assert(
 			kind is PointerCaptureKind.Explicit or PointerCaptureKind.Implicit,
 			"The initial capture kind must be Explicit **OR** Implicit.");
 
@@ -198,7 +198,7 @@ internal partial class PointerCapture
 
 	private void RemoveCore(PointerCaptureTarget target, PointerCaptureKind kinds)
 	{
-		global::System.Diagnostics.Debug.Assert(
+		global::System.Diagnostics.Trace.Assert(
 			kinds != PointerCaptureKind.None,
 			"The capture kind must be set to release pointer captures.");
 
@@ -330,7 +330,7 @@ internal partial class PointerCapture
 
 	private void UpdateOptions(PointerCaptureOptions options)
 	{
-		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		global::System.Diagnostics.Trace.Assert(_nativeCaptureElement is not null);
 		if (_nativeCaptureElement is null)
 		{
 			return;
@@ -356,7 +356,7 @@ internal partial class PointerCapture
 
 	private void ClearOptions()
 	{
-		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		global::System.Diagnostics.Trace.Assert(_nativeCaptureElement is not null);
 		if (_nativeCaptureElement is null)
 		{
 			return;
@@ -385,7 +385,7 @@ internal partial class PointerCapture
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void CapturePointerNative()
 	{
-		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		global::System.Diagnostics.Trace.Assert(_nativeCaptureElement is not null);
 		if (_nativeCaptureElement is null)
 		{
 			return;
@@ -429,7 +429,7 @@ internal partial class PointerCapture
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void ReleasePointerNative()
 	{
-		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		global::System.Diagnostics.Trace.Assert(_nativeCaptureElement is not null);
 		if (_nativeCaptureElement is null)
 		{
 			return;

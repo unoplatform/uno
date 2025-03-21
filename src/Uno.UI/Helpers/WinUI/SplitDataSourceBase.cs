@@ -20,19 +20,19 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 
 	public TVectorId GetVectorIDForItem(int index)
 	{
-		global::System.Diagnostics.Debug.Assert(index >= 0 && index < RawDataSize());
+		global::System.Diagnostics.Trace.Assert(index >= 0 && index < RawDataSize());
 		return m_flags[index];
 	}
 
 	public AttachedDataType AttachedData(int index)
 	{
-		global::System.Diagnostics.Debug.Assert(index >= 0 && index < RawDataSize());
+		global::System.Diagnostics.Trace.Assert(index >= 0 && index < RawDataSize());
 		return m_attachedData[index];
 	}
 
 	public void AttachedData(int index, AttachedDataType attachedData)
 	{
-		global::System.Diagnostics.Debug.Assert(index >= 0 && index < RawDataSize());
+		global::System.Diagnostics.Trace.Assert(index >= 0 && index < RawDataSize());
 		m_attachedData[index] = attachedData;
 	}
 
@@ -65,7 +65,7 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 
 	public void MoveItemsToVector(int start, int end, TVectorId newVectorID)
 	{
-		global::System.Diagnostics.Debug.Assert(start >= 0 && end <= RawDataSize());
+		global::System.Diagnostics.Trace.Assert(start >= 0 && end <= RawDataSize());
 		for (int i = start; i < end; i++)
 		{
 			MoveItemToVector(i, newVectorID);
@@ -74,7 +74,7 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 
 	public void MoveItemToVector(int index, TVectorId newVectorID)
 	{
-		global::System.Diagnostics.Debug.Assert(index >= 0 && index < RawDataSize());
+		global::System.Diagnostics.Trace.Assert(index >= 0 && index < RawDataSize());
 
 		if (!m_flags[index].Equals(newVectorID))
 		{

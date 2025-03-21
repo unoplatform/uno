@@ -835,7 +835,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 
-					global::System.Diagnostics.Debug.Assert(m_iFocusedIndex != -1);
+					global::System.Diagnostics.Trace.Assert(m_iFocusedIndex != -1);
 				}
 			}
 		}
@@ -882,7 +882,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 
-					global::System.Diagnostics.Debug.Assert(positionInSet >= 0);
+					global::System.Diagnostics.Trace.Assert(positionInSet >= 0);
 
 					returnValue = positionInSet + 1;  // Add 1 to convert from a 0-based index to a 1-based index.
 				}
@@ -932,7 +932,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				global::System.Diagnostics.Debug.Assert(sizeOfSet >= 0);
+				global::System.Diagnostics.Trace.Assert(sizeOfSet >= 0);
 
 				returnValue = sizeOfSet;
 			}

@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						//TODO: fix bug that makes this happen (#47229)
 					}
-					Debug.Assert(isCorrectGroup, GetAssertMessage("First item should not be from a different group"));
+					Trace.Assert(isCorrectGroup, GetAssertMessage("First item should not be from a different group"));
 				}
 			}
 			Uno.UI.IndexPath lastItemInLine = firstItemInLine;

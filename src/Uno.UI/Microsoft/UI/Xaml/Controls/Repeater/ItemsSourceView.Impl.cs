@@ -225,7 +225,7 @@ public partial class ItemsSourceView
 				OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 				break;
 			default:
-				global::System.Diagnostics.Debug.Assert(false);
+				global::System.Diagnostics.Trace.Assert(false);
 				OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 				break;
 		}

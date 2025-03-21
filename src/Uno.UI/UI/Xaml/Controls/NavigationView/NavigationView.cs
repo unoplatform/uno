@@ -457,7 +457,7 @@ namespace Windows.UI.Xaml.Controls
 							if (m_topDataProvider.Size() > 0)
 							{
 								// We should always have at least one item in primary.
-								global::System.Diagnostics.Debug.Assert(m_topDataProvider.GetPrimaryItems().Count > 0);
+								global::System.Diagnostics.Trace.Assert(m_topDataProvider.GetPrimaryItems().Count > 0);
 							}
 #endif // DEBUG
 						}
@@ -1414,9 +1414,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					global::System.Diagnostics.Debug.Assert(item != null);
+					global::System.Diagnostics.Trace.Assert(item != null);
 					invokedContainer = item as NavigationViewItemBase;
-					global::System.Diagnostics.Debug.Assert(invokedContainer != null);
+					global::System.Diagnostics.Trace.Assert(invokedContainer != null);
 				}
 			}
 			eventArgs.InvokedItem = invokedItem;
@@ -1813,7 +1813,7 @@ namespace Windows.UI.Xaml.Controls
 			var topNavListView = m_topNavListView;
 			if (topNavListView != null)
 			{
-				global::System.Diagnostics.Debug.Assert(prev != null && next != null);
+				global::System.Diagnostics.Trace.Assert(prev != null && next != null);
 				var prevIndex = topNavListView.IndexFromContainer(prev);
 				var nextIndex = topNavListView.IndexFromContainer(next);
 				if (prevIndex == -1 || nextIndex == -1)
@@ -1840,7 +1840,7 @@ namespace Windows.UI.Xaml.Controls
 			// Here we assume the LastItemCalledInIsItemItsOwnContainerOverride is the container.
 			NavigationViewItemBase container = null;
 			var listView = IsTopNavigationView() ? m_topNavListView : m_leftNavListView;
-			global::System.Diagnostics.Debug.Assert(listView != null);
+			global::System.Diagnostics.Trace.Assert(listView != null);
 
 			if (listView is NavigationViewList navListView)
 			{
@@ -1854,7 +1854,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// UNO TODO
-			// global::System.Diagnostics.Debug.Assert(container != null && container.Content == itemData);
+			// global::System.Diagnostics.Trace.Assert(container != null && container.Content == itemData);
 			return container;
 		}
 
@@ -2184,7 +2184,7 @@ namespace Windows.UI.Xaml.Controls
 			double width = 0.0;
 			width += LayoutUtils.GetActualWidthFor(m_buttonHolderGrid);
 			width += LayoutUtils.GetActualWidthFor(m_topNavGrid);
-			global::System.Diagnostics.Debug.Assert(width < double.MaxValue);
+			global::System.Diagnostics.Trace.Assert(width < double.MaxValue);
 			return width;
 		}
 
@@ -2240,7 +2240,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
 						// so the assert count is different from s_measureOnInitStep2CountThreshold
-						// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
+						// global::System.Diagnostics.Trace.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
 
 						if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
 						{
@@ -2328,7 +2328,7 @@ namespace Windows.UI.Xaml.Controls
 				SetOverflowButtonVisibility(Visibility.Visible);
 				var desiredWidthForOverflowButton = MeasureTopNavigationViewDesiredWidth(c_infSize);
 
-				global::System.Diagnostics.Debug.Assert(desiredWidthForOverflowButton >= desiredWidth);
+				global::System.Diagnostics.Trace.Assert(desiredWidthForOverflowButton >= desiredWidth);
 				m_topDataProvider.OverflowButtonWidth(desiredWidthForOverflowButton - desiredWidth);
 
 				ShrinkTopNavigationSize(desiredWidthForOverflowButton, availableSize);
@@ -2352,7 +2352,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Calculate selected overflow item size.
 			var selectedOverflowItemIndex = m_topDataProvider.IndexOf(item);
-			global::System.Diagnostics.Debug.Assert(selectedOverflowItemIndex != -1);
+			global::System.Diagnostics.Trace.Assert(selectedOverflowItemIndex != -1);
 			var selectedOverflowItemWidth = m_topDataProvider.GetWidthForItem(selectedOverflowItemIndex);
 
 			bool needInvalidMeasure = !m_topDataProvider.IsValidWidthForItem(selectedOverflowItemIndex);
@@ -2362,7 +2362,7 @@ namespace Windows.UI.Xaml.Controls
 				//
 				var actualWidth = GetTopNavigationViewActualWidth();
 				var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
-				global::System.Diagnostics.Debug.Assert(desiredWidth <= actualWidth);
+				global::System.Diagnostics.Trace.Assert(desiredWidth <= actualWidth);
 
 				// Calculate selected item size
 				var selectedItemIndex = -1;
@@ -2461,7 +2461,7 @@ namespace Windows.UI.Xaml.Controls
 				KeepAtLeastOneItemInPrimaryList(itemToBeRemoved, false/*shouldKeepFirst*/);
 
 				// There should be no item is virtualized in this step
-				global::System.Diagnostics.Debug.Assert(!m_topDataProvider.HasInvalidWidth(itemToBeRemoved));
+				global::System.Diagnostics.Trace.Assert(!m_topDataProvider.HasInvalidWidth(itemToBeRemoved));
 				m_topDataProvider.MoveItemsOutOfPrimaryList(itemToBeRemoved);
 			}
 		}

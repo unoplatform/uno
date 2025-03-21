@@ -21,19 +21,19 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	public void AttachNativeElement(object content)
 	{
-		Debug.Assert(content is BrowserHtmlElement);
+		Trace.Assert(content is BrowserHtmlElement);
 		NativeMethods.AttachNativeElement(((BrowserHtmlElement)content).ElementId);
 	}
 
 	public void DetachNativeElement(object content)
 	{
-		Debug.Assert(content is BrowserHtmlElement);
+		Trace.Assert(content is BrowserHtmlElement);
 		NativeMethods.DetachNativeElement(((BrowserHtmlElement)content).ElementId);
 	}
 
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
-		Debug.Assert(content is BrowserHtmlElement);
+		Trace.Assert(content is BrowserHtmlElement);
 		NativeMethods.ArrangeNativeElement(((BrowserHtmlElement)content).ElementId, arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height);
 	}
 
@@ -44,7 +44,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
-		Debug.Assert(content is BrowserHtmlElement);
+		Trace.Assert(content is BrowserHtmlElement);
 		NativeMethods.ChangeNativeElementOpacity(((BrowserHtmlElement)content).ElementId, opacity);
 	}
 

@@ -250,7 +250,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected void Render(Shape? shape, Size? size = null, double scaleX = 1d, double scaleY = 1d, double renderOriginX = 0d, double renderOriginY = 0d)
 		{
-			Debug.Assert(shape == this);
+			Trace.Assert(shape == this);
 			var scale = Matrix3x2.CreateScale((float)scaleX, (float)scaleY);
 			var translate = Matrix3x2.CreateTranslation((float)renderOriginX, (float)renderOriginY);
 			var matrix = scale * translate;

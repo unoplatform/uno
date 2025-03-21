@@ -25,7 +25,7 @@ partial class CoreApplication
 
 	internal static void SetInvalidateRender(Action<object?> invalidateRender)
 	{
-		Debug.Assert(_invalidateRender is null);
+		Trace.Assert(_invalidateRender is null);
 		_invalidateRender ??= invalidateRender;
 	}
 

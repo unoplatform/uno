@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//HRESULT hr = S_OK;
 			//NT_ASSERTMSG("StartOperation should never be called on an operation already associated with a flyout.", !m_spPendingFlyout);
-			Debug.Assert(m_spPendingFlyout == null);
+			Trace.Assert(m_spPendingFlyout == null);
 
 			m_spPendingFlyout = pAssociatedFlyout;
 			//IFC(base_type::StartOperation());

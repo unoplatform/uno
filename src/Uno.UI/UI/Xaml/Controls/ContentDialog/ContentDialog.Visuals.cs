@@ -178,7 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void PrepareContent()
 		{
-			global::System.Diagnostics.Debug.Assert(HasValidAppliedTemplate());
+			global::System.Diagnostics.Trace.Assert(HasValidAppliedTemplate());
 
 			if (!m_hasPreparedContent)
 			{

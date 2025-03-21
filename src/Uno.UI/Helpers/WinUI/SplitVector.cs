@@ -65,15 +65,15 @@ namespace Uno.UI.Helpers.WinUI
 
 		public void InsertAt(int preferIndex, int indexInOriginalVector, T value)
 		{
-			global::System.Diagnostics.Debug.Assert(preferIndex >= 0);
-			global::System.Diagnostics.Debug.Assert(indexInOriginalVector >= 0);
+			global::System.Diagnostics.Trace.Assert(preferIndex >= 0);
+			global::System.Diagnostics.Trace.Assert(indexInOriginalVector >= 0);
 			m_vector.Insert(preferIndex, value);
 			m_indexesInOriginalVector.Insert(preferIndex, indexInOriginalVector);
 		}
 
 		public void Replace(int indexInOriginalVector, T value)
 		{
-			global::System.Diagnostics.Debug.Assert(indexInOriginalVector >= 0);
+			global::System.Diagnostics.Trace.Assert(indexInOriginalVector >= 0);
 
 			var index = IndexFromIndexInOriginalVector(indexInOriginalVector);
 			var vector = m_vector;
@@ -89,9 +89,9 @@ namespace Uno.UI.Helpers.WinUI
 
 		public void RemoveAt(int indexInOriginalVector)
 		{
-			global::System.Diagnostics.Debug.Assert(indexInOriginalVector >= 0);
+			global::System.Diagnostics.Trace.Assert(indexInOriginalVector >= 0);
 			var index = IndexFromIndexInOriginalVector(indexInOriginalVector);
-			global::System.Diagnostics.Debug.Assert(index < m_indexesInOriginalVector.Count);
+			global::System.Diagnostics.Trace.Assert(index < m_indexesInOriginalVector.Count);
 			m_vector.RemoveAt(index);
 			m_indexesInOriginalVector.RemoveAt(index);
 		}
@@ -104,7 +104,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public int IndexToIndexInOriginalVector(int index)
 		{
-			global::System.Diagnostics.Debug.Assert(index >= 0 && index < Size());
+			global::System.Diagnostics.Trace.Assert(index >= 0 && index < Size());
 			return m_indexesInOriginalVector[index];
 		}
 

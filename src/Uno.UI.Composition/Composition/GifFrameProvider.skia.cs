@@ -32,10 +32,10 @@ internal sealed class GifFrameProvider : IFrameProvider
 		_frameInfos = frameInfos;
 		_totalDuration = totalDuration;
 		_onFrameChanged = new WeakReference<Action>(onFrameChanged);
-		Debug.Assert(images.Length > 1);
-		Debug.Assert(frameInfos is not null);
-		Debug.Assert(totalDuration != 0);
-		Debug.Assert(onFrameChanged is not null);
+		Trace.Assert(images.Length > 1);
+		Trace.Assert(frameInfos is not null);
+		Trace.Assert(totalDuration != 0);
+		Trace.Assert(onFrameChanged is not null);
 
 		if (_images.Length < 2)
 		{
@@ -70,7 +70,7 @@ internal sealed class GifFrameProvider : IFrameProvider
 		if (_currentFrame != frameIndex)
 		{
 			_currentFrame = frameIndex;
-			Debug.Assert(_onFrameChanged is not null);
+			Trace.Assert(_onFrameChanged is not null);
 			if (_onFrameChanged.TryGetTarget(out var onFrameChanged))
 			{
 				onFrameChanged();

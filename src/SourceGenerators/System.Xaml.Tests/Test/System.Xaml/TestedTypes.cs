@@ -1019,7 +1019,7 @@ namespace SecondTest
 		{
 			IXamlSchemaContextProvider service = serviceProvider.GetService (typeof (IXamlSchemaContextProvider)) as IXamlSchemaContextProvider;
 			IAmbientProvider provider = serviceProvider.GetService (typeof (IAmbientProvider)) as IAmbientProvider;
-			Debug.Assert (provider != null, "The provider should not be null!");
+			Trace.Assert (provider != null, "The provider should not be null!");
 
 			XamlSchemaContext schemaContext = service.SchemaContext;
 			XamlType[] types = new XamlType [] { schemaContext.GetXamlType (typeof (ResourcesDict)) };

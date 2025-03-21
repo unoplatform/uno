@@ -12,7 +12,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using _Debug = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Trace;
 
 namespace Microsoft.UI.Xaml.Controls
 {

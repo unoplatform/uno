@@ -579,7 +579,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// We will need the second calendar for calculating the year difference
 			CreateNewCalendar(strCalendarIdentifier, out spCurrentCalendar);
 			//#ifndef _PREFAST_ // PREfast bug DevDiv:554051
-			//			System.Diagnostics.Debug.Assert(spCurrentCalendar);
+			//			System.Diagnostics.Trace.Assert(spCurrentCalendar);
 			//#endif
 
 			spCurrentCalendar.SetDateTime(ClampDate(currentDate.Value, m_startDate, m_endDate));
@@ -1684,7 +1684,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			strStartCalendarSystem = pStartCalendar.GetCalendarSystem();
 			strEndCalendarSystem = pEndCalendar.GetCalendarSystem();
-			global::System.Diagnostics.Debug.Assert(strStartCalendarSystem == strEndCalendarSystem, "Calendar systems do not match.");
+			global::System.Diagnostics.Trace.Assert(strStartCalendarSystem == strEndCalendarSystem, "Calendar systems do not match.");
 
 			difference = 0;
 
@@ -2034,19 +2034,19 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_tpYearTextBlock != null && m_tpYearColumn != null && yearVisible && spColumns != null)
 			{
 				columnIndex = spColumns.IndexOf(m_tpYearColumn);
-				global::System.Diagnostics.Debug.Assert(columnIndex != -1);
+				global::System.Diagnostics.Trace.Assert(columnIndex != -1);
 				Grid.SetColumn(m_tpYearTextBlock, columnIndex);
 			}
 			if (m_tpMonthTextBlock != null && m_tpMonthColumn != null && monthVisible && spColumns != null)
 			{
 				columnIndex = spColumns.IndexOf(m_tpMonthColumn);
-				global::System.Diagnostics.Debug.Assert(columnIndex != -1);
+				global::System.Diagnostics.Trace.Assert(columnIndex != -1);
 				Grid.SetColumn(m_tpMonthTextBlock, columnIndex);
 			}
 			if (m_tpDayTextBlock != null && m_tpDayColumn != null && dayVisible && spColumns != null)
 			{
 				columnIndex = spColumns.IndexOf(m_tpDayColumn);
-				global::System.Diagnostics.Debug.Assert(columnIndex != -1);
+				global::System.Diagnostics.Trace.Assert(columnIndex != -1);
 				Grid.SetColumn(m_tpDayTextBlock, columnIndex);
 			}
 
@@ -2114,7 +2114,7 @@ namespace Microsoft.UI.Xaml.Controls
 			CreateNewCalendar(strCalendarIdentifier, out spCalendar);
 
 #if false // _PREFAST_ // PREfast bug DevDiv:554051
-			System.Diagnostics.Debug.Assert(spCalendar);
+			System.Diagnostics.Trace.Assert(spCalendar);
 #endif
 			m_tpCalendar = spCalendar;
 
@@ -2166,7 +2166,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpCalendar.SetDateTime(m_startDate);
 				CreateNewCalendar(strCalendarIdentifier, out spCalendar);
 #if false // ifndef _PREFAST_ // PREfast bug DevDiv:554051
-				System.Diagnostics.Debug.Assert(spCalendar);
+				System.Diagnostics.Trace.Assert(spCalendar);
 #endif
 				spCalendar.SetDateTime(m_endDate);
 
@@ -2281,7 +2281,7 @@ namespace Microsoft.UI.Xaml.Controls
 				CreateNewCalendar(calendarIdentifier, out calendar);
 
 #if false // ifndef _PREFAST_ // PREfast bug DevDiv:554051
-				System.Diagnostics.Debug.Assert(calendar);
+				System.Diagnostics.Trace.Assert(calendar);
 #endif
 				calendar.SetToNow();
 				m_todaysDate = calendar.GetDateTime();

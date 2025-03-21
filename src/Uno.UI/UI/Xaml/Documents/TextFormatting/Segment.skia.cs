@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </remarks>
 		public void AdjustTabWidth(float xOffset)
 		{
-			Debug.Assert(IsTab);
+			Trace.Assert(IsTab);
 			_glyphs![0] = _glyphs[0] with { AdvanceX = TabStopWidth - xOffset % TabStopWidth };
 		}
 	}

@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				if (Duration.HasTimeSpan && Duration.TimeSpan == TimeSpan.Zero)
 				{
-					Debug.Assert(_animator is ImmediateAnimator<T>);
+					Trace.Assert(_animator is ImmediateAnimator<T>);
 					SetValue(_endValue.Value);
 					return;
 				}

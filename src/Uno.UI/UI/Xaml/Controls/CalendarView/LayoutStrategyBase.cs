@@ -255,8 +255,8 @@ namespace Microsoft.UI.Xaml.Controls
 			int totalGroups,
 			RelativePosition positionOfReference)
 		{
-			global::System.Diagnostics.Debug.Assert(0 <= totalGroups);
-			global::System.Diagnostics.Debug.Assert(0 <= referenceGroupIndex && referenceGroupIndex <= totalGroups);
+			global::System.Diagnostics.Trace.Assert(0 <= totalGroups);
+			global::System.Diagnostics.Trace.Assert(0 <= referenceGroupIndex && referenceGroupIndex <= totalGroups);
 
 			switch (positionOfReference)
 			{
@@ -279,8 +279,8 @@ namespace Microsoft.UI.Xaml.Controls
 			int totalItems,
 			RelativePosition positionOfReference)
 		{
-			global::System.Diagnostics.Debug.Assert(0 <= totalItems);
-			global::System.Diagnostics.Debug.Assert(0 <= referenceItemIndex && referenceItemIndex <= totalItems);
+			global::System.Diagnostics.Trace.Assert(0 <= totalItems);
+			global::System.Diagnostics.Trace.Assert(0 <= referenceItemIndex && referenceItemIndex <= totalItems);
 
 			switch (positionOfReference)
 			{

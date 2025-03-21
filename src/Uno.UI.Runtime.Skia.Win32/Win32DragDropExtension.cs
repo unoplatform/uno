@@ -62,7 +62,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
-		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
+		Trace.Assert(_manager is not null && _coreDragDropManager is not null);
 
 		IEnumFORMATETC* enumFormatEtc;
 		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);

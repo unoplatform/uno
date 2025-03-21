@@ -30,7 +30,7 @@ namespace DirectUI
 			//}
 
 			//// does all ARM hardware support this
-			//global::System.Diagnostics.Debug.Assert(success);
+			//global::System.Diagnostics.Trace.Assert(success);
 		}
 
 

@@ -649,7 +649,7 @@ namespace Windows.UI.Input
 
 			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
 			{
-				Debug.Assert(_state == ManipulationState.Started);
+				Trace.Assert(_state == ManipulationState.Started);
 
 				double slope;
 				if (newPosition.X == oldPosition.X)

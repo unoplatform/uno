@@ -824,7 +824,7 @@ namespace Microsoft.IO
 
 			var newBuffer = new byte[this.Length];
 
-			Debug.Assert(this.length <= int.MaxValue);
+			Trace.Assert(this.length <= int.MaxValue);
 			this.InternalRead(newBuffer, 0, (int)this.length, 0);
 
 			return newBuffer;
@@ -1454,7 +1454,7 @@ namespace Microsoft.IO
 				if (newCapacity > this.largeBuffer.Length)
 				{
 					var newBuffer = this.memoryManager.GetLargeBuffer(newCapacity, this.id, this.tag);
-					Debug.Assert(this.length <= Int32.MaxValue);
+					Trace.Assert(this.length <= Int32.MaxValue);
 					this.InternalRead(newBuffer, 0, (int)this.length, 0);
 					this.ReleaseLargeBuffer();
 					this.largeBuffer = newBuffer;
@@ -1480,7 +1480,7 @@ namespace Microsoft.IO
 		/// </summary>
 		private void ReleaseLargeBuffer()
 		{
-			Debug.Assert(this.largeBuffer != null);
+			Trace.Assert(this.largeBuffer != null);
 
 			if (this.memoryManager.options.AggressiveBufferReturn)
 			{
@@ -1499,7 +1499,7 @@ namespace Microsoft.IO
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void AssertLengthIsSmall()
 		{
-			Debug.Assert(this.length <= Int32.MaxValue, "this.length was assumed to be <= Int32.MaxValue, but was larger.");
+			Trace.Assert(this.length <= Int32.MaxValue, "this.length was assumed to be <= Int32.MaxValue, but was larger.");
 		}
 		#endregion
 	}

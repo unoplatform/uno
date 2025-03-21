@@ -162,7 +162,7 @@ namespace Uno.Disposables
 				// keep the main disposed state but decrement the counter
 				// in theory, active should be always > 0 at this point,
 				// guaranteed by the InnerDisposable.Dispose's Exchange operation.
-				System.Diagnostics.Debug.Assert(active > 0);
+				System.Diagnostics.Trace.Assert(active > 0);
 				var u = main | (active - 1);
 
 				var b = Interlocked.CompareExchange(ref _count, u, cnt);

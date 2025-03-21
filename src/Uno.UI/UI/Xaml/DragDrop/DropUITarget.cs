@@ -158,7 +158,7 @@ namespace Microsoft.UI.Xaml
 			// so we won't reset 'state' and clear 'dragUiOverride' when we are only moving from a nested element to another of the same 'dropTarget'.
 			// (like from a LVItem to another one from the same LV).
 			var dropTarget = target.element.FindFirstParent<UIElement>(elt => elt.AllowDrop, includeCurrent: true);
-			global::System.Diagnostics.Debug.Assert(dropTarget is not null);
+			global::System.Diagnostics.Trace.Assert(dropTarget is not null);
 			dropTarget ??= target.element; // Safety only!
 
 			DragEventArgs args;

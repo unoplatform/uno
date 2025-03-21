@@ -863,7 +863,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (spFocusedAsElement is { })
 				{
 					focusState = spFocusedAsElement.FocusState;
-					global::System.Diagnostics.Debug.Assert(FocusState.Unfocused != focusState, "FocusState_Unfocused unexpected since spFocusedAsElement is focused");
+					global::System.Diagnostics.Trace.Assert(FocusState.Unfocused != focusState, "FocusState_Unfocused unexpected since spFocusedAsElement is focused");
 				}
 			}
 

@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Rect container,
 				Rect rcToShift)
 		{
-			Debug.Assert((rcToShift.Width <= container.Width) && (rcToShift.Height <= container.Height),
+			Trace.Assert((rcToShift.Width <= container.Width) && (rcToShift.Height <= container.Height),
 				"A rect must be fit in a container in order to be shifted into it");
 
 			var rcShifted = rcToShift;
@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				rcShifted = MoveRectToPoint(rcShifted, rcShifted.Left, container.Bottom - rcShifted.Height);
 			}
-			Debug.Assert(IsContainedInRect(container, rcShifted));
+			Trace.Assert(IsContainedInRect(container, rcShifted));
 			return rcShifted;
 		}
 

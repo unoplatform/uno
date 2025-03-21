@@ -19,7 +19,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		public XBindExpressionInfo(int xBindCounter, string contextType, string contextName, bool isRValue, string? targetPropertyType)
 		{
 			// targetPropertyType is only used for LValue generation.
-			Debug.Assert((isRValue && targetPropertyType is null) || (!isRValue && targetPropertyType is not null));
+			Trace.Assert((isRValue && targetPropertyType is null) || (!isRValue && targetPropertyType is not null));
 
 			_xBindCounter = xBindCounter;
 			_contextType = contextType;
@@ -152,8 +152,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				builder.AppendLine("	if (sub1 == null) return false;");
 			}
 
-			Debug.Assert(Arguments is null);
-			Debug.Assert(_targetPropertyType is not null);
+			Trace.Assert(Arguments is null);
+			Trace.Assert(_targetPropertyType is not null);
 			var rhs = $"({_targetPropertyType})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({_targetPropertyType}), __value)";
 			if (ExpressionAfterLastNullAccess is null)
 			{

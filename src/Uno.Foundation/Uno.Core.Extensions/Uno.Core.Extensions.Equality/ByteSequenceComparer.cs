@@ -34,7 +34,7 @@ internal static class ByteSequenceComparer
 	// https://github.com/dotnet/roslyn/blob/6f47a0b611ab83ad1b7f8b404cc74098d37e283d/src/Compilers/Core/Portable/Collections/ByteSequenceComparer.cs#L101-L105
 	internal static int GetHashCode(ImmutableArray<byte> x)
 	{
-		Debug.Assert(!x.IsDefault);
+		Trace.Assert(!x.IsDefault);
 		return Hash.GetFNVHashCode(x);
 	}
 }

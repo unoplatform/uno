@@ -128,12 +128,12 @@ internal static class FontManifestHelpers
 			else if (candidate > requestedStretch)
 			{
 				// Both candidate and bestSoFar are wider from requestedStretch
-				Debug.Assert(bestSoFar > requestedStretch);
+				Trace.Assert(bestSoFar > requestedStretch);
 				return candidate < bestSoFar ? FontMatchingResult.CandidateIsBetter : FontMatchingResult.CandidateIsWorse;
 			}
 			else
 			{
-				Debug.Assert(bestSoFar < requestedStretch);
+				Trace.Assert(bestSoFar < requestedStretch);
 				return candidate > bestSoFar ? FontMatchingResult.CandidateIsBetter : FontMatchingResult.CandidateIsWorse;
 			}
 		}
@@ -155,12 +155,12 @@ internal static class FontManifestHelpers
 			else if (candidate > requestedStretch)
 			{
 				// Both candidate and bestSoFar are wider from requestedStretch
-				Debug.Assert(bestSoFar > requestedStretch);
+				Trace.Assert(bestSoFar > requestedStretch);
 				return candidate < bestSoFar ? FontMatchingResult.CandidateIsBetter : FontMatchingResult.CandidateIsWorse;
 			}
 			else
 			{
-				Debug.Assert(bestSoFar < requestedStretch);
+				Trace.Assert(bestSoFar < requestedStretch);
 				return candidate > bestSoFar ? FontMatchingResult.CandidateIsBetter : FontMatchingResult.CandidateIsWorse;
 			}
 		}

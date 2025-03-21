@@ -247,7 +247,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				//_tpPickerHostGrid.As(spPickerHostGridAsPanel);
 				spPickerHostGridChildren = spPickerHostGridAsPanel.Children;
-				global::System.Diagnostics.Debug.Assert(spPickerHostGridChildren != null);
+				global::System.Diagnostics.Trace.Assert(spPickerHostGridChildren != null);
 			}
 
 			int itemHeight;
@@ -1807,7 +1807,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_tpYearPicker != null && _tpYearColumn != null && _yearVisible && spColumns != null)
 			{
 				columnIsFound = (columnIndex = spColumns.IndexOf(_tpYearColumn)) >= 0;
-				global::System.Diagnostics.Debug.Assert(columnIsFound);
+				global::System.Diagnostics.Trace.Assert(columnIsFound);
 				spFrameworkElement = _tpYearPicker;
 				Grid.SetColumn(spFrameworkElement, columnIndex);
 			}
@@ -1815,7 +1815,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_tpMonthPicker != null && _tpMonthColumn != null && _monthVisible && spColumns != null)
 			{
 				columnIsFound = (columnIndex = spColumns.IndexOf(_tpMonthColumn)) >= 0;
-				global::System.Diagnostics.Debug.Assert(columnIsFound);
+				global::System.Diagnostics.Trace.Assert(columnIsFound);
 				spFrameworkElement = _tpMonthPicker;
 				Grid.SetColumn(spFrameworkElement, columnIndex);
 			}
@@ -1823,7 +1823,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_tpDayPicker != null && _tpDayColumn != null && _dayVisible && spColumns != null)
 			{
 				columnIsFound = (columnIndex = spColumns.IndexOf(_tpDayColumn)) >= 0;
-				global::System.Diagnostics.Debug.Assert(columnIsFound);
+				global::System.Diagnostics.Trace.Assert(columnIsFound);
 				spFrameworkElement = _tpDayPicker;
 				Grid.SetColumn(spFrameworkElement, columnIndex);
 			}
@@ -1866,7 +1866,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_tpFirstSpacerColumn != null && spColumns != null)
 				{
 					columnIsFound = (columnIndex = spColumns.IndexOf(_tpFirstSpacerColumn)) >= 0;
-					global::System.Diagnostics.Debug.Assert(columnIsFound);
+					global::System.Diagnostics.Trace.Assert(columnIsFound);
 					Grid.SetColumn(spFrameworkElement, columnIndex);
 				}
 			}
@@ -1881,7 +1881,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_tpSecondSpacerColumn != null && spColumns != null)
 				{
 					columnIsFound = (columnIndex = spColumns.IndexOf(_tpSecondSpacerColumn)) >= 0;
-					global::System.Diagnostics.Debug.Assert(columnIsFound);
+					global::System.Diagnostics.Trace.Assert(columnIsFound);
 					Grid.SetColumn(spFrameworkElement, columnIndex);
 				}
 			}

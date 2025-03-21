@@ -73,7 +73,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					var childNodes = parent.m_childrenNodes;
 					var it = childNodes.IndexOf(child);
 					var index = it;
-					Debug.Assert(index >= 0);
+					Trace.Assert(index >= 0);
 					// we are walking up to the parent, so the path will be backwards
 					path.Insert(0, index);
 					child = parent;

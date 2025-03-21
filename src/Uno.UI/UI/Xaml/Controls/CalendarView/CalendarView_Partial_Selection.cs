@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
 
-				global::System.Diagnostics.Debug.Assert(m_tpMonthViewItemHost.Panel is { });
+				global::System.Diagnostics.Trace.Assert(m_tpMonthViewItemHost.Panel is { });
 				selectionMode = SelectionMode;
 
 				if (selectionMode != CalendarViewSelectionMode.None)
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						m_isSelectedDatesChangingInternally = true;
 
-						global::System.Diagnostics.Debug.Assert(size <= 1 ||
+						global::System.Diagnostics.Trace.Assert(size <= 1 ||
 																selectionMode == CalendarViewSelectionMode.Multiple);
 
 						date = pItem.Date;
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				global::System.Diagnostics.Debug.Assert(false); // corresponding panel part is missing.
+				global::System.Diagnostics.Trace.Assert(false); // corresponding panel part is missing.
 			}
 
 		}
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 			pSelectedDates.FetchAndResetChange(addedDates, removedDates);
 
 			// we don't support extended selection mode, so we should have only up to one added date.
-			global::System.Diagnostics.Debug.Assert(addedDates.Count <= 1);
+			global::System.Diagnostics.Trace.Assert(addedDates.Count <= 1);
 
 			if (addedDates.Count == 1)
 			{
@@ -214,7 +214,7 @@ namespace Microsoft.UI.Xaml.Controls
 				pSelectedDates.CountOf(date, out count);
 
 				// given that we have one date in addedDates, so it must exist in SelectedDates.
-				global::System.Diagnostics.Debug.Assert(count >= 1);
+				global::System.Diagnostics.Trace.Assert(count >= 1);
 
 				if (count > 1)
 				{
@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						isBlackout = spChild.IsBlackout;
 						// we already handle blackout in CollectionChanging, so here the date must not be blackout.
-						global::System.Diagnostics.Debug.Assert(!isBlackout);
+						global::System.Diagnostics.Trace.Assert(!isBlackout);
 
 #endif
 						spChild.SetIsSelected(true);
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 					//if (result.first != result.second)
 					//{
 					//	// because removedDates is unique and sorted, so we should have only up to 1 record.
-					//	global::System.Diagnostics.Debug.Assert(std.distance(result.first, result.second) == 1);
+					//	global::System.Diagnostics.Trace.Assert(std.distance(result.first, result.second) == 1);
 					//	removedDates.erase(result.first);
 					//}
 					removedDates.Remove(date);

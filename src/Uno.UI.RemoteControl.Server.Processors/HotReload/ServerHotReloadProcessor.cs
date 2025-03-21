@@ -322,7 +322,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// </summary>
 			public async ValueTask DeferComplete(HotReloadServerResult result, Exception? exception = null)
 			{
-				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
+				Trace.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				if (Interlocked.CompareExchange(ref _deferredCompletion, new CancellationTokenSource(), null) is null)
 				{
@@ -355,7 +355,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					}
 				}
 
-				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
+				Trace.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				// Remove this from current
 				Interlocked.CompareExchange(ref _owner._current, null, this);

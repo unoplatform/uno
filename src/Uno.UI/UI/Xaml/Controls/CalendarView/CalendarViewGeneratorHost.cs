@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SetIsGrouping(
 			bool isGrouping)
 		{
-			global::System.Diagnostics.Debug.Assert(!isGrouping);
+			global::System.Diagnostics.Trace.Assert(!isGrouping);
 			return;
 		}
 
@@ -284,7 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_lastVisitedDateAndIndex.first = Owner.GetMinDate();
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
+			global::System.Diagnostics.Trace.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
 
 			index = CalculateOffsetFromMinDate(Owner.GetMaxDate());
 
@@ -328,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DateTime date = default;
 			var pCalendar = GetCalendar();
 
-			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
+			global::System.Diagnostics.Trace.Assert(m_lastVisitedDateAndIndex.second != -1);
 
 			pCalendar.SetDateTime(m_lastVisitedDateAndIndex.first);
 			AddUnits((int)(index) - m_lastVisitedDateAndIndex.second);
@@ -353,7 +353,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DateTime estimatedDate = m_lastVisitedDateAndIndex.first;
 
 			var pCalendar = GetCalendar();
-			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
+			global::System.Diagnostics.Trace.Assert(m_lastVisitedDateAndIndex.second != -1);
 
 			int estimatedOffset = 0;
 			long diffInUTC = 0;
@@ -387,7 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (estimationCount++ > maxEstimationRetryCount)
 				{
 					global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]:  estimationCount = {1}.", this, estimationCount);
-					global::System.Diagnostics.Debug.Assert(false);
+					global::System.Diagnostics.Trace.Assert(false);
 				}
 #endif
 
@@ -409,7 +409,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (retryCount++ > maxReboundCount)
 					{
 						global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]: over boundary, retryCount = {1}.", this, retryCount);
-						global::System.Diagnostics.Debug.Assert(false);
+						global::System.Diagnostics.Trace.Assert(false);
 					}
 #endif
 					// we crossed the boundary! reduce the length and restart from estimatedDate
@@ -419,7 +419,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					pCalendar.SetDateTime(estimatedDate);
 					diffInUnit = diffInUnit * 99 / 100;
-					global::System.Diagnostics.Debug.Assert(diffInUnit != 0);
+					global::System.Diagnostics.Trace.Assert(diffInUnit != 0);
 				} //while (true)
 
 				estimatedOffset += diffInUnit;
@@ -497,8 +497,8 @@ namespace Microsoft.UI.Xaml.Controls
 			firstDateOfNextScope = GetCalendar().GetDateTime();
 
 			// when the navigation button is enabled, we should always be able to navigate to the desired scope.
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
+			global::System.Diagnostics.Trace.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
+			global::System.Diagnostics.Trace.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
 
 			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
@@ -522,7 +522,7 @@ namespace Microsoft.UI.Xaml.Controls
 			isScopeChanged = false;
 			var pCalendar = GetCalendar();
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(lastDate, firstDate));
+			global::System.Diagnostics.Trace.Assert(!Owner.DateComparer.LessThan(lastDate, firstDate));
 
 			pCalendar.SetDateTime(firstDate);
 			firstUnit = GetUnit();
@@ -793,7 +793,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				global::System.Diagnostics.Debug.Assert(m_pOwnerNoRef is { });
+				global::System.Diagnostics.Trace.Assert(m_pOwnerNoRef is { });
 				return m_pOwnerNoRef;
 			}
 			set => m_pOwnerNoRef = value;

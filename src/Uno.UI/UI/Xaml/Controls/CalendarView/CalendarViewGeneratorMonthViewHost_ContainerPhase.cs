@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				pVirtualizationInformation = (spContainer as UIElement).GetVirtualizationInformation();
 
-				global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
+				global::System.Diagnostics.Trace.Assert(pVirtualizationInformation is { });
 
 				spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
 				spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
@@ -486,7 +486,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// guaranteed to have pVirtualizationInformation by now
 
-						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
+						global::System.Diagnostics.Trace.Assert(pVirtualizationInformation is { });
 
 						measureSize = pVirtualizationInformation!.MeasureSize;
 
@@ -556,7 +556,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						if (wantsCallBack)
 						{
-							global::System.Diagnostics.Debug.Assert(phase > processingPhase);
+							global::System.Diagnostics.Trace.Assert(phase > processingPhase);
 							// update the next lowest, now that we have seen a phase that is higher than our current processing phase
 							nextLowest = Math.Min(nextLowest, (long)(phase));
 						}
@@ -581,7 +581,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// we broke out of the loop for some other reason (policy)
 					// should be safe at this point
-					global::System.Diagnostics.Debug.Assert(processingPhase < int.MaxValue);
+					global::System.Diagnostics.Trace.Assert(processingPhase < int.MaxValue);
 					m_lowestPhaseInQueue = (int)(processingPhase);
 				}
 			}
@@ -717,7 +717,7 @@ namespace Microsoft.UI.Xaml.Controls
 						spBuildTree.RegisterWork(this);
 					}
 
-					global::System.Diagnostics.Debug.Assert(m_isRegisteredForCallbacks);
+					global::System.Diagnostics.Trace.Assert(m_isRegisteredForCallbacks);
 				}
 				else if (m_lowestPhaseInQueue > phase)
 				{

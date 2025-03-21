@@ -26,7 +26,7 @@ namespace Microsoft.CodeAnalysis.PooledObjects
 
 		private PooledStringBuilder(ObjectPool<PooledStringBuilder> pool)
 		{
-			Debug.Assert(pool != null);
+			Trace.Assert(pool != null);
 			_pool = pool!;
 		}
 
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.PooledObjects
 		public static PooledStringBuilder GetInstance()
 		{
 			var builder = s_poolInstance.Allocate();
-			Debug.Assert(builder.Builder.Length == 0);
+			Trace.Assert(builder.Builder.Length == 0);
 			return builder;
 		}
 

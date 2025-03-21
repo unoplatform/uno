@@ -199,7 +199,7 @@ namespace Windows.UI.Input
 
 			private void TryUpdateHolding(PointerPoint? current = null, bool timeElapsed = false)
 			{
-				Debug.Assert(timeElapsed || current != null);
+				Trace.Assert(timeElapsed || current != null);
 
 				if (HasMovedOutOfTapRange)
 				{
@@ -227,7 +227,7 @@ namespace Windows.UI.Input
 
 			private void TryEndHolding(HoldingState state)
 			{
-				Debug.Assert(state != HoldingState.Started);
+				Trace.Assert(state != HoldingState.Started);
 
 				StopHoldingTimer();
 

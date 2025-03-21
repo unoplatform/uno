@@ -28,7 +28,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				AnimationTrigger trigger,
 				AnimationContext context)
 			{
-				Debug.Assert(trigger != AnimationTrigger.BoundsChange);
+				Trace.Assert(trigger != AnimationTrigger.BoundsChange);
 
 				Element = element;
 				Trigger = trigger;

@@ -21,7 +21,7 @@ partial class ContentRoot
 		}
 		else
 		{
-			Debug.Assert(_host == host);
+			Trace.Assert(_host == host);
 		}
 	}
 

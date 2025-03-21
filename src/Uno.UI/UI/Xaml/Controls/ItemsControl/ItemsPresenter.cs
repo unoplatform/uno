@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// We should only reach here, after CreateHeaderAndFooter() was called. Let's sanity-check that.
-			global::System.Diagnostics.Debug.Assert(!HeaderFooterEnabled || HeaderContentControl is { });
+			global::System.Diagnostics.Trace.Assert(!HeaderFooterEnabled || HeaderContentControl is { });
 
 			if (_itemsPanel is { } previousPanel)
 			{

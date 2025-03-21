@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[Conditional("DEBUG")]
 		private static void ASSERT(bool assertion, string message = null)
 		{
-			global::System.Diagnostics.Debug.Assert(assertion, message);
+			global::System.Diagnostics.Trace.Assert(assertion, message);
 		}
 	}
 }

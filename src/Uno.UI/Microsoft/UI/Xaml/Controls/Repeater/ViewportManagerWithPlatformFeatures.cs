@@ -453,7 +453,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		void OnCompositionTargetRendering(object sender, object args)
 		{
-			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			global::System.Diagnostics.Trace.Assert(!m_managingViewportDisabled);
 
 			m_renderingToken?.Dispose();
 
@@ -492,7 +492,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
 		{
-			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			global::System.Diagnostics.Trace.Assert(!m_managingViewportDisabled);
 			REPEATER_TRACE_INFO("%ls: \tEffectiveViewportChanged event callback \n", GetLayoutId());
 			UpdateViewport(args.EffectiveViewport);
 
@@ -565,7 +565,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		void UpdateViewport(Rect viewport)
 		{
 			// Disabled for non-virtualizing layout in RadioButtons, may need to be revisited (https://github.com/unoplatform/uno/issues/4752)
-			// global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			// global::System.Diagnostics.Trace.Assert(!m_managingViewportDisabled);
 
 			var previousVisibleWindow = m_visibleWindow;
 			REPEATER_TRACE_INFO("%ls: \tEffective Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
@@ -625,7 +625,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		void RegisterCacheBuildWork()
 		{
-			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
+			global::System.Diagnostics.Trace.Assert(!m_managingViewportDisabled);
 			if (m_owner.Layout != null &&
 				m_cacheBuildAction == null)
 			{

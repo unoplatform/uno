@@ -44,7 +44,7 @@ namespace Uno.UI.Controls
 				return;
 			}
 
-			global::System.Diagnostics.Debug.Assert(_subscriptions is null);
+			global::System.Diagnostics.Trace.Assert(_subscriptions is null);
 			_subscriptions = new CompositeDisposable();
 
 			_frame = frame;

@@ -174,7 +174,7 @@ namespace Uno.Collections
 
 			_loadsize = (int)(_loadFactor * hashsize);
 			// Based on the current algorithm, loadsize must be less than hashsize.
-			Debug.Assert(_loadsize < hashsize, "Invalid hashtable loadsize!");
+			Trace.Assert(_loadsize < hashsize, "Invalid hashtable loadsize!");
 		}
 
 		public HashtableEx(int capacity, float loadFactor, IEqualityComparer? equalityComparer, bool usePooling = true) : this(capacity, loadFactor, usePooling)
@@ -390,8 +390,8 @@ namespace Uno.Collections
 		// the KeyCollection class.
 		private void CopyKeys(Array array, int arrayIndex)
 		{
-			Debug.Assert(array != null);
-			Debug.Assert(array!.Rank == 1);
+			Trace.Assert(array != null);
+			Trace.Assert(array!.Rank == 1);
 
 			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
@@ -409,8 +409,8 @@ namespace Uno.Collections
 		// the KeyCollection class.
 		private void CopyEntries(Array array, int arrayIndex)
 		{
-			Debug.Assert(array != null);
-			Debug.Assert(array!.Rank == 1);
+			Trace.Assert(array != null);
+			Trace.Assert(array!.Rank == 1);
 
 			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
@@ -466,8 +466,8 @@ namespace Uno.Collections
 		// the ValueCollection class.
 		private void CopyValues(Array array, int arrayIndex)
 		{
-			Debug.Assert(array != null);
-			Debug.Assert(array!.Rank == 1);
+			Trace.Assert(array != null);
+			Trace.Assert(array!.Rank == 1);
 
 			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
@@ -606,7 +606,7 @@ namespace Uno.Collections
 
 			_loadsize = (int)(_loadFactor * newsize);
 			// minimum size of hashtable is 3 now and maximum loadFactor is 0.72 now.
-			Debug.Assert(_loadsize < newsize, "Our current implementation means this is not possible.");
+			Trace.Assert(_loadsize < newsize, "Our current implementation means this is not possible.");
 		}
 
 		// Returns an enumerator for this hashtable.
@@ -653,7 +653,7 @@ namespace Uno.Collections
 		//
 		protected virtual bool KeyEquals(object? item, object key)
 		{
-			Debug.Assert(key != null, "key can't be null here!");
+			Trace.Assert(key != null, "key can't be null here!");
 			if (object.ReferenceEquals(_buckets.Array, item))
 			{
 				return false;
@@ -800,7 +800,7 @@ namespace Uno.Collections
 
 		private void putEntry(ref buckets newBuckets, object key, object? nvalue, int hashcode)
 		{
-			Debug.Assert(hashcode >= 0, "hashcode >= 0");  // make sure collision bit (sign bit) wasn't set.
+			Trace.Assert(hashcode >= 0, "hashcode >= 0");  // make sure collision bit (sign bit) wasn't set.
 
 			// Local alias for access speed
 			var newBucketsArray = newBuckets.Array;
@@ -1147,7 +1147,7 @@ namespace Uno.Collections
 			// Note that this check works even when _items.Length overflowed thanks to the (uint) cast
 			if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
 			{
-				Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
+				Trace.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
 				return MaxPrimeArrayLength;
 			}
 
@@ -1166,13 +1166,13 @@ namespace Uno.Collections
 		{
 			// We use modified Daniel Lemire's fastmod algorithm (https://github.com/dotnet/runtime/pull/406),
 			// which allows to avoid the long multiplication if the divisor is less than 2**31.
-			Debug.Assert(divisor <= int.MaxValue);
+			Trace.Assert(divisor <= int.MaxValue);
 
 			// This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
 			// is faster than BigMul currently because we only need the high bits.
 			uint highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
 
-			Debug.Assert(highbits == value % divisor);
+			Trace.Assert(highbits == value % divisor);
 			return highbits;
 		}
 	}

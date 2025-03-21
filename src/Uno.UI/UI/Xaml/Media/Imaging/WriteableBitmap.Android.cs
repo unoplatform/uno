@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var pixelsBytes = MemoryMarshal.Cast<int, byte>(pixels.AsSpan());
 
 			pixelsBytes.CopyTo(_buffer.Span);
-			Debug.Assert(_buffer.Span.Length == PixelWidth * PixelHeight * 4);
+			Trace.Assert(_buffer.Span.Length == PixelWidth * PixelHeight * 4);
 		}
 	}
 }

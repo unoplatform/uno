@@ -81,7 +81,7 @@ namespace System.Json
 			if (ret is long) return new JsonPrimitive((long)ret);
 			if (ret is string) return new JsonPrimitive((string)ret);
 
-			Debug.Assert(ret is ulong);
+			Trace.Assert(ret is ulong);
 			return new JsonPrimitive((ulong)ret);
 		}
 
