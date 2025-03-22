@@ -308,7 +308,7 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AccessibilityViewProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(Microsoft.UI.Xaml.DependencyObject)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetAccessibilityView(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AccessibilityView value)
 		{
