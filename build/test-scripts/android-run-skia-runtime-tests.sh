@@ -81,7 +81,7 @@ then
 		-skin 1280x800 \
 		-memory 4096 \
 		$EMU_NO_WINDOW \
-		-gpu swiftshader_indirect \
+		-gpu guest \
 		-no-snapshot \
 		-noaudio \
 		-no-boot-anim \
