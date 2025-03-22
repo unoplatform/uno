@@ -361,7 +361,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
 		{
-			return Offset + translation;
+			// WARNING: DO NOT change this to plain "return Offset + translation;"
+			// as this results in very wrong values on Android when debugger is not attached.
+			// ¯\(°_o)/¯
+			return new Vector3(Offset.X + translation.X, Offset.Y + translation.Y, Offset.Z + translation.Z);
 		}
 
 		return Offset;
