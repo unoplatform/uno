@@ -232,7 +232,7 @@ public static partial class ImageAssert
 		}
 	}
 
-	private static async Task<bool> AreRenderTargetBitmapsEqualAsync(RenderTargetBitmap bitmap1, RenderTargetBitmap bitmap2)
+	public static async Task<bool> AreRenderTargetBitmapsEqualAsync(RenderTargetBitmap bitmap1, RenderTargetBitmap bitmap2)
 	{
 		if (bitmap1.PixelWidth != bitmap2.PixelWidth || bitmap1.PixelHeight != bitmap2.PixelHeight)
 		{
