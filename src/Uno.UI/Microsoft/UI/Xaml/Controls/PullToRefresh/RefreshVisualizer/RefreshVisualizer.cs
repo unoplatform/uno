@@ -287,7 +287,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		if (m_content != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
-
+			contentVisual.IsRefresh = true;
 			Size contentSize = m_content.RenderSize;
 			contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
 

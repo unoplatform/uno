@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.UI;
 
 namespace Microsoft.UI.Composition;
 
@@ -42,11 +43,15 @@ public partial class ExpressionAnimation : CompositionAnimation
 		// TODO: Check what to do if this is a second Start call and we already have non-null _parsedExpression;
 		_parsedExpression = new ExpressionAnimationParser(Expression).Parse();
 
-		return _parsedExpression.Evaluate(this);
+		return Evaluate();
 	}
 
 	internal override object? Evaluate()
-		=> _parsedExpression?.Evaluate(this);
+	{
+		var result = _parsedExpression?.Evaluate(this);
+		UIDebugLog.Log($"{Expression}: {result}");
+		return result;
+	}
 
 	internal override void Stop()
 	{

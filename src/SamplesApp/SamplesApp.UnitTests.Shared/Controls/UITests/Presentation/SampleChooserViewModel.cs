@@ -37,6 +37,8 @@ using UITests.Shared.Helpers;
 using Uno.UI.Samples.UITests.Helpers;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
+using Uno.UI;
 
 namespace SampleControl.Presentation
 {
@@ -95,6 +97,8 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
+
 		public SampleChooserControl Owner { get; }
 
 		public SampleChooserViewModel(SampleChooserControl owner)
@@ -136,6 +140,8 @@ namespace SampleControl.Presentation
 						}
 					}
 				);
+
+			UIDebugLog.MessageReceived += (s, e) => Logs.Insert(0, e);
 		}
 
 		public event EventHandler SampleChanging;

@@ -255,6 +255,7 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 		{
 
 			m_refreshVisualizerVisual = ElementCompositionPreview.GetElementVisual(refreshVisualizer);
+			m_refreshVisualizerVisual.IsRefresh = true;
 			m_refreshVisualizer = refreshVisualizer;
 			m_interactionAnimationNeedsUpdating = true;
 			m_refreshRequestedAnimationNeedsUpdating = true;

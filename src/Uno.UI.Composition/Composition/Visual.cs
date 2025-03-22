@@ -33,6 +33,8 @@ namespace Microsoft.UI.Composition
 
 		partial void InitializePartial();
 
+		public bool IsRefresh { get; set; }
+
 		internal VisualInteractionSource? VisualInteractionSource { get; set; }
 
 		internal bool IsTranslationEnabled { get; set; }

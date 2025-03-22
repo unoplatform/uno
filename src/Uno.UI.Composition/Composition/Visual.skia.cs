@@ -1,15 +1,15 @@
 ﻿#nullable enable
-//#define TRACE_COMPOSITION
+#define TRACE_COMPOSITION
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.Helpers;
-using Uno.UI.Composition;
+using Uno.UI;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -120,6 +120,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 				var totalOffset = GetTotalOffset();
+				if (IsRefresh)
+				{
+					UIDebugLog.Log($"Total2: {totalOffset}");
+				}
 				var offsetMatrix = new Matrix4x4(
 					1, 0, 0, 0,
 					0, 1, 0, 0,
@@ -135,6 +139,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				_totalMatrix = matrix;
 
+				// Output all releavant values for M41 and M42:
+				if (IsRefresh)
+				{
+					//UIDebugLog.Log($"TotalMatrix: {_totalMatrix}, Offset: {Offset}, TotalOffset: {totalOffset}, AnchorPoint: {AnchorPoint}, CenterPoint: {CenterPoint}");
+				}
 			}
 
 			return _totalMatrix;
@@ -281,10 +290,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
 	{
 #if TRACE_COMPOSITION
-		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
-			? new string(' ', depth * 2)
-			: string.Empty;
-		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
+		if (IsRefresh)
+		{
+			var indent = int.TryParse(Comment?.Split('-', 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
+				? new string(' ', depth * 2)
+				: string.Empty;
+			//UIDebugLog.Log($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible} | {TotalMatrixString})");
+
+		}
 #endif
 
 		if (this is { Opacity: 0 } or { IsVisible: false })
@@ -361,9 +374,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
 		{
-			return Offset + translation;
-		}
+			//UIDebugLog.Log($"GetTotalOffset: Translation: {translation}, Offset: {Offset}, total: {total}");
+			var total = Offset + translation;
+			UIDebugLog.Log($"Total1: {total}");
 
+			return (Offset + translation);
+		}
+		if (IsRefresh)
+		{
+			UIDebugLog.Log($"GetTotalOffset: Offset: {Offset}");
+		}
 		return Offset;
 	}
 

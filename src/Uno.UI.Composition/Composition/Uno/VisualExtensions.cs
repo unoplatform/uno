@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using Uno.UI;
 
 namespace Microsoft.UI.Composition;
 
@@ -13,6 +14,7 @@ internal static class VisualExtensions
 	{
 		if (visual.IsTranslationEnabled && visual.Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
 		{
+			UIDebugLog.Log($"GetTotalOffset Ex: Translation: {translation}, Offset: {visual.Offset}");
 			return visual.Offset + translation;
 		}
 
