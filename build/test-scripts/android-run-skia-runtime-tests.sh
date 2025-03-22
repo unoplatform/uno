@@ -139,6 +139,9 @@ echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_PATH to be available..."
 while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
     sleep 15
 
+	## Dump the emulator's system log, in case it crashes
+	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+
     # exit loop if the APP_PID is not running anymore
     if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
         echo "The app is not running anymore"
