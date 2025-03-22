@@ -36,6 +36,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresScaling(1f)]
 #if __WASM__
 		[Ignore("Not supported on WebAssembly")]
+#elif !__SKIA__
+		[Ignore("https://github.com/unoplatform/uno-private/issues/1046")]
 #endif
 		public async Task When_Parent_Has_BorderThickness()
 		{
