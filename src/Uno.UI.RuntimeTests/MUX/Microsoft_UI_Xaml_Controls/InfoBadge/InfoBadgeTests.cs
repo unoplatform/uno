@@ -100,8 +100,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Uri bitmapUri = new Uri("ms-appx:/Assets/ingredient1.png");
 				bitmapIconSource.UriSource = bitmapUri;
 
-#if !__SKIA__ // https://github.com/unoplatform/uno-private/issues/1031
 				imageIconSource = new ImageIconSource();
+#if !__SKIA__ // https://github.com/unoplatform/uno-private/issues/1031
 				var imageUri = new Uri("https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg");
 				imageIconSource.ImageSource = new SvgImageSource(imageUri);
 #else
