@@ -68,7 +68,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy Generated Android APK'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net9.0-android/publish
       Contents: 'uno.platform.samplesapp.skia-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
@@ -79,7 +79,7 @@ jobs:
     displayName: 'Publish Generic Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net9.0\publish
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net9.0
       artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
 
   - task: PublishPipelineArtifact@1
