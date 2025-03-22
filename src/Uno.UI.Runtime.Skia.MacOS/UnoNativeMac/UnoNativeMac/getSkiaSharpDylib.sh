@@ -20,5 +20,6 @@ if [ ! -f "${filename}"/libSkiaSharp.dylib ]; then
     rm -fr "${filename}"
     mkdir -p "${filename}"
     cp -r ${NUGET_PACKAGES}/skiasharp.nativeassets.macos/${VERSION}/runtimes/osx/native/* "${filename}"
+    rm -fr "${build_dir}"
 fi
 cp "${filename}/libSkiaSharp.dylib" .
