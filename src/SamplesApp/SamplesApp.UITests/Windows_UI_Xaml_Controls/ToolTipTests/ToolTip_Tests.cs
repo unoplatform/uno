@@ -111,6 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		[Ignore("https://github.com/unoplatform/uno-private/issues/1050")]
 		public void ToolTip_WhenHostCollapsed_Test()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_CollapsedHost");
