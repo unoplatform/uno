@@ -34,7 +34,7 @@ internal static class MacOSMetalRenderer
 	{
 		// note: size is doubled for retina displays
 		var info = new GRMtlTextureInfoNative() { Texture = texture };
-		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, 1, &info);
+		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, &info);
 		if (nt == IntPtr.Zero)
 		{
 			if (typeof(MacOSMetalRenderer).Log().IsEnabled(LogLevel.Error))
