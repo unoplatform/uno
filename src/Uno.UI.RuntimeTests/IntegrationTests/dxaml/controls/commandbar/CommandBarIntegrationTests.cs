@@ -53,6 +53,18 @@ namespace Windows.UI.Tests.Enterprise
 			TestServices.WindowHelper.VerifyTestCleanup();
 		}
 
+		[TestInitialize]
+		public void TestInitialize()
+		{
+#if __SKIA__
+			if (OperatingSystem.IsAndroid())
+			{
+				// On Android, the CommandBar is not supported.
+				Assert.Inconclusive("CommandBar tests are crashing the emulator https://github.com/unoplatform/uno-private/issues/1053");
+			}
+#endif
+		}
+
 		//
 		// Test Cases
 		//
