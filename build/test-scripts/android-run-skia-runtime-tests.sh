@@ -111,13 +111,9 @@ UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
 # Create the environment file for the app to read
-if [[ -z "$UITEST_RUNTIME_TEST_GROUP" ]]; then
-	echo "UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}" > samplesapp-environment.txt
-	echo "UITEST_RUNTIME_TEST_GROUP_COUNT=${UITEST_RUNTIME_TEST_GROUP_COUNT:-}" >> samplesapp-environment.txt
-	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" >> samplesapp-environment.txt
-else
-	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" > samplesapp-environment.txt
-fi
+echo "UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}" > samplesapp-environment.txt
+echo "UITEST_RUNTIME_TEST_GROUP_COUNT=${UITEST_RUNTIME_TEST_GROUP_COUNT:-}" >> samplesapp-environment.txt
+echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" >> samplesapp-environment.txt
 
 # Push the environment file to the device
 $ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samplesapp-environment.txt
@@ -136,15 +132,8 @@ END_TIME=$((SECONDS+TIMEOUT))
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_PATH to be available..."
 
-ITERATION_COUNT=0
-
 while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
     sleep 15
-
-	## Dump the emulator's system log, in case it crashes
-	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.$ITERATION_COUNT.txt
-
-	ITERATION_COUNT=$((ITERATION_COUNT+1))
 
     # exit loop if the APP_PID is not running anymore
     if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
