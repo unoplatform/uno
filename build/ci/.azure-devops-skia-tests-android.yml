@@ -17,15 +17,14 @@ jobs:
 
 - job: Android_Tests
   displayName: 'Run Skia Android Tests'
-
   timeoutInMinutes: 45
+  dependsOn: Skia_Android_Tests_Build
+  pool: ${{ parameters.vmLinuxPool }}
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-
-  pool: ${{ parameters.vmLinuxPool }}
 
   strategy:
     matrix:
@@ -61,7 +60,7 @@ jobs:
     displayName: 'Enable KVM'
 
   - task: DownloadPipelineArtifact@2
-    displayName: Downloading $(SamplesAppArtifactName)
+    displayName: Downloading $(SAMPLEAPP_ARTIFACT_NAME)
     inputs:
       artifact: $(SAMPLEAPP_ARTIFACT_NAME)
       path: '$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android'
