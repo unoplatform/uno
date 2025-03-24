@@ -10,6 +10,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';mediaelement;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.Skia.Win32" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.MediaPlayer.Skia.X11" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
