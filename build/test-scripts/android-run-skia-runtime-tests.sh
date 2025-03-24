@@ -121,6 +121,9 @@ $ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samples
 # grant the storage permission to the app to write the test results and read the environment file
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
+$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_IMAGES
+$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_VIDEO
+$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_AUDIO
 
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
