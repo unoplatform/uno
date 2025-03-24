@@ -14,7 +14,6 @@ using Android.App;
 [assembly: UsesPermission("android.permission.CAMERA")]
 [assembly: UsesPermission("android.permission.WRITE_EXTERNAL_STORAGE")]
 [assembly: UsesPermission("android.permission.READ_EXTERNAL_STORAGE")]
-[assembly: UsesPermission("android.permission.MANAGE_EXTERNAL_STORAGE")]
 [assembly: UsesPermission("android.permission.READ_MEDIA_IMAGES")]
 [assembly: UsesPermission("android.permission.READ_MEDIA_VIDEO")]
 [assembly: UsesPermission("android.permission.READ_MEDIA_AUDIO")]

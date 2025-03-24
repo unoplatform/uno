@@ -212,7 +212,7 @@ namespace SamplesApp
 			}
 
 			// Read a file from /sdcard/environment.txt and set the environment variables	
-			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+			var environmentFilePath = "/storage/emulated/0/Android/data/uno.platform.samplesapp.skia/files/samplesapp-environment.txt";
 			if (File.Exists(environmentFilePath))
 			{
 				var lines = File.ReadAllLines(environmentFilePath);
