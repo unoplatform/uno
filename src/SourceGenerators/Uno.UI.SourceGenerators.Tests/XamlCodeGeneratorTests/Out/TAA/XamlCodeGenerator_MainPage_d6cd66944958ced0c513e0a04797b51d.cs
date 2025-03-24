@@ -109,12 +109,17 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
+		}
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
@@ -183,6 +188,8 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
 			}
 		}
 		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
