@@ -212,7 +212,7 @@ namespace SamplesApp
 			}
 
 			// Read a file from /sdcard/environment.txt and set the environment variables	
-			var environmentFilePath = "/tmp/samplesapp-environment.txt";
+			var environmentFilePath = "/sdcard/Download/samplesapp-environment.txt";
 			if (File.Exists(environmentFilePath))
 			{
 				var lines = File.ReadAllLines(environmentFilePath);
