@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Android.App;
 using Android.Content.PM;
@@ -36,6 +37,30 @@ namespace SamplesApp.Droid
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : ApplicationActivity
 	{
+
+		protected override void OnCreate(Bundle bundle)
+		{
+			var extras = Intent.Extras;
+			if (extras != null)
+			{
+				string[] knownVariables = [
+					"UITEST_RUNTIME_TEST_GROUP",
+					"UITEST_RUNTIME_TEST_GROUP_COUNT",
+					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+				];
+
+				foreach (var key in extras.KeySet())
+				{
+					if (knownVariables.Contains(key))
+					{
+						var value = extras.GetString(key);
+						System.Environment.SetEnvironmentVariable(key, value);
+					}
+				}
+			}
+
+			base.OnCreate(bundle);
+		}
 		// Required for the MSAL sample "MsalLoginAndGraph"
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
