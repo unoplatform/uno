@@ -11,6 +11,8 @@ using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.Graphics.Display;
 using System.Diagnostics.CodeAnalysis;
+using Uno.Svg.Skia;
+
 
 #if !__NETSTD_REFERENCE__
 using ShimSkiaSharp;
