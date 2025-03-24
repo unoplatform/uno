@@ -2,7 +2,7 @@
 uid: Uno.HotDesign.GetStarted.CounterTutorial
 ---
 
-# Create a Counter App with Hot Design™
+# Create a Counter App with Hot Design®
 
 This tutorial will guide you through using Hot Design to create a simple counter application. The application will include:
 
@@ -21,7 +21,7 @@ This tutorial will guide you through using Hot Design to create a simple counter
 > Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
 >
 > [!IMPORTANT]
-> **Hot Design™** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
+> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
