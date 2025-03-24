@@ -124,7 +124,6 @@ $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permi
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_IMAGES
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_VIDEO
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_AUDIO
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.MANAGE_EXTERNAL_STORAGE
 
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
