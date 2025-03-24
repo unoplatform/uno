@@ -108,15 +108,8 @@ echo "Emulator started"
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
 UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
-UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/Download/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
+UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
-# Create the environment file for the app to read
-echo "UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}" > samplesapp-environment.txt
-echo "UITEST_RUNTIME_TEST_GROUP_COUNT=${UITEST_RUNTIME_TEST_GROUP_COUNT:-}" >> samplesapp-environment.txt
-echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" >> samplesapp-environment.txt
-
-# Push the environment file to the device
-$ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt "/sdcard/Download/samplesapp-environment.txt"
 
 # grant the storage permission to the app to write the test results and read the environment file
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
@@ -126,7 +119,11 @@ $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permi
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_AUDIO
 
 # start the android app using environment variables using adb
-$ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
+$ANDROID_HOME/platform-tools/adb shell am start \
+  -n uno.platform.samplesapp.skia/crc6448f3b0362cbf4bc9.MainActivity \
+  -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" \
+  -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
+  -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_PATH" \
 
 # Set the timeout in seconds
 UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
