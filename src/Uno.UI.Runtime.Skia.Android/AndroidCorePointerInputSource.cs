@@ -19,6 +19,13 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 {
 	public static AndroidCorePointerInputSource Instance { get; } = new();
 
+	//private readonly Action<string>? _trace = Console.WriteLine;
+	private readonly Action<string>? _trace = typeof(AndroidCorePointerInputSource).Log().IsEnabled(LogLevel.Trace)
+		? msg => typeof(AndroidCorePointerInputSource).Log().Trace(msg)
+		: null;
+
+	private IAsyncAction? _pendingAsyncHoverExit;
+
 	private AndroidCorePointerInputSource()
 	{
 	}
@@ -111,13 +118,6 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	//private readonly Action<string>? _trace = Console.WriteLine;
-	private readonly Action<string>? _trace = typeof(AndroidCorePointerInputSource).Log().IsEnabled(LogLevel.Trace)
-		? msg => typeof(AndroidCorePointerInputSource).Log().Trace(msg)
-		: null;
-
-	private IAsyncAction? _pendingAsyncHoverExit;
-
 	private void OnNativeMotionEvent(MotionEventActions action, PointerEventArgs args)
 	{
 		_trace?.Invoke($"[{action}] {args}");
@@ -183,12 +183,9 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 				PointerMoved?.Invoke(this, args);
 				break;
 
-
 			case MotionEventActions.Cancel:
 				PointerCancelled?.Invoke(this, args);
 				break;
-
-
 
 			default:
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -196,7 +193,6 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 					this.Log().Warn($"We receive a native motion event of '{action}', but this is not supported and should have been filtered out in native code.");
 				}
 				break;
-			//throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
 		}
 	}
 
