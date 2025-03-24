@@ -74,8 +74,42 @@ internal static class PointerHelpers
 				// For mouse, we cannot only rely on action: We will get a "HoverExit" when we press the left button.
 				return buttons != 0;
 
+			case PointerDeviceType.Pen when nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) is not 0:
+				return false;
+
+			case PointerDeviceType.Pen when nativeEvent.GetAxisValue(Axis.Pressure, nativeEvent.ActionIndex) is not 0:
+				return true;
+
 			case PointerDeviceType.Pen:
-				return nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) == 0;
+				// This is an invalid case, we should either have a distance or a pressure, not both at 0 ... but this can happen on some devices (e.g. Surface Duo).
+				// From what we observed, this indicates that the pen is **NOT** in contact with the screen.
+				switch (action)
+				{
+					case MotionEventActions.HoverMove:
+						return false;
+
+					case MotionEventActions.HoverEnter:
+					case MotionEventActions.HoverExit:
+						// Those are the problematic cases as an exit/enter are going to be raised by the system the pen is pressed/released.
+						// (Especially the HoverExit which would cause some invalid events to be raised.
+						// HoverEnter should not cause any trouble as pointer should already consider as IsOver after a pen's pointer release).
+						// We return true (safer), the AndroidPointerInput source will then handle that case by itself (defer the exit to confirm if we don't receive a pressed right after).
+						return true;
+
+					case MotionEventActions.Move:
+					case StylusWithBarrelDown:
+					case MotionEventActions.Down:
+					case MotionEventActions.PointerDown:
+						return true;
+
+					case StylusWithBarrelUp:
+					case MotionEventActions.Up:
+					case MotionEventActions.PointerUp:
+						return false;
+
+					default:
+						return true; // This is the safest as it will not prevent interaction
+				}
 
 			default:
 			case PointerDeviceType.Touch:
