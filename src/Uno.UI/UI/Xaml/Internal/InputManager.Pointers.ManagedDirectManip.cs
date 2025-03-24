@@ -97,19 +97,28 @@ partial class InputManager
 
 		private bool TryRedirectPressToDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			// Note: This DOES not support multi-touch.
-			//		 We should try to re-use an existing recognizer (for same kind of pointers ?) to see if it accepts the new pointer.
-			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) == true)
+			if (_directManipulations is not null)
 			{
-				if (_trace)
+				// Currently we do not support to redirect pointer before the press event (e.g. in pointer hover move).
+				// This is theoretically possible using composition APIs, but currently never the case in current source code (as of 2025-03-24),
+				// and is also most probably refused by WinUI.
+
+				// So we cancel all gesture recognizer, except the one that is for the same kind of pointer (to allow multi-touch manipulation).
+				var currentPointer = args.CurrentPoint.Pointer;
+				foreach ((var manipPointer, var manip) in new Dictionary<PointerIdentifier, DirectManipulation>(_directManipulations))
 				{
-					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer (@{args.CurrentPoint.Position.ToDebugString()}).");
+					if (manipPointer.Type != currentPointer.Type // Not the same type
+						|| manip.Recognizer.PendingManipulation?.IsActive(currentPointer) is true) // Second press on the same pointer, we cancel the previous one!
+					{
+						if (_trace)
+						{
+							Trace($"[DirectManipulation] [{manipPointer}] Completing previous manipulation (as we have a down for {currentPointer}).");
+						}
+
+						// Note: This will most probably invoke the Completed event, which will remove the manipulation from the dictionary (therefore we use a clone).
+						manip.Recognizer.CompleteGesture();
+					}
 				}
-
-				using var _ = AsCurrentForDirectManipulation(args);
-				manip.Recognizer.ProcessDownEvent(args.CurrentPoint);
-
-				return true;
 			}
 
 			return false;
@@ -153,8 +162,11 @@ partial class InputManager
 
 		private bool TryRedirectReleaseToDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_directManipulations?.Remove(args.CurrentPoint.Pointer, out var manip) is true)
+			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true)
 			{
+				// Note: We do NOT remove the recognizer from the manipulation, it will self-remove when the manipulation is completed (i.e. once inertia is completed!).
+				//		 This is to allow the manipulation to be cancelled if the pointer is re-pressed.
+
 				if (_trace)
 				{
 					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer (@{args.CurrentPoint.Position.ToDebugString()}).");
