@@ -51,6 +51,21 @@ internal static class PointerHelpers
 	/// </summary>
 	internal const MotionEventActions StylusWithBarrelUp = (MotionEventActions)212;
 
+	private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
+	private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
+
+	internal static uint GetPointerId(MotionEvent nativeEvent, int pointerIndex)
+	{
+		// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
+		// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
+		// If deviceId is greater than 0x00ffffff, we might have a conflict but only in case of multi touch
+		// and with a high variation of deviceId. We assume that's safe enough.
+		// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
+		//		 otherwise up_2 will be with the id of 1
+
+		return ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
+	}
+
 	internal static bool IsInContact(MotionEvent nativeEvent, PointerDeviceType pointerType, MotionEventActions action, MotionEventButtonState buttons)
 	{
 		switch (pointerType)
