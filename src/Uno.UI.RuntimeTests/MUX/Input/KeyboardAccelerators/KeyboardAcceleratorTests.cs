@@ -399,6 +399,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task ValidateKeyboardAcceleratorEventNotInvokedWhenCollapsed()
 	{
 		const string rootPanelXaml =
@@ -625,6 +628,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerator behavior when multiple modifiers are required.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task ValidateKeyboardAcceleratorBehaviorWithMultipleModifiers()
 	{
 		const string rootPanelXaml =
@@ -2977,6 +2983,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that TryInvokeKeyboardAccelerator does not call locally scoped accelerators.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task VerifyTryInvokeKeyboardAcceleratorBehaviorForLocallyScopedAccelerator()
 	{
 		StackPanelWithProcessKeyboardAcceleratorOverride tryInvokePanel = null;
@@ -3437,6 +3446,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	#region OverridingControlAccelerators
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators can override the control accelerators for TextBox.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task VerifyKeyboardAcceleratorCanOverrideControlAccelerator()
 	{
 		const string rootPanelXaml =

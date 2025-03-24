@@ -10,7 +10,7 @@ internal static partial class NativeSkia
 
 	[LibraryImport("libSkiaSharp")]
 	[UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-	internal static unsafe partial nint gr_backendrendertarget_new_metal(int width, int height, int sampleCount, GRMtlTextureInfoNative* mtlInfo);
+	internal static unsafe partial nint gr_backendrendertarget_new_metal(int width, int height, GRMtlTextureInfoNative* mtlInfo);
 }
 
 internal struct GRMtlTextureInfoNative

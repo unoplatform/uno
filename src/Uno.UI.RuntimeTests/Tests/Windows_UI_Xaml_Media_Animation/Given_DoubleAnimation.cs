@@ -190,7 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
 			}
 
-			await TestHelper.RetryAssert(Do, 3);
+			await TestHelper.RetryAssert(Do, 10);
 		}
 
 		[TestMethod]

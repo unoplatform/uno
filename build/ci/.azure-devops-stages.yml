@@ -2,21 +2,19 @@ stages:
 - stage: Setup
   displayName: Setup
   jobs:
-  - template: .azure-devops-commitsar.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+  - job: Validations
+  
+    pool:
+      vmImage: $(linuxVMImage)
 
-  - template: .azure-devops-spell-check.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    steps:
+    - checkout: self
+      clean: true
 
-  - template: .azure-devops-markdown-lint.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-pipeline-validations.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    - template: templates/gitversion-run.yml
+    - template: .azure-devops-commitsar.yml
+    - template: .azure-devops-spell-check.yml
+    - template: .azure-devops-markdown-lint.yml
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
@@ -72,24 +70,18 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- stage: skia_tests_winui
-  displayName: Tests - Skia WinUI
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-skia-tests.yml
-    parameters:
-      vmImage: '$(windows2022HostedVMImage)'
-      vmMacImage: '$(macOSVMImage)'
-      vmMacImageTest: '$(macOSVMImage_UITests)'
-      vmLinuxImage: '$(linuxVMImage)'
-      vmLinuxPool: '$(linuxScaledPool)'
-      poolName: '$(windowsScaledPool)'
-      xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
+- template: .azure-devops-skia-tests.yml
+  parameters:
+    vmImage: '$(windows2022HostedVMImage)'
+    vmMacImage: '$(macOSVMImage)'
+    vmMacImageTest: '$(macOSVMImage_UITests)'
+    vmLinuxImage: '$(linuxVMImage)'
+    vmLinuxPool: '$(linuxScaledPool)'
+    poolName: '$(windowsScaledPool)'
+    xCodeRootBuild: '$(xCodeRoot)'
+    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests
   displayName: Tests - Android
@@ -135,7 +127,11 @@ stages:
     - wasm_tests
     - ios_tests
     - android_tests
-    - skia_tests_winui
+    - runtime_tests_skia_browser
+    - runtime_tests_skia_android
+    - runtime_tests_skia_ios
+    - runtime_tests_skia_linux
+    - runtime_tests_skia_windows
 
   jobs:
   - template: .azure-devops-screenshot-compare.yml

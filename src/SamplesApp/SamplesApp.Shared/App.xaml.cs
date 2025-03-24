@@ -211,25 +211,31 @@ namespace SamplesApp
 				return;
 			}
 
-			// Read a file from /sdcard/environment.txt and set the environment variables	
-			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
-			if (File.Exists(environmentFilePath))
+			try
 			{
-				var lines = File.ReadAllLines(environmentFilePath);
-				foreach (var line in lines)
+				// Read a file from /sdcard/environment.txt and set the environment variables	
+				var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+				if (File.Exists(environmentFilePath))
 				{
-					var parts = line.Split('=');
-					if (parts.Length == 2)
+					var lines = File.ReadAllLines(environmentFilePath);
+					foreach (var line in lines)
 					{
-						var key = parts[0];
-						var value = parts[1];
-						Console.WriteLine($"Setting environment variable {key} to {value}");
-						System.Environment.SetEnvironmentVariable(key, value);
+						var parts = line.Split('=');
+						if (parts.Length == 2)
+						{
+							var key = parts[0];
+							var value = parts[1];
+							Console.WriteLine($"Setting environment variable {key} to {value}");
+							System.Environment.SetEnvironmentVariable(key, value);
+						}
 					}
 				}
 			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed to set up Android environment: {e}");
+			}
 		}
-
 
 #if __IOS__
 		/// <summary>

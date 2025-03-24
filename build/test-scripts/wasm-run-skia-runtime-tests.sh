@@ -30,27 +30,40 @@ sleep 10
 
 RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
 RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
+UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
 rawurlencode "$RESULTS_FILE"
 
 RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}"
 
-# we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
-# print the logs as expected
-# for some reason, you have to run the next line twice or else it doesn't work
-xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
-sleep 5
-killall -9 chrome || true
-killall -9 xvfb-run || true
-xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+TRY_COUNT=0
 
-# wait five minutes for the canary file to be created, otherwise fail the script.
-# This may happen if xvfb-run of chrome fails to start
-for i in {1..30}; do
+while [ $TRY_COUNT -lt 5 ]; do
+    # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
+    # print the logs as expected
+    # for some reason, you have to run the next line twice or else it doesn't work
+    xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+    sleep 5
+    killall -9 chrome || true
+    killall -9 xvfb-run || true
+    xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+
+    # wait one minute for the canary file to be created, otherwise fail the script.
+    # This may happen if xvfb-run of chrome fails to start
+    for i in {1..6}; do
+        if test -f "$RESULTS_CANARY_FILE"; then
+            break
+        fi
+        sleep 10
+    done
+
+    # if the canary file exists, continue
     if test -f "$RESULTS_CANARY_FILE"; then
         break
     fi
-    sleep 10
+
+    TRY_COUNT=$((TRY_COUNT+1))
+    echo "Canary file not found. retrying... (Tried $TRY_COUNT times)"
 done
 
 # if the canary file does not exist show a message and exit

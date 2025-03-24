@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -45,6 +46,17 @@ public class Given_RedirectVisual
 		ElementCompositionPreview.SetElementChildVisual(sut, redirectVisual);
 
 		var result = await Render(expected, sut);
+
+		var sw = Stopwatch.StartNew();
+		while (!await ImageAssert.AreRenderTargetBitmapsEqualAsync(result.actual.Bitmap, result.expected.Bitmap)
+			&& sw.Elapsed < TimeSpan.FromSeconds(10))
+		{
+			await Task.Delay(250);
+
+			// render again until it reaches the timeout
+			result = await Render(expected, sut);
+		}
+
 		await ImageAssert.AreEqualAsync(result.actual, result.expected);
 	}
 

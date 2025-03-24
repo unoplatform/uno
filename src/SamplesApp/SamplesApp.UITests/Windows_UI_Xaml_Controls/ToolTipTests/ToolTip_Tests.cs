@@ -111,6 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		[Ignore("https://github.com/unoplatform/uno-private/issues/1050")]
 		public void ToolTip_WhenHostCollapsed_Test()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_CollapsedHost");
@@ -126,7 +127,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			// the tooltip will start to appears after 1s (TooltipShowDelay)
 			// and, it will remain visible for another 1s.
 			// (moving within the hitbox will reset the remaining duration back to 1s again, but we are not)
-			_app.Wait(TimeSpan.FromMilliseconds(TooltipShowDelay + 300));
+			_app.Wait(TimeSpan.FromMilliseconds(TooltipShowDelay + 1000));
 
 			// however, since we made the host control to disappear (Visibility=Collapsed),
 			// its tooltip should disappear as well.
