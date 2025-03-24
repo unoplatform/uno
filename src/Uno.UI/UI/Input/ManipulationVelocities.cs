@@ -40,7 +40,7 @@ namespace Windows.UI.Input
 
 		/// <inheritdoc />
 		public override string ToString()
-			=> $"x:{Linear.X:N0};y:{Linear.Y:N0};θ:{Angular};e:{Expansion:F2}";
+			=> $"x:{Linear.X:F2};y:{Linear.Y:F2};θ:{Angular};e:{Expansion:F2}";
 
 		#region Equality Members
 		public override bool Equals(object obj) => obj is ManipulationVelocities velocities && Equals(velocities);
