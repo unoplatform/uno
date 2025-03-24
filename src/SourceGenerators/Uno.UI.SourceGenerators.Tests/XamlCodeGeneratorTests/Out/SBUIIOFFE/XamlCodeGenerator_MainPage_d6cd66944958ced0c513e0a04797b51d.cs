@@ -62,48 +62,44 @@ namespace TestRepro
 						FontSize = 30d,
 						// Source 0\MainPage.xaml (Line 9:4)
 					}
-					.GenericApply(__that, __nameScope, (ApplyMethod_0					))
+					.GenericApply(__that, __nameScope, (ApplyMethod_0))
 					,
 				}
 			}
-			.GenericApply(__that, __nameScope, (ApplyMethod_1			))
+			.GenericApply(__that, __nameScope, (ApplyMethod_1))
 			;
 			
 			this
-			.GenericApply(__that, __nameScope, (ApplyMethod_2			))
-			.GenericApply(__that, __nameScope, (ApplyMethod_3			))
+			.GenericApply(__that, __nameScope, (ApplyMethod_2))
+			.GenericApply(__that, __nameScope, (ApplyMethod_3))
 			;
 			OnInitializeCompleted();
 
 		}
 		partial void OnInitializeCompleted();
-							private void ApplyMethod_0(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
-					{
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 4);
-						__p1.CreationComplete();
-					}
-
-					private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
-			{
-				global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 8, 3);
-				__p1.CreationComplete();
-			}
-
-					private void ApplyMethod_2(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
-			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
-			}
-
-					private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
-			{
-				// Class TestRepro.MainPage
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
-				__p1.CreationComplete();
-			}
-
+		private void ApplyMethod_0(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		{
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 4);
+			__p1.CreationComplete();
+		}
+		private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		{
+			global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 8, 3);
+			__p1.CreationComplete();
+		}
+		private void ApplyMethod_2(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		{
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+		}
+		private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		{
+			// Class TestRepro.MainPage
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
+			__p1.CreationComplete();
+		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
@@ -149,6 +145,7 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
 			}
 		}
 	}
