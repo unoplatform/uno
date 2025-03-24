@@ -204,7 +204,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 				var automationControlType = peer!.GetAutomationControlType();
 
-				node.ContentDescription = peer.GetName();
+				node.ContentDescription = peer.GetName() ?? "";
 				node.Password = peer.IsPassword();
 				node.Enabled = peer.IsEnabled();
 				node.Checked = peer is IToggleProvider toggleProvider && toggleProvider.ToggleState == ToggleState.On;
