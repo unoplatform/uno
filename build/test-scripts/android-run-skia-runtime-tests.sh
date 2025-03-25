@@ -108,15 +108,8 @@ echo "Emulator started"
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
 UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
-UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/cache"
+UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
 UITEST_RUNTIME_AUTOSTART_RESULT_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
-
-$ANDROID_HOME/platform-tools/adb shell mkdir -p $UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH
-$ANDROID_HOME/platform-tools/adb shell chmod 777 $UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH
-$ANDROID_HOME/platform-tools/adb shell touch $UITEST_RUNTIME_AUTOSTART_RESULT_PATH.canary
-$ANDROID_HOME/platform-tools/adb shell chmod 777 $UITEST_RUNTIME_AUTOSTART_RESULT_PATH.canary
-$ANDROID_HOME/platform-tools/adb shell touch $UITEST_RUNTIME_AUTOSTART_RESULT_PATH
-$ANDROID_HOME/platform-tools/adb shell chmod 777 $UITEST_RUNTIME_AUTOSTART_RESULT_PATH
 
 # grant the storage permission to the app to write the test results and read the environment file
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE

@@ -435,7 +435,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine("OnResuming");
 
-			// Disable for failing on Android 31
+			// Disable for failing on Android 31 https://github.com/unoplatform/uno-private/issues/1068
 			// AssertIssue10313ResumingAfterActivate();
 
 			_isSuspended = false;
