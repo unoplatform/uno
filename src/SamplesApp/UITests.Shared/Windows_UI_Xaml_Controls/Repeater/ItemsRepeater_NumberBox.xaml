@@ -7,22 +7,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<Grid>
-		<ItemsRepeater x:Name="MainItemsRepeater"
-				Grid.Row="1">
-			<ItemsRepeater.ItemTemplate>
-				<DataTemplate>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-						<!--  Value must be set to reproduce issue  -->
-						<NumberBox Grid.Column="1" Value="5"/>
-					</Grid>
-				</DataTemplate>
-			</ItemsRepeater.ItemTemplate>
-		</ItemsRepeater>
-	</Grid>
+	<ItemsRepeater x:Name="MainItemsRepeater">
+		<ItemsRepeater.ItemTemplate>
+			<DataTemplate>
+				<!--  Value must be set to reproduce issue  -->
+				<NumberBox Value="5"/>
+			</DataTemplate>
+		</ItemsRepeater.ItemTemplate>
+	</ItemsRepeater>
 </Page>
