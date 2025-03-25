@@ -1,5 +1,6 @@
 ﻿// #define FPS_DISPLAY
 
+using System;
 using Windows.Graphics.Display;
 using Android.Content;
 using Android.Graphics;
@@ -15,6 +16,7 @@ using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using SkiaSharp.Views.Android;
+using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Android;
