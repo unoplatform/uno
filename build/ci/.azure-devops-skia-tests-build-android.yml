@@ -34,10 +34,6 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm net9.0-android'
 
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
     displayName: Build Skia Android Head
 
