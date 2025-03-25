@@ -108,7 +108,7 @@ echo "Emulator started"
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
 UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
-UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/data/local/tmp/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
+UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/storage/emulated/0/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
 
 # grant the storage permission to the app to write the test results and read the environment file
