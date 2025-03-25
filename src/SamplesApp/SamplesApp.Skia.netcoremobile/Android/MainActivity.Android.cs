@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Android.App;
@@ -40,6 +41,13 @@ namespace SamplesApp.Droid
 
 		protected override void OnCreate(Bundle bundle)
 		{
+			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
+			if (externalFilesDir != null)
+			{
+				string fullPath = Path.Combine(externalFilesDir.AbsolutePath, "primestorage.txt");
+				File.WriteAllText(fullPath, "Primed so the folder is useable");
+			}
+
 			var extras = Intent.Extras;
 			if (extras != null)
 			{
