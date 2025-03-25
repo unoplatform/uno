@@ -16,14 +16,11 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
-  pool: ${{ parameters.poolName }}
+  pool: ${{ parameters.vmLinuxPool }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-
-    # Use pre-defined local nuget cache for restore
-    NUGET_PACKAGES: 'C:\NugetPackages'
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -33,15 +30,11 @@ jobs:
     clean: true
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet-mobile-install-windows.yml
+  - template: templates/dotnet-mobile-install-linux.yml
     parameters:
       UnoCheckParameters: '--tfm net9.0-android'
 
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)\logs\build-skia-android.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
     displayName: Build Skia Android Head
 
   - task: CopyFiles@2
@@ -65,6 +58,6 @@ jobs:
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)\logs
+      PathtoPublish: $(build.artifactstagingdirectory)/logs
       ArtifactName: skia-samples-app-binlog
       ArtifactType: Container

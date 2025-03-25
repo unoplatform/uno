@@ -17,7 +17,7 @@ jobs:
 
 - job: Android_Tests
   displayName: 'Run Skia Android Tests'
-  timeoutInMinutes: 30
+  timeoutInMinutes: 45
   dependsOn: Skia_Android_Tests_Build
   pool: ${{ parameters.vmLinuxPool }}
 

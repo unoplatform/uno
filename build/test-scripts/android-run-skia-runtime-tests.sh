@@ -108,15 +108,12 @@ echo "Emulator started"
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
 UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
-UITEST_RUNTIME_AUTOSTART_RESULT_PATH="/sdcard/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
-
+UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
+UITEST_RUNTIME_AUTOSTART_RESULT_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_BASE_PATH/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
 # grant the storage permission to the app to write the test results and read the environment file
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
 $ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_IMAGES
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_VIDEO
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_MEDIA_AUDIO
 
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell am start \
