@@ -846,6 +846,11 @@ namespace Uno.UI
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
 			public static bool? UseOpenGLOnWin32 { get; set; }
+
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
+			/// </summary>
+			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
 		}
 
 		public static class DependencyProperty

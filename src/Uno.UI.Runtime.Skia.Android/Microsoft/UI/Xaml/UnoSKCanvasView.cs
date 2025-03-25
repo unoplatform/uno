@@ -15,7 +15,6 @@ using AndroidX.Core.View;
 using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
-using SkiaSharp.Views.Android;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
@@ -40,9 +39,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 	{
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-
-		var renderer = new InternalRenderer(this);
-		SetRenderer(renderer);
+		SetRenderer(new InternalRenderer(this));
 
 		Instance = this;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
@@ -179,16 +176,20 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		=> TextInputPlugin.OnCreateInputConnection(outAttrs!);
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
+	// and modified to also add rendering without OpenGL
 	private class InternalRenderer(UnoSKCanvasView surfaceView) : Java.Lang.Object, IRenderer
 	{
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
+		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
+
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;
 		private GRBackendRenderTarget? _renderTarget;
-		private SKSurface? _surface;
-		private SKCanvas? _canvas;
+
+		private SKSurface? _glBackedSurface;
+		private SKSurface? _softwareSurface;
 
 		private SKSizeI _lastSize;
 		private SKSizeI _newSize;
@@ -225,9 +226,10 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 				_glInfo = new GRGlFramebufferInfo((uint)buffer[0], ColorType.ToGlSizedFormat());
 
 				// destroy the old surface
-				_surface?.Dispose();
-				_surface = null;
-				_canvas = null;
+				_glBackedSurface?.Dispose();
+				_softwareSurface?.Dispose();
+				_glBackedSurface = null;
+				_softwareSurface = null;
 
 				// re-create the render target
 				_renderTarget?.Dispose();
@@ -235,25 +237,41 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			}
 
 			// create the surface
-			if (_surface == null)
+			if (_glBackedSurface == null)
 			{
-				_surface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-				_canvas = _surface.Canvas;
+				_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
 			}
 
-			using (new SKAutoCanvasRestore(_canvas, true))
+			if (!_hardwareAccelerated && _softwareSurface is null)
+			{
+				var info = new SKImageInfo(_newSize.Width, _lastSize.Height, ColorType);
+				_softwareSurface = SKSurface.Create(info);
+			}
+
+			var canvas = _hardwareAccelerated ? _glBackedSurface.Canvas : _softwareSurface!.Canvas;
+
+			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				// start drawing
-				var e = new SKPaintGLSurfaceEventArgs(_surface, _renderTarget, SurfaceOrigin, ColorType);
 				if (surfaceView._picture is { } picture)
 				{
-					e.Surface.Canvas.DrawPicture(picture);
+					canvas.DrawPicture(picture);
 				}
 			}
 
 			// flush the SkiaSharp contents to GL
-			_canvas?.Flush();
-			_context.Flush();
+			canvas.Flush();
+
+			if (!_hardwareAccelerated)
+			{
+				var glBackedCanvas = _glBackedSurface.Canvas;
+				glBackedCanvas.Clear(SKColors.Transparent);
+				glBackedCanvas.DrawSurface(_softwareSurface, 0, 0);
+				glBackedCanvas.Flush();
+			}
+			// else : we already drew directly on the OpenGL-backed canvas
+
+			_context!.Flush();
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
@@ -279,8 +297,8 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		private void FreeContext()
 		{
-			_surface?.Dispose();
-			_surface = null;
+			_glBackedSurface?.Dispose();
+			_glBackedSurface = null;
 			_renderTarget?.Dispose();
 			_renderTarget = null;
 			_context?.Dispose();
