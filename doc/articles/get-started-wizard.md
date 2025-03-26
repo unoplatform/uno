@@ -2,7 +2,7 @@
 uid: Uno.GetStarted.Wizard
 ---
 
-<!-- markdownlint-disable MD026 -->
+<!-- markdownlint-disable MD026 MD033 -->
 # Done! Important next steps:
 
 Create a simple cross-platform Counter application.
