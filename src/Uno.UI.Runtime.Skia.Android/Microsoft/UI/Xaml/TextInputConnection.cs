@@ -280,7 +280,8 @@ class TextInputConnection : BaseInputConnection
 			}
 			else if ((evt.KeyCode == Keycode.Enter
 					|| evt.KeyCode == Keycode.NumpadEnter)
-				&& (InputTypes.TextFlagMultiLine & _editorInfo.InputType) == 0)
+				// Uno Doc: Enter is handled in _keyboardHandler (TextInputPlugin) regardless of InputTypes.TextFlagMultiLine
+				/* && (InputTypes.TextFlagMultiLine & _editorInfo.InputType) == 0 */)
 			{
 				// editor actions are not supported yet
 				// PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
