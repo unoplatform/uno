@@ -6,7 +6,7 @@ uid: Uno.GetStarted.vs2022
 This getting started will guide you through setting up your environment to create Uno Platform applications using C#, .NET and Copilot with Visual Studio 2022/2026.
 
 > [!TIP]
-> If you want to use another environment or IDE, see our [general getting started](get-started.md).
+> If you want to use another environment or IDE, see our [general getting started](xref:Uno.GetStarted).
 
 ## Install Visual Studio with Workloads
 
@@ -27,19 +27,19 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.9 or 
 > [!NOTE]
 > If you intend to do Linux development with WSL, make sure to select **.NET Debugging with WSL** in the **Individual components** section.
 > [!IMPORTANT]
-> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
+> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](xref:Uno.Development.MigratingFromXamarinToNet6) to .NET 6.
 
 ## Check your environment
 
-[!include[use-uno-check](includes/use-uno-check-inline-windows-noheader.md)]
+[!include[use-uno-check](xref:Uno.uno-check-inline.Windows)]
 
 ## Install the Uno Platform Extension
 
-1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
+1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
-    ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)  
+    ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.  
+2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
 
     ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
 
@@ -66,7 +66,7 @@ To setup your environment for WSL:
 
 ### WSL
 
-[!include[linux-setup](includes/additional-linux-setup-inline.md)]
+[!include[linux-setup](../includes/additional-linux-setup-inline.md)]
 
 ---
 

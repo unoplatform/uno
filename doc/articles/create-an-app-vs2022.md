@@ -12,7 +12,7 @@ To create an Uno Platform app:
 
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**, then click the **Next** button
 
-    ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)  
+    ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)
     ![Visual Studio - Create a new project - Selecting `Uno Platform App` option](Assets/tutorial01/newproject2.PNG)
 
 1. Configure your new project by providing a project name and a location, check the "**Place solution and project in the same directory**" option, then click the **Create** button
@@ -24,7 +24,7 @@ To create an Uno Platform app:
 
 1. Choose a template preset to build your application
 
-    ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.png)
+    ![Visual Studio - Configure your new project](wizard/assets/intro.png)
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project template wizard and all its options, see [this](xref:Uno.GettingStarted.UsingWizard).
@@ -33,11 +33,11 @@ To create an Uno Platform app:
 
 1. Click the create button
 
-1. Ensure that the lower left IDE icon shows a check mark and says "Ready" ![A checkmark with a text saying ready](getting-started/wizard/assets/vs2022-ready-statusbar.png). This ensures that the projects have been created, and their dependencies have been restored completely.
+1. Ensure that the lower left IDE icon shows a check mark and says "Ready" ![A checkmark with a text saying ready](wizard/assets/vs2022-ready-statusbar.png). This ensures that the projects have been created, and their dependencies have been restored completely.
 
 1. A Windows Firewall window may appear. If you do not intend to do Linux development with WSL, check "Private networks" only. Otherwise, check "Public networks" and "Private networks".
 
-1. A banner at the top of the editor may ask to reload projects, click **Reload projects**:  
+1. A banner at the top of the editor may ask to reload projects, click **Reload projects**:
     ![Visual Studio - A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
 
 1. > [!IMPORTANT]
@@ -77,7 +77,7 @@ To run the **WebAssembly** (Wasm) head:
 
 - In the debugger toolbar, click the down arrow to select **MyApp (WebAssembly)**
 
-    ![Visual Studio - Select the Wasm profile](getting-started/wizard/assets/wasm-debugger-dropdown.png)
+    ![Visual Studio - Select the Wasm profile](wizard/assets/wasm-debugger-dropdown.png)
 
 - Press the `MyApp (WebAssembly)` button to deploy the app
 - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
@@ -95,7 +95,7 @@ To run the **Windows** (WinAppSDK) head:
 
 - In the debugger toolbar, click the down arrow to select **MyApp (WinAppSDK Packaged)** or **MyApp (WinAppSDK Unpackaged)**
 
-    ![Visual Studio - Select the WinappSDK profile](getting-started/wizard/assets/winappsdk-debugger-dropdown.png)
+    ![Visual Studio - Select the WinappSDK profile](wizard/assets/winappsdk-debugger-dropdown.png)
 
 - Press the `MyApp (WinAppSDK Packaged)` or `MyApp (WinAppSDK Unpackaged)` button to deploy the app
 - If you have not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
@@ -150,4 +150,4 @@ Learn more about:
 - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
 - [How-tos and Tutorials](xref:Uno.Tutorials.Intro) See real-world examples with working code.
-- [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
+- [List of views implemented in Uno](..\implemented-views.md) for the set of available controls and their properties.

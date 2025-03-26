@@ -1,6 +1,7 @@
 ---
 uid: Uno.GetStarted
 ---
+<!--markdownlint-disable MD041 MD051-->
 
 ## Quick Start
 
@@ -8,12 +9,12 @@ uid: Uno.GetStarted
 > In case your targeted IDE is Visual Studio, you can skip the following steps 1 & 2 as the Visual Studio Extension does already install and run Uno.Check for you!
 
 1. Install the [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/latest) to get `dotnet` available in your commandline.
-2. Install and run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to set up all the required pre-requisites.
-   a. Detailed [Configuration Options](https://platform.uno/docs/articles/external/uno.check/doc/configuring-uno-check.html) for Uno-Check
-   b. If you run into issues with it, see [Troubleshooting Uno-Check](https://platform.uno/docs/articles/external/uno.check/doc/troubleshooting-uno-check.html)
+2. Install and run [Uno.Check](./external/uno.check/doc/using-uno-check.md) to set up all the required pre-requisites.
+   a. Detailed [Configuration Options](./external/uno.check/doc/configuring-uno-check.md) for Uno-Check
+   b. If you run into issues with it, see [Troubleshooting Uno-Check](./external/uno.check/doc/troubleshooting-uno-check.md)
 3. Download the Uno Platform extension for your IDE:
 
-   <!-- markdownlint-disable MD001 MD009 -->
+   <!-- markdownlint-disable MD001 MD009 MD033-->
 
    <div class="row">
 

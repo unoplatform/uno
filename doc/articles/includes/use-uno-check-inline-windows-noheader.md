@@ -1,3 +1,6 @@
+---
+uid: Uno.uno-check-inline.Windows
+---
 1. Open a command-line prompt, Windows Terminal if you have it installed, or else Command Prompt or Windows Powershell from the Start menu.
 
 1. Setup uno.check by installing or updating the tool with:
