@@ -1,9 +1,10 @@
 ---
 uid: Uno.Contributing.check-toc.Overview
 ---
+
 # Toc Checker Overview
 
-The [`check_toc.ps1`](../check_toc.ps1) script helps maintain the structure and integrity of your documentation by:
+The `check_toc.ps1` script helps maintain the structure and integrity of your documentation by:
 
 - Detecting **broken links** in [toc.yml](../toc.yml)
 - Identifying **Markdown files** recursive to `articles` folder that are **not referenced** in the TOC
@@ -15,7 +16,7 @@ The [`check_toc.ps1`](../check_toc.ps1) script helps maintain the structure and 
 ## 🛠️ Usage
 
 1. Open a **PowerShell terminal** at the **root** of your locally cloned Uno repository.
-2. Navigate to the [`doc/articles`](../../articles/) directory:
+2. Navigate to the `doc/articles` directory:
 
    ```ps1
    cd doc/articles
