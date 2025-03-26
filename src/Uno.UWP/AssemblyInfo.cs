@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -26,3 +28,18 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
+
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Windows" /* Keep to avoid renaming */ + ".UI")]
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml;
+
+// This attribute is aligned with https://github.com/dotnet/maui/blob/312948086267cf6c529dfeb2ec0eeae7e7aa57ae/src/Graphics/src/Graphics/XmlnsDefinitionAttribute.cs#L8
+// Visual studio now expects this attribute to be present in order to provide intellisense for the types
+// in the namespace, and must not have the `Assembly` property.
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+[DebuggerDisplay("{XmlNamespace}, {ClrNamespace}")]
+internal sealed class XmlnsDefinitionAttribute(string xmlNamespace, string clrNamespace) : Attribute
+{
+	public string XmlNamespace { get; } = xmlNamespace ?? throw new ArgumentNullException(nameof(clrNamespace));
+	public string ClrNamespace { get; } = clrNamespace ?? throw new ArgumentNullException(nameof(xmlNamespace));
+}

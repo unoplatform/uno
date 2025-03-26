@@ -304,14 +304,13 @@ namespace Microsoft.UI.Xaml.Controls
 				//}
 
 				Rect getElementBounds(FrameworkElement element)
-
 				{
 					GeneralTransform transform = element.TransformToVisual(null);
 					var width = element.ActualWidth;
 					var height = element.ActualHeight;
 
 					return transform.TransformBounds(new Rect(0, 0, width, height));
-				};
+				}
 
 				Rect layoutRootBounds = getElementBounds(m_tpLayoutRootPart);
 

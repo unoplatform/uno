@@ -57,18 +57,6 @@ public partial class PagerControlAutomationPeer : FrameworkElementAutomationPeer
 		return AutomationControlType.Menu;
 	}
 
-	private PagerControl GetImpl()
-	{
-		PagerControl impl = null;
-
-		if (Owner is PagerControl pagerControl)
-		{
-			impl = pagerControl;
-		}
-
-		return impl;
-	}
-
 	IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 	{
 		// TODO: Uno specific - does not match the WinUI version,

@@ -16,4 +16,9 @@
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Browser" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" ProjectSystem="true" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';googleplay;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.GooglePlay" ProjectSystem="true" />
+	</ItemGroup>
+
 </Project>

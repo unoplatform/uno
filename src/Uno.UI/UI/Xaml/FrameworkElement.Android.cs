@@ -20,7 +20,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private Size? _lastLayoutSize;
 		private bool _constraintsChanged;
-		private bool? _stretchAffectsMeasure;
 		private bool _stretchAffectsMeasureDefault;
 
 		/// <summary>

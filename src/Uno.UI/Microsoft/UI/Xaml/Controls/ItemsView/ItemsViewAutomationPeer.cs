@@ -98,7 +98,7 @@ partial class ItemsViewAutomationPeer : FrameworkElementAutomationPeer, ISelecti
 		return selectionList?.ToArray();
 	}
 
-	void RaiseSelectionChanged(double oldIndex, double newIndex)
+	internal void RaiseSelectionChanged(double oldIndex, double newIndex)
 	{
 		if (AutomationPeer.ListenerExists(AutomationEvents.SelectionPatternOnInvalidated))
 		{

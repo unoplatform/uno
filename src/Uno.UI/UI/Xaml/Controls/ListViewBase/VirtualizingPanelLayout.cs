@@ -46,12 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public event EventHandler<object>? VerticalSnapPointsChanged;
 #pragma warning restore 67 // Unused member
 
-
-		private double GroupPaddingExtentStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Top : GroupPadding.Left;
-		private double GroupPaddingExtentEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Bottom : GroupPadding.Right;
-		private double GroupPaddingBreadthStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Left : GroupPadding.Top;
-		private double GroupPaddingBreadthEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Right : GroupPadding.Bottom;
-
 		public int FirstVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetFirstVisibleIndexPath()) ?? -1;
 		public int LastVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetLastVisibleIndexPath()) ?? -1;
 

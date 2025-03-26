@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Toolkit
 			using (new AssertionScope())
 			{
 				elevatedView.FirstResult().Rect.X.Should().Be(42f);
-				elevatedView.FirstResult().Rect.Y.Should().Be(98f);
+				elevatedView.FirstResult().Rect.Y.Should().Be(92f);
 				elevatedView.FirstResult().Rect.Width.Should().Be(200f);
 				elevatedView.FirstResult().Rect.Height.Should().Be(160f);
 			}

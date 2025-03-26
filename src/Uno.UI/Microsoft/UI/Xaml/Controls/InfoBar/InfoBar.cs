@@ -225,7 +225,7 @@ public partial class InfoBar : Control
 			case InfoBarSeverity.Error:
 				severityState = "Error";
 				break;
-		};
+		}
 
 		if (m_standardIconTextBlock is FrameworkElement iconTextblock)
 		{
@@ -291,7 +291,7 @@ public partial class InfoBar : Control
 			case InfoBarSeverity.Success: return "InfoBarIconSeveritySuccessName";
 			case InfoBarSeverity.Warning: return "InfoBarIconSeverityWarningName";
 			case InfoBarSeverity.Error: return "InfoBarIconSeverityErrorName";
-		};
+		}
 		return "InfoBarIconSeverityInformationalName";
 	}
 }

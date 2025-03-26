@@ -342,7 +342,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		if (Owner is Control control)
 		{
 			control.Focus(FocusState.Programmatic);
-		};
+		}
 	}
 
 	protected override void ShowContextMenuCore()

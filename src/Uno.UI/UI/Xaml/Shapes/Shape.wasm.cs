@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 				case (false, false, false, false): return;
 				default: UpdateSvgEverything(); break;
-			};
+			}
 
 			_lastRenderHashes = hashes;
 

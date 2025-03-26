@@ -64,10 +64,4 @@ public partial class InfoBarAutomationPeer : FrameworkElementAutomationPeer
 
 		return processing;
 	}
-
-	private InfoBar GetInfoBar()
-	{
-		UIElement owner = Owner;
-		return (InfoBar)owner;
-	}
 }

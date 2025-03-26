@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 
-public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
+public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, ISelectionItemProvider
 {
 	private enum AutomationOutput
 	{
@@ -216,7 +216,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return navigationView;
 	}
 
-	int GetNavigationViewItemCountInPrimaryList()
+	internal int GetNavigationViewItemCountInPrimaryList()
 	{
 		int count = 0;
 		var navigationView = GetParentNavigationView();
@@ -227,7 +227,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return count;
 	}
 
-	int GetNavigationViewItemCountInTopNav()
+	internal int GetNavigationViewItemCountInTopNav()
 	{
 		int count = 0;
 		var navigationView = GetParentNavigationView();
@@ -238,7 +238,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return count;
 	}
 
-	bool IsSettingsItem()
+	internal bool IsSettingsItem()
 	{
 		var navView = GetParentNavigationView();
 		if (navView != null)
@@ -253,18 +253,18 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return false;
 	}
 
-	private bool IsOnTopNavigation()
+	internal bool IsOnTopNavigation()
 	{
 		var position = GetNavigationViewRepeaterPosition();
 		return position != NavigationViewRepeaterPosition.LeftNav && position != NavigationViewRepeaterPosition.LeftFooter;
 	}
 
-	private bool IsOnTopNavigationOverflow()
+	internal bool IsOnTopNavigationOverflow()
 	{
 		return GetNavigationViewRepeaterPosition() == NavigationViewRepeaterPosition.TopOverflow;
 	}
 
-	private bool IsOnFooterNavigation()
+	internal bool IsOnFooterNavigation()
 	{
 		var position = GetNavigationViewRepeaterPosition();
 		return position == NavigationViewRepeaterPosition.LeftFooter || position == NavigationViewRepeaterPosition.TopFooter;
@@ -354,47 +354,53 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 		return returnValue;
 	}
 
-	bool IsSelected()
+	bool ISelectionItemProvider.IsSelected
 	{
-		var nvi = Owner as NavigationViewItem;
-		if (nvi != null)
+		get
 		{
-			return nvi.IsSelected;
-		}
-		return false;
-	}
-
-	IRawElementProviderSimple SelectionContainer()
-	{
-		var navview = GetParentNavigationView();
-		if (navview != null)
-		{
-			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(navview);
-			if (peer != null)
+			var nvi = Owner as NavigationViewItem;
+			if (nvi != null)
 			{
-				return ProviderFromPeer(peer);
+				return nvi.IsSelected;
 			}
+			return false;
 		}
-
-		return null;
 	}
 
-	void AddToSelection()
+	IRawElementProviderSimple ISelectionItemProvider.SelectionContainer
+	{
+		get
+		{
+			var navview = GetParentNavigationView();
+			if (navview != null)
+			{
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(navview);
+				if (peer != null)
+				{
+					return ProviderFromPeer(peer);
+				}
+			}
+
+			return null;
+		}
+	}
+
+	void ISelectionItemProvider.AddToSelection()
 	{
 		ChangeSelection(true);
 	}
 
-	void Select()
+	void ISelectionItemProvider.Select()
 	{
 		ChangeSelection(true);
 	}
 
-	void RemoveFromSelection()
+	void ISelectionItemProvider.RemoveFromSelection()
 	{
 		ChangeSelection(false);
 	}
 
-	void ChangeSelection(bool isSelected)
+	private void ChangeSelection(bool isSelected)
 	{
 		// If the item is being selected, we trigger an invoke as if the user had clicked on the item:
 		if (isSelected)

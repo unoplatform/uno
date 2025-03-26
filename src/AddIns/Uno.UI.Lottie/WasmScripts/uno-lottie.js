@@ -27,60 +27,78 @@ var Uno;
             }
             static stop(elementId) {
                 Lottie.withPlayer(p => {
-                    const a = Lottie._runningAnimations[elementId].animation;
-                    a.stop();
-                    Lottie.raiseState(a);
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        const a = currentAnimation.animation;
+                        a.stop();
+                        Lottie.raiseState(a);
+                    }
                 });
                 return "ok";
             }
             static play(elementId, fromProgress, toProgress, looped) {
                 Lottie.withPlayer(p => {
-                    const a = Lottie._runningAnimations[elementId].animation;
-                    a.loop = looped;
-                    const fromFrame = fromProgress * Lottie._numberOfFrames;
-                    const toFrame = toProgress * Lottie._numberOfFrames;
-                    //Set forceFlag to true in order to force animation to start right away
-                    //Ensures calling play multiple times in quick succession plays the animation properly
-                    a.playSegments([fromFrame, toFrame], true);
-                    Lottie.raiseState(a);
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        const a = currentAnimation.animation;
+                        a.loop = looped;
+                        const fromFrame = fromProgress * Lottie._numberOfFrames;
+                        const toFrame = toProgress * Lottie._numberOfFrames;
+                        //Set forceFlag to true in order to force animation to start right away
+                        //Ensures calling play multiple times in quick succession plays the animation properly
+                        a.playSegments([fromFrame, toFrame], true);
+                        Lottie.raiseState(a);
+                    }
                 });
                 return "ok";
             }
             static kill(elementId) {
                 Lottie.withPlayer(p => {
-                    Lottie._runningAnimations[elementId].animation.destroy();
-                    delete Lottie._runningAnimations[elementId];
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        currentAnimation.animation.destroy();
+                        delete Lottie._runningAnimations[elementId];
+                    }
                 });
                 return "ok";
             }
             static pause(elementId) {
                 Lottie.withPlayer(p => {
-                    const a = Lottie._runningAnimations[elementId].animation;
-                    a.pause();
-                    Lottie.raiseState(a);
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        const a = currentAnimation.animation;
+                        a.pause();
+                        Lottie.raiseState(a);
+                    }
                 });
                 return "ok";
             }
             static resume(elementId) {
                 Lottie.withPlayer(p => {
-                    const a = Lottie._runningAnimations[elementId].animation;
-                    a.play();
-                    Lottie.raiseState(a);
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        const a = currentAnimation.animation;
+                        a.play();
+                        Lottie.raiseState(a);
+                    }
                 });
                 return "ok";
             }
             static setProgress(elementId, progress) {
                 Lottie.withPlayer(p => {
-                    const animation = Lottie._runningAnimations[elementId].animation;
-                    let frame = Lottie._numberOfFrames * progress;
-                    if (frame < animation.firstFrame) {
-                        frame = frame - animation.firstFrame;
+                    const currentAnimation = Lottie._runningAnimations[elementId];
+                    if (currentAnimation) {
+                        const animation = currentAnimation.animation;
+                        let frame = Lottie._numberOfFrames * progress;
+                        if (frame < animation.firstFrame) {
+                            frame = frame - animation.firstFrame;
+                        }
+                        else {
+                            frame = animation.getDuration(true) * progress;
+                        }
+                        animation.goToAndStop(frame, true);
+                        Lottie.raiseState(animation);
                     }
-                    else {
-                        frame = animation.getDuration(true) * progress;
-                    }
-                    animation.goToAndStop(frame, true);
-                    Lottie.raiseState(animation);
                 });
                 return "ok";
             }
@@ -182,7 +200,7 @@ var Uno;
                     loop: true,
                     autoplay: properties.autoplay,
                     name: `Lottie-${properties.elementId}`,
-                    renderer: "svg",
+                    renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
                     container: containerElement,
                     rendererSettings: {
                         // https://github.com/airbnb/lottie-web/wiki/Renderer-Settings

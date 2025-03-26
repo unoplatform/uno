@@ -2522,12 +2522,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return containingGroup?.GetTrailingLine(fillDirection);
 		}
 
-		private Line GetLeadingLine(GeneratorDirection fillDirection)
-		{
-			var containingGroup = GetLeadingNonEmptyGroup(fillDirection);
-			return containingGroup?.GetLeadingLine(fillDirection);
-		}
-
 		private Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
 		{
 			return GetNextUnmaterializedItem(fillDirection, GetLeadingMaterializedItem(fillDirection));

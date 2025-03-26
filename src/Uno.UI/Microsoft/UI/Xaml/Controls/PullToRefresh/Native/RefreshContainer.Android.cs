@@ -58,8 +58,6 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private bool IsNativeRefreshing => _refreshControl?.Refreshing ?? false;
-
 	internal void EndNativeRefreshing()
 	{
 		if (_refreshControl is not null)

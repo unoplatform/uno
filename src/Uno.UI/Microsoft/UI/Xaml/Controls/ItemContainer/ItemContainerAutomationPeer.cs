@@ -148,7 +148,7 @@ partial class ItemContainerAutomationPeer : FrameworkElementAutomationPeer, ISel
 					}
 
 					return parent as UIElement;
-				};
+				}
 
 				if (GetSelectionContainer() is { } selectionContainer)
 				{
