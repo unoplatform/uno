@@ -150,6 +150,7 @@ jobs:
   - template: templates/dotnet-mobile-install-linux.yml
   - template: templates/gitversion.yml
   - template: templates/uno-dev-feed.yml
+  - template: templates/host-cleanup-linux.yml
 
   - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
