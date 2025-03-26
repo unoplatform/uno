@@ -1159,7 +1159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			// The expected proper sequence when all sub-elements are ManipulationMode=System should be "Enter", "Pressed", "PointerCaptureLost", "Exited"
+			// This is the proper sequence when all sub-elements are ManipulationMode=System ("Enter", "Pressed", "PointerCaptureLost").
 			// This is caused by the Windows' Direct Manipulation.
 			// The important thing is to not get Released as it can cause a click on the nested element while it's being scrolled.
 			events.Should().BeEquivalentTo("enter", "pressed", "capturelost");

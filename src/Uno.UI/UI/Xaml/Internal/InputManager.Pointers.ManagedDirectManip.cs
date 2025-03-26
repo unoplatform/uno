@@ -262,7 +262,7 @@ partial class InputManager
 
 				if (_trace)
 				{
-					Trace($"[DirectManipulation] [{args.Pointers[0]}] Started on @={args.Position.ToDebugString()}");
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Started @={args.Position.ToDebugString()}");
 				}
 
 				that.HasStarted = true;
@@ -276,12 +276,13 @@ partial class InputManager
 
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnDirectManipulationUpdated = (sender, args) =>
 			{
+				var that = (DirectManipulation)sender.Owner;
+
 				if (_trace)
 				{
 					Trace($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta}){(args.IsInertial ? " *inertial*" : "")}");
 				}
 
-				var that = (DirectManipulation)sender.Owner;
 				var unhandledDelta = args.Delta;
 				foreach (var handler in that.Handlers)
 				{
