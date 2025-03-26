@@ -551,12 +551,18 @@ public partial class TextBox
 				// No-op when pressing these key specifically.
 				break;
 			default:
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey is not '\r' or '\n'))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
+					if (c is '\n')
+					{
+						// TextBox autoconverts to \r, like WinUI
+						c = '\r';
+					}
+					
 					text = text[..start] + c + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
