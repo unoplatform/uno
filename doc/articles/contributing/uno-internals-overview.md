@@ -74,9 +74,9 @@ Uno Platform uses existing libraries to parse a given XAML file into a XAML obje
 
 ### DependencyObject implementation generator
 
-On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in UWP/WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from UWP/WinUI and having `DependencyObject` be an interface rather than a type.
+On [Android](xref:Uno.Contributing.Android), [iOS](xref:Uno.Contributing.iOS), and [macOS](xref:Uno.Contributing.macOS), `UIElement` (the base view type in UWP/WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from UWP/WinUI and having `DependencyObject` be an interface rather than a type.
 
-Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie the methods that on UWP would be inherited from the base class.
+Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](../../../src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie the methods that on UWP would be inherited from the base class.
 
 ### Formatting image assets
 
@@ -84,4 +84,4 @@ Different platforms have different requirements for where bundled image files ar
 
 ### Formatting string resources
 
-As with images, different platforms have different requirements for location and formatting of localized string resources. The [ResourcesGenerationTask](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in UWP's `*.resw` files in the shared project, and generates the appropriate platform-specific file.
+As with images, different platforms have different requirements for location and formatting of localized string resources. The [ResourcesGenerationTask](../../../src/SourceGenerators/Uno.UI.Tasks/ResourcesGenerator/ResourcesGenerationTask.cs) reads the strings defined in UWP's `*.resw` files in the shared project, and generates the appropriate platform-specific file.
