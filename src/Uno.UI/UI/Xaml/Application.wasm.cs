@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		static async partial void StartPartial(ApplicationInitializationCallback callback)
+		static async partial void StartPartial()
 		{
 			_startInvoked = true;
 
