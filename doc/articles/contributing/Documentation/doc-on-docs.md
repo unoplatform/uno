@@ -8,19 +8,19 @@ Good documentation is essential, and writing docs is a valued contribution that 
 
 We have a few different fill-in-the-blanks style templates, linked below.
 
-For the DocFX tool used to build the docs website, see [more info here](docfx.md).
+For the DocFX tool used to build the docs website, see [more info here](xref:Uno.Contributing.DocFx).
 
 ## Key links
 
-* how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
-* WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
-* Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
+* [How-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md)
+* [WinUI feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md)
+* [Uno-only feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md)
 
 ## Resources
 
 Some useful resources on writing good technical documentation:
 
-* [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/)
+* [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/grammar-and-mechanics.html)
 * [Divio's Documentation System](https://documentation.divio.com/)
 
 ## Writing step-by-step guides
