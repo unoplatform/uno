@@ -67,6 +67,8 @@
           href: xref:Uno.Development.Troubleshooting
         - name: Build error codes
           href: xref:Build.Solution.error-codes
+        - name: Troubleshooting source generation
+          href: xref:Uno.Development.Troubleshooting.SourceGeneration
 
 - name: Samples & Tutorials
   topicHref: xref:Uno.SamplesTutorials.Overview
@@ -375,6 +377,7 @@
             href: uno-development/creating-runtime-tests.md
           - name: UI tests with Uno.UITest
             href: uno-development/creating-ui-tests.md
+          - name: Uno.Contributing.Scripts.PowerShell-Pester-Tests
       - name: Debugging Solution Templates
         href: uno-development/debugging-templates.md
       - name: Conventional Commits format
@@ -389,10 +392,23 @@
         href: contributing/guidelines/issue-triage.md
       - name: Guidelines for implementing a new WinUI/WinRT feature
         href: contributing/guidelines/implementing-a-new-winui-winrt-feature.md
-      - name: Adding documentation
-        href: uno-development/doc-on-docs.md
-      - name: DocFX
-        href: uno-development/docfx.md
+
+      - name: Guidelines for Contributing Documentation
+        items:
+        - name: Adding documentation
+          href: uno-development/doc-on-docs.md
+        - name: DocFX
+          href: uno-development/docfx.md
+        - name: Toc Checker
+          href: xref:Uno.Contributing.check-toc.Overview
+          items:
+          - name: Overview
+            href: xref:Uno.Contributing.check-toc.Overview
+          - name: How-To Use the TOC Checker
+            href: xref:Uno.Contributing.check-toc.Guide
+          - name: Utility Functions for the TOC Checker
+            href: xref:Uno.Contributing.check-toc.Utilities
+
       - name: Uno.UI release procedure
         href: uno-development/release-procedure.md
       - name: Build Artifacts
