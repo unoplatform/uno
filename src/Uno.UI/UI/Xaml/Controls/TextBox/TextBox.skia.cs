@@ -562,7 +562,7 @@ public partial class TextBox
 						// TextBox autoconverts to \r, like WinUI
 						c = '\r';
 					}
-					
+
 					text = text[..start] + c + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
