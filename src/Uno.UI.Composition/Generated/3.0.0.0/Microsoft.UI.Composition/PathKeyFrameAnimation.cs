@@ -15,16 +15,16 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path)
+		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "void PathKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, CompositionPath path)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "void PathKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, CompositionPath path, CompositionEasingFunction easingFunction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
+		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "void PathKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, CompositionPath path, CompositionEasingFunction easingFunction)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "void PathKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, CompositionPath path)");
 		}
 #endif
 	}

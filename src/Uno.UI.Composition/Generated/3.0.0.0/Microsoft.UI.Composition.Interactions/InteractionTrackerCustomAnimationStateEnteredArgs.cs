@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.IsFromBinding.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs.RequestId.get
 	}
 }

@@ -112,6 +112,56 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 LocalToClientTransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSiteView.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSiteView.LocalToClientTransformMatrix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 LocalToParentTransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSiteView.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSiteView.LocalToParentTransformMatrix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ProcessesKeyboardInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentSiteView.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.ProcessesKeyboardInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ProcessesPointerInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentSiteView.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.ProcessesPointerInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentAutomationOptions ContentSiteView.AutomationOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentAutomationOptions%20ContentSiteView.AutomationOption");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ActualSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ClientSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.CoordinateConverter.get
@@ -126,5 +176,10 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RequestedSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ShouldApplyRasterizationScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToClientTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToParentTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesKeyboardInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesPointerInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.AutomationOption.get
 	}
 }

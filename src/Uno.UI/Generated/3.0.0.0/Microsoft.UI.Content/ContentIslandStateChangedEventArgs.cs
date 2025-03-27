@@ -13,10 +13,32 @@ namespace Microsoft.UI.Content
 		// Skipping already declared property DidRasterizationScaleChange
 		// Skipping already declared property DidSiteEnabledChange
 		// Skipping already declared property DidSiteVisibleChange
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteEnabledChange.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool DidLocalToClientTransformMatrixChange
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool DidLocalToParentTransformMatrixChange
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLayoutDirectionChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidActualSizeChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteVisibleChange.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLayoutDirectionChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteEnabledChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidRasterizationScaleChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange.get
 	}
 }

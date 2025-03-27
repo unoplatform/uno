@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition.Interactions
 		// Skipping already declared property RequestId
 		// Skipping already declared property Scale
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.RequestId.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Scale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Position.get
 	}
 }

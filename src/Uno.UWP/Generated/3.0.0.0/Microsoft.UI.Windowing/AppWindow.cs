@@ -41,7 +41,7 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property TitleBar
 		// Skipping already declared property ClientSize
 		// Skipping already declared property DispatcherQueue
-		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Show(bool)
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsVisible.get
@@ -52,7 +52,13 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Title.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Title.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.TitleBar.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Id.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Destroy()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Destroy()");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Hide()
@@ -68,13 +74,7 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.MoveAndResize(RectInt32 rect)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void MoveAndResize(global::Windows.Graphics.RectInt32 rect, global::Microsoft.UI.Windowing.DisplayArea displayarea)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.MoveAndResize(RectInt32 rect, DisplayArea displayarea)");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Id.get
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Resize(Windows.Graphics.SizeInt32)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -93,16 +93,16 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenter)
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind)
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Show()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Destroy()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Destroy()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Show(bool)
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.remove
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void MoveAndResize(global::Windows.Graphics.RectInt32 rect, global::Microsoft.UI.Windowing.DisplayArea displayarea)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.MoveAndResize(RectInt32 rect, DisplayArea displayarea)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.remove
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.remove
@@ -150,6 +150,34 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.DispatcherQueue.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetTaskbarIcon(string iconPath)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetTaskbarIcon(string iconPath)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetTaskbarIcon(global::Microsoft.UI.IconId iconId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetTaskbarIcon(IconId iconId)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetTitleBarIcon(string iconPath)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetTitleBarIcon(string iconPath)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void SetTitleBarIcon(global::Microsoft.UI.IconId iconId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetTitleBarIcon(IconId iconId)");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create(global::Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter, global::Microsoft.UI.WindowId ownerWindowId, global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue)
