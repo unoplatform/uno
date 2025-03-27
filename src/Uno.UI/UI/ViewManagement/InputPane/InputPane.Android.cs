@@ -23,8 +23,9 @@ namespace Windows.UI.ViewManagement
 		partial void EnsureFocusedElementInViewPartial()
 		{
 			_padScrollContentPresenter?.Dispose(); // Restore padding
+			var xamlRoot = Microsoft.UI.Xaml.Window.CurrentSafe?.Content?.XamlRoot;
 
-			if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
+			if (Visible && FocusManager.GetFocusedElement(xamlRoot) is UIElement focusedElement)
 			{
 				if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
 				{

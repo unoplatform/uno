@@ -120,7 +120,8 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				if (FocusManager.GetFocusedElement() is not FrameworkElement element)
+				var xamlRoot = Microsoft.UI.Xaml.Window.CurrentSafe?.Content?.XamlRoot;
+				if (FocusManager.GetFocusedElement(xamlRoot) is not FrameworkElement element)
 				{
 					element = WinUICoreServices.Instance.MainRootVisual;
 				}
