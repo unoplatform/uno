@@ -357,7 +357,10 @@ internal partial class InputManager
 				return;
 			}
 
-			var isOutOfWindow = !HitTest(args, _isOver, out var originalSource, out var overStaleBranch);
+			var overStaleBranch = default(VisualTreeHelper.Branch?);
+			var isOutOfWindow = args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
+				? !HitTest(args, out var originalSource) // No need to find the stale branch for touch as we will flush the over state on the whole tree
+				: !HitTest(args, _isOver, out originalSource, out overStaleBranch);
 			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null) // Note: Theoretically impossible for the Release, but for safety
 			{
@@ -388,12 +391,9 @@ internal partial class InputManager
 			switch ((PointerDeviceType)args.CurrentPoint.Pointer.Type)
 			{
 				case PointerDeviceType.Touch:
-					if (result.VisualTreeAltered)
-					{
-						var root = _inputManager.ContentRoot.VisualTree.RootElement;
-						overStaleBranch = new(root, VisualTreeHelper.SearchDownForLeaf(root, _isOver));
-					}
-					result += RaiseLeave(routedArgs, overStaleBranch);
+					// For touch we need to raise the PointerExited event on all the part of the tree that is pointer over, not only those considered as stale!
+					var overLeaf = VisualTreeHelper.SearchDownForLeaf(_inputManager.ContentRoot.VisualTree.RootElement, _isOver);
+					result += Raise(Leave, overLeaf, routedArgs);
 					break;
 
 				// If we had capture, we might not have raise the pointer enter on the originalSource.
@@ -470,9 +470,15 @@ internal partial class InputManager
 			};
 			var result = default(PointerEventDispatchResult);
 
-			// First we make sure to update the over state of the pointer that is being cancelled (and using its current position!)
+			// First we make sure to update the over state (i.e. leave!) on the branch that is no longer under the pointer
+			// (The move that trigger the direct manipulation to kick-in might include element boundaries traversal)
 			result += RaiseLeave(routedArgs, overStaleBranch, ref originalSource);
+
+			// Then we raise the cancelled event on element directly under the pointer.
+			// (This will also raise the leave on the "main" branch)
 			result += RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
+
+			// Finally we also make sure to clean the pressed state if any branch was not detected.
 			result += CleanPressedState(routedArgs);
 
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
@@ -566,20 +572,6 @@ internal partial class InputManager
 			{
 				result = Raise(Leave, branch.Leaf, args);
 				HitTestIfStale(result, args, ref originalSource, nameof(RaiseLeave), entryPoint, entryLine);
-			}
-
-			return result;
-		}
-
-		private PointerEventDispatchResult RaiseLeave(
-			PointerRoutedEventArgs args,
-			VisualTreeHelper.Branch? overStaleBranch)
-		{
-			var result = default(PointerEventDispatchResult);
-
-			if (overStaleBranch is { } branch)
-			{
-				result = Raise(Leave, branch.Leaf, args);
 			}
 
 			return result;
@@ -761,6 +753,18 @@ internal partial class InputManager
 			return element is not null;
 		}
 
+		private bool HitTest(
+			PointerEventArgs args,
+			[NotNullWhen(true)] out UIElement? element,
+			string? reason = null,
+			[CallerMemberName] string entryPoint = "",
+			[CallerLineNumber] int entryLine = -1)
+		{
+			(element, _) = HitTestCore(args, null, entryPoint, entryLine, reason);
+
+			return element is not null;
+		}
+
 		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTestCore(PointerEventArgs args, StalePredicate? isStale, string entryPoint, int entryLine, string? reason)
 		{
 			if (_inputManager.ContentRoot.XamlRoot is null)
@@ -906,6 +910,7 @@ internal partial class InputManager
 		private static void Trace(string text)
 		{
 			_log.Trace(text);
+			Console.WriteLine(text);
 		}
 
 		private void TraceIgnoredAsNoTree(Windows.UI.Core.PointerEventArgs args, [CallerMemberName] string caller = "")

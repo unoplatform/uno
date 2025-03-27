@@ -179,7 +179,7 @@ namespace Windows.UI.Input
 				if (point.Pointer == _origins.Pointer1.Pointer)
 				{
 					this.Log().Error(
-						"Invalid manipulation state: We are receiving a down for the second time for the same pointer!"
+						"Invalid manipulation state: We are receiving a down for the second time for the same pointer! "
 						+ "This is however common when using iOS emulator with VNC where we might miss some pointer events "
 						+ "due to focus being stole by debugger, in that case you can safely ignore this message.");
 					return false; // Request to create a new manipulation

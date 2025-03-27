@@ -443,6 +443,12 @@ public partial class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
+	public void Release(Point position)
+	{
+		Inject(GetRelease(position));
+		_currentPosition = null;
+	}
+
 	public void Release()
 	{
 		if (_currentPosition is { } current)

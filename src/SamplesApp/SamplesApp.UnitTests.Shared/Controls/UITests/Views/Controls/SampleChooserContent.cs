@@ -53,5 +53,8 @@ namespace SampleControl.Entities
 			};
 
 		public override int GetHashCode() => ControlName.GetHashCode();
+
+		/// <inheritdoc />
+		public override string ToString() => ControlName;
 	}
 }

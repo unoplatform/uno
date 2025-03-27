@@ -529,12 +529,10 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			Rect clippingBounds;
 			var viewBoxPath = _spareViewBoxPath;
-
 			viewBoxPath.Rewind();
 
-			clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
+			var clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
 				? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
 				: Rect.Infinite;
 
