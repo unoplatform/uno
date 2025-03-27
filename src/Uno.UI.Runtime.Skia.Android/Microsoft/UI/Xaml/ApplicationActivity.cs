@@ -39,8 +39,6 @@ namespace Microsoft.UI.Xaml
 
 		private InputPane _inputPane;
 
-		private bool _started;
-
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -239,32 +237,19 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
+			_skCanvasView = new UnoSKCanvasView(this);
+			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+			RelativeLayout.AddView(_skCanvasView);
+
+			_nativeLayerHost = new ClippedRelativeLayout(this);
+			_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+			RelativeLayout.AddView(NativeLayerHost);
+
 			FindViewById(global::Android.Views.Window.IdAndroidContent)!.ViewTreeObserver!.AddOnPreDrawListener(new ActivationPreDrawListener());
-		}
-
-		protected override void OnStart()
-		{
-			base.OnStart();
-
-			// OnStart gets fired either after onCreate (first launch) or after onRestart
-			// (go out of app then back again). We only want to do this once, hence
-			// the flag.
-			if (!_started)
-			{
-				_started = true;
-
-				_skCanvasView = new UnoSKCanvasView(this);
-				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(_skCanvasView);
-
-				_nativeLayerHost = new ClippedRelativeLayout(this);
-				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(NativeLayerHost);
-			}
 		}
 
 		internal void InvalidateRender()
