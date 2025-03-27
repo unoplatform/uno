@@ -628,7 +628,7 @@ public class Given_InputManager
 		Grid.SetColumn(col1, 0);
 		Grid.SetColumn(col2, 1);
 
-		var position = await UITestHelper.Load(ui);
+		await UITestHelper.Load(ui);
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
@@ -637,7 +637,7 @@ public class Given_InputManager
 		col1.PointerExited += (snd, args) => exited = true;
 
 		finger.Press(col1.GetAbsoluteBounds().GetCenter());
-		finger.MoveBy(1,1);
+		finger.MoveBy(1, 1);
 		finger.Release(col2.GetAbsoluteBounds().GetCenter());
 
 		Assert.IsTrue(exited, "Exited should have been raised on col1 as part of the release.");
