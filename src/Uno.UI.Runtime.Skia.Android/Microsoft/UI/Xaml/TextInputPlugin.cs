@@ -271,7 +271,17 @@ internal sealed class TextInputPlugin
 		if (keyEvent is not null
 			&& _inputConnection is TextInputConnection inputConnection)
 		{
-			return inputConnection.handleKeyEvent(keyEvent);
+			var handled = inputConnection.handleKeyEvent(keyEvent);
+
+			if (!handled && (keyEvent.KeyCode == Keycode.Enter || keyEvent.KeyCode == Keycode.NumpadEnter))
+			{
+				// When using soft keyboards, we don't get KeyUp/KeyDown events. Instead,
+				// the input method sends us updates with the updated text values. We
+				// add this hack here specifically to support InputExtensions in
+				// Toolkit, which listens to KeyUp/KeyDown events to operate, but it would
+				// be more reasonable to treat Enter like any other key.
+				return ApplicationActivity.Instance.DispatchKeyEvent(keyEvent);
+			}
 		}
 
 		return _inputConnection.SendKeyEvent(keyEvent);
