@@ -17,9 +17,13 @@ using System.Runtime.CompilerServices;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+using Windows.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -77,6 +81,22 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		else
 		{
 			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+		}
+	}
+
+	[JSExport]
+	private static async Task PrefetchFonts()
+	{
+		var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
+		if (textFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
+		}
+
+		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+		if (symbolsFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
 		}
 	}
 

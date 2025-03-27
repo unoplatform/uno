@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
-using Uno.Foundation.Logging;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 
@@ -42,4 +41,29 @@ public static class FontFamilyHelper
 		FontStretch stretch,
 		FontStyle style)
 		=> PreloadAsync(new FontFamily(familyName), weight, stretch, style);
+
+	/// <param name="uri">The URI of the font (ending with.ttf without .manifest)</param>
+	public static async Task<bool> PreloadAllFontsInManifest(Uri uri)
+	{
+		var manifestUri = new Uri(uri.OriginalString + ".manifest");
+		var path = Uri.UnescapeDataString(manifestUri.PathAndQuery).TrimStart('/');
+		if (!await StorageFileHelper.ExistsInPackage(path))
+		{
+			return false;
+		}
+
+		var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
+		var manifestStream = await manifestFile.OpenStreamForReadAsync();
+		var manifest = FontManifestHelpers.DeserializeManifest(manifestStream);
+
+		if (manifest is null)
+		{
+			return false;
+		}
+
+		var tasks = manifest.Fonts
+			.Select(fontInfo => PreloadAsync(fontInfo.FamilyName, new FontWeight(fontInfo.FontWeight), fontInfo.FontStretch, fontInfo.FontStyle));
+
+		return await Task.WhenAll(tasks).ContinueWith(combinedTask => combinedTask.Result.All(t => t));
+	}
 }

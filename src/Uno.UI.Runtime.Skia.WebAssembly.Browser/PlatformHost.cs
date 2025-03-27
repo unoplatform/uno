@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions.ApplicationModel.Core;
@@ -16,7 +17,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
+public partial class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
@@ -83,6 +84,8 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 			DisplayInformation.GetForCurrentView();
 		}
 
+		PersistBootstrapperLoader();
+
 		_renderer = new BrowserRenderer(this);
 
 		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
@@ -115,4 +118,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
+
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
+	public static partial void PersistBootstrapperLoader();
 }

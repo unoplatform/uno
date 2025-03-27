@@ -30,9 +30,12 @@ internal static class FontManifestHelpers
 		TypeInfoResolver = FontManifestSerializerContext.Default,
 	};
 
+	internal static FontManifest? DeserializeManifest(Stream manifestStream)
+		=> JsonSerializer.Deserialize<FontManifest>(manifestStream, _options);
+
 	internal static string GetFamilyNameFromManifest(Stream jsonStream, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
-		var manifest = JsonSerializer.Deserialize<FontManifest>(jsonStream, _options);
+		var manifest = DeserializeManifest(jsonStream);
 		return GetFamilyNameFromManifest(manifest, weight, style, stretch);
 	}
 

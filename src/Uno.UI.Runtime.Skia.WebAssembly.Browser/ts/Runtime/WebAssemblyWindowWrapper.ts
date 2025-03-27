@@ -4,9 +4,11 @@ namespace Uno.UI.Runtime.Skia {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
+		private prefetchFonts: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
+		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
 
 		private static activeInstances: { [id: string]: WebAssemblyWindowWrapper } = {};
 
@@ -17,6 +19,14 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static initialize(owner: any) {
 			WebAssemblyWindowWrapper.activeInstances[owner] = new WebAssemblyWindowWrapper(owner);
+		}
+
+		public static persistBootstrapperLoader() {
+			let bootstrapperLoaders = document.getElementsByClassName(WebAssemblyWindowWrapper.unoPersistentLoaderClassName);
+			if (bootstrapperLoaders.length > 0) {
+				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+				bootstrapperLoader.classList.add(WebAssemblyWindowWrapper.unoKeepLoaderClassName);
+			}
 		}
 
 		private async build() {
@@ -48,6 +58,8 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.resize();
 
+			await this.prefetchFonts();
+
 			this.removeLoading();
 		}
 
@@ -71,6 +83,7 @@ namespace Uno.UI.Runtime.Skia {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 				this.onResize = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+				this.prefetchFonts = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.PrefetchFonts;
 			}
 		}
 
