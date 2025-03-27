@@ -40,7 +40,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						var tcs = new TaskCompletionSource<ImageData>();
 						_ = Task.Run(async () =>
 						{
-							tcs.TrySetResult(await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct));
+							try
+							{
+								tcs.TrySetResult(await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct));
+							}
+							catch (Exception e)
+							{
+								tcs.TrySetResult(ImageData.FromError(e));
+							}
 						}, ct);
 
 						return await tcs.Task;
@@ -56,12 +63,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					var tcs = new TaskCompletionSource<ImageData>();
 					_ = Task.Run(async () =>
 					{
-						if (uri.IsLocalResource())
+						try
 						{
-							uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
-						}
+							if (uri.IsLocalResource())
+							{
+								uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+							}
 
-						tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
+							tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
+						}
+						catch (Exception e)
+						{
+							tcs.TrySetResult(ImageData.FromError(e));
+						}
 					}, ct);
 
 					var imageData = await tcs.Task;

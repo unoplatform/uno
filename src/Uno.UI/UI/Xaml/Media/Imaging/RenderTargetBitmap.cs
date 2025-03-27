@@ -109,7 +109,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var tcs = new TaskCompletionSource<ImageData>();
 			_ = Task.Run(() =>
 			{
-				tcs.TrySetResult(Open(buffer, _bufferSize, width, height));
+				try
+				{
+					tcs.TrySetResult(Open(buffer, _bufferSize, width, height));
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetResult(ImageData.FromError(e));
+				}
 			}, ct);
 
 			asyncImage = tcs.Task.ContinueWith(task =>
