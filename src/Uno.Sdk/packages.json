@@ -24,6 +24,8 @@
 		"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
 		"Uno.WinUI.Runtime.WebAssembly",
 		"Uno.WinUI.MediaPlayer.WebAssembly",
+		"Uno.WinUI.MediaPlayer.Skia.X11",
+		"Uno.WinUI.MediaPlayer.Skia.Win32",
 		"Uno.WinUI.Graphics3DGL",
 		"Uno.WinUI.Graphics2DSK"
 	  ]
