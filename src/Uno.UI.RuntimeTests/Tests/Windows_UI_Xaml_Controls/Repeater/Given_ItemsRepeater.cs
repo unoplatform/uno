@@ -494,6 +494,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => e.DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_NumberBox_In_Repeater_Then_CanFocus_And_Edit()
+		{
+			var sut = SUT.Create(
+				source: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				itemTemplate: new DataTemplate(() => new Border
+				{
+					Child = new Grid
+					{
+						Children =
+						{
+							new NumberBox() {Value = 10},
+						}
+					}
+				}),
+				viewport: new Size(120, 500)
+			);
+
+			await sut.Load();
+
+			var numberBox = sut.Repeater.GetAllChildren().OfType<NumberBox>().FirstOrDefault();
+			numberBox.Should().NotBeNull();
+			numberBox.Value.Should().Be(10);
+
+			numberBox.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			numberBox.Value = 42;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			numberBox.Value.Should().Be(42);
+		}
+
 		private record MyItem(int Id, double Height, Color Color)
 		{
 			public string Title => $"Item {Id}";
