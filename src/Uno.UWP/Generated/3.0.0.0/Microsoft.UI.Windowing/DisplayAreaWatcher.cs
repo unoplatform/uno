@@ -23,7 +23,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Added.add
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Added.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -38,8 +38,8 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.DisplayAreaWatcher", "void DisplayAreaWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Added.add
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Status.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Added.remove
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.EnumerationCompleted.add
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.EnumerationCompleted.remove
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayAreaWatcher.Removed.add

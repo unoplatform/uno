@@ -172,6 +172,116 @@ namespace Microsoft.UI.Content
 		// Skipping already declared property RasterizationScale
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Content.ChildSiteLink> Children
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IEnumerable<ChildSiteLink> ContentIsland.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CChildSiteLink%3E%20ContentIsland.Children");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 LocalToClientTransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 ContentIsland.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentIsland.LocalToClientTransformMatrix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 LocalToParentTransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 ContentIsland.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentIsland.LocalToParentTransformMatrix");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Content.DesktopPopupSiteBridge> Popups
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IEnumerable<DesktopPopupSiteBridge> ContentIsland.Popups is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CDesktopPopupSiteBridge%3E%20ContentIsland.Popups");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ProcessesKeyboardInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentIsland.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIsland.ProcessesKeyboardInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ProcessesPointerInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ContentIsland.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIsland.ProcessesPointerInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentAutomationOptions ContentIsland.AutomationOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentAutomationOptions%20ContentIsland.AutomationOption");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object FragmentRootAutomationProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ContentIsland.FragmentRootAutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentIsland.FragmentRootAutomationProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object NextSiblingAutomationProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ContentIsland.NextSiblingAutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentIsland.NextSiblingAutomationProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object ParentAutomationProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ContentIsland.ParentAutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentIsland.ParentAutomationProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object PreviousSiblingAutomationProvider
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ContentIsland.PreviousSiblingAutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentIsland.PreviousSiblingAutomationProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsClosed
 		{
 			get
@@ -180,7 +290,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.set
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AppData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AppData.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.CoordinateConverter.get
@@ -194,7 +304,7 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandEnabled.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsSiteEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsSiteVisible.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.LayoutDirection.get
@@ -221,9 +331,20 @@ namespace Microsoft.UI.Content
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ActualSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.StateChanged.remove
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Children.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.LocalToClientTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.LocalToParentTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Popups.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ProcessesKeyboardInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ProcessesPointerInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationOption.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.FragmentRootAutomationProvider.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.NextSiblingAutomationProvider.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ParentAutomationProvider.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.PreviousSiblingAutomationProvider.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -231,13 +352,34 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "void ContentIsland.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ActualSize.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.add
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationProviderRequested.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.FrameworkClosed.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.FrameworkClosed.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Content.ContentIsland CreateForSystemVisual(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Windows.UI.Composition.Visual root)
+		{
+			throw new global::System.NotImplementedException("The member ContentIsland ContentIsland.CreateForSystemVisual(DispatcherQueue queue, Visual root) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ContentIsland.CreateForSystemVisual%28DispatcherQueue%20queue%2C%20Visual%20root%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Content.ContentIsland[] FindAllForSystemCompositor(global::Windows.UI.Composition.Compositor compositor)
+		{
+			throw new global::System.NotImplementedException("The member ContentIsland[] ContentIsland.FindAllForSystemCompositor(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%5B%5D%20ContentIsland.FindAllForSystemCompositor%28Compositor%20compositor%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Content.ContentIsland GetBySystemVisual(global::Windows.UI.Composition.Visual child)
+		{
+			throw new global::System.NotImplementedException("The member ContentIsland ContentIsland.GetBySystemVisual(Visual child) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ContentIsland.GetBySystemVisual%28Visual%20child%29");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ContentIsland Create(global::Microsoft.UI.Composition.Visual Root)

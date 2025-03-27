@@ -33,12 +33,23 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float DisplayScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float ContentIslandEnvironment.DisplayScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentIslandEnvironment.DisplayScale");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayId.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.add
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.remove
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayScale.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.ContentIslandEnvironment, global::Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs> SettingChanged
