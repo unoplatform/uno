@@ -23,6 +23,7 @@ namespace Windows.UI.ViewManagement
 		partial void EnsureFocusedElementInViewPartial()
 		{
 			_padScrollContentPresenter?.Dispose(); // Restore padding
+			var xamlRoot = Microsoft.UI.Xaml.Window.CurrentSafe?.Content?.XamlRoot;
 
 			var initialWindow = Window.InitialWindow;
 			if (initialWindow is null)
