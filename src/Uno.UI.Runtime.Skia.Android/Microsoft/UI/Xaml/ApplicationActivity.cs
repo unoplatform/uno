@@ -128,6 +128,9 @@ namespace Microsoft.UI.Xaml
 			return handled;
 		}
 
+
+		private readonly int[] _locationInWindow = new int[2];
+
 		public override bool DispatchGenericMotionEvent(MotionEvent? ev)
 		{
 			if (ev is null)
@@ -147,9 +150,12 @@ namespace Microsoft.UI.Xaml
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
-			var correction = new int[2];
-			_skCanvasView?.GetLocationInWindow(correction);
-			return AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction, nativelyHandled);
+			_skCanvasView?.GetLocationInWindow(_locationInWindow);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+
+			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
+			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
+			return true;
 		}
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
@@ -171,9 +177,12 @@ namespace Microsoft.UI.Xaml
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
-			var correction = new int[2];
-			_skCanvasView?.GetLocationInWindow(correction);
-			return AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction, nativelyHandled);
+			_skCanvasView?.GetLocationInWindow(_locationInWindow);
+			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+
+			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
+			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
+			return true;
 		}
 
 		public void DismissKeyboard()

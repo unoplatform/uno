@@ -929,8 +929,10 @@ namespace Microsoft.UI.Xaml
 #endif
 					break;
 				case RoutedEventFlag.PointerCanceled:
+				case RoutedEventFlag.PointerCaptureLost when ptArgs.CanceledByDirectManipulation:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
+
 					// No local state (over/pressed/manipulation/gestures) to update for
 					//	- PointerCaptureLost:
 					//	- PointerWheelChanged:

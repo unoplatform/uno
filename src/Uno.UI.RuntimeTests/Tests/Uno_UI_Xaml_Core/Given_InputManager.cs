@@ -602,6 +602,47 @@ public class Given_InputManager
 		Assert.IsTrue(contentRoot.InputManager.Initialized);
 	}
 
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ReleaseOnSibling_Then_GetLeave()
+	{
+		Border col1, col2;
+		var ui = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			ColumnDefinitions =
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+			},
+			Children =
+			{
+				(col1 = new Border { Background = new SolidColorBrush(Colors.DeepPink) }),
+				(col2 = new Border { Background = new SolidColorBrush(Colors.DeepSkyBlue) }),
+			}
+		};
+
+		Grid.SetColumn(col1, 0);
+		Grid.SetColumn(col2, 1);
+
+		await UITestHelper.Load(ui);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		var exited = false;
+		col1.PointerExited += (snd, args) => exited = true;
+
+		finger.Press(col1.GetAbsoluteBounds().GetCenter());
+		finger.MoveBy(1, 1);
+		finger.Release(col2.GetAbsoluteBounds().GetCenter());
+
+		Assert.IsTrue(exited, "Exited should have been raised on col1 as part of the release.");
+	}
+
 	private CoreCursorType? GetCursorShape()
 	{
 		var cursor = TestServices.WindowHelper

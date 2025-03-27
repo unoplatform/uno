@@ -35,9 +35,6 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		internal const MotionEventActions StylusWithBarrelUp = PointerHelpers.StylusWithBarrelUp;
 
-		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
-		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
-
 		// _lastNativeEvent.lastArgs is not necessary equal to LastPointerEvent. _lastNativeEvent.lastArgs is
 		// the last PointerRoutedEventArgs that was created as part of the native bubbling of _lastNativeEvent.nativeEvent.
 		// In other words, if a PointerRoutedEventArgs was created in managed (using the parameterless constructor),
@@ -64,13 +61,7 @@ namespace Microsoft.UI.Xaml.Input
 			_x = nativeEvent.GetX(pointerIndex);
 			_y = nativeEvent.GetY(pointerIndex);
 
-			// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
-			// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
-			// If deviceId is greater than 0x00ffffff, we might have a conflict but only in case of multi touch
-			// and with a high variation of deviceId. We assume that's safe enough.
-			// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
-			//		 otherwise up_2 will be with the id of 1
-			var pointerId = ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
+			var pointerId = PointerHelpers.GetPointerId(nativeEvent, pointerIndex);
 			var nativePointerAction = nativeEvent.Action;
 			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
