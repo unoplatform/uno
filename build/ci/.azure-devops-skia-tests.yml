@@ -14,7 +14,7 @@ stages:
 - stage: runtime_tests_skia_build
   displayName: Build Skia Runtime Tests
   dependsOn:
-    - Setup
+    - binaries_build_native_macos
 
   jobs:
   - template: .azure-devops-skia-tests-build.yml
@@ -95,7 +95,7 @@ stages:
 - stage: runtime_tests_skia_ios
   displayName: iOS Skia Runtime Tests
   dependsOn:
-    - Setup
+    - binaries_build_native_macos
 
   jobs:
   - template: .azure-devops-skia-tests-build-ios.yml
