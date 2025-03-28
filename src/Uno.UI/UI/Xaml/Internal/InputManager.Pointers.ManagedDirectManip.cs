@@ -280,7 +280,7 @@ partial class InputManager
 
 				if (_trace)
 				{
-					Trace($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta}){(args.IsInertial ? " *inertial*" : "")}");
+					Trace($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta} | v={args.Velocities}){(args.IsInertial ? " *inertial*" : "")}");
 				}
 
 				var unhandledDelta = args.Delta;
