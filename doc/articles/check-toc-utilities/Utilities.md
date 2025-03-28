@@ -5,7 +5,7 @@ uid: Uno.Contributing.check-toc.Utilities
 
 *[SoC]: Separation of Concerns – Part of Clean Architecture
 
-The utility functions used by the `check_toc.ps1` script follow SoC principles to improve modularity, maintainability, and testability. These helpers are dynamically imported during script execution via the [`Import-TocCheckerUtils.ps1`](../check-toc-utilities/Import-TocCheckerUtils.ps1) script and encapsulate common logic such as file enumeration, header parsing, and output generation.
+The utility functions used by the `check_toc.ps1` script follow SoC principles to improve modularity, maintainability, and testability. These helpers are dynamically imported during script execution via the [`Import-TocCheckerUtils.ps1`](./Import-TocCheckerUtils.ps1) script and encapsulate common logic such as file enumeration, header parsing, and output generation.
 
 > [!TIP]
 > Keeping utility functions well-documented and separated from the main script logic helps contributors understand, maintain, and extend the tooling efficiently.
