@@ -13,7 +13,7 @@ This guide is for contributors working with the Uno documentation who want to ve
 
 - Any Uno Platform supported IDE
 
-### [PowerShell Environment]
+### PowerShell Environment
 
 - Windows PowerShell 5.1 or PowerShell Core 7+
 - Local clone of the Uno documentation repository
@@ -66,6 +66,7 @@ Open this file to view `- name:` and `href:` entries that should be added to `to
    > [!NOTE]
    > Visual Studio 2022 does not show the generated file by default.
    > To open it, see these Steps:
+   >
    > ![check-toc-find-toc-additions](..\uno-development\assets\check-toc-find-toc-additions-file.gif)
 
 ## Related Pages
@@ -76,4 +77,4 @@ Open this file to view `- name:` and `href:` entries that should be added to `to
 
 ---
 
-[!include[getting-help](includes/getting-help.md)]
+[!INCLUDE [getting-help](xref:Uno.Development.GettingHelp)]
