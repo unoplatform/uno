@@ -1,13 +1,13 @@
 Describe "Import-TocCheckerUtils.ps1 Dot-Sourcing Functionality" {
+    # Import the function to test
     BeforeAll {
-        # Run the Import-TocCheckerUtils.ps1 script to make the function available
-        . (Join-Path -Path $PSScriptRoot -ChildPath 'Import-TocCheckerUtils.ps1')
+        . $PSCommandPath.Replace('.Tests.ps1','.ps1')
     }
 
     It "should dot-source all .ps1 scripts in the folder except itself, excluded files and test scripts" {
         # Arrange
         $utilsFolder = $PSScriptRoot
-        $testFileName = [System.IO.Path]::GetFileName($MyInvocation.MyCommand.Path)
+        $testFileName = $MyInvocation.MyCommand.Path # TODO: Fit to docs for using this correctly
         $excludeFiles = @('Get-IrrelevantThings.ps1', 'Import-TocCheckerUtils.ps1', $testFileName)
 
         # Get all utility script files to be dot-sourced (excluding test and irrelevant ones)

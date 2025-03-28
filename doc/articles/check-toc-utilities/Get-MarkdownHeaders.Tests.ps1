@@ -2,7 +2,7 @@
 # dot source does not always work when using with Invoke-Pester -Output Detailed .\Get-MarkdownHeader.Test.ps1
 # so run . .\Get-MarkdownHeader.ps1 manually before.
 BeforeAll {
-    . "$PSScriptRoot\Get-MarkdownHeader.ps1"
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
 }
 
 Describe 'Get-MarkdownHeader' {
