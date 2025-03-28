@@ -771,6 +771,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Something", textBox.TextBoxView.Text);
 		}
+
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Default_Foreground_TextBoxView(bool useDarkTheme)
+		{
+			using var _ = useDarkTheme ? ThemeHelper.UseDarkTheme() : default;
+
+			var SUT = new TextBox { Text = "Asd" };
+
+			await UITestHelper.Load(SUT);
+			var expected = GetBrushColor(SUT.Foreground);
+			var forwarded = GetBrushColor(SUT.TextBoxView.Foreground);
+			var native = new Color((uint)SUT.TextBoxView.CurrentTextColor);
+
+			Assert.AreEqual(expected, forwarded);
+			Assert.AreEqual(expected, native);
+
+			Color? GetBrushColor(Brush brush) => (brush as SolidColorBrush)?.Color;
+		}
 #endif
 
 		[TestMethod]
