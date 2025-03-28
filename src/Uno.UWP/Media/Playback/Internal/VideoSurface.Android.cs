@@ -11,7 +11,7 @@ using Javax.Microedition.Khronos.Egl;
 namespace Uno.Media.Playback
 {
 	[Register("uno.media.playback.VideoSurface")]
-	public class VideoSurface : TextureView, IVideoSurface
+	internal class VideoSurface : TextureView, IVideoSurface
 	{
 		public VideoSurface(Context context) : base(context)
 		{
