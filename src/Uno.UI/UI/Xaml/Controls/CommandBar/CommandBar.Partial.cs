@@ -1594,8 +1594,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandExecutionStatic(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1605,8 +1604,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal static void OnCommandBarElementVisibilityChanged(ICommandBarElement element)
 		{
-			CommandBar? parentCmdBar;
-			FindParentCommandBarForElement(element, out parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 
 			if (parentCmdBar is { })
 			{
@@ -1866,11 +1864,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						desiredSize = elementAsAppBarButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarButton);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						desiredSize = elementAsAppBarToggleButton.GetKeyboardAcceleratorTextDesiredSize();
+						desiredSize = AppBarButtonHelpers<AppBarToggleButton>.GetKeyboardAcceleratorTextDesiredSize(elementAsAppBarToggleButton);
 					}
 
 					desiredWidth = desiredSize.Width;
@@ -1889,11 +1887,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (element is AppBarButton elementAsAppBarButton)
 					{
-						elementAsAppBarButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarButton>.UpdateTemplateSettings<AppBarButtonTemplateSettings>(elementAsAppBarButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 					else if (element is AppBarToggleButton elementAsAppBarToggleButton)
 					{
-						elementAsAppBarToggleButton.UpdateTemplateSettings(maxAppBarKeyboardAcceleratorTextWidth);
+						AppBarButtonHelpers<AppBarToggleButton>.UpdateTemplateSettings<AppBarToggleButtonTemplateSettings>(elementAsAppBarToggleButton, maxAppBarKeyboardAcceleratorTextWidth);
 					}
 				}
 			}
@@ -2097,8 +2095,9 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		}
 
 
-		public static void FindParentCommandBarForElement(ICommandBarElement element, out CommandBar? parentCmdBar)
+		public static CommandBar? FindParentCommandBarForElement(ICommandBarElement element)
 		{
+			CommandBar? parentCmdBar = null;
 			if (element is DependencyObject elementAsDO &&
 				ItemsControl.ItemsControlFromItemContainer(elementAsDO) is { } ic &&
 				ic.GetTemplatedParent() is CommandBar tp)
@@ -2114,6 +2113,8 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 					.OfType<CommandBar>()
 					.FirstOrDefault();
 			}
+
+			return parentCmdBar;
 		}
 
 		private void FindMovablePrimaryCommands(double availablePrimaryCommandsWidth, double primaryItemsControlDesiredWidth, out int primaryCommandsCountInTransition)
@@ -2608,7 +2609,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 		internal static bool IsCommandBarElementInOverflow(ICommandBarElement element)
 		{
-			FindParentCommandBarForElement(element, out var parentCmdBar);
+			var parentCmdBar = FindParentCommandBarForElement(element);
 			bool isInOverflow = false;
 
 			if (parentCmdBar is { })
@@ -2643,7 +2644,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int positionInSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
@@ -2743,7 +2744,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		{
 			int sizeOfSet = -1;
 
-			FindParentCommandBarForElement(element, out var parentCommandBar);
+			var parentCommandBar = FindParentCommandBarForElement(element);
 
 			if (parentCommandBar is { })
 			{
@@ -3260,7 +3261,7 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			return focusState;
 		}
 
-		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen, bool closeOnDelay)
+		internal void CloseSubMenus(ISubMenuOwner? pMenuToLeaveOpen = null, bool closeOnDelay = false)
 		{
 			var primaryCommands = PrimaryCommands;
 			var secondaryCommands = SecondaryCommands;
