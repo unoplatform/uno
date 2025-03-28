@@ -12,7 +12,7 @@ For the DocFX tool used to build the docs website, see [more info here](xref:Uno
 
 ## Key links
 
-* [how-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md)
+* [How-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md)
 * [WinUI feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md)
 * [Uno-only feature template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md)
 
