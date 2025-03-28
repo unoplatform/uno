@@ -16,7 +16,6 @@ jobs:
   displayName: 'Build iOS Skia Samples App'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
-  dependsOn: skia_package_macos_native_build
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}
