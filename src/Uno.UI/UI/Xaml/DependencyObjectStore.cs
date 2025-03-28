@@ -110,9 +110,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
-#endif
 
 		private InheritedPropertiesDisposable? InheritedProperties
 		{
