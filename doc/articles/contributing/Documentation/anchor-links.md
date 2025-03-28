@@ -42,7 +42,7 @@ You can link to a specific heading in another Markdown file like this:
 [Go to Subsection](otherfile.md#subsection-heading)
 ```
 
-Make sure the linked file is part of the TOC or referenced properly so DocFX includes it in the output.
+Make sure the linked file is part of the TOC or referenced properly so that DocFX includes it in the output.
 
 ## Common Pitfalls
 
