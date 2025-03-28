@@ -46,7 +46,9 @@ while [ $TRY_COUNT -lt 5 ]; do
     sleep 5
     killall -9 chrome || true
     killall -9 xvfb-run || true
-    xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+    killall -9 xvfb || true
+    rm -fr /tmp/.X99-lock || true
+    xvfb-run --server-num 98 google-chrome --enable-logging=stderr -e /dev/stdout --no-sandbox "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
