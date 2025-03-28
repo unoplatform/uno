@@ -31,5 +31,15 @@ namespace Uno.UI.Helpers.WinUI
 
 		[GeneratedRegex(@"\%(\d+)!.*?!", RegexOptions.Singleline)]
 		private static partial Regex CppFormat();
+
+		internal static string Swprintf_s(string input, params object[] inpVars)
+		{
+			int i = 0;
+			input = SimpleCppFormatRegex().Replace(input, m => ("{" + i++/*increase have to be on right side*/ + "}"));
+			return string.Format(CultureInfo.CurrentCulture, input, inpVars);
+		}
+
+		[GeneratedRegex("%.")]
+		private static partial Regex SimpleCppFormatRegex();
 	}
 }
