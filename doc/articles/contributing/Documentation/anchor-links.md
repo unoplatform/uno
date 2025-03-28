@@ -1,7 +1,8 @@
 ---
 uid: Uno.Contributing.Documentation.Anchor-links
-title: Anchor Links in Documentation
 ---
+
+# Anchor Links in Documentation
 
 Anchor links (also called **fragment links**) allow you to link directly to a specific section within a doc file. They are useful for cross-referencing headings and improving navigation in long documentation pages.
 
@@ -42,7 +43,7 @@ You can link to a specific heading in another Markdown file like this:
 [Go to Subsection](otherfile.md#subsection-heading)
 ```
 
-Make sure the linked file is part of the TOC or referenced properly so DocFX includes it in the output.
+Make sure the linked file is part of the TOC or referenced properly so that DocFX includes it in the output.
 
 ## Common Pitfalls
 

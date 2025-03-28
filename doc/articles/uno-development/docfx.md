@@ -29,7 +29,7 @@ DocFX supports extended Markdown syntaxes that are treated specially when conver
 
 You can use [specially-styled blockquotes](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#note-warningtipimportant), to call special attention to particular information.
 
-The following note types are supported, including a sample to each one:
+The following note types are supported, including an example for each one:
 
 ```markdown
 > [!NOTE]
@@ -73,7 +73,7 @@ The following note types are supported, including a sample to each one:
 
 ### Tabs
 
-DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html) precisely.
+DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html#tabs) precisely.
 
 #### Example
 
@@ -144,7 +144,7 @@ To use it, follow this Steps:
 
 ## Building docs website locally with DocFX
 
-Sometimes you may want to run DocFX locally to validate that changes you've made look good in html. To do so you'll first need to generate the 'implemented views' documentation and then, in case you added doc files, [validate the contents of the TOC](#checking-links-in-the-toc), to reduce warning and eventual error output while building the Documentation.
+Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-toc) to minimize warnings and avoid potential build errors.
 
 ### Run DocFX locally
 
@@ -158,7 +158,6 @@ To run DocFX locally and check the resulting html:
 6. Open a Powershell window in the `tools` folder. UNDONE: Terminal in the IDE is enough -->
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
 5. Install docfx globally: `dotnet tool install -g docfx`
-<!--5. Run the following command: `docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository. <!-- UNDONE: Decide if Uno.UI here as placeholder should be exchanged with src? Using Uno.UI here could lead to missunderstanding it as src\Uno.UI which would not only make no sense in this context, but also will cause avoidable Issues by building and serving docfx locally!-->
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
 7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.
