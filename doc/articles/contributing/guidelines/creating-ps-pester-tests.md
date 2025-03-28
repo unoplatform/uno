@@ -6,7 +6,7 @@ uid: Uno.Contributing.Scripts.PowerShell-Pester-Tests
 
 ## Introduction
 
-Some Parts of Uno.UI like the [Toc Checker](xref:Uno.Contributing.check-toc.Overview) with its [Utility Functions](xref:Uno.Contributing.check-toc.Utilities) are written in PowerShell. To make sure, they are working properly, the recommended and most common used Testing Framework is [Pester](https://pester.dev/docs/quick-start).
+Some Parts of Uno.UI like the [Toc Checker](xref:Uno.Contributing.check-toc.Overview) with its [Utility Functions](xref:Uno.Contributing.check-toc.Utilities) are written in PowerShell. To make sure they are working properly, the recommended and most commonly used Testing Framework is [Pester](https://pester.dev/docs/quick-start).
 
 <!-- ### TODO: ## Installing Pester 5+ https://pester.dev/docs/introduction/installation -->
 
