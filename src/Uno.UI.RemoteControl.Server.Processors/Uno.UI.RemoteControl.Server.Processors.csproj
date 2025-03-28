@@ -9,6 +9,9 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl.Messaging\EventTracingProvider.cs">
+		  <Link>HotReload\Messages\EventTracingProvider.cs</Link>
+		</Compile>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
 	</ItemGroup>
 
