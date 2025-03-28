@@ -31,6 +31,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchDepth: 1
 
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-windows.yml
