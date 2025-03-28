@@ -29,7 +29,7 @@ DocFX supports extended Markdown syntaxes that are treated specially when conver
 
 You can use [specially-styled blockquotes](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html#note-warningtipimportant), to call special attention to particular information.
 
-The following note types are supported, including a sample to each one:
+The following note types are supported, including an example for each one:
 
 ```markdown
 > [!NOTE]
