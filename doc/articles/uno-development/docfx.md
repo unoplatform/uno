@@ -73,7 +73,7 @@ The following note types are supported, including an example for each one:
 
 ### Tabs
 
-DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html) precisely.
+DocFX can generate tabs. Make sure to follow the [syntax specification](https://dotnet.github.io/docfx/docs/markdown.html#tabs) precisely.
 
 #### Example
 
