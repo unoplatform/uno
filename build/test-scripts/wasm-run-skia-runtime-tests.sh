@@ -42,8 +42,6 @@ while [ $TRY_COUNT -lt 5 ]; do
     # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
     # print the logs as expected
     # for some reason, you have to run the next line twice or else it doesn't work
-    xvfb-run google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
-    sleep 5
     killall -9 chrome || true
     killall -9 xvfb-run || true
     killall -9 Xvfb || true
