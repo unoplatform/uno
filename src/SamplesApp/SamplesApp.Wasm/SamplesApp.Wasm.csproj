@@ -39,6 +39,7 @@
 		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
 		-->
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
