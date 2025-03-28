@@ -111,7 +111,7 @@ Html output:
 
 ## Building docs website locally with DocFX
 
-Sometimes you may want to run DocFX locally to validate that changes you've made look good in html. To do so you'll first need to generate the 'implemented views' documentation and then, in case you added doc files, [validate the contents of the TOC](#checking-links-in-the-toc), to reduce warning and eventual error output while building the Documentation.
+Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-toc) to minimize warnings and avoid potential build errors.
 
 ### Run DocFX locally
 
