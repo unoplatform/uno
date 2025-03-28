@@ -1,5 +1,5 @@
-using System.Runtime.InteropServices;
-using Microsoft.UI.Xaml;
+﻿using System.Runtime.InteropServices;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;

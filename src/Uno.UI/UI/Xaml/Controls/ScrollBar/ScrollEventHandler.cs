@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Represents the method that will handle the Scroll event of a ScrollBar.

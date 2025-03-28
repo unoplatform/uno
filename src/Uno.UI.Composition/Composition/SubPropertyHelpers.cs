@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
 using System.Numerics;
 using Windows.UI;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal static class SubPropertyHelpers
 {

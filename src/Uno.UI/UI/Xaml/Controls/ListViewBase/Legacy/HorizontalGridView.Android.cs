@@ -2,14 +2,14 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.ComponentModel;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls.Legacy
 {

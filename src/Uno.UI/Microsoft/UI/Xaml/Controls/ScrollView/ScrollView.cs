@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
@@ -25,7 +25,7 @@ using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 #if !__SKIA__
 [NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
@@ -1126,9 +1126,9 @@ public partial class ScrollView : Control, IScrollView
 	{
 		if (m_renderingToken is null)
 		{
-			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
+			Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
 			m_renderingToken = new SerialDisposable();
-			m_renderingToken.Disposable = Disposable.Create(() => Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering);
+			m_renderingToken.Disposable = Disposable.Create(() => Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering);
 		}
 	}
 

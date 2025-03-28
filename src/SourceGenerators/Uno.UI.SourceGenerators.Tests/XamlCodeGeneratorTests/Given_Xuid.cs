@@ -38,7 +38,7 @@ public class Given_Xuid
 				Sources =
 				{
 					"""
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml.Controls;
 					
 					namespace TestRepro;
 					public sealed partial class XuidGeneratorError : ContentDialog

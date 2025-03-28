@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -22,7 +22,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 
 		internal DataTransferManagerTestsViewModel ViewModel { get; private set; }
 
-		private void DataTransferManagerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataTransferManagerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as DataTransferManagerTestsViewModel;
 		}

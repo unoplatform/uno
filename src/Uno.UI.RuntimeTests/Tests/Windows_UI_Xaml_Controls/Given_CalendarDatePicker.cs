@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -137,7 +137,7 @@ public class Given_CalendarDatePicker
 	public async Task When_Default_Flyout_Date()
 	{
 		var now = DateTimeOffset.UtcNow;
-		var datePicker = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+		var datePicker = new Windows.UI.Xaml.Controls.CalendarDatePicker();
 
 		TestServices.WindowHelper.WindowContent = datePicker;
 
@@ -158,7 +158,7 @@ public class Given_CalendarDatePicker
 	public async Task When_Default_Date_Displayed()
 	{
 		var now = DateTimeOffset.UtcNow;
-		var datePicker = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+		var datePicker = new Windows.UI.Xaml.Controls.CalendarDatePicker();
 
 		TestServices.WindowHelper.WindowContent = datePicker;
 

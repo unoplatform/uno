@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using SkiaSharp;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal interface IFrameProvider : IDisposable
 {

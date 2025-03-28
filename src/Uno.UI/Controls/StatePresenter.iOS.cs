@@ -7,8 +7,8 @@ using System.Runtime.CompilerServices;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 using Foundation;
 using UIKit;

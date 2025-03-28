@@ -1,9 +1,9 @@
-using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+﻿using Uno.UI.Samples.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition")]
+	[Sample("Windows.UI.Composition")]
 	public sealed partial class SKCanvasElement_Simple : UserControl
 	{
 #if __SKIA__

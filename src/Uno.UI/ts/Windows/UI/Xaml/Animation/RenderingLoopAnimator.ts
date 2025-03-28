@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation {
+﻿namespace Windows.UI.Xaml.Media.Animation {
 	export class RenderingLoopAnimator {
 
 		private static dispatchFrame: () => number;
@@ -6,7 +6,7 @@
 		private static init() {
 			if (!RenderingLoopAnimator.dispatchFrame) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					RenderingLoopAnimator.dispatchFrame = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.OnFrame;
+					RenderingLoopAnimator.dispatchFrame = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.OnFrame;
 				} else {
 					throw `Unable to find dotnet exports`;
 				}

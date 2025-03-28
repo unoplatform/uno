@@ -14,12 +14,12 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;
@@ -68,7 +68,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				Y2 = 100
 			}),
 
-			Factory.New(() => new Microsoft.UI.Xaml.Shapes.Path
+			Factory.New(() => new Windows.UI.Xaml.Shapes.Path
 			{
 				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
 				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
@@ -549,7 +549,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Text = text?.ToString() ?? "N/A",
 					VerticalAlignment = VerticalAlignment.Center,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
-					TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center
+					TextAlignment = Windows.UI.Xaml.TextAlignment.Center
 				};
 		}
 

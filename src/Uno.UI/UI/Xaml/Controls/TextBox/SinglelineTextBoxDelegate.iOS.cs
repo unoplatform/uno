@@ -8,7 +8,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxDelegate : UITextFieldDelegate
 	{

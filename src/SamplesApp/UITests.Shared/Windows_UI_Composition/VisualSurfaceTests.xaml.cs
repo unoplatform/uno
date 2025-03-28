@@ -6,20 +6,20 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition",
+	[Sample("Windows.UI.Composition",
 		Name = "CompositionVisualSurface",
 		Description = "Represents a visual tree as an ICompositionSurface that can be used to paint a Visual using a CompositionBrush.",
 		IsManualTest = true,
@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void VisualSurfaceTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 			var visualSurface = compositor.CreateVisualSurface();
 			visualSurface.SourceVisual = ElementCompositionPreview.GetElementVisual(player0);
 			visualSurface.SourceSize = new(200, 100);

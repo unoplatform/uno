@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 {

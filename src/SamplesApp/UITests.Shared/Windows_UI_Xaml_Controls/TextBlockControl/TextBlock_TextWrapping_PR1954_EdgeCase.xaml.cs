@@ -4,8 +4,8 @@ using System.Reflection;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 #if __ANDROID__
 using Android.Text;
@@ -102,7 +102,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 
 		private bool? GetButtonDirection(object sender)
 		{
-			switch ((sender as Microsoft.UI.Xaml.Controls.Button)?.Content)
+			switch ((sender as Windows.UI.Xaml.Controls.Button)?.Content)
 			{
 				case "+": return true;
 				case "-": return false;

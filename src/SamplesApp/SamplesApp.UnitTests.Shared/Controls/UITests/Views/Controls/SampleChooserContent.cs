@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SampleControl.Entities
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{

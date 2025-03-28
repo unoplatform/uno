@@ -2,9 +2,9 @@
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
 using System.Threading.Tasks;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Automation;
+namespace Windows.UI.Xaml.Automation;
 
 /// <summary>
 /// Provides static properties that are used to configure the behavior of the <seealso cref="AutomationProperties"/>

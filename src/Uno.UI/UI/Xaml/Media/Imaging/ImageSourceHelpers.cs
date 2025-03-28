@@ -34,7 +34,7 @@ internal static class ImageSourceHelpers
 #if __SKIA__
 	public static Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct)
 	{
-		var surface = new Microsoft.UI.Composition.SkiaCompositionSurface();
+		var surface = new Windows.UI.Composition.SkiaCompositionSurface();
 		var result = surface.LoadFromStream(imageStream);
 
 		if (result.success)

@@ -13,11 +13,11 @@ using Android.Util;
 using System.Collections;
 using System.Windows.Input;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	public partial class BindableHorizontalListView : NativeHorizontalListView
 	{
 		private int _scrollToIndex = -1;

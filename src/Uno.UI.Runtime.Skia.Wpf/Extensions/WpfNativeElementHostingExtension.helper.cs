@@ -3,7 +3,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
+using ContentPresenter = Windows.UI.Xaml.Controls.ContentPresenter;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf;

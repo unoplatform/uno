@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Media;
 

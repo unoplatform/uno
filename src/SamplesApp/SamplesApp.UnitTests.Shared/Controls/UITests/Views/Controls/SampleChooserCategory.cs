@@ -6,7 +6,7 @@ using Uno;
 
 namespace SampleControl.Entities
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	public partial class SampleChooserCategory : IComparer<SampleChooserContent>, IComparable<SampleChooserCategory>
 	{
 		public SampleChooserCategory()

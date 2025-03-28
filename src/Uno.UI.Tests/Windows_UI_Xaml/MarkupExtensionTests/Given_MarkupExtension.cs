@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 {
@@ -134,7 +134,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(string))]
-	public class SimpleMarkupExtExtension : Microsoft.UI.Xaml.Markup.MarkupExtension
+	public class SimpleMarkupExtExtension : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public string TextValue { get; set; }
 
@@ -145,7 +145,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(TestEntityObject))]
-	public class EntityMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension
+	public class EntityMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public string TextValue { get; set; }
 
@@ -162,7 +162,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	}
 
 	[MarkupExtensionReturnType(ReturnType = typeof(IValueConverter))]
-	public class InverseBoolMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension, IValueConverter
+	public class InverseBoolMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension, IValueConverter
 	{
 		protected override object ProvideValue() => this;
 
@@ -177,7 +177,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		}
 	}
 
-	public class NoReturnTypeMarkupExt : Microsoft.UI.Xaml.Markup.MarkupExtension
+	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public Values UseValue { get; set; }
 

@@ -10,15 +10,15 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -29,7 +29,7 @@ using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 #elif __MACOS__
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
@@ -37,12 +37,12 @@ using Color = System.Drawing.Color;
 #endif
 
 #if __WASM__
-using BaseClass = Microsoft.UI.Xaml.UIElement;
+using BaseClass = Windows.UI.Xaml.UIElement;
 #else
-using BaseClass = Microsoft.UI.Xaml.DependencyObject;
+using BaseClass = Windows.UI.Xaml.DependencyObject;
 #endif
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{

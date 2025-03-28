@@ -6,10 +6,10 @@ using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;

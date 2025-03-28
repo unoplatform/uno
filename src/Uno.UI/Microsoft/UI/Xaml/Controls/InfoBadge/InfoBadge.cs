@@ -4,8 +4,8 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -87,7 +87,7 @@ public partial class InfoBadge : Control
 		}
 	}
 
-	private void OnSizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs args)
+	private void OnSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
 	{
 		CornerRadius GetCornerRadius()
 		{

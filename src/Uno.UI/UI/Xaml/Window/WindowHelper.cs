@@ -1,13 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml;
 
 /// <summary>
-/// An Uno Platform specific <see cref="Microsoft.UI.Xaml.Window"/> helper.
+/// An Uno Platform specific <see cref="Windows.UI.Xaml.Window"/> helper.
 /// </summary>
 public static class WindowHelper
 {

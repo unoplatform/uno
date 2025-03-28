@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -11,5 +11,5 @@ internal interface INativeWindowFactoryExtension
 
 	bool SupportsClosingCancellation { get; }
 
-	INativeWindowWrapper CreateWindow(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot);
+	INativeWindowWrapper CreateWindow(Windows.UI.Xaml.Window window, XamlRoot xamlRoot);
 }

@@ -3,7 +3,7 @@ using System;
 using Uno.Media;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Line : Shape
 	{

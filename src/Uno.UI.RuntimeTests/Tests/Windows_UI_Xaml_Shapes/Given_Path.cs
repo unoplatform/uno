@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		{
 			var SUT = new Path
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Data = new PathGeometry
 				{
 					Figures = new PathFigureCollection
@@ -106,10 +106,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await UITestHelper.Load(SUT);
 
 			var screenShot = await UITestHelper.ScreenShot(SUT);
-			ImageAssert.HasColorAt(screenShot, new Point(25, 25), Microsoft.UI.Colors.Red);
-			ImageAssert.HasColorAt(screenShot, new Point(50, 50), Microsoft.UI.Colors.Red);
-			ImageAssert.DoesNotHaveColorAt(screenShot, new Point(50, 150), Microsoft.UI.Colors.Red);
-			ImageAssert.HasColorAt(screenShot, new Point(50, 250), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenShot, new Point(25, 25), Windows.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenShot, new Point(50, 50), Windows.UI.Colors.Red);
+			ImageAssert.DoesNotHaveColorAt(screenShot, new Point(50, 150), Windows.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenShot, new Point(50, 250), Windows.UI.Colors.Red);
 		}
 
 		[TestMethod]

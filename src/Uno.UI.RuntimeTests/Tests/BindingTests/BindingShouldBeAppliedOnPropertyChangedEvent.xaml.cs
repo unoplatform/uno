@@ -2,8 +2,8 @@
 
 using System;
 using System.ComponentModel;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.RuntimeTests.Tests;
 

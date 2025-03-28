@@ -10,7 +10,7 @@ using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.XamlHost.Extensions;
-using WinUI = Microsoft.UI.Xaml;
+using WinUI = Windows.UI.Xaml;
 using WpfCanvas = global::System.Windows.Controls.Canvas;
 using WpfWindow = global::System.Windows.Window;
 
@@ -25,7 +25,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	private bool _ignorePixelScaling;
 	private WpfCanvas _nativeOverlayLayer;
 	private IWpfRenderer _renderer;
-	private Microsoft.UI.Xaml.UIElement? _rootElement;
+	private Windows.UI.Xaml.UIElement? _rootElement;
 	private ContentSite _contentSite;
 	private WpfWindow? _window;
 

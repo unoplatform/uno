@@ -154,7 +154,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			Debug.Assert(Arguments is null);
 			Debug.Assert(_targetPropertyType is not null);
-			var rhs = $"({_targetPropertyType})global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({_targetPropertyType}), __value)";
+			var rhs = $"({_targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({_targetPropertyType}), __value)";
 			if (ExpressionAfterLastNullAccess is null)
 			{
 				builder.AppendLine($"	{ExpressionBeforeLastNullAccess} = {rhs};");

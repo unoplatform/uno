@@ -5,7 +5,7 @@
 
 using System;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Hosting;
 using Uno.Disposables;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;

@@ -4,13 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
 using Microsoft.UI.Dispatching;
 using Windows.Foundation;
 
@@ -787,7 +787,7 @@ public sealed partial class BiDirectionalScrollController : ContentControl
 			RaiseAddScrollVelocityRequested(new Vector2(0, SmallChangeAdditionalVelocity), new Vector2(SmallChangeInertiaDecayRate), true /*hookupCompletion*/);
 	}
 
-	private void Thumb_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+	private void Thumb_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 	{
 		Point pt = e.GetCurrentPoint(sender as UIElement).Position;
 		RaiseLogMessage("BiDirectionalScrollController: Thumb_PointerPressed with position=" + pt);

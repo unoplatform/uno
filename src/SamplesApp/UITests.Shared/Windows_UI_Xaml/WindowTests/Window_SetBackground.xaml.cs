@@ -7,13 +7,13 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -29,7 +29,7 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 			this.InitializeComponent();
 
 #if HAS_UNO
-			_selectedColor = (Microsoft.UI.Xaml.Window.Current?.Background as SolidColorBrush)?.Color ?? Colors.White;
+			_selectedColor = (Windows.UI.Xaml.Window.Current?.Background as SolidColorBrush)?.Color ?? Colors.White;
 #endif
 		}
 
@@ -41,9 +41,9 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 				_selectedColor = value;
 
 #if HAS_UNO
-				if (Microsoft.UI.Xaml.Window.Current is { }) // could be null if on WinUI tree
+				if (Windows.UI.Xaml.Window.Current is { }) // could be null if on WinUI tree
 				{
-					Microsoft.UI.Xaml.Window.Current.Background = new SolidColorBrush(_selectedColor);
+					Windows.UI.Xaml.Window.Current.Background = new SolidColorBrush(_selectedColor);
 				}
 #endif
 			}

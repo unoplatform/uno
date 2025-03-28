@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationViewItemInvokedEventArgs.cpp, commit 46f9da3
 
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

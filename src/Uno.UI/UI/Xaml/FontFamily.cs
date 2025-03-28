@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Uno.UI;
 using Windows.Networking;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{

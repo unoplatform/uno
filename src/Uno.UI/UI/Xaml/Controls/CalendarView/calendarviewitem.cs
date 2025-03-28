@@ -3,12 +3,12 @@
 
 using System;
 using Windows.System;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Input;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CalendarViewItem : CalendarViewBaseItem
 	{

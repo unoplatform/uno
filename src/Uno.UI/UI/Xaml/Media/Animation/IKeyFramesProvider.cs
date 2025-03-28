@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Media.Animation;
+namespace Windows.UI.Xaml.Media.Animation;
 
 internal interface IKeyFramesProvider
 {

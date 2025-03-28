@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Tests.Enterprise
+namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	internal class Event
 	{

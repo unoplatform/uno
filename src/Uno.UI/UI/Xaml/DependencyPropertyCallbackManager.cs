@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using Uno.Buffers;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// DependencyProperty Callback Manager

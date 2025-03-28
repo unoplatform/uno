@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerInteractingState : InteractionTrackerState
 {

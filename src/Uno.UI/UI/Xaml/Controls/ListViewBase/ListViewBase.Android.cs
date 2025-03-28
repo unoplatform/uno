@@ -6,17 +6,17 @@ using Uno.Client;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using System;
 using AndroidX.RecyclerView.Widget;
 using AndroidX.AppCompat.Widget;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{

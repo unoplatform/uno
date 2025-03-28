@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using MuxTextBox = Windows.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 

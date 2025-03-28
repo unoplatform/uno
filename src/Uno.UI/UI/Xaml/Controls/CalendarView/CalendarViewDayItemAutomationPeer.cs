@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Graphics.Printing.OptionDetails;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls.Primitives;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewDayItem
 	{

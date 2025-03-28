@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Contract for a <see cref="Timeline"/> animation which is backed by <see cref="Timeline.AnimationImplementation{T}"/>.

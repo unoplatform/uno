@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public sealed partial class TimelineCollection : DependencyObjectCollection<Timeline>, IList<Timeline>, IEnumerable<Timeline>
 	{

@@ -7,12 +7,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using Common;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;
 using Private.Infrastructure;
@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 partial class ScrollPresenterTests : MUXApiTestBase
 {
@@ -622,9 +622,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		Border border = new Border();
 		border.Name = "border";
 		border.BorderThickness = new Thickness(3);
-		border.BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+		border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Chartreuse);
 		border.Margin = new Thickness(15);
-		border.Background = new SolidColorBrush(Microsoft.UI.Colors.Beige);
+		border.Background = new SolidColorBrush(Windows.UI.Colors.Beige);
 		border.Child = stackPanel;
 
 		Verify.IsNotNull(scrollPresenter);
@@ -641,7 +641,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			scrollPresenter.Width = c_defaultAnchoringUIScrollPresenterNonConstrainedSize;
 			scrollPresenter.Height = c_defaultAnchoringUIScrollPresenterConstrainedSize;
 		}
-		scrollPresenter.Background = new SolidColorBrush(Microsoft.UI.Colors.AliceBlue);
+		scrollPresenter.Background = new SolidColorBrush(Windows.UI.Colors.AliceBlue);
 		scrollPresenter.Content = border;
 
 		InsertStackPanelChild(stackPanel, 0 /*operationCount*/, 0 /*newIndex*/, c_defaultAnchoringUIStackPanelChildrenCount /*newCount*/);
@@ -680,8 +680,8 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			throw new ArgumentException();
 		}
 
-		SolidColorBrush chartreuseBrush = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
-		SolidColorBrush blanchedAlmondBrush = new SolidColorBrush(Microsoft.UI.Colors.BlanchedAlmond);
+		SolidColorBrush chartreuseBrush = new SolidColorBrush(Windows.UI.Colors.Chartreuse);
+		SolidColorBrush blanchedAlmondBrush = new SolidColorBrush(Windows.UI.Colors.BlanchedAlmond);
 
 		for (int i = 0; i < newCount; i++)
 		{
@@ -743,7 +743,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				{
 					Width = 100,
 					Height = 100,
-					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
 					Margin = new Thickness(0, 600, 0, 0),
 					VerticalAlignment = VerticalAlignment.Top
 				};
@@ -752,7 +752,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				grid.Children.Add(anchorElement);
 				grid.Width = 200;
 				grid.Height = 1000;
-				grid.Background = new SolidColorBrush(Microsoft.UI.Colors.Gray);
+				grid.Background = new SolidColorBrush(Windows.UI.Colors.Gray);
 
 				scrollPresenter = new ScrollPresenter
 				{
@@ -938,9 +938,9 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		{
 			Name = "border",
 			BorderThickness = new Thickness(3),
-			BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse),
+			BorderBrush = new SolidColorBrush(Windows.UI.Colors.Chartreuse),
 			Margin = new Thickness(15),
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Beige),
+			Background = new SolidColorBrush(Windows.UI.Colors.Beige),
 			Child = repeater
 		};
 
@@ -949,7 +949,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 		scrollPresenter.ContentOrientation = ScrollingContentOrientation.Vertical;
 		scrollPresenter.Width = 400;
 		scrollPresenter.Height = 600;
-		scrollPresenter.Background = new SolidColorBrush(Microsoft.UI.Colors.AliceBlue);
+		scrollPresenter.Background = new SolidColorBrush(Windows.UI.Colors.AliceBlue);
 		scrollPresenter.Content = border;
 
 		if (scrollPresenterLoadedEvent != null)

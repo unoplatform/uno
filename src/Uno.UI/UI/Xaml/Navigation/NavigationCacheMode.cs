@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Navigation;
+﻿namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Specifies caching characteristics for a page involved in a navigation.

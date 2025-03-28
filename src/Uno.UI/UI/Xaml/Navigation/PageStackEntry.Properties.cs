@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Navigation;
+namespace Windows.UI.Xaml.Navigation;
 
 partial class PageStackEntry
 {

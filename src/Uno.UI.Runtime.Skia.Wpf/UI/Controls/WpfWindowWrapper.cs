@@ -5,14 +5,14 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
-using WinUIWindow = Microsoft.UI.Xaml.Window;
+using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUIWindow = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 

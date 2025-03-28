@@ -13,12 +13,12 @@ using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SamplesApp;
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	internal class ViewModelBase : INotifyPropertyChanged, IDisposable
 	{
 		public UnitTestDispatcherCompat Dispatcher { get; }
@@ -115,7 +115,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		[Microsoft.UI.Xaml.Data.Bindable]
+		[Windows.UI.Xaml.Data.Bindable]
 		public class Command : ICommand
 		{
 			private readonly Action<object> _action;

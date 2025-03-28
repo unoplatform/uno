@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Markup;
+namespace Windows.UI.Xaml.Markup;
 
 /// <summary>
 /// Defines the property that will be used in Xaml when using implicit content.

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Uno.Collections;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 partial class LayoutInformation
 {

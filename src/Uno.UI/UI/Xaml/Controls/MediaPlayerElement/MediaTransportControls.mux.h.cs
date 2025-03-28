@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class MediaTransportControls // Strings
 {

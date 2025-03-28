@@ -3,7 +3,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ using System.Collections;
 using Android.Widget;
 using Android.Runtime;
 using Uno.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -94,7 +94,7 @@ namespace Uno.UI.Controls.Legacy
 			_adapter.ItemsSource = ItemsSource;
 			_adapter.CustomViewTypeCount = this.CustomViewTypeCount;
 			_adapter.GroupStyle = this.GroupStyle;
-			_adapter.ItemContainerHolderStretchOrientation = Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
+			_adapter.ItemContainerHolderStretchOrientation = Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			_adapter.SecondaryPool = _secondaryPool;
 
 			SelectedItems.Safe()
@@ -602,7 +602,7 @@ namespace Uno.UI.Controls.Legacy
 				ExecuteCommandOnItem(ItemClickCommand, args.Position);
 			}
 
-			ItemClick?.Invoke(this, new Microsoft.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = ListViewAdapter.GetItemAt(args.Position) });
+			ItemClick?.Invoke(this, new Windows.UI.Xaml.Controls.ItemClickEventArgs { ClickedItem = ListViewAdapter.GetItemAt(args.Position) });
 
 			HandleItemSelection(args);
 		}

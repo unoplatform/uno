@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests;
 

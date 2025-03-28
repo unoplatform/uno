@@ -3,12 +3,12 @@
 
 // MUX Reference ItemContainerAutomationPeer.cpp, tag winui3/release/1.5.0
 
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 partial class ItemContainerAutomationPeer : FrameworkElementAutomationPeer, ISelectionItemProvider, IInvokeProvider
 {

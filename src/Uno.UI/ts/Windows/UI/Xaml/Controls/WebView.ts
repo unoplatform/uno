@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Controls {
+﻿namespace Windows.UI.Xaml.Controls {
 
 	export class WebView {
 		static reload(htmlId: string): void {

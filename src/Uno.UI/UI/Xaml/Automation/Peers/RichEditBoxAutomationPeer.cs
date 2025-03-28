@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using DirectUI;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes RichEditBox types to Microsoft UI Automation.

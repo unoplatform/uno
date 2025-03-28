@@ -5,9 +5,9 @@
 #nullable enable
 
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	public partial class Hyperlink
 	{

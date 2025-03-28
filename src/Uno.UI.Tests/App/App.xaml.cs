@@ -10,14 +10,14 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Resources;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Resources;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
@@ -102,9 +102,9 @@ namespace UnitTestsApp
 			{
 				_mainWindow ??=
 #if HAS_UNO_WINUI
-					new Microsoft.UI.Xaml.Window();
+					new Windows.UI.Xaml.Window();
 #elif HAS_UNO
-				Microsoft.UI.Xaml.Window.CurrentSafe!;
+				Windows.UI.Xaml.Window.CurrentSafe!;
 #else
 				Window.Current;
 #endif

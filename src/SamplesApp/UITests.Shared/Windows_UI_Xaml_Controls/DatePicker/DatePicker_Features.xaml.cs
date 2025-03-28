@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.DatePicker
@@ -85,7 +85,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 				case DatePickerFlyout flyout:
 					flyout.Date = flyout.Date.AddYears(1);
 					break;
-				case Microsoft.UI.Xaml.Controls.DatePicker picker:
+				case Windows.UI.Xaml.Controls.DatePicker picker:
 					picker.Date = picker.Date.AddYears(1);
 					break;
 			}
@@ -98,7 +98,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 				case DatePickerFlyout flyout:
 					flyout.Date = flyout.Date.AddMonths(1);
 					break;
-				case Microsoft.UI.Xaml.Controls.DatePicker picker:
+				case Windows.UI.Xaml.Controls.DatePicker picker:
 					picker.Date = picker.Date.AddMonths(1);
 					break;
 			}
@@ -111,7 +111,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 				case DatePickerFlyout flyout:
 					flyout.Date = flyout.Date.AddDays(1);
 					break;
-				case Microsoft.UI.Xaml.Controls.DatePicker picker:
+				case Windows.UI.Xaml.Controls.DatePicker picker:
 					picker.Date = picker.Date.AddDays(1);
 					break;
 			}

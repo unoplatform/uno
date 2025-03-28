@@ -12,7 +12,7 @@
 using Windows.UI.Core;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class CalendarPanel
 	{

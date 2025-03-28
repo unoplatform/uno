@@ -2,8 +2,8 @@
 
 using Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 

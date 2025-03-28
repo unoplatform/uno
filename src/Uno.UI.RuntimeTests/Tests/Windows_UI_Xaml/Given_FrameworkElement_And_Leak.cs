@@ -1,4 +1,4 @@
-// Uncomment to get additional reference tracking
+﻿// Uncomment to get additional reference tracking
 //#define TRACK_REFS
 #nullable enable
 
@@ -12,9 +12,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Extensions;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -27,7 +27,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if WINAPPSDK
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 #endif
 
 #if __MACOS__
@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ScrollViewer), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
+		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressBar), 15,
 #if __IOS__
 			LeakTestStyles.Uwp // Fluent styles disabled - #18105
 #else
@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
+		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
 		//[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]

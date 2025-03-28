@@ -1,8 +1,8 @@
 ﻿#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class ProgressBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class ProgressBarTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		[global::Uno.NotImplemented]
 		public double ContainerAnimationEndPosition

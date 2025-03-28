@@ -4,9 +4,9 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class LoadedImageSurface : IDisposable, ICompositionSurface
 	{

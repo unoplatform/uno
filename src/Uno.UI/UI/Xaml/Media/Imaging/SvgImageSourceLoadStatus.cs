@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media.Imaging;
+﻿namespace Windows.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Defines constants that specify the result of loading an SvgImageSource.

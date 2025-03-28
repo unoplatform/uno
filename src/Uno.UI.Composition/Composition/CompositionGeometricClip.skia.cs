@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using SkiaSharp;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 partial class CompositionGeometricClip
 {

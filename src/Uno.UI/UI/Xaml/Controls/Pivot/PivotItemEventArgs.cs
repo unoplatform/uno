@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	[global::Uno.NotImplemented]
 	public partial class PivotItemEventArgs
@@ -13,7 +13,7 @@
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PivotItemEventArgs", "PivotItem PivotItemEventArgs.Item");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PivotItemEventArgs", "PivotItem PivotItemEventArgs.Item");
 			}
 		}
 #endif
@@ -21,11 +21,11 @@
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public PivotItemEventArgs()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PivotItemEventArgs", "PivotItemEventArgs.PivotItemEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PivotItemEventArgs", "PivotItemEventArgs.PivotItemEventArgs()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Item.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItemEventArgs.Item.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.PivotItemEventArgs.PivotItemEventArgs()
+		// Forced skipping of method Windows.UI.Xaml.Controls.PivotItemEventArgs.Item.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.PivotItemEventArgs.Item.set
 	}
 }

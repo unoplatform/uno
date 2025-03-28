@@ -5,7 +5,7 @@
 #nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core

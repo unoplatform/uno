@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// This class is used for DependencyProperty.UnsetValue.
 	/// </summary>
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	internal class UnsetValue : IEquatable<UnsetValue>
 	{
 		private UnsetValue()

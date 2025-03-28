@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using Uno;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Extensions;
 

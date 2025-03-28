@@ -1,6 +1,6 @@
 ﻿using Uno.Disposables;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {
@@ -41,7 +41,7 @@ public partial class UIElement
 
 		view.Layer.ShadowRadius = blur * translation.Z;
 		view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * translation.Z / 4, y * translation.Z / 4);
-		if (view is Microsoft.UI.Xaml.Controls.Border border)
+		if (view is Windows.UI.Xaml.Controls.Border border)
 		{
 			_boundsPathSubscription.Disposable = null;
 			border.BorderRenderer.BoundsPathUpdated += Border_BoundsPathUpdated;

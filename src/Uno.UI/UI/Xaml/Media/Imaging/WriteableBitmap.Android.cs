@@ -8,7 +8,7 @@ using Java.Nio;
 using Uno.Extensions;
 using Uno.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class WriteableBitmap
 	{

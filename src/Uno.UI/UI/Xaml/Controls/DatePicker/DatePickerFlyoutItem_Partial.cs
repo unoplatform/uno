@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutItem : DependencyObject
 	{
@@ -89,16 +89,16 @@
 			set => SetValue(PrimaryTextProperty, value);
 		}
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(PrimaryText), typeof(string),
-				typeof(global::Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem),
+				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
 				new FrameworkPropertyMetadata(default(string)));
 
-		public static global::Microsoft.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
+		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(SecondaryText), typeof(string),
-				typeof(global::Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem),
+				typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem),
 				new FrameworkPropertyMetadata(default(string)));
 
 		public override string ToString()

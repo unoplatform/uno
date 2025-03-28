@@ -9,7 +9,7 @@ using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Represents a tree of XAML content and information about the context in which it is hosted.
@@ -106,7 +106,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal IDisposable OpenPopup(Microsoft.UI.Xaml.Controls.Primitives.Popup popup)
+	internal IDisposable OpenPopup(Windows.UI.Xaml.Controls.Primitives.Popup popup)
 	{
 		if (VisualTree.PopupRoot == null)
 		{

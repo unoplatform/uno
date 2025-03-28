@@ -4,14 +4,14 @@
 
 using System;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal sealed partial class ScrollBarController : IScrollController
 {

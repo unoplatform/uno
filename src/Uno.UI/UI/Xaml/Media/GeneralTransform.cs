@@ -3,7 +3,7 @@ using System.Numerics;
 using Windows.Foundation;
 
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class GeneralTransform : DependencyObject
 	{

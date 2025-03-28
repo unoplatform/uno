@@ -1,5 +1,5 @@
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-namespace Microsoft.UI.Xaml.Controls;
+﻿#if !UNO_HAS_ENHANCED_LIFECYCLE
+namespace Windows.UI.Xaml.Controls;
 
 partial class Control
 {

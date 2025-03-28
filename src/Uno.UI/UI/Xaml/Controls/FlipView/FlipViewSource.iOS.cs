@@ -7,9 +7,9 @@ using Uno.Extensions;
 using Uno.UI.Views.Controls;
 using Uno.UI.Controls;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipViewSource : UICollectionViewSource
 	{

@@ -2,13 +2,13 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the base class for an icon UI element.

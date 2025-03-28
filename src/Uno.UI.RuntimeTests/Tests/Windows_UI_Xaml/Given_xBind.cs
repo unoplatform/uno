@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
@@ -71,16 +71,16 @@ public class Given_xBind
 		vm.Items.Clear();
 
 		// and, it should not throw:
-		/* System.ObjectDisposedException: Cannot access a disposed object. Object name: 'Microsoft.UI.Xaml.Controls.StackPanel'.
+		/* System.ObjectDisposedException: Cannot access a disposed object. Object name: 'Windows.UI.Xaml.Controls.StackPanel'.
 			at Android.Views.ViewGroup.RemoveAllViews()
-			at Microsoft.UI.Xaml.Controls.UIElementCollection.ClearCore()
-			at Microsoft.UI.Xaml.Controls.UIElementCollection.Clear()
-			at Microsoft.UI.Xaml.Controls.ItemsControl.UpdateItems(NotifyCollectionChangedEventArgs args)
-			at Microsoft.UI.Xaml.Controls.ItemsControl.OnItemsSourceSingleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args, Int32 section)
-			at Microsoft.UI.Xaml.Controls.ItemsControl.OnItemsVectorChanged(IObservableVector`1 sender, IVectorChangedEventArgs e)
+			at Windows.UI.Xaml.Controls.UIElementCollection.ClearCore()
+			at Windows.UI.Xaml.Controls.UIElementCollection.Clear()
+			at Windows.UI.Xaml.Controls.ItemsControl.UpdateItems(NotifyCollectionChangedEventArgs args)
+			at Windows.UI.Xaml.Controls.ItemsControl.OnItemsSourceSingleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args, Int32 section)
+			at Windows.UI.Xaml.Controls.ItemsControl.OnItemsVectorChanged(IObservableVector`1 sender, IVectorChangedEventArgs e)
 			at Uno.UI.Extensions.VectorChangedEventHandlerExtensions.TryRaise(ValueTuple`2 handlers, IObservableVector`1 owner, IVectorChangedEventArgs args)
-			at Microsoft.UI.Xaml.Controls.ItemCollection.OnItemsSourceCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
-			at Microsoft.UI.Xaml.Controls.ItemCollection.<>c__DisplayClass33_0.<ObserveCollectionChangedInner>g__handler|0(Object s, NotifyCollectionChangedEventArgs e)
+			at Windows.UI.Xaml.Controls.ItemCollection.OnItemsSourceCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
+			at Windows.UI.Xaml.Controls.ItemCollection.<>c__DisplayClass33_0.<ObserveCollectionChangedInner>g__handler|0(Object s, NotifyCollectionChangedEventArgs e)
 			at System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 			at System.Collections.ObjectModel.ObservableCollection`1.OnCollectionReset()
 			at System.Collections.ObjectModel.ObservableCollection`1.ClearItems()

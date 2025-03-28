@@ -3,9 +3,9 @@ using CoreGraphics;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Path : Shape
 	{

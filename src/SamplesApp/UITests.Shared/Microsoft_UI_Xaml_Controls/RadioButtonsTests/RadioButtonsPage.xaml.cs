@@ -5,9 +5,9 @@
 
 using Uno.UI.Samples.Controls;
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
 
@@ -17,7 +17,7 @@ using RadioButtonsTestHooks = Microsoft.UI.Private.Controls.RadioButtonsTestHook
 #endif
 using System.Collections;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {

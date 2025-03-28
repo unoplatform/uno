@@ -2,7 +2,7 @@
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -11,7 +11,7 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{

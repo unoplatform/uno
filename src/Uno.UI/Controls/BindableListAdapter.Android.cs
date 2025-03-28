@@ -15,18 +15,18 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Android.Util;
 using Java.Interop;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls
 {
-	[Microsoft.UI.Xaml.Data.Bindable]
+	[Windows.UI.Xaml.Data.Bindable]
 	public class BindableListAdapter : ItemContainerHolderAdapter
 	{
 		private Android.Content.Context _context;

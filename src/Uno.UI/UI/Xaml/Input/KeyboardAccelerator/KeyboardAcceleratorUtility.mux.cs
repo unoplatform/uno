@@ -10,7 +10,7 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Windows.WinRT.Paltypes;
 using static Windows.WinRT.WinUser;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 internal static class KeyboardAcceleratorUtility
 {

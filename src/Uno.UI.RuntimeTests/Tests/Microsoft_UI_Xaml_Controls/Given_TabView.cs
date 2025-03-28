@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -150,8 +150,8 @@ public class Given_TabView
 		var vm = new ViewModel();
 		var SUT = new TabView();
 
-		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
-		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
 
 		SUT.DataContext = vm;
 
@@ -206,8 +206,8 @@ public class Given_TabView
 		var vm = new ViewModel();
 		var SUT = new TabView();
 
-		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
-		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
 
 		SUT.DataContext = vm;
 
@@ -223,8 +223,8 @@ public class Given_TabView
 	{
 		var SUT = new TabView();
 
-		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
-		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
 
 		SUT.DataContext = new ViewModel(addTab: true);
 

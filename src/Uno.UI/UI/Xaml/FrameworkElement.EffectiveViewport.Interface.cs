@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	// Internal interface used to allow communication between the real FrameworkElement
 	// and presenters that are only implementing the IFrameworkElement interface (cf. FrameworkElementMixins.tt).

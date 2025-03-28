@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using Windows.UI.Xaml.Media;
 
 namespace Uno.Media
 {

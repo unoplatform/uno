@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Markup;
+namespace Windows.UI.Xaml.Markup;
 
 /// <summary>
 /// Implements XAML schema context concepts that support XAML parsing.

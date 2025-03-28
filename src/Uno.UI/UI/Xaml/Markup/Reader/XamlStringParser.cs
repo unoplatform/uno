@@ -10,7 +10,7 @@ using System.IO;
 using System.Reflection;
 using Uno.Xaml;
 
-namespace Microsoft.UI.Xaml.Markup.Reader
+namespace Windows.UI.Xaml.Markup.Reader
 {
 	internal class XamlStringParser
 	{

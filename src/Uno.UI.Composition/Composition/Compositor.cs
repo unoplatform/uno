@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using Windows.Graphics.Effects;
 using Windows.UI;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{

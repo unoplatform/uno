@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Disposables;
@@ -12,7 +12,7 @@ using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath,
 using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using ObjCRuntime;
 

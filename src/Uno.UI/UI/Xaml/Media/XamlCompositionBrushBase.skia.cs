@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Color = Windows.UI.Color;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 public partial class XamlCompositionBrushBase : Brush
 {

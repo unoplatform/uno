@@ -1,7 +1,7 @@
-﻿namespace Microsoft.UI.Xaml.Hosting;
+﻿namespace Windows.UI.Xaml.Hosting;
 
 /// <summary>
-/// Defines values that represent the reasons that the Microsoft.UI.Xaml.UIElement got focus
+/// Defines values that represent the reasons that the Windows.UI.Xaml.UIElement got focus
 /// in a desktop application that uses a DesktopWindowXamlSource object to host XAML-based UI.
 /// The XamlSourceFocusNavigationRequest.Reason property returns one of these values.
 /// </summary>

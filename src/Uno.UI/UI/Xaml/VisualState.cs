@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject

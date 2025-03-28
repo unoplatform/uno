@@ -5,7 +5,7 @@ using Uno.UI.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class LinearGradientBrush
 	{

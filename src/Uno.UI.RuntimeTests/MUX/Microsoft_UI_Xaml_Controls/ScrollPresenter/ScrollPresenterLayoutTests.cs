@@ -5,13 +5,13 @@ using System;
 using System.Numerics;
 using System.Threading;
 using Common;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Windows.UI;
 using Private.Infrastructure;
@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 partial class ScrollPresenterTests : MUXApiTestBase
 {
@@ -627,7 +627,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				Verify.IsNotNull(uri);
 				imageScrollPresenterContent.Source = new BitmapImage(uri);
 				scrollPresenter.Content = imageScrollPresenterContent;
-				scrollPresenter.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+				scrollPresenter.Background = new Media.SolidColorBrush(Windows.UI.Colors.Chartreuse);
 
 				SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 
@@ -679,7 +679,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			imageScrollPresenterContent.Source = new BitmapImage(uri);
 			imageScrollPresenterContent.Margin = new Thickness(c_leftMargin, 0, c_rightMargin, 0);
 			scrollPresenter.Content = imageScrollPresenterContent;
-			scrollPresenter.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+			scrollPresenter.Background = new Media.SolidColorBrush(Windows.UI.Colors.Chartreuse);
 
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 
@@ -813,7 +813,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				Verify.IsNotNull(uri);
 				imageScrollPresenterContent.Source = new BitmapImage(uri);
 				scrollPresenter.Content = imageScrollPresenterContent;
-				scrollPresenter.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+				scrollPresenter.Background = new Media.SolidColorBrush(Windows.UI.Colors.Chartreuse);
 
 				SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 
@@ -876,7 +876,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 			imageScrollPresenterContent.Source = new BitmapImage(uri);
 			imageScrollPresenterContent.Margin = new Thickness(0, c_topMargin, 0, c_bottomMargin);
 			scrollPresenter.Content = imageScrollPresenterContent;
-			scrollPresenter.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+			scrollPresenter.Background = new Media.SolidColorBrush(Windows.UI.Colors.Chartreuse);
 
 			SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 
@@ -1018,7 +1018,7 @@ partial class ScrollPresenterTests : MUXApiTestBase
 				imageScrollPresenterContent.Source = new BitmapImage(uri);
 				imageScrollPresenterContent.Margin = new Thickness(c_leftMargin, c_topMargin, c_rightMargin, c_bottomMargin);
 				scrollPresenter.Content = imageScrollPresenterContent;
-				scrollPresenter.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Chartreuse);
+				scrollPresenter.Background = new Media.SolidColorBrush(Windows.UI.Colors.Chartreuse);
 
 				SetupDefaultUI(scrollPresenter, rectangleScrollPresenterContent: null, scrollPresenterLoadedEvent);
 

@@ -8,15 +8,15 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 #endif
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 
 using ButtonVisibility = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerButtonVisibility;
 using System.Globalization;

@@ -9,22 +9,22 @@
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
-		"Microsoft.UI.Xaml.Controls.NativeListViewBase",
-		"Microsoft.UI.Xaml.Controls.NativePagedView",
-		"Microsoft.UI.Xaml.Controls.NativeScrollContentPresenter",
+		"Windows.UI.Xaml.Controls.NativeListViewBase",
+		"Windows.UI.Xaml.Controls.NativePagedView",
+		"Windows.UI.Xaml.Controls.NativeScrollContentPresenter",
 		"Uno.UI.Xaml.Controls.NativeRefreshControl",
-		"Microsoft.UI.Xaml.Controls.TextBoxView"
+		"Windows.UI.Xaml.Controls.TextBoxView"
 	);
 #>
 
 #if __ANDROID__
 <#
-	AddClass("Microsoft.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
-	AddClass("Microsoft.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
-	AddClass("Microsoft.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Xaml.Controls", "NativeRefreshControl", isUnoMotionTarget: false, derivesFromFrameworkElement: false, hasLayouter: true);
-	AddClass("Microsoft.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "GridView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView", derivesFromFrameworkElement: false);

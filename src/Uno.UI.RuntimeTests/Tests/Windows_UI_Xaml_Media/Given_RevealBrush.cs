@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Graphics.Display;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
 
@@ -67,8 +67,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		{
 			try
 			{
-				var revealBorderBrush = new Microsoft.UI.Xaml.Media.RevealBorderBrush();
-				var revealBackgroundBrush = new Microsoft.UI.Xaml.Media.RevealBackgroundBrush();
+				var revealBorderBrush = new Windows.UI.Xaml.Media.RevealBorderBrush();
+				var revealBackgroundBrush = new Windows.UI.Xaml.Media.RevealBackgroundBrush();
 				var muxRevealBorderBrush = new Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBorderBrush();
 				var muxRevealBackgroundBrush = new Microsoft/* UWP don't rename */.UI.Xaml.Media.RevealBackgroundBrush();
 

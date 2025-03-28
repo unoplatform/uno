@@ -19,10 +19,10 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using _This = Microsoft.UI.Xaml.FrameworkElement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using _This = Windows.UI.Xaml.FrameworkElement;
 using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
 #if __IOS__
@@ -34,10 +34,10 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
-using _View = Microsoft.UI.Xaml.DependencyObject;
+using _View = Windows.UI.Xaml.DependencyObject;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{

@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 /// <summary>
 /// Represents a keyboard shortcut (or accelerator) that lets a user perform 

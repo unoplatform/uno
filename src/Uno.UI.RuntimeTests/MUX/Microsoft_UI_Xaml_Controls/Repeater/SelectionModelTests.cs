@@ -9,8 +9,8 @@ using System.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.Text;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Common;
 
 #if USING_TAEF
@@ -27,7 +27,7 @@ using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
 using SelectionModelSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelSelectionChangedEventArgs;
 using SelectionModelChildrenRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SelectionModelChildrenRequestedEventArgs;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class SelectionModelTests : MUXApiTestBase

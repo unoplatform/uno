@@ -3,7 +3,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public sealed partial class XamlRoot
 {

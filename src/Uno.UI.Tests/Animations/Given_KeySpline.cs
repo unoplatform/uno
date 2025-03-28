@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.Animations
 			var original = new System.Windows.Media.Animation.KeySpline() { ControlPoint1 = new System.Windows.Point(x1, y1), ControlPoint2 = new System.Windows.Point(x2, y2) };
 			var originalResults = Compute(original.GetSplineProgress);
 
-			var uno = new Microsoft.UI.Xaml.Media.Animation.KeySpline() { ControlPoint1 = new Point(x1, y1), ControlPoint2 = new Point(x2, y2) };
+			var uno = new Windows.UI.Xaml.Media.Animation.KeySpline() { ControlPoint1 = new Point(x1, y1), ControlPoint2 = new Point(x2, y2) };
 			var unoResults = Compute(uno.GetSplineProgress);
 
 			string r1String = string.Join(" ", originalResults.Select(x => x.ToString(".000")));

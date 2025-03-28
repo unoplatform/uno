@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.System;
 

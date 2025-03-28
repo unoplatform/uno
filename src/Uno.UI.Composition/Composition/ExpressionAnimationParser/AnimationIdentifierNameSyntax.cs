@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 {

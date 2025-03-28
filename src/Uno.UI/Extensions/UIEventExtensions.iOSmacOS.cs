@@ -4,7 +4,7 @@ using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 #if __IOS__
 using UIKit;

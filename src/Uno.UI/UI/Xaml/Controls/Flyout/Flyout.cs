@@ -5,8 +5,8 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 #if __IOS__
@@ -14,10 +14,10 @@ using View = UIKit.UIView;
 #elif __ANDROID__
 using Android.Views;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
 	public partial class Flyout : FlyoutBase

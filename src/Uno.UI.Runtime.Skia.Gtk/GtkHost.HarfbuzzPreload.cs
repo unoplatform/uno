@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.Gtk

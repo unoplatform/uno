@@ -7,7 +7,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls"
+    xmlns:local="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d netstdref not_netstdref">
 
 	<ResourceDictionary.ThemeDictionaries>
@@ -30,7 +30,7 @@
 			<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
 
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
 			<StaticResource x:Key="AppBarButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -57,7 +57,7 @@
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundSubMenuOpened" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
 			<StaticResource x:Key="AppBarToggleButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundChecked" ResourceKey="SystemControlHighlightAccentBrush" />
@@ -108,10 +108,10 @@
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarSeparator -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarSeparator -->
 			<StaticResource x:Key="AppBarSeparatorForeground" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
 
-			<!-- Resources for ellipsis button style used in Microsoft.UI.Xaml.Controls.AppBar and Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for ellipsis button style used in Windows.UI.Xaml.Controls.AppBar and Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="AppBarEllipsisButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -125,7 +125,7 @@
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBar -->
 			<StaticResource x:Key="AppBarBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="AppBarForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="AppBarHighContrastBorder" ResourceKey="SystemControlForegroundTransparentBrush" />
@@ -204,7 +204,7 @@
             ******************************************************************
             -->
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
 			<StaticResource x:Key="AppBarButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -231,7 +231,7 @@
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundSubMenuOpened" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
 			<StaticResource x:Key="AppBarToggleButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundChecked" ResourceKey="SystemControlHighlightAccentBrush" />
@@ -282,10 +282,10 @@
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarSeparator -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarSeparator -->
 			<StaticResource x:Key="AppBarSeparatorForeground" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
 
-			<!-- Resources for ellipsis button style used in Microsoft.UI.Xaml.Controls.AppBar and Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for ellipsis button style used in Windows.UI.Xaml.Controls.AppBar and Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="AppBarEllipsisButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -299,7 +299,7 @@
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBar -->
 			<StaticResource x:Key="AppBarBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="AppBarForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="AppBarHighContrastBorder" ResourceKey="SystemControlForegroundTransparentBrush" />
@@ -409,7 +409,7 @@
 
 			<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
 			<StaticResource x:Key="AppBarButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -436,7 +436,7 @@
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundSubMenuOpened" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarButtonSubItemChevronForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarToggleButton -->
 			<StaticResource x:Key="AppBarToggleButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarToggleButtonBackgroundChecked" ResourceKey="SystemControlHighlightAccentBrush" />
@@ -487,10 +487,10 @@
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="AppBarToggleButtonOverflowLabelForegroundCheckedDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBarSeparator -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBarSeparator -->
 			<StaticResource x:Key="AppBarSeparatorForeground" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
 
-			<!-- Resources for ellipsis button style used in Microsoft.UI.Xaml.Controls.AppBar and Microsoft.UI.Xaml.Controls.CommandBar -->
+			<!-- Resources for ellipsis button style used in Windows.UI.Xaml.Controls.AppBar and Windows.UI.Xaml.Controls.CommandBar -->
 			<StaticResource x:Key="AppBarEllipsisButtonBackground" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
@@ -504,7 +504,7 @@
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarEllipsisButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
-			<!-- Resources for Microsoft.UI.Xaml.Controls.AppBar -->
+			<!-- Resources for Windows.UI.Xaml.Controls.AppBar -->
 			<StaticResource x:Key="AppBarBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
 			<StaticResource x:Key="AppBarForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="AppBarHighContrastBorder" ResourceKey="SystemControlForegroundTransparentBrush" />
@@ -591,7 +591,7 @@
 	<Thickness x:Key="AppBarToggleButtonOverflowTextLabelPadding">0,5,0,8</Thickness>
 
 
-	 <!-- Default style for Microsoft.UI.Xaml.Controls.AppBar -->
+	 <!-- Default style for Windows.UI.Xaml.Controls.AppBar -->
     <Style TargetType="AppBar">
         <Setter Property="Background" Value="{ThemeResource AppBarBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource AppBarForeground}" />
@@ -1056,7 +1056,7 @@
     </Style>
 
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.AppBarButton -->
+	<!-- Default style for Windows.UI.Xaml.Controls.AppBarButton -->
 	<Style x:Key="XamlDefaultAppBarButton" TargetType="AppBarButton">
 		<Setter Property="Background" Value="{ThemeResource AppBarButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource AppBarButtonForeground}" />
@@ -1382,7 +1382,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.AppBarToggleButton -->
+	<!-- Default style for Windows.UI.Xaml.Controls.AppBarToggleButton -->
 	<Style x:Key="XamlDefaultAppBarToggleButton" TargetType="AppBarToggleButton">
 		<Setter Property="Background" Value="{ThemeResource AppBarToggleButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource AppBarToggleButtonForeground}" />
@@ -1766,7 +1766,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.AppBarSeparator -->
+	<!-- Default style for Windows.UI.Xaml.Controls.AppBarSeparator -->
 	<Style x:Key="XamlDefaultAppBarSeparator" TargetType="AppBarSeparator">
 		<Setter Property="Foreground" Value="{ThemeResource AppBarSeparatorForeground}" />
 		<Setter Property="IsTabStop" Value="False" />
@@ -1814,7 +1814,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.AppBarElementContainer -->
+	<!-- Default style for Windows.UI.Xaml.Controls.AppBarElementContainer -->
 	<Style x:Key="XamlDefaultAppBarElementContainer" TargetType="AppBarElementContainer">
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
 		<Setter Property="VerticalContentAlignment" Value="Top" />

@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,10 +16,10 @@ using UIKit;
 using View = UIKit.UIView;
 using Point = System.Drawing.PointF;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal class PanelTransitionHelper
 	{

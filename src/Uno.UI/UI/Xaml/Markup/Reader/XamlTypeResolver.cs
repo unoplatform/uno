@@ -14,7 +14,7 @@ using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
-namespace Microsoft.UI.Xaml.Markup.Reader
+namespace Windows.UI.Xaml.Markup.Reader
 {
 	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "normal flow of operation")]

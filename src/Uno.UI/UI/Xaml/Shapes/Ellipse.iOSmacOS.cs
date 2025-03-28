@@ -1,9 +1,9 @@
 ﻿using System;
 using CoreGraphics;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : Shape
 	{

@@ -2,9 +2,9 @@
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System.Threading;
 using System.Linq;
 using System.Collections.Immutable;
@@ -17,7 +17,7 @@ using Windows.Media.Playback;
 using Uno.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Media;
 
@@ -31,7 +31,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private bool _isEnding;
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
-	private Microsoft.UI.Xaml.Media.Stretch _stretch = Microsoft.UI.Xaml.Media.Stretch.Uniform;
+	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private readonly MediaPlayerPresenter _owner;
 	private (double playerHeight, double playerWidth, uint videoHeight, uint videoWidth) _lastSetDimensions;
 
@@ -427,10 +427,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 			switch (_stretch)
 			{
-				case Microsoft.UI.Xaml.Media.Stretch.None:
+				case Windows.UI.Xaml.Media.Stretch.None:
 					break;
 
-				case Microsoft.UI.Xaml.Media.Stretch.Uniform:
+				case Windows.UI.Xaml.Media.Stretch.Uniform:
 					var topInsetUniform = (playerHeight - newHeight) / 2;
 					var leftInsetUniform = (playerWidth - newWidth) / 2;
 
@@ -449,7 +449,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 					}
 					break;
 
-				case Microsoft.UI.Xaml.Media.Stretch.UniformToFill:
+				case Windows.UI.Xaml.Media.Stretch.UniformToFill:
 
 					var topInsetFill = (playerHeight - newHeight) / 2;
 					var leftInsetFill = 0;
@@ -504,7 +504,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 		}
 	}
 
-	internal void UpdateVideoStretch(Microsoft.UI.Xaml.Media.Stretch stretch)
+	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)
 	{
 		if (_videoView != null)
 		{

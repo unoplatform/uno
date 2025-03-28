@@ -5,7 +5,7 @@ using System;
 using Uno.UI;
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public abstract class NativePage : UIViewController
 	{

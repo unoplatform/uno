@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -16,10 +16,10 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{

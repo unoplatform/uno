@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Data;
+namespace Windows.UI.Xaml.Data;
 
 /// <summary>
 /// Manages whether items and ranges of items in the data source are selected in the list control.

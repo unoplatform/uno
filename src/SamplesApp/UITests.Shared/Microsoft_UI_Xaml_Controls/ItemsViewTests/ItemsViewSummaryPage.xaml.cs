@@ -7,11 +7,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.UI;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Samples.Model;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
@@ -357,7 +357,7 @@ public sealed partial class ItemsViewSummaryPage : Page
 		LogItemsViewInfo();
 	}
 
-	private void ItemsView_GettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+	private void ItemsView_GettingFocus(UIElement sender, Windows.UI.Xaml.Input.GettingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -372,7 +372,7 @@ public sealed partial class ItemsViewSummaryPage : Page
 		AppendAsyncEventMessage("ItemsView.LostFocus");
 	}
 
-	private void ItemsView_LosingFocus(UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+	private void ItemsView_LosingFocus(UIElement sender, Windows.UI.Xaml.Input.LosingFocusEventArgs args)
 	{
 		FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 		string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -1770,7 +1770,7 @@ public sealed partial class ItemsViewSummaryPage : Page
 							lockedItemOriginPoint.X - scrollView.HorizontalOffset + 8 <= canvasLinedFlowLayoutLockedItems.Width &&
 							lockedItemOriginPoint.Y - scrollView.VerticalOffset + 8 <= canvasLinedFlowLayoutLockedItems.Height)
 						{
-							Microsoft.UI.Xaml.Shapes.Rectangle lockedItemRectangle = new Microsoft.UI.Xaml.Shapes.Rectangle()
+							Windows.UI.Xaml.Shapes.Rectangle lockedItemRectangle = new Windows.UI.Xaml.Shapes.Rectangle()
 							{
 								Fill = new SolidColorBrush(Colors.Red),
 								Width = 8,

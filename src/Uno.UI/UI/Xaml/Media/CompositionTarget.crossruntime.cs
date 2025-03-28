@@ -3,7 +3,7 @@
 using Uno.UI;
 using Uno.UI.Dispatching;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class CompositionTarget
 	{

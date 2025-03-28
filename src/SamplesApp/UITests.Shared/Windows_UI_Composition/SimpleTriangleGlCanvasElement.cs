@@ -1,7 +1,7 @@
-#if __SKIA__ || WINAPPSDK
+﻿#if __SKIA__ || WINAPPSDK
 using System;
 using System.Drawing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SamplesApp;
 using Silk.NET.OpenGL;
 using Uno.WinUI.Graphics3DGL;

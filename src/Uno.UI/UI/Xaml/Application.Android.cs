@@ -7,12 +7,12 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
-using Colors = Microsoft.UI.Colors;
+using Colors = Windows.UI.Colors;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public partial class Application
 {

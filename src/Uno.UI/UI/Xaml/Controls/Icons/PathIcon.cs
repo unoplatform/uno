@@ -1,7 +1,7 @@
-﻿using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+﻿using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a vector path as its content.

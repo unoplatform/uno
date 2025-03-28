@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
@@ -37,12 +37,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 				EventOrder.Append($"[{sourceAsFrameworkElement.Name}GettingFocus{CanceledToLoggedString(e.Cancel)}{HandledToLoggedString(e.Handled)}{CorrelationIDToLoggedString(e.CorrelationId)}]");
 			});
 
-			FocusManagerLosingFocusHandler = new EventHandler<Microsoft.UI.Xaml.Input.LosingFocusEventArgs>((source, e) =>
+			FocusManagerLosingFocusHandler = new EventHandler<Windows.UI.Xaml.Input.LosingFocusEventArgs>((source, e) =>
 			{
 				EventOrder.Append($"[FocusManagerLosingFocus{CanceledToLoggedString(e.Cancel)}{HandledToLoggedString(e.Handled)}{CorrelationIDToLoggedString(e.CorrelationId)}]");
 			});
 
-			FocusManagerGettingFocusHandler = new EventHandler<Microsoft.UI.Xaml.Input.GettingFocusEventArgs>((source, e) =>
+			FocusManagerGettingFocusHandler = new EventHandler<Windows.UI.Xaml.Input.GettingFocusEventArgs>((source, e) =>
 			{
 				EventOrder.Append($"[FocusManagerGettingFocus{CanceledToLoggedString(e.Cancel)}{HandledToLoggedString(e.Handled)}{CorrelationIDToLoggedString(e.CorrelationId)}]");
 			});
@@ -143,8 +143,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 		TypedEventHandler<UIElement, GettingFocusEventArgs> FrameworkElementGettingFocusHandler;
 		TypedEventHandler<UIElement, LosingFocusEventArgs> FrameworkElementLosingFocusHandler;
 
-		EventHandler<Microsoft.UI.Xaml.Input.GettingFocusEventArgs> FocusManagerGettingFocusHandler;
-		EventHandler<Microsoft.UI.Xaml.Input.LosingFocusEventArgs> FocusManagerLosingFocusHandler;
+		EventHandler<Windows.UI.Xaml.Input.GettingFocusEventArgs> FocusManagerGettingFocusHandler;
+		EventHandler<Windows.UI.Xaml.Input.LosingFocusEventArgs> FocusManagerLosingFocusHandler;
 
 		private string CorrelationIDToLoggedString(Guid currentCorrelationId)
 		{
@@ -188,12 +188,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			EventOrder.Append("[" + sourceAsFrameworkElement.Name + "GotFocus]");
 		}
 
-		private void FocusManagerLostFocusHandler(object source, Microsoft.UI.Xaml.Input.FocusManagerLostFocusEventArgs e)
+		private void FocusManagerLostFocusHandler(object source, Windows.UI.Xaml.Input.FocusManagerLostFocusEventArgs e)
 		{
 			EventOrder.Append($"[FocusManagerLostFocus{CorrelationIDToLoggedString(e.CorrelationId)}]");
 		}
 
-		private void FocusManagerGotFocusHandler(object source, Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs e)
+		private void FocusManagerGotFocusHandler(object source, Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs e)
 		{
 			EventOrder.Append($"[FocusManagerGotFocus{CorrelationIDToLoggedString(e.CorrelationId)}]");
 		}

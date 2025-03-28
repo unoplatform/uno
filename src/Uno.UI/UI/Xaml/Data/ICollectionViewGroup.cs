@@ -1,7 +1,7 @@
 ﻿
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	public partial interface ICollectionViewGroup
 	{

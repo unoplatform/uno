@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Page : IBorderInfoProvider
 {

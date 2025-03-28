@@ -3,7 +3,7 @@
 
 // MUX Reference ItemsViewAutomationPeer.h, tag winui3/release/1.5.0
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 partial class ItemsViewAutomationPeer
 {

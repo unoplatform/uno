@@ -6,15 +6,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Dispatching;
 using Uno.Helpers;
 using System.Threading;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class LoadedImageSurface : IDisposable, ICompositionSurface, ISkiaCompositionSurfaceProvider
 	{

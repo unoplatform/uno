@@ -10,15 +10,15 @@ using System.Collections;
 using Android.Views;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Panel : IEnumerable
 {

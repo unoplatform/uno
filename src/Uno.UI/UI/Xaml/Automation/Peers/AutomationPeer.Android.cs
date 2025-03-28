@@ -8,7 +8,7 @@ using Android.Views;
 using Android.Views.Accessibility;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer
 	{

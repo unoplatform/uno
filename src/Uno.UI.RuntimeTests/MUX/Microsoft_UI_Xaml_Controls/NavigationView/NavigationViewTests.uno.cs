@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -11,7 +11,7 @@ using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Navigati
 using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 public partial class NavigationViewTests : MUXApiTestBase
 {

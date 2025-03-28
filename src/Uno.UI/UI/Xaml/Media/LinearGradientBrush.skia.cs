@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 public partial class LinearGradientBrush : GradientBrush
 {

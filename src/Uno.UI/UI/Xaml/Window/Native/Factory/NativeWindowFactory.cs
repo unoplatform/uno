@@ -2,13 +2,13 @@
 
 using System;
 using Microsoft.UI.Content;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class NativeWindowFactory
 {
-	public static INativeWindowWrapper? CreateWindow(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
+	public static INativeWindowWrapper? CreateWindow(Windows.UI.Xaml.Window window, XamlRoot xamlRoot)
 	{
 		if (window is null)
 		{

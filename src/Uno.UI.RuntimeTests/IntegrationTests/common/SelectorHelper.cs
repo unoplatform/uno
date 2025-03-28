@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft.UI.Xaml.Tests.Common;
+namespace Windows.UI.Xaml.Tests.Common;
 
 internal static class SelectorHelper
 {

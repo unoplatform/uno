@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class PivotItem
 	{

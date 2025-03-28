@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.IntegrationTests;
@@ -38,7 +38,7 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	[RunsOnUIThread]
 	public async Task CanInstantiate()
 	{
-		var act = () => new Microsoft.UI.Xaml.Controls.Frame();
+		var act = () => new Windows.UI.Xaml.Controls.Frame();
 		act.Should().NotThrow();
 	}
 
@@ -46,7 +46,7 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	[RunsOnUIThread]
 	public async Task CanEnterAndLeaveLiveTree()
 	{
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		var frame = new Windows.UI.Xaml.Controls.Frame();
 		bool unloaded = false;
 		frame.Unloaded += (snd, e) => unloaded = true;
 		TestServices.WindowHelper.WindowContent = frame;
@@ -181,14 +181,14 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	{
 		Frame frame = null;
 		Type pageType = typeof(Page);
-		Microsoft.UI.Xaml.Navigation.FrameNavigationOptions navOptions = null;
+		Windows.UI.Xaml.Navigation.FrameNavigationOptions navOptions = null;
 
 		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
 			TestServices.WindowHelper.WindowContent = frame;
-			navOptions = new Microsoft.UI.Xaml.Navigation.FrameNavigationOptions();
+			navOptions = new Windows.UI.Xaml.Navigation.FrameNavigationOptions();
 			navOptions.IsNavigationStackEnabled = false;
 		});
 
@@ -345,8 +345,8 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 		await TestServices.RunOnUIThread(() =>
 
 		{
-			slideNTI = new Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo();
-			commonNTI = new Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo();
+			slideNTI = new Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo();
+			commonNTI = new Windows.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo();
 
 			frame = new Frame();
 			TestServices.WindowHelper.WindowContent = frame;
@@ -508,7 +508,7 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	{
 		Frame frame = null;
 
-		string navigation = "1,3,2,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 3,0";
+		string navigation = "1,3,2,31,Windows.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 3,0";
 
 		await TestServices.RunOnUIThread(() =>
 
@@ -535,8 +535,8 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	public async Task CanSetNavigationStateWithoutNavigatingToCurrent()
 	{
 		Frame frame = null;
-		string navigation1 = "1,3,2,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 3,0";
-		string navigation2 = "1,3,1,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 3,0";
+		string navigation1 = "1,3,2,31,Windows.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 3,0";
+		string navigation2 = "1,3,1,31,Windows.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Windows.UI.Xaml.Controls.Page,12,6,Page 3,0";
 
 		var frameNavigatingEventRegistration = CreateSafeEventRegistration<Frame, NavigatingCancelEventHandler>("Navigating");
 		var frameNavigatedEventRegistration = CreateSafeEventRegistration<Frame, NavigatedEventHandler>("Navigated");

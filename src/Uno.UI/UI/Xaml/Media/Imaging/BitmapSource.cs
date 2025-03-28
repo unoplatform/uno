@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	public partial class BitmapSource : ImageSource
 	{

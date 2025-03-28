@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -12,9 +12,9 @@ using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class TimePicker
 {

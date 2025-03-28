@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Peers;
+﻿namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Defines the directions of navigation within the Microsoft UI Automation tree.

@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Gtk;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 using GLib;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using GtkApplication = Gtk.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk;

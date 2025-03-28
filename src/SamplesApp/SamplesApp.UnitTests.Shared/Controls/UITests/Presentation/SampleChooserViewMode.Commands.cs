@@ -10,13 +10,13 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Entities;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System.IO;
 using Uno.Disposables;
 using System.ComponentModel;
@@ -24,13 +24,13 @@ using System.Windows.Input;
 using Uno.UI.Common;
 
 #if XAMARIN || UNO_REFERENCE_API
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #endif
 
 using ICommand = System.Windows.Input.ICommand;

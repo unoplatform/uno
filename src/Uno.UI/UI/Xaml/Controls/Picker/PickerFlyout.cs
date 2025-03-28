@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(Content))]
 abstract partial class PickerFlyout

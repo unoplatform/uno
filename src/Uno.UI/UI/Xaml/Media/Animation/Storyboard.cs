@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.Diagnostics.Eventing;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using System.Threading;
 using Windows.UI.Core;
 using Uno.Disposables;
@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using Windows.Graphics.Printing.PrintSupport;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
 	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, ITimelineListener

@@ -7,7 +7,7 @@ using Uno;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using Uno.Collections;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 
 using View = AppKit.NSView;
@@ -17,7 +17,7 @@ using Uno.Disposables;
 using CoreAnimation;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class Layouter
 	{

@@ -8,7 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 

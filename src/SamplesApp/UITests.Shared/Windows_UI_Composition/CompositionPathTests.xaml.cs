@@ -7,15 +7,15 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Composition;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -28,7 +28,7 @@ using Microsoft.Graphics.Canvas;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition", Name = "CompositionPath", Description = "Represents a series of connected lines and curves.", IsManualTest = true)]
+	[Sample("Windows.UI.Composition", Name = "CompositionPath", Description = "Represents a series of connected lines and curves.", IsManualTest = true)]
 	public sealed partial class CompositionPathTests : UserControl
 	{
 		public CompositionPathTests()
@@ -792,10 +792,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			ElementCompositionPreview.SetElementChildVisual(compPresenter6, polyVisual);
 
 			// Path Clipping
-			var surface = Microsoft.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_200_200.png"));
+			var surface = Windows.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_200_200.png"));
 			surface.LoadCompleted += (s, o) =>
 			{
-				if (o.Status == Microsoft.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
+				if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 				{
 					var imgBrush = compositor.CreateSurfaceBrush(surface);
 					var imgVisual = compositor.CreateSpriteVisual();

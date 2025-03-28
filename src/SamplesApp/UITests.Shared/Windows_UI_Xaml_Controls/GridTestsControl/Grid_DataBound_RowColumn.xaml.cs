@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Helper;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
@@ -23,8 +23,8 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 				{
 					var border = new Border();
 					border.Background = new SolidColorBrush(Colors.Yellow);
-					border.SetBinding(Grid.RowProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentRow") });
-					border.SetBinding(Grid.ColumnProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentColumn") });
+					border.SetBinding(Grid.RowProperty, new Windows.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentRow") });
+					border.SetBinding(Grid.ColumnProperty, new Windows.UI.Xaml.Data.Binding { Path = new PropertyPath("CurrentColumn") });
 
 					for (int i = 0; !ct.IsCancellationRequested; i++)
 					{

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Input
+﻿namespace Windows.UI.Xaml.Input
 {
 	/// <summary>
 	/// Provides event data for the ExecuteRequested event.

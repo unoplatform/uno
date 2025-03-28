@@ -1,12 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 // MUX Reference ToggleSplitButtonAutomationPeer.cpp, tag winui3/release/1.4.2
 
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {

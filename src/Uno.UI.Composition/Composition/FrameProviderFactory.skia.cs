@@ -1,11 +1,11 @@
-#nullable enable
+ï»¿#nullable enable
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SkiaSharp;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal static class FrameProviderFactory
 {
@@ -91,16 +91,16 @@ internal static class FrameProviderFactory
 	private static bool SkEncodedOriginSwapsWidthHeight(SKEncodedOrigin origin)
 	{
 		return origin is
-			// Reflected across x - axis.Rotated 90° counter - clockwise.
+			// Reflected across x - axis.Rotated 90ï¿½ counter - clockwise.
 			SKEncodedOrigin.LeftTop or
 
-			// Rotated 90° clockwise.
+			// Rotated 90ï¿½ clockwise.
 			SKEncodedOrigin.RightTop or
 
-			// Reflected across x-axis. Rotated 90° clockwise.
+			// Reflected across x-axis. Rotated 90ï¿½ clockwise.
 			SKEncodedOrigin.RightBottom or
 
-			// Rotated 90° counter-clockwise.
+			// Rotated 90ï¿½ counter-clockwise.
 			SKEncodedOrigin.LeftBottom;
 	}
 

@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

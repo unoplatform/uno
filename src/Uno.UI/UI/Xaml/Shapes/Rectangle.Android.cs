@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{

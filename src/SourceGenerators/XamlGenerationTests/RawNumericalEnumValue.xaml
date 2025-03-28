@@ -15,7 +15,7 @@
 		<StackPanel Orientation="1" />
 
 		<!-- Assigning undefined value for StackPanel::Orientation will cause runtime exception on Uwp: -->
-		<!-- XamlParseException: Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text '2'. -->
+		<!-- XamlParseException: Failed to create a 'Windows.UI.Xaml.Controls.Orientation' from the text '2'. -->
 		<!-- Yet, if nothing will happens if you do the same in the code behind... -->
 		<void:StackPanel Orientation="2" />
 

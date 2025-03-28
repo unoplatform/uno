@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using SampleControl.Presentation;
 using SamplesApp;
 using Uno.UI.Samples.Controls;
@@ -29,7 +29,7 @@ public sealed partial class AppWindowPresenters : Page
 
 	internal AppWindowPresentersViewModel ViewModel { get; private set; }
 
-	private void AppWindowPresenters_DataContextChanged(Microsoft.UI.Xaml.FrameworkElement sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+	private void AppWindowPresenters_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 	{
 		ViewModel = args.NewValue as AppWindowPresentersViewModel;
 	}

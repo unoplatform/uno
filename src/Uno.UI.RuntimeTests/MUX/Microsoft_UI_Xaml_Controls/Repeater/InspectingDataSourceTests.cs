@@ -15,8 +15,8 @@ using MUXControlsTestApp.Utils;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -29,7 +29,7 @@ using WEX.Logging.Interop;
 #else
 #endif
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
 	using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
@@ -178,7 +178,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Animator = new DefaultElementAnimator()
 				};
 
-				Content = new Microsoft.UI.Xaml.Controls.ScrollViewer()
+				Content = new Windows.UI.Xaml.Controls.ScrollViewer()
 				{
 					Width = 400,
 					Height = 400,
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				{
 					Width = 400,
 					Height = 400,
-					ScrollViewer = new Microsoft.UI.Xaml.Controls.ScrollViewer()
+					ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
 					{
 						Content = repeater
 					}

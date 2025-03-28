@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml;
+﻿namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Declares the theme preference for an app.

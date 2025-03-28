@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using Windows.ApplicationModel.DataTransfer;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 
 #if HAS_UNO_WINUI || WINAPPSDK
@@ -28,7 +28,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			this.InitializeComponent();
 		}
 
-		private void OnDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs e)
+		private void OnDragOver(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			e.AcceptedOperation = e.DataView.Contains(StandardDataFormats.StorageItems) ? DataPackageOperation.Copy : DataPackageOperation.None;
 
@@ -36,7 +36,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			e.DragUIOverride.IsGlyphVisible = false;
 		}
 
-		private async void OnDrop(object sender, Microsoft.UI.Xaml.DragEventArgs e)
+		private async void OnDrop(object sender, Windows.UI.Xaml.DragEventArgs e)
 		{
 			if (e.DataView.Contains(StandardDataFormats.StorageItems))
 			{

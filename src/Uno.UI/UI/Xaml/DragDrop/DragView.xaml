@@ -14,7 +14,7 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	mc:Ignorable="d ios android wasm netstdref macos skia">
 
-	<!-- Default style for internal control Microsoft.UI.Xaml.DragView -->
+	<!-- Default style for internal control Windows.UI.Xaml.DragView -->
 	<Style TargetType="DragView">
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="IsHitTestVisible" Value="False" />

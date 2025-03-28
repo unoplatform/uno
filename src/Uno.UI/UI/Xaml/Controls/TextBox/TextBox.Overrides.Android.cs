@@ -11,7 +11,7 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using static System.Math;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{

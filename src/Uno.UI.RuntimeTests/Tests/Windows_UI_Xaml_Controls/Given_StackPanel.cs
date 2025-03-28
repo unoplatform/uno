@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Windows.Foundation;
@@ -388,7 +388,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderThickness = new Microsoft.UI.Xaml.Thickness(5),
+				BorderThickness = new Windows.UI.Xaml.Thickness(5),
 				BorderBrush = new SolidColorBrush(Colors.Bisque)
 			};
 

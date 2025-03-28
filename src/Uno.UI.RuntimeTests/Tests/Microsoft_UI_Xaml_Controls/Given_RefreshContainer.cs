@@ -4,10 +4,10 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -28,8 +28,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var child = new Border()
 			{
 				Background = new SolidColorBrush(Colors.Red),
-				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
-				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch,
+				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch,
+				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch,
 			};
 			var grandChild = new Border()
 			{
@@ -59,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 		public async Task When_Child_Empty_List()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}

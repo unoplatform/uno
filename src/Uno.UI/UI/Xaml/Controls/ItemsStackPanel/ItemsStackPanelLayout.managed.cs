@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 #if __ANDROID__ || __IOS__
 	internal partial class ManagedItemsStackPanelLayout : ManagedVirtualizingPanelLayout

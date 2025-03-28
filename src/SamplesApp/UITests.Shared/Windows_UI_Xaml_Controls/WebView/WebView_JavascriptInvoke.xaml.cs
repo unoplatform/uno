@@ -1,9 +1,9 @@
 ﻿using Uno.UI.Samples.Controls;
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.UI.Core;
 using System.Threading;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 using Private.Infrastructure;
@@ -26,7 +26,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 				async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
 			);
 		}
-		public static async Task<string> InvokeScriptAsync(Microsoft.UI.Xaml.Controls.WebView webView, CancellationToken ct, string script, string[] arguments)
+		public static async Task<string> InvokeScriptAsync(Windows.UI.Xaml.Controls.WebView webView, CancellationToken ct, string script, string[] arguments)
 		{
 			return await webView.InvokeScriptAsync(script, arguments).AsTask(ct);
 		}

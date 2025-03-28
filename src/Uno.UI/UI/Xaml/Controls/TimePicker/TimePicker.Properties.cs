@@ -2,7 +2,7 @@
 using Windows.Foundation;
 using Windows.Globalization;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class TimePicker
 {

@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 using NavigationViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
 using NavigationViewItemExpandingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs;

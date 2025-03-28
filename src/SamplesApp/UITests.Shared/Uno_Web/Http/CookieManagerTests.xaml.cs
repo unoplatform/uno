@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Windows.Input;
 #if __WASM__
 using Uno.Web.Http;
@@ -23,7 +23,7 @@ namespace UITests.Uno_Web.Http
 			this.DataContextChanged += CookieManagerTests_DataContextChanged;
 		}
 
-		private void CookieManagerTests_DataContextChanged(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+		private void CookieManagerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as CookieManagerTestsViewModel;
 		}

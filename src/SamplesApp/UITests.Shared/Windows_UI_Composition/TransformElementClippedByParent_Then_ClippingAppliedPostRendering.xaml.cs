@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Numerics;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition", Description = "The two drawings should be identical")]
+	[Sample("Windows.UI.Composition", Description = "The two drawings should be identical")]
 	public sealed partial class TransformElementClippedByParent_Then_ClippingAppliedPostRendering : UserControl
 	{
 		public TransformElementClippedByParent_Then_ClippingAppliedPostRendering()

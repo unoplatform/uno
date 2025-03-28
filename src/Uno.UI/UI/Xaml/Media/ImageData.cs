@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Media;
 
 #if __IOS__
 using _UIImage = UIKit.UIImage;

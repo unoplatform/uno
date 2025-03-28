@@ -10,12 +10,12 @@ using System.Threading;
 
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
@@ -29,7 +29,7 @@ using TwoPaneViewTallModeConfiguration = Microsoft/* UWP don't rename */.UI.Xaml
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class TwoPaneViewTests : MUXApiTestBase

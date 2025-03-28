@@ -1,6 +1,6 @@
 ﻿using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Navigation;
+namespace Windows.UI.Xaml.Navigation;
 
 /// <summary>
 /// Provides event data for the NavigationStopped event.

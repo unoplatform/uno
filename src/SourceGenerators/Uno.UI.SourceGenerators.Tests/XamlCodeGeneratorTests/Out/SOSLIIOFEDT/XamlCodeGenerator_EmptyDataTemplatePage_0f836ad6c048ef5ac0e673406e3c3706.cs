@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class EmptyDataTemplatePage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class EmptyDataTemplatePage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706 = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -52,31 +52,31 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(					)					.GenericApply(__that, __nameScope, (ApplyMethod_0					))
+					new global::Windows.UI.Xaml.DataTemplate(					)					.GenericApply(__that, __nameScope, (ApplyMethod_0					))
 				;
 			}
 			)
 			;
 			// Source 0\EmptyDataTemplatePage.xaml (Line 1:3)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
+			new global::Windows.UI.Xaml.Controls.StackPanel
 			{
 				IsParsing = true,
 				// Source 0\EmptyDataTemplatePage.xaml (Line 11:3)
 				Children = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.ListView
+					new global::Windows.UI.Xaml.Controls.ListView
 					{
 						IsParsing = true,
 						// Source 0\EmptyDataTemplatePage.xaml (Line 12:4)
 					}
 					.GenericApply(__that, __nameScope, (ApplyMethod_1					))
 					,
-					new global::Microsoft.UI.Xaml.Controls.Button
+					new global::Windows.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						Name = "ButtonWithEmptyDataTemplate",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(						)						.GenericApply(__that, __nameScope, (ApplyMethod_2						))
+						ContentTemplate = 						new global::Windows.UI.Xaml.DataTemplate(						)						.GenericApply(__that, __nameScope, (ApplyMethod_2						))
 						,
 						// Source 0\EmptyDataTemplatePage.xaml (Line 13:4)
 					}
@@ -94,33 +94,33 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new EmptyDataTemplatePage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Windows.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
-		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		private void __UpdateBindingsAndResources(global::Windows.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.UpdateResources();
 		}
-							private void ApplyMethod_0(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							private void ApplyMethod_0(global::System.Object __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L7:4");
 					}
 
-							private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							private void ApplyMethod_1(global::Windows.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 					{
 						/* _isTopLevelDictionary:False */
 						__that._component_0 = __p1;
-						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Windows.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 12, 4);
 						__p1.CreationComplete();
 					}
 
-								private void ApplyMethod_2(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+								private void ApplyMethod_2(global::System.Object __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 						{
 							global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L15:6");
 						}
 
-							private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							private void ApplyMethod_3(global::Windows.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 					{
 						__nameScope.RegisterName("ButtonWithEmptyDataTemplate", __p1);
 						__that.ButtonWithEmptyDataTemplate = __p1;
@@ -128,35 +128,35 @@ namespace TestRepro
 						__p1.CreationComplete();
 					}
 
-					private void ApplyMethod_4(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_4(global::Windows.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 11, 3);
 				__p1.CreationComplete();
 			}
 
-					private void ApplyMethod_5(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_5(global::Windows.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				// Source 0\EmptyDataTemplatePage.xaml (Line 1:3)
 				
 				// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 
-					private void ApplyMethod_6(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_6(global::Windows.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				/* _isTopLevelDictionary:False */
 				__that._component_1 = __p1;
 				// Class TestRepro.EmptyDataTemplatePage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Windows.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 				__p1.CreationComplete();
 			}
 
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject { get; set; } = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Button)_ButtonWithEmptyDataTemplateSubject.ElementInstance;
 			}
 			set
 			{
@@ -168,24 +168,24 @@ namespace TestRepro
 		private class __EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706_TestReproEmptyDataTemplatePage
 		{
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.ListView _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.ListView _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; } = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Page _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
 			}
 			set
 			{

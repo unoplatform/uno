@@ -7,29 +7,29 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Common;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
-using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
-using ScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility;
-using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-using ScrollingContentOrientation = Microsoft.UI.Xaml.Controls.ScrollingContentOrientation;
-using ScrollingScrollMode = Microsoft.UI.Xaml.Controls.ScrollingScrollMode;
-using ScrollingInputKinds = Microsoft.UI.Xaml.Controls.ScrollingInputKinds;
-using ScrollingChainMode = Microsoft.UI.Xaml.Controls.ScrollingChainMode;
-using ScrollingRailMode = Microsoft.UI.Xaml.Controls.ScrollingRailMode;
-using ScrollingZoomMode = Microsoft.UI.Xaml.Controls.ScrollingZoomMode;
-using ScrollingAnchorRequestedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs;
+using ScrollView = Windows.UI.Xaml.Controls.ScrollView;
+using ScrollBarVisibility = Windows.UI.Xaml.Controls.ScrollingScrollBarVisibility;
+using ScrollPresenter = Windows.UI.Xaml.Controls.Primitives.ScrollPresenter;
+using ScrollingContentOrientation = Windows.UI.Xaml.Controls.ScrollingContentOrientation;
+using ScrollingScrollMode = Windows.UI.Xaml.Controls.ScrollingScrollMode;
+using ScrollingInputKinds = Windows.UI.Xaml.Controls.ScrollingInputKinds;
+using ScrollingChainMode = Windows.UI.Xaml.Controls.ScrollingChainMode;
+using ScrollingRailMode = Windows.UI.Xaml.Controls.ScrollingRailMode;
+using ScrollingZoomMode = Windows.UI.Xaml.Controls.ScrollingZoomMode;
+using ScrollingAnchorRequestedEventArgs = Windows.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs;
 //using MUXControlsTestHooksLoggingMessageEventArgs = Microsoft.UI.Private.Controls.MUXControlsTestHooksLoggingMessageEventArgs;
 using ScrollViewTestHooks = Microsoft.UI.Private.Controls.ScrollViewTestHooks;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
 #if !__SKIA__

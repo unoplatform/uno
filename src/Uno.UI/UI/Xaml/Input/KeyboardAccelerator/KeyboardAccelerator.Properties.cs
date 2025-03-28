@@ -3,7 +3,7 @@
 using Windows.Foundation;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 partial class KeyboardAccelerator
 {

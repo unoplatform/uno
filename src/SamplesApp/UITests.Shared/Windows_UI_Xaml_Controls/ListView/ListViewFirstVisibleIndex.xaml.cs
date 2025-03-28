@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -16,7 +16,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ListView_Loaded(object sender, RoutedEventArgs e)
 		{
-			var sv = (sender as ListViewBase).FindFirstChild<global::Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var sv = (sender as ListViewBase).FindFirstChild<global::Windows.UI.Xaml.Controls.ScrollViewer>();
 			var panel = (sender as ListViewBase).ItemsPanelRoot as ItemsStackPanel;
 			sv.ViewChanged += (_, __) =>
 			{

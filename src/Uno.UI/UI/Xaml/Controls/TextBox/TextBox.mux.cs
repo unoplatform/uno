@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{

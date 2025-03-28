@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ColorSpectrum : global::Microsoft.UI.Xaml.Controls.Control
+	public partial class ColorSpectrum : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property Shape
 		// Skipping already declared property MinValue

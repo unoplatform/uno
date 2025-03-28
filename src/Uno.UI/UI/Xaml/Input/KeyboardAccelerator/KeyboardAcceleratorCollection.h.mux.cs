@@ -5,7 +5,7 @@
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 internal class KeyboardAcceleratorCollection : DependencyObjectCollection<KeyboardAccelerator>
 {

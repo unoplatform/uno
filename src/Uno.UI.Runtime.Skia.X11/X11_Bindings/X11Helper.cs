@@ -1,4 +1,4 @@
-// Thanks to the X11.NET project for making most bindings easily grabbable.
+﻿// Thanks to the X11.NET project for making most bindings easily grabbable.
 // Copyright (c) 2018 Andrew Newlands
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;

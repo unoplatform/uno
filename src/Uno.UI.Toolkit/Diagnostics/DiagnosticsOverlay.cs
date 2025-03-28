@@ -8,12 +8,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.Diagnostics.UI;
 
@@ -122,7 +122,7 @@ public sealed partial class DiagnosticsOverlay : Control
 					xmlns:diag="using:Uno.Diagnostics.UI"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					xmlns:mux="using:Windows.UI.Xaml.Controls"
 					TargetType="local:DiagnosticsOverlay">
 				<Setter Property="BorderThickness" Value="1" />
 				<Setter Property="CornerRadius" Value="4" />

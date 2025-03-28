@@ -4,7 +4,7 @@ using System;
 using System.Numerics;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 {

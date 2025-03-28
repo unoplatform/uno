@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
-using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs>;
+using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.Controls.FocusEngagedEventArgs>;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	//struct VisibleIndicesUpdatedTraits
 	//{

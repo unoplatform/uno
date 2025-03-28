@@ -13,7 +13,7 @@ using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 #if !HAS_RENDER_TARGET_BITMAP
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

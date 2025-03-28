@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,10 +14,10 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using System.Reflection;
 
 namespace Uno.UI.Tests.BinderTests
@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.BinderTests
 		public void When_Double_To_GridLength()
 		{
 
-			Assert.AreEqual(new GridLength(42.0, GridUnitType.Pixel), Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(GridLength), 42.0));
+			Assert.AreEqual(new GridLength(42.0, GridUnitType.Pixel), Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(GridLength), 42.0));
 		}
 
 		private static void ValidateEnumType(Type enumType)

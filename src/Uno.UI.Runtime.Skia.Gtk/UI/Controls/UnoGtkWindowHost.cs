@@ -11,10 +11,10 @@ using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Windows.Graphics.Display;
 using Windows.Foundation;
 using SkiaSharp;
-using WinUI = Microsoft.UI.Xaml;
-using WinUIWindow = Microsoft.UI.Xaml.Window;
+using WinUI = Windows.UI.Xaml;
+using WinUIWindow = Windows.UI.Xaml.Window;
 using GtkWindow = Gtk.Window;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 

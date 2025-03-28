@@ -4,9 +4,9 @@
 
 using System;
 using DirectUI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes CalendarDatePicker types to Microsoft UI Automation.

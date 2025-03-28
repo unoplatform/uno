@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Provider
+﻿namespace Windows.UI.Xaml.Automation.Provider
 {
 	/// <summary>
 	/// Exposes methods and properties to support access by a Microsoft UI Automation client to controls that can be set to a value within a range.

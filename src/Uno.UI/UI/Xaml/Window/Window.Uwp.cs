@@ -1,9 +1,9 @@
 ﻿#if !HAS_UNO_WINUI
 #nullable enable
 
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class Window
 {

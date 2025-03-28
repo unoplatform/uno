@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 {

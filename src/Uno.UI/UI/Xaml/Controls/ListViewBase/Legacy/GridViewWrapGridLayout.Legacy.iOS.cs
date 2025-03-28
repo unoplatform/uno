@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Disposables;
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using ObjCRuntime;
 
 namespace Uno.UI.Controls.Legacy

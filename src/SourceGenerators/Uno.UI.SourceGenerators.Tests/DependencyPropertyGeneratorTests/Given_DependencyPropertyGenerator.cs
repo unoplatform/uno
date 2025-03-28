@@ -26,7 +26,7 @@ public class Given_DependencyPropertyGenerator
 				{
 					"""
 					using Uno.UI.Xaml;
-					using Microsoft.UI.Xaml;
+					using Windows.UI.Xaml;
 
 					namespace Mynamespace
 					{
@@ -62,16 +62,16 @@ public class Given_DependencyPropertyGenerator
 						using System.Runtime.CompilerServices;
 						using Uno.UI;
 						using Uno.UI.DataBinding;
-						using Microsoft.UI.Xaml;
-						using Microsoft.UI.Xaml.Controls;
-						using Microsoft.UI.Xaml.Data;
+						using Windows.UI.Xaml;
+						using Windows.UI.Xaml.Controls;
+						using Windows.UI.Xaml.Data;
 						using Uno.Diagnostics.Eventing;
 						namespace Mynamespace
 						{
 							partial class C
 							{
 								#region MyValue Dependency Property
-								private static int GetMyValueValue(global::Microsoft.UI.Xaml.DependencyObject instance)
+								private static int GetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance)
 								{
 									if(instance is global::Mynamespace.Owner backingFieldOwnerInstance)
 									{
@@ -88,16 +88,16 @@ public class Given_DependencyPropertyGenerator
 										return (int)instance.GetValue(global::Mynamespace.C.MyValueProperty);
 									}
 								}
-								private static void SetMyValueValue(global::Microsoft.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
+								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
 								/// </summary>
-								private static global::Microsoft.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
+								private static global::Windows.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
 								DependencyProperty.RegisterAttached(
 									name: "MyValue",
 									propertyType: typeof(int),
 									ownerType: typeof(global::Mynamespace.C),
-									typeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(
+									typeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(
 										defaultValue: (int)21 /* GetMyValueDefaultValue(), global::Mynamespace.C */
 										, backingFieldUpdateCallback: (instance, newValue) => 
 								{
@@ -142,7 +142,7 @@ public class Given_DependencyPropertyGenerator
 				{
 					"""
 					using Uno.UI.Xaml;
-					using Microsoft.UI.Xaml;
+					using Windows.UI.Xaml;
 					using Windows.UI.Core;
 
 					namespace Mynamespace
@@ -189,16 +189,16 @@ public class Given_DependencyPropertyGenerator
 						using System.Runtime.CompilerServices;
 						using Uno.UI;
 						using Uno.UI.DataBinding;
-						using Microsoft.UI.Xaml;
-						using Microsoft.UI.Xaml.Controls;
-						using Microsoft.UI.Xaml.Data;
+						using Windows.UI.Xaml;
+						using Windows.UI.Xaml.Controls;
+						using Windows.UI.Xaml.Data;
 						using Uno.Diagnostics.Eventing;
 						namespace Mynamespace
 						{
 							partial class C
 							{
 								#region MyValue Dependency Property
-								private static int GetMyValueValue(global::Microsoft.UI.Xaml.DependencyObject instance)
+								private static int GetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance)
 								{
 									if(instance is global::Mynamespace.Owner backingFieldOwnerInstance)
 									{
@@ -215,16 +215,16 @@ public class Given_DependencyPropertyGenerator
 										return (int)instance.GetValue(global::Mynamespace.C.MyValueProperty);
 									}
 								}
-								private static void SetMyValueValue(global::Microsoft.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
+								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
 								/// </summary>
-								private static global::Microsoft.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
+								private static global::Windows.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
 								DependencyProperty.RegisterAttached(
 									name: "MyValue",
 									propertyType: typeof(int),
 									ownerType: typeof(global::Mynamespace.C),
-									typeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(
+									typeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(
 										defaultValue: (int)21 /* GetMyValueDefaultValue(), global::Mynamespace.C */
 										, backingFieldUpdateCallback: (instance, newValue) => 
 								{
@@ -269,7 +269,7 @@ public class Given_DependencyPropertyGenerator
 				{
 					"""
 					using Uno.UI.Xaml;
-					using Microsoft.UI.Xaml;
+					using Windows.UI.Xaml;
 					using Windows.UI.Core;
 
 					namespace Mynamespace
@@ -319,9 +319,9 @@ public class Given_DependencyPropertyGenerator
 						using System.Runtime.CompilerServices;
 						using Uno.UI;
 						using Uno.UI.DataBinding;
-						using Microsoft.UI.Xaml;
-						using Microsoft.UI.Xaml.Controls;
-						using Microsoft.UI.Xaml.Data;
+						using Windows.UI.Xaml;
+						using Windows.UI.Xaml.Controls;
+						using Windows.UI.Xaml.Data;
 						using Uno.Diagnostics.Eventing;
 						namespace Mynamespace
 						{
@@ -352,12 +352,12 @@ public class Given_DependencyPropertyGenerator
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
 								/// </summary>
-								private static global::Microsoft.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
+								private static global::Windows.UI.Xaml.DependencyProperty CreateMyValueProperty() => 
 								DependencyProperty.Register(
 									name: "MyValue",
 									propertyType: typeof(int),
 									ownerType: typeof(global::Mynamespace.C),
-									typeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(
+									typeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(
 								#error The generated property MyValue cannot contains both a DefaultValue and the GetMyValueDefaultValue() method.
 										defaultValue: (int)21 /* GetMyValueDefaultValue(), global::Mynamespace.C */
 										, backingFieldUpdateCallback: OnMyValueBackingFieldUpdate

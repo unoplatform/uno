@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Disposables;
 using System.Threading.Tasks;
 using Private.Infrastructure;

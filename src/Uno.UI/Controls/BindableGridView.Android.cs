@@ -12,7 +12,7 @@ using Android.Widget;
 using Android.Util;
 using System.Collections;
 using System.Windows.Input;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
@@ -103,7 +103,7 @@ namespace Uno.UI.Controls
 			set { BindableAdapter.ItemTemplateId = value; }
 		}
 
-		public Microsoft.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
+		public Windows.UI.Xaml.Controls.DataTemplateSelector ItemTemplateSelector
 		{
 			get { return BindableAdapter.ItemTemplateSelector; }
 			set { BindableAdapter.ItemTemplateSelector = value; }

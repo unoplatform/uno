@@ -10,8 +10,8 @@ using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 #if __IOS__
 using UIKit;
@@ -88,9 +88,9 @@ namespace Uno.UI.Toolkit
 #else
 				var window =
 #if HAS_UNO
-					Microsoft.UI.Xaml.Window.CurrentSafe;
+					Windows.UI.Xaml.Window.CurrentSafe;
 #else
-					Microsoft.UI.Xaml.Window.Current;
+					Windows.UI.Xaml.Window.Current;
 #endif
 
 				if (window is null)
@@ -222,12 +222,12 @@ namespace Uno.UI.Toolkit
 #endif
 			}
 
-			private Microsoft.UI.Xaml.Window? GetOwnerWindow()
+			private Windows.UI.Xaml.Window? GetOwnerWindow()
 			{
 #if HAS_UNO
-				return Owner?.XamlRoot?.HostWindow ?? Microsoft.UI.Xaml.Window.CurrentSafe;
+				return Owner?.XamlRoot?.HostWindow ?? Windows.UI.Xaml.Window.CurrentSafe;
 #else
-				return Microsoft.UI.Xaml.Window.Current;
+				return Windows.UI.Xaml.Window.Current;
 #endif
 			}
 

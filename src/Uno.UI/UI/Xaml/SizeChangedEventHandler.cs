@@ -9,11 +9,11 @@ using _Size = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public delegate void SizeChangedEventHandler(object sender, SizeChangedEventArgs args);
 
-	public partial class SizeChangedEventArgs : Microsoft.UI.Xaml.RoutedEventArgs
+	public partial class SizeChangedEventArgs : Windows.UI.Xaml.RoutedEventArgs
 	{
 		internal SizeChangedEventArgs(object originalSource, _Size previousSize, _Size newSize)
 			: base(originalSource)

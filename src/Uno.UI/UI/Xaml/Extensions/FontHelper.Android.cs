@@ -10,7 +10,7 @@ using Uno;
 using Uno.UI;
 using System.Linq;
 using Android.OS;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
 using Windows.Storage;
@@ -19,7 +19,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal partial class FontHelper
 	{

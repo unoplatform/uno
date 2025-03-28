@@ -2,10 +2,10 @@
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class DragStartingEventArgs : RoutedEventArgs
 	{

@@ -9,12 +9,12 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Windows.Devices.Perception;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation.Metadata;
 using FluentAssertions;
 
@@ -81,7 +81,7 @@ public class Given_Rectangle
 #endif
 	public async Task When_StrokeThickness_Is_GreaterThan_Or_Equals_Width(double width, double height, double strokeThickness, double expectedWidth, double expectedHeight)
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -91,7 +91,7 @@ public class Given_Rectangle
 			Width = width,
 			Height = height,
 			StrokeThickness = strokeThickness,
-			Stroke = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Stroke = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var root = new Grid
@@ -105,7 +105,7 @@ public class Given_Rectangle
 		await UITestHelper.Load(root);
 
 		var screenshot = await UITestHelper.ScreenShot(root);
-		var shapeBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 15);
+		var shapeBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 15);
 		Assert.AreEqual(expectedWidth, shapeBounds.Width);
 		Assert.AreEqual(expectedHeight, shapeBounds.Height);
 	}
@@ -119,7 +119,7 @@ public class Given_Rectangle
 #endif
 	public async Task When_StrokeThickness_Should_Arrange_Correctly(double strokeThickness, double expectedGreenWidth, double expectedGreenHeight)
 	{
-		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -129,7 +129,7 @@ public class Given_Rectangle
 			Width = 20,
 			Height = 200,
 			StrokeThickness = strokeThickness,
-			Stroke = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Stroke = new SolidColorBrush(Windows.UI.Colors.Green),
 		};
 
 		var grid = new Grid
@@ -137,7 +137,7 @@ public class Given_Rectangle
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
 			Height = 300,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 			Children =
 			{
 				rectangle,
@@ -155,11 +155,11 @@ public class Given_Rectangle
 		await UITestHelper.Load(root);
 
 		var screenshot = await UITestHelper.ScreenShot(root);
-		var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 15);
+		var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 15);
 		Assert.AreEqual(19, redBounds.Width);
 		Assert.AreEqual(299, redBounds.Height);
 
-		var greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 15);
+		var greenBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Green, tolerance: 15);
 		Assert.AreEqual(expectedGreenWidth, greenBounds.Width);
 		Assert.AreEqual(expectedGreenHeight, greenBounds.Height);
 
@@ -171,14 +171,14 @@ public class Given_Rectangle
 	public async Task When_Fill_Is_AcrylicBrush()
 	{
 		var unhandledExceptionFired = false;
-		void OnUnhandled(object sender, global::Microsoft.UI.Xaml.UnhandledExceptionEventArgs args)
+		void OnUnhandled(object sender, global::Windows.UI.Xaml.UnhandledExceptionEventArgs args)
 		{
 			unhandledExceptionFired = true;
 			args.Handled = true;
 		}
 		try
 		{
-			global::Microsoft.UI.Xaml.Application.Current.UnhandledException += OnUnhandled;
+			global::Windows.UI.Xaml.Application.Current.UnhandledException += OnUnhandled;
 			var rectangle = new Rectangle()
 			{
 				Width = 100,
@@ -186,9 +186,9 @@ public class Given_Rectangle
 				Fill = new AcrylicBrush()
 				{
 					BackgroundSource = AcrylicBackgroundSource.Backdrop,
-					TintColor = Microsoft.UI.Colors.Red,
+					TintColor = Windows.UI.Colors.Red,
 					TintOpacity = 0.5,
-					FallbackColor = Microsoft.UI.Colors.Green,
+					FallbackColor = Windows.UI.Colors.Green,
 				},
 			};
 			var root = new Grid
@@ -202,7 +202,7 @@ public class Given_Rectangle
 			};
 			await UITestHelper.Load(root);
 			var screenshot = await UITestHelper.ScreenShot(rectangle);
-			ImageAssert.HasColorAt(screenshot, new(50, 50), Microsoft.UI.Colors.Green, tolerance: 0);
+			ImageAssert.HasColorAt(screenshot, new(50, 50), Windows.UI.Colors.Green, tolerance: 0);
 			unhandledExceptionFired.Should().BeFalse();
 		}
 		finally

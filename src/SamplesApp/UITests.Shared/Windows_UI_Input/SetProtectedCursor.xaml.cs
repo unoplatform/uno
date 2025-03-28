@@ -6,8 +6,8 @@ using Uno.UI.Samples.Controls;
 using System.Collections.Generic;
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Microsoft.UI.Input;
 
 namespace SamplesApp.Wasm.Windows_UI_Input

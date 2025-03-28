@@ -16,7 +16,7 @@ namespace Uno.UI.MSAL
 			builder.WithCustomWebUi(WasmWebUi.Instance);
 #elif __MACOS__
 			// WithUnoHelpers is not yet supported for macOS on .NET 6
-			// builder.WithParentActivityOrWindow(Microsoft.UI.Xaml.Window.Current.Content.Window);
+			// builder.WithParentActivityOrWindow(Windows.UI.Xaml.Window.Current.Content.Window);
 #endif
 			return builder;
 		}

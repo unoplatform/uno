@@ -7,8 +7,8 @@ using System;
 
 using MUXControlsTestApp.Utilities;
 
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Common;
@@ -27,7 +27,7 @@ using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIcon
 using BitmapIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource;
 using ImageIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIconSource;
 using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using Private.Infrastructure;
 using System.Threading.Tasks;
@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class IconSourceApiTests : MUXApiTestBase
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.ImageSource = new SvgImageSource(uri);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
@@ -74,8 +74,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
 				Verify.IsTrue(imageIcon.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (imageIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (imageIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual(uri, ((SvgImageSource)iconSource.ImageSource).UriSource);
 				Verify.AreEqual(uri, ((SvgImageSource)imageIcon.Source).UriSource);
 			});
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.Source = source;
 				iconSource.MirroredWhenRightToLeft = true;
 			});
@@ -120,8 +120,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
 				Verify.IsTrue(animatedIcon.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (animatedIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (animatedIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual(source, iconSource.Source);
 				Verify.AreEqual(source, animatedIcon.Source);
 				Verify.IsTrue(iconSource.MirroredWhenRightToLeft);
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.Symbol = Symbol.HangUp;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
@@ -162,8 +162,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			RunOnUIThread.Execute(() =>
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (symbolIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (symbolIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual(Symbol.HangUp, iconSource.Symbol);
 				Verify.AreEqual(Symbol.HangUp, symbolIcon.Symbol);
 			});
@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.Glyph = "&#xE114;";
 				iconSource.FontSize = 25;
 				iconSource.FontStyle = FontStyle.Oblique;
@@ -220,8 +220,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
 				Verify.IsTrue(fontIcon.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (fontIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (fontIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual("&#xE114;", iconSource.Glyph);
 				Verify.AreEqual("&#xE114;", fontIcon.Glyph);
 				Verify.AreEqual(25, iconSource.FontSize);
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(icon.UriSource, iconSource.UriSource);
 				Verify.AreEqual(bitmapIcon.UriSource, iconSource.UriSource);
 
-				if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
+				if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
 				{
 					Verify.AreEqual(icon.ShowAsMonochrome, iconSource.ShowAsMonochrome);
 					Verify.AreEqual(bitmapIcon.ShowAsMonochrome, iconSource.ShowAsMonochrome);
@@ -270,7 +270,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.UriSource = uri;
 				iconSource.ShowAsMonochrome = false;
 			});
@@ -280,8 +280,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
 				Verify.IsTrue(bitmapIcon.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (bitmapIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (bitmapIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual(uri, iconSource.UriSource);
 				Verify.AreEqual(uri, bitmapIcon.UriSource);
 				Verify.AreEqual(false, iconSource.ShowAsMonochrome);
@@ -314,7 +314,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				Log.Comment("Validate that you can change the properties.");
 
-				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				iconSource.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
 				iconSource.Data = rectGeometry = new RectangleGeometry();
 			});
 			await TestServices.WindowHelper.WaitForIdle();
@@ -323,8 +323,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				Verify.IsTrue(iconSource.Foreground is SolidColorBrush);
 				Verify.IsTrue(pathIcon.Foreground is SolidColorBrush);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
-				Verify.AreEqual(Microsoft.UI.Colors.Red, (pathIcon.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (iconSource.Foreground as SolidColorBrush).Color);
+				Verify.AreEqual(Windows.UI.Colors.Red, (pathIcon.Foreground as SolidColorBrush).Color);
 				Verify.AreEqual(rectGeometry, iconSource.Data);
 				Verify.AreEqual(rectGeometry, pathIcon.Data);
 			});

@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Windows.UI.Xaml.Automation.Peers
 {
 	/// <summary>
 	/// A base class that provides a Microsoft UI Automation peer implementation for types that derive from RangeBase.

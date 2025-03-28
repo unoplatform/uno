@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 #if __WASM__
@@ -38,7 +38,7 @@ public sealed partial class Playground : UserControl
 		await Task.Delay(100); // Workaround for https://github.com/unoplatform/uno/issues/15374
 		_codeEditor = new CodeEditor()
 		{
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
+			Background = new SolidColorBrush(Windows.UI.Colors.Transparent),
 			HasGlyphMargin = true,
 			Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "",
 			CodeLanguage = "XML"
@@ -67,7 +67,7 @@ public sealed partial class Playground : UserControl
 		var ns = new[] {
 				("behaviors", "using:Uno.UI.Demo.Behaviors"),
 				("utu", "using:Uno.Toolkit.UI"),
-				("muxc", "using:Microsoft.UI.Xaml.Controls"),
+				("muxc", "using:Windows.UI.Xaml.Controls"),
 				("um", "using:Uno.Material.Extensions"),
 				("mtuc", "using:Microsoft.Toolkit.Uwp.UI.Controls"),
 				("mtud", "using:Microsoft.Toolkit.Uwp.DeveloperTools"),

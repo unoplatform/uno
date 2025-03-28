@@ -1,9 +1,9 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Data;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Microsoft.UI.Xaml.Automation
+namespace Windows.UI.Xaml.Automation
 {
 	internal class AutomationHelper
 	{

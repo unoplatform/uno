@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class TemplateMaterializationSettings

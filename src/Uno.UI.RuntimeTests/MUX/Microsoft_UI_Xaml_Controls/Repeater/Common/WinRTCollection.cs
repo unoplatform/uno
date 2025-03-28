@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public class WinRTCollection : IObservableVector<object>
 	{

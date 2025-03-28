@@ -1,6 +1,6 @@
-using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+﻿using System;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Helpers;

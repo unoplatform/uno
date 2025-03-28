@@ -1,5 +1,5 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests;
 
 public sealed partial class When_Transition_Modifies_SubProperty : UserControl

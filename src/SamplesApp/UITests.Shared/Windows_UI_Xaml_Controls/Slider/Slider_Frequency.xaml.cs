@@ -1,5 +1,5 @@
 ﻿using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using UITests.Shared.Windows_UI_Xaml_Controls.Slider;
 
 namespace Uno.UI.Samples.Content.UITests.Slider

@@ -6,7 +6,7 @@ using UIKit;
 using Foundation;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// This is set as a placeholder in the constructor of <see cref="NativeListViewBase"/>. It should normally never be used when the list is actually visible.

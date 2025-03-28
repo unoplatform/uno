@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {

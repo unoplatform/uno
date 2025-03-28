@@ -9,11 +9,11 @@ using System.Numerics;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;

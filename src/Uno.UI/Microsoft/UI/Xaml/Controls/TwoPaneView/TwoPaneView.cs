@@ -6,9 +6,9 @@ using System;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -16,7 +16,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 /// Represents a container with two views that size and position content
 /// in the available space, either side-by-side or top-bottom.
 /// </summary>
-public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
+public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
 {
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 	private bool _subscribedToXamlRoot;

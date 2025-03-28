@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Interop;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Interop;
 using PropertyChangedEventHandler = System.ComponentModel.PropertyChangedEventHandler;
 using PropertyChangedEventArgs = System.ComponentModel.PropertyChangedEventArgs;
 using Type = System.Type;

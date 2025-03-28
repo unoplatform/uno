@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TreeViewItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+	public partial class TreeViewItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer.TreeViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.TreeViewItem)
@@ -14,6 +14,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer.Expand()
-		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+		// Processing: Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Web.WebView2.Core;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

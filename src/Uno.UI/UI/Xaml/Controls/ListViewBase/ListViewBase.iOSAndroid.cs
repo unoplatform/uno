@@ -10,7 +10,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 using _ViewGroup = UIKit.UIView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{

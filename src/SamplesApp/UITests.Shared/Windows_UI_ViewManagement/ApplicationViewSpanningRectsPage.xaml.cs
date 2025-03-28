@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 

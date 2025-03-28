@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 partial class ImageSource
 {

@@ -3,7 +3,7 @@
 // MUX Reference dxaml\xcp\dxaml\lib\PageStackEntryTrackerCollection.cpp, tag winui3/release/1.5.5, commit fd8e26f1d
 
 using System;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Navigation;
 using Windows.Foundation.Collections;
 
 namespace DirectUI;

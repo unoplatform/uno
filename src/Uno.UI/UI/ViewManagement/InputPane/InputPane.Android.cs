@@ -5,9 +5,9 @@ using Android.Util;
 using Android.Views.InputMethods;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.ViewManagement
 {

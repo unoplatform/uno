@@ -3,10 +3,10 @@
 // MUX Reference RepeatButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
 using System;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 public partial class RepeatButtonAutomationPeer : ButtonBaseAutomationPeer, IInvokeProvider
 {

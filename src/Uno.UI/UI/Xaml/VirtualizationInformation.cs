@@ -5,7 +5,7 @@ using Windows.Foundation;
 using Uno;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Class that holds virtualization information. We do not create this class indiscriminately,

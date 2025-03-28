@@ -3,9 +3,9 @@ using System.Collections;
 using System.Linq;
 using Windows.Foundation;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;

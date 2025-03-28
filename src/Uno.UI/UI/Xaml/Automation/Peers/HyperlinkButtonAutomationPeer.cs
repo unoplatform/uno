@@ -2,10 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference HyperlinkButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes HyperlinkButton types to Microsoft UI Automation.

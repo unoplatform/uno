@@ -1,10 +1,10 @@
 ﻿using System;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 {
@@ -46,11 +46,11 @@ namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 
 			online.Background = new TestBrush(onlineNineGridBrush);
 
-			var surface = Microsoft.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_100_100.png"));
+			var surface = Windows.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_100_100.png"));
 
-			surface.LoadCompleted += new Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Media.LoadedImageSurface, LoadedImageSourceLoadCompletedEventArgs>((s, o) =>
+			surface.LoadCompleted += new Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Media.LoadedImageSurface, LoadedImageSourceLoadCompletedEventArgs>((s, o) =>
 			{
-				if (o.Status == Microsoft.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
+				if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 				{
 					var offlineBrush = compositor.CreateSurfaceBrush(surface);
 
@@ -82,7 +82,7 @@ namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 			});
 		}
 
-		private class TestBrush : Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
+		private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase
 		{
 			private CompositionBrush Brush;
 

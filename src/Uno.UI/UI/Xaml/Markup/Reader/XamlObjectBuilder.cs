@@ -9,10 +9,10 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Resources;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Resources;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -28,10 +28,10 @@ using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Markup.Reader
+namespace Windows.UI.Xaml.Markup.Reader
 {
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
 		// But because they are not referenced anywhere, they could be trimmed and leads to:
-		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
+		// > MissingMethodException: MissingConstructor_Name, Windows.UI.Xaml.DataTemplate
 		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// If we can match a $"{name}Extension" class and it extends from MarkupExtension, that is also a valid match.
 				// This shortcut syntax is not limited for {Markup} markup declaration syntax, but also works on <Markup> xaml-node declaration. (verified on WinAppSdk)
 				// note: On windows, the custom markup type MUST BE ALREADY used/referenced in the xaml once, in order for XamlReader to work with it, otherwise it will throws:
-				//		Microsoft.UI.Xaml.Markup.XamlParseException: 'The text associated with this error code could not be found.
+				//		Windows.UI.Xaml.Markup.XamlParseException: 'The text associated with this error code could not be found.
 				//		The type 'Sanity' was not found. [Line: 1 Position: 9]'
 				if (TypeResolver.FindType(control.Type.PreferredXamlNamespace, control.Type.Name + "Extension") is { } extensionType &&
 					extensionType.Is<MarkupExtension>())
@@ -637,8 +637,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						// WinUI will actually throw an exception for markup that returns `string` or `Run` here:
 						// > XamlParseException: The text associated with this error code could not be found.
-						// > Run -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines' because the type 'Microsoft.UI.Xaml.Documents.Run' cannot be assigned to the type 'Microsoft.UI.Xaml.Documents.InlineCollection'. [Line: 22 Position: 8]'
-						// > string -> Failed to assign to property 'Microsoft.UI.Xaml.Controls.TextBlock.Inlines'. [Line: 20 Position: 7]'
+						// > Run -> Failed to assign to property 'Windows.UI.Xaml.Controls.TextBlock.Inlines' because the type 'Windows.UI.Xaml.Documents.Run' cannot be assigned to the type 'Windows.UI.Xaml.Documents.InlineCollection'. [Line: 22 Position: 8]'
+						// > string -> Failed to assign to property 'Windows.UI.Xaml.Controls.TextBlock.Inlines'. [Line: 20 Position: 7]'
 						throw new XamlParseException(value is Inline
 							? $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}' because the type '{value.GetType().FullName}' cannot be assigned to the type '{typeof(InlineCollection).FullName}'."
 							: $"Failed to assign to property '{typeof(TextBlock).FullName}.{nameof(TextBlock.Inlines)}'."

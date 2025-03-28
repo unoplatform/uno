@@ -8,13 +8,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uno.Collections;
 using Uno.Helpers;
-using CRowDefinitionCollection = Microsoft.UI.Xaml.Controls.RowDefinitionCollection;
-using CColumnDefinitionCollection = Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection;
+using CRowDefinitionCollection = Windows.UI.Xaml.Controls.RowDefinitionCollection;
+using CColumnDefinitionCollection = Windows.UI.Xaml.Controls.ColumnDefinitionCollection;
 
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Grid : Panel
 	{

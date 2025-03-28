@@ -5,7 +5,7 @@ using System.Buffers;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 public partial class RenderTargetBitmap
 {

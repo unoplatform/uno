@@ -15,7 +15,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	internal class UnoCoreAnimation : IDisposable
 	{

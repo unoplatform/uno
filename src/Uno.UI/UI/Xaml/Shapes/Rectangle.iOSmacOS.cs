@@ -2,7 +2,7 @@
 using System.Linq;
 using Uno.UI.Extensions;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using CoreGraphics;
 
 #if __IOS__
@@ -16,7 +16,7 @@ using _BezierPath = AppKit.NSBezierPath;
 using ObjCRuntime;
 
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Rectangle
 	{

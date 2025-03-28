@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 
@@ -52,7 +52,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 				{
 					var e = o as FrameworkElement;
 					yield return $"{o.GetType().Name}[{e?.Name}]-{o}";
-					if (e is Microsoft.UI.Xaml.Controls.ComboBox)
+					if (e is Windows.UI.Xaml.Controls.ComboBox)
 					{
 						yield break;
 					}

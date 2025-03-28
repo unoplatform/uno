@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TeachingTipTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class TeachingTipTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property TopRightHighlightMargin
 		// Skipping already declared property TopLeftHighlightMargin

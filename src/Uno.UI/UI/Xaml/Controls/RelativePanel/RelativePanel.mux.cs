@@ -1,10 +1,10 @@
 ﻿using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines an area within which you can position and align child

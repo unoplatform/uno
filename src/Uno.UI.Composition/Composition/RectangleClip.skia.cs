@@ -4,7 +4,7 @@ using SkiaSharp;
 using Uno.Extensions;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 partial class RectangleClip
 {

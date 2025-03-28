@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
 using Uno.UI.Xaml;
 #if __ANDROID__
 using Android.Views;
@@ -24,7 +24,7 @@ using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 using _Debug = System.Diagnostics.Debug;
 
@@ -32,7 +32,7 @@ using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.Radial
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 // TODO: Border should be sealed
 [ContentProperty(Name = nameof(Child))]

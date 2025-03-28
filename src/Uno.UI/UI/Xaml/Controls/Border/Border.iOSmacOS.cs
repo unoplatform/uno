@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media;
 using CoreGraphics;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
@@ -18,7 +18,7 @@ using AppKit;
 using _Image = AppKit.NSImage;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Border
 {

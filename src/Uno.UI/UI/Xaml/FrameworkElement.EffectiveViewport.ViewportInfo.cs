@@ -5,7 +5,7 @@ using System.Linq;
 using Windows.Foundation;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal struct ViewportInfo : IEquatable<ViewportInfo>
 	{

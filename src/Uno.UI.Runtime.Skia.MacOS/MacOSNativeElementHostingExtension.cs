@@ -1,15 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
+internal class MacOSNativeElement : Windows.UI.Xaml.FrameworkElement
 {
 	public nint NativeHandle { get; internal set; }
 

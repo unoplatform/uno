@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal class AnimationBinaryExpressionSyntax : AnimationExpressionSyntax
 {

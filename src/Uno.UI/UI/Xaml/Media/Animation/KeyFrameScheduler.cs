@@ -9,7 +9,7 @@ using Windows.System;
 using Uno.Disposables;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal class KeyFrameScheduler<TValue> : IDisposable
 	{

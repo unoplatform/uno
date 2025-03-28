@@ -19,10 +19,10 @@ using Windows.UI;
 using Rectangle = System.Drawing.Rectangle;
 using Size = System.Drawing.Size;
 using Point = System.Drawing.Point;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using _Bitmap = Uno.UI.RuntimeTests.Helpers.RawBitmap;
 using SamplesApp.UITests;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SamplesApp.UITests.TestFramework;
 using _Color = Windows.UI.Color;
 

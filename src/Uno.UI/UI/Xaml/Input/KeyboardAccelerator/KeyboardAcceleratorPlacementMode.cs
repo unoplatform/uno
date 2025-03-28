@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Xaml.Input;
+﻿namespace Windows.UI.Xaml.Input;
 
 /// <summary>
 /// Defines constants that specify whether a keyboard shortcut (accelerator) is displayed.

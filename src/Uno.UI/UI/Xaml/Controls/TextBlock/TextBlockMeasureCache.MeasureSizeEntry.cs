@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Uno;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBlockMeasureCache
 	{

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MenuBarItemFlyout : global::Microsoft.UI.Xaml.Controls.MenuFlyout
+	public partial class MenuBarItemFlyout : global::Windows.UI.Xaml.Controls.MenuFlyout
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuBarItemFlyout.MenuBarItemFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItemFlyout.MenuBarItemFlyout()

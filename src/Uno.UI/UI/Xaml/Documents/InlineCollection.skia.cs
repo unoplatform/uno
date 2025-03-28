@@ -5,16 +5,16 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{

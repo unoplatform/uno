@@ -14,7 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Windows.Graphics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{

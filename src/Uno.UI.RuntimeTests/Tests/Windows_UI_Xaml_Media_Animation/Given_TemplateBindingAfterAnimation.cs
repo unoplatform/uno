@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation.TestPages;
@@ -25,18 +25,18 @@ public class Given_TemplateBindingAfterAnimation
 		var btn = page.customButton;
 		var tb1 = btn.TextBlockTemplateChildBoundToForeground;
 
-		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Blue);
-		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Red);
+		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Blue);
+		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Red);
 
-		btn.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+		btn.Foreground = new SolidColorBrush(Windows.UI.Colors.Green);
 
-		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
-		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Red);
+		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Green);
+		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Red);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
-		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Red);
+		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Green);
+		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Red);
 	}
 
 	[TestMethod]
@@ -53,12 +53,12 @@ public class Given_TemplateBindingAfterAnimation
 		var btn = page.customButton;
 		var tb2 = btn.TextBlockTemplateChildBoundToBackground;
 
-		Assert.AreEqual((btn.Background as SolidColorBrush).Color, Microsoft.UI.Colors.White);
-		Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Brown);
+		Assert.AreEqual((btn.Background as SolidColorBrush).Color, Windows.UI.Colors.White);
+		Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Brown);
 
 		using (ThemeHelper.UseDarkTheme())
 		{
-			Assert.AreEqual((btn.Background as SolidColorBrush).Color, Microsoft.UI.Colors.LightGray);
+			Assert.AreEqual((btn.Background as SolidColorBrush).Color, Windows.UI.Colors.LightGray);
 
 #if __ANDROID__ || __IOS__
 			// Android and iOS behavior is very wrong.
@@ -66,19 +66,19 @@ public class Given_TemplateBindingAfterAnimation
 			// So, we end up not updating the foreground.
 			// TODO: Look into ResourceResolver.TryVisualTreeRetrieval and see whether it should
 			// loop through all Sources instead of just the first one (as it's currently implemented)
-			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Brown);
+			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Brown);
 #elif HAS_UNO
-			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.RosyBrown);
+			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.RosyBrown);
 #else
-			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.LightGray);
+			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.LightGray);
 #endif
 
 			await TestServices.WindowHelper.WaitForIdle();
 
 #if __ANDROID__ || __IOS__
-			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Brown);
+			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.Brown);
 #else
-			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.RosyBrown);
+			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Windows.UI.Colors.RosyBrown);
 #endif
 		}
 	}

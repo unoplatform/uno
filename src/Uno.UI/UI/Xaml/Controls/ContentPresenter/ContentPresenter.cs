@@ -7,14 +7,14 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
 using Windows.Foundation;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.UI.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -40,11 +40,11 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
-using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Declares a Content presenter

@@ -7,18 +7,18 @@ using System.Windows.Input;
 using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using AppBarToggleButtonAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
-using AppBarToggleButtonTemplateSettings = Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using AppBarToggleButtonAutomationPeer = Windows.UI.Xaml.Automation.Peers.AppBarToggleButtonAutomationPeer;
+using AppBarToggleButtonTemplateSettings = Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings;
 using System.Globalization;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 	{

@@ -4,7 +4,7 @@ using System;
 using System.Globalization;
 using System.Numerics;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal sealed class ClampFloatFloatFloatFunctionSpecification : IAnimationFunctionSpecification
 {

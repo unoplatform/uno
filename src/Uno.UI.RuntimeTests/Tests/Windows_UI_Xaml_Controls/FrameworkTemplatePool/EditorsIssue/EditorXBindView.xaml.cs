@@ -1,6 +1,6 @@
 ﻿// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace FrameworkPoolEditorRecycling.Editors;
 
@@ -17,7 +17,7 @@ public sealed partial class EditorXBindView : Page
 		this.DataContextChanged += EditorXBindView_DataContextChanged;
 	}
 
-	private void EditorXBindView_DataContextChanged(Microsoft.UI.Xaml.FrameworkElement sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
+	private void EditorXBindView_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 	{
 		if (DataContext is EditorViewModel editor)
 		{

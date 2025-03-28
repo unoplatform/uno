@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
 
-namespace Microsoft.UI.Xaml.Controls.Maps.Presenters
+namespace Windows.UI.Xaml.Controls.Maps.Presenters
 {
 	public sealed partial class MapPresenter : Control
 	{

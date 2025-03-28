@@ -1,7 +1,7 @@
-using Uno.UI.Xaml.Controls;
+﻿using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class Window
 {

@@ -3,7 +3,7 @@
 #if IS_UNO_COMPOSITION
 namespace Uno.UI.Composition;
 #else
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 #endif
 
 internal partial record struct FullCornerRadius

@@ -6,15 +6,15 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Automation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ using TeachingTipHeroContentPlacementMode = Microsoft/* UWP don't rename */.UI.X
 using TeachingTipPlacementMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipPlacementMode;
 using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.Samples.Controls;
-using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
+using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 using MUXControlsTestApp.Utilities;
 
 #pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
@@ -836,11 +836,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 
 		public void OnSetAnimationParametersButtonClicked(object sender, RoutedEventArgs args)
 		{
-			var expandEasing = global::Microsoft.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
+			var expandEasing = global::Windows.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint1X.Text), float.Parse(this.ExpandControlPoint1Y.Text)),
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint2X.Text), float.Parse(this.ExpandControlPoint2Y.Text)));
 
-			var contractEasing = global::Microsoft.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
+			var contractEasing = global::Windows.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint1X.Text), float.Parse(this.ExpandControlPoint1Y.Text)),
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint2X.Text), float.Parse(this.ExpandControlPoint2Y.Text)));
 

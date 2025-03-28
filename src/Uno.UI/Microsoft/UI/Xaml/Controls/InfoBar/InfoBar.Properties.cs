@@ -4,8 +4,8 @@
 
 using System.Windows.Input;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

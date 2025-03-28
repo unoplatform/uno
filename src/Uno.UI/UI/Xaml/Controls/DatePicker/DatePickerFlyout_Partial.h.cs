@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	//extern __declspec(selectany)  char DatePickerFlyoutShowAtAsyncOperationName[] = "Windows.Foundation.IAsyncOperation`1<Windows.Foundation.IReference`1<Windows.Foundation.DateTime>> Microsoft/* UWP don't rename */.UI.Xaml.Controls.DatePickerFlyout.ShowAtAsync";
 

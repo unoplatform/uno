@@ -7,7 +7,7 @@
 using System;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	/// <summary>
 	/// Provides data for the FocusManager.LosingFocus and UIElement.LosingFocus events.

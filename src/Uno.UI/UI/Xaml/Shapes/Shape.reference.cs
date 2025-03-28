@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Shapes;
+﻿namespace Windows.UI.Xaml.Shapes;
 
 public partial class Shape
 {

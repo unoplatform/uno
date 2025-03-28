@@ -6,20 +6,20 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
-using Colors = Microsoft.UI.Colors;
+using Colors = Windows.UI.Colors;
 #else
 using Colors = Windows.UI.Colors;
 #endif

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Uno.UI.Controls;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using AndroidX.ViewPager.Widget;
 using System.Collections.Specialized;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{

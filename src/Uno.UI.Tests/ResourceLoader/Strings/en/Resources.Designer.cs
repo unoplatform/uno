@@ -93,7 +93,7 @@ namespace Uno.UI.Tests.ResourceLoader.Strings.en {
         /// </summary>
         internal static string OpenVideosButton__using_Windows_UI_Xaml_Controls_ToolTipService_ToolTip {
             get {
-                return ResourceManager.GetString("OpenVideosButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip", resourceCulture);
+                return ResourceManager.GetString("OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip", resourceCulture);
             }
         }
         

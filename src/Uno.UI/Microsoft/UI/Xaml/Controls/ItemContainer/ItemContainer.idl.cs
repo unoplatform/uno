@@ -1,10 +1,10 @@
 ﻿// MUX Reference ItemContainer.idl, tag winui3/release/1.5.0
 
 using System;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 [Flags]
 internal enum ItemContainerMultiSelectMode

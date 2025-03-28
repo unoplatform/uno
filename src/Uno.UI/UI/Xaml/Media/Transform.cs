@@ -15,7 +15,7 @@ using _View = UIKit.UIView;
 using _View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Transform :  Based on the WinRT Transform

@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Microsoft.UI.Composition.SystemBackdrops;
+namespace Windows.UI.Composition.SystemBackdrops;
 
 public partial class MicaController
 #if HAS_UNO_WINUI

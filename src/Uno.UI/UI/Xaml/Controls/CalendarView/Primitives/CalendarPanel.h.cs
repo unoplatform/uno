@@ -4,7 +4,7 @@
 using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class CalendarPanel
 	{

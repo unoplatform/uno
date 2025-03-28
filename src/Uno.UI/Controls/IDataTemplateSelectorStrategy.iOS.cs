@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.Extensions;
 using UIKit;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Views.Controls
 {

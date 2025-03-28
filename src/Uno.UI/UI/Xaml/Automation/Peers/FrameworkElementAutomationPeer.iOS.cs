@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UIKit;
 using Uno;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 public partial class FrameworkElementAutomationPeer : AutomationPeer
 {

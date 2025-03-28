@@ -5,7 +5,7 @@ using SkiaSharp;
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting
+namespace Windows.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
 	/// Represents a stand-alone line break or a segment of a Run that can end in a word-break opportunity and/or a line break. All glyphs in a segment go in

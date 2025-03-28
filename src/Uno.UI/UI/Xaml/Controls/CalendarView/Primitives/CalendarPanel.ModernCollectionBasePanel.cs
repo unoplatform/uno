@@ -16,7 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	// This file is aimed to implement methods that should be implemented by the ModernCollectionBasePanel which is not present in Uno
 

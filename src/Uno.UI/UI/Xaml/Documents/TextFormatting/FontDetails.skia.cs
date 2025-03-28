@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using HarfBuzzSharp;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using SkiaSharp;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+namespace Windows.UI.Xaml.Documents.TextFormatting;
 
 internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX, SKFontMetrics SKFontMetrics, Font Font, bool CanChange)
 {

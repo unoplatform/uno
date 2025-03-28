@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LayoutContext : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class LayoutContext : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property LayoutState
 		// Skipping already declared property LayoutStateCore

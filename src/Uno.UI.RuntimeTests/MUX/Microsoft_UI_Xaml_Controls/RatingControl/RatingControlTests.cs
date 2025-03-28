@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 using MUXControlsTestApp.Utilities;
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Common;
 
 #if USING_TAEF
@@ -29,7 +29,7 @@ using RatingItemFontInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Rati
 using RatingItemImageInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemImageInfo;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class RatingControlTests : MUXApiTestBase

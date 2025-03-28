@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
 namespace XamlGenerationTests.Core
 {

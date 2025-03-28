@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Activation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml;
 
@@ -15,8 +15,8 @@ public class Given_Window
 		// we guarantee that the new window becomes "Current".
 		Window.CleanupCurrentForTestsOnly();
 
-		var window = new Microsoft.UI.Xaml.Window();
+		var window = new Windows.UI.Xaml.Window();
 		window.Activate();
-		Assert.AreEqual(window, Microsoft.UI.Xaml.Window.Current);
+		Assert.AreEqual(window, Windows.UI.Xaml.Window.Current);
 	}
 }

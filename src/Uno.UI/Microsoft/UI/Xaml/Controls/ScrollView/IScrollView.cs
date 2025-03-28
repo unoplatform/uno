@@ -2,11 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 internal interface IScrollView
 {
 	Visibility ComputedHorizontalScrollBarVisibility { get; }

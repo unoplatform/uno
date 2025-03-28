@@ -3,19 +3,19 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
 
 using static Uno.Helpers.MathHelpers;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines a content decorator that can stretch and scale a single child to fill the available space.
 /// </summary>
 [ContentProperty(Name = nameof(Child))]
-public partial class Viewbox : global::Microsoft.UI.Xaml.FrameworkElement, ILayoutOptOut
+public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement, ILayoutOptOut
 {
 	public UIElement Child
 	{

@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
 using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 using Uno.UI.Samples.Controls;
@@ -131,12 +131,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 			radio_disable.Checked += (s, e) =>
 			{
-				tb.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+				tb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 			};
 
 			radio_enable.Checked += (s, e) =>
 			{
-				tb.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+				tb.Visibility = Windows.UI.Xaml.Visibility.Visible;
 			};
 
 			radio_disable.IsChecked = true;

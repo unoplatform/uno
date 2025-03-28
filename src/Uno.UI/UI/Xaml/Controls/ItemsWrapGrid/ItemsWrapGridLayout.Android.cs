@@ -7,7 +7,7 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
 using Windows.Foundation;
@@ -15,7 +15,7 @@ using Uno.UI.Extensions;
 
 using Size = Windows.Foundation.Size;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A native layout which implements <see cref="ItemsWrapGrid"/> behaviour.

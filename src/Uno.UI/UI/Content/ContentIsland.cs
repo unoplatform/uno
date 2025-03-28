@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.UI;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno;
 using Uno.UI.Content;
 using Uno.UI.Hosting;
@@ -25,7 +25,7 @@ public partial class ContentIsland
 	}
 
 	/// <summary>
-	/// Gets the local dots per inch (dpi) of a Microsoft.UI.Composition.ICompositionSurface.
+	/// Gets the local dots per inch (dpi) of a Windows.UI.Composition.ICompositionSurface.
 	/// </summary>
 	public float RasterizationScale => _contentSiteView.RasterizationScale;
 

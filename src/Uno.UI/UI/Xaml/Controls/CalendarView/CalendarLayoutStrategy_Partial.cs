@@ -6,7 +6,7 @@ using Windows.Foundation;
 using DirectUI;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarLayoutStrategy
 	{

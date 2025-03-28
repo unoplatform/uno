@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Maps
+﻿namespace Windows.UI.Xaml.Controls.Maps
 {
 	partial class MapScene
 	{

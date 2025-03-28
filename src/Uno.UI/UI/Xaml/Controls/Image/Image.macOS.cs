@@ -1,8 +1,8 @@
 ﻿using System;
 
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Foundation;
 using AppKit;
 using CoreGraphics;
@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class Image
 {

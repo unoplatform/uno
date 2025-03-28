@@ -1,11 +1,11 @@
-#if HAS_UNO // DependencyPropertyHelper is only available on Uno
+﻿#if HAS_UNO // DependencyPropertyHelper is only available on Uno
 #nullable enable
 
 using System;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.UIElementPerf
 {

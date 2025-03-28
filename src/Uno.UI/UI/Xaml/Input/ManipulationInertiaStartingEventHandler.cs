@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Input
+﻿namespace Windows.UI.Xaml.Input
 {
-	public delegate void ManipulationInertiaStartingEventHandler(object @sender, global::Microsoft.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs @e);
+	public delegate void ManipulationInertiaStartingEventHandler(object @sender, global::Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs @e);
 }

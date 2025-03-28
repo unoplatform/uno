@@ -25,7 +25,7 @@
 	</UserControl.Resources>
 
 	<StackPanel>
-		<!-- #880: error CS0030: Cannot convert type 'double' to 'Microsoft.UI.Xaml.Thickness' -->
+		<!-- #880: error CS0030: Cannot convert type 'double' to 'Windows.UI.Xaml.Thickness' -->
 		<Border BorderThickness="{StaticResource DoubleValueResource}"  />
 
 		<Border BorderThickness="{ThemeResource  ThemedDoubleValueResource}" />

@@ -7,7 +7,7 @@ using Foundation;
 using UIKit;
 using Uno.UI.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{

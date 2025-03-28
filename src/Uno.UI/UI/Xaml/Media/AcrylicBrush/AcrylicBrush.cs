@@ -1,6 +1,6 @@
 ﻿using Color = Windows.UI.Color;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Paints an area with a semi-transparent material that uses multiple

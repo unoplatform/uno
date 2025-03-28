@@ -17,7 +17,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Describes the changes made to a dependency property

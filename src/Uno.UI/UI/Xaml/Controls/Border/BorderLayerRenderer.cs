@@ -1,6 +1,6 @@
 ﻿#if !UNO_HAS_BORDER_VISUAL
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 
 namespace Uno.UI.Xaml.Controls;

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using Uno.UI.Dispatching;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 

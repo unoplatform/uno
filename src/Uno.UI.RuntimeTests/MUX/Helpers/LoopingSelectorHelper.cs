@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft.UI.Xaml.Tests.Common;
+namespace Windows.UI.Xaml.Tests.Common;
 
 public static class LoopingSelectorHelper
 {

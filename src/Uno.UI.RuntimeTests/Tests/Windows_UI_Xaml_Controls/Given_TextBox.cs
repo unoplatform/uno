@@ -4,11 +4,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -18,7 +18,7 @@ using Windows.UI;
 using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
-using Colors = Microsoft.UI.Colors;
+using Colors = Windows.UI.Colors;
 #else
 using Colors = Windows.UI.Colors;
 #endif

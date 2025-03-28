@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;

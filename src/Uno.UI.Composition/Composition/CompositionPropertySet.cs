@@ -7,7 +7,7 @@ using System.Numerics;
 using Windows.Storage.Streams;
 using Color = Windows.UI.Color;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{

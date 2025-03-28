@@ -8,7 +8,7 @@ using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
+namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
 	[Ignore("PipsPager tests are failing due to UI test differences")]
 	public partial class PipsPagerTests : PipsPagerTestBase

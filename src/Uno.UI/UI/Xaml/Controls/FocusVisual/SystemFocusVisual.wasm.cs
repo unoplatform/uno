@@ -4,9 +4,9 @@ using System;
 using Uno.Foundation;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 using System.Runtime.InteropServices.JavaScript;
 
@@ -40,10 +40,10 @@ internal partial class SystemFocusVisual : Control
 
 	internal static partial class NativeMethods
 	{
-		[JSImport("globalThis.Microsoft.UI.Xaml.Input.FocusVisual.attachVisual")]
+		[JSImport("globalThis.Windows.UI.Xaml.Input.FocusVisual.attachVisual")]
 		internal static partial void AttachVisual(IntPtr htmlId, IntPtr focusedElementId);
 
-		[JSImport("globalThis.Microsoft.UI.Xaml.Input.FocusVisual.detachVisual")]
+		[JSImport("globalThis.Windows.UI.Xaml.Input.FocusVisual.detachVisual")]
 		internal static partial void DetachVisual();
 	}
 }

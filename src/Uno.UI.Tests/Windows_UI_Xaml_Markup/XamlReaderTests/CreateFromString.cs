@@ -1,5 +1,5 @@
 ﻿using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using CoreGraphics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace CoreGraphics
 {

@@ -5,8 +5,8 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml;
 using Windows.Foundation.Collections;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;

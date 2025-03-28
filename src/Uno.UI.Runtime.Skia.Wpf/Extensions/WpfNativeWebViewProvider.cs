@@ -1,6 +1,6 @@
 ﻿extern alias WpfWebView;
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 

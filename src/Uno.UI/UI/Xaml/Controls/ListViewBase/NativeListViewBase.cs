@@ -7,9 +7,9 @@ using System.Windows.Input;
 using Uno;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : IFrameworkElement, DependencyObject, IScrollSnapPointsInfo
 	{

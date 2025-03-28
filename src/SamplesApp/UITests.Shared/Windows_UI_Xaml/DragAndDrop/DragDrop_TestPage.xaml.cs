@@ -5,10 +5,10 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
@@ -87,11 +87,11 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Displays the contents of the given <see cref="global::Microsoft.UI.Xaml.DragEventArgs"/> for any drag/drop event.
+		/// Displays the contents of the given <see cref="global::Windows.UI.Xaml.DragEventArgs"/> for any drag/drop event.
 		/// </summary>
 		/// <param name="eventName">The name of the event to display.</param>
 		/// <param name="args">The event arguments to display.</param>
-		private void ShowDragDropDetails(string eventName, global::Microsoft.UI.Xaml.DragEventArgs args)
+		private void ShowDragDropDetails(string eventName, global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			// Determine the standard formats
 			var standardDataFormats = string.Empty;
@@ -162,10 +162,10 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		}
 
 		/// <summary>
-		/// Displays the contents of the given <see cref="global::Microsoft.UI.Xaml.DragEventArgs"/> after a drop occurs.
+		/// Displays the contents of the given <see cref="global::Windows.UI.Xaml.DragEventArgs"/> after a drop occurs.
 		/// </summary>
 		/// <param name="args">The drop event arguments to display.</param>
-		private async void ShowDropDetails(global::Microsoft.UI.Xaml.DragEventArgs args)
+		private async void ShowDropDetails(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			string title = "Last Drop Details";
 			string position = string.Empty;
@@ -281,39 +281,39 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// <summary>
 		/// Event handler for when a drag operation enters the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragEnter(object sender, global::Microsoft.UI.Xaml.DragEventArgs e)
+		private void DropBorder_DragEnter(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
 			// We accept only one operation
 			e.AcceptedOperation = DataPackageOperation.Copy;
 
-			this.ShowDragDropDetails(nameof(global::Microsoft.UI.Xaml.UIElement.DragEnter), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragEnter), e);
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when a drag operation leaves the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragLeave(object sender, global::Microsoft.UI.Xaml.DragEventArgs e)
+		private void DropBorder_DragLeave(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			this.ShowDragDropDetails(nameof(global::Microsoft.UI.Xaml.UIElement.DragLeave), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragLeave), e);
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when a drag operation is over the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_DragOver(object sender, global::Microsoft.UI.Xaml.DragEventArgs e)
+		private void DropBorder_DragOver(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			this.ShowDragDropDetails(nameof(global::Microsoft.UI.Xaml.UIElement.DragOver), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.DragOver), e);
 			return;
 		}
 
 		/// <summary>
 		/// Event handler for when an item is dropped on the <see cref="DropBorder"/>.
 		/// </summary>
-		private void DropBorder_Drop(object sender, global::Microsoft.UI.Xaml.DragEventArgs e)
+		private void DropBorder_Drop(object sender, global::Windows.UI.Xaml.DragEventArgs e)
 		{
-			this.ShowDragDropDetails(nameof(global::Microsoft.UI.Xaml.UIElement.Drop), e);
+			this.ShowDragDropDetails(nameof(global::Windows.UI.Xaml.UIElement.Drop), e);
 			this.ShowDropDetails(e);
 
 			return;
@@ -322,7 +322,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// <summary>
 		/// Event handler for when an internal drag starts from a known source.
 		/// </summary>
-		private void DragSource_DragStarting(global::Microsoft.UI.Xaml.UIElement sender, DragStartingEventArgs args)
+		private void DragSource_DragStarting(global::Windows.UI.Xaml.UIElement sender, DragStartingEventArgs args)
 		{
 			string availableStdFormats = string.Empty;
 			string requestedOperation = DataPackageOperation.Copy.ToString();
@@ -355,7 +355,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			var eventDetails = new EventDetails()
 			{
 				EventBackground = this.DragStartingBrush,
-				EventName = nameof(global::Microsoft.UI.Xaml.UIElement.DragStarting),
+				EventName = nameof(global::Windows.UI.Xaml.UIElement.DragStarting),
 				AvailableFormats = string.Empty,
 				AvailableStdFormats = availableStdFormats,
 				RequestedOperation = requestedOperation,
@@ -370,7 +370,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 		/// <summary>
 		/// Event handler for when a drop operation is completed.
 		/// </summary>
-		private void DragSource_DropCompleted(global::Microsoft.UI.Xaml.UIElement sender, DropCompletedEventArgs args)
+		private void DragSource_DropCompleted(global::Windows.UI.Xaml.UIElement sender, DropCompletedEventArgs args)
 		{
 			var eventDetails = new EventDetails()
 			{

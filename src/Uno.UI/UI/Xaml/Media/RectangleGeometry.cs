@@ -5,7 +5,7 @@ using Windows.Foundation;
 using UIKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
 	{

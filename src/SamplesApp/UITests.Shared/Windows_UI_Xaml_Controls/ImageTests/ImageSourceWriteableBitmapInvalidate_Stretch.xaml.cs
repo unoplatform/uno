@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 using System.Runtime.InteropServices.WindowsRuntime;
 

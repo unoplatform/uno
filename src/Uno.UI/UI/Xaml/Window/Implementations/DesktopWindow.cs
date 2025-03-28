@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Hosting;
 
 namespace Uno.UI.Xaml.Controls;
 

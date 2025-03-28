@@ -8,9 +8,9 @@ using Uno.Extensions;
 using Uno.UI.Tests.Windows_UI_XAML_Controls.FlyoutTests.Controls;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.FlyoutTests
 {
@@ -33,7 +33,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			var flyout = new Flyout()
 			{
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
-				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
 			};
 
 			var button = new Button()
@@ -159,7 +159,7 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			var flyout = new Flyout()
 			{
-				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
 				FlyoutPresenterStyle = new Style
 				{
 					Setters =
@@ -203,7 +203,7 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			var flyout = new Flyout()
 			{
-				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Full,
 				FlyoutPresenterStyle = new Style
 				{
 					Setters =
@@ -253,7 +253,7 @@ namespace Uno.UI.Tests.FlyoutTests
 
 			var flyout = new Windows_UI_XAML_Controls.FlyoutTests.Controls.SettingsFlyout()
 			{
-				Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
 			};
 
 			var button = new Button()

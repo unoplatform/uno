@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Windows.UI;
@@ -454,7 +454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -473,7 +473,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 						{
 							Template = new DataTemplate(() => border = new Border
 							{
-								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+								Background = new SolidColorBrush(Windows.UI.Colors.Red),
 								Width = 100,
 								Height = 100,
 								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
@@ -493,8 +493,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			var tvi = sp.FindFirstDescendant<TreeViewItem>();
 			var x = containerX + 50d;
-			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
-			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Windows.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Windows.UI.Colors.Red);
 
 			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(112, 1);
 			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(112, 1);
@@ -1083,7 +1083,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		public static bool DraggingThrewException { get; set; }
 
-		protected override void OnDragEnter(Microsoft.UI.Xaml.DragEventArgs args)
+		protected override void OnDragEnter(Windows.UI.Xaml.DragEventArgs args)
 		{
 			try
 			{
@@ -1095,7 +1095,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 		}
 
-		protected override void OnDragOver(Microsoft.UI.Xaml.DragEventArgs args)
+		protected override void OnDragOver(Windows.UI.Xaml.DragEventArgs args)
 		{
 			try
 			{

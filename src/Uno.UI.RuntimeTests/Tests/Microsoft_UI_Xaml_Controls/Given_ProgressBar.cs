@@ -59,7 +59,7 @@ public class Given_ProgressBar
 		var sut = new ProgressBar();
 		var sizeChangedRaised = false;
 		sut.SizeChanged += (_, _) => sizeChangedRaised = true;
-		sut.Template = new Microsoft.UI.Xaml.Controls.ControlTemplate();
+		sut.Template = new Windows.UI.Xaml.Controls.ControlTemplate();
 		sut.Width = 50;
 		sut.Height = 50;
 		TestServices.WindowHelper.WindowContent = sut;

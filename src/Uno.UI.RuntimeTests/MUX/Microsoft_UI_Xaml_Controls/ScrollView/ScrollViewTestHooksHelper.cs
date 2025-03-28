@@ -3,7 +3,7 @@
 
 using System;
 using Common;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Microsoft.UI.Private.Controls;
 
 namespace MUXControlsTestApp.Utilities;

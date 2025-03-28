@@ -4,9 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using static Uno.UI.FeatureConfiguration;
-using PasswordBox = Microsoft.UI.Xaml.Controls.PasswordBox;
+using PasswordBox = Windows.UI.Xaml.Controls.PasswordBox;
 using WpfElement = System.Windows.UIElement;
 using WpfFrameworkElement = System.Windows.FrameworkElement;
 
@@ -48,7 +48,7 @@ internal class TextTextBoxView : WpfTextBoxView
 
 	public override void SetFocus() => _textBox.Focus();
 
-	public override bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => textBox is not PasswordBox;
+	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is not PasswordBox;
 
 	public override IDisposable ObserveTextChanges(EventHandler onChanged)
 	{
@@ -57,7 +57,7 @@ internal class TextTextBoxView : WpfTextBoxView
 		return Disposable.Create(() => _textBox.TextChanged -= OnTextChanged);
 	}
 
-	public override void UpdateProperties(Microsoft.UI.Xaml.Controls.TextBox winUITextBox)
+	public override void UpdateProperties(Windows.UI.Xaml.Controls.TextBox winUITextBox)
 	{
 		SetControlProperties(_textBox, winUITextBox);
 		SetTextBoxProperties(_textBox, winUITextBox);

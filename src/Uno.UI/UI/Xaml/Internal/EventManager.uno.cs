@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Helpers;
 using Windows.Foundation;
 

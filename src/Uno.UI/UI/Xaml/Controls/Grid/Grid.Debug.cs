@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class Grid
 	{

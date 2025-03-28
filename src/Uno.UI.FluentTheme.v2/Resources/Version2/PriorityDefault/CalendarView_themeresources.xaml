@@ -5,7 +5,7 @@
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:uno="using:Uno.UI.Xaml.Controls"
-	xmlns:automation="clr-namespace:Microsoft.UI.Xaml.Automation"
+	xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation"
 	xmlns:wasm="http://uno.ui/wasm"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="wasm">

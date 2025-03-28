@@ -2,12 +2,12 @@
 using Uno.Client;
 using Uno.Disposables;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -16,7 +16,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Text))]
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase

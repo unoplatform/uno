@@ -35,7 +35,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
+	public override object NativeWindow => Windows.UI.Xaml.ApplicationActivity.Instance?.Window;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -44,8 +44,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	public override string Title
 	{
-		get => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title;
-		set => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title = value;
+		get => Windows.UI.Xaml.ApplicationActivity.Instance.Title;
+		set => Windows.UI.Xaml.ApplicationActivity.Instance.Title = value;
 	}
 
 	internal int SystemUiVisibility { get; set; }
@@ -196,12 +196,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 				context is Activity activity &&
 				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
 			{
-				var requestedTheme = Microsoft.UI.Xaml.Application.Current.RequestedTheme;
+				var requestedTheme = Windows.UI.Xaml.Application.Current.RequestedTheme;
 
 				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 
 				// "appearance light" refers to status bar set to light theme == dark foreground
-				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
+				insetsController.AppearanceLightStatusBars = requestedTheme == Windows.UI.Xaml.ApplicationTheme.Light;
 			}
 		}
 	}

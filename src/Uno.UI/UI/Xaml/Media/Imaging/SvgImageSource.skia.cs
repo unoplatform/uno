@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using SkiaSharp;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {

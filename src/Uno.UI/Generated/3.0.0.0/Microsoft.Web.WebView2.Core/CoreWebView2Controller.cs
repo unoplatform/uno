@@ -149,16 +149,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsBrowserHitTransparent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsBrowserHitTransparent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsBrowserHitTransparent");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.get
@@ -171,7 +161,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScaleChanged.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsBrowserHitTransparent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Bounds.get

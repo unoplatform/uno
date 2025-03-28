@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -25,7 +25,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		public void BringIntoView(object sender, RoutedEventArgs e)
 		{
-			var list = (Microsoft.UI.Xaml.Controls.ListViewBase)this.myList;
+			var list = (Windows.UI.Xaml.Controls.ListViewBase)this.myList;
 
 			var alignment = (chkBox.IsChecked ?? false) ? ScrollIntoViewAlignment.Leading : ScrollIntoViewAlignment.Default;
 			list.ScrollIntoView(items[(int)nb.Value], alignment);

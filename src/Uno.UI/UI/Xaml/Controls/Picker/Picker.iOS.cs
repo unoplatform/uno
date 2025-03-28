@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.Extensions;
@@ -15,7 +15,7 @@ using CoreGraphics;
 using Uno.Extensions.Specialized;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// This class is mainly used for native looking ComboBox templates on iPhone.

@@ -2,11 +2,11 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -25,7 +25,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -59,7 +59,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -96,7 +96,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -130,7 +130,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -164,7 +164,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -205,7 +205,7 @@ public partial class Given_ExpressionAnimation
 		{
 			Width = 100,
 			Height = 100,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);

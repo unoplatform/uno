@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TeachingTipAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
+	public partial class TeachingTipAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(Microsoft.UI.Xaml.Controls.TeachingTip)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TeachingTipAutomationPeer.TeachingTipAutomationPeer(Microsoft.UI.Xaml.Controls.TeachingTip)

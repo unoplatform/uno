@@ -1,5 +1,5 @@
-using Windows.UI.Core;
+﻿using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public delegate void WindowClosedEventHandler(object sender, CoreWindowEventArgs e);

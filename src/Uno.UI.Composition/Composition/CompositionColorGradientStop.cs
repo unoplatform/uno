@@ -2,7 +2,7 @@
 
 using Windows.UI;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionColorGradientStop : CompositionObject
 	{

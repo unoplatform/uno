@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation;
+﻿namespace Windows.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains values used as automation property identifiers by UI Automation providers and UI Automation clients.

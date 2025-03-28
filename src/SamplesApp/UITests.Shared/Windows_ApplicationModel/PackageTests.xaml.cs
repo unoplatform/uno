@@ -2,7 +2,7 @@
 using Uno.UI.Samples.Controls;
 using Windows.ApplicationModel;
 using Windows.System;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_ApplicationModel
 {

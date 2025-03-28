@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml;
+﻿namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Contains the window's state information returned by the Window.Closed event.

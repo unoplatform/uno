@@ -1,8 +1,8 @@
-using Common;
+﻿using Common;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;

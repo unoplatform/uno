@@ -3,7 +3,7 @@
 #nullable enable
 using System.Numerics;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal class CompositorScrollStrategy : IScrollStrategy
 	{

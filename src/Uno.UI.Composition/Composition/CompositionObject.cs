@@ -10,9 +10,9 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
 
-using static Microsoft.UI.Composition.SubPropertyHelpers;
+using static Windows.UI.Composition.SubPropertyHelpers;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionObject : IDisposable
 	{

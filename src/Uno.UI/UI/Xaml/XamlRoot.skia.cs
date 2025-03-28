@@ -1,10 +1,10 @@
 ﻿#nullable enable
 
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class XamlRoot
 {

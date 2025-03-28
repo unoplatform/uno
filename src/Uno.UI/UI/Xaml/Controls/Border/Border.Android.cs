@@ -5,7 +5,7 @@ using Uno.Extensions;
 using Android.Graphics.Drawables.Shapes;
 using System.Linq;
 using Uno.Disposables;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Helpers;
 
@@ -15,7 +15,7 @@ using Android.Graphics;
 using Android.Views;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Border
 {

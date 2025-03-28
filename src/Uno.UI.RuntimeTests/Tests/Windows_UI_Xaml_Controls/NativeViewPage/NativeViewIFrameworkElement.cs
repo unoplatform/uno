@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 #if __IOS__
 using _NativeBase = UIKit.UISwitch;
 #elif __ANDROID__
@@ -16,7 +16,7 @@ using _NativeBase = AndroidX.AppCompat.Widget.AppCompatCheckBox;
 #elif __MACOS__
 using _NativeBase = AppKit.NSSwitch;
 #else
-using _NativeBase = Microsoft.UI.Xaml.Controls.CheckBox; // No native views on other platforms
+using _NativeBase = Windows.UI.Xaml.Controls.CheckBox; // No native views on other platforms
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

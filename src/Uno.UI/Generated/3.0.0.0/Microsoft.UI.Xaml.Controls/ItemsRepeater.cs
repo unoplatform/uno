@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemsRepeater : global::Microsoft.UI.Xaml.FrameworkElement
+	public partial class ItemsRepeater : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property VerticalCacheLength
 		// Skipping already declared property Layout
@@ -15,34 +15,12 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalCacheLength
 		// Skipping already declared property Background
 		// Skipping already declared property ItemsSourceView
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider ItemTransitionProvider
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)this.GetValue(ItemTransitionProviderProperty);
-			}
-			set
-			{
-				this.SetValue(ItemTransitionProviderProperty, value);
-			}
-		}
-#endif
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property HorizontalCacheLengthProperty
 		// Skipping already declared property ItemTemplateProperty
 		// Skipping already declared property ItemsSourceProperty
 		// Skipping already declared property LayoutProperty
 		// Skipping already declared property VerticalCacheLengthProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemTransitionProviderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTransitionProvider), typeof(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider),
-			typeof(global::Microsoft.UI.Xaml.Controls.ItemsRepeater),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemsRepeater()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemsRepeater()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemsSource.get
@@ -58,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.VerticalCacheLength.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.Background.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementIndex(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementIndex(Windows.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.TryGetElement(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetOrCreateElement(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementPrepared.add
@@ -67,9 +45,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementClearing.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementIndexChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementIndexChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemTransitionProvider.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemTransitionProvider.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemTransitionProviderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemsSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.LayoutProperty.get

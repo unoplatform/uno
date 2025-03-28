@@ -1,6 +1,6 @@
 ﻿using Windows.ApplicationModel;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Represents the method that will handle the Application.EnteredBackground event.

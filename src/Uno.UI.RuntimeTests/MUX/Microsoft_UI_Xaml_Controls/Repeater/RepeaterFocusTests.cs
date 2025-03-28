@@ -7,11 +7,11 @@ using MUXControlsTestApp.Utilities;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using System;
 
 #if USING_TAEF
@@ -30,12 +30,12 @@ using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls
 using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]

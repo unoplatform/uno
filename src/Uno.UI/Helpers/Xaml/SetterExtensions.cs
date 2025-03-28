@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Helpers.Xaml
 {

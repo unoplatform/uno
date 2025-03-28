@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Graphics.Display;
 using Foundation;
 using UIKit;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.Devices.Sensors;
 using CoreGraphics;

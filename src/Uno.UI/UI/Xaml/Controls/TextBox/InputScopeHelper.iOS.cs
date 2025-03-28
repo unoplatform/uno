@@ -4,10 +4,10 @@ using System.Text;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal static class InputScopeHelper
 	{

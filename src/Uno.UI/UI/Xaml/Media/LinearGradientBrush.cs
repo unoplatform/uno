@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Markup;
 using Windows.Foundation;
 using Uno.Extensions;
 using System;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 public partial class LinearGradientBrush : GradientBrush
 {

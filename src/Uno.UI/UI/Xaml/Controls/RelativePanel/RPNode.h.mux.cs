@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -9,7 +9,7 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.Xaml.Controls;

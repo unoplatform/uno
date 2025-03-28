@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Input;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 partial class SelectorItem
 {

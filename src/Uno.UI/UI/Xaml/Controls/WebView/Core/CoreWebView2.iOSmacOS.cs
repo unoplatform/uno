@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 #if __IOS__
 using UIKit;

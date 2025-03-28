@@ -14,8 +14,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace DirectUI;
 

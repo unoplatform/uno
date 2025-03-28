@@ -321,9 +321,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented("using System.Runtime.CompilerServices;");
 			builder.AppendLineIndented("using Uno.UI;");
 			builder.AppendLineIndented("using Uno.UI.DataBinding;");
-			builder.AppendLineIndented("using Microsoft.UI.Xaml;");
-			builder.AppendLineIndented("using Microsoft.UI.Xaml.Controls;");
-			builder.AppendLineIndented("using Microsoft.UI.Xaml.Data;");
+			builder.AppendLineIndented("using Windows.UI.Xaml;");
+			builder.AppendLineIndented("using Windows.UI.Xaml.Controls;");
+			builder.AppendLineIndented("using Windows.UI.Xaml.Data;");
 			builder.AppendLineIndented("using Uno.Diagnostics.Eventing;");
 
 			var attachedPropertiesBackingFieldStatements = new Dictionary<(string ContainingNamespace, string Name), List<string>>();
@@ -706,7 +706,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"/// <summary>");
 			builder.AppendLineIndented($"/// Generated method used to create the <see cref=\"{propertyName}Property\" /> member value");
 			builder.AppendLineIndented($"/// </summary>");
-			builder.AppendLineIndented($"private static global::Microsoft.UI.Xaml.DependencyProperty Create{propertyName}Property() => ");
+			builder.AppendLineIndented($"private static global::Windows.UI.Xaml.DependencyProperty Create{propertyName}Property() => ");
 		}
 
 		private static void BuildPropertyParameters(
@@ -720,7 +720,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			builder.AppendLineIndented($"\tname: \"{propertyName}\",");
 			builder.AppendLineIndented($"\tpropertyType: typeof({propertyTypeName}),");
 			builder.AppendLineIndented($"\townerType: typeof({data.ContainingTypeFullyQualifiedName}),");
-			builder.AppendLineIndented($"\ttypeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(");
+			builder.AppendLineIndented($"\ttypeMetadata: new global::Windows.UI.Xaml.FrameworkPropertyMetadata(");
 
 			if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 			{
@@ -754,15 +754,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			if (metadataOptions != "0")
 			{
-				builder.AppendLineIndented($"\t\t, options: (global::Microsoft.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
+				builder.AppendLineIndented($"\t\t, options: (global::Windows.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
 			}
 		}
 
 		private static bool IsCallbackWithDPChangedArgsOnly(IMethodSymbol m)
-			=> m.Parameters.Length > 0 && m.Parameters[0].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs";
+			=> m.Parameters.Length > 0 && m.Parameters[0].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Windows.UI.Xaml.DependencyPropertyChangedEventArgs";
 
 		private static bool IsCallbackWithDPChangedArgs(IMethodSymbol m)
-			=> m.Parameters.Length == 2 && m.Parameters[1].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs";
+			=> m.Parameters.Length == 2 && m.Parameters[1].Type.ToDisplayString(_fullyQualifiedWithoutGlobal) == "Windows.UI.Xaml.DependencyPropertyChangedEventArgs";
 
 		private static KeyValuePair<string, TypedConstant>? GetAttributeValue(AttributeData attribute, string parameterName)
 			=> attribute.NamedArguments.FirstOrDefault(kvp => kvp.Key == parameterName);

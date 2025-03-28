@@ -15,7 +15,7 @@ using _View = AppKit.NSView;
 using _BindableView = Uno.UI.Controls.BindableNSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{

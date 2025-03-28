@@ -1,9 +1,9 @@
-using Gtk;
+﻿using Gtk;
 using GtkApplication = Gtk.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
-internal partial class GtkNativeElementHostingExtension : Microsoft.UI.Xaml.Controls.ContentPresenter.INativeElementHostingExtension
+internal partial class GtkNativeElementHostingExtension : Windows.UI.Xaml.Controls.ContentPresenter.INativeElementHostingExtension
 {
 	public object CreateSampleComponent(string text)
 	{

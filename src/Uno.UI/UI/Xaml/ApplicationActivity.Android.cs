@@ -20,8 +20,8 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using DirectUI;
@@ -29,7 +29,7 @@ using Uno.UI.Xaml.Input;
 using AndroidX.Activity;
 
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			var initialWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
+			var initialWindow = Windows.UI.Xaml.Window.CurrentSafe ?? Windows.UI.Xaml.Window.InitialWindow;
 			if (initialWindow?.RootElement is View content)
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception ex)
 			{
-				Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 
 			if (Gamepad.TryHandleKeyEvent(e))

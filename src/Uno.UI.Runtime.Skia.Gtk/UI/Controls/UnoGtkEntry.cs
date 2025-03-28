@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using Gtk;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace UITests.Windows_UI_Xaml_Controls.FrameTests;
 

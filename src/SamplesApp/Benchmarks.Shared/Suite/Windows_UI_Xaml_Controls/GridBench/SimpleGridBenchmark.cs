@@ -2,8 +2,8 @@
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using BenchmarkDotNet.Engines;
 
 namespace SamplesApp.Benchmarks.Suite.Windows_UI_Xaml_Controls.GridBench

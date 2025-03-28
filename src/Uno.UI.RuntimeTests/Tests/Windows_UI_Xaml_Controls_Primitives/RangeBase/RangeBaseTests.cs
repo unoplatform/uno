@@ -4,9 +4,9 @@
 
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Generic;

@@ -2,7 +2,7 @@
 
 using System.Numerics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionRectangleGeometry : CompositionGeometry
 	{

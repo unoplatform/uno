@@ -11,7 +11,7 @@ using Windows.Foundation.Collections;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class SelectorBar
 {

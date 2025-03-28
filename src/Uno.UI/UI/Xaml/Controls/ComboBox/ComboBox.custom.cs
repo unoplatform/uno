@@ -5,10 +5,10 @@
 
 using System;
 using DirectUI;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
@@ -26,7 +26,7 @@ using _View = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.FrameworkElement;
+using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 #if HAS_UNO_WINUI
@@ -34,7 +34,7 @@ using _View = Microsoft.UI.Xaml.FrameworkElement;
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class ComboBox : Selector
 {

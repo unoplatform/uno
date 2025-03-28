@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Windows;
 using System.Windows.Markup;
@@ -14,7 +14,7 @@ using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;
 using WpfWindow = System.Windows.Window;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using MUX = Microsoft.UI.Xaml;
+using MUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 

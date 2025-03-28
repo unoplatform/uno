@@ -6,7 +6,7 @@ using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;

@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 partial class UIElement
 {

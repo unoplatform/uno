@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using Android.Views;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using static System.Double;
 
 namespace Uno.UI

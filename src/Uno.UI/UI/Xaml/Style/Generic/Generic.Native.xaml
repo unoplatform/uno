@@ -261,7 +261,7 @@
 					<Grid>
 						<Grid.Resources>
 						</Grid.Resources>
-						<legacy:ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
+						<ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
 											 Foreground="{TemplateBinding Foreground}"
 											 Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
 						<ios:BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"

@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.Helpers;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the closing event.

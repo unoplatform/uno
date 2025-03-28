@@ -1,5 +1,5 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 #pragma warning disable CS0067 // TODO:MZ: Undo this

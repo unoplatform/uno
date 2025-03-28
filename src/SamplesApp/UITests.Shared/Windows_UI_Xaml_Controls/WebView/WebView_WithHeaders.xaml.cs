@@ -1,8 +1,8 @@
 ﻿using Uno.UI.Samples.Controls;
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Windows.Web.Http;
 
 namespace Uno.UI.Samples.Content.UITests.WebView

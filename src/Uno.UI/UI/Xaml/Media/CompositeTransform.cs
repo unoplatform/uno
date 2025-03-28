@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// CompositeTransform :  Based on the WinRT Composite transform

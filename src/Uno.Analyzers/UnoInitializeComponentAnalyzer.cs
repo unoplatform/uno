@@ -35,8 +35,8 @@ public class UnoInitializeComponentAnalyzer : DiagnosticAnalyzer
 
 		context.RegisterCompilationStartAction(context =>
 		{
-			var applicationSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Application");
-			var dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.DependencyObject");
+			var applicationSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Application");
+			var dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
 			if (applicationSymbol is null || dependencyObjectSymbol is null)
 			{
 				return;

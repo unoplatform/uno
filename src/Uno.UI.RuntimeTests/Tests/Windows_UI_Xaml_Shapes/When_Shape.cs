@@ -5,10 +5,10 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.UI.Controls.Legacy;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -102,7 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var root = new Grid
 			{
 				Name = "Root",
-				Background = Microsoft.UI.Colors.Transparent,
+				Background = Windows.UI.Colors.Transparent,
 				Width = 200,
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top,
@@ -128,8 +128,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "RectangleFilled",
 						Width = 50,
 						Height = 50,
-						Fill = Microsoft.UI.Colors.Red.WithOpacity(0.5),
-						Stroke = Microsoft.UI.Colors.Red,
+						Fill = Windows.UI.Colors.Red.WithOpacity(0.5),
+						Stroke = Windows.UI.Colors.Red,
 						StrokeThickness = 6
 					}.Apply(r => r.GridPosition(0, 0)),
 					new Rectangle
@@ -138,7 +138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Width = 50,
 						Height = 50,
 						Fill = null,
-						Stroke = Microsoft.UI.Colors.Red,
+						Stroke = Windows.UI.Colors.Red,
 						StrokeThickness = 6
 					}.Apply(r => r.GridPosition(0, 1)),
 					new Ellipse
@@ -146,8 +146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "EllipseFilled",
 						Width = 50,
 						Height = 50,
-						Fill = Microsoft.UI.Colors.Orange.WithOpacity(0.5),
-						Stroke = Microsoft.UI.Colors.Orange,
+						Fill = Windows.UI.Colors.Orange.WithOpacity(0.5),
+						Stroke = Windows.UI.Colors.Orange,
 						StrokeThickness = 6
 					}.Apply(r => r.GridPosition(1, 0)),
 					new Ellipse
@@ -156,7 +156,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Width = 50,
 						Height = 50,
 						Fill = null,
-						Stroke = Microsoft.UI.Colors.Orange,
+						Stroke = Windows.UI.Colors.Orange,
 						StrokeThickness = 6
 					}.Apply(r => r.GridPosition(1, 1)),
 					new Line
@@ -164,7 +164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "LineFilled",
 						Width = 50,
 						Height = 50,
-						Stroke = Microsoft.UI.Colors.Yellow,
+						Stroke = Windows.UI.Colors.Yellow,
 						StrokeThickness = 20,
 						X1 = 0,
 						Y1 = 0,
@@ -188,8 +188,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "PathFilled",
 						Width = 50,
 						Height = 50,
-						Fill = Microsoft.UI.Colors.Green.WithOpacity(0.5),
-						Stroke = Microsoft.UI.Colors.Green,
+						Fill = Windows.UI.Colors.Green.WithOpacity(0.5),
+						Stroke = Windows.UI.Colors.Green,
 						StrokeThickness = 6,
 						Data = new GeometryGroup
 						{
@@ -210,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Width = 50,
 						Height = 50,
 						Fill = null,
-						Stroke = Microsoft.UI.Colors.Green,
+						Stroke = Windows.UI.Colors.Green,
 						StrokeThickness = 6,
 						Data = new GeometryGroup
 						{
@@ -230,8 +230,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "PolygonFilled",
 						Width = 50,
 						Height = 50,
-						Fill = Microsoft.UI.Colors.Blue.WithOpacity(0.5),
-						Stroke = Microsoft.UI.Colors.Blue,
+						Fill = Windows.UI.Colors.Blue.WithOpacity(0.5),
+						Stroke = Windows.UI.Colors.Blue,
 						StrokeThickness = 6,
 						Points = new PointCollection(new [] { new Point(0, 0), new Point(0, 50), new Point(50, 50) })
 					}.Apply(r => r.GridPosition(4, 0)),
@@ -241,7 +241,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Width = 50,
 						Height = 50,
 						Fill = null,
-						Stroke = Microsoft.UI.Colors.Blue,
+						Stroke = Windows.UI.Colors.Blue,
 						StrokeThickness = 6,
 						Points = new PointCollection(new [] { new Point(0, 0), new Point(0, 50), new Point(50, 50) })
 					}.Apply(r => r.GridPosition(4, 1)),
@@ -250,8 +250,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Name = "PolylineFilled",
 						Width = 50,
 						Height = 50,
-						Fill = Microsoft.UI.Colors.Purple.WithOpacity(0.5),
-						Stroke = Microsoft.UI.Colors.Purple,
+						Fill = Windows.UI.Colors.Purple.WithOpacity(0.5),
+						Stroke = Windows.UI.Colors.Purple,
 						StrokeThickness = 6,
 						Points = new PointCollection(new [] { new Point(0, 0), new Point(0, 50), new Point(50, 50) })
 					}.Apply(r => r.GridPosition(5, 0)),
@@ -261,7 +261,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 						Width = 50,
 						Height = 50,
 						Fill = null,
-						Stroke = Microsoft.UI.Colors.Purple,
+						Stroke = Windows.UI.Colors.Purple,
 						StrokeThickness = 6,
 						Points = new PointCollection(new [] { new Point(0, 0), new Point(0, 50), new Point(50, 50) })
 					}.Apply(r => r.GridPosition(5, 1)),

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentDialogClosedEventArgs
 	{
@@ -7,6 +7,6 @@
 			Result = result;
 		}
 
-		public global::Microsoft.UI.Xaml.Controls.ContentDialogResult Result { get; }
+		public global::Windows.UI.Xaml.Controls.ContentDialogResult Result { get; }
 	}
 }

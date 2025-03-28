@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 

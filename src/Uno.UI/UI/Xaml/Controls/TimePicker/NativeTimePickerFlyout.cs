@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class NativeTimePickerFlyout : TimePickerFlyout
 {

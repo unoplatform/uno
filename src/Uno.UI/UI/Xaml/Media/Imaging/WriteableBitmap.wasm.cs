@@ -7,7 +7,7 @@ using Uno.Foundation;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class WriteableBitmap
 	{

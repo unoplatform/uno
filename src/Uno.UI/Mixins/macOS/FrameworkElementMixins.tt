@@ -2,10 +2,10 @@
 <#@output extension=".cs" #>
 #if __MACOS__
 <# 
-	AddClass("Microsoft.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true, hasAutomationPeer: true);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true, hasAutomationPeer: true);
 
-	AddClass("Microsoft.UI.Xaml.Controls", "TextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
-    AddClass("Microsoft.UI.Xaml.Controls", "SecureTextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
+    AddClass("Windows.UI.Xaml.Controls", "SecureTextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, derivesFromFrameworkElement: false);
 #>
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElementImplementation.macOS.tt"#>
 #endif

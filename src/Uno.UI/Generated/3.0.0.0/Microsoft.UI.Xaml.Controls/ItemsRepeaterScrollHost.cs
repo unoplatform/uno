@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemsRepeaterScrollHost : global::Microsoft.UI.Xaml.FrameworkElement
+	public partial class ItemsRepeaterScrollHost : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property VerticalAnchorRatio
 		// Skipping already declared property ScrollViewer

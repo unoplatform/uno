@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

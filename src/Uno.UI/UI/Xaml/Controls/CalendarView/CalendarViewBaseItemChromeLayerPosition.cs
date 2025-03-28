@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	// the sequence that CCalendarViewBaseItemChrome needs to render
 	// (in order of lowest layer to highest layer).

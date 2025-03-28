@@ -12,6 +12,6 @@ internal class MacOSHostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsMacOS();
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public SkiaHost Create(Func<Windows.UI.Xaml.Application> appBuilder)
 		=> new MacSkiaHost(appBuilder);
 }

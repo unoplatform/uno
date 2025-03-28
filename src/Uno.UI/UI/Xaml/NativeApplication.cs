@@ -16,7 +16,7 @@ using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool _isRunning;
 
-		public delegate Microsoft.UI.Xaml.Application AppBuilder();
+		public delegate Windows.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -38,9 +38,9 @@ namespace Microsoft.UI.Xaml
 			// ApiInformation may return APIs as not implemented incorrectly.
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(global::Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
 
-			// Delay create the Microsoft.UI.Xaml.Application in order to get the
+			// Delay create the Windows.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 			_app = appBuilder();

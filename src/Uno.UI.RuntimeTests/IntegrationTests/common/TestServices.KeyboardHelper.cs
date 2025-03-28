@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Windows.Foundation.Metadata;
 
 #if HAS_UNO
@@ -129,7 +129,7 @@ namespace Private.Infrastructure
 				{"GamePadMenu",                 VirtualKey.GamepadMenu},
 			};
 
-			private static bool TargetSupportsPreviewKeyEvents() => ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDownEvent");
+			private static bool TargetSupportsPreviewKeyEvents() => ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "PreviewKeyDownEvent");
 
 			public static async Task PressKeySequence(string keys, UIElement element = null)
 			{

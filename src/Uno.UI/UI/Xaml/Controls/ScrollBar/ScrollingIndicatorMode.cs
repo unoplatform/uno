@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Defines constants that specify input-specific transition animations that are part of the default template for ScrollBar.

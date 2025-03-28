@@ -8,14 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Windows.Foundation.Metadata;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 using SwipeControl_TestUI;
 using Uno.UI.Samples.Controls;
 
@@ -125,7 +125,7 @@ namespace MUXControlsTestApp
 		//SwipeTestHooks.LastInteractedWithSwipeControlChanged += SwipeTestHooks_LastInteractedWithSwipeControlChanged;
 		//         MaterialHelperTestApiSetup();
 
-		//         if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
+		//         if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
 		//         {
 		//             XamlUICommand uiCommand = new XamlUICommand
 		//             {
@@ -702,14 +702,14 @@ namespace MUXControlsTestApp
 		//             if (!this.IsRenderingHooked)
 		//             {
 		//                 this.IsRenderingHooked = true;
-		//                 Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+		//                 Windows.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 		//             }
 		//         }
 		//         else
 		//         {
 		//             if (this.IsRenderingHooked)
 		//             {
-		//                 Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+		//                 Windows.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
 		//                 this.IsRenderingHooked = false;
 		//             }
 		//         }
