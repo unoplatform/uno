@@ -42,13 +42,14 @@ while [ $TRY_COUNT -lt 5 ]; do
     # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
     # print the logs as expected
     # for some reason, you have to run the next line twice or else it doesn't work
-    xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+    xvfb-run google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
     sleep 5
     killall -9 chrome || true
     killall -9 xvfb-run || true
     killall -9 Xvfb || true
+    killall -9 chrome_crashpad_handler || true
     rm -fr /tmp/.X99-lock || true
-    xvfb-run --server-num 98 google-chrome --enable-logging=stderr -e /dev/stdout --auto-servernum --no-sandbox "${RUNTIME_TESTS_URL}" &
+    xvfb-run google-chrome --enable-logging=stderr -e /dev/stdout --auto-servernum --no-sandbox "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
