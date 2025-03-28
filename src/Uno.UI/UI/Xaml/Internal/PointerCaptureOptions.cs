@@ -15,5 +15,5 @@ internal enum PointerCaptureOptions : byte
 	///   * iOS and Android, where we configure the OS to forbid it to steal the pointer when it detects a scroll gesture.
 	///   * Managed pointers (Skia), which prevents the direct manipulation to kick in (cf. InputManager.Pointers).
 	/// </summary>
-	PreventDirectManipulation = 1,
+	PreventDirectManipulation = 1, // Note: We should actually rely on the ManipulationMode.System instead of this!
 }
