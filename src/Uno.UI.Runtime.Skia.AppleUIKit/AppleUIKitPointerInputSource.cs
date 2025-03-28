@@ -64,8 +64,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 	}
 
-
-
 	internal void TouchesBegan(UIView source, NSSet touches, UIEvent? evt)
 	{
 		try
