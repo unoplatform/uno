@@ -491,42 +491,6 @@ namespace Windows.UI.Input
 				};
 			}
 
-			//private record struct ManipulationUpdate(
-			//	ulong Timestamp,
-			//	ManipulationDelta Cumulative,
-			//	ManipulationDelta Delta,
-			//	ManipulationVelocities Velocities);
-
-			//private ManipulationUpdate GetUpdateSinceLastEvent()
-			//{
-			//	var origins = _origins;
-			//	var currents = _currents;
-			//	var lastEvent = _lastPublishedState;
-
-			//	// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
-			//	// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
-			//	var elapsedMicroseconds = _inertia?.Elapsed.TotalMicroseconds ?? (currents.Timestamp - lastEvent.Timestamp);
-			//	var elapsedMs = elapsedMicroseconds / 1000;
-
-			//	var cumulative = GetCumulative(/* origins, currents*/);
-			//	var delta = GetDelta(lastEvent.SumOfDelta, cumulative);
-
-			//	// With uno a single native event might produce multiple managed pointer events.
-			//	// In that case we would get an empty velocities ... which is often not relevant!
-			//	// When we detect that case, we prefer to replay the last known velocities.
-			//	ManipulationVelocities velocities;
-			//	if (delta.IsEmpty || elapsedMs == 0)
-			//	{
-			//		velocities = _lastRelevantVelocities; // TODO: Merge to LastEvent!
-			//	}
-			//	else
-			//	{
-			//		velocities = GetVelocities(delta, elapsedMs);
-			//	}
-
-			//	return new ManipulationUpdate(currents.Timestamp, cumulative, delta, velocities);
-			//}
-
 			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
 				var deltaSum = _lastPublishedState.SumOfDelta;
