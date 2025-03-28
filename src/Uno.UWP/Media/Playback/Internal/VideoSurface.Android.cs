@@ -11,7 +11,7 @@ using Javax.Microedition.Khronos.Egl;
 namespace Uno.Media.Playback
 {
 	[Register("uno.media.playback.VideoSurface")]
-	public class VideoSurface : SurfaceView, IVideoSurface
+	public class VideoSurface : TextureView, IVideoSurface
 	{
 		public VideoSurface(Context context) : base(context)
 		{
@@ -27,7 +27,7 @@ namespace Uno.Media.Playback
 #pragma warning disable 618
 			// The solution is as described here:
 			// https://stackoverflow.com/questions/25660994/clear-video-frame-from-surfaceview-on-video-complete
-			if (Holder?.Surface == null)
+			if (SurfaceTexture == null)
 			{
 				return;
 			}
@@ -54,7 +54,7 @@ namespace Uno.Media.Playback
 			var config = configs[0];
 			var context = egl.EglCreateContext(display, config, EGL10.EglNoContext, new int[] { 12440, 2, EGL10.EglNone });
 
-			var eglSurface = egl.EglCreateWindowSurface(display, config, Holder.Surface, new int[] { EGL10.EglNone });
+			var eglSurface = egl.EglCreateWindowSurface(display, config, new Surface(SurfaceTexture), new int[] { EGL10.EglNone });
 
 			egl.EglMakeCurrent(display, eglSurface, eglSurface, context);
 			GLES20.GlClearColor(0, 0, 0, 1);

@@ -25,7 +25,7 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlayer :
 		Java.Lang.Object,
-		ISurfaceHolderCallback,
+		TextureView.ISurfaceTextureListener,
 		AndroidMediaPlayer.IOnCompletionListener,
 		AndroidMediaPlayer.IOnErrorListener,
 		AndroidMediaPlayer.IOnPreparedListener,
@@ -97,16 +97,16 @@ namespace Windows.Media.Playback
 		private void InitializePlayer()
 		{
 			_player = new AndroidMediaPlayer();
-			var surfaceView = RenderSurface as SurfaceView;
+			var textureView = RenderSurface as TextureView;
 
 			if (_hasValidHolder)
 			{
-				_player.SetDisplay(surfaceView.Holder);
+				_player.SetSurface(new Surface(textureView.SurfaceTexture));
 				_player.SetScreenOnWhilePlaying(true);
 			}
 			else
 			{
-				surfaceView.Holder.AddCallback(this);
+				textureView.SurfaceTextureListener = this;
 			}
 
 			_player.SetOnErrorListener(this);
@@ -479,26 +479,32 @@ namespace Windows.Media.Playback
 			UniformToFill
 		}
 
-		#region ISurfaceHolderCallback implementation
+		#region ISurfaceTextureListener implementation
 
-		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
+		public void OnSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
 		{
-			UpdateVideoStretch(_currentStretch);
-		}
-
-		public void SurfaceCreated(ISurfaceHolder holder)
-		{
-			_player?.SetDisplay(holder);
+			_player?.SetSurface(new Surface(surface));
 			_player?.SetScreenOnWhilePlaying(true);
 			_hasValidHolder = true;
 
 			UpdateVideoStretch(_currentStretch);
 		}
 
-		public void SurfaceDestroyed(ISurfaceHolder holder)
+		public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
 		{
-			_player?.SetDisplay(null);
+			_player?.SetSurface(null);
 			_hasValidHolder = false;
+			return true;
+		}
+
+		public void OnSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height)
+		{
+			UpdateVideoStretch(_currentStretch);
+		}
+
+		public void OnSurfaceTextureUpdated(SurfaceTexture surface)
+		{
+			UpdateVideoStretch(_currentStretch);
 		}
 
 		#endregion
