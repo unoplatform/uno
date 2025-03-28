@@ -28,25 +28,41 @@ namespace Microsoft.UI.Composition
 		// See https://github.com/dotnet/runtime/blob/c52fd37cc835a13bcfa9a64fdfe7520809a75345/src/libraries/System.Private.CoreLib/src/System/Diagnostics/Stopwatch.cs#L157
 		public long TimestampInTicks => unchecked((long)(Stopwatch.GetTimestamp() * s_tickFrequency));
 
+		/// <summary>
+		/// Creates an instance of AnimationController.
+		/// </summary>
+		/// <returns>The created AnimationController object.</returns>
+		public AnimationController CreateAnimationController() => new(this);
+
+		/// <summary>
+		/// Creates an instance of CompositionColorBrush.
+		/// </summary>
+		/// <returns>Returns the created CompositionColorBrush object.</returns>
+		public CompositionColorBrush CreateColorBrush() => new(this);
+
+		/// <summary>
+		/// Creates an instance of CompositionColorBrush using the specified color.
+		/// </summary>
+		/// <param name="color">The color for the brush to use.</param>
+		/// <returns>Returns the created CompositionColorBrush object.</returns>
+		public CompositionColorBrush CreateColorBrush(Color color) => new(this)
+		{
+			Color = color
+		};
+
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static CompositionEasingFunction GetDefaultEasingFunction() => _defaultEasingFunction.Value;
 
-		public ContainerVisual CreateContainerVisual()
-			=> new ContainerVisual(this);
+
+		public ContainerVisual CreateContainerVisual() => new(this);
 
 		public SpriteVisual CreateSpriteVisual()
 			=> new SpriteVisual(this);
 
-		public CompositionColorBrush CreateColorBrush()
-			=> new CompositionColorBrush(this);
 
-		public CompositionColorBrush CreateColorBrush(Color color)
-			=> new CompositionColorBrush(this)
-			{
-				Color = color
-			};
+
 
 		public ScalarKeyFrameAnimation CreateScalarKeyFrameAnimation()
 			=> new ScalarKeyFrameAnimation(this);
