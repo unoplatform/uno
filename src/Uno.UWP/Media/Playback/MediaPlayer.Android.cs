@@ -34,11 +34,11 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnVideoSizeChangedListener,
 		View.IOnLayoutChangeListener
 	{
+		private readonly VideoSurface _renderSurface = new VideoSurface(Application.Context);
 		private AndroidMediaPlayer _player;
 
 		private bool _isPlayRequested;
 		private bool _isPlayerPrepared;
-		private bool _hasValidHolder;
 		private VideoStretch _currentStretch = VideoStretch.Uniform;
 		private bool _isUpdatingStretch;
 
@@ -53,11 +53,11 @@ namespace Windows.Media.Playback
 		internal uint NaturalVideoHeight { get; private set; }
 		internal uint NaturalVideoWidth { get; private set; }
 
-		public IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
+		internal IVideoSurface RenderSurface => _renderSurface;
 
 		private void Initialize()
 		{
-			((VideoSurface)RenderSurface).AddOnLayoutChangeListener(this);
+			_renderSurface.AddOnLayoutChangeListener(this);
 
 			// Register intent to pause media when audio become noisy (unplugged headphones, for example)
 			_noisyAudioStreamReceiver = new AudioPlayerBroadcastReceiver(this);
@@ -81,10 +81,7 @@ namespace Windows.Media.Playback
 
 					// Clear the surface view so we don't see
 					// the previous video rendering.
-					if (RenderSurface is VideoSurface surfaceView && _hasValidHolder)
-					{
-						surfaceView.Clear();
-					}
+					_renderSurface.Clear();
 				}
 				finally
 				{
@@ -97,16 +94,11 @@ namespace Windows.Media.Playback
 		private void InitializePlayer()
 		{
 			_player = new AndroidMediaPlayer();
-			var textureView = RenderSurface as TextureView;
 
-			if (_hasValidHolder)
+			_renderSurface.SurfaceTextureListener = this;
+			if (_renderSurface.SurfaceTexture is { } texture)
 			{
-				_player.SetSurface(new Surface(textureView.SurfaceTexture));
-				_player.SetScreenOnWhilePlaying(true);
-			}
-			else
-			{
-				textureView.SurfaceTextureListener = this;
+				OnSurfaceTextureAvailable(texture, _renderSurface.Width, _renderSurface.Height);
 			}
 
 			_player.SetOnErrorListener(this);
@@ -399,7 +391,7 @@ namespace Windows.Media.Playback
 			_currentStretch = stretch;
 
 			if (_player != null
-				&& RenderSurface is SurfaceView surface
+				&& RenderSurface is View surface
 				&& surface.Parent is View parentView
 				&& !_isUpdatingStretch)
 			{
@@ -483,17 +475,17 @@ namespace Windows.Media.Playback
 
 		public void OnSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
 		{
-			_player?.SetSurface(new Surface(surface));
+			_renderSurface.Surface = new Surface(surface);
+			_player?.SetSurface(_renderSurface.Surface);
 			_player?.SetScreenOnWhilePlaying(true);
-			_hasValidHolder = true;
 
 			UpdateVideoStretch(_currentStretch);
 		}
 
 		public bool OnSurfaceTextureDestroyed(SurfaceTexture surface)
 		{
+			_renderSurface.Surface = null;
 			_player?.SetSurface(null);
-			_hasValidHolder = false;
 			return true;
 		}
 
