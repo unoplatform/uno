@@ -1,6 +1,6 @@
 # Import the function to test
 BeforeAll {
-    . "$PSScriptRoot\Get-UnlinkedFiles.ps1"
+    . $PSCommandPath.Replace('.Tests.ps1','.ps1')
 }
 
 Describe "Get-UnlinkedFiles" {
