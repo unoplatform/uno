@@ -14,13 +14,16 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -39,7 +42,10 @@ namespace Microsoft.UI.Xaml
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 #endif
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		private static readonly ICustomEventManager<_This, EffectiveViewportChangedEventArgs> _evpChangedManager =
+			new CustomKeepLastEventManager<_This, EffectiveViewportChangedEventArgs>(static () => _evpChangedManager!.OnTick(), (s, e) => s.RaiseEffectiveViewportChanged(e));
+#endif
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
 		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
@@ -384,7 +390,19 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 #else
-				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#if !IS_NATIVE_ELEMENT
+				if (this is ItemsRepeater)
+				{
+					// ItemsRepeater's measure depends on EVPChanged, re-dispatching this event can cause invalid first measure.
+					_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+				}
+				else
+#endif
+				{
+					// re-dispatching the events on the ui-thread with a keep-last (keyed by the sender) strategy
+					// to filter out the first few invalid events.
+					_evpChangedManager.Enqueue(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+				}
 #endif
 			}
 

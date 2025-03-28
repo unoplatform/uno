@@ -149,11 +149,11 @@ static partial class ViewExtensions
 #if true // framework layout properties
 			if (x is FrameworkElement fe)
 			{
-				yield return $"Actual={FormatSize(fe.ActualWidth, fe.ActualHeight)}";
 				if (fe.Parent is FrameworkElement parent)
 				{
 					yield return $"XY={FormatPoint(fe.TransformToVisual(parent).TransformPoint(default))}";
 				}
+				yield return $"Actual={FormatSize(fe.ActualWidth, fe.ActualHeight)}";
 #if HAS_UNO
 				//yield return $"Available={FormatSize(fe.m_previousAvailableSize)}";
 #endif

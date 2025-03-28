@@ -17,6 +17,11 @@
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';googleplay;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.GooglePlay" ProjectSystem="true" />
+	</ItemGroup>
+
+
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" ProjectSystem="true" />
 	</ItemGroup>
