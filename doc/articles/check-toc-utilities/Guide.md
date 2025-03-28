@@ -60,7 +60,7 @@ Open this file to view `- name:` and `href:` entries that should be added to `to
 
 ## Troubleshooting
 
-- If nothing is reported, verify the script was executed in the correct directory.
+- If nothing is reported, verify that the script was executed in the correct directory.
 - If `toc_additions.yml.tmp` is missing, check for file permission issues.
 
    > [!NOTE]
