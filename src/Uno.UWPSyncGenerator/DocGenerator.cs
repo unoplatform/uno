@@ -383,7 +383,6 @@ namespace Uno.UWPSyncGenerator
 				yield return (view.IOSSymbol, ImplementedFor.iOS);
 				yield return (view.TvOSSymbol, ImplementedFor.tvOS);
 				yield return (view.WasmSymbol, ImplementedFor.WASM);
-				yield return (view.MacOSSymbol, ImplementedFor.MacOS);
 			}
 		}
 
