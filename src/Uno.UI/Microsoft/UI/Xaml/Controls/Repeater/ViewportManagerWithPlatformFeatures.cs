@@ -463,6 +463,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Now that the item has been brought into view, we can let the anchor provider pick a new anchor.
 			foreach (var child in m_owner.Children)
 			{
+				if (child is null)
+				{
+					continue;
+				}
+
 				if (!child.CanBeScrollAnchor)
 				{
 					var info = ItemsRepeater.GetVirtualizationInfo(child);
