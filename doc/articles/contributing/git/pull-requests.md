@@ -10,7 +10,7 @@ If you don't know what a pull request is, read the [About pull requests document
 
 If you are an outside contributor, please fork the Uno Platform repository you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this.
 
-Make sure the repository can build and all tests pass, as well as follow the current [coding guidelines](code-style.md).
+Make sure the repository can build and all tests pass, as well as follow the current [coding guidelines](xref:Uno.Contributing.CodeStyle).
 
 Pull requests should all be made to the **master** branch.
 
@@ -44,7 +44,7 @@ Make sure to rebase your work on the latest default branch of the Uno repository
 
 **Commit/Pull Request Format**
 
-All commits **must** be in the [Conventional Commits format](../../uno-development/git-conventional-commits.md), otherwise the build will fail.
+All commits **must** be in the [Conventional Commits format](xref:Uno.Contributing.ConventionalCommits), otherwise the build will fail.
 
 We use this convention to automatically generate release notes for new releases, and means that your commit messages will appear untouched in the release notes.
 
@@ -64,7 +64,7 @@ Make sure that:
 
 When opening a PR, you'll see the description is filled by a template. Make sure to read through the template and fill the missing parts in it.
 
-If you haven't [added tests](creating-tests.md) appropriate to your changes, the reviewers will probably ask you to add some.
+If you haven't [added tests](xref:Uno.Contributing.Tests.CreatingTests) appropriate to your changes, the reviewers will probably ask you to add some.
 
 ## Reviewing
 
