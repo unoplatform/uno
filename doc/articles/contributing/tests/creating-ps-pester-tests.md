@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.Scripts.PowerShell-Pester-Tests
+uid: Uno.Contributing.Tests.PowerShell-Pester-Tests
 ---
 
 # Testing PowerShell Scripts with Pester

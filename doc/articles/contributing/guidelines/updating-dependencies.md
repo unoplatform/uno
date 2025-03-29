@@ -22,7 +22,7 @@ The following dependencies don't change the public API surface and are typically
 - Moq
 
 The following dependencies require manual adjustments before merging:
-
+<!-- TODO: decide if following line should be changed, since docfx.console is officially depreciated! -->
 - [docfx.console](https://github.com/unoplatform/Uno/pull/1082/commits/c222caf8c23b35e19f6b33cd624cbfa714250bfe)
 - `Microsoft.CodeAnalysis.*`. Those dependencies need to be aligned with the source generation task package, for which the dependency cannot be be explicitly provided.
 - `Xamarin.GooglePlayServices.*`. Those dependencies are added per TargetFramework (Android SDK version), not updated.
