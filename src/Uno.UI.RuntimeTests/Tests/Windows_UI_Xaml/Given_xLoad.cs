@@ -487,6 +487,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, SUT.GetChildren().Count(c => c is ElementStub));
 			Assert.AreEqual(0, SUT.GetChildren().Count(c => c is Border));
 		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18509")]
+		public async Task When_xLoad_Set_Back_And_Forth()
+		{
+			var SUT = new xLoad_Back_And_Forth();
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual("tb", SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<ElementStub>()?.Name);
+			Assert.IsNull(SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<TextBlock>());
+
+			((List<xLoadBackAndForthVM>)SUT.NavView.MenuItemsSource)[0].IsSelected = true;
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreNotEqual("tb", SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<ElementStub>()?.Name);
+			Assert.AreEqual("visible", SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<TextBlock>()?.Text);
+
+			((List<xLoadBackAndForthVM>)SUT.NavView.MenuItemsSource)[0].IsSelected = false;
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("tb", SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<ElementStub>()?.Name);
+			Assert.IsNull(SUT.FindFirstChild<NavigationViewItem>()?.FindFirstChild<TextBlock>());
+		}
 	}
 }
 #endif
