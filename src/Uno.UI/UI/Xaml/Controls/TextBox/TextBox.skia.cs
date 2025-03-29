@@ -14,8 +14,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
@@ -35,6 +37,7 @@ public partial class TextBox
 	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
 	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
+	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
 
@@ -71,6 +74,9 @@ public partial class TextBox
 
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+
+
+	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
 
@@ -164,6 +170,12 @@ public partial class TextBox
 		TextBoxView?.UpdateFont();
 	}
 
+	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
 	partial void OnFlowDirectionChangedPartial()
@@ -182,11 +194,12 @@ public partial class TextBox
 		}
 	}
 
-
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 	{
 		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
+
+	private static SKPaint _spareCaretPaint = new SKPaint();
 
 	private void UpdateTextBoxView()
 	{
@@ -239,13 +252,14 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							using (SkiaHelper.GetTempSKPaint(out var caretPaint))
-							{
-								brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-								args.canvas.DrawRect(
-									new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
-										(float)caretRect.Bottom), caretPaint);
-							}
+							var caretPaint = _spareCaretPaint;
+
+							caretPaint.Reset();
+
+							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+							args.canvas.DrawRect(
+								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
+									(float)caretRect.Bottom), caretPaint);
 						}
 
 						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
@@ -257,7 +271,7 @@ public partial class TextBox
 							var transform = displayBlock.TransformToVisual(null);
 							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 							{
-								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)));
+								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)), XamlRoot);
 								if (args.endCaret)
 								{
 									endThumbCaretVisible = true;
@@ -276,26 +290,38 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnFocusStateChangedPartial(FocusState focusState)
+	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
-		if (!_isSkiaTextBox)
-		{
-			TextBoxView?.OnFocusStateChanged(focusState);
-		}
-		else
+		TextBoxView?.OnFocusStateChanged(focusState);
+
+		if (_isSkiaTextBox)
 		{
 			if (focusState != FocusState.Unfocused)
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				_textBoxNotificationsSingleton?.OnFocused(this);
 			}
 			else
 			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+				if (!initial)
+				{
+					_textBoxNotificationsSingleton?.OnUnfocused(this);
+				}
+				_timer.Stop();
 			}
 			UpdateDisplaySelection();
 		}
 	}
+
+#if false // Removing temporarily. We'll need to add it back.
+	// TODO: Discuss this public API.
+	public static void FinishAutofillContext(bool shouldSave)
+	{
+		_textBoxNotificationsSingleton?.FinishAutofillContext(shouldSave);
+	}
+#endif
 
 	partial void SelectPartial(int start, int length)
 	{
@@ -307,14 +333,13 @@ public partial class TextBox
 			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
-
 		_selection = (start, length, _selection.selectionEndsAtTheStart);
 
-		if (!_isSkiaTextBox)
-		{
-			TextBoxView?.Select(start, length);
-		}
-		else
+		// Even when using Skia TextBox, we may need to call Select,
+		// which will update the native input in case of Wasm Skia for example.
+		TextBoxView?.Select(start, length);
+
+		if (_isSkiaTextBox)
 		{
 			if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 			{
@@ -357,7 +382,11 @@ public partial class TextBox
 			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.RenderSelection = isFocused;
 			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			inlines.RenderCaret = isFocused && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly;
+			inlines.RenderCaret =
+				isFocused &&
+				caretShowing &&
+				(CaretMode is CaretDisplayMode.CaretWithThumbsBothEndsShowing || !IsReadOnly) && // If read only, we only show carets on touch.
+				!FeatureConfiguration.TextBox.HideCaret;
 		}
 	}
 
@@ -513,12 +542,26 @@ public partial class TextBox
 					ReleasePointerCaptures();
 				}
 				break;
+			case VirtualKey.LeftShift:
+			case VirtualKey.RightShift:
+			case VirtualKey.Shift:
+			case VirtualKey.Control:
+			case VirtualKey.LeftControl:
+			case VirtualKey.RightControl:
+				// No-op when pressing these key specifically.
+				break;
 			default:
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey is not '\r' or '\n'))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
+
+					if (c is '\n')
+					{
+						// TextBox autoconverts to \r, like WinUI
+						c = '\r';
+					}
 
 					text = text[..start] + c + text[end..];
 					selectionStart = start + 1;
@@ -550,6 +593,9 @@ public partial class TextBox
 			_caretXOffset = caretXOffset;
 		}
 	}
+
+	internal void SetPendingSelection(int selectionStart, int selectionLength)
+		=> _pendingSelection = (selectionStart, selectionLength);
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
@@ -887,7 +933,7 @@ public partial class TextBox
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
 	/// This makes the calculations a lot more natural.
 	/// </summary>
-	private void SelectInternal(int selectionStart, int selectionLength)
+	internal void SelectInternal(int selectionStart, int selectionLength)
 	{
 		_inSelectInternal = true;
 		_selection.selectionEndsAtTheStart = selectionLength < 0;
@@ -1014,7 +1060,7 @@ public partial class TextBox
 			i += chunk.length;
 		}
 
-		return (i, 0);
+		return _cachedChunks.chunks.Count > 0 ? _cachedChunks.chunks[^1] : (0, 0);
 	}
 
 	private void GenerateChunks()
@@ -1099,6 +1145,11 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
+	partial void InitializePartial()
+	{
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+	}
+
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
@@ -1116,6 +1167,8 @@ public partial class TextBox
 			{
 				ClearUndoRedoHistory();
 			}
+
+			_textBoxNotificationsSingleton?.NotifyValueChanged(this);
 		}
 	}
 
@@ -1302,6 +1355,9 @@ public partial class TextBox
 		UpdateCanUndoRedo();
 	}
 
+	internal override bool IsDelegatingFocusToTemplateChild()
+		=> OperatingSystem.IsBrowser();
+
 	private enum CaretDisplayMode
 	{
 		ThumblessCaretHidden,
@@ -1410,12 +1466,13 @@ public partial class TextBox
 
 		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
-		public void ShowAt(Point p)
+		public void ShowAt(Point p, XamlRoot xamlRoot)
 		{
 			_popup ??= new Popup
 			{
 				Child = this,
-				IsLightDismissEnabled = false
+				IsLightDismissEnabled = false,
+				XamlRoot = xamlRoot
 			};
 
 			_popup.HorizontalOffset = p.X;

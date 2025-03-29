@@ -18,6 +18,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer
 	{
+		#region IsScrollInertiaEnabled (Attached DP)
+		public static bool GetIsScrollInertiaEnabled(DependencyObject element)
+			=> (bool)element.GetValue(IsScrollInertiaEnabledProperty);
+
+		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled)
+			=> element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
+
 		public bool IsScrollInertiaEnabled
 		{
 			get => (bool)GetValue(IsScrollInertiaEnabledProperty);
@@ -30,12 +37,91 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(true));
+		#endregion
 
-		public static bool GetIsScrollInertiaEnabled(DependencyObject element) =>
-			(bool)element.GetValue(IsScrollInertiaEnabledProperty);
+		#region IsHorizontalScrollChainingEnabled (Attached DP)
+		public static bool GetIsHorizontalScrollChainingEnabled(DependencyObject element)
+			=> (bool)element.GetValue(IsHorizontalScrollChainingEnabledProperty);
 
-		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled) =>
-			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
+		public static void SetIsHorizontalScrollChainingEnabled(DependencyObject element, bool isHorizontalScrollChainingEnabled)
+			=> element.SetValue(IsHorizontalScrollChainingEnabledProperty, isHorizontalScrollChainingEnabled);
+
+		public bool IsHorizontalScrollChainingEnabled
+		{
+			get => (bool)GetValue(IsHorizontalScrollChainingEnabledProperty);
+			set => SetValue(IsHorizontalScrollChainingEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsHorizontalScrollChainingEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"IsHorizontalScrollChainingEnabled",
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+		#endregion
+
+		#region IsHorizontalRailEnabled (Attached DP)
+		public static bool GetIsHorizontalRailEnabled(DependencyObject element)
+			=> (bool)element.GetValue(IsHorizontalRailEnabledProperty);
+
+		public static void SetIsHorizontalRailEnabled(DependencyObject element, bool isHorizontalRailEnabled)
+			=> element.SetValue(IsHorizontalRailEnabledProperty, isHorizontalRailEnabled);
+
+		public bool IsHorizontalRailEnabled
+		{
+			get => (bool)GetValue(IsHorizontalRailEnabledProperty);
+			set => SetValue(IsHorizontalRailEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsHorizontalRailEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"IsHorizontalRailEnabled",
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+		#endregion
+
+		#region IsVerticalScrollChainingEnabled (Attached DP)
+		public static bool GetIsVerticalScrollChainingEnabled(DependencyObject element)
+			=> (bool)element.GetValue(IsVerticalScrollChainingEnabledProperty);
+
+		public static void SetIsVerticalScrollChainingEnabled(DependencyObject element, bool isVerticalScrollChainingEnabled)
+			=> element.SetValue(IsVerticalScrollChainingEnabledProperty, isVerticalScrollChainingEnabled);
+
+		public bool IsVerticalScrollChainingEnabled
+		{
+			get => (bool)GetValue(IsVerticalScrollChainingEnabledProperty);
+			set => SetValue(IsVerticalScrollChainingEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsVerticalScrollChainingEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"IsVerticalScrollChainingEnabled",
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+		#endregion
+
+		#region IsVerticalRailEnabled (Attached DP)
+		public static bool GetIsVerticalRailEnabled(DependencyObject element)
+			=> (bool)element.GetValue(IsVerticalRailEnabledProperty);
+
+		public static void SetIsVerticalRailEnabled(DependencyObject element, bool isVerticalRailEnabled)
+			=> element.SetValue(IsVerticalRailEnabledProperty, isVerticalRailEnabled);
+
+		public bool IsVerticalRailEnabled
+		{
+			get => (bool)GetValue(IsVerticalRailEnabledProperty);
+			set => SetValue(IsVerticalRailEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsVerticalRailEnabledProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"IsVerticalRailEnabled",
+				typeof(bool),
+				typeof(ScrollViewer),
+				new FrameworkPropertyMetadata(true));
+		#endregion
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 

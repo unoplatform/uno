@@ -179,7 +179,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (!ReferenceEquals(_animation, animation))
 			{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 				_renderSurface?.RemoveFromSuperview();
 #elif __SKIA__ || __ANDROID__
 				_player?.RemoveChild(_renderSurface);
@@ -188,10 +188,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			_renderSurface = BuildRenderSurface();
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			_player?.Add(_renderSurface);
-#elif __MACOS__
-			_player?.AddSubview(_renderSurface);
 #elif __SKIA__ || __ANDROID__
 			_player?.AddChild(_renderSurface);
 #endif
@@ -207,7 +205,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_hardwareCanvas = new();
 			_hardwareCanvas.PaintSurface += OnHardwareCanvas_PaintSurface;
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			AdjustHardwareCanvasOpacity();
 #endif
 			return _hardwareCanvas;
@@ -215,14 +213,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_softwareCanvas = new();
 			_softwareCanvas.PaintSurface += OnSoftwareCanvas_PaintSurface;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			_softwareCanvas.Opaque = false;
 #endif
 			return _softwareCanvas;
 #endif
 		}
 
-#if USE_HARDWARE_ACCELERATION && (__ANDROID__ || __IOS__)
+#if USE_HARDWARE_ACCELERATION && (__ANDROID__ || __APPLE_UIKIT__)
 		private void AdjustHardwareCanvasOpacity()
 		{
 			if (_hardwareCanvas != null)
@@ -241,7 +239,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						{
 							texture.SetOpaque(false);
 						}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 						if (swapChainPanel.Subviews.Length == 1
 							&& swapChainPanel.Subviews[0] is GLKit.GLKView texture)
 						{

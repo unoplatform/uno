@@ -27,7 +27,7 @@ using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
@@ -138,9 +138,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ComboBox_MinWidth()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -178,9 +175,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ComboBox_Constrained_By_Parent()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -259,9 +253,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Check_Creation_Count_Few_Items()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -282,7 +273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					await WindowHelper.WaitForLoaded(SUT);
 
-#if !__ANDROID__ && !__IOS__ // This does not hold on Android or iOS, possibly because ComboBox is not virtualized
+#if !__ANDROID__ && !__APPLE_UIKIT__ // This does not hold on Android or iOS, possibly because ComboBox is not virtualized
 					Assert.AreEqual(0, CounterGrid.CreationCount);
 					Assert.AreEqual(0, CounterGrid2.CreationCount);
 #endif
@@ -307,11 +298,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("ComboBox is currently not virtualized on iOS and Android - #556")] // https://github.com/unoplatform/uno/issues/556
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task Check_Creation_Count_Many_Items()
 		{
@@ -350,7 +338,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Check_DropDown_Flyout_Margin_When_In_Modal()
@@ -424,9 +412,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task Check_Dropdown_Measure_Count()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -454,7 +439,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				NumberAssert.Greater(MeasureCountCarouselPanel.MeasureCount, 0);
 				NumberAssert.Greater(MeasureCountCarouselPanel.ArrangeCount, 0);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 				const int MaxAllowedCount = 15; // TODO: figure out why iOS measures more times
 #else
 				const int MaxAllowedCount = 5;
@@ -470,9 +455,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			var comboBox = new ComboBox
@@ -828,9 +810,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();
@@ -1514,7 +1493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	}
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
 	public partial class MultiFrame : Grid
 	{

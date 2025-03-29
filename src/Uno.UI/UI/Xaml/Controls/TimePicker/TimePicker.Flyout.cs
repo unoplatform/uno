@@ -1,17 +1,14 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePicker
 {
-#if __IOS__ || __ANDROID__
-	private const bool DEFAULT_NATIVE_STYLE = true;
-#else
-	private const bool DEFAULT_NATIVE_STYLE = false;
-#endif
+	private static bool DEFAULT_NATIVE_STYLE = OperatingSystem.IsAndroid() || OperatingSystem.IsIOS();
 
 	[UnoOnly]
 	public static DependencyProperty UseNativeStyleProperty { get; } = DependencyProperty.Register(
@@ -74,16 +71,23 @@ partial class TimePicker
 
 	internal static TimePickerFlyout CreateFlyout(TimePicker timePicker)
 	{
-		var useNativeStyle =
-#if __IOS__ || __ANDROID__
-			timePicker.UseNativeStyle;
-#else
-			false;
-#endif
+		var useNativeStyle = timePicker.UseNativeStyle;
 
-		var flyout = useNativeStyle ?
-			new NativeTimePickerFlyout() :
-			new TimePickerFlyout();
+		TimePickerFlyout flyout;
+#if __ANDROID__ || __IOS__
+		flyout = useNativeStyle ? new NativeTimePickerFlyout() : new TimePickerFlyout();
+#elif __SKIA__
+		if (useNativeStyle && ApiExtensibility.CreateInstance<ISkiaNativeTimePickerProviderExtension>(null, out var instance))
+		{
+			flyout = instance.CreateNativeTimePickerFlyout();
+		}
+		else
+		{
+			flyout = new TimePickerFlyout();
+		}
+#else
+		flyout = new TimePickerFlyout();
+#endif
 
 		if (useNativeStyle)
 		{

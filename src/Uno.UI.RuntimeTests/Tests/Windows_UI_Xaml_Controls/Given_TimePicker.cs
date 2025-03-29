@@ -222,7 +222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)associatedFlyout;
@@ -264,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
@@ -274,7 +274,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
@@ -315,7 +315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Time_Uninitialized_Should_Display_Current_Time()
 		{
 			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
-			timePicker.Time = new TimeSpan(TimePicker.DEFAULT_TIME_TICKS);
+			timePicker.Time = new TimeSpan(NativeTimePickerFlyout.DEFAULT_TIME_TICKS);
 
 			var expectedCurrentTime = GetCurrentTime();
 

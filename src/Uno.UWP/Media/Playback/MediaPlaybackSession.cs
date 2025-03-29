@@ -99,8 +99,11 @@ namespace Windows.Media.Playback
 			get => _playbackState;
 			set
 			{
-				_playbackState = value;
-				PlaybackStateChanged?.Invoke(this, _playbackState);
+				if (_playbackState != value)
+				{
+					_playbackState = value;
+					PlaybackStateChanged?.Invoke(this, _playbackState);
+				}
 			}
 		}
 

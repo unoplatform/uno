@@ -284,7 +284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if HAS_UNO && !__MACOS__
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_Button_Flyout_TemplateBinding()
 		{

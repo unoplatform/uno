@@ -75,9 +75,9 @@ namespace Windows.UI.Input
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
 			if (_gestures.TryGetValue(value.PointerId, out var previousGesture))
 			{
-				if (_log.IsEnabled(LogLevel.Information))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.LogInfo($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
+					this.Log().Debug($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
 				}
 				previousGesture.ProcessComplete();
 			}
@@ -218,7 +218,9 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 
-		internal Manipulation PendingManipulation => _manipulation;
+#nullable enable
+		internal Manipulation? PendingManipulation => _manipulation;
+#nullable restore
 		#endregion
 
 		#region Tap (includes DoubleTap and RightTap)

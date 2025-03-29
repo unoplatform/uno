@@ -1,7 +1,7 @@
 ﻿#nullable enable
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __IOS__) && !UNO_HAS_ENHANCED_LIFECYCLE
+#if !(IS_NATIVE_ELEMENT && __APPLE_UIKIT__) && !UNO_HAS_ENHANCED_LIFECYCLE
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 // so avoid check of the '_isLayouted' flag
 #define CHECK_LAYOUTED
@@ -25,12 +25,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
 using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else

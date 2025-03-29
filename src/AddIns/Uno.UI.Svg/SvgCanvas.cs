@@ -14,7 +14,7 @@ using SKMatrix = SkiaSharp.SKMatrix;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
-#if __MACCATALYST__ || !(__IOS__ || __MACOS__ || __ANDROID__)
+#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 #else
@@ -23,7 +23,7 @@ using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
 #endif
 #else
 using SkiaSharp.Views.UWP;
-#if __MACCATALYST__ || !(__IOS__ || __MACOS__ || __ANDROID__)
+#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
 #else
@@ -62,7 +62,7 @@ internal partial class SvgCanvas : SkiaCanvas
 
 #if __MACCATALYST__
 		this.Opaque = false;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 		// The SKGLTextureView is opaque by default, so we poke at the tree
 		// to change the opacity of the first view of the SKSwapChainPanel
 		// to make it transparent.
@@ -128,7 +128,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			var svgScaleMatrix = CreateScaleMatrix();
-			canvas.DrawPicture(picture, ref svgScaleMatrix);
+			canvas.DrawPicture(picture, in svgScaleMatrix);
 		}
 	}
 

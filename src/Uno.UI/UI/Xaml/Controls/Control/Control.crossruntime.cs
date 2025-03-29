@@ -11,4 +11,6 @@ public partial class Control
 	{
 		return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 	}
+
+	internal virtual bool IsDelegatingFocusToTemplateChild() => false;
 }

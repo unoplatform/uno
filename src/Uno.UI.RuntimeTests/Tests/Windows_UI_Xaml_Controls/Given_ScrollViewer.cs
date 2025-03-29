@@ -42,9 +42,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -103,9 +100,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -700,9 +694,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Details here: https://github.com/unoplatform/uno/issues/7000
 		[Ignore]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Tall_Rectangle()
 		{
 			const int ContentHeight = 300;
@@ -740,9 +731,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Details here: https://github.com/unoplatform/uno/issues/7000
 		[Ignore]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Wide_Rectangle()
 		{
 			const int ContentWidth = 300;
@@ -777,9 +765,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Direct_Content_BringIntoView()
 		{
 			var scrollViewer = new ScrollViewer()
@@ -813,9 +798,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Nested_Scroll_BringIntoView()
 		{
 			var outerScrollViewer = new ScrollViewer()
@@ -934,9 +916,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_ChangeView_Offset()
 		{
 			const double offset = 100;
@@ -1180,10 +1159,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			// The expected proper sequence when all sub-elements are ManipulationMode=System should be "Enter", "Pressed", "PointerCaptureLost", "Exited"
+			// This is the proper sequence when all sub-elements are ManipulationMode=System ("Enter", "Pressed", "PointerCaptureLost").
 			// This is caused by the Windows' Direct Manipulation.
 			// The important thing is to not get Released as it can cause a click on the nested element while it's being scrolled.
-			events.Should().BeEquivalentTo("enter", "pressed", "exited");
+			events.Should().BeEquivalentTo("enter", "pressed", "capturelost");
 		}
 
 		[TestMethod]
@@ -1411,7 +1390,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
-				Content = stackPanel
+				Content = stackPanel,
+				IsScrollInertiaEnabled = false
 			};
 
 			await UITestHelper.Load(SUT);
@@ -1453,5 +1433,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(200, SUT.ScrollableHeight);
 
 		}
+
+#if HAS_UNO // ScrollViewerUpdatesMode is Uno-specific
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ContentHasNoBackground_Then_StillTouchScrollable()
+		{
+			var sut = new ScrollViewer()
+			{
+				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous, // Make sure the VerticalOffset is being updated without any delay
+				Width = 100,
+				Height = 100,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+				HorizontalScrollMode = ScrollMode.Auto,
+				VerticalScrollMode = ScrollMode.Auto,
+				Content = new Grid()
+				{
+					Background = null,
+					Width = 100,
+					Height = 200
+				}
+			};
+
+			await UITestHelper.Load(sut);
+
+			Assert.AreEqual(0, sut.VerticalOffset);
+
+			// Scroll using touch
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(sut.GetAbsoluteBounds().GetCenter());
+			finger.MoveBy(0, -50, steps: 50);
+			finger.Release();
+
+			Assert.AreNotEqual(0, sut.VerticalOffset);
+		}
+#endif
 	}
 }

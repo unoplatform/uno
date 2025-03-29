@@ -22,10 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 [RequiresFullWindow]
-#if __MACOS__
-[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
-public partial class Given_ContentPresenter // test cases
+public partial class Given_ContentPresenter
 {
 	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
@@ -51,7 +48,7 @@ public partial class Given_ContentPresenter // test cases
 
 		// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 		// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		SUT.InvalidateMeasure();
 		SUT.UpdateLayout();
 #endif

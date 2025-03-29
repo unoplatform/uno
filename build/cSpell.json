@@ -67,6 +67,7 @@
 	"MVVM",
 	"MSIX",
 	"NETSDK",
+	"NBGV",
 	"netstandard",
 	"neumorphic",
 	"oidc",
@@ -205,7 +206,11 @@
 	"sasakrsmanovic",
 	"maccatalyst",
 	"settingscard",
-	"storecontext"
+	"storecontext",
+	"tvos",
+	"appleuikit",
+	"uikit",
+	"settingscard"
   ],
   "patterns": [
 	{

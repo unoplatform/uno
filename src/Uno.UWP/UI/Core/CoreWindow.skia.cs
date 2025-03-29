@@ -9,9 +9,6 @@ namespace Windows.UI.Core;
 
 public partial class CoreWindow
 {
-	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyDown;
-	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyUp;
-
 	internal event TypedEventHandler<CoreWindow, KeyEventArgs>? NativeKeyDownReceived;
 	internal event TypedEventHandler<CoreWindow, KeyEventArgs>? NativeKeyUpReceived;
 

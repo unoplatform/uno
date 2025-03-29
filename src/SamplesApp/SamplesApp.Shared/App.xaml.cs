@@ -32,10 +32,15 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
+#if HAS_UNO
+using Uno.UI.Helpers;
+#endif
+
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using SampleControl.Presentation;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -102,7 +107,7 @@ namespace SamplesApp
 			this.Resuming += OnResuming;
 #endif
 #if __SKIA__
-			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
 			{
 				Assert.IsTrue(_gotOnLaunched);
 			});
@@ -149,8 +154,6 @@ namespace SamplesApp
 
 			if (activationKind == ActivationKind.Launch)
 			{
-				AssertIssue8356();
-
 				AssertIssue12936();
 
 				AssertIssue12937();
@@ -171,35 +174,22 @@ namespace SamplesApp
 
 			ActivateMainWindow();
 
-#if !WINAPPSDK
-			ApplicationView.GetForCurrentView().Title = "Uno Samples";
-#else
-			MainWindow!.Title = "Uno Samples";
-#endif
-
-#if __SKIA__ && DEBUG
-			AppendRepositoryPathToTitleBar();
-#endif
-
+			SetWindowTitle();
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
-#if __SKIA__ && DEBUG
-		private void AppendRepositoryPathToTitleBar()
+		private static void SetWindowTitle()
 		{
-			var fullPath = Package.Current.InstalledLocation.Path;
-			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
-			var repositoryPath = fullPath;
-			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
-			{
-				repositoryPath = fullPath.Substring(0, index);
-			}
+			var appTitle = SampleChooserViewModel.DefaultAppTitle;
 
-			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
-		}
+#if !WINAPPSDK
+			ApplicationView.GetForCurrentView().Title = appTitle;
+#else
+			MainWindow!.Title = appTitle;
 #endif
+		}
 
 		[MemberNotNull(nameof(_mainWindow))]
 		private void EnsureMainWindow()
@@ -216,27 +206,36 @@ namespace SamplesApp
 
 		private void SetupAndroidEnvironment()
 		{
-#if __ANDROID__
-			// Read a file from /sdcard/environment.txt and set the environment variables	
-			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
-			if (File.Exists(environmentFilePath))
+			if (!OperatingSystem.IsAndroid())
 			{
-				var lines = File.ReadAllLines(environmentFilePath);
-				foreach (var line in lines)
+				return;
+			}
+
+			try
+			{
+				// Read a file from /sdcard/environment.txt and set the environment variables	
+				var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+				if (File.Exists(environmentFilePath))
 				{
-					var parts = line.Split('=');
-					if (parts.Length == 2)
+					var lines = File.ReadAllLines(environmentFilePath);
+					foreach (var line in lines)
 					{
-						var key = parts[0];
-						var value = parts[1];
-						Console.WriteLine($"Setting environment variable {key} to {value}");
-						System.Environment.SetEnvironmentVariable(key, value);
+						var parts = line.Split('=');
+						if (parts.Length == 2)
+						{
+							var key = parts[0];
+							var value = parts[1];
+							Console.WriteLine($"Setting environment variable {key} to {value}");
+							System.Environment.SetEnvironmentVariable(key, value);
+						}
 					}
 				}
 			}
-#endif
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed to set up Android environment: {e}");
+			}
 		}
-
 
 #if __IOS__
 		/// <summary>
@@ -317,7 +316,6 @@ namespace SamplesApp
 #endif
 			_mainWindow!.Activate();
 			_wasActivated = true;
-			_isSuspended = false;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -437,7 +435,8 @@ namespace SamplesApp
 		{
 			Console.WriteLine("OnResuming");
 
-			AssertIssue10313ResumingAfterActivate();
+			// Disable for failing on Android 31 https://github.com/unoplatform/uno-private/issues/1068
+			// AssertIssue10313ResumingAfterActivate();
 
 			_isSuspended = false;
 		}
@@ -450,13 +449,18 @@ namespace SamplesApp
 #endif
 			var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
 			{
-#if __WASM__
-				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#else
-				builder.AddConsole();
+#if __SKIA__ || __WASM__
+				if (OperatingSystem.IsBrowser())
+				{
+					builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+				}
+				else
 #endif
+				{
+					builder.AddConsole();
+				}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 
@@ -467,7 +471,6 @@ namespace SamplesApp
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Debug);
 #endif
-
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
@@ -486,6 +489,8 @@ namespace SamplesApp
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
+
+				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
@@ -537,7 +542,7 @@ namespace SamplesApp
 
 		static void ConfigureFeatureFlags()
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			Uno.UI.FeatureConfiguration.CommandBar.AllowNativePresenterContent = true;
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;

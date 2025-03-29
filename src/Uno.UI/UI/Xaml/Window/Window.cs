@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using Uno.UI;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.Core;
+using System.Diagnostics;
 
 namespace Microsoft.UI.Xaml;
 
@@ -52,9 +53,16 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
+#if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
 			windowType = WindowType.CoreWindow;
+		}
+#endif
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Creating new window (type:{windowType})");
 		}
 
 		InitialWindow ??= this;

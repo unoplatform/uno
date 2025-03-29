@@ -17,6 +17,8 @@ namespace Microsoft.UI.Composition
 
 		bool ISizedBrush.IsSized => true;
 
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+
 		Vector2? ISizedBrush.Size => Surface switch
 		{
 			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
@@ -74,6 +76,8 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
+		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
+
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))
@@ -101,11 +105,7 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					// The image rescaling (i.e resampling) algorithm in the shader directly is really low quality (but really fast).
-					// There is no sound workaround for this at the moment. See https://github.com/unoplatform/uno/issues/17325.
-					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
-					// SkiaSharp 3 introduces new SKSamplingOptions. When we move to SkiaSharp 3, replace the line about with this one.
-					// var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
+					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
 					{
@@ -120,7 +120,6 @@ namespace Microsoft.UI.Composition
 					}
 
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
 				}
 			}
 			else if (Surface is ISkiaSurface skiaSurface)
@@ -134,7 +133,6 @@ namespace Microsoft.UI.Composition
 
 					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
 				}
 				else
 				{

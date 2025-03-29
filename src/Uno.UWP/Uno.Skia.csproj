@@ -21,6 +21,9 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -37,6 +40,10 @@
 		<Compile Include="..\Uno.UI\UI\Colors.cs" />
 		<Compile Include="..\Uno.UI\UI\ColorHelper.cs" />
 		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="ApplicationModel\Core\CoreApplication.Reference.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -10,6 +10,11 @@
 			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</DefineConstants>
 		</PropertyGroup>
 
+
+		<Error
+			Condition=" '$(UnoWinRTRuntimeIdentifier)' == 'WebAssembly' OR '$(UnoUIRuntimeIdentifier)' == 'Skia' "
+			Text="Unable to Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.UI.WebAssembly cannot be used at the same time." />
+
 	</Target>
 
   <Target Name="_ForceUnoUIRuntimeWasm" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'"

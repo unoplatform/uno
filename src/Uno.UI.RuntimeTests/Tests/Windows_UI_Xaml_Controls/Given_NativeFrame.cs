@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __APPLE_UIKIT__
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await SUT.WaitForPages(2); // the 2 pages are page 1 and page 3
 		}
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]

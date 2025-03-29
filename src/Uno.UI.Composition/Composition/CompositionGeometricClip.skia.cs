@@ -28,7 +28,7 @@ partial class CompositionGeometricClip
 		return null;
 	}
 
-	internal override void Apply(SKCanvas canvas, Visual visual)
+	internal override SKPath? GetClipPath(Visual visual)
 	{
 		if (Geometry is not null)
 		{
@@ -39,19 +39,19 @@ partial class CompositionGeometricClip
 				var path = geometrySource.Geometry;
 				if (!TransformMatrix.IsIdentity)
 				{
-					using var _ = SkiaHelper.GetTempSKPath(out var transformedPath);
+					var transformedPath = new SKPath();
 					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
-					canvas.ClipPath(transformedPath, antialias: true);
+					path = transformedPath;
 				}
-				else
-				{
-					canvas.ClipPath(path, antialias: true);
-				}
+
+				return path;
 			}
 			else
 			{
 				throw new InvalidOperationException($"Clipping with source {geometry} is not supported");
 			}
 		}
+
+		return null;
 	}
 }

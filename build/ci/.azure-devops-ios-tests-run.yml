@@ -7,17 +7,18 @@ parameters:
   UITEST_SNAPSHOTS_ONLY: ''
   UITEST_SNAPSHOTS_GROUP: ''
   UITEST_ALLOW_RERUN: ''
+  UITEST_VARIANT: ''
+  SAMPLESAPP_BUNDLE_ID: ''
   nugetPackages: ''
+  SamplesAppArtifactName: ''
+  dependsOn: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 1
-  dependsOn:
-  - iOS_Build
-
+  dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -33,11 +34,11 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS Samples App'
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading iOS Samples App
     inputs:
-        artifactName: ios-uitest-build
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: ${{ parameters.SamplesAppArtifactName }}
+      path: $(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}
 
   - task: DownloadBuildArtifacts@0
     condition: gt(variables['System.JobAttempt'], 1)
@@ -92,7 +93,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
-      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/${{ parameters.SamplesAppArtifactName }}/SamplesApp.app"
+      SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
     condition: always()
@@ -121,7 +123,9 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
+      UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+      SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
     condition: eq(variables.UITEST_ALLOW_RERUN, 'true')

@@ -15,10 +15,8 @@ using Uno.UI.RuntimeTests.Extensions;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -30,9 +28,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ContentShouldCenter_WithMinWidth()
 		{
 			// all colored elements should be concentric

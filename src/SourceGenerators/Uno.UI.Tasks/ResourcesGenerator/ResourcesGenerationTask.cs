@@ -97,9 +97,9 @@ public class ResourcesGenerationTask_v0 : Task
 			{
 				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment, resource);
 			}
-			else if (TargetPlatform == "ios")
+			else if (TargetPlatform == "uikit")
 			{
-				yield return GenerateiOSResources(language, sourceLastWriteTime, resources, comment);
+				yield return GenerateUIKitResources(language, sourceLastWriteTime, resources, comment);
 			}
 		}
 
@@ -171,7 +171,7 @@ public class ResourcesGenerationTask_v0 : Task
 		);
 	}
 
-	private ITaskItem GenerateiOSResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
+	private ITaskItem GenerateUIKitResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment)
 	{
 		var logicalTargetPath = Path.Combine($"{language}.lproj", "Localizable.strings"); // this path is required by Xamarin
 		var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
@@ -194,7 +194,7 @@ public class ResourcesGenerationTask_v0 : Task
 			actualTargetPath,
 			new Dictionary<string, string>()
 			{
-				{ "UnoResourceTarget", "iOS" },
+				{ "UnoResourceTarget", "UIKit" },
 				{ "LogicalName", logicalTargetPath }
 			}
 		);

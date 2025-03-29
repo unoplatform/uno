@@ -1,12 +1,19 @@
 ﻿#nullable enable
 
-using Windows.Foundation;
+using System;
+using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using SkiaSharp;
+using Uno.UI.Composition;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
+	private bool _needsContinuousUpdates;
+
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{
@@ -43,6 +50,19 @@ public partial class ShapeVisual
 
 		base.Paint(in session);
 	}
+
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+		if (propertyName == nameof(Shapes))
+		{
+			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+		}
+	}
+
+	internal override bool RequiresRepaintOnEveryFrame => _needsContinuousUpdates;
+
+	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal override bool HitTest(Point point)

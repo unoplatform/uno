@@ -333,12 +333,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// For Subclass build functionality
 			writer.AppendLineIndented("");
-			writer.AppendLineIndented("#if __ANDROID__");
+			writer.AppendLineIndented("#if HAS_UNO_SKIA");
+			writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
+			writer.AppendLineIndented("#elif __ANDROID__");
 			writer.AppendLineIndented("using _View = Android.Views.View;");
-			writer.AppendLineIndented("#elif __IOS__");
+			writer.AppendLineIndented("#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__");
 			writer.AppendLineIndented("using _View = UIKit.UIView;");
-			writer.AppendLineIndented("#elif __MACOS__");
-			writer.AppendLineIndented("using _View = AppKit.NSView;");
 			writer.AppendLineIndented("#else");
 			writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
 			writer.AppendLineIndented("#endif");
@@ -379,10 +379,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							using var scopeAutoDisposable = LogicalScope(topLevelControl);
 
 							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
-							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
-							{
-								BuildDrawableResourcesIdResolver(writer);
-							}
 
 							TryBuildElementStubHolders(writer);
 
@@ -519,11 +515,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 			}
 
-			writer.AppendLineIndented($"#if __ANDROID__");
-			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
-			writer.AppendLineIndented($"#endif");
-
-			if (_isWasm)
+			if (_isWasm
+				// Only applicable when building for Wasm DOM support
+				&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
 			{
 				writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
 				writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
@@ -600,54 +594,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildDrawableResourcesIdResolver(IndentedStringBuilder writer)
-		{
-			writer.AppendLine();
-			writer.AppendLineIndented("/// <summary>");
-			writer.AppendLineIndented("/// Resolves the Id of a bundled image.");
-			writer.AppendLineIndented("/// </summary>");
-
-			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-
-			using (writer.BlockInvariant("internal static class DrawableResourcesIdResolver"))
-			{
-				using (writer.BlockInvariant("internal static int Resolve(string imageName)"))
-				{
-					using (writer.BlockInvariant("switch (imageName)"))
-					{
-						var drawables = _metadataHelper
-							.GetTypeByFullName($"{_defaultNamespace}.Resource")
-							.GetTypeMembers("Drawable")
-							.SingleOrDefault();
-
-						// Support for net8.0+ resource constants
-						drawables ??= _metadataHelper
-							.GetTypeByFullName("_Microsoft.Android.Resource.Designer.ResourceConstant")
-							.GetTypeMembers("Drawable")
-							.SingleOrDefault();
-
-						if (drawables?.GetFields() is { } drawableFields)
-						{
-							foreach (var drawable in drawableFields)
-							{
-								writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
-								using (writer.Indent())
-								{
-									writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
-								}
-							}
-						}
-
-						writer.AppendLineIndented("default:");
-						using (writer.Indent())
-						{
-							writer.AppendLineIndented("return 0;");
-						}
-					}
-				}
-			}
-		}
-
 		private void GenerateApiExtensionRegistrations(IndentedStringBuilder writer)
 		{
 			var apiExtensionAttributeSymbol = _metadataHelper.FindTypeByFullName("Uno.Foundation.Extensibility.ApiExtensionAttribute");
@@ -661,7 +607,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var registration in query)
 			{
-				writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				if (registration.Length == 2)
+				{
+					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				}
+				else if (registration.Length == 3)
+				{
+					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::{registration.ElementAt(2).Value}>(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				}
+				else if (registration.Length == 4)
+				{
+					writer.AppendLineIndented($"if (OperatingSystem.IsOSPlatform(\"{registration.ElementAt(3).Value}\"))");
+					writer.AppendLineIndented("{");
+					using (writer.Indent())
+					{
+						if (registration.ElementAt(3).Value is not null)
+						{
+							writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::{registration.ElementAt(2).Value}>(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+						}
+						else
+						{
+							writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+						}
+					}
+					writer.AppendLineIndented("}");
+				}
+				else
+				{
+					throw new InvalidOperationException($"ApiExtensionAttribute should takes 2 to 4 arguments.");
+				}
 			}
 		}
 
@@ -1711,30 +1685,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (type.GetFullyQualifiedTypeExcludingGlobal().Equals("Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.XamlControlsResources", StringComparison.Ordinal))
 			{
-				int GetResourcesVersion()
-				{
-					// We're in a XAML file which uses the XamlControlsResources type. To ensure that the linker can work
-					// properly we're redirecting the type creation to a type containing only the requested version.
-					if (topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ControlsResourcesVersion") is { } versionMember)
-					{
-						if (versionMember.Value?.ToString()?.TrimStart("Version") is { } versionString)
-						{
-							if (int.TryParse(versionString, out var explicitVersion))
-							{
-								if (explicitVersion < 1 || explicitVersion > XamlConstants.MaxFluentResourcesVersion)
-								{
-									throw new Exception($"Unsupported XamlControlsResources version {explicitVersion}. Max version is {XamlConstants.MaxFluentResourcesVersion}");
-								}
-							}
-
-							return explicitVersion;
-						}
-					}
-
-					return XamlConstants.MaxFluentResourcesVersion;
-				}
-
-				using (writer.BlockInvariant($"new global::Microsoft" + /* UWP don't rename */ $".UI.Xaml.Controls.XamlControlsResourcesV{GetResourcesVersion()}()"))
+				using (writer.BlockInvariant($"new global::Microsoft" + /* UWP don't rename */ $".UI.Xaml.Controls.XamlControlsResourcesV2()"))
 				{
 					BuildLiteralProperties(writer, topLevelControl);
 				}

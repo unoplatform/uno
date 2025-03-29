@@ -28,7 +28,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FocusVisual.dispatchPositionChange = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Xaml.Controls.SystemFocusVisual.DispatchNativePositionChange;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `FocusVisual: Unable to find dotnet exports`;
 				}
 			}
 

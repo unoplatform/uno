@@ -18,6 +18,9 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+		
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

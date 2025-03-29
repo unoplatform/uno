@@ -1,111 +1,43 @@
-
 stages:
 - stage: Setup
   displayName: Setup
   jobs:
-  - template: .azure-devops-commitsar.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-spell-check.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-markdown-lint.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-pipeline-validations.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-- stage: convert_tree
-  displayName: UWP Tree Conversion
-  dependsOn:
-    - Setup
-  jobs:
-  - template: .azure-devops-uwp-convert.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
-
-- stage: binaries_build_uwp
-  displayName: Build Binaries UWP
-  dependsOn:
-    - Setup
-    - convert_tree
-
-  jobs: 
-  - template: .azure-devops-package-netcoremobile.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+  - job: Validations
   
-  - template: .azure-devops-package-wasm.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    pool:
+      vmImage: $(linuxVMImage)
 
-  - template: .azure-devops-package-reference.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    steps:
+    - checkout: self
+      clean: true
 
-  - template: .azure-devops-package-skia.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      macOSImageName: '$(macOSVMImage)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    - template: templates/gitversion-run.yml
+    - template: .azure-devops-commitsar.yml
+    - template: .azure-devops-spell-check.yml
+    - template: .azure-devops-markdown-lint.yml
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
   dependsOn:
     - Setup
 
-  jobs: 
+  jobs:
+  - template: .azure-devops-package-skia-native-assets.yml
+    parameters:
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+      macOSImageName: '$(macOSVMImage)'
+
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
-  
-  - template: .azure-devops-package-wasm.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-  - template: .azure-devops-package-reference.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-  - template: .azure-devops-package-skia.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      macOSImageName: '$(macOSVMImage)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-- stage: packages_build
-  displayName: Generate Packages
-  dependsOn:
-    - binaries_build_uwp
-    - binaries_build_winui
-
-  jobs: 
-  - template: .azure-devops-package.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
 
 - stage: packages_tests
   displayName: Test Packages
   dependsOn:
-    - packages_build
+    - binaries_build_winui
 
   jobs: 
   - template: .azure-devops-project-template-tests.yml
@@ -119,9 +51,7 @@ stages:
 - stage: unit_tests
   displayName: Tests - Unit
   dependsOn:
-    - binaries_build_uwp
-    - binaries_build_winui
-    - convert_tree
+    - Setup
 
   jobs:
 
@@ -132,7 +62,7 @@ stages:
 - stage: wasm_tests
   displayName: Tests - WebAssembly
   dependsOn:
-    - convert_tree
+    - Setup
 
   jobs:
   
@@ -140,48 +70,19 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- stage: skia_tests_uwp
-  displayName: Tests - Skia UWP
-  dependsOn:
-    - Setup
-    - convert_tree
+- template: .azure-devops-skia-tests.yml
+  parameters:
+    vmImage: '$(windows2022HostedVMImage)'
+    vmMacImage: '$(macOSVMImage)'
+    vmMacImageTest: '$(macOSVMImage_UITests)'
+    vmLinuxImage: '$(linuxVMImage)'
+    vmLinuxPool: '$(linuxScaledPool)'
+    poolName: '$(windowsScaledPool)'
+    xCodeRootBuild: '$(xCodeRoot)'
+    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
-  jobs:
-  - template: .azure-devops-skia-tests.yml
-    parameters:
-      vmImage: '$(windows2022HostedVMImage)'
-      vmMacImage: '$(macOSVMImage)'
-      vmLinuxImage: '$(linuxVMImage)'
-      poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
-
-- stage: skia_tests_winui
-  displayName: Tests - Skia WinUI
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-skia-tests.yml
-    parameters:
-      vmImage: '$(windows2022HostedVMImage)'
-      vmMacImage: '$(macOSVMImage)'
-      vmLinuxImage: '$(linuxVMImage)'
-      poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
-      XAML_FLAVOR_BUILD: WinUI
-
-- stage: macos_tests
-  displayName: Tests - macOS
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-macos.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      xCodeRoot: '$(xCodeRoot)'
-  
 - stage: android_tests
   displayName: Tests - Android
   dependsOn:
@@ -226,8 +127,11 @@ stages:
     - wasm_tests
     - ios_tests
     - android_tests
-    - macos_tests
-    - skia_tests_winui
+    - runtime_tests_skia_browser
+    - runtime_tests_skia_android
+    - runtime_tests_skia_ios
+    - runtime_tests_skia_linux
+    - runtime_tests_skia_windows
 
   jobs:
   - template: .azure-devops-screenshot-compare.yml
@@ -239,8 +143,8 @@ stages:
 ##
 - stage: Publish_Dev
   displayName: 'Publish Dev NuGet'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
-  dependsOn: packages_build
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: binaries_build_winui
   jobs:
   - template: .azure-devops-publish-nuget-dev.yml
     parameters:
@@ -249,7 +153,7 @@ stages:
 - stage: Publish_Prod_Dev
   displayName: 'Publish Prod Dev NuGet'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
-  dependsOn: packages_build
+  dependsOn: binaries_build_winui
   jobs:
   - template: .azure-devops-publish-nuget-prod-dev.yml
     parameters:

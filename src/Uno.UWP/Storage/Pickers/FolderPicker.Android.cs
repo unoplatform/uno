@@ -16,7 +16,7 @@ namespace Windows.Storage.Pickers
 
 		private static TaskCompletionSource<Intent?>? _currentFolderPickerRequest;
 
-		internal static bool TryHandleIntent(Intent intent, Result resultCode)
+		internal static bool TryHandleIntent(Intent? intent, Result resultCode)
 		{
 			if (_currentFolderPickerRequest == null)
 			{

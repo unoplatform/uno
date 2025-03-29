@@ -5,6 +5,8 @@ namespace Microsoft.UI.Composition;
 
 partial class InsetClip
 {
+	private (Rect? bounds, SKPath path)? _clipPath;
+
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
 		return new Rect(
@@ -14,9 +16,16 @@ partial class InsetClip
 			height: visual.Size.Y - TopInset - BottomInset);
 	}
 
-	internal override void Apply(SKCanvas canvas, Visual visual)
+	internal override SKPath GetClipPath(Visual visual)
 	{
-		var rect = GetBounds(visual).Value.ToSKRect();
-		canvas.ClipRect(rect, SKClipOperation.Intersect, true);
+		var bounds = GetBounds(visual).Value;
+		if (_clipPath is null || _clipPath.Value.bounds != bounds)
+		{
+			var path = new SKPath();
+			var rect = bounds.ToSKRect();
+			path.AddRect(rect);
+			_clipPath = (bounds, path);
+		}
+		return _clipPath.Value.path;
 	}
 }

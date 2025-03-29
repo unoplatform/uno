@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable disable
+
+using Android.App;
 using Java.Util;
 using System;
 using System.Collections.Generic;

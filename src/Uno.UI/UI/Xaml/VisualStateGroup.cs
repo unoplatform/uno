@@ -13,10 +13,8 @@ using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml

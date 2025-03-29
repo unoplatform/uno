@@ -3,13 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PowerEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
 		// Skipping already declared property Mode
 		// Skipping already declared property Power
+		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.PowerEasingFunction.Power.get
 	}
 }

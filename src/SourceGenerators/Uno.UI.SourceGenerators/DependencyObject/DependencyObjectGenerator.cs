@@ -163,9 +163,6 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Uno.Diagnostics.Eventing;
-#if __MACOS__
-using AppKit;
-#endif
 ");
 					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
@@ -531,7 +528,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				if (hasDispose)
 				{
 					builder.AppendMultiLineIndented($@"
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __IOS__ || __TVOS__
 					private bool _isDisposed;
 
 					[SuppressMessage(
@@ -564,7 +561,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 							// a native representation via the IntPtr ctor, particularly on iOS.
 							__Store?.Dispose();
 
-#if __IOS__
+#if __APPLE_UIKIT__ || __IOS__ || __TVOS__
 							var subviews = Subviews;
 
 							if (subviews.Length > 0)
@@ -574,15 +571,6 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 								{{
 									v.RemoveFromSuperview();
 								}}
-							}}
-#elif __MACOS__
-							// avoids the managed array (and items) allocation(s) since we do not need them
-							if (this.GetSubviewsCount() > 0)
-							{{
-								BinderCollector.RequestCollect();
-
-								// avoids multiple native calls to remove subviews
-								Subviews = Array.Empty<NSView>();
 							}}
 #endif
 
@@ -594,11 +582,6 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 						{{
 							GC.ReRegisterForFinalize(this);
 
-#if __MACOS__
-							// net7.0-macos and later uses CoreCLR (not mono) and the notification mechanism is different
-							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
-							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
-#endif
 							_ = Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}

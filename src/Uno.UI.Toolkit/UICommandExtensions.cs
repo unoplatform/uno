@@ -11,7 +11,7 @@ namespace Uno.UI.Toolkit
 	{
 		public static void SetDestructive(this UICommand command, bool isDestructive)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (command == null)
 			{
 				return;

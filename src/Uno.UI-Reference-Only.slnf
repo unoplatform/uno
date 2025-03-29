@@ -19,6 +19,7 @@
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Reference.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Reference.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Reference.csproj",
+      "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Reference.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Reference.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Reference.csproj",

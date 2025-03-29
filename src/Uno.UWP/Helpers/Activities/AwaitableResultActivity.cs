@@ -13,7 +13,7 @@ using Uno.UI;
 namespace Uno.Helpers.Activities
 {
 	[Activity(
-				Theme = "@style/Theme.AppCompat.Translucent",
+				// Theme = "@style/Theme.AppCompat.Translucent",
 				ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize
 			)]
 	internal class AwaitableResultActivity : FragmentActivity

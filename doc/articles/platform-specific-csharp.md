@@ -39,8 +39,9 @@ The following conditional symbols are predefined for each Uno platform:
 | --------------- | ------------------ | ------- |
 | Android         | `__ANDROID__`      | |
 | iOS             | `__IOS__`          | |
+| tvOS            | `__TVOS__`         | |
 | Catalyst        | `__MACCATALYST__`  | |
-| macOS           | `__MACOS__`        | |
+| iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
 | WebAssembly     | `__WASM__`         | Only available in the `net9.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
 | Skia            | `HAS_UNO_SKIA`     | Only available in the `net9.0-desktop` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
 | _Non-Windows_   | `HAS_UNO`          | To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
@@ -101,8 +102,9 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.skia.cs` is built only for `net9.0-desktop`
 * `*.reference.cs` is built only for `net9.0-desktop`
 * `*.iOS.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst`
-* `*.macOS.cs` is built only for `net9.0-macos`
-* `*.iOSmacOS.cs` is built only for `net9.0-ios` and `net9.0-macos`
+* `*.tvOS.cs` is built only for `net9.0-tvos`
+* `*.UIKit.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
+* `*.Apple.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst` and `net9.0-tvos`
 * `*.Android.cs` is built only for `net9.0-android`
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.

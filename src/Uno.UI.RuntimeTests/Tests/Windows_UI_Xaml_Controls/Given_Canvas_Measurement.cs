@@ -43,9 +43,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
-#if __MACOS__ //Color are not interpreted the same way in Mac
-			Assert.Inconclusive();
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
@@ -68,13 +65,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_ZIndex()
 		{
-#if __MACOS__
-			Assert.Inconclusive(); //Color are not interpreted the same way in Mac
-#endif
 #if __ANDROID__
 			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
 #endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -112,9 +106,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Verify_Canvas_In_Canvas()
 		{
-#if __MACOS__
-			Assert.Inconclusive(); //Color are not interpreted the same way in Mac
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";

@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__
 					_layoutRoot.RemoveFromSuperview();
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();
@@ -187,10 +187,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);
-#elif __IOS__
+#elif __APPLE_UIKIT__
 					this.Add(_layoutRoot);
-#elif __MACOS__
-					this.AddSubview(_layoutRoot);
 #elif __SKIA__ || __WASM__
 					this.AddChild(_layoutRoot);
 					_mediaPlayerPresenter?.ExitFullScreen();

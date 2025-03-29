@@ -86,6 +86,18 @@ namespace Uno.Collections
 
 		public bool Contains(T item) => _innerList.Contains(item);
 
+		public bool TrueForAll(Predicate<T> match)
+		{
+			for (int i = 0; i < Count; i++)
+			{
+				if (!match(_innerList[i]))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public void CopyTo(T[] array, int arrayIndex) => _innerList.CopyTo(array, arrayIndex);
 
 		public bool Remove(T item)

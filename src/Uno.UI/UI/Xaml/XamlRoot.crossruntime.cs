@@ -51,7 +51,7 @@ public sealed partial class XamlRoot
 				_renderQueued = false;
 				InvalidateRender();
 			}
-		});
+		}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
 	}
 
 	/// <summary>

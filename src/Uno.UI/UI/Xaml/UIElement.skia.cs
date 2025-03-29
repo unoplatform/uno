@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
@@ -28,6 +29,7 @@ using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
 using Uno.UI.Xaml.Controls;
+using Uno.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -90,6 +92,7 @@ namespace Microsoft.UI.Xaml
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
+					_visual.Owner = new WeakReference(this);
 				}
 
 				return _visual;
@@ -97,6 +100,9 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private protected virtual ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateContainerVisual();
+
+		internal static Action<UIElement, UIElement, int?> ExternalOnChildAdded { get; set; }
+		internal static Action<UIElement, UIElement> ExternalOnChildRemoved { get; set; }
 
 		/// <param name="point">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
 		/// <remarks>This does NOT take the clipping into account.</remarks>
@@ -194,6 +200,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_children.Remove(child))
 			{
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 
 				// Force a new measure of this element
@@ -227,6 +234,7 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var child in _children.ToArray())
 			{
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
 				InnerRemoveChild(child);
 			}
 

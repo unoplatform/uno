@@ -148,11 +148,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			{
 				TargetFrameworkVersion = TargetFramework;
 				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.Gtk", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaGtk;
-				}
-				else if (ProjectName.EndsWith("Skia.WPF", StringComparison.InvariantCultureIgnoreCase))
+				if (ProjectName.EndsWith("Skia.WPF", StringComparison.InvariantCultureIgnoreCase))
 				{
 					TargetRuntime = UnoTarget.SkiaWpf;
 				}

@@ -15,10 +15,8 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -39,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
 		public async Task When_ListView_Parent_Unstretched()
@@ -75,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
 		public async Task When_ListView_Parent_Unstretched_Scrolled()
@@ -114,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
 		[RunsOnUIThread]
@@ -214,6 +212,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
+#endif
 		public async Task When_Item_Margins_And_Scrolled()
 		{
 			var SUT = new ListView
@@ -272,7 +273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Item_Recycled_DuringScroll()
@@ -352,6 +353,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __WASM__
 		[Ignore("Test is flaky")]
+#elif __SKIA__
+		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif
 		public async Task When_ItemsPresenter_MinHeight()
 		{
@@ -445,7 +448,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => Math.Abs(SUT.ActualHeight - 29) <= Epsilon, message: $"ListView failed to shrink from removing item: (ActualHeight: {SUT.ActualHeight})");
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Item_With_NegativeMargin_AsdAsd() // todo@xy: remove asdasd
@@ -536,7 +539,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				for (double d = current + increment; d < vOffset; d += increment)
 				{
-					sv.ChangeView(null, d, null);
+					sv.ChangeView(null, d, null, true);
 					await Task.Delay(10);
 				}
 			}
@@ -544,12 +547,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				for (double d = current - increment; d > vOffset; d -= increment)
 				{
-					sv.ChangeView(null, d, null);
+					sv.ChangeView(null, d, null, true);
 					await Task.Delay(10);
 				}
 			}
 
-			sv.ChangeView(null, vOffset, null);
+			sv.ChangeView(null, vOffset, null, true);
 		}
 
 		public class When_Item_Changes_Measure_Count_ItemViewModel : System.ComponentModel.INotifyPropertyChanged

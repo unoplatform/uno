@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Documents
 				float textSizeX;
 				if (typeface is not null && typeface != defaultTypeface)
 				{
-					fallbackFont = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					fallbackFont = FontDetailsCache.GetFont(typeface.FamilyName, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
 					if (fallbackFont.CanChange)
 					{
 						fallbackFont.RegisterElementForFontLoaded(this);

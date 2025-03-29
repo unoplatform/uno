@@ -4,7 +4,7 @@ namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{
-#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
+#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__ || __WASM__
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 			=> MeasureRelativeShape(availableSize);

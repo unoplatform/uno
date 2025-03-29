@@ -26,9 +26,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 {
 	[TestClass]
 	[RequiresFullWindow]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 	public class FocusTests
 	{
 		private enum FocusAsyncMethod
@@ -552,7 +549,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			}
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		[TestProperty("Hosting:Mode", "UAP")]   // Bug 24196441: Focus engagement bugs in lifted islands
 		public async Task VerifyShiftTabWhenOnceTabFocusNavigationSet()
 		{

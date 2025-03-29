@@ -8,8 +8,8 @@ using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics;
 using Windows.Graphics.Interop;
-using Windows.Graphics.Interop.Direct2D;
 using static Uno.FoundationFeatureConfiguration;
+using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.UI.Composition;
 

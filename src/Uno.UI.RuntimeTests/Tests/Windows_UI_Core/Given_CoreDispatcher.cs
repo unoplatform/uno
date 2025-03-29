@@ -10,7 +10,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 {
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	[TestClass]
 	public class Given_CoreDispatcher
 	{

@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = "Content")]
 #if !__SKIA__
-[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, IScrollPresenter
 {

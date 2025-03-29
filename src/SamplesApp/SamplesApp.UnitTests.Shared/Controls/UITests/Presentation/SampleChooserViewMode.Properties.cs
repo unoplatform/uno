@@ -253,6 +253,73 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public static string TargetPlatform
+		{
+			get
+			{
+#if !HAS_UNO
+				return "WinUI";
+#else
+				var renderingType =
+#if __SKIA__
+					"Skia";
+#else
+					"Native";
+#endif
+
+				string targetPlatform;
+				if (OperatingSystem.IsAndroid())
+				{
+					targetPlatform = "Android";
+				}
+				else if (OperatingSystem.IsIOS())
+				{
+					targetPlatform = "iOS";
+				}
+				else if (OperatingSystem.IsTvOS())
+				{
+					targetPlatform = "tvOS";
+				}
+				else if (OperatingSystem.IsBrowser())
+				{
+					targetPlatform = "WebAssembly";
+				}
+				else if (OperatingSystem.IsWindows())
+				{
+					targetPlatform = "Windows";
+				}
+				else if (OperatingSystem.IsMacOS())
+				{
+					targetPlatform = "macOS";
+				}
+				else if (OperatingSystem.IsLinux())
+				{
+					targetPlatform = "Linux";
+				}
+				else
+				{
+					targetPlatform = "Unknown";
+				}
+
+				return $"{renderingType} {targetPlatform}";
+#endif
+			}
+		}
+
+		public static string DefaultAppTitle
+		{
+			get
+			{
+				var appTitle = $"Uno Samples ({TargetPlatform})";
+
+				var repositoryPath = RepositoryPath;
+				appTitle += $" [{repositoryPath}]";
+				return appTitle;
+			}
+		}
+
+		public static string RepositoryPath => GetRepositoryPath();
+
 		public SampleChooserContent CurrentSelectedSample
 		{
 			get => _currentSelectedSample;

@@ -4,6 +4,9 @@
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
+		
+		<!-- We need all the intermediate assemblies to be located in the processors -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />

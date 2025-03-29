@@ -390,7 +390,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;
 		if (usingXi2)
 		{
-			SetXIEventMask(TopX11Window);
+			var mask = XI2Mask;
+			if (GetXI2Details(display).version >= XIVersion.XI2_2)
+			{
+				mask |= XI2_2Mask;
+			}
+			SetXIEventMask(TopX11Window.Display, TopX11Window.Window, mask);
 		}
 
 		XLib.XSelectInput(RootX11Window.Display, RootX11Window.Window, RootEventsMask);

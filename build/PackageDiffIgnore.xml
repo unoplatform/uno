@@ -1865,6 +1865,7 @@
 			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
 		</Assemblies>
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
 		<Events>
@@ -1892,6 +1893,8 @@
 
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 
@@ -1900,6 +1903,9 @@
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
@@ -1952,6 +1958,7 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
 			<!-- END ComboBox.IsEditable -->
 
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
@@ -1962,9 +1969,15 @@
 
 	<IgnoreSet baseVersion="5.5">
 		<Assemblies>
+			<Member fullName="Uno" reason="package split"/>
+			<Member fullName="Uno.Foundation" reason="package split"/>
+			<Member fullName="Uno.UI.Dispatching" reason="package split"/>
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 		</Types>
 
 		<Events>
@@ -1977,6 +1990,8 @@
 		</Properties>
 
 		<Methods>
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
+
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
@@ -1991,9 +2006,15 @@
 
 	<IgnoreSet baseVersion="5.6">
 		<Assemblies>
+			<Member fullName="Uno" reason="package split"/>
+			<Member fullName="Uno.Foundation" reason="package split"/>
+			<Member fullName="Uno.UI.Dispatching" reason="package split"/>
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 		</Types>
 
 		<Events>
@@ -2029,6 +2050,7 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Microsoft.UI.Xaml.DependencyObject element, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
 			<Member fullName="System.Void Windows.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
 			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 		</Methods>
 	</IgnoreSet>
 

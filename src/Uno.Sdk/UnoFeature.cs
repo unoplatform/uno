@@ -90,6 +90,12 @@ public enum UnoFeature
 	Skia,
 
 	[UnoArea(UnoArea.Core)]
+	SkiaRenderer,
+
+	[UnoArea(UnoArea.Core)]
+	NativeRenderer,
+
+	[UnoArea(UnoArea.Core)]
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]

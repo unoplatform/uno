@@ -8,7 +8,7 @@ using Windows.UI.Core;
 
 namespace Windows.System;
 
-internal static class VirtualKeyHelper
+internal static partial class VirtualKeyHelper
 {
 	public static VirtualKey FromKeyCode(Keycode key)
 	{
@@ -166,17 +166,17 @@ internal static class VirtualKeyHelper
 	{
 		var modifiers = VirtualKeyModifiers.None;
 
-		if (flags.HasFlag(MetaKeyStates.ShiftMask))
+		if ((flags & MetaKeyStates.ShiftMask) != 0)
 		{
 			modifiers |= VirtualKeyModifiers.Shift;
 		}
 
-		if (flags.HasFlag(MetaKeyStates.CtrlMask))
+		if ((flags & MetaKeyStates.CtrlMask) != 0)
 		{
 			modifiers |= VirtualKeyModifiers.Control;
 		}
 
-		if (flags.HasFlag(MetaKeyStates.MetaMask))
+		if ((flags & MetaKeyStates.MetaMask) != 0)
 		{
 			modifiers |= VirtualKeyModifiers.Windows;
 		}

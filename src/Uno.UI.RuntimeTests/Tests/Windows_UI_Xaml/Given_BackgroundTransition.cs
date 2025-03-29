@@ -27,6 +27,12 @@ public class Given_BackgroundTransition
 	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
 	public async Task When_Has_Brush_Transition(Type type)
 	{
+		if (OperatingSystem.IsAndroid())
+		{
+			// This test is generally flaky due to its nature.
+			Assert.Inconclusive("Animations are flaky.");
+		}
+
 		var control = (FrameworkElement)Activator.CreateInstance(type);
 
 		control.Width = 200;
@@ -72,7 +78,8 @@ public class Given_BackgroundTransition
 #if !__SKIA__
 	[Ignore]
 #endif
-	[TestMethod]
+	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_Animation_With_Brush_Transition()
 	{
 		var SUT = (Button)XamlReader.Load(

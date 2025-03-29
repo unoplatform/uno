@@ -1,9 +1,11 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Windows.Foundation;
+using System.Runtime.InteropServices;
 using SkiaSharp;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -13,6 +15,20 @@ public partial class ContainerVisual : Visual
 	private bool _hasCustomRenderOrder;
 
 	private (Rect rect, bool isAncestorClip)? _layoutClip;
+
+	private GCHandle _gcHandle;
+
+	partial void InitializePartial()
+	{
+		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+
+		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+		Handle = GCHandle.ToIntPtr(_gcHandle);
+	}
+
+	internal IntPtr Handle { get; private set; }
+
+	internal WeakReference? Owner { get; set; }
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.
@@ -26,11 +42,6 @@ public partial class ContainerVisual : Visual
 	}
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
-
-	partial void InitializePartial()
-	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
-	}
 
 	private protected override List<Visual> GetChildrenInRenderOrder()
 	{
@@ -70,7 +81,6 @@ public partial class ContainerVisual : Visual
 			return false;
 		}
 
-		dst.Rewind();
 		var clipRect = rect.ToSKRect();
 		dst.AddRect(clipRect);
 		if (isAncestorClip)
@@ -86,14 +96,35 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
-	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
+	private static SKPath _sparePrePaintingClippingPath = new SKPath();
+
+	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
-		base.ApplyPrePaintingClipping(in canvas);
-		using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
+		var prePaintingClipPath = _sparePrePaintingClippingPath;
+
+		prePaintingClipPath.Rewind();
+
+		if (base.GetPrePaintingClipping(dst))
 		{
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				canvas.ClipPath(prePaintingClipPath, antialias: true);
+				dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
+			}
+
+			return true;
+		}
+		else
+		{
+			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
+			{
+				dst.Reset();
+				dst.AddPath(prePaintingClipPath);
+
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}

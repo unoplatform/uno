@@ -7,47 +7,30 @@ using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
+/// <remarks>
+/// Skia uses the word "typeface" to mean a specific style of a typographic family (e.g. OpenSans with Bold weight, Normal width and Italic slant)
+/// and the word "font" to mean a typeface + a specific font size. This is different from the literature where "typeface"
+/// means a typographic family (e.g. OpenSans or Segoe UI) and "font" means what Skia means by "typeface".
+/// We try to use Skia's wording for code and the accurate wording for logging.
+/// </remarks>
 internal static class FontDetailsCache
 {
-	private record struct FontCacheEntry(
-		string? Name,
-		float FontSize,
-		FontWeight Weight,
-		FontStretch Stretch,
-		FontStyle Style);
+	private readonly record struct FontEntry(
+		string Name,
+		SKFontStyleWeight Weight,
+		SKFontStyleWidth Width,
+		SKFontStyleSlant Slant);
 
-	private static Dictionary<FontCacheEntry, FontDetails> _fontCache = new();
-	private static object _fontCacheGate = new();
-
-	internal static void OnFontLoaded(string font, SKTypeface? typeface)
-	{
-		lock (_fontCacheGate)
-		{
-			foreach (var (key, details) in _fontCache)
-			{
-				if (key.Name == font)
-				{
-					if (typeface is null)
-					{
-						// font load failed.
-						details.LoadFailed();
-					}
-					else
-					{
-						details.Update(typeface);
-					}
-				}
-			}
-		}
-	}
+	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
+	private static readonly object _fontCacheGate = new();
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -80,9 +63,8 @@ internal static class FontDetailsCache
 		return stream is null ? null : SKTypeface.FromStream(stream);
 	}
 
-	private static FontDetails GetFontInternal(
+	private static Task<SKTypeface?> GetFontInternal(
 		string name,
-		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style)
@@ -91,9 +73,6 @@ internal static class FontDetailsCache
 		var skWidth = stretch.ToSkiaWidth();
 		var skSlant = style.ToSkiaSlant();
 
-		SKTypeface? skTypeFace;
-		bool temporaryDefaultFont = false;
-		var originalName = name;
 		var hashIndex = name.IndexOf('#');
 		if (hashIndex > 0)
 		{
@@ -102,93 +81,89 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri) && uri.IsLocalResource())
 		{
-			var task = LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
-			if (task.IsCompleted)
-			{
-				if (task.IsCompletedSuccessfully)
-				{
-					skTypeFace = task.Result;
-				}
-				else
-				{
-					// Load failed.
-					OnFontLoaded(originalName, null);
-					skTypeFace = null;
-				}
-			}
-			else
-			{
-				temporaryDefaultFont = true;
-				skTypeFace = null;
-				task.ContinueWith(task =>
-				{
-					NativeDispatcher.Main.Enqueue(() =>
-					{
-						try
-						{
-							if (task.IsCompletedSuccessfully)
-							{
-								OnFontLoaded(originalName, task.Result);
-							}
-							else
-							{
-								// Load failed.
-								OnFontLoaded(originalName, null);
-							}
-						}
-						catch (Exception e)
-						{
-							if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-							{
-								typeof(FontDetailsCache).Log().LogError($"Failed to load font {name} from ms-appx: {e}");
-							}
-						}
-					});
-				});
-			}
+			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
 		else
 		{
 			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			skTypeFace = SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+			return Task.FromResult<SKTypeface?>(SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant));
 		}
-
-		if (skTypeFace == null)
-		{
-			if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(Inline).Log().LogWarning($"The font {name} could not be found, using system default");
-			}
-
-			skTypeFace = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
-				?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
-				?? SKTypeface.FromFamilyName(null);
-		}
-
-		return FontDetails.Create(skTypeFace, fontSize, temporaryDefaultFont);
 	}
 
-	public static FontDetails GetFont(
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
-		FontStyle style)
+		FontStyle style) =>
 	{
 		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
 		{
 			name = FeatureConfiguration.Font.DefaultTextFontFamily;
 		}
 
-		var key = new FontCacheEntry(name, fontSize, weight, stretch, style);
+		var (skWeight, skWidth, skSlant) = (weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
+		var key = new FontEntry(name, skWeight, skWidth, skSlant);
 
+		Task<SKTypeface?> typefaceTask;
 		lock (_fontCacheGate)
 		{
-			if (!_fontCache.TryGetValue(key, out var value))
+			if (!_fontCache.TryGetValue(key, out var nullableTask))
 			{
-				_fontCache[key] = value = GetFontInternal(name, fontSize, weight, stretch, style);
+				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style);
 			}
-			return value;
+			typefaceTask = nullableTask;
 		}
-	}
+
+		var canChange = !typefaceTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
+		var typeface = !canChange ? typefaceTask.Result : null;
+
+		if (typeface == null)
+		{
+			if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
+			{
+				if (canChange)
+				{
+					typeof(Inline).Log().LogWarning($"{key} is still loading, using system default for now.");
+				}
+				else
+				{
+					typeof(Inline).Log().LogWarning($"{key} could not be found, using system default");
+				}
+			}
+
+			typeface = SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant)
+						?? SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant)
+						?? SKTypeface.FromFamilyName(null);
+		}
+
+		var details = FontDetails.Create(typeface, fontSize, canChange);
+
+		if (canChange)
+		{
+			typefaceTask.ContinueWith(t =>
+			{
+				var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+
+				if (loadedTypeface is null)
+				{
+					if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
+					}
+				}
+
+				details.FontLoaded(loadedTypeface);
+			});
+		}
+
+		return (details, typefaceTask);
+	});
+
+	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
+		string? name,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
 }

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using Windows.Storage;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
-using Windows.UI.ViewManagement;
+using Uno.UI.Helpers;
+
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace SamplesApp;
@@ -71,6 +70,12 @@ partial class App
 			return;
 		}
 
+		if (Uno.UI.Helpers.DeviceTargetHelper.IsNonDesktop())
+		{
+			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
+			return;
+		}
+
 		var description = Package.Current.Description;
 		var publisherName = Package.Current.PublisherDisplayName;
 
@@ -81,16 +86,6 @@ partial class App
 		Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");
 
 		Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
-#endif
-	}
-
-	/// <summary>
-	/// Assert that Application Title is getting its value from manifest
-	/// </summary>
-	public void AssertIssue8356()
-	{
-#if __SKIA__
-		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
 #endif
 	}
 
@@ -143,11 +138,20 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
+		if (OperatingSystem.IsBrowser())
+		{
+			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
+			return;
+		}
+
 		var appName = Package.Current.Id.Name;
 		var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
 
 		AssertForFolder(ApplicationData.Current.LocalFolder);
-		AssertForFolder(ApplicationData.Current.RoamingFolder);
+		if (!DeviceTargetHelper.IsUIKit()) // TODO: Creating/deleting file in RoamingFolder is not working correctly #655
+		{
+			AssertForFolder(ApplicationData.Current.RoamingFolder);
+		}
 		AssertForFolder(ApplicationData.Current.TemporaryFolder);
 		AssertForFolder(ApplicationData.Current.LocalCacheFolder);
 		AssertSettings(ApplicationData.Current.LocalSettings);
@@ -155,7 +159,11 @@ partial class App
 
 		void AssertForFolder(StorageFolder folder)
 		{
-			AssertContainsIdProps(folder);
+			// On desktop the app folders should contain the app name and publisher in path.
+			if (DeviceTargetHelper.IsDesktop())
+			{
+				AssertContainsIdProps(folder);
+			}
 			AssertCanCreateFile(folder);
 		}
 
@@ -165,15 +173,15 @@ partial class App
 			var value = Guid.NewGuid().ToString();
 
 			container.Values[key] = value;
-			Assert.IsTrue(container.Values.ContainsKey(key));
+			Assert.IsTrue(container.Values.ContainsKey(key), $"Container {container} does not contain {key}");
 			Assert.AreEqual(value, container.Values[key]);
 			container.Values.Remove(key);
 		}
 
 		void AssertContainsIdProps(StorageFolder folder)
 		{
-			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal));
-			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal));
+			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal), $"{folder.Path} does not contain {appName}");
+			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
 		}
 
 		void AssertCanCreateFile(StorageFolder folder)
@@ -212,7 +220,7 @@ partial class App
 	private void AssertIssue15521()
 	{
 #if __ANDROID__
-		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
 }

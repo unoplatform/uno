@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.VoiceCommands
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class VoiceCommandResponse
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal VoiceCommandResponse()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
 		{
 			get
@@ -27,8 +27,8 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
 		{
 			get
@@ -41,8 +41,8 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string AppLaunchArgument
 		{
 			get
@@ -55,8 +55,8 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> VoiceCommandContentTiles
 		{
 			get
@@ -65,8 +65,8 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static uint MaxSupportedVoiceCommandContentTiles
 		{
 			get
@@ -83,29 +83,29 @@ namespace Windows.ApplicationModel.VoiceCommands
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.VoiceCommandContentTiles.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage userMessage)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage userMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandResponse%20VoiceCommandResponse.CreateResponse%28VoiceCommandUserMessage%20userMessage%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponse(VoiceCommandUserMessage message, IEnumerable<VoiceCommandContentTile> contentTiles) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandResponse%20VoiceCommandResponse.CreateResponse%28VoiceCommandUserMessage%20message%2C%20IEnumerable%3CVoiceCommandContentTile%3E%20contentTiles%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandResponse%20VoiceCommandResponse.CreateResponseForPrompt%28VoiceCommandUserMessage%20message%2C%20VoiceCommandUserMessage%20repeatMessage%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponseForPrompt(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage message, global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage repeatMessage, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> contentTiles)
 		{
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage, IEnumerable<VoiceCommandContentTile> contentTiles) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandResponse%20VoiceCommandResponse.CreateResponseForPrompt%28VoiceCommandUserMessage%20message%2C%20VoiceCommandUserMessage%20repeatMessage%2C%20IEnumerable%3CVoiceCommandContentTile%3E%20contentTiles%29");

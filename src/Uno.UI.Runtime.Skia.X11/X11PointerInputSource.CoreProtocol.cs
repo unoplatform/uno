@@ -30,7 +30,7 @@ internal partial class X11PointerInputSource
 		var point = CreatePointFromCurrentState(ev.time);
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(ev.state);
 
-		var args = new PointerEventArgs(point, modifiers);
+		var args = new PointerEventArgs(point, modifiers) { Handled = ev.window != _host.TopX11Window.Window };
 
 		CreatePointFromCurrentState(ev.time);
 		X11XamlRootHost.QueueAction(_host, () => RaisePointerExited(args));
@@ -40,7 +40,7 @@ internal partial class X11PointerInputSource
 	{
 		_mousePosition = new Point(ev.x, ev.y);
 
-		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
+		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state, ev.window);
 		X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
 	}
 
@@ -48,7 +48,7 @@ internal partial class X11PointerInputSource
 	{
 		_mousePosition = new Point(ev.x, ev.y);
 
-		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
+		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state, ev.window);
 		X11XamlRootHost.QueueAction(_host, () => RaisePointerMoved(args));
 	}
 
@@ -57,7 +57,7 @@ internal partial class X11PointerInputSource
 		_mousePosition = new Point(ev.x, ev.y);
 		_pressedButtons = (byte)(_pressedButtons | 1 << ev.button);
 
-		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
+		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state, ev.window);
 
 		if (ev.button is SCROLL_LEFT or SCROLL_RIGHT or SCROLL_UP or SCROLL_DOWN)
 		{
@@ -94,16 +94,16 @@ internal partial class X11PointerInputSource
 		_mousePosition = new Point(ev.x, ev.y);
 		_pressedButtons = (byte)(_pressedButtons & ~(1 << ev.button));
 
-		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
+		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state, ev.window);
 		X11XamlRootHost.QueueAction(_host, () => RaisePointerReleased(args));
 	}
 
-	private PointerEventArgs CreatePointerEventArgsFromCurrentState(IntPtr time, XModifierMask state)
+	private PointerEventArgs CreatePointerEventArgsFromCurrentState(IntPtr time, XModifierMask state, IntPtr eventWindow)
 	{
 		var point = CreatePointFromCurrentState(time);
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(state);
 
-		return new PointerEventArgs(point, modifiers);
+		return new PointerEventArgs(point, modifiers) { Handled = eventWindow != _host.TopX11Window.Window };
 	}
 
 	/// <summary>

@@ -141,7 +141,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 
 			SetValue(Canvas.ZIndexProperty, IsSelected ? 20 : 0);
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (IsSelected)
 			{
 				// ios/droid: For some reason, ScrollToItem/ScrollToPosition from Selector::OnSelectedItemChanged would fail to scroll to the index

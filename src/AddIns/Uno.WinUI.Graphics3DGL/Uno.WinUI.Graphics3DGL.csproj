@@ -8,14 +8,17 @@
 
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
+		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
     </PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
-		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
@@ -50,7 +53,7 @@
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-				<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
+				<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
 				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Extensions\WpfNativeOpenGLWrapper.cs" />

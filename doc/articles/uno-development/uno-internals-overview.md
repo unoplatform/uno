@@ -37,7 +37,7 @@ APIs for non-UI features, for example [`Windows.System.Power`](../features/windo
 WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI (and UWP) apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the UWP framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in UWP but are not implemented on Uno. For example:
 
 ```csharp
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__
 [global::Uno.NotImplemented]
 public  bool ExitDisplayModeOnAccessKeyInvoked
 {
@@ -62,7 +62,6 @@ For more details on how Uno Platform runs on each platform, see platform-specifi
 * [Android](uno-internals-android.md)
 * [iOS](uno-internals-ios.md)
 * [WebAssembly](uno-internals-wasm.md)
-* [macOS](uno-internals-macos.md)
 
 ## Uno.WinUI build-time tooling
 

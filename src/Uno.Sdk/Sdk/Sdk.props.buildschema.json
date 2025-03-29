@@ -57,6 +57,10 @@
 			"type": "folder-with-slash",
 			"description": "The folder containing the iOS-specific files for this project."
 		},
+		"tvOSProjectFolder": {
+			"type": "folder-with-slash",
+			"description": "The folder containing the Mac Catalyst-specific files for this project."
+		},
 		"MacCatalystProjectFolder": {
 			"type": "folder-with-slash",
 			"description": "The folder containing the Mac Catalyst-specific files for this project."

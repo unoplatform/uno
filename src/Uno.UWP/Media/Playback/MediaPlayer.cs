@@ -10,7 +10,7 @@ namespace Windows.Media.Playback
 	public sealed partial class MediaPlayer
 	{
 		internal const bool ImplementedByExtensions =
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __TVOS__
 			false;
 #else
 			true;
@@ -29,7 +29,6 @@ namespace Windows.Media.Playback
 				_source = value;
 
 				InitializeSource();
-
 				SourceChanged?.Invoke(this, null);
 
 				if (_source != null && AutoPlay)

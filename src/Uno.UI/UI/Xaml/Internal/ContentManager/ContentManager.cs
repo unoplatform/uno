@@ -75,7 +75,7 @@ internal partial class ContentManager
 
 			// For an unknown reason we need to make sure to reset the Frame of the root view controller on iOS when Content changes,
 			// otherwise EVP and When_Mask_All tests fail as the viewport will extend under status bar. This should be investigated in #8978.
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (_owner is not Microsoft.UI.Xaml.Window windowOuter)
 			{
 				throw new InvalidOperationException("Owner of ContentManager should be a Window");

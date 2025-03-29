@@ -142,6 +142,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			TextBlock clickCountTextBlock = FindElementByName<TextBlock>("ClickCountTextBlock");
 			TextBlock flyoutOpenedCountTextBlock = FindElementByName<TextBlock>("FlyoutOpenedCountTextBlock");
 
+			// Uno-specific
+			splitButton.StartBringIntoView();
+
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 

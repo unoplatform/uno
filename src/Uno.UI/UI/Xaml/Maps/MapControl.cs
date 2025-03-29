@@ -11,7 +11,7 @@ using Windows.Devices.Geolocation;
 
 namespace Microsoft.UI.Xaml.Controls.Maps
 {
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 	[NotImplemented]
 #endif
 	public partial class MapControl : Controls.Control, IUnoMapControl
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Maps
 		{
 			base.OnLoaded();
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			if (Template == null && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().LogWarning($"No template available for MapControl, the control will not display. Check that Uno MapControl support is configured correctly (see https://platform.uno/docs/articles/controls/map-control-support.html ).");

@@ -41,10 +41,8 @@ using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 using Windows.UI.Input;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -67,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("LayoutStorage not implemented properly for Layouter")]
 #endif
 		public async Task When_Not_In_Visual_Tree_Should_Reset_LayoutStorage()
@@ -143,7 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("It doesn't yet work properly on Android and iOS")]
 #endif
 		public async Task When_TranslateTransform_And_Clip()
@@ -210,9 +208,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Visible_InvalidateArrange()
 		{
 			var sut = new Border() { Width = 100, Height = 10 };
@@ -225,7 +220,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsFalse(sut.IsArrangeDirty);
 		}
 
-#if !__ANDROID__ && !__IOS__ // Fails on Android & iOS (issue #5002)
+#if !__ANDROID__ && !__APPLE_UIKIT__ // Fails on Android & iOS (issue #5002)
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Collapsed_InvalidateArrange()
@@ -875,7 +870,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var treeRoot = GetTreeRoot();
 			Assert.IsNotNull(treeRoot);
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// On Xamarin platforms, we don't expect the real root of the tree to be a XAML element
 			Assert.IsNotInstanceOfType(treeRoot, typeof(UIElement));
 #else
@@ -901,9 +896,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_LayoutInformation_GetAvailableSize_Constraints()
 		{
 			var noConstraintsBorder = new Border();

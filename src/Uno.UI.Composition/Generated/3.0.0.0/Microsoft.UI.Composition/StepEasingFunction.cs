@@ -3,16 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class StepEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
 		// Skipping already declared property StepCount
-		// Skipping already declared property FinalStep
-		// Skipping already declared property InitialStep
-		// Skipping already declared property IsFinalStepSingleFrame
 		// Skipping already declared property IsInitialStepSingleFrame
+		// Skipping already declared property IsFinalStepSingleFrame
+		// Skipping already declared property InitialStep
+		// Skipping already declared property FinalStep
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.set

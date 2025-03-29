@@ -13,6 +13,8 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 {
+	private static readonly SKPath _sparePrePaintingClippingPath = new SKPath();
+
 	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
 	private Thickness _borderThickness;
@@ -22,9 +24,10 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	// State set and used inside the class
 	private bool _borderPathValid;
 	private bool _backgroundPathValid;
-	private CompositionSpriteShape? _backgroundShape;
-	private CompositionSpriteShape? _borderShape;
+	private CompositionSpriteShape? _backgroundShape; // Never null after _backgroundBrush is set
+	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
+	private SKRoundRect? _borderPathOuterRect;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -57,29 +60,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	public CompositionBrush? BackgroundBrush
 	{
 		private get => _backgroundBrush;
-		set
-		{
-			if (_backgroundBrush is null)
-			{
-				// we skip the background path calculations while the background is null;
-				_backgroundPathValid = false;
-			}
-			SetProperty(ref _backgroundBrush, value);
-		}
+		set => SetProperty(ref _backgroundBrush, value);
 	}
 
 	public CompositionBrush? BorderBrush
 	{
 		private get => _borderBrush;
-		set
-		{
-			if (_borderBrush is null)
-			{
-				// we skip the border path calculations while the border is null;
-				_borderPathValid = false;
-			}
-			SetProperty(ref _borderBrush, value);
-		}
+		set => SetProperty(ref _borderBrush, value);
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -96,6 +83,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			// BackgroundShape and BorderShape are NOT added to this.Shapes, which both makes it easier
 			// to reason about (no external tampering) and is also closer to what WinUI does.
 			case nameof(BorderBrush):
+				_borderPathValid = false;
 				if (BorderBrush is not null && _borderShape is null)
 				{
 					var borderShape = Compositor.CreateSpriteShape();
@@ -112,6 +100,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				}
 				break;
 			case nameof(BackgroundBrush):
+				_backgroundPathValid = false;
 				if (BackgroundBrush is not null && _backgroundShape is null)
 				{
 					var backgroundShape = Compositor.CreateSpriteShape();
@@ -141,7 +130,10 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.Apply(session.Canvas, this);
+			if (_backgroundClip?.GetClipPath(this) is { } bgClip)
+			{
+				session.Canvas.ClipPath(bgClip);
+			}
 			backgroundShape.Render(in session);
 			session.Canvas.Restore();
 		}
@@ -151,8 +143,47 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		_borderShape?.Render(in session);
 	}
 
-	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
+	internal override bool GetPrePaintingClipping(SKPath dst)
+	{
+		// This method is only important for airspace (to accurately deal with corner radii, etc.),
+		// other than that it doesn't really do anything.
+		UpdatePathsAndCornerClip();
+
+		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
+		{
+			if (base.GetPrePaintingClipping(dst))
+			{
+				var path = _sparePrePaintingClippingPath;
+
+				path.Rewind();
+
+				path.AddRoundRect(rect);
+				dst.Op(path, SKPathOp.Intersect, dst);
+
+				return true;
+			}
+			else
+			{
+				dst.Reset();
+				dst.AddRoundRect(rect);
+				return true;
+			}
+		}
+		else
+		{
+			return base.GetPrePaintingClipping(dst);
+		}
+	}
+
+	private protected override SKPath? GetPostPaintingClipping()
+	{
+		UpdatePathsAndCornerClip();
+		return _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
+			? base.GetPostPaintingClipping() is { } baseClip
+				? path.Op(baseClip, SKPathOp.Intersect)
+				: path
+			: base.GetPostPaintingClipping();
+	}
 
 	private void UpdatePathsAndCornerClip()
 	{
@@ -182,60 +213,81 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			fullCornerRadius.Outer.GetRadii(outerRadii);
 			fullCornerRadius.Inner.GetRadii(innerRadii);
 
-			if (_backgroundBrush is { } && !_backgroundPathValid) // no point calculating background state if the brush is null
+			if (!_backgroundPathValid)
 			{
 				_backgroundPathValid = true;
-				// We don't pass down <inner|outer>Area directly, since it contains the thickness offsets.
-				// Instead, we only pass the Size (without the X and Y offsets).
-				// The offsets shouldn't be part of the background path calculations, but should be done
-				// at the point of rendering by translation the final output by the thickness.
-				// This matters because if the path is for an image with a scaling RelativeTransform.
-				// In that case, if you factor the thickness in the path itself (i.e. include it in SKPath.Bounds),
-				// the shader will sample from the image after the offset is applied.
-				// E.g., if we have a border with a 20px border thickness and 100x100 background area for an ImageBrush with a
-				// RelativeTransform = ScaleTransform { ScaleX = 3, ScaleY = 3, CenterX = 0.5, CenterY = 0.5 }, here's what we want:
-				// |-----------------300px---------------------|
-				// |                                           |
-				// |<-100px->                        <-100px-> |
-				// |         |---------100px--------|          |
-				// |         |                      |<---------/---- what we want the shader to sample.
-				// |         |      final           |          | <-- image scaled to 100*3 x 100*3
-				// |         |      drawing         |          |
-				// 300px   100px    area          100px      300px
-				// |         |                      |          |
-				// |         |                      |          |
-				// |         |                      |          |
-				// |         |---------100px--------|          |
-				// |                                           |
-				// |                                           |
-				// |-----------------300px---------------------|
+				if (_backgroundBrush is not null)
+				{
+					// We don't pass down <inner|outer>Area directly, since it contains the thickness offsets.
+					// Instead, we only pass the Size (without the X and Y offsets).
+					// The offsets shouldn't be part of the background path calculations, but should be done
+					// at the point of rendering by translation the final output by the thickness.
+					// This matters because if the path is for an image with a scaling RelativeTransform.
+					// In that case, if you factor the thickness in the path itself (i.e. include it in SKPath.Bounds),
+					// the shader will sample from the image after the offset is applied.
+					// E.g., if we have a border with a 20px border thickness and 100x100 background area for an ImageBrush with a
+					// RelativeTransform = ScaleTransform { ScaleX = 3, ScaleY = 3, CenterX = 0.5, CenterY = 0.5 }, here's what we want:
+					// |-----------------300px---------------------|
+					// |                                           |
+					// |<-100px->                        <-100px-> |
+					// |         |---------100px--------|          |
+					// |         |                      |<---------/---- what we want the shader to sample.
+					// |         |      final           |          | <-- image scaled to 100*3 x 100*3
+					// |         |      drawing         |          |
+					// 300px   100px    area          100px      300px
+					// |         |                      |          |
+					// |         |                      |          |
+					// |         |                      |          |
+					// |         |---------100px--------|          |
+					// |                                           |
+					// |                                           |
+					// |-----------------300px---------------------|
 
-				// Here's what we don't want:
-				//    |-----------------300px---------------------|
-				//    |                                           |
-				//    |<80px>                         <--120px--> |
-				//    |      |---------100px--------|             |
-				//    |      |                      |<------------/---- same exact final drawing area (in absolute window coordinates)
-				//    |      |      final           |             | <-- but outer image shifted by 20px to the right
-				//    |      |      drawing         |             |
-				// 300px   100px    area          100px         300px
-				//    |      |                      |             |
-				//    |      |                      |             |
-				//    |      |                      |             |
-				//    |      |---------100px--------|             |
-				//    |                                           |
-				//    |                                           |
-				//    |-----------------300px---------------------|
+					// Here's what we don't want:
+					//    |-----------------300px---------------------|
+					//    |                                           |
+					//    |<80px>                         <--120px--> |
+					//    |      |---------100px--------|             |
+					//    |      |                      |<------------/---- same exact final drawing area (in absolute window coordinates)
+					//    |      |      final           |             | <-- but outer image shifted by 20px to the right
+					//    |      |      drawing         |             |
+					// 300px   100px    area          100px         300px
+					//    |      |                      |             |
+					//    |      |                      |             |
+					//    |      |                      |             |
+					//    |      |---------100px--------|             |
+					//    |                                           |
+					//    |                                           |
+					//    |-----------------300px---------------------|
 
-				var backgroundPath = CreateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea.Size, outerArea.Size, outerRadii, innerRadii);
-				((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
-				_backgroundShape!.Offset = _useInnerBorderBoundsAsAreaForBackground ? new Vector2((float)_borderThickness.Left, (float)_borderThickness.Top) : Vector2.Zero;
+					var backgroundPath = CreateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea.Size,
+						outerArea.Size, outerRadii, innerRadii);
+					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path =
+						new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
+					_backgroundShape!.Offset = _useInnerBorderBoundsAsAreaForBackground
+						? new Vector2((float)_borderThickness.Left, (float)_borderThickness.Top)
+						: Vector2.Zero;
+				}
+				else if (_backgroundShape is not null) // reset values
+				{
+					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = null;
+					_backgroundShape!.Offset = Vector2.Zero;
+				}
 			}
-			if (_borderBrush is { } && !_borderPathValid) // no point calculating border state if the brush is null
+
+			if (!_borderPathValid)
 			{
 				_borderPathValid = true;
-				var borderPath = CreateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
-				((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
+				if (_borderBrush is not null)
+				{
+					var borderPath = CreateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
+					((CompositionPathGeometry)_borderShape!.Geometry!).Path =
+						new CompositionPath(new SkiaGeometrySource2D(borderPath));
+				}
+				else if (_borderShape is not null)
+				{
+					((CompositionPathGeometry)_borderShape!.Geometry!).Path = null;
+				}
 			}
 		}
 
@@ -283,7 +335,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		return backgroundPath;
 	}
 
-	private static unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		var borderPath = new SKPath();
 
@@ -293,6 +345,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		{
 			var outerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(outerRect.Handle, &outerArea, outerRadii);
+			_borderPathOuterRect = outerRect;
 			borderPath.AddRoundRect(outerRect);
 			borderPath.Close();
 		}
@@ -305,6 +358,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		return borderPath;
 	}
+
+	internal override bool CanPaint() =>
+		(BackgroundBrush?.CanPaint() ?? false) ||
+		(BorderBrush?.CanPaint() ?? false) ||
+		base.CanPaint();
+
+	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
 	internal override bool HitTest(Point point)
 	{

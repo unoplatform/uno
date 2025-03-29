@@ -1,4 +1,5 @@
-﻿using HarfBuzzSharp;
+﻿using System;
+using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -15,11 +16,13 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				_fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
-
-				if (_fontInfo.CanChange)
+				if (_fontInfo is null)
 				{
-					_fontInfo.RegisterElementForFontLoaded(this);
+					_fontInfo = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
+					if (_fontInfo.CanChange)
+					{
+						_fontInfo.RegisterElementForFontLoaded(this);
+					}
 				}
 
 				return _fontInfo;

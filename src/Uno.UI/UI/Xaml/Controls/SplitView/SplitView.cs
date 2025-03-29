@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			TemplateSettings = new SplitViewTemplateSettings(this);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();
@@ -376,7 +376,7 @@ namespace Microsoft.UI.Xaml.Controls
 				PaneOpening?.Invoke(this, null);
 			}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			PatchInvalidFinalState(stateName);
 #endif
 			VisualStateManager.GoToState(this, stateName, useTransitons);

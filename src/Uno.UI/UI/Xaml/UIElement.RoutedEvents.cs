@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
 
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public event PointerEventHandler PointerWheelChanged
 		{
@@ -431,21 +431,13 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if __MACOS__
-		public new event KeyEventHandler KeyDown
-#else
 		public event KeyEventHandler KeyDown
-#endif
 		{
 			add => AddHandler(KeyDownEvent, value, false);
 			remove => RemoveHandler(KeyDownEvent, value);
 		}
 
-#if __MACOS__
-		public new event KeyEventHandler KeyUp
-#else
 		public event KeyEventHandler KeyUp
-#endif
 		{
 			add => AddHandler(KeyUpEvent, value, false);
 			remove => RemoveHandler(KeyUpEvent, value);
@@ -681,7 +673,7 @@ namespace Microsoft.UI.Xaml
 				// and the parent will not be PopupRoot. In that case, we shouldn't propagate to the element
 				parent = this.GetParent() as UIElement;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 				// This is for safety (legacy support) and should be removed.
 				// A common issue is the managed parent being cleared before unload event raised.
 				parent ??= this.FindFirstParent<UIElement>();
@@ -866,7 +858,8 @@ namespace Microsoft.UI.Xaml
 
 			/// <summary>
 			/// Used only with managed pointers to indicate that the bubbling is for cleanup.
-			/// In that case even interpreted events should be muted.
+			/// In that case even interpreted events (i.e. GestureRecognizer) should also be muted
+			/// (while the IsInternal will only mute the raw event, e.g. enter/move/pressed).
 			/// </summary>
 			public bool IsCleanup { get; set; }
 
@@ -877,7 +870,7 @@ namespace Microsoft.UI.Xaml
 				=> (Mode & flag) != 0;
 
 			public override string ToString()
-				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
+				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(IsCleanup ? " *cleanup*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";
 		}
 #nullable restore
 
@@ -913,9 +906,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static bool IsHandled(RoutedEventArgs args)
-		{
-			return args is IHandleableRoutedEventArgs cancellable && cancellable.Handled;
-		}
+			=> args is IHandleableRoutedEventArgs { Handled: true };
 
 		private bool IsBubblingInManagedCode(RoutedEvent routedEvent, RoutedEventArgs args)
 		{

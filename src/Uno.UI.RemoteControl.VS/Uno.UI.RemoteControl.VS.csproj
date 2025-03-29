@@ -10,6 +10,9 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
+
+		<!-- We need all the intermediate assemblies for proper packaging -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-[
+	[
 	{
 	  "group": "Core",
 	  "version": "DefaultUnoVersion",
@@ -12,14 +12,20 @@
 		"Uno.WinUI.Svg",
 		"Uno.WinUI.Lottie",
 		"Uno.WinUI.DevServer",
-		"Uno.WinUI.Runtime.Skia.Gtk",
 		"Uno.WinUI.Runtime.Skia.Linux.FrameBuffer",
 		"Uno.WinUI.Runtime.Skia.MacOS",
+		"Uno.WinUI.Runtime.Skia.Win32",
 		"Uno.WinUI.Runtime.Skia.Wpf",
 		"Uno.WinUI.Runtime.Skia.X11",
 		"Uno.WinUI.Svg",
+		"Uno.WinUI.WebAssembly",
+		"Uno.WinUI.Runtime.Skia.Android",
+		"Uno.WinUI.Runtime.Skia.AppleUIKit",
+		"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
 		"Uno.WinUI.Runtime.WebAssembly",
 		"Uno.WinUI.MediaPlayer.WebAssembly",
+		"Uno.WinUI.MediaPlayer.Skia.X11",
+		"Uno.WinUI.MediaPlayer.Skia.Win32",
 		"Uno.WinUI.Graphics3DGL",
 		"Uno.WinUI.Graphics2DSK"
 	  ]
@@ -33,7 +39,7 @@
 		"Uno.Wasm.Bootstrap.Server"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.10"
+		"net9.0": "9.0.13"
 	  }
 	},
 	{
@@ -87,15 +93,15 @@
 	  ]
 	},
 	{
-	  "group": "hotdesign",
-	  "version": "1.3.1",
-	  "packages": [
-		"Uno.UI.HotDesign"
-	  ]
+		"group": "hotdesign",
+		"version": "1.6-dev.21",
+		"packages": [
+			"Uno.UI.HotDesign"
+		]
 	},
 	{
 	  "group": "SkiaSharp",
-	  "version": "2.88.9",
+	  "version": "3.119.0-preview.0.11",
 	  "packages": [
 		"SkiaSharp.Skottie",
 		"SkiaSharp.Views.Uno.WinUI",
@@ -268,7 +274,7 @@
 	},
 	{
 	  "group": "Extensions",
-	  "version": "5.2.7",
+	  "version": "5.3-dev.120",
 	  "packages": [
 		"Uno.Extensions.Authentication.WinUI",
 		"Uno.Extensions.Authentication.MSAL.WinUI",

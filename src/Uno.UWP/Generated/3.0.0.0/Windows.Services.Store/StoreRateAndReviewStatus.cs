@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum StoreRateAndReviewStatus
 	{
 		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.Succeeded

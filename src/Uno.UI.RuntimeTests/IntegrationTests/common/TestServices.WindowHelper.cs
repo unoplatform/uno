@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
-using System.Reflection.Metadata.Ecma335;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 
 #if HAS_UNO
@@ -19,10 +18,8 @@ using DirectUI;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -448,6 +445,16 @@ namespace Private.Infrastructure
 					toolTip = DXamlTestHooks.TestGetActualToolTip(element);
 				});
 				return toolTip;
+			}
+
+			public static void SetTestScaling(float scalingOverride)
+			{
+				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(scalingOverride);
+			}
+
+			public static void UnsetTestScaling()
+			{
+				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(0.0f);
 			}
 #endif
 		}

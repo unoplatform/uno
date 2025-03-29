@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Commands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Properties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.wasm.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.macOS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Android.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.iOS.cs" />

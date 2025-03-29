@@ -14,7 +14,7 @@ public class ProgressRingTests
 	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
-#if !(__WASM__ || __MACOS__ || HAS_SKOTTIE)
+#if !(__WASM__ || HAS_SKOTTIE)
 	[Ignore("Skottie is not supported on net6+ UWP targets")]
 #endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
@@ -30,13 +30,8 @@ public class ProgressRingTests
 
 			await TestServices.WindowHelper.WaitForLoaded(progressRing);
 
-#if __MACOS__
-			Assert.AreEqual(16, progressRing.ActualHeight);
-			Assert.AreEqual(16, progressRing.ActualWidth);
-#else
 			Assert.AreEqual(32, progressRing.ActualHeight);
 			Assert.AreEqual(32, progressRing.ActualWidth);
-#endif
 		}
 	}
 }

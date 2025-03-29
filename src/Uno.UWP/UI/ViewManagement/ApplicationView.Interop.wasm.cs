@@ -7,7 +7,7 @@ internal partial class ApplicationView
 {
 	internal static partial class NativeMethods
 	{
-		[JSImport("globalThis.Uno.UI.WindowManager.current.getWindowTitle")]
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();
 	}
 }

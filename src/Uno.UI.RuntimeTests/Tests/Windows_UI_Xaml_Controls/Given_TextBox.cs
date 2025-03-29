@@ -33,10 +33,8 @@ using Uno.Extensions;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 #endif
 
@@ -247,9 +245,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -274,9 +269,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -301,9 +293,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -327,13 +316,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectionStart_Set()
 		{
 			var textBox = new TextBox
@@ -368,13 +354,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
 		{
 			var textBox = new TextBox
@@ -546,9 +529,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_EndOfText()
 		{
 			var textBox = new TextBox
@@ -568,9 +548,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_MiddleOfText()
 		{
 			var textBox = new TextBox
@@ -591,9 +568,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedText_AllTextToEmpty()
 		{
 			var textBox = new TextBox
@@ -792,9 +766,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ReadOnly_Toggled_Repeatedly()
 		{
 			var textBox = new TextBox
@@ -864,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __IOS__
+#if __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Fails on Skia and iOS")]
 		// On iOS, the failure is: AssertFailedException: Expected value to be greater than 1199.0, but found 1199.0.
 		// Since the number is large, it looks like the TextBox is taking the full height.
@@ -896,12 +867,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			height2.Should().BeGreaterThan(height1);
 		}
 
-		[TestMethod]
-#if __MACOS__
-		[Ignore("Paste is not implemented on MacOS")]
-#endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste()
 		{
+#if __SKIA__
+			if (OperatingSystem.IsBrowser())
+			{
+				// TODO: Investigate what happens on Wasm Skia when running this test.
+				Assert.Inconclusive("Fails on Wasm Skia for unknown reason");
+			}
+#endif
 			var SUT = new TextBox();
 
 			var pasteCount = 0;

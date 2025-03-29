@@ -18,13 +18,13 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="$(NBGV_SemVer2)" />
     <!-- Keep RemoteControl (instead of devserver) as-is for backward compatibility testing -->
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="$(GITVERSION_SemVer)" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
-    <PackageReference Include="Uno.WinUI.Lottie" Version="$(GITVERSION_SemVer)" />
-    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.7" />
-    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="$(NBGV_SemVer2)" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(NBGV_SemVer2)" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="$(NBGV_SemVer2)" />
+    <PackageReference Include="SkiaSharp.Skottie" Version="3.119.0-preview.0.11" />
+    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="3.119.0-preview.0.11" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
   <ItemGroup>

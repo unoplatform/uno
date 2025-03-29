@@ -1070,9 +1070,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 #endif
 #if __SKIA__
 		[RequiresFullWindow]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
+		[Ignore("This test sometimes breaks the state of the app for unknown reasons. This doesn't happen in isolation, but only when run a part of a larger test run.")]
 #endif
 		public async Task VerifyButtonState()
 		{
@@ -1663,7 +1661,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __IOS__ || __MACOS__ || __ANDROID__ || __SKIA__
+#if __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android/Skia")]
 #endif
 		public async Task CalendarPanelLayoutTestStretchTest()
@@ -2582,9 +2580,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 #if __SKIA__
 		[Ignore("Currently flaky on Skia, part of #9080 epic")]
 #endif

@@ -4,7 +4,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer
 	{
-		[NotImplemented]
-		internal static bool ListenerExistsHelper(AutomationEvents eventId) => false;
+		internal static bool ListenerExistsHelper(AutomationEvents eventId)
+#if __SKIA__
+			=> AutomationPeerListener?.ListenerExistsHelper(eventId) == true;
+#else
+			=> true;
+#endif
 	}
 }

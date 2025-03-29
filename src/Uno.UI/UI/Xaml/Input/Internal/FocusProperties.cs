@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Xaml.Input
 {
-	internal static class FocusProperties
+	internal static partial class FocusProperties
 	{
 		internal static IReadOnlyList<DependencyObject> GetFocusChildren(DependencyObject? dependencyObject)
 		{
@@ -39,7 +39,7 @@ namespace Uno.UI.Xaml.Input
 				var children = VisualTreeHelper.GetChildren(textBlock);
 				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
 			}
-#if __ANDROID__ || __IOS__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
+#if __ANDROID__ || __APPLE_UIKIT__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
 			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
 			{
 				if (scrollContentPresenter.Content is DependencyObject child)
@@ -141,7 +141,14 @@ namespace Uno.UI.Xaml.Input
 				}
 				else if (dependencyObject is TextBlock || dependencyObject is RichTextBlock)
 				{
-					return GetCaretBrowsingModeEnable() || (dependencyObject as UIElement)?.IsTabStop == true;
+					// Uno-specific: WinUI doesn't have ImplicitTextBlock.
+					// In Uno, we don't want ImplicitTextBlock to be a potential tab stop for better accessibility.
+					// Consider on Android Skia when we force caret browsing mode when hit-testing.
+					// If the user presses on the text of a checkbox and hit test returns the ImplicitTextBlock,
+					// we don't want it to be considered a potential tab stop. Instead, we want to get the CheckBox,
+					// which will be the first potential tab stop when walking up the tree.
+					// If the ImplicitTextBlock explicitly has IsTabStop as true, we will consider it.
+					return (GetCaretBrowsingModeEnable() && dependencyObject is not ImplicitTextBlock) || (dependencyObject as UIElement)?.IsTabStop == true;
 				}
 				else
 				{
@@ -158,7 +165,7 @@ namespace Uno.UI.Xaml.Input
 		/// <summary>
 		/// Caret browsing mode is a Windows-specific accessibility feature.
 		/// </summary>
-		private static bool GetCaretBrowsingModeEnable() => false;
+		internal static bool GetCaretBrowsingModeEnable() => UnoForceGetTextBlockForAccessibility;
 
 		/// <summary>
 		/// Returns true if there is a focusable child.

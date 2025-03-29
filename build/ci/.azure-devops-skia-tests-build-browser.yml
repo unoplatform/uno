@@ -1,0 +1,60 @@
+parameters:
+  vmImage: ''
+  vmMacImage: ''
+  vmMacImageTest: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
+  xCodeRootTest: ''
+  xCodeRootBuild: ''
+  poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+jobs:
+- job: Skia_Tests_Build_Browser
+  displayName: 'Build Browser Skia Samples App'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
+
+  pool: ${{ parameters.poolName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-mobile-install-windows.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-browserwasm'
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)\logs\build-skia-wasm-browser.binlog
+    displayName: Build Wasm Skia Head
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish WebAssembly Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
+      artifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)\logs
+      ArtifactName: skia-samples-app-binlog
+      ArtifactType: Container

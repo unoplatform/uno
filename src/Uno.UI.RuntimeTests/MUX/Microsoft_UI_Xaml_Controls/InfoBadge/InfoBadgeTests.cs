@@ -101,8 +101,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				bitmapIconSource.UriSource = bitmapUri;
 
 				imageIconSource = new ImageIconSource();
+#if !__SKIA__ // https://github.com/unoplatform/uno-private/issues/1031
 				var imageUri = new Uri("https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg");
 				imageIconSource.ImageSource = new SvgImageSource(imageUri);
+#else
+				imageIconSource.ImageSource = null;
+#endif
 
 				pathIconSource = new PathIconSource();
 				var geometry = new RectangleGeometry();
@@ -136,9 +140,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				infoBadge.IconSource = bitmapIconSource;
 				Content.UpdateLayout();
 
+#if !__SKIA__ // https://github.com/unoplatform/uno-private/issues/1031
 				Log.Comment("Switch to Image Icon");
 				infoBadge.IconSource = imageIconSource;
 				Content.UpdateLayout();
+#endif
 
 				Log.Comment("Switch to Animated Icon");
 				infoBadge.IconSource = animatedIconSource;

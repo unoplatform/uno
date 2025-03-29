@@ -754,9 +754,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void VerifyNavigationItemUIAType()
 		{
 			RunOnUIThread.Execute(() =>
@@ -1251,9 +1248,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 #if __ANDROID__
 		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
 #endif

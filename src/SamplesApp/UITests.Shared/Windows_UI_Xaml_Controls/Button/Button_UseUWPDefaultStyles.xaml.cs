@@ -20,7 +20,7 @@ using _NativeType = Microsoft.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
 using Uno.UI;
 using _NativeType = Microsoft.UI.Xaml.Controls.BindableButtonEx;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using Uno.UI;
 using _NativeType = Uno.UI.Views.Controls.BindableUIButton;
@@ -29,8 +29,6 @@ using _NativeType = Microsoft.UI.Xaml.Controls.Grid; // We use a 'fake' native s
 #endif
 #if UNO_REFERENCE_API
 using Uno.UI;
-#elif __MACOS__
-using AppKit;
 #endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236

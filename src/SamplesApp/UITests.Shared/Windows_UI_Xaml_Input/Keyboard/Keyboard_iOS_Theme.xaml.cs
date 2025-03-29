@@ -46,7 +46,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 
 		private void UpdateKeyboardAppearance(object sender, RoutedEventArgs e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			var appearance = (sender as RadioButton).Content switch
 			{
 				"Light" => UIKit.UIKeyboardAppearance.Light,

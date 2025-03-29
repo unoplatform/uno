@@ -11,10 +11,6 @@
 		<Description>Do not use this package directly. It is intended for Uno Platform code contributors during development.</Description>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
-		<!-- This is better but Jerome made me take it out -->
-		<!-- <UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_v$(GitVersion_Sha)</UnoSdkVersionSuffix> -->
-		<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
-		<!-- <UnoSdkVersionSuffix Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</UnoSdkVersionSuffix> -->
 		<AssemblyName>Uno.Sdk$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->

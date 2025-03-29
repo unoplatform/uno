@@ -13,6 +13,12 @@ using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
 
+#if HAS_UNO_WINUI || WINAPPSDK
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+#else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+#endif
+
 namespace Microsoft.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
@@ -21,6 +27,12 @@ namespace Microsoft.UI.Xaml
 
 		[ThreadStatic]
 		private static Application _current;
+
+		[ThreadStatic]
+		private static string? _argumentsOverride;
+
+		internal static void SetArguments(string arguments)
+			=> _argumentsOverride = arguments;
 
 		partial void InitializePartial()
 		{
@@ -96,11 +108,14 @@ namespace Microsoft.UI.Xaml
 
 			callback(new ApplicationInitializationCallbackParams());
 
-			_current.InvokeOnLaunched();
+			// Force a schedule to let the dotnet exports be initialized properly
+			DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
 		}
 
 		private void InvokeOnLaunched()
 		{
+			InitializeSystemTheme();
+
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				InitializationCompleted();

@@ -14,14 +14,11 @@ using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
@@ -45,8 +42,8 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
@@ -68,7 +65,7 @@ public partial class Border : FrameworkElement
 	/// </summary>
 	/// <param name="view"></param>
 	public
-#if __IOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		void Add(View view)

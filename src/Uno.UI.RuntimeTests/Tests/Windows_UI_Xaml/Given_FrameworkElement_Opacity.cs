@@ -30,12 +30,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public class Given_FrameworkElement_Opacity
 	{
-#if !__SKIA__
-		[Ignore]
-#endif
-		[TestMethod]
+#if __SKIA__
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Opacity()
 		{
+			if (OperatingSystem.IsAndroid())
+			{
+				Assert.Inconclusive("Fails on Android Skia, likely because the system doesn't have an available font for full block unicode character (\u2588)");
+			}
+
 			var SUT = new FrameworkElement_Opacity();
 
 			await UITestHelper.Load(SUT);
@@ -63,12 +66,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2");
 		}
 
-#if !__SKIA__
-		[Ignore]
-#endif
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Opacity_Inner()
 		{
+			if (OperatingSystem.IsAndroid())
+			{
+				Assert.Inconclusive("Fails on Android Skia, likely because the system doesn't have an available font for full block unicode character (\u2588)");
+			}
+
 			var SUT = new FrameworkElement_Opacity();
 
 			await UITestHelper.Load(SUT);
@@ -99,5 +104,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			height = SUT.ImageInner0_5.ActualHeight;
 			ImageAssert.HasColorAtChild(si, SUT.ImageInner0_5, width / 2, height / 2, "#FFFEF9E1", tolerance: 1);
 		}
+#endif
 	}
 }

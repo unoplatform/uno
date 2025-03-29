@@ -7,6 +7,6 @@
     <DefineConstants>$(DefineConstants);WINUI</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Runtime.WebAssembly" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.WinUI.Runtime.WebAssembly" Version="$(NBGV_SemVer2)" />
   </ItemGroup>
 </Project>

@@ -11,10 +11,8 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 #if __ANDROID__
 using Android.Views;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
-#elif __MACOS__
-using View = AppKit.NSView;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif

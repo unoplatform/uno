@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.Helpers;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
@@ -14,23 +16,42 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly SKPath _spareRenderPath = new SKPath();
+
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
+
+	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
+	// If we move to a UI-thread-per-window model, then we need multiple recorders.
+	[ThreadStatic]
+	private static SKPictureRecorder? _recorder;
 
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+	private SKPicture? _picture;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
 
-	internal bool IsPopupVisual => (_flags & VisualFlags.IsPopupVisualSet) != 0 ? (_flags & VisualFlags.IsPopupVisual) != 0 : (_flags & VisualFlags.IsPopupVisualInherited) != 0;
-	internal bool IsNativeHostVisual
+	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
+
+	/// <summary>A visual is a NativeHost visual if it's directly set by SetAsNativeHostVisual or is a child of a NativeHost visual</summary>
+	/// <remarks>call with a null <paramref name="isNativeHostVisual"/> to unset.</remarks>
+	internal void SetAsNativeHostVisual(bool? isNativeHostVisual) => SetAsNativeHostVisual(isNativeHostVisual, false);
+	private void SetAsNativeHostVisual(bool? isNativeHostVisual, bool inherited)
 	{
-		get => (_flags & VisualFlags.IsNativeHostVisual) != 0;
-		set
+		Debug.Assert(!inherited || isNativeHostVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsNativeHostVisual;
+
+		if (inherited)
 		{
-			if (value)
+			_flags |= (isNativeHostVisual!.Value ? VisualFlags.IsNativeHostVisualInherited : 0);
+		}
+		else if (isNativeHostVisual is { })
+		{
+			_flags |= VisualFlags.IsNativeHostVisualSet;
+			if (isNativeHostVisual.Value)
 			{
 				_flags |= VisualFlags.IsNativeHostVisual;
 			}
@@ -39,38 +60,32 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_flags &= ~VisualFlags.IsNativeHostVisual;
 			}
 		}
-	}
-
-	/// <summary>A visual is a popup visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual</summary>
-	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
-	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
-	{
-		Debug.Assert(!inherited || isPopupVisual is { }, "Only non-null values should be inherited.");
-		var oldValue = IsPopupVisual;
-
-		if (inherited)
-		{
-			_flags |= (isPopupVisual!.Value ? VisualFlags.IsPopupVisualInherited : 0);
-		}
-		else if (isPopupVisual is { })
-		{
-			_flags |= (isPopupVisual.Value ? VisualFlags.IsPopupVisual : 0);
-			_flags |= VisualFlags.IsPopupVisualSet;
-		}
 		else
 		{
-			_flags &= ~VisualFlags.IsPopupVisualSet;
+			_flags &= ~VisualFlags.IsNativeHostVisualSet;
 		}
 
-		var newValue = IsPopupVisual;
+		var newValue = IsNativeHostVisual;
 		if (oldValue != newValue)
 		{
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.SetAsPopupVisual(newValue, true);
+				child.SetAsNativeHostVisual(newValue, true);
 			}
 		}
 	}
+
+	/// <summary>
+	/// Identifies whether a Visual can paint things. For example, ContainerVisuals don't
+	/// paint on their own (even though they might contain other Visuals that do).
+	/// This is a temporary optimization to reduce unnecessary SkPicture allocations.
+	/// In the future, we should accurately set <see cref="_requiresRepaint"/> to
+	/// only be true when we really have something to paint (and that painting needs to be updated).
+	/// </summary>
+	internal virtual bool CanPaint() => false;
+
+	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
+	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -157,6 +172,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal string TotalMatrixString => $"{((_flags & VisualFlags.MatrixDirty) != 0 ? "-dirty-" : "")}{_totalMatrix}";
 #endif
 
+	/// <remarks>
+	/// This should only be called from <see cref="Compositor.InvalidateRenderPartial"/>
+	/// </remarks>
+	internal void InvalidatePaint()
+	{
+		_picture?.Dispose();
+		_picture = null;
+		_flags |= VisualFlags.PaintDirty;
+	}
+
 	public CompositionClip? Clip
 	{
 		get => _clip;
@@ -190,19 +215,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal ShadowState? ShadowState { get; set; }
 
+
+	partial void OnOffsetChanged(Vector3 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnSizeChanged(Vector2 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	partial void OnIsVisibleChanged(bool value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
 	/// <summary>
 	/// Render a visual as if it's the root visual.
 	/// </summary>
-	/// <param name="surface">The surface on which this visual should be rendered.</param>
+	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<PaintingSession, Visual>? postRenderAction)
+	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
 			return;
 		}
-
-		var canvas = surface.Canvas;
 
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
@@ -225,7 +259,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = translation * initialTransform;
 		}
 
-		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
+		_factory.CreateInstance(this,
+						  canvas,
+						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
+						  opacity: 1.0f,
+						  out var session);
+
+		using (session)
 		{
 			Render(session, postRenderAction);
 		}
@@ -238,13 +278,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
 	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<PaintingSession, Visual>? postRenderAction)
+	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
 			? new string(' ', depth * 2)
 			: string.Empty;
-		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Filters.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
+		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
 		if (this is { Opacity: 0 } or { IsVisible: false })
@@ -252,25 +292,57 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using (var session = CreateLocalSession(in parentSession))
+		CreateLocalSession(in parentSession, out var session);
+
+		using (session)
 		{
 			var canvas = session.Canvas;
 
-			ApplyPrePaintingClipping(canvas);
+			var preClip = _spareRenderPath;
+
+			preClip.Rewind();
+
+			if (GetPrePaintingClipping(preClip))
+			{
+				canvas.ClipPath(preClip, antialias: true);
+			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
-			Paint(session);
+
+			if (RequiresRepaintOnEveryFrame)
+			{
+				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				Paint(session);
+			}
+			else
+			{
+				if ((_flags & VisualFlags.PaintDirty) != 0)
+				{
+					_flags &= ~VisualFlags.PaintDirty;
+					_recorder ??= new SKPictureRecorder();
+					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+					_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+					Paint(in recorderSession);
+					_picture = _recorder.EndRecording();
+				}
+
+				session.Canvas.DrawPicture(_picture);
+			}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
 #endif
 
-			postRenderAction?.Invoke(session, this);
+			postRenderAction?.Invoke(canvas, this);
 
-			ApplyPostPaintingClipping(canvas);
+			if (GetPostPaintingClipping() is { } postClip)
+			{
+				canvas.ClipPath(postClip, antialias: true);
+			}
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
@@ -295,17 +367,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		return Offset;
 	}
 
-	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
-	private protected virtual void ApplyPrePaintingClipping(in SKCanvas canvas)
+	internal virtual bool GetPrePaintingClipping(SKPath dst)
 	{
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ContainerVisual through the LayoutClip)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(canvas, this);
+		if (Clip is not null)
+		{
+			dst.Reset();
+			dst.AddPath(Clip?.GetClipPath(this));
+			return true;
+		}
+		return false;
 	}
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
-	private protected virtual void ApplyPostPaintingClipping(in SKCanvas canvas) { }
+	private protected virtual SKPath? GetPostPaintingClipping() => null;
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
@@ -320,37 +397,38 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
-	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
+	private unsafe void CreateLocalSession(in PaintingSession parentSession, out PaintingSession session)
 	{
-		var surface = parentSession.Surface;
 		var canvas = parentSession.Canvas;
-		var rootTransform = parentSession.RootTransform;
-		// We try to keep the filter ref as long as possible in order to share the same filter.OpacityColorFilter
-		var filters = Opacity is 1.0f
-			? parentSession.Filters
-			: parentSession.Filters with { Opacity = parentSession.Filters.Opacity * Opacity };
 
-		var session = _factory.CreateInstance(this, surface, canvas, filters, rootTransform);
+		ref var rootTransform = ref parentSession.RootTransform;
 
-		if (rootTransform.IsIdentity)
+		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
+
+		Matrix4x4 totalMatrix;
+
+		if (Unsafe.IsNullRef(ref rootTransform))
 		{
-			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
+			totalMatrix = TotalMatrix;
 		}
 		else
 		{
-			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
+			totalMatrix = TotalMatrix * rootTransform;
 		}
 
-		return session;
+		// this avoids the matrix copying in canvas.SetMatrix()
+		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
 	}
 
 	[Flags]
 	internal enum VisualFlags : byte
 	{
-		IsPopupVisualSet = 1,
-		IsPopupVisual = 2,
-		IsPopupVisualInherited = 4,
-		IsNativeHostVisual = 8,
-		MatrixDirty = 16
+		IsNativeHostVisualSet = 1, // Is the IsNativeHostVisual bit valid?
+		IsNativeHostVisual = 2,
+		IsNativeHostVisualInherited = 4,
+		MatrixDirty = 8,
+		PaintDirty = 16,
 	}
 }

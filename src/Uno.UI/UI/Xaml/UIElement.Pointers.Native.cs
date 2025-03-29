@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __APPLE_UIKIT__
 
 using System;
 using System.Collections.Generic;
@@ -49,14 +49,14 @@ partial class UIElement
 			gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 			if (gestures.IsDragging)
 			{
-				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 			}
 		}
 
 		return handledInManaged;
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 #endif
 

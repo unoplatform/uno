@@ -1,22 +1,24 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using WebKit;
 using Uno.Foundation.Logging;
-using Uno.UI.Extensions;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 internal class LocalWKUIDelegate : WKUIDelegate
 {
-	private readonly Func<WKWebView, WKWebViewConfiguration, WKNavigationAction, WKWindowFeatures, WKWebView> _createWebView;
+	private readonly Func<WKWebView, WKWebViewConfiguration, WKNavigationAction?, WKWindowFeatures, WKWebView?> _createWebView;
 	private readonly Action<WKWebView, string, WKFrameInfo, Action> _runJavaScriptAlertPanel;
-	private readonly Action<WKWebView, string, string, WKFrameInfo, Action<string>> _runJavaScriptTextInputPanel;
+	private readonly Action<WKWebView, string, string?, WKFrameInfo, Action<string>> _runJavaScriptTextInputPanel;
 	private readonly Action<WKWebView, string, WKFrameInfo, Action<bool>> _runJavaScriptConfirmPanel;
 	private readonly Action<WKWebView> _didClose;
 
 	public LocalWKUIDelegate(
-		Func<WKWebView, WKWebViewConfiguration, WKNavigationAction, WKWindowFeatures, WKWebView> onCreateWebView,
+		Func<WKWebView, WKWebViewConfiguration, WKNavigationAction?, WKWindowFeatures, WKWebView?> onCreateWebView,
 		Action<WKWebView, string, WKFrameInfo, Action> onRunJavaScriptAlertPanel,
-		Action<WKWebView, string, string, WKFrameInfo, Action<string>> onRunJavaScriptTextInputPanel,
+		Action<WKWebView, string, string?, WKFrameInfo, Action<string>> onRunJavaScriptTextInputPanel,
 		Action<WKWebView, string, WKFrameInfo, Action<bool>> onRunJavaScriptConfirmPanel,
 		Action<WKWebView> didClose
 	)
@@ -28,11 +30,11 @@ internal class LocalWKUIDelegate : WKUIDelegate
 		_didClose = didClose;
 	}
 
-	public override WKWebView CreateWebView(WKWebView webView, WKWebViewConfiguration configuration, WKNavigationAction navigationAction, WKWindowFeatures windowFeatures)
+	public override WKWebView? CreateWebView(WKWebView webView, WKWebViewConfiguration configuration, WKNavigationAction navigationAction, WKWindowFeatures windowFeatures)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"CreateWebView: TargetRequest[{navigationAction?.TargetFrame?.Request?.Url?.ToUri()}] Request:[{navigationAction.Request?.Url?.ToUri()}]");
+			this.Log().Debug($"CreateWebView: TargetRequest[{navigationAction?.TargetFrame?.Request?.Url?.ToUri()}] Request:[{navigationAction?.Request?.Url?.ToUri()}]");
 		}
 
 		return _createWebView?.Invoke(webView, configuration, navigationAction, windowFeatures);
@@ -48,7 +50,7 @@ internal class LocalWKUIDelegate : WKUIDelegate
 		_runJavaScriptAlertPanel?.Invoke(webView, message, frame, completionHandler);
 	}
 
-	public override void RunJavaScriptTextInputPanel(WKWebView webView, string prompt, string defaultText, WKFrameInfo frame, Action<string> completionHandler)
+	public override void RunJavaScriptTextInputPanel(WKWebView webView, string prompt, string? defaultText, WKFrameInfo frame, Action<string> completionHandler)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{

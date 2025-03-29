@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 	[TestClass]
 	[RunsOnUIThread]
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 	[Ignore]
 #endif
 	public class Given_GridView_Items
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(gridView.ActualWidth / 2, LayoutInformation.GetLayoutSlot(gvi2).Width, 1);
 		}
 
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		[Ignore]
 #endif
 		[TestMethod]

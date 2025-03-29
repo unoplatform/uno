@@ -45,7 +45,7 @@ public partial class Given_LayoutPanel
 
 		// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 		// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		SUT.InvalidateMeasure();
 		SUT.UpdateLayout();
 #endif

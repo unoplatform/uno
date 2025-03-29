@@ -75,6 +75,11 @@ namespace Windows.UI.Input
 			/// </summary>
 			public bool IsDragManipulation { get; private set; }
 
+			/// <summary>
+			/// Gets the inertia processor if the manipulation is in the inertia state.
+			/// </summary>
+			public InertiaProcessor? Inertia => _inertia;
+
 			public GestureSettings Settings => _settings;
 			public bool IsTranslateXEnabled => _isTranslateXEnabled;
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
@@ -174,7 +179,7 @@ namespace Windows.UI.Input
 				if (point.Pointer == _origins.Pointer1.Pointer)
 				{
 					this.Log().Error(
-						"Invalid manipulation state: We are receiving a down for the second time for the same pointer!"
+						"Invalid manipulation state: We are receiving a down for the second time for the same pointer! "
 						+ "This is however common when using iOS emulator with VNC where we might miss some pointer events "
 						+ "due to focus being stole by debugger, in that case you can safely ignore this message.");
 					return false; // Request to create a new manipulation
@@ -258,6 +263,8 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started:
 					case ManipulationState.Inertia:
+						var isInertial = _state == ManipulationState.Inertia;
+
 						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
 
@@ -268,7 +275,7 @@ namespace Windows.UI.Input
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, isInertial, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Starting:
@@ -366,7 +373,7 @@ namespace Windows.UI.Input
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.Center, ManipulationDelta.Empty, _contacts.onStart));
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_currents.Identifiers, position, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, position, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationState.Started when pointerRemoved && ShouldStartInertia(velocities):
@@ -376,10 +383,14 @@ namespace Windows.UI.Input
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationInertiaStarting?.Invoke(
 							_recognizer,
-							new ManipulationInertiaStartingEventArgs(_currents.Identifiers, position, delta, cumulative, velocities, _contacts.onStart, _inertia));
+							new ManipulationInertiaStartingEventArgs(this, _currents.Identifiers, position, delta, cumulative, velocities, _contacts.onStart));
 
-						_inertia.Start();
+						if (_state is ManipulationState.Inertia) // The manipulation might have been completed in the event handler
+						{
+							_inertia.Start();
+						}
 						break;
+
 
 					case ManipulationState.Starting when pointerRemoved:
 					case ManipulationState.Started when pointerRemoved:
@@ -398,11 +409,11 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started when pointerAdded:
 					case ManipulationState.Started when delta.IsSignificant(_deltaThresholds):
-					case ManipulationState.Inertia: // No significant check for inertia, we prefer smooth animations!
+					case ManipulationState.Inertia: // No IsSignificant check for inertia, we prefer smooth animations!
 						UpdatePublishedState(delta);
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(_currents.Identifiers, position, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
+							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, position, delta, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 				}
 			}
@@ -421,10 +432,6 @@ namespace Windows.UI.Input
 
 				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
 				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
-#if __MACOS__
-				// correction for translateY being inverted (#4700)
-				translateY *= -1;
-#endif
 
 				double rotation;
 				float scale, expansion;
@@ -499,7 +506,7 @@ namespace Windows.UI.Input
 			{
 				// The _currents.Timestamp is not updated once inertia as started, we must get the elapsed duration from the inertia processor
 				// (and not compare it to PointerPoint.Timestamp in any way, cf. remarks on InertiaProcessor.Elapsed)
-				var elapsedMicroseconds = _inertia?.Elapsed ?? (_currents.Timestamp - _lastPublishedState.timestamp);
+				var elapsedMicroseconds = _inertia?.Elapsed.TotalMicroseconds ?? (_currents.Timestamp - _lastPublishedState.timestamp);
 				var elapsedMs = elapsedMicroseconds / 1000;
 
 				// With uno a single native event might produce multiple managed pointer events.
@@ -528,6 +535,19 @@ namespace Windows.UI.Input
 				}
 
 				return _lastRelevantVelocities;
+			}
+
+			internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaNextTick()
+			{
+				if (_inertia is null)
+				{
+					return null;
+				}
+
+				var cumulative = _inertia.GetNextCumulative();
+				var delta = GetDelta(cumulative);
+
+				return (delta, cumulative);
 			}
 
 			// This has to be invoked before any event being raised, it will update the internal that is used to compute delta and velocities.

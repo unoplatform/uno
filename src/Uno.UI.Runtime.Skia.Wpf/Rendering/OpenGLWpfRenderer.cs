@@ -229,7 +229,20 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, _surface);
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface.Canvas);
+
+				if (_host.NativeOverlayLayer is { } nativeLayer)
+				{
+					nativeLayer.Clip ??= new PathGeometry();
+					((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+					}
+				}
 			}
 		}
 

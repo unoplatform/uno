@@ -338,5 +338,28 @@ namespace Uno.Extensions
 			};
 #endif
 		}
+
+		/// <summary>
+		/// Memoizer with four parameters, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
+		/// </summary>
+		/// <typeparam name="T">The return type to memoize</typeparam>
+		/// <param name="func">the function to evaluate</param>
+		/// <returns>A memoized value</returns>
+		public static Func<TArg1, TArg2, TArg3, TArg4, TArg5, TResult> AsLockedMemoized<TArg1, TArg2, TArg3, TArg4, TArg5, TResult>(this Func<TArg1, TArg2, TArg3, TArg4, TArg5, TResult> func)
+		{
+			var values = new ConcurrentDictionary<CachedTuple<TArg1, TArg2, TArg3, TArg4, TArg5>, TResult>(CachedTuple<TArg1, TArg2, TArg3, TArg4, TArg5>.Comparer);
+
+			return (arg1, arg2, arg3, arg4, arg5) =>
+			{
+				var tuple = CachedTuple.Create(arg1, arg2, arg3, arg4, arg5);
+
+				return values.GetOrAdd(
+					tuple,
+
+					// Use the parameter to avoid closure heap allocation
+					k => func(k.Item1, k.Item2, k.Item3, k.Item4, k.Item5)
+				);
+			};
+		}
 	}
 }

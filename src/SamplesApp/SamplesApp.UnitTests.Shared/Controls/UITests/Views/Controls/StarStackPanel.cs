@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Uno.UI.Samples.Helper;
 
-#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API && !__MACOS__
+#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ && !UNO_REFERENCE_API
 using System.Windows;
 using System.Windows.Controls;
 #else
@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.Controls
 			double starTotal = 0;
 
 			var children = Children
-#if !WINAPPSDK && !__ANDROID__ && !__IOS__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.OrderBy(GetPriority)
@@ -122,7 +122,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width = Math.Max(sizeHint.Value, 0);
 			}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -152,7 +152,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width = Math.Max(availableSize.Width - totalSize.Width, 0);
 			}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -190,7 +190,7 @@ namespace Uno.UI.Samples.Controls
 				availableSize.Width *= portion;
 			}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var desiredSize = MeasureElement(child, availableSize);
 #else
 			child.Measure(availableSize);
@@ -312,7 +312,7 @@ namespace Uno.UI.Samples.Controls
 
 		private void ComputeChildAutoSize(UIElement child, Orientation orientation, ref Size finalSize, ref double totalLength, ref Size size)
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var desiredSize = GetElementDesiredSize(child);
 #else
 			var desiredSize = child.DesiredSize;
@@ -389,7 +389,7 @@ namespace Uno.UI.Samples.Controls
 				totalLength += size.Width;
 			}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			ArrangeElement(record.Child, rect);
 #else
 			record.Child.Arrange(rect);
@@ -428,7 +428,7 @@ namespace Uno.UI.Samples.Controls
 
 			panel.InvalidateMeasure();
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 			panel.InvalidateArrange();
 #endif
 		}

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Android.App;
 using Android.Runtime;
 using Android.Util;
@@ -192,11 +194,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
-			if ((ContextHelper.TryGetCurrent(out var context)) &&
+			if (Microsoft.UI.Xaml.Application.Current is { } application &&
+				(ContextHelper.TryGetCurrent(out var context)) &&
 				context is Activity activity &&
 				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
 			{
-				var requestedTheme = Microsoft.UI.Xaml.Application.Current.RequestedTheme;
+				var requestedTheme = application.RequestedTheme;
 
 				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
 

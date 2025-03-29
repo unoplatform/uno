@@ -20,13 +20,12 @@ using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
 using System.Collections.Immutable;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
-[TestClass]
-#if !__SKIA__
-[Ignore("Hot reload tests are only available on Skia targets")]
-#endif
+// Hot reload tests are only available on Skia desktop targets
+[ConditionalTestClass(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
@@ -52,9 +51,10 @@ public partial class Given_HotReloadWorkspace
 	/// in the Core CLR, making all HR runtime tests fail.
 	/// 
 	/// </remarks>
-	[TestMethod]
+	// Hot reload tests are only available on Skia desktop targets
 	[Timeout(10 * 60 * 1000)]
 	[Filters]
+	[TestMethod]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters

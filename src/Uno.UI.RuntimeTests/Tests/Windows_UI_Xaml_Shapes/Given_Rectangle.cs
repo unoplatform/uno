@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__ || __SKIA__ || WINAPPSDK
+﻿#if __APPLE_UIKIT__ || __SKIA__ || WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -76,7 +76,7 @@ public class Given_Rectangle
 	[DataRow(60.0d, 70.0d, 10.0d, 59.0d, 69.0d)]
 	[DataRow(10.0d, 80.0d, 30.0d, 39d, 109.0d)]
 	[RequiresFullWindow]
-#if __IOS__
+#if __APPLE_UIKIT__
 	[Ignore("Does not work on iOS")]
 #endif
 	public async Task When_StrokeThickness_Is_GreaterThan_Or_Equals_Width(double width, double height, double strokeThickness, double expectedWidth, double expectedHeight)
@@ -114,7 +114,7 @@ public class Given_Rectangle
 	[DataRow(19.0d, 19.0d, 199.0d)]
 	[DataRow(20.0d, 39.0d, 219.0d)]
 	[RequiresFullWindow]
-#if __IOS__
+#if __APPLE_UIKIT__
 	[Ignore("Does not work on iOS")]
 #endif
 	public async Task When_StrokeThickness_Should_Arrange_Correctly(double strokeThickness, double expectedGreenWidth, double expectedGreenHeight)
@@ -166,7 +166,7 @@ public class Given_Rectangle
 		Assert.AreEqual(greenBounds.Top - redBounds.Top, redBounds.Bottom - greenBounds.Bottom);
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	[TestMethod]
 	public async Task When_Fill_Is_AcrylicBrush()
 	{

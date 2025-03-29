@@ -700,19 +700,6 @@ namespace Uno.UI {
 		}
 
 		/**
-			* Load the specified URL into a new tab or window
-			* @param url URL to load
-			* @returns "True" or "False", depending on whether a new window could be opened or not
-			*/
-		public open(url: string): string {
-			const newWindow = window.open(url, "_blank");
-
-			return newWindow != null
-				? "True"
-				: "False";
-		}
-
-		/**
 			* Issue a browser alert to user
 			* @param message message to display
 			*/
@@ -720,22 +707,6 @@ namespace Uno.UI {
 			window.alert(message);
 
 			return "ok";
-		}
-
-		/**
-			* Sets the browser window title
-			* @param message the new title
-			*/
-		public setWindowTitle(title: string): string {
-			document.title = title || UnoAppManifest.displayName;
-			return "ok";
-		}
-
-		/**
-			* Gets the currently set browser window title
-			*/
-		public getWindowTitle(): string {
-			return document.title || UnoAppManifest.displayName;
 		}
 
 		/**
@@ -1356,7 +1327,7 @@ namespace Uno.UI {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `SetDependencyPropertyValue: Unable to find dotnet exports`;
 				}
 			}
 
@@ -1400,7 +1371,7 @@ namespace Uno.UI {
 				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
 				WindowManager.keyTrackingMethod = (<any>globalThis).DotnetExports.Uno.Uno.UI.Core.KeyboardStateTracker.UpdateKeyStateNative;
 			} else {
-				throw `Unable to find dotnet exports`;
+				throw `WindowManager: Unable to find dotnet exports`;
 			}
 		}
 

@@ -18,6 +18,7 @@ public partial class Application
 {
 	partial void InitializePartial()
 	{
+		InitializeSystemTheme();
 		PermissionsHelper.Initialize();
 	}
 

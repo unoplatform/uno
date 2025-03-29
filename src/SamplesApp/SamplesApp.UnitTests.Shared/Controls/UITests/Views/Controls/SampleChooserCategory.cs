@@ -35,6 +35,10 @@ namespace SampleControl.Entities
 
 		public override int GetHashCode() => Category?.GetHashCode() ?? 0;
 
+		/// <inheritdoc />
+		public override string ToString()
+			=> Category ?? "";
+
 		public int Compare(SampleChooserContent x, SampleChooserContent y)
 		{
 			var comparisonResult = string.Compare(x.ControlName, y.ControlName, StringComparison.InvariantCultureIgnoreCase);

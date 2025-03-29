@@ -20,9 +20,10 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if (!HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__) && !WINAPPSDK
-[TestClass]
+#if (!HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__) && !WINAPPSDK
 [RunsOnUIThread]
+// only SkiaMacOS right now
+[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView
 {
 	[TestMethod]
@@ -39,7 +40,7 @@ public class Given_WebView
 		Assert.AreEqual("https://bing.com", uri.OriginalString);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __WASM__
 	[TestMethod]
 	public void When_NavigateWithHttpRequestMessage()
 	{

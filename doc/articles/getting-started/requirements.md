@@ -34,6 +34,10 @@ At compile time, Uno Platform typically supports two versions of the Android SDK
 
 Uno Platform apps run on iOS 11 and above, using the `net9.0-ios` target framework.
 
+## tvOS
+
+Uno Platform apps run on tvOS 11 and above, using the `net8.0-tvos` target framework.
+
 ## macOS - Catalyst
 
 Uno Platform applications run on all macOS versions supported by Mac Catalyst - currently macOS 10.15 and above, using the `net9.0-maccatalyst` target framework.

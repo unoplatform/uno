@@ -21,7 +21,7 @@ namespace UnoApp50
 		/// <summary>
 		/// Configures global Uno Platform logging.
 		/// </summary>
-		private static void InitializeLogging()
+		internal static void InitializeLogging()
 		{
 			// Logging is disabled by default for release builds, as it incurs a significant
 			// initialization cost from Microsoft.Extensions.Logging setup. If startup performance
@@ -34,7 +34,7 @@ namespace UnoApp50
 			{
 #if __WASM__
 				builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__ || __MACCATALYST__
+#elif __APPLE_UIKIT__ || __MACCATALYST__
 				builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
 #elif WINAPPSDK
 				builder.AddDebug();

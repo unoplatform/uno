@@ -225,7 +225,7 @@ public partial class TextBox
 			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
 			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
 
-			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
 			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			Select(closerEnd, 0);
@@ -346,23 +346,20 @@ public partial class TextBox
 
 			_contextMenu.Items.Clear();
 
-			if (_selection.length == 0)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-			else
+			var hasSelection = _selection.length > 0;
+
+			if (!IsReadOnly && hasSelection)
 			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
+			}
+
+			if (hasSelection)
+			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+			}
+
+			if (!IsReadOnly)
+			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
 				if (CanUndo)
 				{
@@ -372,8 +369,9 @@ public partial class TextBox
 				{
 					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
 				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
+
+			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 
 			_contextMenu.ShowAt(this, p);
 		}

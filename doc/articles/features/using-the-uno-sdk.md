@@ -186,6 +186,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | iOS | 14.2 |
 | macOS | 10.14 |
 | MacCatalyst | 14.0 |
+| tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
@@ -205,6 +206,11 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
       <PropertyGroup>
         <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
@@ -277,9 +283,9 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.wasm.cs` (WebAssembly)
 - `*.skia.cs` (Skia)
 - `*.reference.cs` (Reference only)
-- `*.iOS.cs`(iOS & MacCatalyst)
-- `*.macOS.cs` (MacOS not MacCatalyst)
-- `*.iOSmacOS.cs` (iOS, MacCatalyst, & MacOS)
+- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS & MacCatalyst)
+- `*.tvOS.cs`(tvOS)
+- `*.UIKit.cs`, `*.Apple.cs` (iOS & Mac Catalyst & tvOS)
 - `*.Android.cs` (Android)
 - `*.WinAppSDK.cs` (Windows App SDK)
 

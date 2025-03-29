@@ -44,7 +44,7 @@ public partial class ElementCompositionPreview
 	/// <param name="visual">The Visual to add to the element's visual tree.</param>
 	public static void SetElementChildVisual(UIElement element, Visual visual)
 	{
-#if __IOS__
+#if __APPLE_UIKIT__
 		element.Layer.AddSublayer(visual.NativeLayer);
 		visual.NativeOwner = element;
 		element.ClipsToBounds = false;

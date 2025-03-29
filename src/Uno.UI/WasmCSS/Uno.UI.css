@@ -303,3 +303,11 @@ input::-ms-clear {
   height: 100%;
   user-select: none;
 }
+
+#uno-canvas
+{
+  /*
+    Disable pointer events by default to match HitTestVisibilityProperty default value.
+  */
+  pointer-events: none;
+}

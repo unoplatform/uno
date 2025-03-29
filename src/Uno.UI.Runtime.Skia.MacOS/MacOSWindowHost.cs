@@ -11,6 +11,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 
@@ -84,13 +85,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
 				if (path is { })
 				{
-					using var negativePath = new SKPath();
-					negativePath.AddRect(new SKRect(0, 0, width, height));
-					using var diffPath = negativePath.Op(path, SKPathOp.Difference);
-					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, diffPath.ToSvgPathData());
+					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, path.ToSvgPathData());
 				}
 			}
 		}
@@ -291,6 +289,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 
 			var window = GetWindowHost(handle);
+
+			// if fullscreen then the OS will return to the default, overlapped window and we need to dispose the current presenter
+			if ((key == VirtualKey.Escape) && NativeUno.uno_window_is_full_screen(handle))
+			{
+				window?._winUIWindow?.AppWindow?.SetPresenter(AppWindowPresenterKind.Default);
+				// also notify media player(s) that could be running in (the soon to be not so) full screen
+				MacOSMediaPlayerPresenterExtension.OnEscapingFullScreen();
+			}
+
 			var keyDown = window?.KeyDown;
 			if (keyDown is null)
 			{

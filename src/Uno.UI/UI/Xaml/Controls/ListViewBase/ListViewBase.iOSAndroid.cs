@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +6,7 @@ using Uno.UI;
 using Uno.UI.Controls;
 #if __ANDROID__
 using _ViewGroup = Android.Views.ViewGroup;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _ViewGroup = UIKit.UIView;
 #endif
 

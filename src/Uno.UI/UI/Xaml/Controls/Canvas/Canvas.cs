@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 #if __ANDROID__
 using Android.Views;
 using NativeView = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using NativeView = UIKit.UIView;
 #else
 using NativeView = System.Object;

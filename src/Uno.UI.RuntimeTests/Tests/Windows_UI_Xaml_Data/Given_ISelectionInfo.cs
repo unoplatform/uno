@@ -12,9 +12,6 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS")]
-#endif
 	public class Given_ISelectionInfo
 	{
 		[TestMethod]

@@ -1,8 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
+using System.Runtime.Loader;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Win32;
+using Uno.WinUI.Runtime.Skia.X11;
 
 namespace SkiaSharpExample
 {
@@ -13,9 +18,21 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			// Ensures that we're loading the Skia assemblies properly
+			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
+			// and _UnoAdjustUserRuntimeAssembly to avoid getting reference assemblies in the
+			// output folder.
+			AssemblyLoadContext.Default.Resolving += Default_Resolving;
+
+			Run();
+		}
+
+		private static void Run()
+		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
-			var host = SkiaHostBuilder.Create()
+			SkiaHost? host = default;
+			var builder = SkiaHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
 				.AfterInit(() =>
 				{
@@ -29,8 +46,49 @@ namespace SkiaSharpExample
 							Assert.IsTrue(windowContentAsUIElement.IsFocused);
 						};
 					}
+
+					if (host is X11ApplicationHost)
+					{
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
+					}
+
+					if (OperatingSystem.IsWindows())
+					{
+						void Initialize()
+						{
+							// This is in a separate method to avoid loading the win32 uno runtime assembly
+							// This assumes that the runtime loads dependencies when entering the method.
+
+							if (host is Win32Host)
+							{
+								global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension(o));
+								global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension(o));
+							}
+						}
+
+						Initialize();
+					}
 				})
-				.UseX11()
+				.UseX11();
+
+			if (OperatingSystem.IsWindows())
+			{
+				void Build()
+				{
+					// This is in a separate method to avoid loading the win32 uno runtime assembly
+					// This assumes that the runtime loads dependencies when entering the method.
+
+					builder = builder
+						.UseWin32();
+				}
+
+				Build();
+			}
+
+			builder = builder
+				.UseWindows()
 				.UseLinuxFrameBuffer()
 				.UseWindows(b => b
 					.WpfApplication(() =>
@@ -38,10 +96,38 @@ namespace SkiaSharpExample
 						// optional app creation
 						return new System.Windows.Application();
 					}))
-				.UseMacOS()
+				.UseMacOS();
+
+			host = builder
 				.Build();
 
 			host.Run();
+		}
+
+		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
+		{
+			try
+			{
+				if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.Absolute, out var asm))
+				{
+					var appPath = Path.GetDirectoryName(asm.LocalPath)!;
+
+					var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
+
+					if (File.Exists(asmPath))
+					{
+						return alc.LoadFromAssemblyPath(asmPath);
+					}
+				}
+
+				return null;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				Console.WriteLine($"Error processing {assemblyName.Name}. SamplesApp.Skia.Generic assembly location: {typeof(MainClass).Assembly.Location}");
+				throw;
+			}
 		}
 	}
 }

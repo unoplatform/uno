@@ -35,12 +35,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 	{
 		const int _itemHeight = 70;
 		const int _offset = 30;
-		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
 		[InjectedPointer(PointerDeviceType.Mouse)]
 #if !IS_RUNTIME_UI_TESTS
+		[Test]
 		[Ignore("Flaky")]
+#else
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // https://github.com/unoplatform/uno-private/issues/809
 #endif
 		public async Task When_Dragging_TreeView_Item()
 		{

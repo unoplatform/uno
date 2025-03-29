@@ -22,10 +22,8 @@ using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -245,7 +243,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(initialWidth < sv.ActualWidth);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 #if __WASM__
 		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
 #endif
@@ -284,7 +283,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 #if !__SKIA__
 		[Ignore("This test specifically tests the skia-rendered TextBox")]
 #endif
@@ -1055,9 +1055,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Popup_Above()
@@ -1070,9 +1067,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Popup_Below()

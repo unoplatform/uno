@@ -2,6 +2,7 @@
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
+using System;
 using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml.Automation
@@ -32,6 +33,14 @@ namespace Microsoft.UI.Xaml.Automation
 
 		private static void OnNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+#if __SKIA__
+			if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+				dependencyObject is UIElement element && // TODO: Adjust when TextElement's automation peers are supported.
+				element.GetOrCreateAutomationPeer() is { } peer)
+			{
+				AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.NameProperty, args.OldValue, args.NewValue);
+			}
+#endif
 		}
 
 		#endregion
@@ -130,13 +139,8 @@ namespace Microsoft.UI.Xaml.Automation
 
 		private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
-			{
-				view.AccessibilityIdentifier = (string)args.NewValue;
-			}
-#elif __MACOS__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AppKit.NSView view)
 			{
 				view.AccessibilityIdentifier = (string)args.NewValue;
 			}
@@ -201,8 +205,8 @@ namespace Microsoft.UI.Xaml.Automation
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
 
-#if __WASM__
-		private static string FindHtmlRole(UIElement uIElement)
+#if __WASM__ || __SKIA__
+		internal static string FindHtmlRole(UIElement uIElement)
 		{
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Button_Available && uIElement is Button)
 			{
@@ -227,6 +231,21 @@ namespace Microsoft.UI.Xaml.Automation
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Slider_Available && uIElement is Slider)
 			{
 				return "slider";
+			}
+
+			var peer = uIElement.GetOrCreateAutomationPeer();
+			if (peer?.GetAutomationControlType() is { } type)
+			{
+				return type switch
+				{
+					AutomationControlType.Button => "button",
+					AutomationControlType.RadioButton => "radio",
+					AutomationControlType.CheckBox => "checkbox",
+					AutomationControlType.Text => "label",
+					AutomationControlType.Edit => "label",
+					AutomationControlType.Slider => "slider",
+					_ => null,
+				};
 			}
 
 			return null;

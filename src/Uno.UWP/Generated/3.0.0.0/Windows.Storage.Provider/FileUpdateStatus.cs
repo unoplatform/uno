@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Provider
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum FileUpdateStatus
 	{
 		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Incomplete

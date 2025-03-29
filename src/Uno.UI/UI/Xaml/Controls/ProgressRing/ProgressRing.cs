@@ -12,7 +12,7 @@ public partial class ProgressRing : Control
 	{
 		DefaultStyleKey = typeof(ProgressRing);
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		// Apply the native style by default
 		Style = (Style)Application.Current.Resources["NativeWuxProgressRingStyle"];
 #endif

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text;
+using System.Web;
 using Microsoft.UI.Xaml.Data;
 using Uno;
 using Uno.Diagnostics.Eventing;
@@ -35,15 +38,10 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 using Microsoft.UI.Xaml.Controls;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using AppKit;
-using Windows.UI.Core;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
@@ -89,12 +87,14 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Application()
 		{
+			CoreApplication.StaticInitialize();
+
+
 #if __SKIA__ || __WASM__
 			Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
 			Current = this;
 			ApplicationLanguages.ApplyCulture();
-			InitializeSystemTheme();
 
 			InitializePartial();
 		}
@@ -151,8 +151,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InitializeSystemTheme()
 		{
-			// just cache the theme, but do not notify about a change unnecessarily
-			InternalRequestedTheme = GetSystemTheme();
+			if (!IsThemeSetExplicitly)
+			{
+				// just cache the theme, but do not notify about a change unnecessarily
+				InternalRequestedTheme = GetSystemTheme();
+			}
 		}
 
 		private ApplicationTheme InternalRequestedTheme
@@ -249,8 +252,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if !__ANDROID__ && !__SKIA__
+		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -411,7 +414,7 @@ namespace Microsoft.UI.Xaml
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -422,7 +425,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
@@ -543,35 +546,50 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if __MACOS__ || __SKIA__
+		[JSImport("globalThis.eval")]
+		private static partial string Eval(string js);
+
+#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-			var args = Environment.GetCommandLineArgs();
-			if (args.Length <= 1)
+			if (!string.IsNullOrEmpty(_argumentsOverride))
 			{
-				return "";
+				return _argumentsOverride;
 			}
 
-			// The first "argument" is actually application name, needs to be removed.
-			// May be wrapped in quotes.
-
-			var executable = args[0];
-			var rawCmd = Environment.CommandLine;
-
-			var index = rawCmd.IndexOf(executable, StringComparison.Ordinal);
-			if (index == 0)
+			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				rawCmd = rawCmd.Substring(executable.Length);
+				return Uri.UnescapeDataString(new Uri(Eval("window.location.href")).Query.TrimStart('?'));
 			}
-			else if (index == 1)
+			else
 			{
-				// The executable is wrapped in quotes
-				rawCmd = rawCmd.Substring(executable.Length + 2);
-			}
+				var args = Environment.GetCommandLineArgs();
+				if (args.Length <= 1)
+				{
+					return "";
+				}
 
-			// The whitespace on the start side of Arguments
-			// in UWP is trimmed whereas the ending is not.
-			return rawCmd.TrimStart();
+				// The first "argument" is actually application name, needs to be removed.
+				// May be wrapped in quotes.
+
+				var executable = args[0];
+				var rawCmd = Environment.CommandLine;
+
+				var index = rawCmd.IndexOf(executable, StringComparison.Ordinal);
+				if (index == 0)
+				{
+					rawCmd = rawCmd.Substring(executable.Length);
+				}
+				else if (index == 1)
+				{
+					// The executable is wrapped in quotes
+					rawCmd = rawCmd.Substring(executable.Length + 2);
+				}
+
+				// The whitespace on the start side of Arguments
+				// in UWP is trimmed whereas the ending is not.
+				return rawCmd.TrimStart();
+			}
 		}
 #endif
 	}

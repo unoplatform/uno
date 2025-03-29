@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 rm -rf build
 cd UnoNativeMac
 chmod +x getSkiaSharpDylib.sh

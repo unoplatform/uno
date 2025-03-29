@@ -19,7 +19,7 @@ public sealed partial class AutoSuggestBox_SoftKeboard : UserControl
 
 	private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 	{
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 		if (args.Reason != AutoSuggestionBoxTextChangeReason.UserInput)
 		{
 			return;

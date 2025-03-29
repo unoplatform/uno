@@ -6,6 +6,9 @@
 		<GeneratePackageOnBuild Condition="'$(UNO_UWP_BUILD)'!='true' And '$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
+		
+		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
+		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />

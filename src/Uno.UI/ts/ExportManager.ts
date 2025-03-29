@@ -5,20 +5,17 @@ namespace Uno.UI {
 
 		public static async initialize(): Promise<void> {
 
-			if ((<any>Module).getAssemblyExports !== undefined) {
-				const unoExports = await (<any>Module).getAssemblyExports("Uno");
-				const unoUIExports = await (<any>Module).getAssemblyExports("Uno.UI");
-				const unoUIDispatchingExports = await (<any>Module).getAssemblyExports("Uno.UI.Dispatching");
+			await Windows.ApplicationModel.Core.CoreApplication.initializeExports();
 
-				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");
+			if ((<any>Module).getAssemblyExports !== undefined) {
+				const unoUIExports = await (<any>Module).getAssemblyExports("Uno.UI");
 
 				if (Object.entries(unoUIExports).length > 0) {
-					(<any>globalThis).DotnetExports = {
-						Uno: unoExports,
-						UnoUI: unoUIExports,
-						UnoUIDispatching: unoUIDispatchingExports,
-						UnoFoundationRuntimeWebAssembly: runtimeWasmExports
-					};
+
+					// DotnetExports may already have been initialized
+					(<any>globalThis).DotnetExports = (<any>globalThis).DotnetExports || {};
+
+					(<any>globalThis).DotnetExports.UnoUI = unoUIExports;
 				}
 			}
 		}

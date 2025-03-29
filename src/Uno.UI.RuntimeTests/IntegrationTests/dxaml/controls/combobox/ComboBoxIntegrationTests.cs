@@ -4623,7 +4623,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task CanRaiseTextSubmittedEventComboBoxClosed()
@@ -4632,7 +4632,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task CanRaiseTextSubmittedEventComboBoxOpened()
@@ -4641,7 +4641,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateItemAutoMatchOnTextSubmitted()
@@ -4650,7 +4650,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateTextSubmittedHandledProperty()
@@ -4760,7 +4760,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxClosed()
@@ -4769,7 +4769,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxOpened()
@@ -4891,7 +4891,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	[Ignore("Focus does not behave correctly in this case because we move it asynchronously in TextBox.ProcessFocusChanged #17988")]
 #endif
 	public async Task ValidateEditableModeGamePadInteraction()
@@ -5179,7 +5179,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateSettingSelectedIndexUpdatesTextBoxText()
@@ -5220,7 +5220,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
 	public async Task ValidateSelectionTriggerAlwaysCanSetCustomValueAgain()

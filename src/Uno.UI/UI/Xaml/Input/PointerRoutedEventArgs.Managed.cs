@@ -35,17 +35,19 @@ namespace Microsoft.UI.Xaml.Input
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
-
-#if HAS_UNO_WINUI
-			_currentPoint = new PointerPoint(_pointerEventArgs.CurrentPoint);
-#else
 			_currentPoint = _pointerEventArgs.CurrentPoint;
-#endif
 
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
 			KeyModifiers = pointerEventArgs.KeyModifiers;
+			Handled = pointerEventArgs.Handled;
 			OriginalSource = source;
+		}
+
+		public bool Handled
+		{
+			get => _pointerEventArgs.Handled;
+			set => _pointerEventArgs.Handled = value;
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)

@@ -10,6 +10,8 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -18,19 +20,25 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
 		private readonly ManagedWeakReference _textBox;
-		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
+		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
+
+		// On Windows, \u25CF is used as password character.
+		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
+		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
+		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
+		internal static readonly char PasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? '\u2022' : '\u25CF';
 
 		public TextBoxView(TextBox textBox)
 		{
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
-			_isPasswordBox = textBox is PasswordBox;
+			IsPasswordBox = textBox is PasswordBox;
 
 			DisplayBlock = new TextBlock { MinWidth = InlineCollection.CaretThickness };
 			SetFlowDirectionAndTextAlignment();
 
-			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -40,6 +48,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		internal bool IsPasswordBox { get; }
 
 		public (int start, int length) SelectionBeforeKeyDown =>
 			(_textBoxExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _textBoxExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
@@ -111,31 +121,44 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
-			if (_isSkiaTextBox)
+			if (_isSkiaTextBox && _useInvisibleNativeTextView)
 			{
-				return;
-			}
-
-			if (focusState != FocusState.Unfocused)
-			{
-				DisplayBlock.Opacity = 0;
-				_textBoxExtension?.StartEntry();
-
-				var selectionStart = this.GetSelectionStart();
-
-				if (selectionStart == 0)
+				// We don't care about actual entry here, just making
+				// the password manager autocompletion button appear.
+				if (focusState != FocusState.Unfocused)
 				{
-					int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
-
-					_textBoxExtension?.Select(cursorPosition, 0);
+					_textBoxExtension?.StartEntry();
+				}
+				else
+				{
+					_textBoxExtension?.EndEntry();
 				}
 			}
-			else
+			else if (!_isSkiaTextBox)
 			{
-				_textBoxExtension?.EndEntry();
-				DisplayBlock.Opacity = 1;
+				if (focusState != FocusState.Unfocused)
+				{
+					DisplayBlock.Opacity = 0;
+					_textBoxExtension?.StartEntry();
+
+					var selectionStart = this.GetSelectionStart();
+
+					if (selectionStart == 0)
+					{
+						int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
+
+						_textBoxExtension?.Select(cursorPosition, 0);
+					}
+				}
+				else
+				{
+					_textBoxExtension?.EndEntry();
+					DisplayBlock.Opacity = 1;
+				}
 			}
 		}
+
+		internal void UpdateTheme() => _textBoxExtension?.UpdateProperties();
 
 		internal void UpdateFont()
 		{
@@ -194,10 +217,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
-			if (_isPasswordBox && !_isPasswordRevealed)
+			if (IsPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('●', text.Length);
+				DisplayBlock.Text = new string(PasswordChar, text.Length);
 			}
 			else
 			{
@@ -210,5 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 				TextBox?.UpdateLayout();
 			}
 		}
+
+		internal void UpdateProperties() => _textBoxExtension?.UpdateProperties();
 	}
 }

@@ -23,6 +23,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
 			_sourcePaint ??= paint.Clone();
@@ -33,15 +35,21 @@ namespace Microsoft.UI.Composition
 			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
 		}
 
+		internal override bool CanPaint() => (Source?.CanPaint() ?? false) || (Mask?.CanPaint() ?? false);
+
+		private static SKPaint _spareResultPaint = new SKPaint();
+
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
-			using (SkiaHelper.GetTempSKPaint(out var resultPaint))
-			{
-				resultPaint.IsAntialias = true;
+			var resultPaint = _spareResultPaint;
 
-				UpdatePaint(resultPaint, bounds);
-				session.Canvas?.DrawRect(bounds, resultPaint);
-			}
+			resultPaint.Reset();
+
+			resultPaint.IsAntialias = true;
+
+			UpdatePaint(resultPaint, bounds);
+
+			session.Canvas?.DrawRect(bounds, resultPaint);
 		}
 
 		private protected override void DisposeInternal()

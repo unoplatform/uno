@@ -15,6 +15,9 @@
 		<Deterministic>true</Deterministic>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

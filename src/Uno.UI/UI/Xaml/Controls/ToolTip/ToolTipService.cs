@@ -5,11 +5,8 @@ using Uno.Disposables;
 using Uno.UI;
 using Windows.System;
 
-
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;

@@ -27,10 +27,10 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
     
     $globalJsonfilePath = $_.FullName;
 
-    Write-Host "Updated $globalJsonfilePath with $env:GITVERSION_SemVer"
+    Write-Host "Updated $globalJsonfilePath with $env:NBGV_SemVer2"
 
     $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:GITVERSION_SemVer
+    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:NBGV_SemVer2
     $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
 }
 
@@ -38,17 +38,14 @@ $projects =
 @(
     # 5.0 and earlier
     @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", @(), @()),
-    @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Gtk/UnoAppWinUILinuxValidation.Skia.Gtk.csproj", @(), @()),
     @(0, "UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", @(), @()),
 
     # 5.1 Blank
-    @(0, "5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", @(), @()),
     @(0, "5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", @(), @()),
     @(0, "5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", @(), @()),
     @(0, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", @(), @()),
 
     # 5.1 Recommended
-    @(1, "5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", @(), @()),
     @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
     @(1, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
     @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
@@ -90,6 +87,12 @@ $projects =
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
+
+    # 5.4 Wasm+Skia
+    @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @(), @()),
+
+    # 5.6 Win32+Skia
+    @(3, "5.6/uno56net9win32/uno56net9win32/uno56net9win32.csproj", @(), @()),
 
     ## Note for contributors
     ##

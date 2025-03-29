@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __APPLE_UIKIT__
 using Uno.UI.DataBinding;
 using System;
 using System.Collections.Generic;

@@ -61,7 +61,7 @@ namespace Windows.Storage.Pickers
 		PickerLocationId IFilePicker.SuggestedStartLocationInternal => SuggestedStartLocation;
 		IList<string> IFilePicker.FileTypeFilterInternal => FileTypeFilter;
 
-#if __SKIA__ || __MACOS__ || __WASM__ || __IOS__ || __ANDROID__
+#if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__
 		public FolderPicker()
 		{
 			InitializePlatform();

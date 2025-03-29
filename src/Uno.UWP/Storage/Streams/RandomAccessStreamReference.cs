@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Uno;
 using Uno.Extensions;
@@ -25,6 +26,15 @@ namespace Windows.Storage.Streams
 				{
 					var storageFile = StorageFile.GetFileFromPath(AppDataUriEvaluator.ToPath(uri));
 					return await storageFile.OpenReadAsync();
+				}
+
+				if (uri.IsLocalResource())
+				{
+					var convertedPath =
+						Path.Combine(Package.Current.InstalledPath,
+							uri.PathAndQuery.TrimStart('/').Replace('/', Path.DirectorySeparatorChar)
+						);
+					return await StorageFile.GetFileFromPath(convertedPath).OpenReadAsync();
 				}
 
 				var downloader = await StreamedUriDataLoader.Create(ct, uri);

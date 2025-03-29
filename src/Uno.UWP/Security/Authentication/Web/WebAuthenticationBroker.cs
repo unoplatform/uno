@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__TVOS__
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -43,3 +44,4 @@ namespace Windows.Security.Authentication.Web
 		}
 	}
 }
+#endif

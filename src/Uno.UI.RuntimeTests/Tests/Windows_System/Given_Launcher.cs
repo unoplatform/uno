@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __APPLE_UIKIT__
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

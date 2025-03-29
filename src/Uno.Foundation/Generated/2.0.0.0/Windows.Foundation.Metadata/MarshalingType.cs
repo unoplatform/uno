@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum MarshalingType
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.None

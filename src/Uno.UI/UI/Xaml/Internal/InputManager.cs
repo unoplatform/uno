@@ -36,11 +36,14 @@ internal partial class InputManager : IInputInjectorTarget
 		InitializeKeyboard(host);
 		InitializePointers(host);
 		InitDragAndDrop();
+		Initialized = true;
 	}
 
 	partial void InitializeKeyboard(object host);
 
 	internal ContentRoot ContentRoot { get; }
+
+	internal bool Initialized { get; private set; }
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;

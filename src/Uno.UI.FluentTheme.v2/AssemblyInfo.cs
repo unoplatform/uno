@@ -11,7 +11,7 @@ using global::System.Runtime.InteropServices;
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 
-#if __IOS__
+#if __APPLE_UIKIT__
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: Foundation.LinkerSafe]
 #pragma warning restore CS0618 // Type or member is obsolete

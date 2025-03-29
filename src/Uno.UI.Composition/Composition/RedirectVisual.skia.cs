@@ -11,10 +11,13 @@ namespace Microsoft.UI.Composition
 		{
 			base.Paint(in session);
 
-			if (Source is not null && session.Canvas is not null)
+			if (Source is not null && session.Canvas is { } canvas)
 			{
-				Source.RenderRootVisual(session.Surface, default, null);
+				Source.RenderRootVisual(canvas, null, null);
 			}
 		}
+
+		internal override bool CanPaint() => Source?.CanPaint() ?? false;
+		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 	}
 }

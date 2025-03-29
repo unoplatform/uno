@@ -21,12 +21,10 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 
-#if __MACOS__
-using AppKit;
-#elif __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
 #else
 using _Panel = Microsoft.UI.Xaml.Controls.Panel;
@@ -38,7 +36,7 @@ using IndexPath = Uno.UI.IndexPath;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
 #else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject

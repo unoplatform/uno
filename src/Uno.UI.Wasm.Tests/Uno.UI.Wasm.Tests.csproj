@@ -11,7 +11,7 @@
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
 		<CompilerVisibleProperty Include="TSBindingsPath" />

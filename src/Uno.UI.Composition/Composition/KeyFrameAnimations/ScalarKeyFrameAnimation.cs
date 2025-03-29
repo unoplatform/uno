@@ -11,7 +11,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 {
-#if !__IOS__
+#if !__APPLE_UIKIT__
 	private readonly SortedDictionary<float, AnimationKeyFrame<float>> _keyFrames = new();
 #endif
 
@@ -19,7 +19,7 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 	{
 	}
 
-#if !__IOS__
+#if !__APPLE_UIKIT__
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
 	public void InsertKeyFrame(float normalizedProgressKey, float value)

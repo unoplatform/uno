@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
 			"Description", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as CalendarDatePicker)?.UpdateDescriptionVisibility(false)));
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 		public new // .Description already exists on NSObject (both macOS & iOS)
 #else
 		public

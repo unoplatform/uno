@@ -28,10 +28,8 @@ using Uno.UI.Controls.Legacy;
 using Windows.UI.ViewManagement;
 
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -806,7 +804,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-#if !(__ANDROID__ || __IOS__ || __MACOS__)
+#if !(__ANDROID__ || __APPLE_UIKIT__)
 			if (_mpe.MediaPlayer.IsLoopingEnabled
 				&& !_mpe.MediaPlayer.IsLoopingAllEnabled
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
@@ -825,7 +823,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-#if !(__ANDROID__ || __IOS__ || __MACOS__)
+#if !(__ANDROID__ || __APPLE_UIKIT__)
 
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
@@ -850,7 +848,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-#if !(__ANDROID__ || __IOS__ || __MACOS__)
+#if !(__ANDROID__ || __APPLE_UIKIT__)
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
@@ -1229,7 +1227,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-#if !(__ANDROID__ || __IOS__ || __MACOS__)
+#if !(__ANDROID__ || __APPLE_UIKIT__)
 			var state = _mpe.MediaPlayer.IsLoopingAllEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: _mpe.MediaPlayer.IsLoopingEnabled

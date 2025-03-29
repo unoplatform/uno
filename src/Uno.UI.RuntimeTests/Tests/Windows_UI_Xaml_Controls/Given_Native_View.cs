@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__
 #define HAS_NATIVE_VIEWS
 #endif
 
@@ -11,10 +11,8 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI.Extensions;
 #endif
@@ -26,9 +24,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Added_In_Xaml()
 		{
 			var page = new NativeView_Page();
@@ -73,9 +68,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Inner_IFrameworkElement()
 		{
 			var page = new NativeView_Page();
@@ -92,9 +84,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Grid_Properties_Set()
 		{
 			var page = new NativeView_Grid_Page();

@@ -33,8 +33,10 @@ partial class RectangleClip
 			width: Right - Left,
 			height: Bottom - Top);
 
-	internal override void Apply(SKCanvas canvas, Visual visual)
+	internal override SKPath? GetClipPath(Visual visual)
 	{
-		canvas.ClipRoundRect(GetRect(visual), SKClipOperation.Intersect, true);
+		var path = new SKPath();
+		path.AddRoundRect(GetRect(visual));
+		return path;
 	}
 }

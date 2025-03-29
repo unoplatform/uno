@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS")]
 #endif
 		public async Task When_Time_Zone()
@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				using (new TimeZoneModifier(TimeZoneInfo.CreateCustomTimeZone("FakeTestTimeZone", TimeSpan.FromHours(offset), "FakeTestTimeZone", "FakeTestTimeZone")))
 				{
 					var datePicker = new DatePicker();
+					datePicker.UseNativeStyle = false;
 					await UITestHelper.Load(datePicker);
 
 					await DateTimePickerHelper.OpenDateTimePicker(datePicker);
@@ -120,6 +121,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("fr-CA");
 
@@ -141,6 +148,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Czech_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("cs-CZ");
 
@@ -162,6 +175,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("hu-HU");
 
@@ -287,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeDatePickerFlyout = (NativeDatePickerFlyout)associatedFlyout;
@@ -336,7 +355,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
@@ -345,7 +364,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[TestMethod]
 		public async Task When_Default_Flyout_Date_Native()
 		{

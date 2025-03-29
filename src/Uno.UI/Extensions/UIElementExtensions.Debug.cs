@@ -201,10 +201,8 @@ static partial class UIElementExtensions
 #elif HAS_UNO
 			UIElement { IsVisualTreeRoot: true } => 0,
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 			UIKit.UIView native => native.Superview?.GetDebugDepth() + 1 ?? 0,
-#elif __MACOS__
-			AppKit.NSView native => native.Superview?.GetDebugDepth() + 1 ?? 0,
 #elif __ANDROID__
 			Android.Views.View native => native.Parent?.GetDebugDepth() + 1 ?? 0,
 #endif

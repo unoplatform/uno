@@ -51,6 +51,9 @@
 		<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
 
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+	
+		<!-- Don't install GTK in CI, let the workflow do it to prevent concurrency issues -->
+		<SkipGtkInstall Condition=" '$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true' ">true</SkipGtkInstall>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -117,7 +120,8 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.WebAssembly.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Gtk.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.X11.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Win32.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
@@ -208,14 +212,22 @@
 		<IsIOS>false</IsIOS>
 		<IsIOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='ios'">true</IsIOS>
 
+		<IsTvOS>false</IsTvOS>
+		<IsTvOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='tvos'">true</IsTvOS>
+
 		<IsMacOS>false</IsMacOS>
-		<IsMacOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='macos'">true</IsMacOS>
 
 		<IsCatalyst>false</IsCatalyst>
 		<IsCatalyst Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='maccatalyst'">true</IsCatalyst>
 
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
+
+		<IsAppleUIKit>false</IsAppleUIKit>
+		<IsAppleUIKit Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsAppleUIKit>
+
+		<IsApple>false</IsApple>
+		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsApple>
 
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
@@ -231,6 +243,12 @@
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- Disable warning about wasm/skia long paths -->
+		<NoWarn>$(NoWarn);NU5123</NoWarn>
+		
+		<!-- YOUSSEF TODO: Fix doc comments and remove this NoWarn -->
+		<NoWarn>$(NoWarn);CS1711;CS1712;CS1572;CS1574;CS1570</NoWarn>
 
 		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
 		<NoWarn>$(NoWarn);CS0436</NoWarn>

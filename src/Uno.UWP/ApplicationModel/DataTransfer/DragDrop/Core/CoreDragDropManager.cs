@@ -141,6 +141,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		internal DataPackageOperation ProcessAborted(long pointerId)
 			=> _manager?.ProcessAborted(pointerId) ?? DataPackageOperation.None;
 
+		/// <summary>
+		/// The methods below should only be called by <see cref="CoreDragDropManager"/>. Ideally, this interface should
+		/// have been removed or kept private to <see cref="CoreDragDropManager"/>, but, unfortunately, <see cref="CoreDragDropManager"/>
+		/// is in Uno.UWP, so it has no Uno.UI visibility and can't interact with UIElements, etc.
+		/// </summary>
 		internal interface IDragDropManager
 		{
 			bool AreConcurrentOperationsEnabled { get; set; }

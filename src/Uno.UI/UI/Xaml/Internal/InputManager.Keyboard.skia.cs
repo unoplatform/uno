@@ -66,7 +66,8 @@ partial class InputManager
 
 			var routedArgs = new KeyRoutedEventArgs(originalSource1, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 			{
-				CanBubbleNatively = false
+				CanBubbleNatively = false,
+				Handled = args.Handled
 			};
 
 			originalSource1.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, routedArgs);
@@ -90,6 +91,8 @@ partial class InputManager
 					$"ScanCode: {args.KeyStatus.ScanCode})"
 				);
 			}
+
+			args.Handled = routedArgs.Handled;
 		}
 
 		/// <summary>

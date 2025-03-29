@@ -338,7 +338,7 @@ namespace Windows.UI.Input
 							isLongPress = true;
 							return true;
 						}
-#if __IOS__
+#if __APPLE_UIKIT__
 						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
 							&& isLeftTap
 							&& points.HasExceedMinHoldPressure)

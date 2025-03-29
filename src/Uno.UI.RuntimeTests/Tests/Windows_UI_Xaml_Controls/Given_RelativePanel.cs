@@ -16,9 +16,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class Given_RelativePanel
 	{
 		[TestMethod]
@@ -48,7 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			SUT.InvalidateMeasure();
 			SUT.UpdateLayout();
 #endif
@@ -143,7 +140,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(48.0, button.MeasuredHeight / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
 			Assert.AreEqual(88.0, button.MeasuredWidth / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			var button = new UIKit.UIButton();
 			button.SetTitle("Test", UIKit.UIControlState.Normal);
 			SUT.Children.Add(button);

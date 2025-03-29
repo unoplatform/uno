@@ -13,6 +13,7 @@ using Windows.Devices.Haptics;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -91,8 +92,6 @@ namespace Microsoft.UI.Xaml
 				var oldMode = (ManipulationModes)args.OldValue;
 				var newMode = (ManipulationModes)args.NewValue;
 
-				newMode.LogIfNotSupported(elt.Log());
-
 				elt.UpdateManipulations(newMode, elt.HasManipulationHandler);
 				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
@@ -148,7 +147,7 @@ namespace Microsoft.UI.Xaml
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		/// <summary>
 		/// Validates that this element is able to manage pointer events.
 		/// If this element is only the shadow of a ghost native view that was instantiated for marshalling purposes by Xamarin,
@@ -800,9 +799,10 @@ namespace Microsoft.UI.Xaml
 				asyncResult.SetResult(result);
 			});
 
-			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
+			var coreDragDropManager = XamlRoot.GetCoreDragDropManager(XamlRoot);
+			coreDragDropManager.DragStarted(dragInfo);
 			// Synchronously fire DragEnter+DragOver without waiting for another "mouse tick". This matches WinUI.
-			XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(ptArgs);
+			coreDragDropManager.ProcessMoved(ptArgs);
 
 			var result = await asyncResult.Task;
 
@@ -872,7 +872,7 @@ namespace Microsoft.UI.Xaml
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
 #else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
@@ -892,7 +892,7 @@ namespace Microsoft.UI.Xaml
 					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #else
-#if __IOS__
+#if __APPLE_UIKIT__
 					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
 					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
 					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
@@ -929,8 +929,10 @@ namespace Microsoft.UI.Xaml
 #endif
 					break;
 				case RoutedEventFlag.PointerCanceled:
+				case RoutedEventFlag.PointerCaptureLost when ptArgs.CanceledByDirectManipulation:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
+
 					// No local state (over/pressed/manipulation/gestures) to update for
 					//	- PointerCaptureLost:
 					//	- PointerWheelChanged:
@@ -1000,7 +1002,7 @@ namespace Microsoft.UI.Xaml
 #if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
-					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventOSSteal, args);
+					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventDirectManipulation, args);
 				}
 #endif
 			}
@@ -1031,7 +1033,7 @@ namespace Microsoft.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured && !ctx.IsCleanup);
 				if (gestures.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 				}
 			}
 
@@ -1072,7 +1074,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 				if (isDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessReleased(args);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessDropped(args);
 				}
 			}
 
@@ -1096,7 +1098,7 @@ namespace Microsoft.UI.Xaml
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
-				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
+				XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessMoved(args);
 			}
 
 			return handledInManaged;
@@ -1118,7 +1120,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args.Pointer.PointerId);
+					XamlRoot.GetCoreDragDropManager(XamlRoot).ProcessAborted(args.Pointer.PointerId);
 				}
 			}
 
@@ -1148,7 +1150,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
-
 		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			if (ctx.IsInternal || ctx.IsCleanup)
@@ -1253,6 +1254,14 @@ namespace Microsoft.UI.Xaml
 
 			if (isOver) // Entered
 			{
+#if __SKIA__
+				if (!wasOver)
+				{
+					// Currently works on Wasm Skia only.
+					string text = (this as TextBlock)?.Text;
+					Uno.Helpers.AccessibilityAnnouncer.AnnouncePolite(text);
+				}
+#endif
 				return RaisePointerEvent(PointerEnteredEvent, args, ctx);
 			}
 			else // Exited
@@ -1390,10 +1399,10 @@ namespace Microsoft.UI.Xaml
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
-			return Capture(pointer, PointerCaptureKind.Explicit, PointerCaptureOptions.None, _pendingRaisedEvent.args) is PointerCaptureResult.Added;
+			return Capture(pointer, PointerCaptureKind.Explicit, PointerCaptureOptions.None, _pendingRaisedEvent.args) is not PointerCaptureResult.Failed;
 		}
 
-		private protected PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind = PointerCaptureKind.Explicit, PointerCaptureOptions options = PointerCaptureOptions.None)
+		internal PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind = PointerCaptureKind.Explicit, PointerCaptureOptions options = PointerCaptureOptions.None)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 

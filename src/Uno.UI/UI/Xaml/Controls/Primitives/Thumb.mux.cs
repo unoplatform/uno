@@ -269,7 +269,7 @@ public sealed partial class Thumb
 				args.Handled = true;
 
 				var pointer = args.Pointer;
-				var pointerCaptured = CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventOSSteal);
+				var pointerCaptured = CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventDirectManipulation);
 				IsDragging = true;
 
 				// If logical parent is a popup, TransformToVisual can fail because a popup's child

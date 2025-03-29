@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
 using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Samples.UITests.Helpers;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -16,11 +18,12 @@ using Uno.Logging;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
+
 #else
 using Windows.System;
 #endif
 
-#if __SKIA__ || __MACOS__
+#if __SKIA__
 using System.CommandLine;
 #endif
 
@@ -43,20 +46,31 @@ partial class App
 
 	public static async Task<bool> HandleRuntimeTests(string args)
 	{
-		var runRuntimeTestsResultsParam =
-			args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+		Console.WriteLine($"Automated runtime tests args: {args}");
 
-		var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
+		var argsPairs = ParseArgs(args);
 
-		// Used to autostart the runtime tests for iOS/Android Runtime tests
-		runtimeTestResultFilePath ??= Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
+		var runtimeTestResultFilePath = argsPairs.GetValueOrDefault(
+			"--runtime-tests",
+			// Used to autostart the runtime tests for iOS/Android Runtime tests
+			Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE") ?? "");
 
-		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
+		if (argsPairs.TryGetValue("--runtime-tests-group", out var runtimeTestGroup))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP", runtimeTestGroup);
+		}
+
+		if (argsPairs.TryGetValue("--runtime-tests-group-count", out var runtimeTestGroupCount))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT", runtimeTestGroupCount);
+		}
+
+		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath} (UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")})");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
 			Console.WriteLine($"Writing canary file {runtimeTestResultFilePath}.canary");
-			System.IO.File.WriteAllText(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString(), System.Text.Encoding.Unicode);
+			await SkiaSamplesAppHelper.SaveFile(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString());
 
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
@@ -71,6 +85,12 @@ partial class App
 
 		return false;
 	}
+
+	private static Dictionary<string, string> ParseArgs(string args)
+		=> args.Split('&').ToDictionary(
+			p => p.Split('=').First(),
+			p => p.Split('=').LastOrDefault() ?? ""
+		);
 
 #if __WASM__
 	[System.Runtime.InteropServices.JavaScript.JSExport]
@@ -152,7 +172,7 @@ partial class App
 
 	private bool HandleAutoScreenshots(string args)
 	{
-#if __SKIA__ || __MACOS__
+#if __SKIA__
 		if (string.IsNullOrEmpty(args))
 		{
 			return false;
@@ -186,12 +206,12 @@ partial class App
 				throw new ArgumentException("Group index is out of range.");
 			}
 
-			Console.WriteLine($"Screenshots path: {screenshotsPath}");
-			Console.WriteLine($"Total groups: {totalGroups}");
-			Console.WriteLine($"Current group index: {currentGroupIndex}");
-
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
+				Console.WriteLine($"Screenshots path: {screenshotsPath}");
+				Console.WriteLine($"Total groups: {totalGroups}");
+				Console.WriteLine($"Current group index: {currentGroupIndex}");
+
 				if (MainWindow is null)
 				{
 					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");

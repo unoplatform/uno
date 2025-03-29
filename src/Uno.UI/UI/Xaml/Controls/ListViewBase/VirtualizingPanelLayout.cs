@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 	[Microsoft.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 		/// <summary>
 		/// Determines if the owner Panel is inside a popup. Used to determine
 		/// if the computation of the breadth should be using the parent's stretch
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				var stretchOwner =
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 					IsInsidePopup ? (FrameworkElement)OwnerPanel :
 #endif
 					XamlParent;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Uno.Extensions;
@@ -12,12 +13,8 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
-using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -28,9 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			var navView = new MUXC.NavigationView()
