@@ -22,7 +22,7 @@ rawurlencode() {
 }
 
 # For Skia-WASM, SamplesApp is set up so that when saving files, it
-# sends a POST requpsest at HOSTNAME:PORT+1 where HOSTNAME and PORT are
+# sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
 # the hostname and port of the server that serves the SamplesApp
 python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
 python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
@@ -47,7 +47,7 @@ while [ $TRY_COUNT -lt 5 ]; do
     killall -9 Xvfb || true
     killall -9 chrome_crashpad_handler || true
     rm -fr /tmp/.X99-lock || true
-    xvfb-run -e /dev/stdout --auto-servernum google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+    xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
