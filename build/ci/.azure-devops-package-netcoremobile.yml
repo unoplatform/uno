@@ -8,7 +8,6 @@ jobs:
   displayName: 'Build Binaries'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
-  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 

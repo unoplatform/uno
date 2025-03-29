@@ -11,18 +11,10 @@ parameters:
   XAML_FLAVOR_BUILD: ''
 
 jobs:
-- template: .azure-devops-package-skia-native-assets.yml
-  parameters:
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
-    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
-    macOSImageName: ${{ parameters.vmMacImage }}
-    AssetNativeSuffix: '-SamplesApp'
-
 - job: Skia_Tests_Build
   displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
-  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -53,7 +45,7 @@ jobs:
   - task: DownloadPipelineArtifact@2
     displayName: Restoring macOS native assets
     inputs:
-      artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog

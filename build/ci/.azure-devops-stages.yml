@@ -16,8 +16,8 @@ stages:
     - template: .azure-devops-spell-check.yml
     - template: .azure-devops-markdown-lint.yml
 
-- stage: binaries_build_winui
-  displayName: Build Binaries WinUI
+- stage: binaries_build_native_macos
+  displayName: Build native binaries
   dependsOn:
     - Setup
 
@@ -27,7 +27,14 @@ stages:
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
+ 
 
+- stage: binaries_build_winui
+  displayName: Build Binaries WinUI
+  dependsOn:
+    - binaries_build_native_macos
+
+  jobs:
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'

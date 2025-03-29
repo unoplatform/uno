@@ -31,6 +31,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchDepth: 1
 
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-windows.yml
@@ -41,7 +42,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)\logs\build-skia-wasm-browser.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net9.0 -p:UnoTargetFrameworkOverride=net9.0 -p:PreBuildUnoUITasks=true /bl:$(build.artifactstagingdirectory)\logs\build-skia-wasm-browser.binlog
     displayName: Build Wasm Skia Head
 
   - task: PublishPipelineArtifact@1
