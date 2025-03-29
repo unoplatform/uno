@@ -83,7 +83,6 @@ namespace Uno.UWPSyncGenerator
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.AndroidSymbol), attributesToGenerate);
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.IOSSymbol), attributesToGenerate);
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.TvOSSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.MacOSSymbol), attributesToGenerate);
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.SkiaSymbol), attributesToGenerate);
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.WasmSymbol), attributesToGenerate);
 			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.UnitTestsymbol), attributesToGenerate);
