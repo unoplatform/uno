@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Helpers;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
