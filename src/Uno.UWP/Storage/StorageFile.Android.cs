@@ -61,7 +61,7 @@ namespace Windows.Storage
 
 				Stream GetAsset()
 				{
-					if (DrawableHelper.FindResourceIdFromPath(path) is { } resourceId)
+					if (DrawableHelper.FindResourceIdFromPath(path, logFailure: false) is { } resourceId)
 					{
 						return ContextHelper.Current.Resources!.OpenRawResource(resourceId);
 					}
