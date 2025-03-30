@@ -145,4 +145,4 @@ To run the script on Windows:
 
 ## Import Uno Extensions and Tools docs
 
-[!INCLUDE ../external/  <!--https://github.com/unoplatform/uno.extensions/blob/main/doc/README.md -->]
+[!INCLUDE [Import external docs](../../external/uno.extensions/doc/README.md)]
