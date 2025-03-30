@@ -24,12 +24,6 @@ public class Given_ShapeVisual
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
-		if (OperatingSystem.IsBrowser())
-		{
-			Assert.Inconclusive("this test is failing on browser, see https://github.com/unoplatform/uno-private/issues/704");
-			return;
-		}
-
 		// runtime test version of the ShapeVisualClipping sample
 
 		// The reference images are currently not very accurate due to the commented clipping line in ShapeVisual.Paint.
