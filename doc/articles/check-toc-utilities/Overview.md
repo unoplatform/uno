@@ -1,7 +1,7 @@
 ---
 uid: Uno.Contributing.check-toc.Overview
 ---
-# Overview
+# Toc Checker Overview
 
 The [`check_toc.ps1`](../check_toc.ps1) script helps maintain the structure and integrity of your documentation by:
 

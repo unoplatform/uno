@@ -358,7 +358,7 @@
         - name: Adding documentation
           href: uno-development/doc-on-docs.md
         - name: DocFX
-          href: uno-development/docfx.md
+          href: xref:Uno.Contributing.DocFx
         - name: Toc Checker
           href: xref:Uno.Contributing.check-toc.Overview
           items:
@@ -400,7 +400,7 @@
           - name: UI tests with Uno.UITest
             href: xref:Uno.Contributing.Tests.CreateUITests
           - name: Testing PowerShell Scripts with Pester
-            href: Uno.Contributing.Tests.PowerShell-Pester-Tests
+            href: xref:Uno.Contributing.Tests.PowerShell-Pester-Tests
           - name: Using the SamplesApp
             href: xref:Uno.Contributing.SamplesApp
       - name: Inspecting the visual tree

@@ -7,15 +7,13 @@ uid: Uno.Contributing.DocFx
 # The Uno documentation website and DocFX
 
 *[TOC]: Table of Contents
-*[HTML]: Hypertext Markup Language
 *[docs]: documentation
-*[doc file]: markdown file
 
 Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [HTML files](xref:Uno.Documentation.Intro).
 
 ## Linking to the TOC
 
-Normally when you add a new doc file, you also add it to [articles/toc.yml](../toc.yml). This allows it to show up in the left sidebar TOC on the docs website.
+Normally when you add a new markdown file, you also add it to [articles/toc.yml](../../toc.yml). This allows it to show up in the left sidebar TOC on the docs website.
 
 ### Checking Links in the TOC
 
