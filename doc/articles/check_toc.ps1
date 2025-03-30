@@ -9,9 +9,9 @@ function Invoke-TocCheck {
     )
 
     begin {
-        Write-Verbose "Loading utility scripts from Util_Loader.ps1"
-        . .\check-toc-utilities\Util_Loader.ps1
-
+        Write-Verbose "Loading utility scripts from Import-TocCheckerUtils.ps1"
+        . .\check-toc-utilities\Import-TocCheckerUtils.ps1
+        Import-TocCheckerUtils -UtilsFolder $PSCommandPath.Replace('check-toc.ps1', 'check-toc-utilities') -ExcludeFiles @(Get-IrrelevantFiles)
         Write-Host "Dot-sourced Functions in Scope:" -ForegroundColor Cyan
         Get-Command -CommandType Function |
             Where-Object { $_.Name -match 'Get-MarkdownHeader|Get-UnlinkedFiles' } |
