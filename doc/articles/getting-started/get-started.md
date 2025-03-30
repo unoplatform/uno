@@ -6,9 +6,9 @@ uid: Uno.GetStarted
 ## Quick Start
 
 1. Install the [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet/latest) to get `dotnet` available in your commandline.
-2. Install and run [Uno.Check](./external/uno.check/doc/using-uno-check.md) to set up all the required pre-requisites.
-   a. Detailed [Configuration Options](./external/uno.check/doc/configuring-uno-check.md) for Uno-Check
-   b. If you run into issues with it, see [Troubleshooting Uno-Check](./external/uno.check/doc/troubleshooting-uno-check.md)
+2. Install and run [Uno.Check](xref:UnoCheck.UsingUnoCheck) to set up all the required pre-requisites.
+   a. Detailed [Configuration Options](xref:UnoCheck.Configuration) for Uno-Check
+   b. If you run into issues with it, see [Troubleshooting Uno-Check](xref:UnoCheck.Troubleshooting)
 3. Download the Uno Platform extension for your IDE:
 
    <!-- markdownlint-disable MD001 MD009 MD033-->
