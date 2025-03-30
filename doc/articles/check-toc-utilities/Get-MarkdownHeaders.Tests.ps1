@@ -10,7 +10,7 @@ Describe 'Get-MarkdownHeader' {
         # Arrange
         $lines = @(
             '---',
-            'title: Example Title',
+            #'title: Example Title', # TODO: Uncomment this line if the title is transferred correctly as header in the future from Docfx
             '---',
             '<!-- TODO: ## Some commented Title which should not be included in TOC -->',
             '<!--',
@@ -40,24 +40,25 @@ Describe 'Get-MarkdownHeader' {
         # Assert
         $header | Should -Be 'Header 2'
     }
-    It 'Returns the title if no Markdown header is found' {
-        # Arrange
-        $lines = @(
-            '---',
-            'title: Example Title',
-            '---',
-            '<!-- TODO: ## Some commented Title which should not be included in TOC -->',
-            '<!--',
-            '## Another commented Title which should not be included in TOC',
-            '-->'
-        )
+    # TODO: Uncomment this Test if the title is transferred correctly as header in the future from Docfx
+    # It 'Returns the title if no Markdown header is found' {
+    #     # Arrange
+    #     $lines = @(
+    #         '---',
+    #         'title: Example Title',
+    #         '---',
+    #         '<!-- TODO: ## Some commented Title which should not be included in TOC -->',
+    #         '<!--',
+    #         '## Another commented Title which should not be included in TOC',
+    #         '-->'
+    #     )
 
-        # Act
-        $header = Get-MarkdownHeader -Lines $lines -Verbose
+    #     # Act
+    #     $header = Get-MarkdownHeader -Lines $lines -Verbose
 
-        # Assert
-        $header | Should -Be 'Example Title'
-    }
+    #     # Assert
+    #     $header | Should -Be 'Example Title'
+    # }
 
     It 'Returns null if no header or title is found' {
         # Arrange

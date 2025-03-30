@@ -20,14 +20,16 @@ function Get-MarkdownHeader {
         if ($line -match '-->') { $inComment = $false }
     }
 
-    # If no header is found, return the first line that starts with 'title:'
-    foreach ($line in $Lines) {
-      #  Write-Verbose "Checking for title in line: $line"
-        if ($line -match '^title:\s*(.+)') {
-       #     Write-Verbose "Matched title: $matches[1]"
-            return $matches[1].Trim()
-        }
-    }
+    # TODO: Uncomment the following code if at any point, the title is transferred as header in Docfx output
+
+    ## If no header is found, return the first line that starts with 'title:'
+    # foreach ($line in $Lines) {
+      ##  Write-Verbose "Checking for title in line: $line"
+    #    if ($line -match '^title:\s*(.+)') {
+       ##     Write-Verbose "Matched title: $matches[1]"
+    #        return $matches[1].Trim()
+    #    }
+    #}
 
     # If no header is found, return $null
   #  Write-Verbose "No header or title found"
