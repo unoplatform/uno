@@ -56,4 +56,4 @@ Utility functions are dynamically imported from [`Import-TocCheckerUtils.ps1`](.
 
 ## 🌐 Further Reading
 
-- [!INCLUDE [Clean Architecture Principles Inline](../includes/clean-architecture-principles-inline.md)]
+- [!INCLUDE [Clean Architecture Principles Inline](xref:Uno.Clean-Architecture-Inline)]
