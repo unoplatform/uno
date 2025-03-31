@@ -94,7 +94,6 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private readonly ResourceFile[] _resourceFiles;
 
 			public bool EnableFuzzyMatching { get; set; } = true;
-			public bool DisableBuildReferences { get; set; }
 			public Dictionary<string, string>? GlobalConfigOverride { get; set; }
 
 			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
@@ -216,10 +215,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
-				if (!DisableBuildReferences)
-				{
-					project = project.AddMetadataReferences(BuildUnoReferences());
-				}
+				project = project
+					.AddMetadataReferences(BuildUnoReferences());
 
 				return base.ApplyCompilationOptions(project);
 			}

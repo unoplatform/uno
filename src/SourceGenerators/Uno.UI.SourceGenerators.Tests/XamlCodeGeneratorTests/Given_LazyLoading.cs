@@ -56,7 +56,6 @@ public class Given_LazyLoading
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -115,7 +114,6 @@ public class Given_LazyLoading
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
