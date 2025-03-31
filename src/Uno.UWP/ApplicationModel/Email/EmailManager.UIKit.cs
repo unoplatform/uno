@@ -83,6 +83,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 	}
 
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 	public class MailComposeViewControllerDelegate : MFMailComposeViewControllerDelegate
 	{
 		public override void Finished(MFMailComposeViewController controller, MFMailComposeResult result, NSError? error)
@@ -90,4 +91,5 @@ namespace Windows.ApplicationModel.Email
 			controller.DismissViewController(true, null);
 		}
 	}
+#endif
 }
