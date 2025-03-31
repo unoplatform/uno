@@ -24,6 +24,9 @@
 		<CommonOverridePackageId>uno.winrt</CommonOverridePackageId>
 
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
+
+		<!-- Required to get the generated JS file included in the output assembly -->
+		<_UnoRequiresEmbeddedResourcesInjection>true</_UnoRequiresEmbeddedResourcesInjection>
 	</PropertyGroup>
 	
 	<PropertyGroup>
