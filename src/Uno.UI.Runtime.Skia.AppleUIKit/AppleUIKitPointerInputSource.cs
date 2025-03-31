@@ -162,7 +162,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
+#if __TVOS__
+		var position = touch.LocationInView(source);
+#else
 		var position = touch.GetPreciseLocation(source);
+#endif
 		var pointerDeviceType = touch.Type.ToPointerDeviceType();
 		var isInContact = touch.Phase == UITouchPhase.Began
 			|| touch.Phase == UITouchPhase.Moved
@@ -212,7 +216,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		: null;
 
 	private void TraceStart(UIView source, NSSet touches, [CallerMemberName] string action = "")
+#if __TVOS__
+		=> _trace?.Invoke($"<{action} touches={touches.Count} src={source.GetDebugName()}>");
+#else
 		=> _trace?.Invoke($"<{action} touches={touches.Count} src={source.GetDebugName()} multi={source.MultipleTouchEnabled} exclusive={source.ExclusiveTouch}>");
+#endif
 
 	private void TraceSingle(PointerEventArgs args, [CallerMemberName] string action = "")
 		=> _trace?.Invoke($"{action}: {args}>");
@@ -221,6 +229,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		=> _trace?.Invoke($"</{action}>");
 
 	private void TraceError(Exception error, [CallerMemberName] string action = "")
-		=> _trace?.Invoke($"</{action} error=true>\r\n" + error); 
+		=> _trace?.Invoke($"</{action} error=true>\r\n" + error);
 	#endregion
 }
