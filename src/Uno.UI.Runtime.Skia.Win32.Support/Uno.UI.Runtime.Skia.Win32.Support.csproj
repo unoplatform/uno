@@ -11,7 +11,7 @@
 		<PlatformTarget>x64</PlatformTarget>
 		<Description>Support assembly for Uno Platform Skia Win32 Runtime</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Win32</PackageId>
+		<CommonOverridePackageId>uno.winui.runtime.skia.win32</CommonOverridePackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
