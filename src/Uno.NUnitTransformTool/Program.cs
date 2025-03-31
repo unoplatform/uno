@@ -65,14 +65,14 @@ namespace Uno.ReferenceImplComparer
 				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
 				var simpleName = SimpleNameRegex().Replace(name, "");
 
-				failedTests.Add(simpleName);
+				failedTests.Add("FullyQualifiedName=" + simpleName);
 			}
 
 			// Add a dummy line to be used to rerun the test running in case 
 			// tests get canceled. This condition happens when running nunit-console
 			// and the retry attribute which markes runners as cancelled and fails any
 			// subsequent test.
-			failedTests.Add("invalid-test-for-retry");
+			failedTests.Add("FullyQualifiedName=invalid-test-for-retry");
 
 			File.WriteAllText(outputFile, string.Join(" | ", failedTests));
 
