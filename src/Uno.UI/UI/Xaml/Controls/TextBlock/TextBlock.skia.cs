@@ -30,10 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
-		public TextBlock()
+		public TextBlock() : this(false)
+		{
+		}
+
+		internal TextBlock(bool isInsideTextBox)
 		{
 			UpdateLastUsedTheme();
-			_textVisual = new TextVisual(Visual.Compositor, this);
+			_textVisual = new TextVisual(Visual.Compositor, this, isInsideTextBox);
 
 			Visual.Children.InsertAtBottom(_textVisual);
 
@@ -237,7 +241,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Note: this is a very close copy of TextBox.GenerateChunks. Note how, unlike TextBox, we don't need
 		// to add any caching here, since chunked-selection in TextBlocks only occurs on double-tapping,
 		// which is a lot less frequent than the TextBox scenarios (e.g. holding ctrl+shift+<right|left>).
-		private (int start, int length) GetChunkAt(string text, int index)
+		private static (int start, int length) GetChunkAt(string text, int index)
 		{
 			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
 			// \r and \t are always their own chunks
