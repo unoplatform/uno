@@ -28,7 +28,7 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="Microsoft.Testing.Extensions.HangDump" Version="1.6.3" />
+		<PackageReference Include="Microsoft.Testing.Extensions.HangDump" />
 	</ItemGroup>
 
 	<ItemGroup>
