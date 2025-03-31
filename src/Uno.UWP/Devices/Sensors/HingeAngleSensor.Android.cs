@@ -80,7 +80,7 @@ namespace Windows.Devices.Sensors
 			{
 				if (_hingeAngleSensor == null && !ApiExtensibility.CreateInstance(owner, out _hingeAngleSensor))
 				{
-					owner.Log().Warn("You need to reference Uno.UI.Foldable NuGet package from your project to use this feature.");
+					owner.Log().Warn("You need to add the 'Foldable' Uno Feature to your project to use this API.");
 				}
 			}
 		}
