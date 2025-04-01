@@ -4,9 +4,9 @@
     "projects": [
       "AddIns\\Uno.UI.GooglePlay\\Uno.UI.GooglePlay.netcoremobile.csproj",
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.netcoremobile.csproj",
-      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.reference.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.Win32\\Uno.UI.MediaPlayer.Skia.Win32.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.X11\\Uno.UI.MediaPlayer.Skia.X11.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
