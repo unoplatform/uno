@@ -487,13 +487,13 @@
         - name: WinUI links
           items:
             - name: Overview
-              href: winui-doc-links.md
+              href: xref:Uno.Development.WinUIDoc
             - name: Tutorials
-              href: winui-doc-links-tutorials.md
+              href: Uno.Development.WinUITutorialsDoc
             - name: Development
-              href: winui-doc-links-development.md
+              href: xref:Uno.Development.WinUIDevelopmentDoc
             - name: Design
-              href: winui-doc-links-design.md
+              href: xref:Uno.Development.WinUIDesignDoc
 
     - name: UI
       items:
@@ -527,194 +527,194 @@
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
-              href: Uno.Controls.ListViewBase
+              href: xref:Uno.Controls.ListViewBase
             - name: Lottie animations
-              href: features/Lottie.md
+              href: xref:Uno.Features.Lottie
             - name: MapControl
-              href: controls/map-control-support.md
+              href: xref:Uno.Controls.MapControl
             - name: MediaPlayerElement
-              href: controls/MediaPlayerElement.md
+              href: xref:Uno.Controls.MediaPlayerElement
             - name: MenuFlyout
-              href: controls/MenuFlyout.md
+              href: xref:Uno.Controls.MenuFlyout
             - name: NavigationView
-              href: controls/NavigationView.md
+              href: xref:Uno.Controls.NavigationView
             - name: Native control styles
-              href: native-styles.md
+              href: xref:Uno.Development.NativeViews
             - name: Other features
               href: xref:Uno.Development.AdditionalFeatures
             - name: Pivot
-              href: controls/Pivot.md
+              href: xref:Uno.Controls.Pivot
             - name: Popup
-              href: controls/Popup.md
+              href: xref:Uno.Controls.Popup
             - name: ProgressRing
-              href: features/progressring.md
+              href: xref:Uno.Features.ProgressRing
             - name: RefreshContainer (Pull to Refresh)
-              href: controls/RefreshContainer.md
+              href: xref:Uno.Controls.RefreshContainer
             - name: ScrollViewer
-              href: controls/ScrollViewer.md
+              href: xref:Uno.Controls.ScrollViewer
             - name: SKCanvasElement
               href: xref:Uno.Controls.SKCanvasElement
             - name: TextBox
-              href: controls/TextBox.md
+              href: xref:Uno.Controls.TextBox
             - name: TimePicker
-              href: controls/TimePicker.md
+              href: xref:Uno.Controls.TimePicker
             - name: ToggleSwitch
-              href: controls/ToggleSwitch.md
+              href: xref:Uno.Controls.ToggleSwitch
             - name: URI Protocol activation
-              href: features/protocol-activation.md
+              href: xref:Uno.Features.ProtocolActivation
             - name: Using pointer cursors
-              href: features/cursors.md
+              href: xref:Uno.Features.Cursors
             - name: Using SVG images
-              href: features/svg.md
+              href: xref:Uno.Features.SVG
             - name: VisibleBoundsPadding
               href: xref:Uno.Features.VisibleBoundsPadding
             - name: WebView (WebView2)
-              href: controls/WebView.md
+              href: xref:Uno.Controls.WebView
 
       - name: Features
         items:
         - name: Accessibility
-          href: features/working-with-accessibility.md
+          href: xref:Uno.Features.Accessibility
         - name: Animations
-          href: features/working-with-animations.md
+          href: xref:Uno.Features.Animations
         - name: Assets and image display
-          href: features/working-with-assets.md
+          href: xref:Uno.Features.Assets
         - name: Build telemetry
-          href: uno-toolchain-telemetry.md
+          href: xref:Uno.Development.ToolchainTelemetry
         - name: Composition API
-          href: composition.md
+          href: xref:Uno.Development.Composition
         - name: Dialogs
-          href: features/dialogs.md
+          href: xref:Uno.Features.Dialogs
         - name: Fluent styles
-          href: features/fluent-styles.md
+          href: xref:Uno.Features.FluentStyles
         - name: Focus management
-          href: features/focus-management.md
+          href: xref:Uno.Features.FocusManagement
         - name: Fonts
-          href: features/custom-fonts.md
+          href: xref:Uno.Features.CustomFonts
         - name: Markup Extensions
-          href: features/windows-ui-markup-extensions.md
+          href: xref:Uno.Features.WinUIMarkupExtension
         - name: Native frame navigation
-          href: features/native-frame-nav.md
+          href: xref:Uno.Features.NativeFrameNav
         - name: Orientation
-          href: features/orientation.md
+          href: xref:Uno.Features.Orientation
         - name: Routed Events
-          href: features/routed-events.md
+          href: xref:Uno.Features.RoutedEvents
         - name: Shapes & Brushes
-          href: features/shapes-and-brushes.md
+          href: xref:Uno.Features.ShapesAndBrushes
         - name: String resources and localization
-          href: features/working-with-strings.md
+          href: xref:Uno.Features.Localization
         - name: Succinct syntax
-          href: features/windows-ui-succinct-syntax.md
+          href: xref:Uno.Features.WinUISuccinctSyntax
         - name: Themes
-          href: features/working-with-themes.md
+          href: xref:Uno.Features.Themes
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
-          href: features/pointers-keyboard-and-other-user-inputs.md
+          href: xref:Uno.Features.UserInputs
         - name: Using Fluent styles in legacy apps
-          href: features/using-winui2.md
+          href: xref:Uno.Features.WinUI2
         - name: Windowing
-          href: features/windows-ui-xaml-window.md
+          href: xref:Uno.Features.WinUIWindow
         - name: x:Bind
-          href: features/windows-ui-xaml-xbind.md
+          href: xref:Uno.Features.WinUIxBind
 
       - name: 3rd-party libraries
-        href: supported-libraries.md
+        href: xref:Uno.Development.SupportedLibraries
 
     - name: Non-UI
       items:
       - name: Accelerometer
-        href: features/accelerometer.md
+        href: xref:Uno.Features.Accelerometer
       - name: Android TV
-        href: features/android-tv.md
+        href: xref:Uno.Features.AndroidTv
       - name: App Actions
-        href: features/windows-ui-startscreen.md
+        href: xref:Uno.Features.WinUIStartScreen
       - name: App Close Handler
-        href: features/app-close-handler.md
+        href: xref:Uno.Features.AppCloseHandler
       - name: App Suspension
-        href: features/windows-ui-xaml-application.md
+        href: xref:Uno.Features.WinUIApplication
       - name: Application Data and Settings
-        href: features/applicationdata.md
+        href: xref:Uno.Features.ApplicationData
       - name: Badge Notifications
-        href: features/windows-ui-notifications.md
+        href: xref:Uno.Features.WinUINotifications
       - name: Barometer
-        href: features/barometer.md
+        href: xref:Uno.Features.Barometer
       - name: Battery Information
-        href: features/windows-system-power.md
+        href: xref:Uno.Features.WSPower
       - name: Bluetooth
-        href: features/bluetoothdevice.md
+        href: xref:Uno.Features.BluetoothDevice
       - name: Capture (Camera)
-        href: features/windows-media-capture.md
+        href: xref:Uno.Features.Capture
       - name: Clipboard
-        href: features/clipboard.md
+        href: xref:Uno.Features.Clipboard
       - name: Compass
-        href: features/compass.md
+        href: xref:Uno.Features.Compass
       - name: Contacts
-        href: features/windows-applicationmodel-contacts.md
+        href: xref:Uno.Features.WAMContacts
       - name: Credential Storage
-        href: features/PasswordVault.md
+        href: xref:Uno.Features.PasswordVault
       - name: Device Enumeration
-        href: features/windows-devices-enumeration.md
+        href: xref:Uno.Features.WDEnumeration
       - name: Device Information
-        href: features/windows-system-profile.md
+        href: xref:Uno.Features.WSProfile
       - name: E-mail
-        href: features/windows-applicationmodel-email.md
+        href: xref:Uno.Features.WAMEmail
       - name: File and Folder Pickers
-        href: features/windows-storage-pickers.md
+        href: xref:Uno.Features.WSPickers
       - name: File Management
-        href: features/file-management.md
+        href: xref:Uno.Features.FileManagement
       - name: Flashlight
-        href: features/flashlight.md
+        href: xref:Uno.Features.Flashlight
       - name: Gamepad
-        href: features/gamepad.md
+        href: xref:Uno.Features.Gamepad
       - name: Geolocation (GPS)
-        href: features/windows-devices-geolocation.md
+        href: xref:Uno.Features.WDGeolocation
       - name: Gyrometer
-        href: features/gyrometer.md
+        href: xref:Uno.Features.Gyrometer
       - name: Haptics
-        href: features/windows-devices-haptics.md
+        href: xref:Uno.Features.WDHaptics
       - name: Hardware back button
-        href: features/hardware-back-button.md
+        href: xref:Uno.Features.HardwareBackButton
       - name: Keeping Screen On
-        href: features/windows-system-display.md
+        href: xref:Uno.Features.WSDisplay
       - name: Light Sensor
-        href: features/lightsensor.md
+        href: xref:Uno.Features.LightSensor
       - name: Magnetometer
-        href: features/magnetometer.md
+        href: xref:Uno.Features.Magnetometer
       - name: MIDI
-        href: features/windows-devices-midi.md
+        href: xref:Uno.Features.WDMidi
       - name: Network Information
-        href: features/windows-networking.md
+        href: xref:Uno.Features.WNetworking
       - name: Orientation Sensor
-        href: features/orientation-sensor.md
+        href: xref:Uno.Features.OrientationSensor
       - name: Package Information
-        href: features/windows-applicationmodel.md
+        href: xref:Uno.Features.WAM
       - name: Phone Calls
-        href: features/windows-applicationmodel-calls.md
+        href: xref:Uno.Features.WAMCalls
       - name: Proximity Sensor
-        href: features/proximity-sensor.md
+        href: xref:Uno.Features.ProximitySensor
       - name: Settings
         href: features/settings.md
       - name: Sharing
-        href: features/windows-applicationmodel-datatransfer.md
+        href: xref:Uno.Features.WAMDataTransfer
       - name: SMS
-        href: features/windows-applicationmodel-chat.md
+        href: xref:Uno.Features.WAMChat
       - name: Speech Recognition
-        href: features/SpeechRecognition.md
+        href: xref:Uno.Features.SpeechRecognition
       - name: Step Counter
-        href: features/step-counter.md
+        href: xref:Uno.Features.StepCounter
       - name: Store Context
-        href: features/windows-ui-storecontext.md
+        href: xref:Uno.Features.StoreContext
       - name: Title Bar Customization
-        href: features/windows-ui-viewmanagement.md
+        href: xref:Uno.Features.WinUIViewManagement
       - name: URI Launcher
-        href: features/windows-system.md
+        href: xref:Uno.Features.WS
       - name: Vibration
-        href: features/windows-phone-devices-notification-vibrationdevice.md
+        href: xref:Uno.Features.WPDNotification
       - name: Wallpaper and Lock Screen
-        href: features/windows-system-userprofile.md
+        href: xref:Uno.Features.WSUserProfile
       - name: Web Authentication Broker
-        href: features/web-authentication-broker.md
+        href: xref:Uno.Features.WAB
       - name: Working with cookies
-        href: features/working-with-cookies.md
+        href: xref:Uno.Features.Cookies
 
 - name: Extensions
   # topicHref: external/uno.extensions/doc/ExtensionsOverview.md
