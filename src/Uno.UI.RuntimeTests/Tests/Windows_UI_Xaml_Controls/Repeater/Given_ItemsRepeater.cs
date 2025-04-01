@@ -505,11 +505,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			var sut = SUT.Create(
 				source: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 				itemTemplate: XamlHelper.LoadXaml<DataTemplate>("""
-					<Border>
-						<Grid>
-							<NumberBox Value="10" />
-						</Grid>
-					</Border>
+					<DataTemplate>
+						<Border>
+							<Grid>
+								<NumberBox Value="10" />
+							</Grid>
+						</Border>
+					</DataTemplate>
 				"""),
 				viewport: new Size(120, 500)
 			);
