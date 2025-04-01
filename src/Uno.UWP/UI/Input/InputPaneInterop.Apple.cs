@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System.Diagnostics;
-using Android.Views.InputMethods;
+using UIKit;
 
 namespace Windows.UI.Input;
 
@@ -11,7 +11,7 @@ internal static class InputPaneInterop
 
 	internal static bool TryHide()
 	{
-		UIKit.UIApplication.SharedApplication.KeyWindow.EndEditing(true);
+		UIApplication.SharedApplication.KeyWindow?.EndEditing(true);
 		return true;
 	}
 }
