@@ -1,6 +1,7 @@
 using System;
-using Windows.Foundation;
+using Android.App;
 using Android.Views;
+using Android.Widget;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Media.Playback;
@@ -20,10 +21,22 @@ internal class AndroidSkiaMediaPlayerPresenterExtension : IMediaPlayerPresenterE
 
 	private void SetVideoSurface(IVideoSurface videoSurface)
 	{
-		_presenter.Child = new ContentPresenter()
+		if (videoSurface is View view)
 		{
-			Content = videoSurface
-		};
+			// We wrap the video view in a FrameLayout because
+			// _presenter.MediaPlayer.UpdateVideoStretch uses the
+			// layout dimensions of the parent to stretch the video
+			// view within that parent. Without the FrameLayout,
+			// the parent is UnoSKSurfaceView which covers the whole
+			// screen. This way, the parent has the correct size that
+			// the video view can stretch within.
+			var layout = new FrameLayout(Application.Context);
+			layout.AddView(view);
+			_presenter.Child = new ContentPresenter
+			{
+				Content = layout
+			};
+		}
 	}
 
 	internal void ApplyStretch()
