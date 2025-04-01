@@ -332,11 +332,11 @@
     - name: Contributing
       items:
       - name: Overview
-        href: uno-development/contributing-intro.md
+        href: xref:Uno.Contributing.Intro
       - name: Code of Conduct
         href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
       - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
+        href: xref:Uno.Contributing.WaysToContribute
       - name: How Uno works
         items:
           - name: Overview
@@ -344,11 +344,11 @@
           - name: Android
             href: xref:Uno.Contributing.Android
           - name: Layouting in Android
-            href: Uno.Contributing.LayoutingAndroid
+            href: Uno.Contributing.Layouting.Android
           - name: iOS
             href: Uno.Contributing.iOS
           - name: Layouting in iOS
-            href: xref:Uno.Contributing.LayoutingiOS
+            href: xref:Uno.Contributing.Layouting.iOS
           - name: WASM
             href: xref:Uno.Contributing.Wasm
           - name: macOS
@@ -366,18 +366,9 @@
       - name: Guidelines for Contributing Documentation
         items:
         - name: Adding documentation
-          href: uno-development/doc-on-docs.md
+          href: xref:Uno.Contributing.Docs
         - name: DocFX
-          href: uno-development/docfx.md
-        - name: Toc Checker
-          href: xref:Uno.Contributing.check-toc.Overview
-          items:
-          - name: Overview
-            href: xref:Uno.Contributing.check-toc.Overview
-          - name: How-To Use the TOC Checker
-            href: xref:Uno.Contributing.check-toc.Guide
-          - name: Utility Functions for the TOC Checker
-            href: xref:Uno.Contributing.check-toc.Utilities
+          href: xref:Uno.Contributing.DocFx
       - name: Contributing to Uno.UI
         topicHref: xref:Uno.Contributing.BuildingUno
         items:
@@ -386,7 +377,7 @@
           - name: Debugging Uno.UI
             href: xref:Uno.Contributing.DebuggingUno
           - name: Building Uno.UI for macOS using Visual Studio for Mac
-            href: xref:Uno.Contributing.BuildingUnomacOS
+            href: xref:Uno.Contributing.BuildingUno.macOS
           - name: Guidelines for code style
             href: xref:Uno.Contributing.CodeStyle
       - name: Git
@@ -416,11 +407,11 @@
       - name: Inspecting the visual tree
         href: xref:Uno.Contributing.InspectVisualTree
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: xref:Uno.Contributing.ImplementWinUIWinRTAPI
+        href: xref:Uno.Contributing.ImplementWinUIWinRT-API
       - name: Advanced topics
         items:
           - name: Adding functionality with API extensions
-            href: uno-development/api-extensions.md
+            href: xref:Uno.Contributing.ApiExtensions
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio

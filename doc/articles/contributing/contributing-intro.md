@@ -30,7 +30,7 @@ See [Uno's code conventions and common patterns here](xref:Uno.Contributing.Code
 
 ## Implementing a new feature
 
-See how to implement a new [feature here](xref:Uno.Contributing.ImplementWinUIWinRTAPI).
+See how to implement a new [feature here](xref:Uno.Contributing.ImplementWinUIWinRT-API).
 
 ## Experimenting with Samples App
 
@@ -38,7 +38,7 @@ The [Samples App](xref:Uno.Contributing.SamplesApp) is the development app conta
 
 This app is available live at these locations, built from the default branch:
 
-- WebAssembly: https://aka.platform.uno/wasm-samples-app
+- [WebAssembly: `https://aka.platform.uno/wasm-samples-app`](https://aka.platform.uno/wasm-samples-app)
 
 ## Adding tests
 
@@ -70,9 +70,9 @@ Uno uses [Dependabot to automatically update external dependencies](xref:Uno.Con
 
 Read the [guidelines for issue triage](xref:Uno.Contributing.UpdatingDependencies).
 
-Tools and procedures for creating stable releases are described [here](xref:Uno.Contributing.ReleaseProcedure).
+- [Information about Tools and procedures for creating stable releases](xref:Uno.Contributing.ReleaseProcedure).
 
-Build artifacts produced by the CI are documented [here](xref:Uno.Contributing.Artifacts).
+- [Information about Build artifacts produced by the CI](xref:Uno.Contributing.Artifacts).
 
 ### More questions?
 
