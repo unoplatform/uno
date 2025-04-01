@@ -7,10 +7,14 @@ then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
 
 	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	# GridView and ListView are also disabled for instabilities
 	# runGroup is used to parallelize the snapshots tests on multiple agents
 	export TEST_FILTERS=" \
 		FullyQualifiedName ~ SamplesApp.UITests.Snap \
 		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.CommandBar \
+		& TestCategory !~ automated:SamplesApp.Windows_UI_Xaml_Controls.ListView \
+		& TestCategory !~ automated:GenericApp.Views.Content.UITests.GridView \
+		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.GridView \
 		& TestCategory ~ runGroup:$UITEST_SNAPSHOTS_GROUP \
 	"
 else
@@ -238,7 +242,7 @@ else
 	echo "  Test filters: $UNO_TESTS_FILTER"
 
 	## Run tests
-	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
+	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
 fi
 
 # export the simulator logs

@@ -78,7 +78,9 @@
 
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+			</PropertyGroup>
 
+			<PropertyGroup Condition="$(RuntimeIdentifier.Contains('arm64'))">
 				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
 				<UseInterpreter>true</UseInterpreter>
