@@ -75,18 +75,18 @@ The brush currently has an important limitation on Android, iOS, and macOS: it c
         <RowDefinition />
         <RowDefinition />
     </Grid.RowDefinitions>
-    
-    <!-- This border represents the background, 
+
+    <!-- This border represents the background,
         it covers the entire parent area -->
     <Border Grid.RowSpan="2">
         <Border.Background>
-            <AcrylicBrush 
-                AlwaysUseFallback="False" 
-                TintColor="Red" 
+            <AcrylicBrush
+                AlwaysUseFallback="False"
+                TintColor="Red"
                 TintOpacity="0.8" />
         </Border.Background>
     </Border>
-    
+
     <TextBox Text="Some input" />
     <Button Grid.Row="1">My content</Button>
 </Grid>
@@ -106,7 +106,7 @@ Where you can use which brushes
 | Usage                                        | SolidColorBrush | ImageBrush           | GradientBrush   |
 | -------------------------------------------- | --------------- | -------------------- | --------------- |
 | `Background` property (many controls/panels) | Yes             | Yes (except on Wasm) | Yes             |
-| `BorderBrush` (`Border`, `Panel`)            | Yes             | No                   | Yes (Skia, Android), partial (iOS, WASM) [see below] |
+| `BorderBrush` (`Border`, `Panel`)            | Yes             | No                   | Yes (Skia, Android), partial (iOS, WASM) [see below](#gradient-border-brush-limitations-on-wasm-and-ios) |
 | `Foreground` (`TextBlock`)                   | Yes             | No                   | Yes (Wasm only) |
 | `Fill` (Shapes)                              | Yes             | Yes (except on Wasm) | Yes             |
 | `Stroke` (Shapes)                            | Yes             | No                   | Yes (Wasm only) |

@@ -36,6 +36,7 @@ It is crucial to set the `XamlRoot` property before calling `ShowAsync`. This wa
 ### Opening a `ContentDialog` from a Model/ViewModel
 
 When you want to open a `ContentDialog` from a Model or ViewModel, you can pass the `XamlRoot` from the view to the model or view model by creating a service (e.g., `IXamlRootProvider`) that is initialized at the start of the app with the XamlRoot of the main window.
+<!-- TODO: Add this magic IXamlRootProvider to Uno somewhere! Naming something not existing here, where someone new could just discover this whole topic will most likly not beeing able to get this correctly set up (remarks to UI thread and non UI-Thread)! -->
 
 Here is a more detailed example of how to display a `ContentDialog` with result handling:
 
@@ -67,6 +68,15 @@ private async Task DisplayDeleteFileDialog()
     }
 }
 ```
+
+---
+> [!NOTE]
+> This example dialog task must run on the UI thread. If your app uses XAML markup, the best place to execute it is in the code-behind of your XAML page. If your app uses C# markup, execute it directly below the main UI definition of the page class, similar to a regular event handler.
+
+---
+
+> [!IMPORTANT]
+> If you attempt to execute this task from within your Model or ViewModel without properly handling the `XamlRoot` (which belongs to the UI layer), you will encounter an exception. This occurs because UI-related code is being executed on a non-UI thread.
 
 ### [MVVM](#tab/mvvm)
 

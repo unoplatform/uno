@@ -25,4 +25,4 @@ Recall that `UIElement` implements `DependencyObect` [as an interface](uno-inter
 
 ## Layouting
 
-Uno's measure and arrange logic is triggered from the native Android layout cycle. For a schematic of the control flow, see [Layouting in Android](xref:Uno.Contributing.LayoutingAndroid).
+Uno's measure and arrange logic is triggered from the native Android layout cycle. For a schematic of the control flow, see [Layouting in Android](xref:Uno.Contributing.Layouting.Android).

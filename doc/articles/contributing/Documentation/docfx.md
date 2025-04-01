@@ -4,14 +4,11 @@ uid: Uno.Contributing.docfx
 
 <!-- markdownlint-disable MD001 -->
 
-# The Uno documentation website and DocFX
+# The Uno documentation website and docfx
 
-*[TOC]: Table of Contents
-*[HTML]: Hypertext Markup Language
-*[docs]: documentation
-*[doc file]: markdown file
+Uno Platform's docs website uses [docFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
-Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [HTML files](xref:Uno.Documentation.Intro).
+## Linking to the Table of Contents
 
 ## DocFX-flavored Markdown
 
@@ -25,43 +22,43 @@ The following note types are supported, including an example for each one:
 
 ```markdown
 > [!NOTE]
-> Information the user should notice even if skimming.
+> Useful information that users should know, even when skimming content.
 ```
 
 > [!NOTE]
-> Information the user should notice even if skimming.
+> Useful information that users should know, even when skimming content.
 
 ```markdown
 > [!TIP]
-> Optional information to help a user be more successful.
+> Helpful advice for doing things better or more easily.
 ```
 
 > [!TIP]
-> Optional information to help a user be more successful.
+> Helpful advice for doing things better or more easily.
 
 ```markdown
 > [!IMPORTANT]
-> Essential information required for user success.
+> Key information users need to know to achieve their goal.
 ```
 
 > [!IMPORTANT]
-> Essential information required for user success.
+> Key information users need to know to achieve their goal.
 
 ```markdown
 > [!CAUTION]
-> Negative potential consequences of an action.
+> Advises about risks or negative outcomes of certain actions.
 ```
 
 > [!CAUTION]
-> Negative potential consequences of an action.
+> Advises about risks or negative outcomes of certain actions.
 
 ```markdown
 > [!WARNING]
-> Dangerous certain consequences of an action.
+> Urgent info that needs immediate user attention to avoid problems.
 ```
 
 > [!WARNING]
-> Dangerous certain consequences of an action.
+> Urgent info that needs immediate user attention to avoid problems.
 
 ## Linking to the TOC
 
@@ -200,22 +197,19 @@ Find information about how to link specific Headers inside of a markdown file in
 
 ## Building docs website locally with DocFX
 
-Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-toc) to minimize warnings and avoid potential build errors.
+Sometimes, you may want to run docfx locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-table-of-contents) to minimize warnings and avoid potential build errors.
 
-### Run DocFX locally
+### Run docfx locally
 
-To run DocFX locally and check the resulting html:
+To run docfx locally and check the resulting html:
 
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio.
 2. Edit the properties of the `Uno.UwpSyncGenerator` project. Under the 'Debug' tab, set Application arguments to "doc".
-3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that DocFX can run successfully.
-<!-- 4. Navigate to `%USERPROFILE%\.nuget\packages\docfx.console`. If you don't see the DocFX package in your NuGet cache, go back to ``Uno.UI-Tools.slnf`, right-click on the solution and choose 'Restore NuGet Packages.' UNDONE: DocFx.console is depreciated and not longer available, see more Information to this here: https://github.com/dotnet/docfx/issues/9100
-5. Open the latest DocFX version and open the `tools` folder. UNDONE: tools\DocFx.exe is now nested in .dotnet folder and available throught `dotnet tool`
-6. Open a Powershell window in the `tools` folder. UNDONE: Terminal in the IDE is enough -->
+3. Set `Uno.UwpSyncGenerator` as startup project and run it. It may fail to generate the full implemented views content; if so, it should still nonetheless generate stubs so that docfx can run successfully.
 4. Open a Terminal at the Root Directory of your locally cloned Uno Repository.
 5. Install docfx globally: `dotnet tool install -g docfx`
 6. Run the following command: `docfx build doc/docfx.json` and attach any nested foldername you want by adding `-o your-nested-output-path`, default: `_site`
-7. When DocFX builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
+7. When docfx builds successfully, it will create the html output at `uno-clone-repo\doc\[your-nested-output-path\]_site`, which you can serve by one of the following options:
    a. Execute the command `docfx serve doc/docfx.json` in your terminal.
    b. Use a [local server](#use-a-local-server).
 

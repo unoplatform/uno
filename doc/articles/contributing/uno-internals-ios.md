@@ -15,4 +15,4 @@ Recall that `UIElement` implements `DependencyObject` [as an interface](xref:Uno
 
 ## Layouting
 
-Uno's measure and arrange logic is triggered from the native iOS layout cycle. For a schematic of the control flow, see [Layouting in iOS](xref:Uno.Contributing.LayoutingiOS).
+Uno's measure and arrange logic is triggered from the native iOS layout cycle. For a schematic of the control flow, see [Layouting in iOS](xref:Uno.Contributing.Layouting.iOS).

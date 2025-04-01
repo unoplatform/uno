@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.ImplementWinUIWinRTAPI
+uid: Uno.Contributing.ImplementWinUIWinRT-API
 ---
 
 # Guidelines for implementing a new WinUI/WinRT API

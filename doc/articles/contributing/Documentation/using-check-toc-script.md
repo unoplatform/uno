@@ -100,7 +100,7 @@ Open `toc_additions.yml.tmp` to see the suggested entries in YAML format. The sc
 Copy the relevant entries from `toc_additions.yml.tmp` and add them to [`toc.yml`](../toc.yml) in the **appropriate** category, maintaining the existing structure and indentation.
 
 > [!TIP]
-> The script generates basic `href:` file path references. If a file has a `uid:` in its YAML front matter, you may want to manually convert the `href:` to an `xref:` reference for location independence. For detailed information about TOC linking best practices, see the [Linking to the TOC](xref:Uno.Contributing.DocFx#linking-to-the-toc) documentation.
+> The script generates basic `href:` file path references. If a file has a `uid:` in its YAML front matter, you may want to manually convert the `href:` to an `xref:` reference for location independence. For detailed information about TOC linking best practices, see the [Linking to the TOC](xref:Uno.Contributing.docfx#linking-to-the-toc) documentation.
 
 ## Troubleshooting
 
@@ -137,7 +137,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ## Related Pages
 
 - [TOC Checker Script Overview](xref:Uno.Contributing.check-toc) - Comprehensive overview of the script
-- [The Uno docs website and DocFX](xref:Uno.Contributing.DocFx) - General documentation guidelines
+- [The Uno docs website and DocFX](xref:Uno.Contributing.docfx) - General documentation guidelines
 
 ---
 

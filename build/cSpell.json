@@ -57,6 +57,7 @@
 	"laggy",
 	"layouter",
 	"layouting",
+	"Layouting",
 	"Listview",
 	"listviewbase",
 	"Linq",
@@ -227,57 +228,57 @@
 	"TFMs"
   ],
   "patterns": [
-	{
-		"name": "Markdown uid",
-		"pattern": "^(?=uid:).*$",
-		"description": ""
-	},
-	{
-	  "name": "Markdown links",
-	  "pattern": "\\((.*)\\)",
-	  "description": ""
-	},
-	{
-	  "name": "Markdown code blocks",
-	  "pattern": "/^(\\s*`{3,}).*[\\s\\S]*?^\\1/gmx",
-	  "description": "Taken from the cSpell example at https://cspell.org/configuration/patterns/#verbose-regular-expressions"
-	},
-	{
-	  "name": "Inline code blocks",
-	  "pattern": "\\`([^\\`\\r\\n]+?)\\`",
-	  "description": "https://stackoverflow.com/questions/41274241/how-to-capture-inline-markdown-code-but-not-a-markdown-code-fence-with-regex"
-	},
-	{
-	  "name": "Link contents",
-	  "pattern": "\\<a(.*)\\>",
-	  "description": ""
-	},
-	{
-	  "name": "Snippet references",
-	  "pattern": "-- snippet:(.*)",
-	  "description": ""
-	},
-	{
-	  "name": "Snippet references 2",
-	  "pattern": "\\<\\[sample:(.*)",
-	  "description": "another kind of snippet reference"
-	},
-	{
-	  "name": "Multi-line code blocks",
-	  "pattern": "/^\\s*```[\\s\\S]*?^\\s*```/gm"
-	}
+    {
+      "name": "Markdown uid",
+      "pattern": "^(?=uid:).*$",
+      "description": ""
+    },
+    {
+      "name": "Markdown links",
+      "pattern": "\\((.*)\\)",
+      "description": ""
+    },
+    {
+      "name": "Markdown code blocks",
+      "pattern": "/^(\\s*`{3,}).*[\\s\\S]*?^\\1/gmx",
+      "description": "Taken from the cSpell example at https://cspell.org/configuration/patterns/#verbose-regular-expressions"
+    },
+    {
+      "name": "Inline code blocks",
+      "pattern": "\\`([^\\`\\r\\n]+?)\\`",
+      "description": "https://stackoverflow.com/questions/41274241/how-to-capture-inline-markdown-code-but-not-a-markdown-code-fence-with-regex"
+    },
+    {
+      "name": "Link contents",
+      "pattern": "\\<a(.*)\\>",
+      "description": ""
+    },
+    {
+      "name": "Snippet references",
+      "pattern": "-- snippet:(.*)",
+      "description": ""
+    },
+    {
+      "name": "Snippet references 2",
+      "pattern": "\\<\\[sample:(.*)",
+      "description": "another kind of snippet reference"
+    },
+    {
+      "name": "Multi-line code blocks",
+      "pattern": "/^\\s*```[\\s\\S]*?^\\s*```/gm"
+    }
   ],
   "ignoreRegExpList": [
-	"Markdown uid",
-	"Markdown links",
-	"Markdown code blocks",
-	"Inline code blocks",
-	"Link contents",
-	"Snippet references",
-	"Snippet references 2",
-	"Multi-line code blocks"
+    "Markdown uid",
+    "Markdown links",
+    "Markdown code blocks",
+    "Inline code blocks",
+    "Link contents",
+    "Snippet references",
+    "Snippet references 2",
+    "Multi-line code blocks"
   ],
   "ignorePaths": [
-	"../doc/index.md"
+    "../doc/index.md"
   ]
 }

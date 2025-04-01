@@ -102,7 +102,7 @@ public class DynamicBindExtension : MarkupExtension
 The following XAML will display “Page Tag”:
 
 ```xml
-<Page Tag='Page tag' 
+<Page Tag='Page tag'
       x:Class="App1.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

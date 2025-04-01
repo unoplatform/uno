@@ -360,11 +360,11 @@
     - name: Contributing
       items:
       - name: Overview
-        href: uno-development/contributing-intro.md
+        href: xref:Uno.Contributing.Intro
       - name: Code of Conduct
         href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
       - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
+        href: xref:Uno.Contributing.WaysToContribute
       - name: How Uno works
         items:
           - name: Overview
@@ -372,11 +372,11 @@
           - name: Android
             href: xref:Uno.Contributing.Android
           - name: Layouting in Android
-            href: Uno.Contributing.LayoutingAndroid
+            href: Uno.Contributing.Layouting.Android
           - name: iOS
             href: Uno.Contributing.iOS
           - name: Layouting in iOS
-            href: xref:Uno.Contributing.LayoutingiOS
+            href: xref:Uno.Contributing.Layouting.iOS
           - name: WASM
             href: xref:Uno.Contributing.Wasm
           - name: macOS
@@ -423,7 +423,7 @@
           - name: Overview
             href: xref:Uno.Contributing.Tests.CreatingTests
           - name: Mocked unit tests (Uno.UI.Tests)
-            href: xref:Uno.Contributing.Tests.Creating-mocked-tests.md
+            href: xref:Uno.Contributing.Tests.Creating-mocked-tests
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
             href: xref:Uno.Contributing.Tests.CreateRuntimeTests
           - name: UI tests with Uno.UITest
@@ -435,11 +435,11 @@
       - name: Inspecting the visual tree
         href: xref:Uno.Contributing.InspectVisualTree
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: xref:Uno.Contributing.ImplementWinUIWinRTAPI
+        href: xref:Uno.Contributing.ImplementWinUIWinRT-API
       - name: Advanced topics
         items:
           - name: Adding functionality with API extensions
-            href: uno-development/api-extensions.md
+            href: xref:Uno.Contributing.ApiExtensions
           - name: The WeakEventHelper class
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio

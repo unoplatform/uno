@@ -83,8 +83,7 @@ To use the map component, you will need an API key for Windows and Android. Here
 
 ### Windows
 
-For the detailed procedure for Windows, see [Request a maps authentication key
-](https://learn.microsoft.com/windows/uwp/maps-and-location/authentication-key) documentation.
+For the detailed procedure for Windows, see [Request a maps authentication key](https://learn.microsoft.com/windows/uwp/maps-and-location/authentication-key) documentation.
 
 + Go to <https://www.bingmapsportal.com>
 + Login to your account or register if you don't have one
