@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -67,6 +68,23 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
+	internal void RaiseNativeVisualViewportChanged(Size newViewportSize)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			Console.WriteLine($"RaiseNativeVisualViewportChanged({newViewportSize.Width}, {newViewportSize.Height})");
+		}
+
+		if (newViewportSize.Height < Bounds.Height)
+		{
+			InputPane.GetForCurrentView().OccludedRect = new Rect(0, newViewportSize.Height, Bounds.Width, Bounds.Height - newViewportSize.Height);
+		}
+		else
+		{
+			InputPane.GetForCurrentView().OccludedRect = new Rect(0, 0, 0, 0);
+		}
+	}
+
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
@@ -81,6 +99,19 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		else
 		{
 			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+		}
+	}
+
+	[JSExport]
+	private static void OnVisualViewportResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)
+	{
+		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		{
+			windowWrapper.RaiseNativeVisualViewportChanged(new(width, height));
+		}
+		else
+		{
+			Console.WriteLine($"Visual viewport size change target for {instance} does not exist");
 		}
 	}
 

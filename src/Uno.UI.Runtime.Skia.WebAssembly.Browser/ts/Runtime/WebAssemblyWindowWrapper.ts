@@ -4,6 +4,7 @@ namespace Uno.UI.Runtime.Skia {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
+		private onVisualViewportResize: any;
 		private prefetchFonts: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
@@ -52,6 +53,10 @@ namespace Uno.UI.Runtime.Skia {
 			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
 
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener("resize", x => this.visualViewportResize());
+			}
+
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
 			})
@@ -83,6 +88,7 @@ namespace Uno.UI.Runtime.Skia {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 				this.onResize = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+				this.onVisualViewportResize = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnVisualViewportResize;
 				this.prefetchFonts = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.PrefetchFonts;
 			}
 		}
@@ -105,6 +111,10 @@ namespace Uno.UI.Runtime.Skia {
 
 		private resize() {
 			this.onResize(this.owner, document.documentElement.clientWidth, document.documentElement.clientHeight);
+		}
+
+		private visualViewportResize() {
+			this.onVisualViewportResize(this.owner, window.visualViewport.width, window.visualViewport.height);
 		}
 
 		public static setCursor(cssCursor: string) {
