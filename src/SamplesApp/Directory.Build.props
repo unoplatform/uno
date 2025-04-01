@@ -6,6 +6,7 @@
   <PropertyGroup>
     <!-- fixed for self-testing inside the Uno Solution -->
     <UnoRemoteControlPort>53487</UnoRemoteControlPort>
+    <UnoGenerateXamlSourcesProvider>True</UnoGenerateXamlSourcesProvider>
   </PropertyGroup>
 
 </Project>
