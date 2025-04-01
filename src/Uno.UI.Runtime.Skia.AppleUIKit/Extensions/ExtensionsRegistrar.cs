@@ -33,7 +33,7 @@ internal class ExtensionsRegistrar
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new UIKitNativeElementHostingExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new InvisibleTextBoxViewExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new MediaPlayerPresenterExtension(o));
-		ApiExtensibility.Register<IInputPaneExtension>(typeof(IInputPaneExtension), o => new InputPaneExtension());
+		ApiExtensibility.Register<InputPane>(typeof(IInputPaneExtension), o => new InputPaneExtension());
 #if !__TVOS__
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new UIKitNativeWebViewProvider(o));
 #endif
