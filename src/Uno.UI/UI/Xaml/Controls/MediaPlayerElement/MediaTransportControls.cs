@@ -1772,7 +1772,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (element == m_tpFullWindowButton)
 			{
-				return !IsFullWindowButtonVisible;
+#if HAS_UNO // Currently full screen mode is not supported by the control on Skia targets
+				var alwaysCollapsed =
+#if !__SKIA__
+					false;
+#else
+					true;
+#endif
+				return !IsFullWindowButtonVisible || alwaysCollapsed;
+#endif
 			}
 			else if (element == m_tpZoomButton)
 			{
