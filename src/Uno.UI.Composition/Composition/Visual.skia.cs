@@ -363,7 +363,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			// WARNING: DO NOT change this to plain "return Offset + translation;"
 			// as this results in very wrong values on Android when debugger is not attached.
-			// ¯\(°_o)/¯
+			// https://github.com/dotnet/runtime/issues/114094
 			return new Vector3(Offset.X + translation.X, Offset.Y + translation.Y, Offset.Z + translation.Z);
 		}
 
