@@ -7,6 +7,7 @@ then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
 
 	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	# GridView and ListView are also disabled for instabilities
 	# runGroup is used to parallelize the snapshots tests on multiple agents
 	export TEST_FILTERS=" \
 		FullyQualifiedName ~ SamplesApp.UITests.Snap \
