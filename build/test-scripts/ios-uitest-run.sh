@@ -12,6 +12,8 @@ then
 		FullyQualifiedName ~ SamplesApp.UITests.Snap \
 		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.CommandBar \
 		& TestCategory !~ automated:SamplesApp.Windows_UI_Xaml_Controls.ListView \
+		& TestCategory !~ automated:GenericApp.Views.Content.UITests.GridView \
+		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.GridView \
 		& TestCategory ~ runGroup:$UITEST_SNAPSHOTS_GROUP \
 	"
 else
