@@ -16,6 +16,7 @@ namespace Windows.UI.ViewManagement;
 partial class InputPane
 {
 	private Lazy<IInputPaneExtension?>? _inputPaneExtension;
+	private IDisposable _padScrollContentPresenter;
 
 	partial void InitializePlatform()
 	{
@@ -32,9 +33,28 @@ partial class InputPane
 
 	partial void EnsureFocusedElementInViewPartial()
 	{
+		_padScrollContentPresenter?.Dispose(); // Restore padding
+
 		if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
 		{
-			focusedElement.StartBringIntoView();
+			if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
+			{
+				// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
+				// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
+				while (double.IsPositiveInfinity(scp.m_previousAvailableSize.Height)
+					&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
+				{
+					scp = outerScv;
+				}
+
+				_padScrollContentPresenter = scp.Pad(OccludedRect);
+			}
+
+			// As we changed the layout properties of the ScrollContentPresenter, we need to wait for the next layout pass for
+			// the scrollable height to be updated.
+			_ = UI.Core.CoreDispatcher.Main.RunAsync(
+				UI.Core.CoreDispatcherPriority.Normal, () => focusedElement.StartBringIntoView()
+			);
 		}
 	}
 }
