@@ -67,7 +67,7 @@ Open this file to view `- name:` and `href:` entries that should be added to `to
    > Visual Studio 2022 does not show the generated file by default.
    > To open it, see these Steps:
    >
-   > ![check-toc-find-toc-additions](..\uno-development\assets\check-toc-find-toc-additions-file.gif)
+   > ![check-toc-find-toc-additions](..\Assets\check-toc-find-toc-additions-file.gif)
 
 ## Related Pages
 
