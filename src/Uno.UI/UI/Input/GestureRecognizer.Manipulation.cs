@@ -660,6 +660,7 @@ namespace Windows.UI.Input
 				=> _inertia is null
 					&& !IsDragManipulation
 					&& (_settings & GestureSettingsHelper.Inertia) != 0
+					&& (_settings & GestureSettingsHelper.Manipulations) != 0 // On pointer removed, we should not start inertia if all manip are disabled (could happen if configured for drag but IsDragManipulation not yet true)
 					&& velocities.IsAnyAbove(_inertiaThresholds);
 
 			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
