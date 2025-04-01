@@ -70,7 +70,11 @@
 
 			input.oninput = ev => {
 				let input = ev.target as HTMLInputElement;
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+				if (input.selectionDirection == "backward") {
+					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+				} else {
+					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+				}
 			};
 
 			input.onpaste = ev => {
