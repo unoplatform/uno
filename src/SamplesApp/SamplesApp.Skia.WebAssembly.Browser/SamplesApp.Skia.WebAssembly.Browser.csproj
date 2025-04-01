@@ -22,6 +22,8 @@
 		<PublishTrimmed>false</PublishTrimmed>
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 		
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
+		
 		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
 		<InvariantGlobalization>false</InvariantGlobalization>
 
