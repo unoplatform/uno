@@ -45,8 +45,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		_inputPane = InputPane.GetForCurrentView();
 
+#if !__TVOS__
 		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+#endif
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
@@ -159,7 +161,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
-
+#if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
 	{
 		try
@@ -197,6 +199,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
+#endif
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
