@@ -242,7 +242,7 @@ else
 	echo "  Test filters: $UNO_TESTS_FILTER"
 
 	## Run tests
-	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 60m --hangdump-filename $LOG_FILEPATH/hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
+	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
 fi
 
 # export the simulator logs
