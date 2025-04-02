@@ -28,7 +28,7 @@ jobs:
     displayName: Restoring macOS native assets
     inputs:
       artifact: '.git'
-      path: $(Build.SourcesDirectory)
+      path: $(Build.SourcesDirectory)/.git
 
   - checkout: self
     clean: true
