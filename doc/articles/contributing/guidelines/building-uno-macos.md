@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.BuildingUnomacOS
+uid: Uno.Contributing.BuildingUno.macOS
 ---
 
 # Building Uno.UI for macOS using Visual Studio for Mac

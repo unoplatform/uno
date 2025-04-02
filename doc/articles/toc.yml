@@ -338,11 +338,11 @@
           - name: Android
             href: xref:Uno.Contributing.Android
           - name: Layouting in Android
-            href: Uno.Contributing.LayoutingAndroid
+            href: xref:Uno.Contributing.Layouting.Android
           - name: iOS
             href: Uno.Contributing.iOS
           - name: Layouting in iOS
-            href: xref:Uno.Contributing.LayoutingiOS
+            href: xref:Uno.Contributing.Layouting.iOS
           - name: WASM
             href: xref:Uno.Contributing.Wasm
           - name: macOS
@@ -380,7 +380,7 @@
           - name: Debugging Uno.UI
             href: xref:Uno.Contributing.DebuggingUno
           - name: Building Uno.UI for macOS using Visual Studio for Mac
-            href: xref:Uno.Contributing.BuildingUnomacOS
+            href: xref:Uno.Contributing.BuildingUno.macOS
           - name: Guidelines for code style
             href: xref:Uno.Contributing.CodeStyle
       - name: Git
@@ -410,21 +410,21 @@
       - name: Inspecting the visual tree
         href: xref:Uno.Contributing.InspectVisualTree
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: xref:Uno.Contributing.ImplementWinUIWinRTAPI
+        href: xref:Uno.Contributing.ImplementWinUIWinRT-API
       - name: Advanced topics
         items:
           - name: Adding functionality with API extensions
-            href: uno-development/api-extensions.md
+            href: xref:Uno.Contributing.ApiExtensions
           - name: The WeakEventHelper class
-            href: uno-development/Internal-WeakEventHelper.md
+            href: xref:Uno.Contributing.WeakEventHelper
           - name: Debugging Uno.UI Java code with Android studio
-            href: uno-development/Uno-UI-Debugging-Android-Studio.md
+            href: xref:Uno.Contributing.AndroidStudio
           - name: Troubleshooting Memory Issues
-            href: uno-development/troubleshooting-memory-issues.md
+            href: xref:Uno.Contributing.MemoryIssues
           - name: Troubleshooting Source Generation
-            href: uno-development/troubleshooting-source-generation.md
+            href: xref:Uno.Contributing.SourceGeneration
           - name: The XAML Trimming phase
-            href: uno-development/Uno-UI-XAML-ResourceTrimming.md
+            href: xref:Uno.Contributing.XamlResourceTrimming
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
           - name: Guidelines for updating dependencies
@@ -746,7 +746,7 @@
         href: xref:Uno.vscode.additional
       - name: C# Dev Kit Support
         href: xref:Uno.GetStarted.vscode.DevKit
-      - name: Omnisharp Support
+      - name: OmniSharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
     - name: Rider
       items:
