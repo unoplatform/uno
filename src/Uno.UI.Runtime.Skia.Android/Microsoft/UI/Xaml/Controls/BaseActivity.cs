@@ -54,7 +54,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Occurs when the <see cref="Current"/> activity changed.
 		/// </summary>
-		public static event EventHandler<CurrentActivityChangedEventArgs>? CurrentChanged;
+		internal static event EventHandler<CurrentActivityChangedEventArgs>? CurrentChanged;
 
 		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
