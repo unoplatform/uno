@@ -1,5 +1,5 @@
 parameters:
-  UnoCheck_Version: '1.31.0-dev.9'
+  UnoCheck_Version: '1.31.0-dev.10'
   UnoCheckParameters: ''
 
 steps:
