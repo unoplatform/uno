@@ -16,9 +16,9 @@ namespace Windows.UI.ViewManagement
 	{
 		private IDisposable _padScrollContentPresenter;
 
-		private bool TryShowPlatform() => InputPaneInterop.TryShowPlatform(ContextHelper.Current as Activity);
+		private bool TryShowPlatform() => InputPaneInterop.TryShow(ContextHelper.Current as Activity);
 
-		private bool TryHidePlatform() => InputPaneInterop.TryHidePlatform(ContextHelper.Current as Activity);
+		private bool TryHidePlatform() => InputPaneInterop.TryHide(ContextHelper.Current as Activity);
 
 		partial void EnsureFocusedElementInViewPartial()
 		{
