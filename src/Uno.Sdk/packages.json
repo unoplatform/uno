@@ -108,7 +108,8 @@
 		"SkiaSharp.Views.WinUI",
 		"SkiaSharp.NativeAssets.Linux",
 		"SkiaSharp.NativeAssets.macOS",
-		"SkiaSharp.NativeAssets.Win32"
+		"SkiaSharp.NativeAssets.Win32",
+		"SkiaSharp.NativeAssets.WebAssembly"
 	  ]
 	},
 	{
