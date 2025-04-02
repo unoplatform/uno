@@ -1005,7 +1005,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
 			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(104, 104, ts: 102 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1038,8 +1038,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
-				v => v.Delta().IsInertial().WithCumulative(tX: 1090.40002441406, tY: 1090.40002441406),
-				v => v.End().WithCumulative(tX: 1090.40002441406, tY: 1090.40002441406)
+				v => v.Delta().IsInertial().WithCumulative(tX: 1092.40002441406, tY: 1092.40002441406),
+				v => v.End().WithCumulative(tX: 1092.40002441406, tY: 1092.40002441406)
 			);
 		}
 
@@ -1052,7 +1052,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
 			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(104, 104, ts: 102 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1085,8 +1085,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
-				v => v.Delta().IsInertial().WithCumulative(tX: 1090.40002441406, tY: 0),
-				v => v.End().WithCumulative(tX: 1090.40002441406, tY: 0)
+				v => v.Delta().IsInertial().WithCumulative(tX: 1092.40002441406, tY: 0),
+				v => v.End().WithCumulative(tX: 1092.40002441406, tY: 0)
 			);
 		}
 
@@ -1099,7 +1099,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
 			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(104, 104, ts: 102 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1132,8 +1132,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
-				v => v.Delta().IsInertial().WithCumulative(tX: 0, tY: 1090.40002441406),
-				v => v.End().WithCumulative(tX: 0, tY: 1090.40002441406)
+				v => v.Delta().IsInertial().WithCumulative(tX: 0, tY: 1092.40002441406),
+				v => v.End().WithCumulative(tX: 0, tY: 1092.40002441406)
 			);
 		}
 
@@ -1146,7 +1146,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
 			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
-			sut.ProcessUpEvent(98, 98, ts: 101 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(96, 96, ts: 102 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1179,8 +1179,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
-				v => v.Delta().IsInertial().WithCumulative(tX: -910.40002441406, tY: -910.40002441406),
-				v => v.End().WithCumulative(tX: -910.40002441406, tY: -910.40002441406)
+				v => v.Delta().IsInertial().WithCumulative(tX: -912.40002441406, tY: -912.40002441406),
+				v => v.End().WithCumulative(tX: -912.40002441406, tY: -912.40002441406)
 			);
 		}
 

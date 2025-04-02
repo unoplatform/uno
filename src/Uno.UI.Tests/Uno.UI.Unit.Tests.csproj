@@ -11,6 +11,9 @@
 		<AssemblyName>Uno.UI.Tests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
 	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
 	<!--
 	Uncomment to troubleshoot source generation
 	<PropertyGroup>

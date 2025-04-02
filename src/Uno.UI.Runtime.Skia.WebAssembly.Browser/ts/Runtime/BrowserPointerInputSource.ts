@@ -78,7 +78,7 @@
 			//element.addEventListener("lostpointercapture", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointercancel", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true });
-			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true });
+			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true, passive: false });
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {

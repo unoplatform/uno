@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -67,16 +68,22 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 		try
 		{
+			TraceStart(source, touches);
+
 			foreach (UITouch touch in touches)
 			{
 				var args = CreatePointerEventArgs(source, touch);
 
-				PointerEntered?.Invoke(this, args);
+				TraceSingle(args);
+
 				PointerPressed?.Invoke(this, args);
 			}
+
+			TraceEnd();
 		}
 		catch (Exception e)
 		{
+			TraceError(e);
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
@@ -85,15 +92,22 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 		try
 		{
+			TraceStart(source, touches);
+
 			foreach (UITouch touch in touches)
 			{
 				var args = CreatePointerEventArgs(source, touch);
 
+				TraceSingle(args);
+
 				PointerMoved?.Invoke(this, args);
 			}
+
+			TraceEnd();
 		}
 		catch (Exception e)
 		{
+			TraceError(e);
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
@@ -102,16 +116,22 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 		try
 		{
+			TraceStart(source, touches);
+
 			foreach (UITouch touch in touches)
 			{
 				var args = CreatePointerEventArgs(source, touch);
 
+				TraceSingle(args);
+
 				PointerReleased?.Invoke(this, args);
-				PointerExited?.Invoke(this, args);
 			}
+
+			TraceEnd();
 		}
 		catch (Exception e)
 		{
+			TraceError(e);
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
@@ -120,34 +140,43 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	{
 		try
 		{
+			TraceStart(source, touches);
+
 			foreach (UITouch touch in touches)
 			{
 				var args = CreatePointerEventArgs(source, touch);
 
+				TraceSingle(args);
+
 				PointerCancelled?.Invoke(this, args);
 			}
+
+			TraceEnd();
 		}
 		catch (Exception e)
 		{
+			TraceError(e);
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
+#if __TVOS__
 		var position = touch.LocationInView(source);
+#else
+		var position = touch.GetPreciseLocation(source);
+#endif
 		var pointerDeviceType = touch.Type.ToPointerDeviceType();
-		var isInContact =
-			touch.Phase == UITouchPhase.Began
+		var isInContact = touch.Phase == UITouchPhase.Began
 			|| touch.Phase == UITouchPhase.Moved
 			|| touch.Phase == UITouchPhase.Stationary;
 		var pointerDevice = PointerDevice.For(pointerDeviceType);
-		var id = (uint)touch.GetNativeHash();
-		var pointerIdentifier = new PointerIdentifier(pointerDeviceType, id);
+		var id = (uint)(int)touch.Handle;
 		var properties = new PointerPointProperties
 		{
 			IsLeftButtonPressed = isInContact,
-			IsRightButtonPressed = touch.Type == UITouchType.Direct,
+			IsRightButtonPressed = false,
 			IsMiddleButtonPressed = false,
 			IsXButton1Pressed = false,
 			IsXButton2Pressed = false,
@@ -163,7 +192,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			IsPrimary = true,
 			IsInRange = true,
 			Orientation = 0,
-			Pressure = (float)touch.Force,
+			Pressure = (float)(touch.Force / touch.MaximumPossibleForce),
 			TouchConfidence = isInContact,
 		};
 
@@ -173,11 +202,33 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			frameId,
 			timestamp,
 			pointerDevice,
-			pointerIdentifier.Id,
+			id,
 			position,
 			position,
 			isInContact,
 			properties);
 		return new PointerEventArgs(pointerPoint, Windows.System.VirtualKeyModifiers.None); // TODO:MZ: Key modifiers
 	}
+
+	#region Tracing
+	private static readonly Action<string>? _trace = typeof(AppleUIKitCorePointerInputSource).Log().IsTraceEnabled()
+		? typeof(AppleUIKitCorePointerInputSource).Log().Trace
+		: null;
+
+	private void TraceStart(UIView source, NSSet touches, [CallerMemberName] string action = "")
+#if __TVOS__
+		=> _trace?.Invoke($"<{action} touches={touches.Count} src={source.GetDebugName()}>");
+#else
+		=> _trace?.Invoke($"<{action} touches={touches.Count} src={source.GetDebugName()} multi={source.MultipleTouchEnabled} exclusive={source.ExclusiveTouch}>");
+#endif
+
+	private void TraceSingle(PointerEventArgs args, [CallerMemberName] string action = "")
+		=> _trace?.Invoke($"{action}: {args}>");
+
+	private void TraceEnd([CallerMemberName] string action = "")
+		=> _trace?.Invoke($"</{action}>");
+
+	private void TraceError(Exception error, [CallerMemberName] string action = "")
+		=> _trace?.Invoke($"</{action} error=true>\r\n" + error);
+	#endregion
 }

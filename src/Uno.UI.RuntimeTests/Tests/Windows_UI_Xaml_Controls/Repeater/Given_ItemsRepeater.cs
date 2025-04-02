@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Helpers;
 
 #if HAS_UNO && !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -492,6 +493,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			// Item 0 should be at offset 0
 			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => e.DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_NumberBox_In_Repeater_Then_CanFocus_And_Edit()
+		{
+			var sut = SUT.Create(
+				source: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+				itemTemplate: XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border>
+							<Grid>
+								<NumberBox Value="10" />
+							</Grid>
+						</Border>
+					</DataTemplate>
+				"""),
+				viewport: new Size(120, 500)
+			);
+
+			await sut.Load();
+
+			var numberBox = sut.Repeater.FindFirstDescendantOrThrow<NumberBox>();
+			numberBox.Value.Should().Be(10);
+
+			numberBox.Focus(FocusState.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			numberBox.Value = 42;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			numberBox.Value.Should().Be(42);
 		}
 
 		private record MyItem(int Id, double Height, Color Color)

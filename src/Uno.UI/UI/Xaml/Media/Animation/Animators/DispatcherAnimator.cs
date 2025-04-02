@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal abstract class DispatcherAnimator<T> : CPUBoundAnimator<T> where T : struct
 	{
-		public const int DefaultFrameRate = 30;
+		public const int DefaultFrameRate = 60;
 
 		private readonly int _frameRate;
 		private readonly DispatcherTimer _timer;

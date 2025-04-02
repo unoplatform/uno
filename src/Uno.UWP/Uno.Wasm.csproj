@@ -76,6 +76,14 @@
 
 	<Target Name="GetTargetPath" />
 
+	<Target Name="_AdjustCompileDependsOn" AfterTargets="BeforeBuild">
+		<ItemGroup>
+			<_AdjustedCoreCompileDependsOn Include="$(CoreCompileDependsOn)" Exclude="CompileTypeScript;CompileTypeScriptWithTSConfig;GetTypeScriptOutputForPublishing" />
+		</ItemGroup>
+		<PropertyGroup>
+			<CoreCompileDependsOn>@(_AdjustedCompileDependsOn)</CoreCompileDependsOn>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="_UnoSetupTSCompilation">
 		<PropertyGroup>

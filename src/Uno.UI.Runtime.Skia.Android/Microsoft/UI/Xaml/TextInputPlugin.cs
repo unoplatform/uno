@@ -284,6 +284,6 @@ internal sealed class TextInputPlugin
 			}
 		}
 
-		return _inputConnection.SendKeyEvent(keyEvent);
+		return false;
 	}
 }
