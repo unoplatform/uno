@@ -435,7 +435,7 @@ namespace Uno.UI.Xaml.Core
 					UIElement rootVisual = RootVisual!;
 					rootVisual.IsLoaded = true;
 				}
-				else if (root.XamlRoot?.VisualTree.RootElement is { } xamlIsland)
+				else if (RootElement is { } xamlIsland)
 				{
 					xamlIsland.IsLoaded = true;
 				}
