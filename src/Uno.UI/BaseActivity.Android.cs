@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Uno.Disposables;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Android.App;
 using Android.Content;
+using Android.OS;
 using Android.Runtime;
 using Android.Views;
+using Microsoft.UI.Xaml;
 using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
-using Android.OS;
-using Windows.UI.ViewManagement;
+using Uno.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.WindowManagement;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
@@ -31,7 +32,7 @@ namespace Uno.UI
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
 #pragma warning disable 618
-	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity, DependencyObject
+	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity, DependencyObject, IActivityLifecycleEvents
 #pragma warning restore 618
 
 	{
@@ -152,6 +153,24 @@ namespace Uno.UI
 			Performance.Increment(CreatedTotalBindableActivityCounter);
 			Performance.Increment(ActiveBindableActivityCounter);
 #endif
+		}
+
+		event EventHandler<Bundle> IActivityLifecycleEvents.Create
+		{
+			add => Create += value;
+			remove => Create -= value;
+		}
+
+		event EventHandler IActivityLifecycleEvents.Stop
+		{
+			add => Stop += value;
+			remove => Stop -= value;
+		}
+
+		event EventHandler IActivityLifecycleEvents.Start
+		{
+			add => Start += value;
+			remove => Start -= value;
 		}
 
 		private void Initialize()
