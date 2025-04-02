@@ -134,7 +134,7 @@ partial class InputManager
 			{
 				if (_trace)
 				{
-					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer --POST DISPATCH-- (@{args.CurrentPoint.Position.ToDebugString()}).");
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer --POST DISPATCH-- (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 				}
 
 				using var _ = AsCurrentForDirectManipulation(args);
@@ -148,7 +148,7 @@ partial class InputManager
 			{
 				if (_trace)
 				{
-					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Handling move (@{args.CurrentPoint.Position.ToDebugString()}).");
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Handling move (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 				}
 
 				using var _ = AsCurrentForDirectManipulation(args);
@@ -169,7 +169,7 @@ partial class InputManager
 
 				if (_trace)
 				{
-					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer (@{args.CurrentPoint.Position.ToDebugString()}).");
+					Trace($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 				}
 
 				using var _ = AsCurrentForDirectManipulation(args);
@@ -215,7 +215,8 @@ partial class InputManager
 			{
 				var recognizer = new GestureRecognizer(this)
 				{
-					GestureSettings = GestureSettingsHelper.Manipulations
+					GestureSettings = GestureSettingsHelper.Manipulations,
+					PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForDirectManipulation
 				};
 				recognizer.ManipulationStarting += OnDirectManipulationStarting;
 				recognizer.ManipulationStarted += OnDirectManipulationStarted;
