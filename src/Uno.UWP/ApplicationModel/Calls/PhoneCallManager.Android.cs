@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Android.Content;
 using Android.OS;
 using Android.Telephony;
@@ -20,11 +21,32 @@ namespace Windows.ApplicationModel.Calls
 					"PhoneCallManager was used too early in the application lifetime. " +
 					"Android app context needs to be available.");
 			}
+
 			_telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService);
+
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 #pragma warning disable CA1422 // Validate platform compatibility
-			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
+			if (Build.VERSION.SdkInt < BuildVersionCodes.S)
+			{
+				_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
+			}
+			else
+			{
+				RegisterTelephonyCallbackAsync();
+			}
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
+		}
+
+		private static async void RegisterTelephonyCallbackAsync()
+		{
+#pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
+#pragma warning disable CA1422 // Validate platform compatibility
+			if (await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, Android.Manifest.Permission.ReadPhoneState))
+			{
+				_telephonyManager.RegisterTelephonyCallback(ContextHelper.Current.MainExecutor, new CallCallback());
+			}
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
