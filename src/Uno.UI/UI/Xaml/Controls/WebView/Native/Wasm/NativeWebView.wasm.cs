@@ -18,7 +18,7 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class NativeWebView : ICleanableNativeWebView
+internal partial class NativeWebView : ICleanableNativeWebView
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
