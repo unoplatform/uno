@@ -6,7 +6,7 @@ uid: Uno.Contributing.DocFx
 
 # The Uno documentation website and DocFX
 
-Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [HTML files](xref:Uno.Documentation.Intro).
+Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown (.md) files in the [articles folder](../../../articles) into [HTML files](xref:Uno.Documentation.Intro).
 
 ## Linking to the Table of Contents
 
@@ -106,7 +106,7 @@ Html output:
 
 ## Building docs website locally with DocFX
 
-Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-toc) to minimize warnings and avoid potential build errors.
+Sometimes, you may want to run DocFX locally to ensure that your changes render correctly in HTML. To do this, first generate the *implemented views* documentation. If you've added any new documentation files, make sure to [validate the contents of the TOC](#checking-links-in-the-table-of-contents) to minimize warnings and avoid potential build errors.
 
 ### Run DocFX locally
 
