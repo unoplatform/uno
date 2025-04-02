@@ -31,7 +31,12 @@ using UIKit;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
+#if UIKIT_SKIA
+internal
+#else
+public
+#endif
+	partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 {
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
