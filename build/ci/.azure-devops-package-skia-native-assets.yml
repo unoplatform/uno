@@ -23,6 +23,13 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: '.git'
+      path: $(Build.SourcesDirectory)
+
   - checkout: self
     clean: true
 
