@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Islands;
 
-partial class XamlIsland : IRootElement
+partial class XamlIslandRoot : IRootElement
 {
 	private readonly UnoRootElementLogic _rootElementLogic;
 
