@@ -19,13 +19,10 @@ namespace Windows.ApplicationModel.Email
 	{
 		private static async Task ShowComposeNewEmailInternalAsync(EmailMessage message)
 		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
+			ArgumentNullException.ThrowIfNull(message);
 
 #if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
-			if (MFMailComposeViewController.CanSendMail)
+			if (Uno.WinRTFeatureConfiguration.EmailManager.UseMailAppAsDefaultEmailClient && MFMailComposeViewController.CanSendMail)
 			{
 				await ComposeEmailWithMFAsync(message);
 			}
