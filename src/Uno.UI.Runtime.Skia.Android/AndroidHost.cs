@@ -11,7 +11,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-public class AndroidSkiaHost : ISkiaApplicationHost
+public class AndroidHost : ISkiaApplicationHost
 {
 	private Func<Application> _appBuilder;
 
@@ -22,7 +22,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public AndroidSkiaHost(Func<Application> appBuilder)
+	public AndroidHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
 	}
