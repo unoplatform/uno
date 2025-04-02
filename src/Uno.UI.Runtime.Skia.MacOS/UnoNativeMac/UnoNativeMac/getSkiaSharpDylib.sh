@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION=${VERSION:-3.119.0-preview.0.11}
+VERSION=${VERSION:-3.119.0-preview.1.2}
 
 filename="skiasharp_"${VERSION}"_nativeassets"
 build_dir="${filename}-tmp-build"
