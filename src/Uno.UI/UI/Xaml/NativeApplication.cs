@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml
 				if (!_isRunning)
 				{
 					// We create the host late enough for the ContextHelper.Context to have been set correctly.
-					new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = _appBuilder()).Run();
+					new Uno.UI.Runtime.Skia.Android.AndroidHost(() => _app = _appBuilder()).Run();
 				}
 
 				_app.InitializationCompleted();
