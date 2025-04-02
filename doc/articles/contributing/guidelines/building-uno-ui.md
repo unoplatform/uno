@@ -14,7 +14,7 @@ This article explains how to build Uno.UI locally, for instance, if you wish to 
   - Select the **.NET desktop development** workload
   - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](../../../../src/Uno.CrossTargetting.targets))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](../../../../src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj))
-- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET Android/iOS workloads
+- Run [Uno.Check](xref:UnoCheck.UsingUnoCheck) on your dev machine to setup .NET Android/iOS workloads
 - Install the latest [.NET SDK](https://aka.ms/dotnet/download) from Microsoft.
 
 ## Recommended Windows hardware
@@ -93,7 +93,7 @@ Inside Visual Studio, the number of platforms is restricted to limit the compila
 =======
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
-See [instructions here](xref:Uno.Contributing.BuildingUnomacOS) for building Uno.UI for the macOS platform.
+See [instructions here](xref:Uno.Contributing.BuildingUno.macOS) for building Uno.UI for the macOS platform.
 
 >>>>>>> 65e43b54ea (chore(contributing): Updated most of the contribution specific md files directory to match their namespace):doc/articles/contributing/guidelines/building-uno-ui.md
 ## Troubleshooting build issues

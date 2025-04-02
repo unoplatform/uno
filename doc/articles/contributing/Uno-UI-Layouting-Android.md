@@ -1,5 +1,5 @@
 ﻿---
-uid: Uno.Contributing.LayoutingAndroid
+uid: Uno.Contributing.Layouting.Android
 ---
 
 # Layouting in Android

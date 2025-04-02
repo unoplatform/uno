@@ -1,5 +1,5 @@
 ﻿---
-uid: Uno.Contributing.LayoutingiOS
+uid: Uno.Contributing.Layouting.iOS
 ---
 
 # Layouting in iOS
