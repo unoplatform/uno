@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 			else if (_subscriptions.Count == 1)
 			{
-				_ = Open(CancellationToken.None);
+				Open();
 			}
 
 			return Disposable.Create(() => _subscriptions.Remove(onSourceOpened));
@@ -88,12 +88,15 @@ namespace Microsoft.UI.Xaml.Media
 			_imageData = default;
 			if (_subscriptions.Count > 0 || this is SvgImageSource)
 			{
-				_ = Open(CancellationToken.None);
+				Open();
 			}
 		}
 
-		private async Task Open(CancellationToken ct)
+		private void Open()
 		{
+			var cts = new CancellationTokenSource();
+			var ct = cts.Token;
+			_opening.Disposable = Disposable.Create(cts.Cancel);
 			try
 			{
 				if (TryOpenSourceSync(null, null, out var img))
@@ -102,7 +105,13 @@ namespace Microsoft.UI.Xaml.Media
 				}
 				else if (TryOpenSourceAsync(ct, null, null, out var asyncImg))
 				{
-					OnOpened(await asyncImg);
+					asyncImg.ContinueWith(t =>
+					{
+						if (t.IsCompletedSuccessfully)
+						{
+							OnOpened(t.Result);
+						}
+					}, ct);
 				}
 				else
 				{
