@@ -44,7 +44,8 @@ namespace Uno.UI.Foldable
 			lifecycleEvents.Start += OnStartEvent;
 			lifecycleEvents.Stop += OnStopEvent;
 		}
-		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
+
+		private void OnCreateEvent(object sender, Android.OS.Bundle savedInstanceState)
 		{
 			windowInfoTrackerCallbackAdapter = new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
 			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(
@@ -53,7 +54,7 @@ namespace Uno.UI.Foldable
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnCreateEvent");
 			}
 		}
-		private void OnStartEvent()
+		private void OnStartEvent(object sender, EventArgs args)
 		{
 			windowInfoTrackerCallbackAdapter.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -61,7 +62,7 @@ namespace Uno.UI.Foldable
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnStartEvent");
 			}
 		}
-		private void OnStopEvent()
+		private void OnStopEvent(object sender, EventArgs args)
 		{
 			windowInfoTrackerCallbackAdapter.RemoveWindowLayoutInfoListener(this);
 		}
