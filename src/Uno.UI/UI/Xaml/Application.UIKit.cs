@@ -25,6 +25,8 @@ namespace Microsoft.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
+		private const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+
 		private bool _preventSecondaryActivationHandling;
 
 		partial void InitializePartial()
@@ -42,6 +44,10 @@ namespace Microsoft.UI.Xaml
 		{
 			callback(new ApplicationInitializationCallbackParams());
 		}
+
+		internal static bool HasSceneManifest() =>
+			(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
+			NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
 
 		/// <summary>
 		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
