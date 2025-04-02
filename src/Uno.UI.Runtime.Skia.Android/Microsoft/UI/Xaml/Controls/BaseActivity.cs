@@ -431,31 +431,31 @@ namespace Uno.UI
 		/// <summary>
 		/// Occurs when OnCreate is invoked on the activity.
 		/// </summary>
-		internal event EventHandler<Bundle> Create;
+		internal event EventHandler<Bundle?>? Create;
 
 		/// <summary>
 		/// Occurs when <see cref="OnStart"/> is invoked on the activity.
 		/// </summary>
-		internal event EventHandler Start;
+		internal event EventHandler? Start;
 
 		/// <summary>
 		/// Occurs when <see cref="OnStop"/> is invoked on the activity.
 		/// </summary>
-		internal event EventHandler Stop;
+		internal event EventHandler? Stop;
 
-		event EventHandler<Bundle> IActivityLifecycleEvents.Create
+		event EventHandler<Bundle?>? IActivityLifecycleEvents.Create
 		{
 			add => Create += value;
 			remove => Create -= value;
 		}
 
-		event EventHandler IActivityLifecycleEvents.Stop
+		event EventHandler? IActivityLifecycleEvents.Stop
 		{
 			add => Stop += value;
 			remove => Stop -= value;
 		}
 
-		event EventHandler IActivityLifecycleEvents.Start
+		event EventHandler? IActivityLifecycleEvents.Start
 		{
 			add => Start += value;
 			remove => Start -= value;
