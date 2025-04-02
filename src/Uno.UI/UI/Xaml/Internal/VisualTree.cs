@@ -592,7 +592,7 @@ namespace Uno.UI.Xaml.Core
 			return false;
 		}
 
-		internal static XamlIsland? GetXamlIslandRootForElement(DependencyObject? pObject)
+		internal static XamlIslandRoot? GetXamlIslandRootForElement(DependencyObject? pObject)
 		{
 			if (pObject is null) // || !pObject.GetContext().HasXamlIslandRoots())
 			{
@@ -600,7 +600,7 @@ namespace Uno.UI.Xaml.Core
 			}
 			if (GetForElement(pObject) is { } visualTree)
 			{
-				return visualTree.RootElement as XamlIsland;
+				return visualTree.RootElement as XamlIslandRoot;
 			}
 			return null;
 		}
