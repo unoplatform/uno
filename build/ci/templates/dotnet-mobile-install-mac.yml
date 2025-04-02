@@ -15,9 +15,3 @@ steps:
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3
-  - powershell: |
-      & dotnet workload install tvos
-    displayName: Install .NET tvOS Workload
-    errorActionPreference: continue
-    ignoreLASTEXITCODE: true
-    retryCountOnTaskFailure: 3
