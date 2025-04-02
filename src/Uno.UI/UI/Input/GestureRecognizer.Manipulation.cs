@@ -228,7 +228,10 @@ namespace Windows.UI.Input
 				var hasUpdate = false;
 				foreach (var point in updated)
 				{
-					hasUpdate |= TryUpdate(point);
+					if (_deviceType == (PointerDeviceType)point.PointerDevice.PointerDeviceType)
+					{
+						hasUpdate |= _currents.TryUpdate(point);
+					}
 				}
 
 				if (hasUpdate)
@@ -245,7 +248,14 @@ namespace Windows.UI.Input
 					return;
 				}
 
-				if (TryUpdate(removed))
+				if (_deviceType != (PointerDeviceType)removed.PointerDevice.PointerDeviceType)
+				{
+					return;
+				}
+
+				PatchSuspiciousRemovedPointer(ref removed);
+
+				if (_currents.TryUpdate(removed))
 				{
 					_contacts.current--;
 
@@ -311,16 +321,6 @@ namespace Windows.UI.Input
 			public void RunInertiaSync()
 				=> _inertia?.RunSync();
 #endif
-
-			private bool TryUpdate(PointerPoint point)
-			{
-				if (_deviceType != (PointerDeviceType)point.PointerDevice.PointerDeviceType)
-				{
-					return false;
-				}
-
-				return _currents.TryUpdate(point);
-			}
 
 			private void NotifyUpdate()
 			{
@@ -695,6 +695,75 @@ namespace Windows.UI.Input
 					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
 			}
 
+			#region Patch pointer events
+			private void PatchSuspiciousRemovedPointer(ref PointerPoint removed)
+			{
+				if (OperatingSystem.IsAndroid() && _recognizer.PatchCases.HasFlag(Uno.UI.Input.GestureRecognizerSuspiciousCases.AndroidMotionUpAtInvalidLocation))
+				{
+					PointerPoint previous;
+					if (_currents.Pointer1.Pointer == removed.Pointer)
+					{
+						previous = _currents.Pointer1;
+					}
+					else if (_currents.Pointer2?.Pointer == removed.Pointer)
+					{
+						previous = _currents.Pointer2;
+					}
+					else
+					{
+						return;
+					}
+
+					var δTμs = removed.Timestamp - previous.Timestamp;
+					if (δTμs > 100_000) // 100 ms => Extra high delay to avoid false positive on slow devices, but usually it's about 8ms
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Cannot detect suspicious pointer event: Δt is to high! (Δμs={δTμs})");
+						}
+
+						return;
+					}
+
+					var δTms = δTμs / 1000.0;
+					var δX = removed.Position.X - previous.Position.X;
+					var δY = removed.Position.Y - previous.Position.Y;
+
+					if (DirectionChanged(δX, _lastRelevantVelocities.Linear.X)
+						|| DirectionChanged(δY, _lastRelevantVelocities.Linear.Y))
+					{
+						// Suspicious case detected: Direction is changing for the pointer release event, patch using the last known velocities
+
+						var patchedRawPosition = _lastRelevantVelocities.Apply(previous.RawPosition, δTms);
+						var patchedPosition = _lastRelevantVelocities.Apply(previous.Position, δTms);
+
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace(
+								"Suspicious pointer event detected! Direction is changing on x-axis for the release pointer event. "
+								+ $"Patching coordinates from {removed.Position.ToDebugString()} to {patchedPosition.ToDebugString()} (Δms={δTms} | v={_lastRelevantVelocities})");
+						}
+
+						removed = removed.At(patchedRawPosition, patchedPosition);
+						return;
+					}
+
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Suspicious pointer event NOT detected! (Δms={δTms} | Δx={δX} | Δy={δY} | v={_lastRelevantVelocities})");
+					}
+
+					static bool DirectionChanged(double δ, double velocity)
+					{
+						var direction = Math.Sign(δ);
+						var previousDirection = Math.Sign(velocity);
+
+						return direction is not 0 && previousDirection is not 0 && direction != previousDirection;
+					}
+				}
+			} 
+			#endregion
+
 			internal readonly record struct Thresholds(
 				double TranslateX,
 				double TranslateY,
@@ -711,21 +780,21 @@ namespace Windows.UI.Input
 			private struct Points
 			{
 				public PointerPoint Pointer1;
-				private PointerPoint? _pointer2;
+				public PointerPoint? Pointer2;
 
 				public ulong Timestamp; // The timestamp of the latest pointer update to either pointer
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
 				public float Distance; // The distance between the 2 points, or zero if !HasPointer2
 				public double Angle; // The angle between the horizontal axis and the line segment formed by the 2 points, or zero if !HasPointer2
 
-				public bool HasPointer2 => _pointer2 != null;
+				public bool HasPointer2 => Pointer2 != null;
 
 				public PointerIdentifier[] Identifiers;
 
 				public Points(PointerPoint point)
 				{
 					Pointer1 = point;
-					_pointer2 = default;
+					Pointer2 = default;
 
 					Identifiers = new[] { point.Pointer };
 					Timestamp = point.Timestamp;
@@ -736,12 +805,12 @@ namespace Windows.UI.Input
 
 				public bool ContainsPointer(uint pointerId)
 					=> Pointer1.PointerId == pointerId
-					|| (HasPointer2 && _pointer2!.PointerId == pointerId);
+					|| (HasPointer2 && Pointer2!.PointerId == pointerId);
 
 				public void SetPointer2(PointerPoint point)
 				{
-					_pointer2 = point;
-					Identifiers = new[] { Pointer1.Pointer, _pointer2.Pointer };
+					Pointer2 = point;
+					Identifiers = new[] { Pointer1.Pointer, Pointer2.Pointer };
 					UpdateComputedValues();
 				}
 
@@ -756,9 +825,9 @@ namespace Windows.UI.Input
 
 						return true;
 					}
-					else if (_pointer2 != null && _pointer2.PointerId == point.PointerId)
+					else if (Pointer2 != null && Pointer2.PointerId == point.PointerId)
 					{
-						_pointer2 = point;
+						Pointer2 = point;
 						Timestamp = point.Timestamp;
 
 						UpdateComputedValues();
@@ -777,7 +846,7 @@ namespace Windows.UI.Input
 					//		 This is required to avoid to be impacted the any transform applied on the element,
 					//		 and it's sufficient as values of the manipulation events are only values relative to the original touch point.
 
-					if (_pointer2 == null)
+					if (Pointer2 == null)
 					{
 						Center = Pointer1.RawPosition;
 						Distance = 0;
@@ -786,7 +855,7 @@ namespace Windows.UI.Input
 					else
 					{
 						var p1 = Pointer1.RawPosition;
-						var p2 = _pointer2.RawPosition;
+						var p2 = Pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 						Distance = Vector2.Distance(p1.ToVector2(), p2.ToVector2());

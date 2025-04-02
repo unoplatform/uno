@@ -38,6 +38,9 @@ namespace Windows.UI.Input
 				|| Math.Abs(Angular) > thresholds.Rotate
 				|| Math.Abs(Expansion) > thresholds.Expansion;
 
+		internal Point Apply(Point point, double δTimeMs)
+			=> new(point.X + Linear.X * δTimeMs, point.Y + Linear.Y * δTimeMs);
+
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"x:{Linear.X:F2};y:{Linear.Y:F2};θ:{Angular};e:{Expansion:F2}";
