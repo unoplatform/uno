@@ -11,7 +11,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 /// <summary>
 /// State of an on-going text editing session.
 /// </summary>
-public class TextEditState
+internal class TextEditState
 {
 	public string text;
 	public int selectionStart;
