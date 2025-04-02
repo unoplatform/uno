@@ -710,7 +710,7 @@ namespace Uno.UI.Xaml.Core
 					}
 				}
 
-				if (currentAncestor is XamlIsland xamlIslandRoot)
+				if (currentAncestor is XamlIslandRoot xamlIslandRoot)
 				{
 					return xamlIslandRoot.ContentRoot.VisualTree;
 				}
@@ -875,7 +875,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			get
 			{
-				if (RootElement is XamlIsland xamlIslandRoot)
+				if (RootElement is XamlIslandRoot xamlIslandRoot)
 				{
 					return xamlIslandRoot.GetSize();
 				}
@@ -899,7 +899,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			get
 			{
-				if (RootElement is XamlIsland xamlIslandRoot)
+				if (RootElement is XamlIslandRoot xamlIslandRoot)
 				{
 					return xamlIslandRoot.IsVisible();
 				}
