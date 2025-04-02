@@ -8,7 +8,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 /// A representation of the change that occurred to an editing state, along with the resulting
 /// composing and selection regions.
-public record TextEditingDelta(
+internal record TextEditingDelta(
 		string OldText,
 		int DeltaStart,
 		int DeltaEnd,
