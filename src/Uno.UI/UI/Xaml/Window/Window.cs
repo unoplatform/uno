@@ -58,6 +58,8 @@ partial class Window
 		{
 			windowType = WindowType.CoreWindow;
 		}
+#else
+		windowType = WindowType.DesktopXamlSource; // Skia always uses "Desktop" windows.
 #endif
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
