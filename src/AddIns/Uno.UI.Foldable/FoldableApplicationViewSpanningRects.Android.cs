@@ -34,9 +34,15 @@ namespace Uno.UI.Foldable
 
 		public FoldableApplicationViewSpanningRects(object owner)
 		{
-			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
-			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Start += OnStartEvent;
-			ViewManagement.ApplicationViewHelper.GetBaseActivityEvents().Stop += OnStopEvent;
+			var lifecycleEvents = ViewManagement.ApplicationViewHelper.GetActivityLifecycleEvents();
+			if (lifecycleEvents is null)
+			{
+				throw new InvalidOperationException("Activity must provide lifecycle events.");
+			}
+
+			lifecycleEvents.Create += OnCreateEvent;
+			lifecycleEvents.Start += OnStartEvent;
+			lifecycleEvents.Stop += OnStopEvent;
 		}
 		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
 		{

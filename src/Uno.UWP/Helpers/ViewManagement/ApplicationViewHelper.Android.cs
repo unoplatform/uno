@@ -7,4 +7,6 @@ public static class ApplicationViewHelper
 	/// raised on key Activity method overrides.
 	/// </summary>
 	public static IBaseActivityEvents GetBaseActivityEvents() => ContextHelper.Current as IBaseActivityEvents;
+
+	internal static IActivityLifecycleEvents GetActivityLifecycleEvents() => ContextHelper.Current as IActivityLifecycleEvents;
 }
