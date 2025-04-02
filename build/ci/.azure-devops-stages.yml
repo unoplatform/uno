@@ -19,7 +19,7 @@ stages:
     - task: PublishPipelineArtifact@1
       retryCountOnTaskFailure: 3
       inputs:
-        targetPath: $(build.sourcesdirectory)/.git
+        targetPath: '$(build.sourcesdirectory)/.git'
         artifactName: '.git'
 
 - stage: binaries_build_native_macos
