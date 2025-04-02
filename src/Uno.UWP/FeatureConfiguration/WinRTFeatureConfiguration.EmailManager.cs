@@ -9,7 +9,7 @@ partial class WinRTFeatureConfiguration
 		/// Allows using.
 		/// </summary>
 		/// <remarks>Applies to iOS only.</remarks>        
-		public static bool UseMailAppAsDefaultEmailClient { get; set; }
+		public static bool UseMailAppAsDefaultEmailClient { get; set; } = true;
 #endif
 	}
 }
