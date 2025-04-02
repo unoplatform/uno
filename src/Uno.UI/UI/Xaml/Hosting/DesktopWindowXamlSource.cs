@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Hosting;
 /// </summary>
 public partial class DesktopWindowXamlSource : IDisposable
 {
-	private readonly XamlIsland _xamlIsland;
+	private readonly XamlIslandRoot _xamlIsland;
 
 	/// <summary>
 	/// Initializes a new instance of the DesktopWindowXamlSource class.
@@ -53,7 +53,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 		set => _xamlIsland.Content = value;
 	}
 
-	internal XamlIsland XamlIsland => _xamlIsland;
+	internal XamlIslandRoot XamlIsland => _xamlIsland;
 
 	/// <summary>
 	/// Attempts to programmatically give focus to the DesktopWindowXamlSource in the desktop application.

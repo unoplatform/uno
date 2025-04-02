@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		private object CoerceHitTestVisibility(object baseValue)
 		{
-			if (this is RootVisual or XamlIsland)
+			if (this is RootVisual or XamlIslandRoot)
 			{
 				return HitTestability.Visible;
 			}
