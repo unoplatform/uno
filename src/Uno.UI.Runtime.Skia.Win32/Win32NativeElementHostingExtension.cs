@@ -18,7 +18,7 @@ using SkiaSharp;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-public class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
+internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
 {
 	private static HWND _enumProcRet;
 	private static readonly SKPath _lastClipPath = new();
