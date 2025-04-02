@@ -761,7 +761,7 @@ namespace Windows.UI.Input
 						return direction is not 0 && previousDirection is not 0 && direction != previousDirection;
 					}
 				}
-			} 
+			}
 			#endregion
 
 			internal readonly record struct Thresholds(
