@@ -257,7 +257,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var children = Children;
 				for (var i = 0; i < children.Count; ++i)
 				{
-					var element = children[i];
+					if (children[i] is not { } element)
+					{
+						continue;
+					}
+
 					var virtInfo = GetVirtualizationInfo(element);
 
 					if (virtInfo.Owner == ElementOwner.Layout &&
@@ -304,7 +308,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			var children = Children;
 			for (var i = 0; i < children.Count; ++i)
 			{
-				var element = children[i];
+				if (children[i] is not { } element)
+				{
+					continue;
+				}
+
 				var virtInfo = GetVirtualizationInfo(element);
 				virtInfo.KeepAlive = false;
 
@@ -412,7 +420,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			var children = Children;
 			for (int i = 0; i < children.Count && result == null; ++i)
 			{
-				var element = children[i];
+				if (children[i] is not { } element)
+				{
+					continue;
+				}
+
 				var virtInfo = TryGetVirtualizationInfo(element);
 				if (virtInfo != null && virtInfo.IsRealized && virtInfo.Index == index)
 				{
@@ -834,7 +846,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var children = Children;
 				for (int i = 0; i < children.Count; ++i)
 				{
-					var element = children[i];
+					if (children[i] is not { } element)
+					{
+						continue;
+					}
+
 					if (GetVirtualizationInfo(element).IsRealized)
 					{
 						ClearElementImpl(element);
@@ -927,7 +943,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			if (UseLayoutRounding)
 			{
 				if (XamlRoot is { } xamlRoot)
-
 				{
 					double layoutRoundFactor = xamlRoot.RasterizationScale;
 
@@ -980,7 +995,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (children[childIndex] is { } element)
 				{
 					if (GetVirtualizationInfo(element) is { } virtInfo)
-
 					{
 						if (virtInfo.Owner == ElementOwner.Layout)
 						{
