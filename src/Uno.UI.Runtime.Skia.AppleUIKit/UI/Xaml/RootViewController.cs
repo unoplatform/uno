@@ -284,6 +284,30 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	}
 #endif
 
+	public override void TouchesBegan(NSSet touches, UIEvent? evt)
+	{
+		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this.View!, touches, evt);
+		base.TouchesBegan(touches, evt);
+	}
+
+	public override void TouchesMoved(NSSet touches, UIEvent? evt)
+	{
+		AppleUIKitCorePointerInputSource.Instance.TouchesMoved(this.View!, touches, evt);
+		base.TouchesMoved(touches, evt);
+	}
+
+	public override void TouchesEnded(NSSet touches, UIEvent? evt)
+	{
+		AppleUIKitCorePointerInputSource.Instance.TouchesEnded(this.View!, touches, evt);
+		base.TouchesEnded(touches, evt);
+	}
+
+	public override void TouchesCancelled(NSSet touches, UIEvent? evt)
+	{
+		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this.View!, touches, evt);
+		base.TouchesCancelled(touches, evt);
+	}
+
 	public override void MotionEnded(UIEventSubtype motion, UIEvent? evt)
 	{
 #if !__TVOS__

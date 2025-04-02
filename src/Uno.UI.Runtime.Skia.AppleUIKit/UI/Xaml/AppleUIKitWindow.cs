@@ -36,18 +36,6 @@ internal class AppleUIKitWindow : UIWindow
 	internal ICoreWindowEvents? OwnerEvents { get; private set; }
 #endif
 
-	public override void TouchesBegan(NSSet touches, UIEvent? evt) =>
-		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this, touches, evt);
-
-	public override void TouchesMoved(NSSet touches, UIEvent? evt) =>
-		AppleUIKitCorePointerInputSource.Instance.TouchesMoved(this, touches, evt);
-
-	public override void TouchesEnded(NSSet touches, UIEvent? evt) =>
-		AppleUIKitCorePointerInputSource.Instance.TouchesEnded(this, touches, evt);
-
-	public override void TouchesCancelled(NSSet touches, UIEvent? evt) =>
-		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this, touches, evt);
-
 	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
 		if (!UnoKeyboardInputSource.Instance.TryHandlePresses(presses, evt, this))

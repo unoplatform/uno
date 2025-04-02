@@ -46,8 +46,8 @@
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 
-		<!-- Required in CI to avoid dependency issues -->
-		<PreBuildUnoUITasks Condition="'$(CI_Build)'!=''">true</PreBuildUnoUITasks>
+		<!-- Required when not building inside VS to avoid dependency issues -->
+		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -78,7 +78,9 @@
 
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+			</PropertyGroup>
 
+			<PropertyGroup Condition="$(RuntimeIdentifier.Contains('arm64'))">
 				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
 				<UseInterpreter>true</UseInterpreter>
@@ -214,6 +216,10 @@
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+			</ItemGroup>
+
+			<ItemGroup>
+				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 			</ItemGroup>
 
 			<ItemGroup>

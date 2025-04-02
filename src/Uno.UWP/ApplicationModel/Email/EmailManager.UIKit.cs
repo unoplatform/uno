@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,44 +40,56 @@ namespace Windows.ApplicationModel.Email
 #if !__MACCATALYST__ && !__TVOS__
 		private static async Task ComposeEmailWithMFAsync(EmailMessage message)
 		{
-			if (UIApplication.SharedApplication.KeyWindow?.RootViewController == null)
+			if (UIApplication.SharedApplication.KeyWindow?.RootViewController is not { } rootViewController)
 			{
 				throw new InvalidOperationException("Root view controller is null, API called too early in the application lifecycle.");
 			}
 
-			var controller = new MFMailComposeViewController();
-
-			if (!string.IsNullOrEmpty(message?.Body))
+			var controller = new MFMailComposeViewController
 			{
-				controller.SetMessageBody(message.Body, true);
+				MailComposeDelegate = new MailComposeViewControllerDelegate()
+			};
+
+			if (message is { } msg)
+			{
+				if (!string.IsNullOrEmpty(msg.Body))
+				{
+					controller.SetMessageBody(msg.Body, true);
+				}
+
+				if (!string.IsNullOrEmpty(msg.Subject))
+				{
+					controller.SetSubject(msg.Subject);
+				}
+
+				if (msg.To.Count > 0)
+				{
+					controller.SetToRecipients(msg.To.Select(r => r.Address).ToArray());
+				}
+
+				if (msg.CC.Count > 0)
+				{
+					controller.SetCcRecipients(msg.CC.Select(cc => cc.Address).ToArray());
+				}
+
+				if (msg.Bcc.Count > 0)
+				{
+					controller.SetBccRecipients(msg.Bcc.Select(bcc => bcc.Address).ToArray());
+				}
 			}
 
-			if (!string.IsNullOrEmpty(message?.Subject))
-			{
-				controller.SetSubject(message.Subject);
-			}
-
-			if (message?.To?.Count > 0)
-			{
-				controller.SetToRecipients(
-					message.To.Select(r => r.Address).ToArray());
-			}
-
-			if (message?.CC?.Count > 0)
-			{
-				controller.SetCcRecipients(
-					message.CC.Select(cc => cc.Address).ToArray());
-			}
-
-			if (message?.Bcc?.Count > 0)
-			{
-				controller.SetBccRecipients(
-					message.Bcc.Select(bcc => bcc.Address).ToArray());
-			}
-
-			await UIApplication.SharedApplication.KeyWindow?.RootViewController.PresentViewControllerAsync(controller, true);
-			await controller.DismissViewControllerAsync(true);
+			await rootViewController.PresentViewControllerAsync(controller, true);
 		}
 #endif
 	}
+
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+	public class MailComposeViewControllerDelegate : MFMailComposeViewControllerDelegate
+	{
+		public override void Finished(MFMailComposeViewController controller, MFMailComposeResult result, NSError? error)
+		{
+			controller.DismissViewController(true, null);
+		}
+	}
+#endif
 }

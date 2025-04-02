@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
-			this.Child = VisualTreeHelper.AdaptNative(videoSurface as SurfaceView);
+			this.Child = VisualTreeHelper.AdaptNative(videoSurface as View);
 		}
 
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue)

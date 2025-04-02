@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Core;
-
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -928,7 +928,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Pen ||
 				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Touch;
 
-			inputTarget.CapturePointer(args.Pointer);
+			inputTarget.CapturePointer(args.Pointer, /* uno */ options: PointerCaptureOptions.PreventDirectManipulation);
 			UpdateColorFromPoint(args.GetCurrentPoint(inputTarget));
 			UpdateVisualState(useTransitions: true);
 			UpdateEllipse();

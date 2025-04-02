@@ -19,6 +19,8 @@ using Windows.UI.StartScreen;
 using Java.Interop;
 using Uno.UI.Runtime.Skia.Android;
 using Microsoft.UI.Xaml;
+using Windows.Services.Store.Internal;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 
 [assembly: UsesPermission("android.permission.ACCESS_COARSE_LOCATION")]
@@ -100,6 +102,17 @@ namespace SamplesApp.Droid
 			{
 				FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid = false;
 			}
+		}
+
+		public override void OnCreate()
+		{
+			base.OnCreate();
+
+			// Initialize Android-specific extensions.
+			// These would be generally registered automatically by App.xaml generator,
+			// but in our case it runs in context of SamplesApp.Skia, which does not reference
+			// this Android-specific addin.
+			ApiExtensibility.Register(typeof(IStoreContextExtension), o => new global::Uno.UI.GooglePlay.StoreContextExtension(o));
 		}
 	}
 }
