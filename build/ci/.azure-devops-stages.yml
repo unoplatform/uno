@@ -16,10 +16,13 @@ stages:
     - template: .azure-devops-spell-check.yml
     - template: .azure-devops-markdown-lint.yml
 
+    - pwsh: |
+        ren .git _git
+  
     - task: PublishPipelineArtifact@1
       retryCountOnTaskFailure: 3
       inputs:
-        targetPath: '$(build.sourcesdirectory)/.git'
+        targetPath: '$(build.sourcesdirectory)/_git'
         artifactName: '.git'
 
 - stage: binaries_build_native_macos
