@@ -26,7 +26,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 
