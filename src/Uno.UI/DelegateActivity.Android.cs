@@ -46,7 +46,12 @@ namespace Uno.UI
 		/// <param name="intent">The Intent you want to send</param>
 		/// <param name="requestCode">A specific Response code, this is useful if you send more than one type of request in parallel</param>
 		/// <returns>OnActivityResultArgs : an object containing the parameters of the  OnActivityResult</returns>
-		internal async Task<OnActivityResultArgs> GetActivityResult(CancellationToken ct, Intent intent, int requestCode = 0)
+#if ANDROID_SKIA
+		internal
+#else
+		public
+#endif
+			async Task<OnActivityResultArgs> GetActivityResult(CancellationToken ct, Intent intent, int requestCode = 0)
 		{
 			try
 			{
