@@ -305,7 +305,7 @@ namespace Uno.UI
 			{
 				handler.Invoke(this, EventArgs.Empty);
 			}
-			
+
 			InnerStop();
 			base.OnStop();
 		}
