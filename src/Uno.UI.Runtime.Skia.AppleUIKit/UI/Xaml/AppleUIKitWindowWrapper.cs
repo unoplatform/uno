@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using UIKit;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
@@ -23,6 +24,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private RootViewController _mainController;
 	private readonly DisplayInformation _displayInformation;
+	private InputPane _inputPane;
+
 #if !__TVOS__
 	private NSObject? _orientationRegistration;
 #endif
@@ -38,6 +41,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
+
+
+		_inputPane = InputPane.GetForCurrentView();
+
+#if !__TVOS__
+		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
+		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+#endif
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
@@ -149,6 +160,46 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
+
+#if !__TVOS__
+	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
+	{
+		try
+		{
+			if (e.Notification.UserInfo is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("[OnKeyboardWillShow] Notification UserInfo was null");
+				}
+
+				return;
+			}
+
+			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
+		}
+		catch (Exception ex)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(ex);
+		}
+	}
+
+	private void OnKeyboardWillHide(object? sender, UIKeyboardEventArgs e)
+	{
+		try
+		{
+			_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
+		}
+		catch (Exception ex)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(ex);
+		}
+	}
+#endif
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
