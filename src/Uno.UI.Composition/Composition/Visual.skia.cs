@@ -12,13 +12,15 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
-using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private const int PictureCollapsingOptimizationFrameThreshold = 120;
+	private const int PictureCollapsingOptimizationVisualCountThreshold = 100;
+
 	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
@@ -35,8 +37,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
 	private SKPicture? _picture;
+	private SKPicture? _childrenPicture;
+	private int _framesSinceSubtreeNotChanged;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -96,6 +100,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
+		InvalidateParentChildrenPicture();
 		return !matrixDirty;
 	}
 
@@ -190,6 +195,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
+		InvalidateParentChildrenPicture();
+	}
+
+	private void InvalidateParentChildrenPicture()
+	{
+		var parent = this.Parent;
+		while (parent is not null && (parent._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+		{
+			parent._childrenPicture?.Dispose();
+			parent._childrenPicture = null;
+			parent._flags |= VisualFlags.ChildrenSKPictureInvalid;
+			parent = parent.Parent;
+		}
 	}
 
 	public CompositionClip? Clip
@@ -285,7 +303,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession)
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -297,6 +315,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
 			return;
+		}
+
+		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+		{
+			_framesSinceSubtreeNotChanged++;
+		}
+		else
+		{
+			_framesSinceSubtreeNotChanged = 0;
+			_flags &= ~VisualFlags.ChildrenSKPictureInvalid;
 		}
 
 		CreateLocalSession(in parentSession, out var session);
@@ -318,10 +346,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				PaintStep(this, session);
 				PostPaintingClipStep(this, canvas);
-				foreach (var child in GetChildrenInRenderOrder())
-				{
-					child.Render(in session);
-				}
+				RenderChildrenStep(this, session, applyChildOptimization);
 			}
 			else
 			{
@@ -334,10 +359,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					PaintStep(this, childSession);
 					PostPaintingClipStep(this, recordingCanvas);
-					foreach (var child in GetChildrenInRenderOrder())
-					{
-						child.Render(in childSession);
-					}
+					RenderChildrenStep(this, childSession, applyChildOptimization);
 				}
 				var childrenPicture = recorder.EndRecording();
 				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
@@ -385,6 +407,40 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
+			}
+		}
+
+		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
+		{
+			if (visual._childrenPicture is not null)
+			{
+				session.Canvas.DrawPicture(visual._childrenPicture);
+			}
+			else if (visual._framesSinceSubtreeNotChanged < PictureCollapsingOptimizationFrameThreshold
+					 || !applyChildOptimization
+					 || visual.GetSubTreeVisualCount() < PictureCollapsingOptimizationVisualCountThreshold)
+			{
+				foreach (var child in visual.GetChildrenInRenderOrder())
+				{
+					child.Render(in session, applyChildOptimization);
+				}
+			}
+			else
+			{
+				var recorder = new SKPictureRecorder();
+				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				// child.Render will reapply the total transform matrix, so we need to invert ours.
+				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
+				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				using (childSession)
+				{
+					foreach (var child in visual.GetChildrenInRenderOrder())
+					{
+						child.Render(in childSession, applyChildOptimization: false);
+					}
+				}
+				visual._childrenPicture = recorder.EndRecording();
+				session.Canvas.DrawPicture(visual._childrenPicture);
 			}
 		}
 	}
@@ -473,6 +529,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
+	internal virtual int GetSubTreeVisualCount() => 1;
+
 	/// <summary>
 	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
@@ -518,5 +576,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		IsNativeHostVisualInherited = 4,
 		MatrixDirty = 8,
 		PaintDirty = 16,
+		ChildrenSKPictureInvalid = 32, // some child in the subtree of this visual is dirty.
 	}
 }
