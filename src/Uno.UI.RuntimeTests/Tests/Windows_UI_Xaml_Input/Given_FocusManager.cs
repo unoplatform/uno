@@ -11,8 +11,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Input.Preview.Injection;
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
 	[TestClass]
