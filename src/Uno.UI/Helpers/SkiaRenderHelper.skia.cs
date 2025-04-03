@@ -40,7 +40,7 @@ internal static class SkiaRenderHelper
 	{
 		if (!ContentPresenter.HasNativeElements())
 		{
-			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, null);
+			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, null, FeatureConfiguration.Rendering.CollapseVisualSubtreeSKPictures);
 			return null;
 		}
 		else
@@ -82,7 +82,7 @@ internal static class SkiaRenderHelper
 				mainPath = mainPath!.Op(
 					finalVisualPath,
 					visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
-			});
+			}, false);
 
 			return mainPath;
 		}

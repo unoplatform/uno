@@ -13,6 +13,7 @@ public partial class ContainerVisual : Visual
 {
 	private List<Visual>? _childrenInRenderOrder;
 	private bool _hasCustomRenderOrder;
+	private int? _subtreeVisualCount;
 
 	private (Rect rect, bool isAncestorClip)? _layoutClip;
 
@@ -20,7 +21,16 @@ public partial class ContainerVisual : Visual
 
 	partial void InitializePartial()
 	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+		Children.CollectionChanged += (s, e) =>
+		{
+			var parent = this;
+			while (parent is not null)
+			{
+				parent._subtreeVisualCount = null;
+				parent = parent.Parent;
+			}
+			IsChildrenRenderOrderDirty = true;
+		};
 
 		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 		Handle = GCHandle.ToIntPtr(_gcHandle);
@@ -144,5 +154,11 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override int GetSubTreeVisualCount()
+	{
+		_subtreeVisualCount ??= Children.Count + Children.InnerList.Aggregate(0, (acc, visual) => acc + visual.GetSubTreeVisualCount());
+		return _subtreeVisualCount.Value;
 	}
 }

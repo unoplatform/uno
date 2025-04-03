@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
@@ -851,6 +852,12 @@ namespace Uno.UI
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Applies heuristics to combine certain visual subtrees into one big SKPicture
+			/// instead of each visual having its own recorder.
+			/// </summary>
+			public static bool CollapseVisualSubtreeSKPictures { get; set; }
 		}
 
 		public static class DependencyProperty
