@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsResourcePackage => false;
 
-#if (__IOS__ || __ANDROID__ || __MACOS__)
+#if (__APPLE_UIKIT__ || __ANDROID__)
 		[global::Uno.NotImplemented]
 		public global::System.Uri Logo => default;
 #endif

@@ -41,5 +41,7 @@ public abstract class SKCanvasElement : FrameworkElement
 			owner.RenderOverride(session.Canvas, Size.ToSize());
 			session.Canvas.Restore();
 		}
+
+		internal override bool CanPaint() => true;
 	}
 }

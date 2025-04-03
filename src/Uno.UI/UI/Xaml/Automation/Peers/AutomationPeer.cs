@@ -239,6 +239,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				toggleProvider.Toggle();
 				return true;
 			}
+			else if (this is ISelectionItemProvider selectionItemProvider)
+			{
+				selectionItemProvider.Select();
+				return true;
+			}
 
 			return false;
 		}
@@ -262,7 +267,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 
 		// This is here to make the method internal!
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{
 			// Uno TODO: Properly implement this.
@@ -275,11 +280,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
 
-		[global::Uno.NotImplemented]
+#if !__SKIA__
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
 		{
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
 		}
+#endif
 		#endregion
 	}
 }

@@ -37,15 +37,14 @@ public partial class SvgImageSource : ImageSource
 	/// </summary>
 	/// <param name="uriSource"></param>
 	public SvgImageSource(Uri uriSource)
+		: this()
 	{
 		UriSource = uriSource;
-
-		Initialize();
 	}
 
 	private void Initialize()
 	{
-#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
+#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__
 		InitSvgProvider();
 #endif
 		InitPartial();

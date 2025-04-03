@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Uno;
@@ -29,14 +30,11 @@ using Uno.UI.Xaml.Core;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using View = AppKit.NSView;
-using AppKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -147,6 +145,8 @@ namespace Microsoft.UI.Xaml.Controls
 			OnUnloadedPartial();
 		}
 		private partial void OnUnloadedPartial();
+
+		protected override AutomationPeer OnCreateAutomationPeer() => new ScrollViewerAutomationPeer(this);
 
 
 		#region -- Common DP callbacks --
@@ -259,19 +259,19 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP)
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public bool BringIntoViewOnFocusChange
@@ -696,7 +696,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		internal
 #else
 		private
@@ -845,10 +845,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_presenter.CanVerticallyScroll = allowed;
 
-			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
-			//		 auto materialization due to databound visibility.
-			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
-			//		 as we wouldn't have set the IsFixedOrientation flag yet.
 			MaterializeVerticalScrollBarIfNeeded(computedVisibility);
 
 			ComputedVerticalScrollBarVisibility = computedVisibility;
@@ -882,10 +878,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_presenter.CanHorizontallyScroll = allowed;
 
-			// Note: We materialize the ScrollBar BEFORE setting the ComputedVisibility in order to avoid
-			//		 auto materialization due to databound visibility.
-			//		 This would cause materialization of both Vertical and Horizontal templates of the ScrollBar
-			//		 as we wouldn't have set the IsFixedOrientation flag yet.
 			MaterializeHorizontalScrollBarIfNeeded(computedVisibility);
 
 			ComputedHorizontalScrollBarVisibility = computedVisibility;
@@ -942,25 +934,13 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 #endif
 
-		internal UIElement ElementHorizontalScrollBar()
-		{
-			//UNO TODO: Implement ElementHorizontalScrollBar on ScrollViewer
-			return new();
-		}
-
-		internal UIElement ElementVerticalScrollBar()
-		{
-			//UNO TODO: Implement ElementVerticalScrollBar on ScrollViewer
-			return new();
-		}
-
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !UNO_REFERENCE_API && !__MACOS__ && !IS_UNIT_TESTS
+#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
 			new
 #endif
 			void Add(View view)
@@ -993,7 +973,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
 			{
 				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
@@ -1094,6 +1074,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isVerticalScrollBarMaterialized;
 		private bool _isHorizontalScrollBarMaterialized;
 
+		internal ScrollBar? ElementHorizontalScrollBar => _horizontalScrollbar;
+		internal ScrollBar? ElementVerticalScrollBar => _verticalScrollbar;
+
 		private void MaterializeVerticalScrollBarIfNeeded(Visibility computedVisibility)
 		{
 			if (!_isTemplateApplied || _isVerticalScrollBarMaterialized || computedVisibility != Visibility.Visible)
@@ -1101,18 +1084,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			using (ScrollBar.MaterializingFixed(Orientation.Vertical))
-			{
-				_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
-				_isVerticalScrollBarMaterialized = true;
-			}
+			_verticalScrollbar = (GetTemplateChild(Parts.WinUI3.VerticalScrollBar) ?? GetTemplateChild(Parts.Uwp.VerticalScrollBar)) as ScrollBar;
+			_isVerticalScrollBarMaterialized = true;
 
 			if (_verticalScrollbar is null)
 			{
 				return;
 			}
 
-			_verticalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
@@ -1124,18 +1103,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			using (ScrollBar.MaterializingFixed(Orientation.Horizontal))
-			{
-				_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
-				_isHorizontalScrollBarMaterialized = true;
-			}
+			_horizontalScrollbar = (GetTemplateChild(Parts.WinUI3.HorizontalScrollBar) ?? GetTemplateChild(Parts.Uwp.HorizontalScrollBar)) as ScrollBar;
+			_isHorizontalScrollBarMaterialized = true;
 
 			if (_horizontalScrollbar is null)
 			{
 				return;
 			}
 
-			_horizontalScrollbar.IsFixedOrientation = true; // Redundant with ScrollBar.MaterializingFixed, but twice is safer
 			DetachScrollBars();
 			AttachScrollBars();
 		}
@@ -1278,10 +1253,10 @@ namespace Microsoft.UI.Xaml.Controls
 				Update(isIntermediate);
 
 				if (!isIntermediate
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
 #endif
-				)
+					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
 						|| VerticalSnapPointsType != SnapPointsType.None)
@@ -1350,8 +1325,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_hasPendingUpdate = false;
 
+			var oldHorizontalOffset = HorizontalOffset;
+			var oldVerticalOffset = VerticalOffset;
+
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
+
+			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
+			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
+				GetAutomationPeer() is ScrollViewerAutomationPeer peer)
+			{
+				peer.RaiseAutomationEvents(
+					ExtentWidth,
+					ExtentHeight,
+					ViewportWidth,
+					ViewportHeight,
+					MinHorizontalOffset,
+					MinVerticalOffset,
+					oldHorizontalOffset,
+					oldVerticalOffset);
+			}
 
 			UpdatePartial(isIntermediate);
 
@@ -1391,10 +1384,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		public void ScrollToHorizontalOffset(double offset)
-			=> ChangeView(offset, null, null, false);
+			=> ChangeView(offset, null, null, true);
 
 		public void ScrollToVerticalOffset(double offset)
-			=> ChangeView(null, offset, null, false);
+			=> ChangeView(null, offset, null, true);
 
 		/// <summary>
 		/// Scroll content by one page to the left.
@@ -1634,7 +1627,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
+#if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
@@ -1723,7 +1716,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if __CROSSRUNTIME__ || __MACOS__
+#if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
 
 		[NotImplemented]

@@ -181,7 +181,7 @@ partial class ItemsView
 	}
 
 	public
-#if __ANDROID__ || __MACOS__
+#if __ANDROID__
 		new
 #endif
 		Layout Layout

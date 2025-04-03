@@ -1865,6 +1865,7 @@
 			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
 		</Assemblies>
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
 		<Events>
@@ -1892,6 +1893,8 @@
 
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 
@@ -1900,6 +1903,9 @@
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
@@ -1952,6 +1958,7 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
 			<!-- END ComboBox.IsEditable -->
 
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
@@ -1962,9 +1969,15 @@
 
 	<IgnoreSet baseVersion="5.5">
 		<Assemblies>
+			<Member fullName="Uno" reason="package split"/>
+			<Member fullName="Uno.Foundation" reason="package split"/>
+			<Member fullName="Uno.UI.Dispatching" reason="package split"/>
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 		</Types>
 
 		<Events>
@@ -1977,6 +1990,8 @@
 		</Properties>
 
 		<Methods>
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
+
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
@@ -1986,6 +2001,57 @@
 			<!-- BEGIN DiagnosticsOverlay -->
 			<Member fullName="System.Void Uno.Diagnostics.UI.DiagnosticsOverlay.Add(System.String id, System.String name, Microsoft.UI.Xaml.UIElement preview, System.Func`1&lt;Microsoft.UI.Xaml.UIElement&gt; details)" reason="Recently public, nobody uses it yet." />
 			<!-- END DiagnosticsOverlay -->
+		</Methods>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.6">
+		<Assemblies>
+			<Member fullName="Uno" reason="package split"/>
+			<Member fullName="Uno.Foundation" reason="package split"/>
+			<Member fullName="Uno.UI.Dispatching" reason="package split"/>
+		</Assemblies>
+
+		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Uno.UI.GooglePlay.GlobalStaticResources" reason="Should not be generated" />
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Windows.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Windows.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />	
+			
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+		</Properties>
+
+		<Methods>
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2Property()" reason="Change to get_ContainerAnimationStartPosition2Property which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property()" reason="Change to get_ContainerAnimationEndPosition2Property which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationStartPosition2(System.Double value)" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationEndPosition2(System.Double value)" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Microsoft.UI.Xaml.DependencyObject element, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
+			<Member fullName="System.Void Windows.UI.Xaml.Automation.AutomationProperties.SetAccessibilityeView(Windows.UI.Xaml.DependencyObject element, Windows.UI.Xaml.Automation.Peers.AccessibilityView value)" reason="Typo" />
+			<Member fullName="System.Object Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider::TryGetLoadedDataAsPictureAsync()" reason="Needed internally for ImageBrushes with SVG assets on Skia." />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 		</Methods>
 	</IgnoreSet>
 

@@ -27,9 +27,6 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
@@ -399,9 +396,10 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// Note: below string contains invisible unicode characters (BiDi characters),
 				// you should always use copy&paste to get the string, directly
 				// type the string will cause the string comparison fails.
+				// Uno Specific: Those BiDi characters are not emitted by Uno
+				// Also, depending on locale, we might get day/month isntead of month/day
 				//VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
-
-				dateText.Text.Should().Be("10/21/2000"); // UNO: Those BiDi characters are not emitted by Uno
+				Assert.IsTrue(dateText.Text is "10/21/2000" or "21/10/2000");
 			});
 
 			await RunOnUIThread(() =>
@@ -843,7 +841,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// Note: below string contains invisible unicode characters (BiDi characters),
 				// you should always use copy&paste to get the string, directly
 				// type the string will cause the string comparison fails.
-				VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
+				// Uno Specific: Those BiDi characters are not emitted by Uno
+				// Also, depending on locale, we might get day/month isntead of month/day
+				// VERIFY_IS_TRUE(dateText.Text == "‎10‎/‎21‎/‎2000");
+				Assert.IsTrue(dateText.Text is "10/21/2000" or "21/10/2000");
+
+				// Uno Specific: Those BiDi characters are not emitted by Uno
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 1);
 				VERIFY_DATES_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date1.UniversalTime());
@@ -882,7 +885,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// Note: below string contains invisible unicode characters (BiDi characters),
 				// you should always use copy&paste to get the string, directly
 				// type the string will cause the string comparison fails.
-				VERIFY_IS_TRUE(dateText.Text == "‎1‎/‎1‎/‎2003");
+				// Uno Specific: Those BiDi characters are not emitted by Uno
+				// VERIFY_IS_TRUE(dateText.Text == "‎1‎/‎1‎/‎2003");
+				Assert.AreEqual("01/01/2003", dateText.Text);
 
 				VERIFY_ARE_EQUAL(calendarView.SelectedDates.Count, 1);
 				VERIFY_DATES_ARE_EQUAL(calendarView.SelectedDates.GetAt(0).UniversalTime(), date2.UniversalTime());

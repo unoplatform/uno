@@ -117,7 +117,6 @@ public class Given_InputManager
 		transform.Y.Should().NotBe(0, "Manipulation should have started");
 
 		// Cause a fast move that will trigger a pointer leave
-		// Note: This might not be the WinUI behavior, should we receive a pointer leave when the element is capturing the pointer?
 		exited.Should().BeFalse();
 		finger.MoveBy(0, 50, steps: 0);
 		exited.Should().BeTrue();
@@ -126,6 +125,111 @@ public class Given_InputManager
 		var intermediatePosition = transform.Y;
 		finger.MoveBy(0, 50);
 		transform.Y.Should().Be(intermediatePosition + 50);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_LeaveElementWithCapture_Then_PointerEnterLeaveOnlyOnCapturedElement_And_EnterRaisedOnCaptureLost()
+	{
+		Border sut, sutParent, sutChild, sutSibling;
+		var ui = new Grid
+		{
+			Width = 128,
+			Height = 128,
+			Children =
+			{
+				(sutParent = new Border
+				{
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Center,
+					Width = 36,
+					Height = 36,
+					Background = new SolidColorBrush(Colors.DeepSkyBlue),
+					Child = (sut = new Border
+					{
+						Name = "SUT-Border",
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+						Width = 32,
+						Height = 32,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						Child = (sutChild = new Border
+						{
+							Name = "SUT-Border",
+							HorizontalAlignment = HorizontalAlignment.Center,
+							VerticalAlignment = VerticalAlignment.Center,
+							Width = 28,
+							Height = 28,
+							Background = new SolidColorBrush(Colors.Chartreuse),
+						})
+					})
+				}),
+				(sutSibling = new Border
+				{
+					HorizontalAlignment = HorizontalAlignment.Right,
+					VerticalAlignment = VerticalAlignment.Center,
+					Width = 36,
+					Height = 36,
+					Background = new SolidColorBrush(Colors.Orange)
+				})
+			}
+		};
+
+		await UITestHelper.Load(ui);
+
+		sut.PointerPressed += (snd, e) => sut.CapturePointer(e.Pointer);
+
+		int parentEntered = 0, sutEntered = 0, childEntered = 0, siblingEntered = 0;
+		sutParent.PointerEntered += (snd, e) => parentEntered++;
+		sut.PointerEntered += (snd, e) => sutEntered++;
+		sutChild.PointerEntered += (snd, e) => childEntered++;
+		sutSibling.PointerEntered += (snd, e) => siblingEntered++;
+
+		int parentExited = 0, sutExited = 0, childExited = 0, siblingExited = 0;
+		sutParent.PointerExited += (snd, e) => parentExited++;
+		sut.PointerExited += (snd, e) => sutExited++;
+		sutChild.PointerExited += (snd, e) => childExited++;
+		sutSibling.PointerExited += (snd, e) => siblingExited++;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetMouse();
+
+		finger.Press(sut.GetAbsoluteBounds().GetCenter());
+		finger.MoveTo(sutSibling.GetAbsoluteBounds().GetCenter());
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(1);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(0);
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(1);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
+
+		finger.MoveTo(sut.GetAbsoluteBounds().GetCenter());
+		finger.MoveTo(sutSibling.GetAbsoluteBounds().GetCenter());
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(2);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(0);
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(2);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
+
+		finger.Release();
+
+		parentEntered.Should().Be(1);
+		sutEntered.Should().Be(2);
+		childEntered.Should().Be(1);
+		siblingEntered.Should().Be(1, because: "enter event should be raised on element under the mouse when the capture is released");
+		parentExited.Should().Be(0);
+		sutExited.Should().Be(2);
+		childExited.Should().Be(0);
+		siblingExited.Should().Be(0);
 	}
 
 	[TestMethod]
@@ -156,6 +260,8 @@ public class Given_InputManager
 	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
+#elif __SKIA__
+	[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif
 	public async Task When_Scroll_No_Delay_For_VisualState_Update()
 	{
@@ -190,6 +296,9 @@ public class Given_InputManager
 		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
 
 		mouse.Wheel(-50);
+
+		// Wait for the scroll animation to complete
+		await Task.Delay(1000);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
@@ -483,6 +592,55 @@ public class Given_InputManager
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	[TestMethod]
+	public void Verify_Initialized()
+	{
+		var xamlRoot = TestServices.WindowHelper.XamlRoot;
+		var contentRoot = xamlRoot.VisualTree.ContentRoot;
+		Assert.IsTrue(contentRoot.InputManager.Initialized);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ReleaseOnSibling_Then_GetLeave()
+	{
+		Border col1, col2;
+		var ui = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			ColumnDefinitions =
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+			},
+			Children =
+			{
+				(col1 = new Border { Background = new SolidColorBrush(Colors.DeepPink) }),
+				(col2 = new Border { Background = new SolidColorBrush(Colors.DeepSkyBlue) }),
+			}
+		};
+
+		Grid.SetColumn(col1, 0);
+		Grid.SetColumn(col2, 1);
+
+		await UITestHelper.Load(ui);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		var exited = false;
+		col1.PointerExited += (snd, args) => exited = true;
+
+		finger.Press(col1.GetAbsoluteBounds().GetCenter());
+		finger.MoveBy(1, 1);
+		finger.Release(col2.GetAbsoluteBounds().GetCenter());
+
+		Assert.IsTrue(exited, "Exited should have been raised on col1 as part of the release.");
 	}
 
 	private CoreCursorType? GetCursorShape()

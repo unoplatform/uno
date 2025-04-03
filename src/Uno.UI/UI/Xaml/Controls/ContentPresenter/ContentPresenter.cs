@@ -27,18 +27,12 @@ using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
@@ -82,8 +76,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
@@ -661,7 +655,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
 			if (pTemplatedParent != null
-#if ANDROID || __IOS__
+#if ANDROID || __APPLE_UIKIT__
 				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
 #endif
 				)
@@ -782,7 +776,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			ContentTemplateRoot = null;
 		}
 
-		TrySetDataContextFromContent(newValue);
+		// We need to overrides the local value of DataContext with Content's value here.
+		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
+		// Then we can't do so, because updating the DC will cause the binding to evaluate again, and yield invalid value.
+		if (GetBindingExpression(ContentProperty) is not { } expression ||
+			expression.IsExplicitlySourced ||
+			expression.ParentBinding.IsTemplateBinding)
+		{
+			TrySetDataContextFromContent(newValue);
+		}
 
 		TryRegisterNativeElement(oldValue, newValue);
 
@@ -983,7 +985,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// the DataContext to null (or the inherited value) and then back to
 			// the content and have two-way bindings propagating the null value
 			// back to the source.
-			if (!ReferenceEquals(DataContext, Content))
+			if (!ReferenceEquals(DataContext, Content) &&
+				this.GetCurrentHighestValuePrecedence(DataContextProperty) != DependencyPropertyValuePrecedences.Inheritance)
 			{
 				// On first load UWP clears the local value of a ContentPresenter.
 				// The reason for this behavior is unknown.
@@ -1088,50 +1091,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		ContentTemplateRoot = textBlock;
 		IsUsingDefaultTemplate = true;
-	}
-
-	private bool _isBoundImplicitlyToContent;
-
-	private void SetImplicitContent()
-	{
-		if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-		{
-			return;
-		}
-
-		if (GetTemplatedParent() is not ContentControl)
-		{
-			ClearImplicitBindings();
-			return; // Not applicable: no TemplatedParent or it's not a ContentControl
-		}
-
-		// Check if the Content is set to something
-		var store = ((IDependencyObjectStoreProvider)this).Store;
-		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
-		{
-			ClearImplicitBindings();
-			return; // Nope, there's a value somewhere
-		}
-
-		// Check if the Content property is bound to something
-		var b = GetBindingExpression(ContentProperty);
-		if (b != null)
-		{
-			ClearImplicitBindings();
-			return; // Yep, there's a binding: a value "will" come eventually
-		}
-
-		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
-		_isBoundImplicitlyToContent = true;
-
-		void ClearImplicitBindings()
-		{
-			if (_isBoundImplicitlyToContent)
-			{
-				SetBinding(ContentProperty, new Binding());
-			}
-		}
 	}
 
 	partial void RegisterContentTemplateRoot();

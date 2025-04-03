@@ -1,21 +1,18 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
-using System.Threading.Tasks;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.UI.Composition;
-using Windows.Graphics.Display;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
+		private float _scale = 1.0f;
+		private IDisposable? _scaleChangedDisposable;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
@@ -36,9 +33,19 @@ namespace Microsoft.UI.Composition
 					}
 				};
 
+				if (SourceVisual?.CompositionTarget is ICompositionTarget target)
+				{
+					SubscribeScaleChanged();
+
+					_scale = (float)target.RasterizationScale;
+				}
+
+				size *= _scale;
+
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
+				canvas.Scale(_scale, _scale);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -49,8 +56,16 @@ namespace Microsoft.UI.Composition
 
 				var previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
-				SourceVisual.RenderRootVisual(_surface, SourceOffset, null);
+				SourceVisual.RenderRootVisual(_surface.Canvas, SourceOffset, null);
 				Compositor.IsSoftwareRenderer = previousCompMode;
+			}
+		}
+
+		private void DpiChanged(object? sender, EventArgs args)
+		{
+			if (_surface is not null)
+			{
+				((ISkiaSurface)this).UpdateSurface(true);
 			}
 		}
 
@@ -67,7 +82,7 @@ namespace Microsoft.UI.Composition
 					session.Canvas.ClipRect(new SKRect(0, 0, int.MaxValue, int.MaxValue));
 				}
 
-				SourceVisual.RenderRootVisual(session.Surface, SourceOffset, null);
+				SourceVisual.RenderRootVisual(session.Canvas, SourceOffset, null);
 				session.Canvas.RestoreToCount(save);
 			}
 		}
@@ -77,9 +92,50 @@ namespace Microsoft.UI.Composition
 			base.Dispose();
 
 			_surface?.Dispose();
+			UnsubscribeScaleChanged();
 		}
 
-		partial void OnSourceVisualChangedPartial(Visual? sourceVisual) => ((ISkiaSurface)this).UpdateSurface(SourceSize == default && sourceVisual?.Size != default);
+		partial void OnSourceVisualChangedPartial(Visual? sourceVisual)
+		{
+			bool needsRecreation = false;
+
+			UnsubscribeScaleChanged();
+
+			if (sourceVisual?.CompositionTarget is ICompositionTarget target)
+			{
+				SubscribeScaleChanged();
+
+				var scale = (float)target.RasterizationScale;
+				if (scale != _scale)
+				{
+					_scale = scale;
+					needsRecreation = true;
+				}
+			}
+
+			((ISkiaSurface)this).UpdateSurface(needsRecreation || (SourceSize == default && sourceVisual?.Size != default));
+		}
+
+		private void UnsubscribeScaleChanged()
+		{
+			_scaleChangedDisposable?.Dispose();
+			_scaleChangedDisposable = null;
+		}
+
+		private void SubscribeScaleChanged()
+		{
+			if (_scaleChangedDisposable is not null)
+			{
+				return;
+			}
+
+			if (SourceVisual?.CompositionTarget is ICompositionTarget target)
+			{
+				_scaleChangedDisposable = Disposable.Create(() => target.RasterizationScaleChanged -= DpiChanged);
+				target.RasterizationScaleChanged += DpiChanged;
+			}
+		}
+
 		partial void OnSourceOffsetChangedPartial(Vector2 offset) => ((ISkiaSurface)this).UpdateSurface();
 		partial void OnSourceSizeChangedPartial(Vector2 size) => ((ISkiaSurface)this).UpdateSurface(true);
 	}

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 using Microsoft.UI.Xaml.Navigation;
+using Uno.Disposables;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -57,7 +60,7 @@ public class Given_Frame
 	public Task When_Page_Loaded_Navigates_With_Yield() =>
 		When_Page_Loaded_Navigates_Inner(true);
 
-	public async Task When_Page_Loaded_Navigates_Inner(bool yield)
+	private async Task When_Page_Loaded_Navigates_Inner(bool yield)
 	{
 		var frame = new Frame();
 		TestServices.WindowHelper.WindowContent = frame;
@@ -326,8 +329,8 @@ public class Given_Frame
 				Assert.AreEqual(navigatedCurrentSourcePageType, SUT.SourcePageType);
 			};
 
-			Assert.AreEqual(null, SUT.SourcePageType);
-			Assert.AreEqual(null, SUT.CurrentSourcePageType);
+			Assert.IsNull(SUT.SourcePageType);
+			Assert.IsNull(SUT.CurrentSourcePageType);
 
 			// Navigate from null to SourceTypePage1
 
@@ -389,7 +392,7 @@ public class Given_Frame
 	{
 		var SUT = new Frame();
 		SUT.Navigate(typeof(MyPage));
-		Assert.ThrowsException<ArgumentNullException>(
+		Assert.ThrowsExactly<ArgumentNullException>(
 			() => SUT.SourcePageType = null);
 	}
 
@@ -454,7 +457,7 @@ public class Given_Frame
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
+		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 #if HAS_UNO
 		if (FeatureConfiguration.Frame.UseWinUIBehavior)
@@ -484,10 +487,92 @@ public class Given_Frame
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
+		var exception = Assert.ThrowsExactly<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
 		Assert.AreEqual("Crashed", exception.Message);
 		Assert.IsTrue(navigationFailed);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+#if !__ANDROID__
+	[Ignore("This test specifically tests Android's NativeFramePresenter")]
+#endif
+	[DataRow(false)]
+	[DataRow(true)]
+	[Timeout(5 * 60 * 1000)] // test is really slow in CI
+	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
+	{
+		// to clean up residual pages from a previous test run
+		for (int i = 0; i < 4; i++)
+		{
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+			GC.WaitForPendingFinalizers();
+		}
+
+		FinalizeCounterPage.Reset();
+		var oldUseWinUIBehavior = FeatureConfiguration.Frame.UseWinUIBehavior;
+		var oldIsPoolingEnabled = FeatureConfiguration.Page.IsPoolingEnabled;
+		FeatureConfiguration.Frame.UseWinUIBehavior = false; // WinUI behaviour doesn't cache pages
+		FeatureConfiguration.Page.IsPoolingEnabled = false;
+		using var _ = Disposable.Create(() =>
+		{
+			FeatureConfiguration.Page.IsPoolingEnabled = oldIsPoolingEnabled;
+			FeatureConfiguration.Frame.UseWinUIBehavior = oldUseWinUIBehavior;
+			FinalizeCounterPage.Reset();
+		});
+
+		var SUT = new Frame
+		{
+			Style = Application.Current.Resources["NativeDefaultFrame"] as Style,
+			Width = 200,
+			Height = 200
+		};
+
+		await UITestHelper.Load(SUT);
+
+		// WaitingForIdle doesn't work here, most probably because of native animations. Instead, we use a 3 sec delay
+		SUT.Navigate(typeof(FinalizeCounterPage));
+		await Task.Delay(TimeSpan.FromSeconds(3));
+		SUT.Navigate(typeof(FinalizeCounterPage));
+		await Task.Delay(TimeSpan.FromSeconds(3));
+		SUT.GoBack();
+		await Task.Delay(TimeSpan.FromSeconds(3));
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (backAndForth)
+			{
+				if (i % 2 == 0)
+				{
+					SUT.GoForward();
+				}
+				else
+				{
+					SUT.GoBack();
+				}
+			}
+			else
+			{
+				SUT.Navigate(typeof(FinalizeCounterPage));
+				await Task.Delay(TimeSpan.FromSeconds(3));
+				SUT.BackStack.Clear();
+			}
+
+			await Task.Delay(TimeSpan.FromSeconds(3));
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+			GC.WaitForPendingFinalizers();
+		}
+
+		Assert.AreEqual(backAndForth ? 2 : 12, FinalizeCounterPage.ConstructorCalls);
+		// 10 and not 11 because NativeFramePresenter won't immediately clear its "cache" on
+		// SUT.BackStack.Clear(), but waits for the next SUT.Navigate()
+		Assert.AreEqual(backAndForth ? 0 : 10, FinalizeCounterPage.FinalizerCalls);
+	}
+#endif
 
 	[TestCleanup]
 	public void Cleanup()
@@ -688,5 +773,30 @@ public partial class ExceptionInOnNavigatedToPage : Page
 	{
 		base.OnNavigatedTo(e);
 		throw new NotSupportedException("Crashed");
+	}
+}
+
+public partial class FinalizeCounterPage : Page
+{
+	private static int _finalizerCalls;
+	public static int FinalizerCalls => _finalizerCalls;
+
+	public static int ConstructorCalls { get; private set; }
+
+	public static void Reset()
+	{
+		Interlocked.Exchange(ref _finalizerCalls, 0);
+		ConstructorCalls = 0;
+	}
+
+	public FinalizeCounterPage()
+	{
+		ConstructorCalls++;
+		Content = new TextBlock { Text = $"FinalizeCounterPage {ConstructorCalls}" };
+	}
+
+	~FinalizeCounterPage()
+	{
+		Interlocked.Increment(ref _finalizerCalls);
 	}
 }

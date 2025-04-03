@@ -25,5 +25,8 @@ public interface ISvgProvider
 
 	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
 
+	/// <returns>An SKPicture on Skia, otherwise null.</returns>
+	object? TryGetLoadedDataAsPictureAsync() => default;
+
 	void Unload();
 }

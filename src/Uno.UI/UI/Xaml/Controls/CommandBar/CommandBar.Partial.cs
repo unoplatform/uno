@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 #define HAS_NATIVE_COMMANDBAR
 #endif
 
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => throw new NotImplementedException();
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		internal NativeCommandBarPresenter? Presenter { get; set; }
 #endif
 
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __ANDROID__
 			Presenter = (this as ViewGroup).FindFirstChild<NativeCommandBarPresenter>();
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			Presenter = this.FindFirstChild<NativeCommandBarPresenter?>();
 #endif
 
@@ -367,7 +367,7 @@ namespace Microsoft.UI.Xaml.Controls
 			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		private static DependencyProperty NavigationCommandProperty = Uno.UI.ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
@@ -1411,6 +1411,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var element = m_tpDynamicPrimaryCommands?[(int)changeIndex];
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					element.IsCompact = shouldBeCompact;
 					PropagateDefaultLabelPositionToElement(element);
 				}
@@ -1425,6 +1427,8 @@ namespace Microsoft.UI.Xaml.Controls
 					var element = m_tpDynamicPrimaryCommands?[i];
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						PropagateDefaultLabelPositionToElement(element);
 					}
 				}
@@ -1453,6 +1457,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1468,6 +1474,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}

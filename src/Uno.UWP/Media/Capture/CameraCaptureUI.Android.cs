@@ -115,7 +115,7 @@ namespace Windows.Media.Capture
 		}
 
 		[Activity(
-			Theme = "@style/Theme.AppCompat.Translucent",
+			// Theme = "@style/Theme.AppCompat.Translucent",
 
 			// This prevents the Activity from being destroyed when the orientation and/or screen size changes.
 			// This is important because OnDestroy would otherwise return Result.Canceled before OnActivityResult can return the actual result.

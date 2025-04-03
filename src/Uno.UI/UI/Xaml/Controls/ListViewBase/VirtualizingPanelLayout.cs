@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 	[Microsoft.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 		/// <summary>
 		/// Determines if the owner Panel is inside a popup. Used to determine
 		/// if the computation of the breadth should be using the parent's stretch
@@ -45,12 +45,6 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented]
 		public event EventHandler<object>? VerticalSnapPointsChanged;
 #pragma warning restore 67 // Unused member
-
-
-		private double GroupPaddingExtentStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Top : GroupPadding.Left;
-		private double GroupPaddingExtentEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Bottom : GroupPadding.Right;
-		private double GroupPaddingBreadthStart => ScrollOrientation == Orientation.Vertical ? GroupPadding.Left : GroupPadding.Top;
-		private double GroupPaddingBreadthEnd => ScrollOrientation == Orientation.Vertical ? GroupPadding.Right : GroupPadding.Bottom;
 
 		public int FirstVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetFirstVisibleIndexPath()) ?? -1;
 		public int LastVisibleIndex => XamlParent?.GetIndexFromIndexPath(GetLastVisibleIndexPath()) ?? -1;
@@ -145,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				var stretchOwner =
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 					IsInsidePopup ? (FrameworkElement)OwnerPanel :
 #endif
 					XamlParent;

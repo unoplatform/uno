@@ -14,10 +14,8 @@ using FluentAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -570,9 +568,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_NestedItemsControl_RecycleTemplate()

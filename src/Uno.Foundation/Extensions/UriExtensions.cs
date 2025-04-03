@@ -65,7 +65,7 @@ public static class UriExtensions
 			throw new ArgumentNullException(nameof(uri));
 		}
 
-		return uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase);
+		return uri.IsAbsoluteUri && uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase);
 	}
 
 	/// <summary>

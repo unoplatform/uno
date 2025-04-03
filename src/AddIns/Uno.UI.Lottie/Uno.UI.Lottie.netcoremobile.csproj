@@ -52,12 +52,12 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsCatalyst)">
-		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
+	<ItemGroup Condition="$(IsTvOS)">
+		<PackageReference Include="SkiaSharp.NativeAssets.tvOS" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsMacOS)">
-		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+	<ItemGroup Condition="$(IsCatalyst)">
+		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

@@ -31,13 +31,9 @@ using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
@@ -72,6 +68,8 @@ namespace Microsoft.UI.Xaml
 #endif
 
 		private bool _defaultStyleApplied;
+
+		private ResourceDictionary _resources;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 
@@ -116,7 +114,7 @@ namespace Microsoft.UI.Xaml
 
 		#region Tag Dependency Property
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 #pragma warning disable 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
 #endif
 		public object Tag
@@ -154,7 +152,7 @@ namespace Microsoft.UI.Xaml
 
 		#region FlowDirection Dependency Property
 #if !SUPPORTS_RTL
-		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 		public FlowDirection FlowDirection
 		{
@@ -163,7 +161,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if !SUPPORTS_RTL
-		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL
@@ -249,7 +247,6 @@ namespace Microsoft.UI.Xaml
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -260,8 +257,20 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get; set;
+			get => _resources ??= new ResourceDictionary();
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
 		}
+
+		/// <summary>
+		/// Tries getting the ResourceDictionary without initializing it.
+		/// </summary>
+		/// <returns>A ResourceDictionary instance or null</returns>
+		internal Microsoft.UI.Xaml.ResourceDictionary TryGetResources()
+			=> _resources;
 
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -334,7 +343,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var child = this.FindFirstChild();
 			return child is not null && child is not UIElement
 				? MeasureElement(child, availableSize)
@@ -351,7 +360,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>The actual size that is used after the element is arranged in layout.</returns>
 		protected virtual Size ArrangeOverride(Size finalSize)
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var child = this.FindFirstChild();
 			if (child is not null && child is not UIElement)
 			{
@@ -931,7 +940,7 @@ namespace Microsoft.UI.Xaml
 #if __ANDROID__
 					// Schedule on the animation dispatcher so the callback appears faster.
 					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__
 					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
@@ -956,7 +965,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings(updateReason);
+			TryGetResources()?.UpdateThemeBindings(updateReason);
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
@@ -970,7 +979,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		#region AutomationPeer
-#if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
+#if !__APPLE_UIKIT__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -988,27 +997,6 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		public AutomationPeer GetAutomationPeer()
-		{
-			if (_automationPeer == null)
-			{
-				_automationPeer = OnCreateAutomationPeer();
-			}
-
-			return _automationPeer;
-		}
-#elif __MACOS__
-		private AutomationPeer _automationPeer;
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return null;
-		}
-
-		public virtual string GetAccessibilityInnerText()
-		{
-			return null;
-		}
 		public AutomationPeer GetAutomationPeer()
 		{
 			if (_automationPeer == null)

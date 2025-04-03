@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 			await folder.CreateFileAsync(filename);
 
-			await Assert.ThrowsExceptionAsync<UnauthorizedAccessException>(() => folder.CreateFileAsync(filename).AsTask());
+			await Assert.ThrowsExactlyAsync<UnauthorizedAccessException>(() => folder.CreateFileAsync(filename).AsTask());
 		}
 
 		[TestMethod]

@@ -15,10 +15,8 @@ using Uno.UI.Xaml.Controls;
 using System.Collections;
 using Microsoft.UI.Composition;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using __View = UIKit.UIView;
-#elif __MACOS__
-using __View = AppKit.NSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -49,8 +47,8 @@ public partial class Panel : FrameworkElement, IPanel
 		_children = new UIElementCollection(this);
 	}
 
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
@@ -280,11 +278,11 @@ public partial class Panel : FrameworkElement, IPanel
 	/// </summary>
 	/// <param name="view"></param>
 	public
-#if __IOS__
+#if __APPLE_UIKIT__
 	new
 #endif
 	void Add(
-#if !__IOS__ && !__MACOS__
+#if !__APPLE_UIKIT__
 		UIElement view
 #else
 		__View view

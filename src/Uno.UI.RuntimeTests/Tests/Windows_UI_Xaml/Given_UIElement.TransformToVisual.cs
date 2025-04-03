@@ -21,7 +21,7 @@ using static Private.Infrastructure.TestServices.WindowHelper;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using Uno.UI.Extensions;
@@ -33,9 +33,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_TransformToVisual_WithMargin()
 		{
 			FrameworkElement inner = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.DarkBlue) };
@@ -77,10 +74,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !WINAPPSDK // Cannot create a DataTemplate on UWP
 		[TestMethod]
 		[RunsOnUIThread]
-
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_TransformToVisual_ThroughListView()
 		{
 			var listView = new ListView
@@ -126,37 +119,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
 
 				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
-				Assert.AreEqual(containerToListView.X, 0, tolerance);
+				Assert.AreEqual(0, containerToListView.X, tolerance);
+				Assert.AreEqual(0, containerToListView.X, tolerance);
 				Assert.AreEqual(containerToListView.Y, ((100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToListView.Width, 42, tolerance);
-				Assert.AreEqual(containerToListView.Height, 42, tolerance);
+				Assert.AreEqual(42, containerToListView.Width, tolerance);
+				Assert.AreEqual(42, containerToListView.Height, tolerance);
 
 				var borderToListView = border.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToListView.X, 0, tolerance);
+				Assert.AreEqual(0, borderToListView.X, tolerance);
 				Assert.AreEqual(borderToListView.Y, ((100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToListView.Width, 42, tolerance);
-				Assert.AreEqual(borderToListView.Height, 42, tolerance);
+				Assert.AreEqual(42, borderToListView.Width, tolerance);
+				Assert.AreEqual(42, borderToListView.Height, tolerance);
 
 				var containerToSut = container.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(containerToSut.X, 15, tolerance);
+				Assert.AreEqual(15, containerToSut.X, tolerance);
 				Assert.AreEqual(containerToSut.Y, (15 + (100 + 5 * 2) * index), tolerance);
-				Assert.AreEqual(containerToSut.Width, 42, tolerance);
-				Assert.AreEqual(containerToSut.Height, 42, tolerance);
+				Assert.AreEqual(42, containerToSut.Width, tolerance);
+				Assert.AreEqual(42, containerToSut.Height, tolerance);
 
 				var borderToSut = border.TransformToVisual(sut).TransformBounds(new Rect(0, 0, 42, 42));
-				Assert.AreEqual(borderToSut.X, 15, tolerance);
+				Assert.AreEqual(15, borderToSut.X, tolerance);
 				Assert.AreEqual(borderToSut.Y, (15 + (100 + 5 * 2) * index + 5), tolerance);
-				Assert.AreEqual(borderToSut.Width, 42, tolerance);
-				Assert.AreEqual(borderToSut.Height, 42, tolerance);
+				Assert.AreEqual(42, borderToSut.Width, tolerance);
+				Assert.AreEqual(42, borderToSut.Height, tolerance);
 			}
 		}
 #endif
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_TransformToVisual_Through_ListView_Scrolled()
 		{
 			var listView = new ListView
@@ -181,13 +171,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var sv = listView.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			sv.ChangeView(null, 10, null);
+			sv.ChangeView(null, 10, null, disableAnimation: true);
 			await WaitForEqual(10, () => sv.VerticalOffset);
 
 			AssertItem(0, -10);
 			AssertItem(1, 19);
 
-			sv.ChangeView(null, 40, null);
+			sv.ChangeView(null, 40, null, disableAnimation: true);
 
 			await WaitForEqual(40, () => sv.VerticalOffset);
 
@@ -209,9 +199,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_TransformToVisual_WithTransformOrigin()
 		{
 			var sut = new Border
@@ -241,9 +228,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_TransformToVisual_From_ScrollViewer()
 		{
 			var innerBorder = new Border
@@ -299,14 +283,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, 216);
 
-			SUT.ChangeView(null, 96, null);
+			SUT.ChangeView(null, 96, null, true);
 
 			await TestServices.WindowHelper.WaitForEqual(96, () => SUT.VerticalOffset);
 
 			AssertTransformOffset(SUT, 76);
 			AssertTransformOffset(innerBorder, 120);
 
-			SUT.ChangeView(null, 2000, null);
+			SUT.ChangeView(null, 2000, null, true);
 
 			await TestServices.WindowHelper.WaitForEqual(520, () => SUT.VerticalOffset);
 
@@ -322,9 +306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
@@ -425,9 +406,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
@@ -735,9 +713,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
@@ -1148,9 +1123,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Basic_Triple_Nesting()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1167,9 +1139,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Triple_Nesting_Margin_Item()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1190,9 +1159,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Triple_Nesting_Scroll_Paddings()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1215,9 +1181,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Double_Nesting_Scroll_Offsets()
 		{
 			var outer = new ScrollViewer()

@@ -22,7 +22,7 @@ partial class Window
 	}
 #endif
 
-#if !__IOS__ // This can be added when iOS uses SceneDelegate #8341.
+#if !__APPLE_UIKIT__ // This can be added when iOS uses SceneDelegate #8341.
 	/// <summary>
 	/// Gets or sets a string used for the window title.
 	/// </summary>

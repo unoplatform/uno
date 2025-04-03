@@ -22,12 +22,12 @@ using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
-#if __ANDROID__
+#if HAS_UNO_SKIA
+using _View = Microsoft.UI.Xaml.UIElement;
+#elif __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -99,7 +99,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
+								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.SC0().Build(__owner)
 								)								,
 								// Source 0\MainPage.xaml (Line 15:5)
 							}
@@ -168,7 +168,7 @@ namespace TestRepro
 						{
 							Mode = BindingMode.OneTime,
 						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
 					);
 					__that._component_1 = __p1;
 					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
@@ -248,18 +248,6 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner1ButtonSubject.ElementInstance = value;
-			}
-		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
 		{
@@ -270,6 +258,18 @@ namespace TestRepro
 			set
 			{
 				_inner1Subject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
+			}
+			set
+			{
+				_inner1ButtonSubject.ElementInstance = value;
 			}
 		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
@@ -284,18 +284,6 @@ namespace TestRepro
 				_inner2Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner3ButtonSubject.ElementInstance = value;
-			}
-		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner3
 		{
@@ -306,6 +294,18 @@ namespace TestRepro
 			set
 			{
 				_inner3Subject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
+			}
+			set
+			{
+				_inner3ButtonSubject.ElementInstance = value;
 			}
 		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
@@ -321,88 +321,93 @@ namespace TestRepro
 			}
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-		private class _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			global::System.Object __ResourceOwner_1;
-			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1)
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+			public class SC0
 			{
-				var __that = this;
-				this.__ResourceOwner_1 = __ResourceOwner_1;
-				this.__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.Grid
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::System.Object __ResourceOwner_1;
+				_View __rootInstance = null;
+				public _View Build(object __ResourceOwner_1)
 				{
-					IsParsing = true,
-					Name = "gridInsideTemplate",
-					// Source 0\MainPage.xaml (Line 18:8)
-					Children = 
+					var __that = this;
+					this.__ResourceOwner_1 = __ResourceOwner_1;
+					this.__rootInstance = 
+					new global::Microsoft.UI.Xaml.Controls.Grid
 					{
-						new global::Microsoft.UI.Xaml.Controls.Grid
+						IsParsing = true,
+						Name = "gridInsideTemplate",
+						// Source 0\MainPage.xaml (Line 18:8)
+						Children = 
 						{
-							IsParsing = true,
-							Name = "gridInsideGridInsideTemplate",
-							// Source 0\MainPage.xaml (Line 19:9)
+							new global::Microsoft.UI.Xaml.Controls.Grid
+							{
+								IsParsing = true,
+								Name = "gridInsideGridInsideTemplate",
+								// Source 0\MainPage.xaml (Line 19:9)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+							{
+							__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
+							__that.gridInsideGridInsideTemplate = __p1;
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+							,
 						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+					}
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+					{
+					__nameScope.RegisterName("gridInsideTemplate", __p1);
+					__that.gridInsideTemplate = __p1;
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+					__p1.CreationComplete();
+					}
+					))
+					;
+					if (__rootInstance is DependencyObject d)
+					{
+						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
 						{
-						__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
-						__that.gridInsideGridInsideTemplate = __p1;
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						__p1.CreationComplete();
+							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							__nameScope.Owner = d;
 						}
-						))
-						,
+						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					}
+					return __rootInstance;
+				}
+				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
+				{
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
+					}
+					set
+					{
+						_gridInsideGridInsideTemplateSubject.ElementInstance = value;
 					}
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private global::Microsoft.UI.Xaml.Controls.Grid gridInsideTemplate
 				{
-				__nameScope.RegisterName("gridInsideTemplate", __p1);
-				__that.gridInsideTemplate = __p1;
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				__p1.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is DependencyObject d)
-				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					get
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+						return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
 					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
-				}
-				return __rootInstance;
-			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
-			{
-				get
-				{
-					return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
-				}
-				set
-				{
-					_gridInsideGridInsideTemplateSubject.ElementInstance = value;
-				}
-			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.Grid gridInsideTemplate
-			{
-				get
-				{
-					return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
-				}
-				set
-				{
-					_gridInsideTemplateSubject.ElementInstance = value;
+					set
+					{
+						_gridInsideTemplateSubject.ElementInstance = value;
+					}
 				}
 			}
 		}

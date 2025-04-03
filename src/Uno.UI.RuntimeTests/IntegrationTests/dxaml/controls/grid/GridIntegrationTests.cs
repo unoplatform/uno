@@ -17,9 +17,6 @@ using Windows.UI;
 namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class GridIntegrationTests
 	{
 		const double s_rectSize = 30.0;
@@ -46,9 +43,6 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task CanPerformLayout()
 		{
 			TestCleanupWrapper cleanup;
@@ -561,8 +555,9 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__ && !__IOS__
 		[TestMethod]
+#if __ANDROID__ || __APPLE_UIKIT__
+		[Ignore]
 #endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
 		{

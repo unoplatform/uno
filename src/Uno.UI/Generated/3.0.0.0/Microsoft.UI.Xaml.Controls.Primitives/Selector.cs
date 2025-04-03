@@ -35,8 +35,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValuePathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.IsSynchronizedWithCurrentItemProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool GetIsSelectionActive(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			throw new global::System.NotImplementedException("The member bool Selector.GetIsSelectionActive(DependencyObject element) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Selector.GetIsSelectionActive%28DependencyObject%20element%29");

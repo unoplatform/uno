@@ -22,7 +22,7 @@ public partial class App : Application
         MainWindow = new Window();
 #if DEBUG
 #pragma warning disable UNO0008
-        MainWindow.EnableHotReload();
+        MainWindow.UseStudio();
 #pragma warning restore UNO0008
 #endif
 

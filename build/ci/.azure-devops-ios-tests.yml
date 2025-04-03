@@ -68,6 +68,8 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/dotnet-mobile-install-mac.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-ios'
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -88,17 +90,25 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
-      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      TargetFolder: $(build.artifactstagingdirectory)/bin/SamplesApp.app
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
 
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish iOS Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/bin
+      ArtifactName: ios-uitest-build
+
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish iOS build logs'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: ios-uitest-build
+      PathtoPublish: $(build.artifactstagingdirectory)/logs
+      ArtifactName: ios-uitest-build-logs
       ArtifactType: Container
 
 - job: iOS_TestFlight
@@ -139,6 +149,8 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/dotnet-mobile-install-mac.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-ios'
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -189,12 +201,16 @@ jobs:
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
       JobDisplayName: 'iOS Automated Tests ${{ AutomatedTestGroup.value }}'
       JobTimeoutInMinutes: 120
+      SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'true'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build
 
 ##
 ## Runtime tests
@@ -206,6 +222,7 @@ jobs:
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
       JobDisplayName: 'iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
       JobTimeoutInMinutes: 120
+      SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
@@ -213,7 +230,10 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build
 
 # Disabled for benchmkarks timeout
 # - template: .azure-devops-ios-tests-run.yml
@@ -225,6 +245,7 @@ jobs:
 #     vmImage: ${{ parameters.vmImageTest }}
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
+#     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
 - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
@@ -234,9 +255,13 @@ jobs:
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
       JobDisplayName: 'iOS Snapshot Tests ${{ snapshotGroup.value }}'
       JobTimeoutInMinutes: 60
+      SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
       UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
       UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build

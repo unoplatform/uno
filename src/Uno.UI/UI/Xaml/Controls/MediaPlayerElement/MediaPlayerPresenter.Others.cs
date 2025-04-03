@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;

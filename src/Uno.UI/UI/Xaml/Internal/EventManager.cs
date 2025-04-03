@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Core;
@@ -26,7 +28,9 @@ internal sealed partial class EventManager
 
 	internal void EnqueueForEffectiveViewportChanged(FrameworkElement element, EffectiveViewportChangedEventArgs args)
 	{
+		_effectiveViewportChangedQueue.RemoveAll(x => x.Element == element);
 		_effectiveViewportChangedQueue.Add((element, args));
+
 		CoreServices.RequestAdditionalFrame();
 	}
 

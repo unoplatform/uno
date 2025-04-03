@@ -48,10 +48,10 @@ namespace Windows.Storage.Pickers
 		}
 
 		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
-		PickerLocationId IFilePicker.SuggestedStartLocationInternal => PickerLocationId.DocumentsLibrary;
-		IList<string> IFilePicker.FileTypeFilterInternal => new FileExtensionVector();
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => SuggestedStartLocation;
+		IList<string> IFilePicker.FileTypeFilterInternal => FileTypeFilter;
 
-#if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
+#if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__
 		public FileOpenPicker()
 		{
 			InitializePlatform();
@@ -107,7 +107,7 @@ namespace Windows.Storage.Pickers
 		/// Sets the file limit a user can select when picking multiple files.
 		/// </summary>
 		/// <param name="limit">The maximum number of files that the user can pick.</param>
-#if !__IOS__
+#if !__IOS__ && !__TVOS__
 		[global::Uno.NotImplemented]
 #endif
 		public static void SetMultipleFilesLimit(this FileOpenPicker picker, int limit)

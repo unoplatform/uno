@@ -12,10 +12,8 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -48,9 +46,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 #if HAS_UNO && !HAS_UNO_WINUI
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_NavView()
 		{
 			var SUT = new MyNavigationView() { IsSettingsVisible = false };
@@ -73,7 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(item2);
 
 			var children =
-#if __ANDROID__ || __IOS__ // ItemsStackPanel is just a Xaml facade on Android/iOS, its Children list isn't populated
+#if __ANDROID__ || __APPLE_UIKIT__ // ItemsStackPanel is just a Xaml facade on Android/iOS, its Children list isn't populated
 				list.GetItemsPanelChildren();
 #else
 				panel.Children;
@@ -85,9 +80,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[Ignore("Failing on CI due to animations")]
-#if false && __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task MUX_When_MinimalHierarchicalAndSelectItem_Then_RemoveOverState()
 		{
 			var items = Enumerable
@@ -187,7 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nvi1.IsExpanded = true;
 			await WindowHelper.WaitForIdle();
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var descendant = nv.EnumerateDescendants().SingleOrDefault(d => d is NavigationViewItem { Name: "RuntimeTestNVI" });
 			Assert.AreEqual(nvi2, descendant);
 #else

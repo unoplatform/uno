@@ -19,6 +19,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -127,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -150,7 +151,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
 		// is different between the fallback font and OpenSans
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock
@@ -160,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				LineHeight = 34,
 			};
 
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
 			var familyName = skFont.Typeface.FamilyName;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
@@ -282,10 +283,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
-#if __MACOS__
-			Assert.Inconclusive("https://github.com/unoplatform/uno/issues/626");
-#endif
-
 			var SUT = new TextBlock
 			{
 				Inlines = {
@@ -366,7 +363,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails")]
 #endif
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
@@ -610,10 +607,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __WASM__
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		public async Task When_Changing_Text_Through_Inlines()
+		{
+			var SUT = new TextBlock { Text = "Initial Text" };
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
+			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
+
+			SUT.Inlines.Clear();
+			SUT.Inlines.Add(new Run { Text = "Updated Text" });
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
+
+			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
+		}
 #endif
+
+		[TestMethod]
 		public async Task When_FontFamily_In_Separate_Assembly()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -645,9 +657,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_FontFamily_Default()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -711,9 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif !HAS_RENDER_TARGET_BITMAP
+#if !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_SolidColorBrush_With_Opacity()
@@ -777,7 +784,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
-#if !__IOS__ // Line height is not supported on iOS
+#if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{
@@ -839,7 +846,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__MACOS__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TextTrimming()
@@ -893,9 +899,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
 
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
-			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
-#endif
 
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
@@ -1102,12 +1107,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionHighlightColor.Color);
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
 			var SUT = new TextBlock
@@ -1136,14 +1142,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		// Flaky on Skia.iOS uno-private#795
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
+			var delayToAvoidDoubleTap = 600;
 			var SUT = new TextBlock
 			{
 				Text = "FirstLine\r\n Second",
@@ -1165,7 +1174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
@@ -1180,7 +1189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
@@ -1235,12 +1244,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
 			var SUT = new TextBlock
@@ -1327,12 +1337,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
 			var SUT = new TextBlock

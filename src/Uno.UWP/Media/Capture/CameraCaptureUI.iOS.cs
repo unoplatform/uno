@@ -93,7 +93,7 @@ namespace Windows.Media.Capture
 								CameraCaptureUIPhotoFormat.Png => (image.AsPNG().AsStream(), ".png"),
 								_ => throw new NotSupportedException($"{PhotoSettings.Format} is not supported"),
 							};
-						};
+						}
 
 						var (data, extension) = GetImageStream();
 						return await CreateTempImage(data, extension);

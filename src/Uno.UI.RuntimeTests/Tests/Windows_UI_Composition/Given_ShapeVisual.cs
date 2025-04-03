@@ -5,6 +5,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -14,11 +15,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [RunsOnUIThread]
 public class Given_ShapeVisual
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[RequiresFullWindow]
-	[TestMethod]
+	[RequiresScaling(1f)]
+	[Timeout(300000)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("this test is failing on browser, see https://github.com/unoplatform/uno-private/issues/704");
+			return;
+		}
+
 		// runtime test version of the ShapeVisualClipping sample
 
 		// The reference images are currently not very accurate due to the commented clipping line in ShapeVisual.Paint.
@@ -62,28 +73,34 @@ public class Given_ShapeVisual
 							Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
 							Child = element
 						};
-						await UITestHelper.Load(border);
 
-						var screenShot1 = await UITestHelper.ScreenShot(border);
 						var filename = $"When_ShapeVisual_ViewBox_Shape_Combinations_{counter++}.png";
-						// To generate the images
-						// await screenShot1.Save(filename);
-
 						var referenceImage = new Image
 						{
 							Width = 500,
 							Height = 500,
-							Source = new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}")
+							Source = new BitmapImage(new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}"))
 						};
 
 						var imageOpened = false;
 						referenceImage.ImageOpened += (s, e) => imageOpened = true;
 
-						await UITestHelper.Load(referenceImage);
+						await UITestHelper.Load(new StackPanel()
+						{
+							Children = { border, referenceImage },
+							Spacing = 10,
+							Orientation = Orientation.Horizontal
+						});
+
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
+
+						var screenShot1 = await UITestHelper.ScreenShot(border);
+						// To generate the images
+						// await screenShot1.Save(filename);
+
 						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
-						// there can be a very small _bit_ difference when drawing with metal on macOS
-						if (OperatingSystem.IsMacOS())
+						// there can be a very small _bit_ difference when drawing with metal on some platforms
+						if (OperatingSystem.IsMacOS() || OperatingSystem.IsBrowser() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
 						{
 							await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
 						}
@@ -96,5 +113,4 @@ public class Given_ShapeVisual
 			}
 		}
 	}
-#endif
 }

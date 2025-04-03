@@ -1,10 +1,8 @@
 #nullable enable
 
-using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
-using Uno.Extensions;
 
 namespace Uno.UI.Helpers;
 
@@ -16,67 +14,74 @@ internal static class SkiaRenderHelper
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
+	/// or null if the entire window is drawn. Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ContainerVisual rootVisual, SKSurface surface)
+	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
 	{
-		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-		if (path is { })
+		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
+		var negativePath = new SKPath();
+		if (path is not null)
 		{
-			// we clear the "negative" of what was drawn
-			var negativePath = new SKPath();
 			negativePath.AddRect(new SKRect(0, 0, width, height));
+			negativePath.Transform(canvas.TotalMatrix);
 			negativePath = negativePath.Op(path, SKPathOp.Difference);
-			var canvas = surface.Canvas;
-			canvas.Save();
-			canvas.ClipPath(negativePath);
-			canvas.Clear(SKColors.Transparent);
-			canvas.Restore();
 		}
+
+		return negativePath;
 	}
+
+	private static SKPath _sparePreClipPath = new SKPath();
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn.
 	/// </summary>
-	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
+	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
 	{
 		if (!ContentPresenter.HasNativeElements())
 		{
-			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, null);
+			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, null);
 			return null;
 		}
 		else
 		{
-			var canvas = surface.Canvas;
-			// Assuming the canvas we're drawing on is on top of the native elements,
-			// we want to crop out "see-through windows" so we can see the native elements underneath the canvas
-
-			// the entire viewport
-			var mainPath = new SKPath();
-			mainPath.AddRect(new SKRect(0, 0, width, height));
-
-			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (session, visual) =>
+			SKPath? mainPath = null;
+			rootVisual.Compositor.RenderRootVisual(canvas, rootVisual, (canvas, visual) =>
 			{
-				// minus the native-element areas
-				if (visual.IsNativeHostVisual)
+				// the entire viewport
+				if (visual == rootVisual)
 				{
-					_clipPath.Reset();
-					_clipPath.AddRect(canvas.DeviceClipBounds);
-					_visualPath.Reset();
-					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
-					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Difference);
+					// we initialize the mainPath here to be able to factor the initial TotalMatrix into our rect.
+					// This matters for DPI scaling primarily.
+					mainPath = new SKPath();
+					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
 				}
 
-				// plus the popups
-				if (visual.IsPopupVisual)
+				if (visual is { IsNativeHostVisual: false } && !visual.CanPaint())
 				{
-					_clipPath.Reset();
-					_clipPath.AddRect(canvas.DeviceClipBounds); // possible QoL improvement: find a way to get the tight clip path (e.g. for rounded corners) not just the bounding rect
-					_visualPath.Reset();
-					_visualPath.AddRect(visual.TotalMatrix.ToMatrix3x2().Transform(new Rect(new Point(), visual.Size.ToSize())).ToSKRect());
-					// note that popups are always traversed last in the tree, so there are no "races" between the paths of PopupVisuals and NativeHostVisuals
-					mainPath = mainPath.Op(_clipPath.Op(_visualPath, SKPathOp.Intersect), SKPathOp.Union);
+					return;
 				}
+
+				_clipPath.Reset();
+				_clipPath.AddRect(canvas.LocalClipBounds);
+				_visualPath.Reset();
+				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
+
+				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
+				var preClip = _sparePreClipPath;
+
+				preClip.Rewind();
+
+				if (visual.GetPrePaintingClipping(preClip))
+				{
+					finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
+				}
+
+				finalVisualPath.Transform(canvas.TotalMatrix);
+
+				mainPath = mainPath!.Op(
+					finalVisualPath,
+					visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
 			});
 
 			return mainPath;

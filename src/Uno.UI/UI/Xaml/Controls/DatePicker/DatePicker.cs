@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Header))]
 	public partial class DatePicker : Control
 	{
-		internal const long DEFAULT_DATE_TICKS = 504910368000000000;
-
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
 
@@ -2269,7 +2267,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/* static */
 
-		private static DateTimeOffset NullDateSentinelValue { get; } =
+		internal static DateTimeOffset NullDateSentinelValue { get; } =
 			default(WindowsFoundationDateTime);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)

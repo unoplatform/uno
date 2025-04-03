@@ -8,7 +8,7 @@ namespace Windows.UI.Core
 	public sealed partial class CoreDispatcher
 	{
 		/// <summary>
-		/// Provide a action that will delegate the dispach of CoreDispatcher work
+		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static Action<Action, NativeDispatcherPriority> DispatchOverride
@@ -18,7 +18,7 @@ namespace Windows.UI.Core
 		}
 
 		/// <summary>
-		/// Provide a action that will delegate the dispach of CoreDispatcher work
+		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static Func<bool> HasThreadAccessOverride

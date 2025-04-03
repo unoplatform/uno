@@ -542,7 +542,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		public async Task ValidateTemplateSwitchingRefreshesElements(Layout layout)
+		private async Task ValidateTemplateSwitchingRefreshesElements(Layout layout)
 		{
 			var dataTemplate1 = (DataTemplate)XamlReader.Load(
 					 @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -10,7 +11,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 	public abstract class BaseDxamlTestClass
 	{
 
-		internal SafeEventRegistration<TElement, TDelegate> CreateSafeEventRegistration<TElement, TDelegate>(string eventName)
+		internal SafeEventRegistration<TElement, TDelegate> CreateSafeEventRegistration<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] TElement, TDelegate>(string eventName)
 			where TElement : class
 			where TDelegate : Delegate
 		{

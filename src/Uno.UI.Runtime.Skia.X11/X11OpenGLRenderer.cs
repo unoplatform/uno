@@ -38,7 +38,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.Render()
 		{
-			using var lockDiposable = X11Helper.XLock(_x11Window.Display);
+			var display = _x11Window.Display;
+			var window = _x11Window.Window;
+			using var lockDiposable = X11Helper.XLock(display);
 
 			if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
@@ -59,17 +61,17 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				return;
 			}
 
-			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, glXInfo.context))
+			if (!GlxInterface.glXMakeCurrent(display, window, glXInfo.context))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"glXMakeCurrent failed for renderCount {_renderCount} and Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+					this.Log().Error($"glXMakeCurrent failed for renderCount {_renderCount} and Window {window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
 				}
 				return;
 			}
 
 			XWindowAttributes attributes = default;
-			_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(display, window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -87,7 +89,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				_renderTarget = new GRBackendRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits, glInfo);
 				_surface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, skColorType);
-				_airspaceHelper = new X11AirspaceRenderHelper(_x11Window.Display, _x11Window.Window, width, height);
+				_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 				_lastSize = new Size(width, height);
 			}
 
@@ -103,19 +105,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
-					if (path is { })
-					{
-						_airspaceHelper.XShapeClip(path);
-					}
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
+					_airspaceHelper.XShapeClip(path);
 				}
 			}
 
 			_surface.Canvas.Flush();
 
-			GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
+			GlxInterface.glXSwapBuffers(display, window);
 
-			_ = XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
+			_ = XLib.XFlush(display); // unnecessary on most X11 implementations
 		}
 
 		private GRContext CreateGRGLContext()

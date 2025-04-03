@@ -2,6 +2,7 @@
 #if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -12,6 +13,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
+using Uno.UI.Input;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
@@ -26,12 +28,12 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
-		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 500;
+		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
 
-		internal const long HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
+		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
 
-		internal const long DragWithTouchMinDelayTicks = TimeSpan.TicksPerMillisecond * 300; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
+		internal const long DragWithTouchMinDelayMicroseconds = 300000; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
 
 		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
@@ -50,6 +52,13 @@ namespace Windows.UI.Input
 		}
 
 		public bool IsActive => _gestures.Count > 0 || _manipulation != null;
+
+		/// <summary>
+		/// Defines which suspicious cases should be patched by the gesture recognizer.
+		/// </summary>
+		[UnoOnly]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public GestureRecognizerSuspiciousCases PatchCases { get; set; } = WinRTFeatureConfiguration.GestureRecognizer._defaultPatchSuspiciousCases;
 
 		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
 
@@ -75,9 +84,9 @@ namespace Windows.UI.Input
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
 			if (_gestures.TryGetValue(value.PointerId, out var previousGesture))
 			{
-				if (_log.IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Error($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
+					this.Log().Debug($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
 				}
 				previousGesture.ProcessComplete();
 			}
@@ -157,14 +166,7 @@ namespace Windows.UI.Input
 				_log.Debug($"{Owner} Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
 			}
 
-			if (isRelevant)
-			{
-				_manipulation?.Remove(value);
-			}
-			else
-			{
-				_manipulation?.Complete();
-			}
+			_manipulation?.Remove(value);
 		}
 
 #if IS_UNIT_TESTS
@@ -225,7 +227,9 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 
-		internal Manipulation PendingManipulation => _manipulation;
+#nullable enable
+		internal Manipulation? PendingManipulation => _manipulation;
+#nullable restore
 		#endregion
 
 		#region Tap (includes DoubleTap and RightTap)

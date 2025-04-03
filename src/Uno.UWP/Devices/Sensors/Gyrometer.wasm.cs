@@ -47,15 +47,15 @@ namespace Windows.Devices.Sensors
 		[JSExport]
 		internal static int DispatchReading(float x, float y, float z)
 		{
-			if (_instance == null)
+			if (_instance.Value == null)
 			{
 				throw new InvalidOperationException("Gyrometer:DispatchReading can be called only after Gyrometer is initialized");
 			}
 			var now = DateTimeOffset.UtcNow;
-			if ((now - _instance._lastReading).TotalMilliseconds >= _instance.ReportInterval * 0.8)
+			if ((now - _instance.Value._lastReading).TotalMilliseconds >= _instance.Value.ReportInterval * 0.8)
 			{
-				_instance._lastReading = now;
-				_instance.OnReadingChanged(
+				_instance.Value._lastReading = now;
+				_instance.Value.OnReadingChanged(
 					new GyrometerReading(
 						x * SensorConstants.RadToDeg,
 						y * SensorConstants.RadToDeg,

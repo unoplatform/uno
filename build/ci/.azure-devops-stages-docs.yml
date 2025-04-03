@@ -3,21 +3,19 @@ stages:
 - stage: Setup
   displayName: Setup
   jobs:
-  - template: .azure-devops-commitsar.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+  - job: Validations
+  
+    pool:
+      vmImage: $(linuxVMImage)
 
-  - template: .azure-devops-spell-check.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    steps:
+    - checkout: self
+      clean: true
 
-  - template: .azure-devops-markdown-lint.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-pipeline-validations.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
+    - template: templates/gitversion-run.yml
+    - template: .azure-devops-commitsar.yml
+    - template: .azure-devops-spell-check.yml
+    - template: .azure-devops-markdown-lint.yml
 
 - stage: docs_generation
   displayName: Docs Generation

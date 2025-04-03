@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Globalization;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 #endif
 

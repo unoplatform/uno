@@ -4,6 +4,7 @@
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>

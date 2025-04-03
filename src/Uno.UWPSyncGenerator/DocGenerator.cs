@@ -57,11 +57,11 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS, and Skia)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, macOS, tvOS, and Skia)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}
-				using (_sb.Section("Implemented - Android + iOS only"))
+				using (_sb.Section("Implemented - Android + iOS + tvOS only"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Mobile, true);
 				}
@@ -102,6 +102,7 @@ namespace Uno.UWPSyncGenerator
 				Directory.CreateDirectory(Path.Combine(DocPath, ImplementedPath));
 
 				var tocSB = new StringBuilder();
+				var entries = new Dictionary<string, string>();
 
 				foreach (var group in _viewsGrouped)
 				{
@@ -251,10 +252,16 @@ namespace Uno.UWPSyncGenerator
 							fileWriter.Write(_sb.ToString());
 						}
 
-						// Build TOC in implemented folder
-						tocSB.AppendLineInvariant($"- name: {viewName}");
-						tocSB.AppendLineInvariant($"  href: ../{GetImplementedMembersFilename(view.UAPSymbol)}");
+						// Collect entries before sorting
+						entries.Add(viewName, GetImplementedMembersFilename(view.UAPSymbol));
 					}
+				}
+
+				// Build TOC ordered by name in implemented folder
+				foreach (var kvp in entries.OrderBy(x => x.Key))
+				{
+					tocSB.AppendLineInvariant($"- name: {kvp.Key}");
+					tocSB.AppendLineInvariant($"  href: ../{kvp.Value}");
 				}
 
 #if DEBUG
@@ -294,7 +301,7 @@ namespace Uno.UWPSyncGenerator
 							.ToList();
 						_sb.AppendCells(cells);
 					}
-				};
+				}
 			}
 		}
 
@@ -374,8 +381,8 @@ namespace Uno.UWPSyncGenerator
 				yield return (view.UAPSymbol, ImplementedFor.UAP);
 				yield return (view.AndroidSymbol, ImplementedFor.Android);
 				yield return (view.IOSSymbol, ImplementedFor.iOS);
+				yield return (view.TvOSSymbol, ImplementedFor.tvOS);
 				yield return (view.WasmSymbol, ImplementedFor.WASM);
-				yield return (view.MacOSSymbol, ImplementedFor.MacOS);
 			}
 		}
 
@@ -405,13 +412,13 @@ namespace Uno.UWPSyncGenerator
 				case ImplementedFor.Main:
 					return "all platforms supported by Uno Platform";
 				case ImplementedFor.Mobile:
-					return "Android, iOS";
+					return "Android, iOS, tvOS";
 				case ImplementedFor.Xamarin:
-					return "Android, iOS, MacOS";
+					return "Android, iOS, macOS, tvOS";
 				case ImplementedFor.UAP:
 					return "UWP";
 				case (ImplementedFor.Mobile | ImplementedFor.WASM):
-					return "Android, iOS, WASM";
+					return "Android, iOS, tvOS, WASM";
 				default:
 					return implementedFor.ToString();
 			}

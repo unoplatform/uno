@@ -62,7 +62,7 @@ public class Given_DateTimeFormatter
 		var formatter = new DateTimeFormatter("longdate");
 		var dateToFormat = new DateTimeOffset(2024, 1, 15, 0, 0, 0, TimeSpan.Zero);
 
-		Assert.ThrowsException<NotSupportedException>(() =>
+		Assert.ThrowsExactly<NotSupportedException>(() =>
 			formatter.Format(dateToFormat, "UTC"));
 	}
 
@@ -79,6 +79,8 @@ public class Given_DateTimeFormatter
 	{
 		var expectedResults = new Dictionary<string, string>
 		{
+			{ "day", "27" },
+			{ "year", "2024" },
 			{ "{day.integer}/{month.integer}/{year.full}", "27/6/2024" },
 			{ "{month.full} {year.full}", "June 2024" },
 			{ "{month.full} {day.integer}", "June 27" },

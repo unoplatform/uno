@@ -26,6 +26,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TimePicker
 	{
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_TimePickerFlyout_Placed_Outside_Window()
+		{
+			var btn = new Button
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Content = "Open Flyout",
+				Flyout = new TimePickerFlyout()
+			};
+
+			await UITestHelper.Load(btn);
+			btn.ProgrammaticClick();
+			await UITestHelper.WaitForIdle();
+
+			var presenter = (TimePickerFlyoutPresenter)VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot)[0].Child;
+			Assert.IsTrue(presenter.GetAbsoluteBoundsRect().IntersectWith(TestServices.WindowHelper.XamlRoot.VisualTree.VisibleBounds).Equals(presenter.GetAbsoluteBoundsRect()));
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_MinuteIncrement_In_Range_Should_Be_Set_Properly()
 		{
@@ -42,9 +63,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var timePicker = new TimePicker();
 			timePicker.MinuteIncrement = 17;
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = 60);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = 60);
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = -1);
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => timePicker.MinuteIncrement = -1);
 			Assert.AreEqual(17, timePicker.MinuteIncrement);
 		}
 
@@ -201,7 +222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
 #endif
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)associatedFlyout;
@@ -243,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			if (useNative)
 			{
 				var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
@@ -253,7 +274,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
@@ -294,7 +315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Time_Uninitialized_Should_Display_Current_Time()
 		{
 			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
-			timePicker.Time = new TimeSpan(TimePicker.DEFAULT_TIME_TICKS);
+			timePicker.Time = new TimeSpan(NativeTimePickerFlyout.DEFAULT_TIME_TICKS);
 
 			var expectedCurrentTime = GetCurrentTime();
 

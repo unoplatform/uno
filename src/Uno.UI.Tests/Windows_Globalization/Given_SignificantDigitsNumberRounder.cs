@@ -191,7 +191,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
 			}
 
-			Assert.ThrowsException<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
+			Assert.ThrowsExactly<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
 		[TestMethod]
@@ -208,7 +208,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				Assert.AreEqual("The parameter is incorrect.\r\n\r\nvalue", ex.Message);
 			}
 
-			Assert.ThrowsException<ArgumentException>(() => sut.SignificantDigits = 0);
+			Assert.ThrowsExactly<ArgumentException>(() => sut.SignificantDigits = 0);
 		}
 	}
 }

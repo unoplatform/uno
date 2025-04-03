@@ -182,11 +182,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
 			Assert.AreEqual(0, stubs.Count());
 
-			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground?.ToString());
+			Assert.IsNotNull(tb02.Foreground);
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground.ToString());
 
 			var tb01 = SUT.FindName("tb01") as TextBlock;
 
-			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb01.Foreground?.ToString());
+			Assert.IsNotNull(tb01.Foreground);
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb01.Foreground.ToString());
 		}
 	}
 }

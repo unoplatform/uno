@@ -47,7 +47,7 @@ namespace UnoIslands
 			{
 #if __WASM__
 				builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__
+#elif __APPLE_UIKIT__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
 #elif NETFX_CORE
                 builder.AddDebug();

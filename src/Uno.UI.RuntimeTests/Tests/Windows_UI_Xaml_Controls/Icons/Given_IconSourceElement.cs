@@ -25,10 +25,10 @@ public class Given_IconSourceElement
 
 		var symbolChild = VisualTreeUtils.FindVisualChildByType<TextBlock>(iconSourceElement);
 		Assert.IsNotNull(symbolChild);
-		Assert.AreEqual("\uE10B", symbolChild.Text); //E10B represents Accept symbol
+		Assert.AreEqual("\uE8FB", symbolChild.Text); //E8FB represents Accept symbol
 
 		symbolIconSource.Symbol = Symbol.Cancel;
-		Assert.AreEqual("\uE10A", symbolChild.Text); //E10A represents Cancel symbol
+		Assert.AreEqual("\uE711", symbolChild.Text); //E711 represents Cancel symbol
 
 		// PathIconSource
 		var ellipseGeometry = new EllipseGeometry()

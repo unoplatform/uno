@@ -150,3 +150,43 @@ dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by T
 
 # IDE0051: Remove unused private member
 dotnet_diagnostic.IDE0051.severity = warning
+
+# MSTEST0004: Public types should be test classes
+# dotnet_diagnostic.MSTEST0004.severity = warning
+
+# MSTEST0006: Avoid '[ExpectedException]'
+dotnet_diagnostic.MSTEST0006.severity = warning
+
+# MSTEST0007: Use test attributes only on test methods
+dotnet_diagnostic.MSTEST0007.severity = warning
+
+# MSTEST0016: Test class should have test method
+# Enabled only as an IDE suggestion for now. Violations can be addressed later
+dotnet_diagnostic.MSTEST0016.severity = suggestion
+
+# MSTEST0017: Assertion arguments should be passed in the correct order
+dotnet_diagnostic.MSTEST0017.severity = warning
+
+# MSTEST0023: Do not negate boolean assertions
+dotnet_diagnostic.MSTEST0023.severity = warning
+
+# MSTEST0025: Use 'Assert.Fail' instead of an always-failing assert
+dotnet_diagnostic.MSTEST0025.severity = warning
+
+# MSTEST0026: Avoid conditional access in assertions
+dotnet_diagnostic.MSTEST0026.severity = suggestion
+
+# MSTEST0029: Public method should be test method
+dotnet_diagnostic.MSTEST0029.severity = warning
+
+# MSTEST0030: Type containing [TestMethod] should be marked with [TestClass]
+dotnet_diagnostic.MSTEST0030.severity = warning
+
+# MSTEST0031: System.ComponentModel.DescriptionAttribute has no effect on test methods
+dotnet_diagnostic.MSTEST0031.severity = warning
+
+# MSTEST0032: Review or remove the assertion as its condition is known to be always true
+dotnet_diagnostic.MSTEST0032.severity = warning
+
+# MSTEST0037: Use proper 'Assert' methods
+dotnet_diagnostic.MSTEST0037.severity = warning

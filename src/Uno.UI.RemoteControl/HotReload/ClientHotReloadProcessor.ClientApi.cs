@@ -43,6 +43,15 @@ public partial class ClientHotReloadProcessor
 		bool WaitForHotReload = true)
 	{
 		/// <summary>
+		/// Indicates if the file should be saved to disk.
+		/// </summary>
+		/// <remarks>
+		/// Some IDE supports the ability to update the file in memory without saving it to disk.
+		/// Null means that the default behavior of the IDE should be used.
+		/// </remarks>
+		public bool? ForceSaveToDisk { get; init; }
+
+		/// <summary>
 		/// The max delay to wait for the server to process a file update request.
 		/// </summary>
 		/// <remarks>This includes the time to send the request to the server, the server to process it and send a reply.</remarks>
@@ -95,6 +104,9 @@ public partial class ClientHotReloadProcessor
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
+	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
+		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload) { ForceSaveToDisk = forceSaveToDisk }, ct);
+
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
@@ -117,8 +129,8 @@ public partial class ClientHotReloadProcessor
 			}
 
 			var log = this.Log();
-			var trace = log.IsTraceEnabled(LogLevel.Trace) ? log : default;
-			var debug = log.IsDebugEnabled(LogLevel.Debug) ? log : default;
+			var trace = log.IsTraceEnabled() ? log : default;
+			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.FilePath)}]";
 
 			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText?[..100]} | to: {req.NewText?[..100]}.");
@@ -132,7 +144,8 @@ public partial class ClientHotReloadProcessor
 				OldText = req.OldText,
 				NewText = req.NewText,
 				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
-				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts
+				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts,
+				ForceSaveOnDisk = req.ForceSaveToDisk,
 			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 

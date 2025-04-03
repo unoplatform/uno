@@ -143,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState)
+		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{
 			if (_textBoxView == null)
 			{
@@ -214,6 +214,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
+			if (_textBoxView != null)
+			{
+				_textBoxView.Foreground = newValue;
+			}
 		}
 
 		partial void OnInputScopeChangedPartial(InputScope newValue)

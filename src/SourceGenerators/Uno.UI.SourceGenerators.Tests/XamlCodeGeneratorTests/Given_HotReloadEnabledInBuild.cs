@@ -312,12 +312,63 @@ public class Given_HotReloadEnabledInBuild
 					"""
 					using Microsoft.UI.Xaml;
 					using Microsoft.UI.Xaml.Controls;
+					namespace TestRepro;
+					public sealed partial class MainPage : Page
+					{
+						public MainPage() => InitializeComponent();
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+		}.AddGeneratedSources();
 
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationIncludedInOutputForEmptyDataTemplates()
+	{
+		var xamlFile = new XamlFile("EmptyDataTemplatePage.xaml",
+			"""
+			 <Page x:Class="TestRepro.EmptyDataTemplatePage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:TestRepro"
+					Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+				<Page.Resources>
+					<DataTemplate x:Key="MyEmptyTemplate">
+						<!-- SUT -->
+					</DataTemplate>
+				</Page.Resources>
+				<StackPanel>
+					<ListView ItemTemplate="{StaticResource MyItemTemplate}" />
+					<Button x:Name="ButtonWithEmptyDataTemplate">
+						<Button.ContentTemplate>
+							<DataTemplate>
+								<!-- SUT -->
+							</DataTemplate>
+						</Button.ContentTemplate>
+					</Button>
+				</StackPanel>
+			 </Page>
+			""");
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 					namespace TestRepro
 					{
-						public sealed partial class MainPage : Page
+						public sealed partial class EmptyDataTemplatePage : Page
 						{
-							public MainPage()
+							public EmptyDataTemplatePage()
 							{
 								this.InitializeComponent();
 							}

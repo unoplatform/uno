@@ -16,7 +16,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [RunsOnUIThread]
 public class Given_BackgroundTransition
 {
-#if __SKIA__
+#if !__SKIA__
+	[Ignore]
+#endif
 	[TestMethod]
 	[DataRow(typeof(Grid))]
 	[DataRow(typeof(StackPanel))]
@@ -25,6 +27,12 @@ public class Given_BackgroundTransition
 	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
 	public async Task When_Has_Brush_Transition(Type type)
 	{
+		if (OperatingSystem.IsAndroid())
+		{
+			// This test is generally flaky due to its nature.
+			Assert.Inconclusive("Animations are flaky.");
+		}
+
 		var control = (FrameworkElement)Activator.CreateInstance(type);
 
 		control.Width = 200;
@@ -64,10 +72,14 @@ public class Given_BackgroundTransition
 
 		var bitmap = await UITestHelper.ScreenShot(control);
 
-		ImageAssert.HasColorAt(bitmap, new Point(100, 100), new Color(255, 127, 0, 127), tolerance: 30);
+		ImageAssert.HasColorAt(bitmap, new Point(100, 100), Color.FromArgb(255, 127, 0, 127), tolerance: 30);
 	}
 
-	[TestMethod]
+#if !__SKIA__
+	[Ignore]
+#endif
+	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_Animation_With_Brush_Transition()
 	{
 		var SUT = (Button)XamlReader.Load(
@@ -128,7 +140,6 @@ public class Given_BackgroundTransition
 		await Task.Delay(1000);
 
 		bitmap = await UITestHelper.ScreenShot(SUT);
-		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), new Color(255, 127, 0, 127), tolerance: 20);
+		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Color.FromArgb(255, 127, 0, 127), tolerance: 20);
 	}
-#endif
 }

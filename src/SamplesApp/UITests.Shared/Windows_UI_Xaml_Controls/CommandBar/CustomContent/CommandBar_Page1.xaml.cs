@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using Uno.UI.Controls;
 #endif
@@ -26,7 +26,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.CustomContent
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			UIView parent = this;
 			while (parent.HasParent())
 			{

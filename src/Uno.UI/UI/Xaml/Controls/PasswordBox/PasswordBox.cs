@@ -20,9 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool UseIsPasswordEnabledProperty => this.IsDependencyPropertySet(IsPasswordRevealButtonEnabledProperty) && !this.IsDependencyPropertySet(PasswordRevealModeProperty);
 
 		public PasswordBox()
-#if __MACOS__
-			: base(true)
-#endif
 		{
 			DefaultStyleKey = typeof(PasswordBox);
 		}
@@ -214,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static global::Microsoft.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(PasswordRevealMode),
-				typeof(bool),
+				typeof(PasswordRevealMode),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: PasswordRevealMode.Peek,
@@ -309,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>

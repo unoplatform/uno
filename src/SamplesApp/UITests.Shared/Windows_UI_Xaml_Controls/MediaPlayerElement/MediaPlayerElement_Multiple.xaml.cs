@@ -29,7 +29,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 
 		private void UpdateButton_Click(object sender, RoutedEventArgs e)
 		{
-#if !HAS_UNO_WINUI
 			var uri = SourceTextBox.Text;
 
 			if (!string.IsNullOrEmpty(uri))
@@ -40,11 +39,9 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 			{
 				Mpe.Source = null;
 			}
-#endif
 		}
 		private void UpdateButtonTwo_Click(object sender, RoutedEventArgs e)
 		{
-#if !HAS_UNO_WINUI
 			var uri = SourceTwoTextBox.Text;
 
 			if (!string.IsNullOrEmpty(uri))
@@ -55,7 +52,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 			{
 				MpeTwo.Source = null;
 			}
-#endif
 		}
 	}
 }

@@ -3,17 +3,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Windows.ApplicationModel;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
-// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
-// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
-internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
+internal partial class X11NativeElementHostingExtension
 {
-	private const string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
+	private static readonly string SampleVideoLink = Path.Combine(Package.Current.InstalledPath, "Assets", "Videos", "Getting_Started_with_Uno_Platform_for_Figma.mp4");
 
 	/// replace the executable and the args with whatever you have locally. This is only used
 	/// for internal debugging. However, make sure that you can set a unique title to the window,
@@ -93,7 +91,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			// Wait for the window to open.
 			Thread.Sleep(500);
-			IntPtr window = FindWindowByTitle(Display, root, title);
+			IntPtr window = FindWindowByTitle(host, title, TimeSpan.MaxValue);
 
 			if (window == IntPtr.Zero)
 			{
@@ -133,8 +131,34 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			.Any(File.Exists);
 	}
 
+	internal static IntPtr FindWindowByTitle(X11XamlRootHost host, string title, TimeSpan timeout)
+	{
+		var start = Stopwatch.GetTimestamp();
+		var display = host.RootX11Window.Display;
+
+		IntPtr root;
+		using (X11Helper.XLock(display))
+		{
+			_ = XLib.XQueryTree(display, host.RootX11Window.Window, out root, out _, out var children, out _);
+			_ = XLib.XFree(children);
+		}
+
+		var window = IntPtr.Zero;
+		while (window == IntPtr.Zero && Stopwatch.GetElapsedTime(start) < timeout)
+		{
+			using (X11Helper.XLock(display))
+			{
+				window = FindWindowByTitle(display, root, title);
+			}
+		}
+
+		return window;
+	}
+
 	private unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
 	{
+		using var lockDiposable = X11Helper.XLock(display);
+
 		_ = X11Helper.XFetchName(display, current, out var name);
 		if (name == title)
 		{
@@ -153,35 +177,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		for (var i = 0; i < nChildren; ++i)
 		{
 			IntPtr window = FindWindowByTitle(display, span[i], title);
-
-			if (window != IntPtr.Zero)
-			{
-				return window;
-			}
-		}
-
-		return IntPtr.Zero;
-	}
-
-	private unsafe static IntPtr FindWindowById(IntPtr display, IntPtr current, IntPtr id)
-	{
-		if (current == id)
-		{
-			return current;
-		}
-
-		_ = XLib.XQueryTree(display,
-			current,
-			out _,
-			out _,
-			out IntPtr children,
-			out int nChildren);
-
-		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
-
-		for (var i = 0; i < nChildren; ++i)
-		{
-			IntPtr window = FindWindowById(display, span[i], id);
 
 			if (window != IntPtr.Zero)
 			{

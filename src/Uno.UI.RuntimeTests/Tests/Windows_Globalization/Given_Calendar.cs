@@ -44,6 +44,13 @@ public class Given_Calendar
 	[DataRow("GregorianCalendar", "28", 1)]
 	public void When_Calendar_Unspecified_DateTimeKind_Different_Offsets(string identifier, string expectedDayAsString, double offset)
 	{
+		if (TimeZoneInfo.Local.IsDaylightSavingTime(DateTimeOffset.Now))
+		{
+			// Don't attempt to change the specific datetime below to DateTime.Now or something similar. This test
+			// tackles a very specific regression and changes might not capture the problem.
+			Assert.Inconclusive("Local timezones with daylight saving can crash the DateTimeOffset constructor.");
+		}
+
 		offset += DateTimeOffset.Now.Offset.TotalHours;
 
 		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
@@ -61,6 +68,12 @@ public class Given_Calendar
 	[DataRow("GregorianCalendar", "29")]
 	public void When_Calendar_Local_DateTimeKind(string identifier, string expectedDayAsString)
 	{
+		if (TimeZoneInfo.Local.IsDaylightSavingTime(DateTimeOffset.Now))
+		{
+			// Don't attempt to change the specific datetime below to DateTime.Now or something similar. This test
+			// tackles a very specific regression and changes might not capture the problem.
+			Assert.Inconclusive("Local timezones with daylight saving can crash the DateTimeOffset constructor.");
+		}
 		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
 		var offset = DateTimeOffset.Now.Offset;
 		var dateTime = new DateTimeOffset(new DateTime(2024, 2, 29, 0, 0, 0, DateTimeKind.Local), offset);
@@ -77,6 +90,13 @@ public class Given_Calendar
 	[DataRow("GregorianCalendar", "29")]
 	public void When_Calendar_Utc_DateTimeKind(string identifier, string expectedDayAsString)
 	{
+		if (TimeZoneInfo.Local.IsDaylightSavingTime(DateTimeOffset.Now))
+		{
+			// Don't attempt to change the specific datetime below to DateTime.Now or something similar. This test
+			// tackles a very specific regression and changes might not capture the problem.
+			Assert.Inconclusive("Local timezones with daylight saving fail the offset assert.");
+		}
+
 		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
 		var dateTime = new DateTimeOffset(new DateTime(2024, 2, 29, 0, 0, 0, DateTimeKind.Utc), TimeSpan.Zero);
 		calendar.SetDateTime(dateTime);
@@ -135,23 +155,23 @@ public class Given_Calendar
 	public void When_TwentyFourHour_Invalid_Hours()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = -1);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = 24);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = -1);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = 24);
 	}
 
 	[TestMethod]
 	public void When_TwentyFourHour_Invalid_Period()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 2);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 2);
 	}
 
 	[TestMethod]
 	public void When_TwelveHour_Invalid_Period()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 0);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Period = 3);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 0);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Period = 3);
 	}
 
 	[TestMethod]
@@ -171,10 +191,10 @@ public class Given_Calendar
 	public void When_TwelveHour_Invalid_Hours()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
-		Assert.ThrowsException<ArgumentException>(() => calendar.Hour = 0);
+		Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = 0);
 		for (int hour = 13; hour <= 23; hour++)
 		{
-			Assert.ThrowsException<ArgumentException>(() => calendar.Hour = hour);
+			Assert.ThrowsExactly<ArgumentException>(() => calendar.Hour = hour);
 		}
 	}
 

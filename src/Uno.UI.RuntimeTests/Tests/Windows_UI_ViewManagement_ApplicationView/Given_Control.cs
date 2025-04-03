@@ -17,27 +17,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView
 	{
 		public static Rect StartupVisibleBounds { get; set; }
 
-		public static string StartupTitle { get; set; }
-
-#if __SKIA__
-		[TestMethod]
-		public void When_StartupTitle_Is_Defined()
-		{
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				return;
-			}
-
-			Assert.AreEqual(Windows.ApplicationModel.Package.Current.DisplayName, StartupTitle);
-		}
+#if !__ANDROID__
+		[Ignore]
 #endif
-
-#if __ANDROID__
 		[TestMethod]
 		public void When_StartupVisibleBounds_Has_Value()
 		{
 			Assert.IsFalse(RectHelper.GetIsEmpty(StartupVisibleBounds), $"VisibleBounds should not be empty");
 		}
-#endif
 	}
 }

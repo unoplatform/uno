@@ -49,29 +49,12 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 
 void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
 {
-    if (!element || !element.visible) {
-#if DEBUG
-        NSLog(@"uno_native_arrange %p is not visible - nothing to arrange", element);
-#endif
-        return;
-    }
-
-    NSRect clip = NSMakeRect(arrangeLeft + clipLeft, arrangeTop - clipTop, clipWidth, clipHeight);
-    element.hidden = NSIsEmptyRect(clip) || clipHeight <= 0 || clipWidth <= 0;
-    if (element.hidden) {
-#if DEBUG
-        NSLog(@"uno_native_arrange %p hidden by clipping", element);
-#endif
-        return;
-    }
-
-    NSRect arrange = NSMakeRect(arrangeLeft + clipLeft, arrangeTop + clipTop, MIN(arrangeWidth, clipWidth), MIN(arrangeHeight, clipHeight));
+    NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
     element.frame = arrange;
 #if DEBUG
-    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g) %s", element,
+    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g)", element,
           arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight,
-          clipLeft, clipTop, clipWidth, clipHeight,
-          element.hidden ? "EMPTY" : (clipWidth < arrangeWidth) || (clipHeight < arrangeHeight) ? "partial" : "");
+          clipLeft, clipTop, clipWidth, clipHeight);
 #endif
 }
 

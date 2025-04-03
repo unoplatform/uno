@@ -1,4 +1,3 @@
-#if UNO_HAS_MANAGED_POINTERS
 #nullable enable
 
 using System;
@@ -40,6 +39,12 @@ public partial class CoreWindow
 		_pointerSource.PointerCancelled += (_, args) => PointerCancelled?.Invoke(this, args);
 	}
 
+	public void SetPointerCapture()
+		=> _pointerSource?.SetPointerCapture();
+
+	public void ReleasePointerCapture()
+		=> _pointerSource?.ReleasePointerCapture();
+
 	internal IUnoCorePointerInputSource? PointersSource => _pointerSource;
 
 	public CoreCursor PointerCursor
@@ -53,11 +58,4 @@ public partial class CoreWindow
 			}
 		}
 	}
-
-	public void SetPointerCapture()
-		=> _pointerSource?.SetPointerCapture();
-
-	public void ReleasePointerCapture()
-		=> _pointerSource?.ReleasePointerCapture();
 }
-#endif

@@ -21,12 +21,10 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 
-#if __MACOS__
-using AppKit;
-#elif __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
 #else
 using _Panel = Microsoft.UI.Xaml.Controls.Panel;
@@ -38,7 +36,7 @@ using IndexPath = Uno.UI.IndexPath;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
 #else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
@@ -165,10 +163,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private double ViewportEnd => ScrollOffset + ViewportExtent;
 
+		internal const double ExtendedViewportScaling = 0.5;
+
 		/// <summary>
 		/// The additional length in pixels for which to create buffered views.
 		/// </summary>
-		private double ViewportExtension => CacheLength * ViewportExtent * 0.5;
+		private double ViewportExtension => CacheLength * ViewportExtent * ExtendedViewportScaling;
 
 		/// <summary>
 		/// The start of the 'extended viewport,' the area of the visible viewport plus the buffer area defined by <see cref="CacheLength"/>.
@@ -201,13 +201,18 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void Initialize(_Panel owner)
 		{
 			OwnerPanel = owner ?? throw new ArgumentNullException(nameof(owner));
-			OwnerPanel.Loaded += OnLoaded;
+			// It's necessary to subscribe to Loading not Loaded to fire this before
+			// the first Measure during/after loading. If during the first measure
+			// ScrollViewer and ItemsControl are not set, this will cause the
+			// DesiredSize to be zero and this causes cascading problems specifically
+			// with ListView. cf. https://github.com/unoplatform/kahua-private/issues/257
+			OwnerPanel.Loading += OnLoading;
 			OwnerPanel.Unloaded += OnUnloaded;
 
 			Generator = new VirtualizingPanelGenerator(this);
 		}
 
-		private void OnLoaded(object sender, RoutedEventArgs e)
+		private void OnLoading(FrameworkElement frameworkElement, object args)
 		{
 			foreach (var parent in OwnerPanel.GetVisualAncestry())
 			{
@@ -454,7 +459,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
-		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
+		/// <param name="extentAdjustment">
+		/// Adjustment to apply when calculating fillable area.
+		/// Used when a viewport change is not yet committed into the <see cref="ScrollOffset"/>.
+		/// </param>
 		private void UpdateLayout(double? extentAdjustment, bool isScroll)
 		{
 			ResetReorderingIndex();
@@ -496,7 +504,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Fill in extended viewport with views.
 		/// </summary>
-		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
+		/// <param name="extentAdjustment">
+		/// Adjustment to apply when calculating fillable area.
+		/// Used when a viewport change is not yet committed into the <see cref="ScrollOffset"/>.
+		/// </param>
 		private void FillLayout(double extentAdjustment)
 		{
 			// Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
@@ -507,6 +518,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			FillForward();
 
+			if (_dynamicSeedStart.HasValue && GetItemsEnd() <= ExtendedViewportEnd + extentAdjustment)
+			{
+				// if the FillForward didnt fully fill the current viewport,
+				// we may still need to a FillBackward, otherwise we risk having a leading blank space
+				FillBackward();
+			}
+
 			// Make sure that the reorder item has been rendered
 			if (GetAndUpdateReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
 			{
@@ -515,27 +533,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 			void FillBackward()
 			{
-				if (GetItemsStart() > ExtendedViewportStart + extentAdjustment)
+				while (
+					GetItemsStart() is { } start && start > ExtendedViewportStart + extentAdjustment &&
+					GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath()) is { } nextItem)
 				{
-					var nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
-					while (nextItem != null && GetItemsStart() > ExtendedViewportStart + extentAdjustment)
-					{
-						AddLine(Backward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(Backward, GetFirstMaterializedIndexPath());
-					}
+					AddLine(Backward, nextItem);
 				}
 			}
-
 			void FillForward()
 			{
-				if ((GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
+				var seed = _dynamicSeedIndex;
+				while (
+					GetItemsEnd() is var end && (end ?? 0) < ExtendedViewportEnd + extentAdjustment &&
+					GetNextUnmaterializedItem(Forward, seed ?? GetLastMaterializedIndexPath()) is { } nextItem)
 				{
-					var nextItem = GetNextUnmaterializedItem(Forward, _dynamicSeedIndex ?? GetLastMaterializedIndexPath());
-					while (nextItem != null && (GetItemsEnd() ?? 0) < ExtendedViewportEnd + extentAdjustment)
-					{
-						AddLine(Forward, nextItem.Value);
-						nextItem = GetNextUnmaterializedItem(Forward, GetLastMaterializedIndexPath());
-					}
+					AddLine(Forward, nextItem);
+					seed = null;
 				}
 			}
 		}
@@ -543,7 +556,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Remove views that lie entirely outside extended viewport.
 		/// </summary>
-		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
+		/// <param name="extentAdjustment">
+		/// Adjustment to apply when calculating fillable area.
+		/// Used when a viewport change is not yet committed into the <see cref="ScrollOffset"/>.
+		/// </param>
 		private void UnfillLayout(double extentAdjustment)
 		{
 			UnfillBackward();
@@ -923,7 +939,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Refresh();
 		}
 
-		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
+		internal Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			return GetFirstMaterializedLine()?.FirstItem ?? Uno.UI.IndexPath.NotFound;
 		}
@@ -933,12 +949,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return GetLastMaterializedLine()?.LastItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
-		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
+		internal IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
 		{
 			throw new NotImplementedException(); //TODO: snap points support
 		}
 
-		private float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
+		internal float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
 
 		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{

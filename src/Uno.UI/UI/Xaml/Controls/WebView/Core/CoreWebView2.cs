@@ -39,6 +39,12 @@ public partial class CoreWebView2
 
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
+#if __SKIA__
+	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+
+	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+#endif
+
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
@@ -172,7 +178,7 @@ public partial class CoreWebView2
 		DocumentTitleChanged?.Invoke(this, null);
 	}
 
-	internal void RaiseNavigationStarting(object navigationData, out bool cancel)
+	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
 	{
 		string? uriString = null;
 		if (navigationData is Uri uri)

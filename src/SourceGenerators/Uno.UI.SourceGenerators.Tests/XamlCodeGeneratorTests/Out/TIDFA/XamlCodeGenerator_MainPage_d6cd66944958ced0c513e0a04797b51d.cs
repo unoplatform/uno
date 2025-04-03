@@ -22,12 +22,12 @@ using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
-#if __ANDROID__
+#if HAS_UNO_SKIA
+using _View = Microsoft.UI.Xaml.UIElement;
+#elif __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -69,7 +69,7 @@ namespace TestRepro
 						{
 							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
 					);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 					__p1.CreationComplete();

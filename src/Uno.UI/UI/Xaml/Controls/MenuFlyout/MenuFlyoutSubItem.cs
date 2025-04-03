@@ -793,6 +793,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_tpPopup.HorizontalOffset = position.X;
 			m_tpPopup.VerticalOffset = position.Y;
+
+			// Set the XamlRoot if the parent is available
+			m_tpPopup.XamlRoot ??= parentMenuFlyoutPresenter?.XamlRoot;
 			SetIsOpen(true);
 
 

@@ -15,7 +15,7 @@ internal static class MacOSMetalRenderer
 		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
 		// net8+ alternative -> https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
 		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic);
-		var context = (GRContext?)get?.Invoke(null, [ctx, true]);
+		var context = (GRContext?)get?.Invoke(null, [ctx, true, true]);
 		if (context is null)
 		{
 			// Macs since 2012 have Metal 2 support and macOS 10.14 Mojave (2018) requires Metal
@@ -34,7 +34,7 @@ internal static class MacOSMetalRenderer
 	{
 		// note: size is doubled for retina displays
 		var info = new GRMtlTextureInfoNative() { Texture = texture };
-		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, 1, &info);
+		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, &info);
 		if (nt == IntPtr.Zero)
 		{
 			if (typeof(MacOSMetalRenderer).Log().IsEnabled(LogLevel.Error))

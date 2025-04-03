@@ -22,6 +22,11 @@ public static partial class CoreApplication
 		InitializePlatform();
 	}
 
+	internal static void StaticInitialize()
+	{
+		// Called to ensure the static constructor is called
+	}
+
 	static partial void InitializePlatform();
 
 	/// <summary>
@@ -44,7 +49,7 @@ public static partial class CoreApplication
 	/// </summary>
 	public static event EventHandler<LeavingBackgroundEventArgs> LeavingBackground;
 
-#if __ANDROID__ || __SKIA__ || __MACOS__
+#if __ANDROID__ || __SKIA__
 	/// <summary>
 	/// Occurs when the app is shutting down.
 	/// </summary>
@@ -76,7 +81,7 @@ public static partial class CoreApplication
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
 
-#if __ANDROID__ || __SKIA__ || __MACOS__
+#if __ANDROID__ || __SKIA__
 	/// <summary>
 	/// Shuts down the app.
 	/// </summary>

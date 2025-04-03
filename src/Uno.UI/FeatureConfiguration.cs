@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls;
-using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI
 {
@@ -136,7 +135,7 @@ namespace Uno.UI
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// opt-in for iOS/Android/macOS
 #else
 				= true;
@@ -176,10 +175,10 @@ namespace Uno.UI
 		public static class Font
 		{
 			private static string _symbolsFont =
-#if __WASM__ || __MACOS__ || __IOS__
+#if __WASM__ || __APPLE_UIKIT__
 				"Symbols";
 #else
-				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+				"ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 
 			/// <summary>
@@ -209,7 +208,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
@@ -252,7 +251,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
 			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
@@ -357,7 +356,7 @@ namespace Uno.UI
 			/// </summary>
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			/// <summary>
 			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
 			/// </summary>
@@ -717,7 +716,7 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
-#if __IOS__
+#if __IOS__ || UNO_REFERENCE_API
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
 			/// </summary>
@@ -739,7 +738,7 @@ namespace Uno.UI
 
 		public static class DatePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
@@ -752,7 +751,7 @@ namespace Uno.UI
 
 		public static class TimePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
 			/// </summary>
@@ -782,7 +781,7 @@ namespace Uno.UI
 
 		public static class CommandBar
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
 			/// </summary>
@@ -841,6 +840,17 @@ namespace Uno.UI
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
 			public static bool? UseOpenGLOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
+			/// OpenGL if available. Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseOpenGLOnWin32 { get; set; }
+
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
+			/// </summary>
+			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
 		}
 
 		public static class DependencyProperty
@@ -903,6 +913,46 @@ namespace Uno.UI
 			}
 #else
 			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
+#endif
+		}
+
+#if __ANDROID__ || UNO_REFERENCE_API
+		public static class AndroidSettings
+		{
+#if NET9_0_OR_GREATER
+			private static bool _isEdgeToEdgeEnabled = true;
+#else
+			private static bool _isEdgeToEdgeEnabled;
+#endif
+
+			/// <summary>
+			/// Gets or sets a value indicating whether the app should use the "edge-to-edge" experience
+			/// <see href="https://developer.android.com/develop/ui/views/layout/edge-to-edge" />.
+			/// When enabled, the system UI becomes transparent and the app's UI flows behind it.
+			/// Use Uno Toolkit SafeArea to accomodate for it.
+			/// This flag has no effect on Android 15 and newer, where the edge-to-edge experience
+			/// is enforced by the OS.
+			/// </summary>
+			/// <remarks>True by default in apps targeting .NET 9 and newer, false otherwise.</remarks>
+			public static bool IsEdgeToEdgeEnabled
+			{
+#if __ANDROID__
+				get => _isEdgeToEdgeEnabled || (int)Android.OS.Build.VERSION.SdkInt >= 35;
+#else
+				get => _isEdgeToEdgeEnabled;
+#endif
+				set => _isEdgeToEdgeEnabled = value;
+			}
+		}
+#endif
+
+		public static class NavigationView
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
+			/// </summary>
+			public static bool EnableUno19516Workaround { get; set; } = true;
 #endif
 		}
 	}

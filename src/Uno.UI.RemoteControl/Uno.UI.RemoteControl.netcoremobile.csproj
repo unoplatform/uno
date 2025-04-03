@@ -33,6 +33,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="buildTransitive\*.DevServer.props">
+			<PackagePath>build</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 		<Content Include="buildTransitive\*.DevServer.targets">
 			<PackagePath>build</PackagePath>
 			<Pack>true</Pack>
@@ -41,7 +45,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -21,7 +21,7 @@ namespace GenericApp.Views.Content.UITests.TextBoxControl
 			var textbox = sender as TextBox;
 			textbox.RequestFocus(Android.Views.FocusSearchDirection.Up, null);
 		}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 		private void RequestTextboxFocus(object sender, RoutedEventArgs e)
 		{
 			var textbox = sender as TextBox;

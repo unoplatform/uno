@@ -232,9 +232,9 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(0, sut.SignificantDigits);
 		Assert.AreEqual(1, sut.IntegerDigits);
 		Assert.AreEqual(2, sut.FractionDigits);
-		Assert.AreEqual(false, sut.IsGrouped);
-		Assert.AreEqual(false, sut.IsZeroSigned);
-		Assert.AreEqual(false, sut.IsDecimalPointAlwaysDisplayed);
+		Assert.IsFalse(sut.IsGrouped);
+		Assert.IsFalse(sut.IsZeroSigned);
+		Assert.IsFalse(sut.IsDecimalPointAlwaysDisplayed);
 		Assert.AreEqual("en-US", sut.ResolvedLanguage);
 		Assert.IsNull(sut.NumberRounder);
 	}
@@ -653,7 +653,7 @@ public class Given_CurrencyFormatter
 	[TestMethod]
 	public void When_CurrencyCodeIsNotValid()
 	{
-		Assert.ThrowsException<ArgumentException>(() => MakeFormatter("irr"));
+		Assert.ThrowsExactly<ArgumentException>(() => MakeFormatter("irr"));
 	}
 
 	private string FormatCurrencyCodeModeNegativeNumber(string text, string symbol)

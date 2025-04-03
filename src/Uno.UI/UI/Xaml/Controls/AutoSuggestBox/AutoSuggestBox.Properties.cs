@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		object Description

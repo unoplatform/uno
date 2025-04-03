@@ -24,4 +24,6 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 	{
 		WrappedBrush?.UpdatePaint(paint, bounds);
 	}
+
+	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
 }

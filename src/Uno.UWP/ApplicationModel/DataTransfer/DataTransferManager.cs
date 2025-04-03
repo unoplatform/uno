@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
 using System;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -22,8 +22,9 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void ShowShareUI() => ShowShareUI(new ShareUIOptions());
 
-		public static void ShowShareUI(ShareUIOptions options)
+		public static void ShowShareUI(ShareUIOptions? options)
 		{
+			options ??= new(); // When not provided, use defaults.
 			var dataTransferManager = _instance.Value;
 			var args = new DataRequestedEventArgs((dataRequest) => ContinueShowShareUI(options, dataRequest.Data));
 			dataTransferManager.DataRequested?.Invoke(dataTransferManager, args);

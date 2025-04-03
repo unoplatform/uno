@@ -30,10 +30,15 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	public Task When_SingleSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_singleSelection_noClick", clicked: false);
 
-	[Test]
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if IS_RUNTIME_UI_TESTS
+	// https://github.com/unoplatform/uno/issues/9080
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
+#else
+	[Test]
+#endif
 	public Task When_MultipleSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_multipleSelection_noClick", clicked: false);
 

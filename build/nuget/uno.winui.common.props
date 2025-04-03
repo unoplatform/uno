@@ -10,5 +10,7 @@
 
 	<PropertyGroup>
 		<SupportsFontManifest Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">true</SupportsFontManifest>
+		<SupportsFontManifest Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</SupportsFontManifest>
+		<SupportsFontManifest Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst'">true</SupportsFontManifest>
 	</PropertyGroup>
 </Project>

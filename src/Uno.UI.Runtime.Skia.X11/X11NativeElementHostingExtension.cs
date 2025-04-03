@@ -1,8 +1,10 @@
 using System;
-using System.Collections.Generic;
+using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -11,7 +13,6 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 // https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private static Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
 	private Rect? _lastArrangeRect;
 	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
@@ -45,13 +46,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			host.AttachSubWindow(nativeWindow.WindowId);
 			_ = XLib.XMapWindow(Display, nativeWindow.WindowId);
-			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
+			_ = X11Helper.XRaiseWindow(Display, host.TopX11Window.Window);
+			host.RegisterInputFromNativeSubwindow(nativeWindow.WindowId);
 
-			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
-			{
-				set = _hostToNativeElementHosts[host] = new HashSet<X11NativeElementHostingExtension>();
-			}
-			set.Add(this);
+			HideWindowFromTaskBar(nativeWindow);
 
 			xamlRoot.InvalidateRender += UpdateLayout;
 			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
@@ -62,6 +60,61 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
+	private unsafe void HideWindowFromTaskBar(X11NativeWindow nativeWindow)
+	{
+		// hide the embedded window from showing up in the taskbar/dock.
+		var netWmStateAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE");
+		var netWmStateSkipTaskbarAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR");
+		if (netWmStateAtom != IntPtr.Zero && netWmStateSkipTaskbarAtom != IntPtr.Zero)
+		{
+			_ = XLib.XGetWindowProperty(
+				Display,
+				nativeWindow.WindowId,
+				netWmStateAtom,
+				IntPtr.Zero,
+				X11Helper.LONG_LENGTH,
+				false,
+				X11Helper.AnyPropertyType,
+				out var actualTypeAtom,
+				out var actualFormat,
+				out var nitems,
+				out _,
+				out var prop);
+			using var atomsDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
+
+			if (actualFormat == 32)
+			{
+				var atomSpan = new Span<IntPtr>(prop.ToPointer(), (int)nitems);
+
+				var foundSkipTaskbarAtom = false;
+				foreach (var atom in atomSpan)
+				{
+					if (atom == netWmStateSkipTaskbarAtom)
+					{
+						foundSkipTaskbarAtom = true;
+						break;
+					}
+				}
+
+				if (!foundSkipTaskbarAtom)
+				{
+					_ = XLib.XChangeProperty(
+						Display,
+						nativeWindow.WindowId,
+						netWmStateAtom,
+						X11Helper.GetAtom(Display, X11Helper.XA_ATOM),
+						32,
+						PropertyMode.Append,
+						new[]
+						{
+							X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR")
+						},
+						1);
+				}
+			}
+		}
+	}
+
 	public void DetachNativeElement(object content)
 	{
 		if (content is X11NativeWindow nativeWindow
@@ -69,17 +122,12 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var lockDiposable = X11Helper.XLock(Display);
+			host.UnregisterInputFromNativeSubwindow(nativeWindow.WindowId);
 			_ = XLib.XQueryTree(Display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
 			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
+			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
 			_ = XLib.XSync(Display, false);
-
-			var set = _hostToNativeElementHosts[host];
-			set.Remove(this);
-			if (set.Count == 0)
-			{
-				_hostToNativeElementHosts.Remove(host);
-			}
 
 			_lastClipRect = null;
 			_lastArrangeRect = null;
@@ -120,6 +168,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)
 			{
 				arrangeRect.Size = new Size(1, 1);
+			}
+			else
+			{
+				var scale = XamlRoot.GetDisplayInformation(xamlRoot).RawPixelsPerViewPixel;
+				arrangeRect = Matrix3x2.CreateScale((float)scale).Transform(arrangeRect);
 			}
 			_ = XLib.XResizeWindow(Display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
 			_ = X11Helper.XMoveWindow(Display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);

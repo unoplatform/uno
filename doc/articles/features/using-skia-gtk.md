@@ -2,10 +2,10 @@
 uid: Uno.Skia.Gtk
 ---
 
-# Using the Skia+GTK head
+# Using the Skia.GTK head (legacy)
 
 > [!IMPORTANT]
-> The Skia+Gtk support is being retired as of Uno Platform 5.2. The package will continue to be available until further notice and the latest apps should be moving to the [Skia Desktop support](xref:Uno.Skia.Desktop).
+> The Skia.Gtk support is being retired as of Uno Platform 5.2 and removed since Uno Platform 6.0. Apps should be migrating to the [Skia Desktop support](xref:Uno.Skia.Desktop).
 
 Uno supports running applications using Gtk+3 shell, using a Skia backend rendering. Gtk3+ is used to create a shell for the application to be used on various operating systems, such as Linux, Windows, and macOS.
 
@@ -13,7 +13,7 @@ Depending on the target platform, the UI rendering may be using OpenGL or softwa
 
 Note that for Linux, the [FrameBuffer rendering](using-linux-framebuffer.md) head is also available.
 
-## Get started with the Skia+GTK head
+## Get started with the Skia.GTK head
 
 Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio 2022](xref:Uno.GetStarted.vs2022), make sure to use Uno Platform 5.1 templates to get it.
 
@@ -92,10 +92,10 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="2.88.7" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.7" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.7" />
+   <PackagReference Include="SkiaSharp" Version="3.119.0-preview.1.2" />
+   <PackagReference Include="SkiaSharp.Harfbuzz" Version="3.119.0-preview.1.2" />
+   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0-preview.1.2" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="3.119.0-preview.1.2" />
 </ItemGroup>
 ```
 

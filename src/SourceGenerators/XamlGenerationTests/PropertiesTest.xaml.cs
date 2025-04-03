@@ -8,7 +8,7 @@ namespace XamlGenerationTests.Shared
 	{
 		public PropertiesTest()
 		{
-#if __IOS__
+#elif __APPLE_UIKIT__
 			iOSUILabel.ToString();
 #endif
 

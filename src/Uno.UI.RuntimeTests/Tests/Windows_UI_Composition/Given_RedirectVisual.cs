@@ -12,16 +12,18 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 public class Given_RedirectVisual
 {
-#if __SKIA__
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Render target bitmap is not supported on this target")]
+#endif
 	[RunsOnUIThread]
-	[Ignore("Disabled because of https://github.com/unoplatform/uno-private/issues/307")]
 	public async Task When_Source_Changes()
 	{
 		var compositor = Window.Current.Compositor;
@@ -44,6 +46,17 @@ public class Given_RedirectVisual
 		ElementCompositionPreview.SetElementChildVisual(sut, redirectVisual);
 
 		var result = await Render(expected, sut);
+
+		var sw = Stopwatch.StartNew();
+		while (!await ImageAssert.AreRenderTargetBitmapsEqualAsync(result.actual.Bitmap, result.expected.Bitmap)
+			&& sw.Elapsed < TimeSpan.FromSeconds(10))
+		{
+			await Task.Delay(250);
+
+			// render again until it reaches the timeout
+			result = await Render(expected, sut);
+		}
+
 		await ImageAssert.AreEqualAsync(result.actual, result.expected);
 	}
 
@@ -65,5 +78,4 @@ public class Given_RedirectVisual
 
 		return (await UITestHelper.ScreenShot(expected), await UITestHelper.ScreenShot(sut));
 	}
-#endif
 }

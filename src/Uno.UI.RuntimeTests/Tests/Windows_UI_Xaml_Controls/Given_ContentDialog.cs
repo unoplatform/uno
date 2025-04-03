@@ -89,9 +89,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Not_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -121,9 +118,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -156,9 +150,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -191,9 +182,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -227,9 +215,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Initial_Focus_With_Focusable_Content()
 		{
 			Button button = new Button() { Content = "Target" };
@@ -261,9 +246,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Initial_Focus_With_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -295,9 +277,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Initial_Focus_With_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -328,9 +307,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_CloseDeferred()
 		{
 			var SUT = new MyContentDialog
@@ -344,18 +320,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SetXamlRootForIslandsOrWinUI(SUT);
 
 			bool triggered = false;
+			var triggeredTwice = false;
 			bool hideSecondTime = false;
 
 			async void SUT_Closing(object sender, ContentDialogClosingEventArgs args)
 			{
-				// Closing should only be invoked once.
-				Assert.IsFalse(triggered);
+				triggeredTwice |= triggered;
 				triggered = true;
 				var deferral = args.GetDeferral();
 				await WindowHelper.WaitFor(() => hideSecondTime);
 				deferral.Complete();
 				triggered = false;
-			};
+			}
 
 			SUT.Closing += SUT_Closing;
 
@@ -373,11 +349,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Closing -= SUT_Closing;
 				SUT.Hide();
 			}
+
+			await WindowHelper.WaitForIdle();
+
+			// Closing should only be invoked once.
+			// NOTE: the assert shouldn't be in SUT_Closing as it's async void.
+			Assert.IsFalse(triggeredTwice);
 		}
 
 		[TestMethod]
-		//#if !__ANDROID__ && !__IOS__ // Fails on Android because keyboard does not appear when TextBox inside native popup is programmatically focussed - https://github.com/unoplatform/uno/issues/7995
-#if !__IOS__
+		//#if !__ANDROID__ && !__APPLE_UIKIT__ // Fails on Android because keyboard does not appear when TextBox inside native popup is programmatically focussed - https://github.com/unoplatform/uno/issues/7995
+#if !__APPLE_UIKIT__
 		[Ignore("Test applies to platforms using software keyboard")]
 #endif
 		public async Task When_Soft_Keyboard_And_VisibleBounds()
@@ -501,7 +483,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				e.Cancel = true;
 				sender.Hide();
-			};
+			}
 
 			switch (buttonType)
 			{
@@ -648,9 +630,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Popup_Closed()
 		{
 			var closedEvent = new Event();

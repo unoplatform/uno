@@ -1,5 +1,4 @@
-﻿#if __MACOS__ || __SKIA__
-using System;
+﻿using System;
 using Uno.Helpers;
 using Windows.Foundation;
 
@@ -19,4 +18,3 @@ public partial class SystemNavigationCloseRequestedPreviewEventArgs
 
 	public Deferral GetDeferral() => DeferralManager.GetDeferral();
 }
-#endif

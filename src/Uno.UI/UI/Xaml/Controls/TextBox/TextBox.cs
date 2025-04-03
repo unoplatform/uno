@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -75,12 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>
 		public
-#if __IOS__
+#if __APPLE_UIKIT__
 			new
 #endif
 			event TextControlPasteEventHandler Paste;
@@ -124,11 +124,19 @@ namespace Microsoft.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 
 #if __SKIA__
-			ActualThemeChanged += (_, _) => TextBoxView?.DisplayBlock.InvalidateInlines(false);
+			ActualThemeChanged += (_, _) =>
+			{
+				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				TextBoxView?.UpdateTheme();
+			};
 			_timer.Tick += TimerOnTick;
 			EnsureHistory();
 #endif
+
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		private protected override void OnLoaded()
 		{
@@ -144,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
@@ -328,7 +336,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
-				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+				GetBindingExpression(TextProperty) is
+				{
+					ParentBinding:
+					{
+						IsXBind: false, // NOTE: we UpdateSource in OnTextChanged only when the binding is not an x:Bind. WinUI's generated code for x:Bind contains a simple LostFocus subscription and waits for the next LostFocus even when not focused, unlike regular Bindings.
+						UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus
+					}
+				} bindingExpression)
 			{
 				bindingExpression.UpdateSource(Text);
 			}
@@ -416,10 +431,12 @@ namespace Microsoft.UI.Xaml.Controls
 					_pendingSelection = (start, end - start);
 				}
 			}
-			else if (_isSkiaTextBox)
+			else if (_isSkiaTextBox && !DeviceTargetHelper.IsUIKit())
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
+				// On UIKit targets we use invisible overlay and replacing newlines would break the sync between
+				// the native input and the managed representation.
 				baseString = RemoveLF(baseString);
 			}
 #else
@@ -459,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Description DependencyProperty
 
 		public
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		object Description
@@ -749,8 +766,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFlowDirectionChangedPartial();
 #endif
 
-#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -758,8 +775,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -978,7 +995,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
-			OnFocusStateChangedPartial(newValue);
+			OnFocusStateChangedPartial(newValue, initial);
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
@@ -994,7 +1011,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
-			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			if (newValue == FocusState.Unfocused)
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
@@ -1002,7 +1019,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState);
+		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -1052,6 +1069,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 			{
+				var wasFocused = FocusState != FocusState.Unfocused;
 				if (isPointerCaptureRequired)
 				{
 					if (CapturePointer(args.Pointer))
@@ -1063,6 +1081,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					Focus(FocusState.Pointer);
 				}
+
+#if __SKIA__
+				if (wasFocused)
+				{
+					// See comment in OnPointerReleased for why we do this
+					_textBoxNotificationsSingleton?.OnFocused(this);
+				}
+#endif
 			}
 
 			args.Handled = true;
@@ -1083,7 +1109,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!ShouldFocusOnPointerPressed(args))
 			{
+				var wasFocused = FocusState != FocusState.Unfocused;
 				Focus(FocusState.Pointer);
+#if __SKIA__
+				if (wasFocused)
+				{
+					// We already call UpdateFocusState in TextBoxView when focus changes, but this is not enough.
+					// UpdateFocusState should be called here even if the TextBox was already focused.
+					// This is to support re-showing the keyboard when clicking on an already-focused TextBox.
+					// For example:
+					// 1. User taps on TextBox and it gained focus and soft keyboard was shown.
+					// 2. User hides the keyboard, but TextBox is still focused.
+					// 3. User taps on TextBox again. In this case, we want to call UpdateFocusState so that the soft keyboard is re-shown again.
+					//
+					// This approach feels hacky though and may not handle programmatic focus properly, i.e, when programmatic focus is requested on an already-focused TextBox. This is a niche case though.
+					_textBoxNotificationsSingleton?.OnFocused(this);
+				}
+#endif
 			}
 
 			args.Handled = true;
@@ -1214,6 +1256,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
 		internal string ProcessTextInput(string newText)
 		{
+			var isCurrentlyModifying = _isInputModifyingText;
+
 			try
 			{
 				_isInputModifyingText = true;
@@ -1233,7 +1277,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			finally
 			{
-				_isInputModifyingText = false;
+				if (!isCurrentlyModifying)
+				{
+					// The all to ProcessTextInput may be recursing, we only want to restore
+					// the state on the last one.
+					_isInputModifyingText = false;
+				}
 			}
 
 			return Text; //This may have been modified by BeforeTextChanging, TextChanging, DP callback, etc
@@ -1302,6 +1351,10 @@ namespace Microsoft.UI.Xaml.Controls
 				length = textLength - start;
 			}
 
+#if __SKIA__
+			_pendingSelection = null;
+#endif
+
 			if (SelectionStart == start && SelectionLength == length)
 			{
 				return;
@@ -1317,9 +1370,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SelectAllPartial();
 
-		/// <summary>
-		/// Copies content from the OS clipboard into the text control.
-		/// </summary>
 		public void PasteFromClipboard()
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
@@ -1329,56 +1379,67 @@ namespace Microsoft.UI.Xaml.Controls
 				try
 				{
 					clipboardText = await content.GetTextAsync();
+					PasteFromClipboard(clipboardText);
 				}
 				catch (InvalidOperationException e)
 				{
-					clipboardText = "";
-
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
 					}
 				}
-				var selectionStart = SelectionStart;
-				var selectionLength = SelectionLength;
-				var currentText = Text;
-
-				if (selectionLength > 0)
-				{
-					currentText = currentText.Remove(selectionStart, selectionLength);
-				}
-
-				currentText = currentText.Insert(selectionStart, clipboardText);
-
-				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
-
-#if __SKIA__
-				try
-				{
-					_clearHistoryOnTextChanged = false;
-					_suppressCurrentlyTyping = true;
-#else
-				{
-#endif
-					ProcessTextInput(currentText);
-				}
-#if __SKIA__
-				finally
-				{
-					_suppressCurrentlyTyping = false;
-					_clearHistoryOnTextChanged = true;
-					if (Text.IsNullOrEmpty())
-					{
-						// On WinUI, the caret never has thumbs if there is no text
-						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-					}
-				}
-#endif
-
-#if !IS_UNIT_TESTS && !__MACOS__
-				RaisePaste(new TextControlPasteEventArgs());
-#endif
 			});
+		}
+
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		internal void PasteFromClipboard(string clipboardText)
+		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
+			var selectionStart = SelectionStart;
+			var selectionLength = SelectionLength;
+			var currentText = Text;
+
+			if (selectionLength > 0)
+			{
+				currentText = currentText.Remove(selectionStart, selectionLength);
+			}
+
+			currentText = currentText.Insert(selectionStart, clipboardText);
+
+			PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+
+#if __SKIA__
+			try
+			{
+				_clearHistoryOnTextChanged = false;
+				_suppressCurrentlyTyping = true;
+#else
+			{
+#endif
+				ProcessTextInput(currentText);
+			}
+#if __SKIA__
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+				_clearHistoryOnTextChanged = true;
+				if (Text.IsNullOrEmpty())
+				{
+					// On WinUI, the caret never has thumbs if there is no text
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				}
+			}
+#endif
+
+#if !IS_UNIT_TESTS
+			RaisePaste(new TextControlPasteEventArgs());
+#endif
 		}
 
 		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
@@ -1402,6 +1463,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CutSelectionToClipboard()
 		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
 #if __SKIA__

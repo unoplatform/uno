@@ -155,10 +155,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			ResolutionScale ResolutionScale,
 			double? DiagonalSizeInInches);
 
-		public X11DisplayInformationExtension(object owner, float? scaleOverride)
+		public X11DisplayInformationExtension(object owner)
 		{
 			_owner = (DisplayInformation)owner;
-			_scaleOverride = scaleOverride;
 
 			if (float.TryParse(
 				Environment.GetEnvironmentVariable(EnvironmentUnoDisplayScaleOverride),

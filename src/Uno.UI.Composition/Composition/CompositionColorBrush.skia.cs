@@ -12,5 +12,7 @@ namespace Microsoft.UI.Composition
 		{
 			paint.Color = Color.ToSKColor();
 		}
+
+		internal override bool CanPaint() => Color != Colors.Transparent;
 	}
 }

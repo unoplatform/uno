@@ -143,10 +143,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			}
 		}
 
-		[TestMethod]
 #if __WASM__
 		[Ignore("Fails for unknown reason")]
 #endif
+		// https://github.com/unoplatform/uno-private/issues/801
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
 		{
 			var wr = GetWeakReference();
@@ -172,7 +173,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void When_MaxWidth_NaN()
 		{
-			Assert.ThrowsException<ArgumentException>(() => new ContentControl
+			Assert.ThrowsExactly<ArgumentException>(() => new ContentControl
 			{
 				MaxWidth = double.NaN,
 				MaxHeight = double.NaN,

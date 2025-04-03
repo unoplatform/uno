@@ -54,7 +54,7 @@ partial class ContentPresenter
 		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
-			Visual.IsNativeHostVisual = true;
+			Visual.SetAsNativeHostVisual(true);
 
 			if (ContentTemplate is not null)
 			{
@@ -74,7 +74,7 @@ partial class ContentPresenter
 		else
 		{
 			IsNativeHost = false;
-			Visual.IsNativeHostVisual = false;
+			Visual.SetAsNativeHostVisual(null);
 		}
 	}
 
@@ -86,7 +86,7 @@ partial class ContentPresenter
 			// might no longer be a NativeHost
 			return;
 		}
-		var arrangeRect = this.GetAbsoluteBoundsRect();
+		var arrangeRect = TransformToVisual(null).TransformBounds(LayoutSlotWithMarginsAndAlignments);
 		var ev = GetParentViewport().Effective;
 
 		Rect clipRect;

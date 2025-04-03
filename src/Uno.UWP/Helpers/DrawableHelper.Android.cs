@@ -36,6 +36,14 @@ namespace Uno.Helpers
 		/// <returns>Resource's id</returns>
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName)
+			=> FindResourceId(imageName, logFailure: true);
+
+		/// <summary>
+		/// Returns the Id of the bundled image.
+		/// </summary>
+		/// <param name="imageName">Name of the image</param>
+		/// <returns>Resource's id</returns>
+		internal static int? FindResourceId(string imageName, bool logFailure = true)
 		{
 			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
 
@@ -58,7 +66,7 @@ namespace Uno.Helpers
 
 			if (id == 0)
 			{
-				if (typeof(DrawableHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+				if (logFailure && typeof(DrawableHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(DrawableHelper).Log().Error("Couldn't find drawable with key: " + key);
 				}
@@ -74,10 +82,10 @@ namespace Uno.Helpers
 		/// </summary>
 		/// <param name="imagePath">Path of the image</param>
 		/// <returns>Resource's id</returns>
-		internal static int? FindResourceIdFromPath(string imagePath)
+		internal static int? FindResourceIdFromPath(string imagePath, bool logFailure = true)
 		{
 			var key = System.IO.Path.GetFileNameWithoutExtension(AndroidResourceNameEncoder.EncodeDrawablePath(imagePath));
-			return FindResourceId(key);
+			return FindResourceId(key, logFailure: logFailure);
 		}
 
 		/// <summary>

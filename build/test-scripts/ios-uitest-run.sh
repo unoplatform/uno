@@ -7,10 +7,14 @@ then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
 
 	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	# GridView and ListView are also disabled for instabilities
 	# runGroup is used to parallelize the snapshots tests on multiple agents
 	export TEST_FILTERS=" \
 		FullyQualifiedName ~ SamplesApp.UITests.Snap \
 		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.CommandBar \
+		& TestCategory !~ automated:SamplesApp.Windows_UI_Xaml_Controls.ListView \
+		& TestCategory !~ automated:GenericApp.Views.Content.UITests.GridView \
+		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.GridView \
 		& TestCategory ~ runGroup:$UITEST_SNAPSHOTS_GROUP \
 	"
 else
@@ -30,7 +34,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests \
 			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated \
-			| Namespace = SamplesApp.UITests.MessageDialogTests
+			| Namespace = SamplesApp.UITests.MessageDialogTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
 	then
@@ -42,7 +46,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests \
 			| Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];
 	then
@@ -54,7 +58,7 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests \
 			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '4' ];
 	then
@@ -76,6 +80,10 @@ else
 	fi
 fi
 
+if [ -n "${UITEST_VARIANT-}" ]; then
+	export SCREENSHOTS_FOLDERNAME="$SCREENSHOTS_FOLDERNAME-$UITEST_VARIANT"
+fi
+
 export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
 export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
 
@@ -85,7 +93,8 @@ mkdir -p $LOG_FILEPATH
 export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
-export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
+export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
@@ -185,10 +194,10 @@ then
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
 	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
 
-	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "uno.platform.samplesdev"
+	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
-	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesdev" | awk '{print $1}'`
+	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
 	# Set the timeout in seconds 
@@ -233,14 +242,7 @@ else
 	echo "  Test filters: $UNO_TESTS_FILTER"
 
 	## Run tests
-	dotnet test \
-		-c Release \
-		-l:"console;verbosity=normal" \
-		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-		--filter "$UNO_TESTS_FILTER" \
-		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-		-v m \
-		|| true
+	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
 fi
 
 # export the simulator logs

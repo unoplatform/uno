@@ -46,7 +46,13 @@ namespace Microsoft.UI.Composition
 		public Vector3 Offset
 		{
 			get => _offset;
-			set { SetProperty(ref _offset, value); OnOffsetChanged(value); }
+			set
+			{
+				if (SetProperty(ref _offset, value))
+				{
+					OnOffsetChanged(value);
+				}
+			}
 		}
 
 		partial void OnOffsetChanged(Vector3 value);
@@ -54,8 +60,16 @@ namespace Microsoft.UI.Composition
 		public bool IsVisible
 		{
 			get => _isVisible;
-			set => SetProperty(ref _isVisible, value);
+			set
+			{
+				if (SetProperty(ref _isVisible, value))
+				{
+					OnIsVisibleChanged(value);
+				}
+			}
 		}
+
+		partial void OnIsVisibleChanged(bool value);
 
 		public CompositionCompositeMode CompositeMode
 		{
@@ -104,7 +118,13 @@ namespace Microsoft.UI.Composition
 		public Vector2 Size
 		{
 			get => _size;
-			set { SetProperty(ref _size, value); OnSizeChanged(value); }
+			set
+			{
+				if (SetProperty(ref _size, value))
+				{
+					OnSizeChanged(value);
+				}
+			}
 		}
 
 		partial void OnSizeChanged(Vector2 value);
@@ -130,7 +150,7 @@ namespace Microsoft.UI.Composition
 			{
 				_parent = value;
 #if __SKIA__
-				SetAsPopupVisual(value?.IsPopupVisual ?? false, inherited: true);
+				SetAsNativeHostVisual(value?.IsNativeHostVisual ?? false, inherited: true);
 #endif
 			}
 		}
@@ -144,6 +164,22 @@ namespace Microsoft.UI.Composition
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);
+#if __SKIA__
+			if (propertyName == nameof(Opacity))
+			{
+				RecursiveInvalidate(this);
+			}
+
+			void RecursiveInvalidate(Visual visual)
+			{
+				visual.InvalidatePaint();
+				var children = visual.GetChildrenInRenderOrder();
+				foreach (var child in children)
+				{
+					RecursiveInvalidate(child);
+				}
+			}
+#endif
 		}
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)

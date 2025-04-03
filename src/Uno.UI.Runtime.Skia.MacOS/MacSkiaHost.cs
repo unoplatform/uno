@@ -30,6 +30,9 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		MacOSSystemNavigationManagerPreviewExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSNativeOpenGLWrapper.Register();
+		MacOSNativeWebViewProvider.Register();
+		MacOSMediaPlayerExtension.Register();
+		MacOSMediaPlayerPresenterExtension.Register();
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

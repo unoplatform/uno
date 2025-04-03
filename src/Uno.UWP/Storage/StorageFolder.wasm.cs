@@ -48,5 +48,6 @@ namespace Windows.Storage
 
 			_storageInitialized.TrySetResult(true);
 		}
+
 	}
 }

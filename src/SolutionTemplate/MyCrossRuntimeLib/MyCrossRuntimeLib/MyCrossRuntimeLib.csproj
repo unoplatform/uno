@@ -17,7 +17,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.WinUI" Version="$(NBGV_SemVer2)" />
   </ItemGroup>
   <Choose>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">

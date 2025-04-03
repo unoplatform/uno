@@ -9,7 +9,9 @@ using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
+using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
+using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -24,30 +26,40 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			Dictionary<string, string> properties,
 			CancellationToken ct)
 		{
-			if (properties.TryGetValue("UnoEnCLogPath", out var EnCLogPath))
+			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath))
 			{
 				// Sets Roslyn's environment variable for troubleshooting HR, see:
 				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
-				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", EnCLogPath);
+				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", logPath);
+
+				// Unconditionally enable binlog generation in msbuild. See https://github.com/dotnet/project-system/blob/4210ce79cfd35154dbd858f056bfb9101f290e69/docs/design-time-builds.md?L61
+				Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");
+				Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
 			}
 
-			var globalProperties = new Dictionary<string, string> {
-				// Mark this compilation as hot-reload capable, so generators can act accordingly
-				{ "IsHotReloadHost", "True" },
-			};
-
-			foreach (var property in properties)
+			static bool IsValidProperty(string property)
 			{
-				// Don't set the runtime identifier since it propagates to libraries as well
-				// which do not build using the RuntimeIdentifier being set. For instance, a head
-				// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
-				// dependent projects, causing the HR engine to search for pdb/dlls in
-				// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
-				if (!property.Key.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
+				if (property.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
 				{
-					globalProperties.Add(property.Key, property.Value);
+					// Don't set the runtime identifier since it propagates to libraries as well
+					// which do not build using the RuntimeIdentifier being set. For instance, a head
+					// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
+					// dependent projects, causing the HR engine to search for pdb/dlls in
+					// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+
+					return false;
 				}
+
+				if (property.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase))
+				{
+					// Noticeably, don't set the "MSBuildVersion" (Forbidden, will fail workspace).
+					return false;
+				}
+
+				return true;
 			}
+
+			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			MSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
@@ -156,19 +168,19 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			throw new InvalidOperationException("Unable to find dotnet SDK base path");
 		}
 
-		private static void RegisterAssemblyLoader()
+		public static void RegisterAssemblyLoader()
 		{
-			// Force assembly loader to consider siblings, when running in a separate appdomain.
-			ResolveEventHandler localResolve = (s, e) =>
+			// Force assembly loader to consider siblings, when running in a separate appdomain / ALC.
+			Assembly? Load(string name)
 			{
-				if (e.Name == "Mono.Runtime")
+				if (name == "Mono.Runtime")
 				{
 					// Roslyn 2.0 and later checks for the presence of the Mono runtime
 					// through this check.
 					return null;
 				}
 
-				var assembly = new AssemblyName(e.Name);
+				var assembly = new AssemblyName(name);
 				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath) ?? "";
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
@@ -178,35 +190,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				if (assembly.Name is not null && assembly.Name.EndsWith(".resources", StringComparison.Ordinal))
 				{
 					return null;
-				}
-
-				// Lookup for the highest version matching assembly in the current app domain.
-				// There may be an existing one that already matches, even though the
-				// fusion loader did not find an exact match.
-				var loadedAsm = (
-									from asm in AppDomain.CurrentDomain.GetAssemblies()
-									where asm.GetName().Name == assembly.Name
-									orderby asm.GetName().Version descending
-									select asm
-								).ToArray();
-
-				if (loadedAsm.Length > 1)
-				{
-					var duplicates = loadedAsm
-						.Skip(1)
-						.Where(a => a.GetName().Version == loadedAsm[0].GetName().Version)
-						.ToArray();
-
-					if (duplicates.Length != 0)
-					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
-					}
-
-					return loadedAsm[0];
-				}
-				else if (loadedAsm.Length == 1)
-				{
-					return loadedAsm[0];
 				}
 
 				Assembly? LoadAssembly(string filePath)
@@ -242,10 +225,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					.Select(LoadAssembly)
 					.Where(p => p != null)
 					.FirstOrDefault();
-			};
+			}
 
-			AppDomain.CurrentDomain.AssemblyResolve += localResolve;
-			AppDomain.CurrentDomain.TypeResolve += localResolve;
+			AppDomain.CurrentDomain.AssemblyResolve += (snd, e) => Load(e.Name);
+			AppDomain.CurrentDomain.TypeResolve += (snd, e) => Load(e.Name);
+
+			// Processors are loaded in a separate ALC in `RemoteControlServer`, which requires
+			// to load the files in same ALC to avoid invalid cross-ALC references.
+			if (AssemblyLoadContext.GetLoadContext(typeof(CompilationWorkspaceProvider).Assembly) is { } alc)
+			{
+				alc.Resolving += (snd, e) => Load(e.FullName);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unable to determine the ALC for {nameof(CompilationWorkspaceProvider)}");
+			}
 		}
 
 	}

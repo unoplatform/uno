@@ -1,20 +1,25 @@
 ﻿#if HAS_UNO
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_XamlReader
+	public partial class Given_XamlReader
 	{
 		[TestMethod]
 		public void When_DoubleCollection()
@@ -173,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_FrameworkElement_Resources_Nest_ResDictAndRes()
 		{
-			Assert.ThrowsException<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
+			Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
 				<Border>
 					<Border.Resources>
 			
@@ -190,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_FrameworkElement_Resources_Nest_ManyResDicts()
 		{
-			Assert.ThrowsException<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
+			Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
 				<Border>
 					<Border.Resources>
 			
@@ -304,7 +309,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = setup.FindFirstDescendant<ScrollViewer>(x => x.Name == "SUT");
 			var expr = sut.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty);
 
-			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
+			Assert.AreEqual("(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)", expr.ParentBinding.Path.Path);
 			Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
 			ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
 			Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
@@ -334,6 +339,341 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				""";
 			var xaml = XamlHelper.LoadXaml<Style>(xamlString);
 			Assert.IsInstanceOfType(xaml, typeof(Style));
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_FullName_NodeSyntax()
+		{
+			var value = XamlHelper.LoadXaml<object>("""
+				<local:TestMarkupExtension xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" />
+			""");
+
+			Assert.IsInstanceOfType<bool>(value);
+			Assert.IsTrue(value as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ShortName_NodeSyntax()
+		{
+			var value = XamlHelper.LoadXaml<object>("""
+				<local:TestMarkup xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" />
+			""");
+
+			Assert.IsInstanceOfType<bool>(value);
+			Assert.IsTrue(value as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_FullName_AttributeSyntax_Generic()
+		{
+			var host = XamlHelper.LoadXaml<Border>("""
+				<Border Tag="{local:TestMarkupExtension}"
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					 />
+			""");
+
+			Assert.IsInstanceOfType<bool>(host.Tag);
+			Assert.IsTrue(host.Tag as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ShortName_AttributeSyntax_Generic()
+		{
+			var host = XamlHelper.LoadXaml<Border>("""
+				<Border Tag="{local:TestMarkup}"
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					 />
+			""");
+
+			Assert.IsInstanceOfType<bool>(host.Tag);
+			Assert.IsTrue(host.Tag as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_FullName_AttributeSyntax_TextBlock()
+		{
+			var host = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock Tag="{local:TestMarkupExtension}"
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					 />
+			""");
+
+			Assert.IsInstanceOfType<bool>(host.Tag);
+			Assert.IsTrue(host.Tag as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ShortName_AttributeSyntax_TextBlock()
+		{
+			var host = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock Tag="{local:TestMarkup}"
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					 />
+			""");
+
+			Assert.IsInstanceOfType<bool>(host.Tag);
+			Assert.IsTrue(host.Tag as bool? ?? false);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_TextBlock_Inlines_Explicit()
+		{
+			var host = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<TextBlock.Inlines>
+						<Run Text="{local:ReturnStringAsd}" />
+						<Run Text="{local:ReturnStringAsd}" />
+						<Span>
+							<Run Text="{local:ReturnStringAsd}" />
+						</Span>
+					</TextBlock.Inlines>
+				</TextBlock>
+			""");
+			var expectation = """
+					0	Run // Text='Asd'
+					1	Run // Text='Asd'
+					2	Span
+					3		Run // Text='Asd'
+			""";
+
+			VerifyInlineTree(expectation, host, DescribeInline);
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_TextBlock_Inlines_Implicit()
+		{
+			var host = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<Run Text="{local:ReturnStringAsd}" />
+					<Run Text="{local:ReturnStringAsd}" />
+					<Span>
+						<Run Text="{local:ReturnStringAsd}" />
+					</Span>
+				</TextBlock>
+			""");
+			// note: when using this "implicit" syntax, a one-space run is inserted between elements of same level.
+			var expectation = """
+				0	Run // Text='Asd'
+				1	Run // Text=' '
+				2	Run // Text='Asd'
+				3	Run // Text=' '
+				4	Span
+				5		Run // Text='Asd'
+			""";
+
+			VerifyInlineTree(expectation, host, DescribeInline);
+		}
+
+#if false
+		[TestMethod]
+		public void When_MarkupExtension_ServiceProvider_SelfRoot()
+		{
+			var provider = XamlHelper.LoadXaml<IXamlServiceProvider>("""
+				<local:DebugMarkupExtension xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"/>
+			""");
+			//IProvideValueTarget
+			//	.TargetObject       // crash: AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt.
+			//	.TargetProperty     // throws: XamlParseException: Markup extension could not provide value. 
+			//IRootObjectProvider
+			//	.RootObject         // {DependecyObject}
+			//IUriContext
+			//	.BaseUri            // null
+		}
+#endif
+
+		[TestMethod]
+		public void When_MarkupExtension_ServiceProvider_DirectDP()
+		{
+			var setup = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					Text="{local:DebugMarkupExtension Behavior=AssignToTag}"
+					/>
+			""");
+			Assert.IsInstanceOfType<IXamlServiceProvider>(setup.Tag);
+			//IProvideValueTarget
+			//	.TargetObject       // {Microsoft.UI.Xaml.Controls.TextBlock}
+			//	.TargetProperty     // {Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty}
+			//		.DeclaringType  // typeof(TextBlock)
+			//		.Type           // typeof(string)
+			//		.Name           // "Text"
+			//IRootObjectProvider
+			//	.RootObject         // {Microsoft.UI.Xaml.Controls.TextBlock}
+			//IUriContext
+			//	.BaseUri            // null
+			var sut = (IXamlServiceProvider)setup.Tag;
+			var pvt = sut.GetService<IProvideValueTarget>();
+			var pvtp = pvt?.TargetProperty as ProvideValueTargetProperty;
+			var rop = sut.GetService<IRootObjectProvider>();
+
+			var expectedDP = TextBlock.TextProperty;
+
+			Assert.AreEqual(setup, pvt?.TargetObject, "IProvideValueTarget.TargetObject");
+			Assert.AreEqual(expectedDP.OwnerType, pvtp.DeclaringType, "IProvideValueTarget.TargetProperty.DeclaringType");
+			Assert.AreEqual(expectedDP.Name, pvtp.Name, "IProvideValueTarget.TargetProperty.Name");
+			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
+			Assert.AreEqual(setup, rop.RootObject, "IRootObjectProvider.RootObject");
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ServiceProvider_InheritedDP()
+		{
+			var setup = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock
+					xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup"
+					Tag="{local:DebugMarkupExtension Behavior=ReturnProvider}"
+					/>
+			""");
+			Assert.IsInstanceOfType<IXamlServiceProvider>(setup.Tag);
+			//IProvideValueTarget
+			//    .TargetObject       // {Microsoft.UI.Xaml.Controls.TextBlock}
+			//    .TargetProperty     // {Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty} <-- diff
+			//        .DeclaringType  // typeof(FrameworkElement)
+			//        .Type           // typeof(object)
+			//        .Name           // "Tag"
+			//IRootObjectProvider
+			//    .RootObject         // {Microsoft.UI.Xaml.Controls.TextBlock}
+			//IUriContext
+			//    .BaseUri            // null
+			var sut = (IXamlServiceProvider)setup.Tag;
+			var pvt = sut.GetService<IProvideValueTarget>();
+			var pvtp = pvt?.TargetProperty as ProvideValueTargetProperty;
+			var rop = sut.GetService<IRootObjectProvider>();
+
+			var expectedDP = FrameworkElement.TagProperty;
+
+			Assert.AreEqual(setup, pvt?.TargetObject, "IProvideValueTarget.TargetObject");
+			Assert.AreEqual(expectedDP.OwnerType, pvtp.DeclaringType, "IProvideValueTarget.TargetProperty.DeclaringType");
+			Assert.AreEqual(expectedDP.Name, pvtp.Name, "IProvideValueTarget.TargetProperty.Name");
+			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
+			Assert.AreEqual(setup, rop.RootObject, "IRootObjectProvider.RootObject");
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ServiceProvider_Nested()
+		{
+			var setup = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<TextBlock Text="{local:DebugMarkupExtension Behavior=AssignToTag}" />
+				</Grid>
+			""");
+			var host = (TextBlock)setup.Children[0];
+			Assert.IsInstanceOfType<IXamlServiceProvider>(host.Tag);
+			//IProvideValueTarget
+			//    .TargetObject       // {Microsoft.UI.Xaml.Controls.TextBlock}
+			//    .TargetProperty     // {Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty}
+			//        .DeclaringType  // typeof(TextBlock)
+			//        .Type           // typeof(string)
+			//        .Name           // "Text"
+			//IRootObjectProvider
+			//    .RootObject         // {Microsoft.UI.Xaml.Controls.Grid}  <-- diff
+			//IUriContext
+			//    .BaseUri            // null
+
+			var sut = (IXamlServiceProvider)host.Tag;
+			var pvt = sut.GetService<IProvideValueTarget>();
+			var pvtp = pvt?.TargetProperty as ProvideValueTargetProperty;
+			var rop = sut.GetService<IRootObjectProvider>();
+
+			var expectedDP = TextBlock.TextProperty;
+
+			Assert.AreEqual(host, pvt?.TargetObject, "IProvideValueTarget.TargetObject");
+			Assert.AreEqual(expectedDP.OwnerType, pvtp.DeclaringType, "IProvideValueTarget.TargetProperty.DeclaringType");
+			Assert.AreEqual(expectedDP.Name, pvtp.Name, "IProvideValueTarget.TargetProperty.Name");
+			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
+			Assert.AreEqual(setup, rop.RootObject, "IRootObjectProvider.RootObject");
+		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ServiceProvider_InlineLiteral()
+		{
+			var rootGrid = XamlHelper.LoadXaml<Grid>("""
+				<Grid xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<StackPanel>
+						<local:DebugMarkupExtension Behavior="ReturnTextBlockWithProviderInTag" />
+					</StackPanel>
+				</Grid>
+			""");
+			var stackPanel = (StackPanel)rootGrid.Children[0];
+			var textBlock = (TextBlock)stackPanel.Children[0];
+
+			Assert.IsInstanceOfType<IXamlServiceProvider>(textBlock.Tag);
+			//IProvideValueTarget
+			//    .TargetObject       // {Microsoft.UI.Xaml.Controls.StackPanel}
+			//    .TargetProperty     // {Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty}
+			//        .DeclaringType  // typeof(Panel)
+			//        .Type           // typeof(UIElementCollection)
+			//        .Name           // "Children"
+			//IRootObjectProvider
+			//    .RootObject         // {Microsoft.UI.Xaml.Controls.Grid}
+			//IUriContext
+			//    .BaseUri            // null
+
+			var sut = (IXamlServiceProvider)textBlock.Tag;
+			var pvt = sut.GetService<IProvideValueTarget>();
+			var pvtp = pvt?.TargetProperty as ProvideValueTargetProperty;
+			var rop = sut.GetService<IRootObjectProvider>();
+
+			var expectedDP = new // note: there is no such property in WinUI neither
+			{
+				OwnerType = typeof(Panel),
+				Name = nameof(Panel.Children),
+				Type = typeof(UIElementCollection),
+			};
+
+			Assert.AreEqual(stackPanel, pvt?.TargetObject, "IProvideValueTarget.TargetObject");
+			Assert.AreEqual(expectedDP.OwnerType, pvtp.DeclaringType, "IProvideValueTarget.TargetProperty.DeclaringType");
+			Assert.AreEqual(expectedDP.Name, pvtp.Name, "IProvideValueTarget.TargetProperty.Name");
+			Assert.AreEqual(expectedDP.Type, pvtp.Type, "IProvideValueTarget.TargetProperty.Type");
+			Assert.AreEqual(rootGrid, rop.RootObject, "IRootObjectProvider.RootObject");
+		}
+	}
+
+	public partial class Given_XamlReader
+	{
+		private static void VerifyInlineTree(string expectedTree, TextBlock tb, Func<Inline, IEnumerable<string>> describe)
+		{
+			var expectations = expectedTree.Split('\n', StringSplitOptions.TrimEntries);
+			var descendants = FlattenInlines(tb.Inlines).ToArray();
+
+			Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
+			for (int i = 0; i < expectations.Length; i++)
+			{
+				var line = expectations[i].TrimStart("0123456789. ".ToArray());
+				var parts = line.Split(" // ", count: 2);
+				var depth = parts[0].TakeWhile(x => x == '\t').Count() - 1; // first tab is used as separator
+				parts[0] = parts[0].TrimStart('\t');
+
+				var node = descendants[i];
+				var name = node.Inline.GetType().Name;
+				var description = string.Join(", ", describe(node.Inline));
+
+				Assert.AreEqual(depth, node.Depth, $"Incorrect depth on line {i}");
+				Assert.AreEqual(parts[0], name, $"Incorrect node on line {i}");
+				Assert.AreEqual(parts.ElementAtOrDefault(1) ?? "", description, $"Invalid description on line {i}");
+			}
+		}
+
+		private static IEnumerable<(int Depth, Inline Inline)> FlattenInlines(InlineCollection inlines, int depth = 0)
+		{
+			// depth first traverse
+			foreach (var inline in inlines)
+			{
+				yield return (depth, inline);
+
+				if (inline is Span span)
+				{
+					foreach (var nested in FlattenInlines(span.Inlines, depth + 1))
+					{
+						yield return nested;
+					}
+				}
+			}
+		}
+
+		private static IEnumerable<string> DescribeInline(Inline inline)
+		{
+			if (inline is Run run) yield return $"Text='{run.Text}'";
 		}
 	}
 
@@ -367,6 +707,94 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 	public class Given_XamlReader_CustomResDict2 : ResourceDictionary
 	{
+	}
+
+	public class TestMarkupExtension : MarkupExtension
+	{
+		public object ServiceProvider { get; private set; }
+		public bool ProvideValueCalled { get; private set; }
+
+		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+		{
+			ServiceProvider = serviceProvider;
+
+			return ProvideValue();
+		}
+		protected override object ProvideValue()
+		{
+			return ProvideValueCalled = true;
+		}
+	}
+
+	public class ReturnStringAsd : MarkupExtension
+	{
+		protected override object ProvideValue() => "Asd";
+	}
+
+	public static class DebugMarkupAttachable
+	{
+		#region DependencyProperty: Value
+
+		public static DependencyProperty ValueProperty { get; } = DependencyProperty.RegisterAttached(
+			"Value",
+			typeof(object),
+			typeof(DebugMarkupAttachable),
+			new PropertyMetadata(default(object)));
+
+		public static object GetValue(DependencyObject obj) => (object)obj.GetValue(ValueProperty);
+		public static void SetValue(DependencyObject obj, object value) => obj.SetValue(ValueProperty, value);
+
+		#endregion
+		#region DependencyProperty: Value2
+
+		public static DependencyProperty Value2Property { get; } = DependencyProperty.RegisterAttached(
+			"Value2",
+			typeof(int),
+			typeof(DebugMarkupAttachable),
+			new PropertyMetadata(default(int)));
+
+		public static int GetValue2(DependencyObject obj) => (int)obj.GetValue(Value2Property);
+		public static void SetValue2(DependencyObject obj, int value) => obj.SetValue(Value2Property, value);
+
+		#endregion
+	}
+
+	public class DebugMarkupExtension : MarkupExtension
+	{
+		public enum DebugBehavior { ReturnProvider, ReturnTextBlockWithProviderInTag, AssignToTag, AssignToAttachableValue }
+
+		public DebugBehavior Behavior { get; set; } = DebugBehavior.ReturnProvider;
+		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+		{
+			if (Behavior == DebugBehavior.ReturnProvider)
+			{
+				return serviceProvider;
+			}
+			else if (Behavior == DebugBehavior.ReturnTextBlockWithProviderInTag)
+			{
+				return new TextBlock { Tag = serviceProvider };
+			}
+			else
+			{
+				if (serviceProvider.GetService(typeof(IProvideValueTarget)) is IProvideValueTarget pvt &&
+					pvt.TargetObject is FrameworkElement fe &&
+					pvt.TargetProperty is ProvideValueTargetProperty pvtp)
+				{
+					if (Behavior == DebugBehavior.AssignToTag)
+					{
+						fe.Tag = serviceProvider;
+					}
+					else
+					{
+						DebugMarkupAttachable.SetValue(fe, serviceProvider);
+					}
+
+					return pvtp.Type.IsValueType ? Activator.CreateInstance(pvtp.Type) : null;
+				}
+
+				return DependencyProperty.UnsetValue;
+			}
+		}
 	}
 }
 #endif

@@ -28,6 +28,7 @@
 	"devs",
 	"dbus",
 	"Dismissable",
+	"dmgbuild",
 	"Docfx",
 	"ellipsize",
 	"Entra",
@@ -66,6 +67,7 @@
 	"MVVM",
 	"MSIX",
 	"NETSDK",
+	"NBGV",
 	"netstandard",
 	"neumorphic",
 	"oidc",
@@ -114,7 +116,8 @@
 	"Haptics",
 	"autoplay",
 	"Xcodes",
-	"Raygun"
+	"Raygun",
+	"waitlist"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -203,7 +206,11 @@
 	"sasakrsmanovic",
 	"maccatalyst",
 	"settingscard",
-	"storecontext"
+	"storecontext",
+	"tvos",
+	"appleuikit",
+	"uikit",
+	"settingscard"
   ],
   "patterns": [
 	{

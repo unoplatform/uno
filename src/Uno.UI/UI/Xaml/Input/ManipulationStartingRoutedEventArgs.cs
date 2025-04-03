@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			_args = args;
 
-			// We should convert back the enum from the args.Settings, but its the same value of the container.ManipulationMode
+			// We should convert back the enum from the args.Settings, but it's the same value of the container.ManipulationMode
 			// so we use the easiest path!
 			_mode = container.ManipulationMode;
 

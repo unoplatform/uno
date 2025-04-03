@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using DirectUI;
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;

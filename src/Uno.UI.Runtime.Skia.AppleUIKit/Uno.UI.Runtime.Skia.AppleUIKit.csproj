@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-tvos</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+	
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<authors>Uno Platform</authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the platform support for Skia Apple iOS, Mac Catalyst, and tvOS in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.AppleUIKit</PackageId>
+
+		<RootNamespace>Uno.WinUI.Runtime.Skia.AppleUIKit</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<DefineConstants>$(DefineConstants);UIKIT_SKIA</DefineConstants>
+		
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.Apple.cs" Link="Controls\BringIntoViewMode.Apple.cs" />
+		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.UIKit.cs" Link="Controls\IRotationAwareViewController.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(IsTvOS)">
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\LocalWKUIDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.ErrorMap.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.ErrorMap.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\WebViewNavigationDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.Apple.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp.Views" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->
+
+</Project>

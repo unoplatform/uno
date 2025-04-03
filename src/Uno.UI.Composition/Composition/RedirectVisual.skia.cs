@@ -10,7 +10,14 @@ namespace Microsoft.UI.Composition
 		internal override void Paint(in PaintingSession session)
 		{
 			base.Paint(in session);
-			Source?.Paint(session);
+
+			if (Source is not null && session.Canvas is { } canvas)
+			{
+				Source.RenderRootVisual(canvas, null, null);
+			}
 		}
+
+		internal override bool CanPaint() => Source?.CanPaint() ?? false;
+		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 	}
 }

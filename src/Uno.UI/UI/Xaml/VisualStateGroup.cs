@@ -13,10 +13,8 @@ using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -31,6 +29,7 @@ namespace Microsoft.UI.Xaml
 		private readonly SerialDisposable _parentLoadedDisposable = new();
 
 		private (VisualState state, VisualTransition transition) _current;
+		private bool _pendingOnOwnerElementChanged;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
 
@@ -159,11 +158,27 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void OnOwnerElementChanged() =>
-			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
+		private void OnOwnerElementChanged()
+		{
+			if (this.GetParent() is IFrameworkElement { IsParsing: true })
+			{
+				_pendingOnOwnerElementChanged = true;
+				return;
+			}
 
-		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
+		}
+
+		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
+		{
+			if (_pendingOnOwnerElementChanged)
+			{
+				_pendingOnOwnerElementChanged = false;
+				OnOwnerElementChanged();
+			}
+
 			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
+		}
 
 		private void OnOwnerElementUnloaded(object sender, RoutedEventArgs args) =>
 			ExecuteOnTriggers(t => t.OnOwnerElementUnloaded());
@@ -500,6 +515,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
+			if (this.GetParent() is IFrameworkElement { IsParsing: true })
+			{
+				return;
+			}
+
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 			if (newState == oldState)

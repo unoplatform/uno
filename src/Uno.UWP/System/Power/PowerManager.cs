@@ -24,14 +24,14 @@ public static partial class PowerManager
 	private static EnergySaverStatus? _lastEnergySaverStatus;
 #endif
 
-	private readonly static StartStopEventWrapper<EventHandler<object>> _powerSupplyStatusChanged;
-	private readonly static StartStopEventWrapper<EventHandler<object>> _remainingChargePercentChanged;
-	private readonly static StartStopEventWrapper<EventHandler<object>> _batteryStatusChanged;
+	private readonly static StartStopEventWrapper<object> _powerSupplyStatusChanged;
+	private readonly static StartStopEventWrapper<object> _remainingChargePercentChanged;
+	private readonly static StartStopEventWrapper<object> _batteryStatusChanged;
 #if __WASM__
-	private readonly static StartStopEventWrapper<EventHandler<object>> _remainingDischargeTimeChanged;
+	private readonly static StartStopEventWrapper<object> _remainingDischargeTimeChanged;
 #endif
 #if !__WASM__
-	private readonly static StartStopEventWrapper<EventHandler<object>> _energySaverStatusChanged;
+	private readonly static StartStopEventWrapper<object> _energySaverStatusChanged;
 #endif
 
 	static PowerManager()

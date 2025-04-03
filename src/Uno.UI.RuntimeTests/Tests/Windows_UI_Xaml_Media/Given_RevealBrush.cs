@@ -21,9 +21,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #if !WINAPPSDK // RevealBrush is not implemented in WinUI yet
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_RevealBrush_Assigned()
 		{
 			// Basic smoke test - RevealBrush is currently unimplemented, but it shouldn't break the layout

@@ -18,10 +18,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #elif __ANDROID__
 using Uno.UI;
 #endif
@@ -72,6 +70,31 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
+#if __IOS__ || __ANDROID__
+#if __IOS__
+			else if (instance is UIView nativeView)
+#elif __ANDROID__
+			else if (instance is global::Android.Views.ViewGroup nativeView)
+#endif
+			{
+				// Enumerate through native instances, such as NativeFramePresenter
+
+				var idx = 0;
+				foreach (var nativeChild in nativeView.EnumerateChildren())
+				{
+					var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+					var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
+					var inner = EnumerateHotReloadInstances(nativeChild, predicate, $"{instanceKey}_[{idx}]");
+
+					idx++;
+
+					await foreach (var validElement in inner)
+					{
+						yield return validElement;
+					}
+				}
+			}
+#endif
 		}
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
@@ -102,15 +125,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				// In the case of Page, swapping the actual page is not supported, so we
 				// need to swap the content of the page instead. This can happen if the Frame
 				// is using a native presenter which does not use the `Frame.Content` property.
-
-				// Clear any local context, so that the new page can inherit the value coming
-				// from the parent Frame. It may happen if the old page set it explicitly.
-
-#if !WINUI
-				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-#else
-				oldPage.ClearValue(Page.DataContextProperty);
-#endif
 
 				oldPage.Content = newPage;
 #if !WINUI

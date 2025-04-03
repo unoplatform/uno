@@ -18,6 +18,6 @@ public class Given_BindableNullableValueType
 		tb.Tag = "10";
 		Assert.AreEqual(10, x.MyProperty);
 		tb.Tag = null;
-		Assert.AreEqual(null, x.MyProperty);
+		Assert.IsNull(x.MyProperty);
 	}
 }

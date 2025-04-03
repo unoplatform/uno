@@ -32,14 +32,21 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 > [!IMPORTANT]
 > Apple targets are automatically disabled under Linux.
 
-Next, open the project using Visual Studio Code:
+Next, open the project using Visual Studio Code.
 
-* In the terminal type the following:
+* Let's assume your project is named `MyApp` and is located inside a `Projects` folder:
+
+  * **Using the Terminal**
+    Ensure you are at the **parent folder** (`Projects`) level, then run:
 
     ```bash
     code ./MyApp
     ```
 
+  * **Using Visual Studio Code**
+    1. Open **Visual Studio Code**.
+    2. Go to **File > Open Folder**.
+    3. Navigate to the `Projects` folder and select the `MyApp` folder.
 * Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
 * Once the solution has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.csproj` to load the project instead.
 
@@ -60,23 +67,33 @@ Uno Platform provides integrated support for debugging your app on Windows, macO
 
 ### [**WebAssembly**](#tab/Wasm)
 
+> [!NOTE]
+> VS Code's built-in JavaScript debugger currently **[only supports](https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md)**:
+>
+> * **Google Chrome**
+> * **Microsoft Edge (Chromium-based)**
+>
+> To debug WebAssembly with VS Code, **one of these browsers must be installed**.
+>
+> Safari, Firefox, and other browsers are **not directly supported** via VS Code at the moment.
+
 In VS Code :
 
 1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
-1. Set the debugger launch to `Debug (Chrome, WebAssembly)`
+1. Set the debugger launch to `Uno Platform WebAssembly Debug (Chrome)` or `Uno Platform WebAssembly Debug (Edge)`
 
 ![VS Code UI](Assets/quick-start/vs-code-chrome-debug.png)
 
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next, click on the target framework to select `net8.0-browserwasm | Debug`
+1. Next, click on the target framework to select `net9.0-browserwasm | Debug`
 
 ![status bar](Assets/quick-start/vs-code-browserwasm-project.png)
 
 Finally, press `F5` to start the debugging session.
 
-### [**Desktop / Skia**](#tab/skia)
+### [**Desktop**](#tab/skia)
 
 In VS Code :
 
@@ -88,7 +105,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-desktop | Debug`
+1. Next click on the target framework to select `net9.0-desktop | Debug`
 
 ![status bar](Assets/quick-start/vs-code-desktop-project.png)
 
@@ -120,21 +137,7 @@ This will allow the application to build on the remote machine and then show on 
 
 #### Considerations for Hot Reload
 
-Note that C# Hot Reload is not available when running with the debugger. In order to use C# Hot Reload, run the app using the following:
-
-* On Windows, type the following:
-
-    ```bash
-    $env:DOTNET_MODIFIABLE_ASSEMBLIES="debug"
-    dotnet run -f net8.0-desktop
-    ```
-
-* On Linux or macOS:
-
-    ```bash
-    export DOTNET_MODIFIABLE_ASSEMBLIES=debug
-    dotnet run -f net8.0-desktop
-    ```
+Note that C# Hot Reload is not available when running with the debugger. See [this section](xref:Uno.Platform.Studio.HotReload.Overview) for more information on Hot Reload.
 
 ### [**Android**](#tab/androiddebug)
 
@@ -148,7 +151,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-android | Debug`
+1. Next click on the target framework to select `net9.0-android | Debug`
 1. Then select the device to debug with. You will need to connect an Android device or [create an Android emulator](https://developer.android.com/studio/run/managing-avds).
 
 ![status bar](Assets/quick-start/vs-code-android-project.png)
@@ -170,7 +173,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-ios | Debug`
+1. Next click on the target framework to select `net9.0-ios | Debug`
 1. Then select the device to debug with. You will need to connect an iOS device or [use an installed iOS simulator](https://developer.apple.com/documentation/xcode/installing-additional-simulator-runtimes).
 
 ![status bar](Assets/quick-start/vs-code-ios-project.png)
@@ -195,7 +198,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-maccatalyst | Debug`
+1. Next click on the target framework to select `net9.0-maccatalyst | Debug`
 1. The `This Mac` device will be pre-selected. On Apple Silicon (arm64) Macs you will have the option to use `This Mac using Rosetta` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-maccatalyst-project.png)
@@ -217,7 +220,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net8.0-windows10.0.xxxxx | Debug`
+1. Next click on the target framework to select `net9.0-windows10.0.xxxxx | Debug`
 1. The `This Computer` device will be pre-selected. On ARM64-based computers, you will have the option to use `This Computer using emulation` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-windows-project.png)

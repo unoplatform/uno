@@ -8,7 +8,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Application.dispatchVisibilityChange = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Application.DispatchVisibilityChange;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `Application: Unable to find dotnet exports`;
 				}
 			}
 

@@ -126,6 +126,7 @@
 				AND '$(BuildingInsideVisualStudio)' == 'true'
 				AND '$(OutputType)'!='Library'
 				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
+				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.13.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $(TargetFrameworks.Contains('-desktop'))
@@ -136,8 +137,8 @@
 				)
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
 
-		<Warning Code="UNOB0014"
-					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work, when mobile targets are also used. (See https://aka.platform.uno/UNOB0014)" />
+		<Warning Code="UNOB0015"
+					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work, when mobile targets are also used. (See https://aka.platform.uno/UNOB0015)" />
 	</Target>
 
 	<Target Name="_UnoVSWarnWindowsIsFirst"

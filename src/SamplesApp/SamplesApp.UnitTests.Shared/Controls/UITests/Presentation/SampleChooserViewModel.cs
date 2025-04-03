@@ -34,6 +34,9 @@ using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
 using UITests.Shared.Helpers;
+using Uno.UI.Samples.UITests.Helpers;
+using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace SampleControl.Presentation
 {
@@ -437,6 +440,11 @@ namespace SampleControl.Presentation
 			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 		}
 
+		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
+		{
+			await SetSelectedSample(ct, content.ControlType.FullName);
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
@@ -490,7 +498,7 @@ namespace SampleControl.Presentation
 
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
-					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
+					await SkiaSamplesAppHelper.SaveFile(testResultsFilePath, unitTests.NUnitTestResultsDocument, ct);
 				}
 			}
 			finally
@@ -625,17 +633,20 @@ namespace SampleControl.Presentation
 
 				// Order the results by showing the "start with" results
 				// followed by results that "contain" the search term
-				return starts.Concat(contains).Distinct().ToList();
+				return starts.Concat(contains).OrderBy(s => s.ControlName).Distinct().ToList();
 			});
 		}
 
-		public void TryOpenSample()
+		public bool TryOpenSingleSearchResult()
 		{
 			if (FilteredSamples is { } samples
 				&& samples.Count is 1)
 			{
 				SelectedSearchSample = samples[0];
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -800,7 +811,8 @@ namespace SampleControl.Presentation
 				SampleContents = SelectedCategory
 					.SamplesContent
 					.Safe()
-					.OrderBy(s => s.IsFavorite)
+					.OrderByDescending(s => s.IsFavorite)
+					.ThenBy(s => s.ControlName)
 					.ToList();
 			}
 		}
@@ -847,6 +859,7 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
+			OnSelectedCategoryChanged();
 			UpdateFavorites();
 		}
 
@@ -1244,6 +1257,25 @@ namespace SampleControl.Presentation
 				_log.Error(ex.Message);
 			}
 #endif
+		}
+
+		private static string GetRepositoryPath([CallerFilePath] string filePath = null)
+		{
+			// We could be building WSL app on Windows
+			// In which case Path.DirectorySeparatorChar is '/' but filePath is using '\'
+			var separator = Path.DirectorySeparatorChar;
+			if (filePath.IndexOf(separator) == -1)
+			{
+				separator = separator == '/' ? '\\' : '/';
+			}
+			var srcSamplesApp = $"{separator}src{separator}SamplesApp";
+			var repositoryPath = filePath;
+			if (repositoryPath.IndexOf(srcSamplesApp) is int index && index > 0)
+			{
+				repositoryPath = repositoryPath.Substring(0, index);
+			}
+
+			return repositoryPath;
 		}
 
 		private async Task RunOnUIThreadAsync(Action action)

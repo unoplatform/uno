@@ -1,10 +1,11 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
 using Java.Interop;
-using Uno.UI.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
@@ -20,7 +21,12 @@ namespace Microsoft.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
-		private readonly Application _app;
+		private Application _app;
+
+#if ANDROID_SKIA
+		private AppBuilder _appBuilder;
+#endif
+
 		private Intent _lastHandledIntent;
 
 		private bool _isRunning;
@@ -43,7 +49,12 @@ namespace Microsoft.UI.Xaml
 			// Delay create the Microsoft.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
+#if ANDROID_SKIA
+			_appBuilder = appBuilder;
+#else
 			_app = appBuilder();
+#endif
+
 		}
 
 		public override void OnCreate()
@@ -60,8 +71,19 @@ namespace Microsoft.UI.Xaml
 					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
 				}
 
-				_app.InitializationCompleted();
+#if ANDROID_SKIA
+				// We need to call TryHandleIntent first so the application arguments are set correctly.
+				// Then, when the Application is created, it will use those arguments.
+				_ = TryHandleIntent(activity.Intent);
+				if (!_isRunning)
+				{
+					// We create the host late enough for the ContextHelper.Context to have been set correctly.
+					new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = _appBuilder()).Run();
+				}
 
+				_app.InitializationCompleted();
+#else
+				_app.InitializationCompleted();
 				var handled = TryHandleIntent(activity.Intent);
 
 				// default to normal launch
@@ -69,6 +91,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
+#endif
 
 				_isRunning = true;
 			}
@@ -92,7 +115,11 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
+#if ANDROID_SKIA
+					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
+#else
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+#endif
 					handled = true;
 				}
 				else if (intent.Data != null)

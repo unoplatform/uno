@@ -11,14 +11,16 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
+	private const int SubWindowXI2Mask = (1 << (int)XiEventType.XI_ButtonPress) |
+		(1 << (int)XiEventType.XI_ButtonRelease) |
+		(1 << (int)XiEventType.XI_Motion);
+
 	private static int _threadCount;
 
 	private readonly Action _closingCallback;
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
 	private readonly Action _configureCallback;
-
-	private int _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -87,7 +89,7 @@ internal partial class X11XamlRootHost
 		{
 			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
 
-			if (_closed.Task.IsCompleted)
+			if (Closed.IsCompleted)
 			{
 				SynchronizedShutDown(x11Window);
 				return;
@@ -166,10 +168,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						default:
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on the root X11 window.");
-							}
+							PrintUnexpectedEventError(@event);
 							break;
 					}
 				}
@@ -197,7 +196,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							Interlocked.Exchange(ref _needsConfigureCallback, 1);
+							RaiseConfigureCallback();
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
@@ -209,7 +208,7 @@ internal partial class X11XamlRootHost
 							QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 							break;
 						case XEventName.Expose:
-							QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+							((IXamlRootHost)this).InvalidateRender();
 							break;
 						case XEventName.MotionNotify:
 							_pointerSource?.ProcessMotionNotifyEvent(@event.MotionEvent);
@@ -226,26 +225,30 @@ internal partial class X11XamlRootHost
 						case XEventName.EnterNotify:
 							_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
 							break;
-						case XEventName.GenericEvent:
-							var eventWithData = @event;
-							var cookiePtr = &eventWithData.GenericEventCookie;
-							var getEventDataSucceeded = XLib.XGetEventData(TopX11Window.Display, cookiePtr);
+						case XEventName.GenericEvent when @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode:
+							{
+								var display = TopX11Window.Display;
+								using var lockDisposable = X11Helper.XLock(display);
+								var eventWithData = @event;
+								var cookiePtr = &eventWithData.GenericEventCookie;
+								var getEventDataSucceeded = XLib.XGetEventData(display, cookiePtr);
 
-							try
-							{
-								if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+								try
 								{
-									pointerSource.HandleXI2Event(eventWithData);
+									if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+									{
+										pointerSource.HandleXI2Event(display, eventWithData);
+									}
 								}
-							}
-							finally
-							{
-								if (getEventDataSucceeded)
+								finally
 								{
-									XLib.XFreeEventData(TopX11Window.Display, cookiePtr);
+									if (getEventDataSucceeded)
+									{
+										XLib.XFreeEventData(display, cookiePtr);
+									}
 								}
+								break;
 							}
-							break;
 						case XEventName.KeyPress:
 							_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, true);
 							break;
@@ -274,23 +277,33 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						default:
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on a non-uno window {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
-							}
+							PrintUnexpectedEventError(@event);
 							break;
 					}
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
-					}
+					PrintUnexpectedEventError(@event);
 				}
 			}
 		}
-		// ReSharper disable once FunctionNeverReturns
+
+		void PrintUnexpectedEventError(XEvent @event)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				var windowString = "foreign window";
+				if (@event.AnyEvent.window == TopX11Window.Window)
+				{
+					windowString = "top-layer Uno window";
+				}
+				else if (@event.AnyEvent.window == RootX11Window.Window)
+				{
+					windowString = "root uno Window";
+				}
+				this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on {windowString} {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
+			}
+		}
 	}
 
 	public static void QueueAction(IXamlRootHost host, Action action)
@@ -323,5 +336,43 @@ internal partial class X11XamlRootHost
 		}
 
 		return modifiers;
+	}
+
+	public void RegisterInputFromNativeSubwindow(IntPtr window)
+	{
+		var display = TopX11Window.Display;
+		using var lockDisposable = X11Helper.XLock(display);
+		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;
+
+		if (usingXi2)
+		{
+
+			SetXIEventMask(display, window, SubWindowXI2Mask | XI2_2Mask);
+		}
+		else
+		{
+			// WARNING: not tested
+			// https://tronche.com/gui/x/xlib/event-handling/XSelectInput.html
+			// The X11 core protocol dictates that "Only one client at a time can select a ButtonPress event, which is associated with the event mask ButtonPressMask."
+			// So, we only subscribe to motion events and miss out on button presses/releases. We expect almost
+			// everyone to be using XI2 so this shouldn't matter very much
+			XLib.XSelectInput(display, window, (IntPtr)EventMask.PointerMotionMask);
+		}
+	}
+
+	public void UnregisterInputFromNativeSubwindow(IntPtr window)
+	{
+		var display = TopX11Window.Display;
+		using var lockDisposable = X11Helper.XLock(display);
+		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;
+
+		if (usingXi2)
+		{
+			SetXIEventMask(display, window, 0);
+		}
+		else
+		{
+			XLib.XSelectInput(display, window, 0);
+		}
 	}
 }

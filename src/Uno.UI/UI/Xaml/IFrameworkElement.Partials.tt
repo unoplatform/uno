@@ -11,10 +11,10 @@
 		@"../Uno.UI/UI/Xaml/FrameworkElement.EffectiveViewport.cs"
 	};
 	
-	void GenerateDefaultPartialClasses(params string[] types)
-		=> GeneratePartialClasses(DefaultPartials, types);
+	void GenerateDefaultPartialClasses(string ifCondition, params string[] types)
+		=> GeneratePartialClasses(ifCondition, DefaultPartials, types);
 
-	void GeneratePartialClasses(IEnumerable<string> partialFiles, params string[] types)
+	void GeneratePartialClasses(string ifCondition, IEnumerable<string> partialFiles, params string[] types)
 	{
 		foreach(var include in partialFiles.Select(path => Host.ResolvePath(path)))
 		foreach(var type in types)
@@ -26,6 +26,7 @@
 			var partialContent = System.IO.File.ReadAllText(include);
 			partialContent = "#define TEMPLATED\r\n" + partialContent;
 			partialContent = "#define IS_NATIVE_ELEMENT\r\n" + partialContent;
+			partialContent = "#if " + ifCondition + "\r\n" + partialContent + "\r\n#endif\r\n";
 			partialContent = Regex.Replace(partialContent, @"^using _This\s*=.*$", $"using _This = {type};", RegexOptions.Multiline);
 			partialContent = Regex.Replace(partialContent, @"^namespace [a-zA-Z0-9_\.\s]+$", $"namespace {spaceName}", RegexOptions.Multiline);
 			partialContent = Regex.Replace(partialContent, @"partial class [a-zA-Z0-9_]+", $"partial class {className}", RegexOptions.Multiline);

@@ -8,7 +8,12 @@ namespace Windows.Storage.Streams
 #endif
 	public partial interface IContentTypeProvider
 	{
-		// Skipping already declared property ContentType
+#if false || false || __TVOS__ || false || false || false || false
+		string ContentType
+		{
+			get;
+		}
+#endif
 		// Forced skipping of method Windows.Storage.Streams.IContentTypeProvider.ContentType.get
 	}
 }

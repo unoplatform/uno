@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using SamplesApp;
 
 namespace Uno.UI.Samples.UITests.Image
 {
@@ -51,7 +52,11 @@ namespace Uno.UI.Samples.UITests.Image
 
 		private void Show(string text)
 		{
-			var unused = new Windows.UI.Popups.MessageDialog(text).ShowAsync();
+			var dialog = new Windows.UI.Popups.MessageDialog(text);
+#if HAS_UNO
+			dialog.AssociatedWindow = App.MainWindow;
+#endif
+			_ = dialog.ShowAsync();
 		}
 	}
 }

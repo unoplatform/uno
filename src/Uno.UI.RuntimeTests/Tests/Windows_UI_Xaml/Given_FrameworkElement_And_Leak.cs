@@ -30,9 +30,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 #endif
 
-#if __MACOS__
-using AppKit;
-#elif __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -40,9 +38,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
@@ -61,26 +56,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
-#if __IOS__
+#if __APPLE_UIKIT__
 			LeakTestStyles.Uwp // Fluent styles disabled - #18105
 #else
 			LeakTestStyles.All
 #endif
 			)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15,
-#if __IOS__
+#if __APPLE_UIKIT__
 			LeakTestStyles.Uwp // Fluent styles disabled - #18105
 #else
 			LeakTestStyles.All
 #endif
 			)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
 		//[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Slider), 15)]
 #endif
 		[DataRow(typeof(SymbolIcon), 15)]
@@ -96,16 +91,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ContentDialog), 15)]
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(DatePicker), 15)]
 		[DataRow(typeof(TimePicker), 15)]
 #endif
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
 #endif
 		[DataRow(typeof(Page), 15)]
 		[DataRow(typeof(Image), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(ToggleSwitch), 15)]
 #endif
 #if __SKIA__ && HAS_UNO_WINUI // Control is currently supported on Skia targets only.
@@ -123,88 +118,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15)]
 #endif
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]
 #endif
 #endif
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView), 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
 #endif
 		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
-#if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
+#if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
 #endif
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
-#if !__WASM__ && !__IOS__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+#if !__WASM__ && !__APPLE_UIKIT__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)]
 #endif
-		[DataRow(typeof(TextBox_Focus_Leak), 15,
-#if __IOS__
-			LeakTestStyles.None // Disabled - #10344
-#else
-			LeakTestStyles.All
-#endif
-			)]
+		[DataRow(typeof(TextBox_Focus_Leak), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
-#if __IOS__
-			LeakTestStyles.None // Disabled - #10344
-#elif __ANDROID__
+#if __ANDROID__
 			LeakTestStyles.Uwp // Fluent styles disabled - #14340
 #else
 			LeakTestStyles.All
 #endif
-			)]
+			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(MediaPlayerElement), 15)]
-		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
+			if (ignoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform))
+			{
+				Assert.Inconclusive("This test is ignored on this platform.");
+			}
+
 			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
 				await When_Add_Remove_Inner(controlTypeRaw, count);
@@ -322,7 +314,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
 			if (activeControls != 0)
 			{
@@ -350,7 +342,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			//var retained = _holders.Select(x => x.Key).ToArray();
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			// On iOS, the collection of objects does not seem to be reliable enough
 			// to always go to zero during runtime tests. If the count of active objects
 			// is arbitrarily below the half of the number of top-level objects.
@@ -360,7 +352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)

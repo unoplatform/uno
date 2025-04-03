@@ -9,12 +9,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -1718,7 +1721,7 @@ public partial class NavigationView : ContentControl
 										var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
 										footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
 									}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
 #else
 									return footerItemsRepeater.ActualHeight + footerItemsRepeaterTopBottomMargin;
@@ -1736,7 +1739,7 @@ public partial class NavigationView : ContentControl
 											var paneFooterMargin = paneFooter.Margin;
 											paneFooterTopBottomMargin = paneFooterMargin.Top + paneFooterMargin.Bottom;
 										}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 										return paneFooter.DesiredSize.Height + paneFooterTopBottomMargin;
 #else
 										return paneFooter.ActualHeight + paneFooterTopBottomMargin;
@@ -1760,7 +1763,7 @@ public partial class NavigationView : ContentControl
 										var menuItemsMargin = menuItems.Margin;
 										menuItemsTopBottomMargin = menuItemsMargin.Top + menuItemsMargin.Bottom;
 									}
-#if __IOS__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
+#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return menuItems.DesiredSize.Height + menuItemsTopBottomMargin;
 #else
 									return menuItems.ActualHeight + menuItemsTopBottomMargin;
@@ -4353,6 +4356,19 @@ public partial class NavigationView : ContentControl
 			{
 				backButton.UpdateLayout();
 			}
+
+#if __ANDROID__
+			// workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
+			if (FeatureConfiguration.NavigationView.EnableUno19516Workaround &&
+				m_appliedTemplate && IsLoaded)
+			{
+				foreach (var ir in this.EnumerateDescendants().OfType<ItemsRepeater>())
+				{
+					ir.InvalidateMeasure();
+				}
+			}
+#endif
+
 			UpdatePaneLayout();
 		}
 

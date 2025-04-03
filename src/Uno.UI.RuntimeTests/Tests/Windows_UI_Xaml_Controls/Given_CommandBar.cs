@@ -13,7 +13,7 @@ using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Uno.UI.Controls;
 using Uno.UI.Helpers.WinUI;
 using UIKit;
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
 #endif
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
@@ -116,26 +116,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var moreButton = (Button)SUT.FindName("MoreButton");
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(48, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 64);
+			Assert.AreEqual(64, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
+			Assert.AreEqual(VerticalAlignment.Stretch, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = false;
 			await Task.Delay(1000); // wait for animations
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(48, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RequiresFullWindow]
 
@@ -180,7 +180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	public static class NavigationBarTestHelper
 	{
 		public static UINavigationBar GetNativeNavBar(this CommandBar navBar) => navBar

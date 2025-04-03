@@ -1,19 +1,18 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-namespace Windows.Media.Playback
+#if __ANDROID__ || __IOS__ || __TVOS__
+namespace Windows.Media.Playback;
+
+public enum MediaPlayerState
 {
-	public enum MediaPlayerState
-	{
-		Closed,
+	Closed,
 
-		Opening,
+	Opening,
 
-		Buffering,
+	Buffering,
 
-		Playing,
+	Playing,
 
-		Paused,
+	Paused,
 
-		Stopped
-	}
+	Stopped
 }
 #endif

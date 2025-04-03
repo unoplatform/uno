@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using Uno.UI.Controls;
 #endif
@@ -33,7 +33,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle
 		public void OnButtonClicked(object sender, object args)
 		{
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			UIView parent = this;
 			while (parent.HasParent())
 			{

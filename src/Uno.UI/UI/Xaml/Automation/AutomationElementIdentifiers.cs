@@ -99,7 +99,7 @@ public partial class AutomationElementIdentifiers
 	public static AutomationProperty LocalizedControlTypeProperty { get; } = new();
 
 	/// <summary>
-	/// Identifies the class name automation property. The class name property value is returned by the GetClassName method.
+	/// Identifies the element name automation property. The current name is returned by the GetName method.
 	/// </summary>
 	public static AutomationProperty NameProperty { get; } = new();
 

@@ -98,6 +98,7 @@ public partial class HotRestartGenerator : ISourceGenerator
 
 		private string? GetApplicationDefinitionType()
 		{
+			Debugger.Break();
 			var appDefinitionFile = _context.GetMSBuildItemsWithAdditionalFiles("ApplicationDefinition").FirstOrDefault();
 
 			if (appDefinitionFile?.File.GetText()?.ToString() is { } text)

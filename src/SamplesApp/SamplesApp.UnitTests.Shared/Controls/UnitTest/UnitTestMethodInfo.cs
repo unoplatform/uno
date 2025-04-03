@@ -27,6 +27,13 @@ internal record UnitTestMethodInfo
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
+
+		var requiresScalingAttribute = method.GetCustomAttribute<RequiresScalingAttribute>() ?? method.DeclaringType?.GetCustomAttribute<RequiresScalingAttribute>();
+		if (requiresScalingAttribute is not null)
+		{
+			RequiresScaling = requiresScalingAttribute.Scaling;
+		}
+
 		PassFiltersAsFirstParameter =
 			HasCustomAttribute<FiltersAttribute>(method) ||
 			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
@@ -35,10 +42,17 @@ internal record UnitTestMethodInfo
 			.SingleOrDefault()
 			?.ExceptionType;
 
-		_ignoredBecauseOfConditionalTestAttribute = method
+		var ignoredBecauseOfConditionalTestClassAttribute = method.DeclaringType?
+			.GetCustomAttributes<ConditionalTestClassAttribute>()
+			.SingleOrDefault()
+			?.ShouldRun() == false;
+
+		var ignoredBecauseOfConditionalTestAttribute = method
 			.GetCustomAttributes<ConditionalTestAttribute>()
 			.SingleOrDefault()
 			?.ShouldRun() == false;
+
+		_ignoredBecauseOfConditionalTestAttribute = ignoredBecauseOfConditionalTestClassAttribute | ignoredBecauseOfConditionalTestAttribute;
 
 		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()
@@ -67,6 +81,8 @@ internal record UnitTestMethodInfo
 	public Type? ExpectedException { get; }
 
 	public bool RequiresFullWindow { get; }
+
+	public float? RequiresScaling { get; }
 
 	public bool RunsOnUIThread { get; }
 

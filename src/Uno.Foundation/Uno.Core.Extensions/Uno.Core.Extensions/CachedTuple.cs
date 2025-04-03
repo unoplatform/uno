@@ -52,6 +52,14 @@ namespace Uno
 		{
 			return new CachedTuple<T1, T2, T3, T4>(item1, item2, item3, item4);
 		}
+
+		/// <summary>
+		/// Creates a tuple with five values.
+		/// </summary>
+		public static CachedTuple<T1, T2, T3, T4, T5> Create<T1, T2, T3, T4, T5>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5)
+		{
+			return new CachedTuple<T1, T2, T3, T4, T5>(item1, item2, item3, item4, item5);
+		}
 	}
 
 	/// <summary>
@@ -238,6 +246,75 @@ namespace Uno
 			}
 
 			public int GetHashCode(CachedTuple<T1, T2, T3, T4> obj)
+			{
+				return obj._cachedHashCode;
+			}
+		}
+	}
+
+	/// <summary>
+	/// A tuple with give values implementation that caches the GetHashCode value for faster lookup performance.
+	/// </summary>
+	internal class CachedTuple<T1, T2, T3, T4, T5>
+	{
+		private readonly int _cachedHashCode;
+
+		public static readonly IEqualityComparer<CachedTuple<T1, T2, T3, T4, T5>> Comparer = new EqualityComparer();
+
+		public T1 Item1 { get; }
+		public T2 Item2 { get; }
+		public T3 Item3 { get; }
+		public T4 Item4 { get; }
+		public T5 Item5 { get; }
+
+		public CachedTuple(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5)
+		{
+			Item1 = item1;
+			Item2 = item2;
+			Item3 = item3;
+			Item4 = item4;
+			Item5 = item5;
+
+			_cachedHashCode = item1?.GetHashCode() ?? 0
+				^ item2?.GetHashCode() ?? 0
+				^ item3?.GetHashCode() ?? 0
+				^ item4?.GetHashCode() ?? 0
+				^ item5?.GetHashCode() ?? 0;
+		}
+
+		public override int GetHashCode() => _cachedHashCode;
+
+		public override bool Equals(object obj)
+		{
+			var tuple = obj as CachedTuple<T1, T2, T3, T4, T5>;
+
+			if (tuple != null)
+			{
+				return InternalEquals(this, tuple);
+			}
+
+			return false;
+		}
+
+		private static bool InternalEquals(CachedTuple<T1, T2, T3, T4, T5> t1, CachedTuple<T1, T2, T3, T4, T5> t2)
+		{
+			return ReferenceEquals(t1, t2) || (
+				EqualityComparer<T1>.Default.Equals(t1.Item1, t2.Item1)
+				&& EqualityComparer<T2>.Default.Equals(t1.Item2, t2.Item2)
+				&& EqualityComparer<T3>.Default.Equals(t1.Item3, t2.Item3)
+				&& EqualityComparer<T4>.Default.Equals(t1.Item4, t2.Item4)
+				&& EqualityComparer<T5>.Default.Equals(t1.Item5, t2.Item5)
+			);
+		}
+
+		private class EqualityComparer : IEqualityComparer<CachedTuple<T1, T2, T3, T4, T5>>
+		{
+			public bool Equals(CachedTuple<T1, T2, T3, T4, T5> x, CachedTuple<T1, T2, T3, T4, T5> y)
+			{
+				return InternalEquals(x, y);
+			}
+
+			public int GetHashCode(CachedTuple<T1, T2, T3, T4, T5> obj)
 			{
 				return obj._cachedHashCode;
 			}

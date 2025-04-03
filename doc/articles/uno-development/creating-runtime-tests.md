@@ -52,15 +52,13 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 
  The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
 
- Note that for Android/iOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
+ Note that for Android/iOS/Mac Catalyst/tvOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
 
  ```csharp
  #if NETFX_CORE
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -88,7 +86,7 @@ Finally we assert that the `ActualWidth` of each container is what we expect, an
 
 ```csharp
 [TestMethod]
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __TVOS__ || __ANDROID__
 [Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
 public async Task When_ListView_Parent_Unstretched()

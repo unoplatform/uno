@@ -1,4 +1,6 @@
-﻿using Android.OS;
+﻿#nullable disable
+
+using Android.OS;
 using System;
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -9,7 +11,7 @@ using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class NativeTimePickerFlyout
+partial class NativeTimePickerFlyout : TimePickerFlyout
 {
 	private bool _programmaticallyDismissed;
 	private UnoTimePickerDialog _dialog;
@@ -21,7 +23,7 @@ partial class NativeTimePickerFlyout
 
 	internal protected override void Open()
 	{
-		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		if (Time.Ticks == DEFAULT_TIME_TICKS)
 		{
 			Time = GetCurrentTime();
 		}
@@ -55,9 +57,13 @@ partial class NativeTimePickerFlyout
 				minutes = minutes * MinuteIncrement;
 			}
 
+#if ANDROID_SKIA
+			var time = new TimeSpan(0, hourOfDay, minutes, 0);
+#else
 			var time = FeatureConfiguration.TimePickerFlyout.UseLegacyTimeSetting
 				? new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds)
 				: new TimeSpan(0, hourOfDay, minutes, 0);
+#endif
 			SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 		}
 

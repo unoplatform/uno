@@ -381,7 +381,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		}
 	}
 
-	//[TestMethod] Bug 19277312: MUX Scroller tests fail on RS5_Release
+	[TestMethod] // Bug 19277312: MUX Scroller tests fail on RS5_Release
 	[TestProperty("Description", "Decreases the ScrollPresenter.MaxZoomFactor property and verifies the ScrollPresenter.ZoomFactor value decreases accordingly. Verifies the impact on the ScrollPresenter.Content Visual.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
 	public async Task PinchContentThroughMaxZoomFactor()
@@ -460,7 +460,7 @@ public partial class ScrollPresenterTests : MUXApiTestBase
 		});
 	}
 
-	// [TestMethod] Bug 19277312: MUX Scroller tests fail on RS5_Release
+	[TestMethod] // Bug 19277312: MUX Scroller tests fail on RS5_Release
 	[TestProperty("Description", "Increases the ScrollPresenter.MinZoomFactor property and verifies the ScrollPresenter.ZoomFactor value increases accordingly. Verifies the impact on the ScrollPresenter.Content Visual.")]
 	[Ignore("Relies on CompositionAnimation.SetExpressionReferenceParameter which is not yet implemented.")]
 	public async Task StretchContentThroughMinZoomFactor()

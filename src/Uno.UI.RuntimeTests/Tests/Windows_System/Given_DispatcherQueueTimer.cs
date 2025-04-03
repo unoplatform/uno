@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				await Task.WhenAny(tcs.Task, Task.Delay(30000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
-				Assert.AreEqual(count, 3);
+				Assert.AreEqual(3, count);
 			}
 			finally
 			{
@@ -154,12 +154,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
 		public void When_SetNegativeInterval()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-
-			timer.Interval = TimeSpan.FromMilliseconds(-100);
+			var negativeTimeSpan = TimeSpan.FromMilliseconds(-100);
+			Assert.Throws<ArgumentException>(() => timer.Interval = negativeTimeSpan);
 		}
 
 		[TestMethod]

@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
-			var dpi = DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			var dpi = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
 			var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 			using var surface = SKSurface.Create(info);
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 			canvas.Scale((float)dpi);
-			visual.RenderRootVisual(surface, offsetOverride: Vector2.Zero, null);
+			visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero, null);
 
 			var img = surface.Snapshot();
 
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				var scaledBitmap = bitmap.Resize(
 					new SKImageInfo((int)scaledSize.Value.Width, (int)scaledSize.Value.Height, SKColorType.Bgra8888, SKAlphaType.Premul),
-					SKFilterQuality.High);
+					new SKSamplingOptions(SKCubicResampler.CatmullRom));
 				bitmap.Dispose();
 				bitmap = scaledBitmap;
 				(width, height) = (bitmap.Width, bitmap.Height);
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			EnsureBuffer(ref buffer, byteCount);
 			unsafe
 			{
-				SkiaCompat.SKBitmap_GetPixelSpan(bitmap).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
 			}
 			bitmap?.Dispose();
 

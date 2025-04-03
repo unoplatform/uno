@@ -35,7 +35,7 @@ jobs:
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
 
     displayName: 'Compare UI Tests screenshots'
-    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
+    condition: and(eq(variables['Build.Repository.Provider'], 'GitHub'), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')))
 
   - task: PublishTestResults@2
     condition: always()
@@ -51,6 +51,7 @@ jobs:
       includeRootFolder: true
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip'
+    condition: not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature'))
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3

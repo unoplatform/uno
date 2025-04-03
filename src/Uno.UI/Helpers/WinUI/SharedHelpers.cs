@@ -224,7 +224,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_areInteractionTrackerPointerWheelRedirectionModesAvailable =
 					IsSystemDll() ||
 					IsRS5OrHigher() ||
-					(IsRS4OrHigher() && ApiInformation.IsEnumNamedValuePresent("Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode", "PointerWheelOnly"));
+					(IsRS4OrHigher() && ApiInformation.IsEnumNamedValuePresent("Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode, Uno.UI.Composition", "PointerWheelOnly"));
 			}
 
 			return s_areInteractionTrackerPointerWheelRedirectionModesAvailable.Value;

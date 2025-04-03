@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Grid
 	{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		private UIElementCollection GetChildren()
 		{
 			return Children;

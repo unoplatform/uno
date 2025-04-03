@@ -1,23 +1,22 @@
 ﻿using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public interface IMediaPlayerPresenterExtension
 {
-	public interface IMediaPlayerPresenterExtension
-	{
-		void MediaPlayerChanged();
+	void MediaPlayerChanged();
 
-		void StretchChanged();
+	void StretchChanged();
 
-		void RequestFullScreen();
+	void RequestFullScreen();
 
-		void ExitFullScreen();
+	void ExitFullScreen();
 
-		void RequestCompactOverlay();
+	void RequestCompactOverlay();
 
-		void ExitCompactOverlay();
+	void ExitCompactOverlay();
 
-		uint NaturalVideoHeight { get; }
+	uint NaturalVideoHeight { get; }
 
-		uint NaturalVideoWidth { get; }
-	}
+	uint NaturalVideoWidth { get; }
 }

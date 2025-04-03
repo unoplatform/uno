@@ -55,6 +55,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
 		private readonly bool _isHotReloadEnabled;
+		private readonly bool _generateXamlSourcesProvider;
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
@@ -98,6 +99,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ContentControlSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ContentPresenterSymbol { get; }
 		internal Lazy<INamedTypeSymbol> StringSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ObjectSymbol { get; }
@@ -228,6 +230,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isHotReloadEnabled = _isDebug;
 			}
 
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoGenerateXamlSourcesProvider"), out _generateXamlSourcesProvider))
+			{
+				_generateXamlSourcesProvider = _isHotReloadEnabled; // Default to the presence of Hot Reload feature
+			}
+
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
 			{
 				_enableFuzzyMatching = false;
@@ -267,6 +274,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AssemblyMetadataSymbol = GetOptionalSymbolAsLazy("System.Reflection.AssemblyMetadataAttribute");
 			ElementStubSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ElementStub);
 			SetterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Setter);
+			ContentControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentControl);
 			ContentPresenterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentPresenter);
 			FrameworkElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FrameworkElement);
 			UIElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UIElement);
@@ -458,6 +466,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					).GenerateFile()
 				)).ToList();
 
+				if (_generateXamlSourcesProvider && GenerateEmbeddedXamlSources(files) is { } embeddedXamlSources)
+				{
+					outputFiles.Add(new KeyValuePair<string, SourceText>("EmbeddedXamlSources", embeddedXamlSources));
+				}
+
 				outputFiles.Add(new KeyValuePair<string, SourceText>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
@@ -635,7 +648,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						//load document
 						var doc = new XmlDocument();
 						doc.LoadXml(sourceText.ToString());
-
 
 						//extract all localization keys from Win10 resource file
 						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions

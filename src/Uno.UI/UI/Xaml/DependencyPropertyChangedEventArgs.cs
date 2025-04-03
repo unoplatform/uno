@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 #endif
 
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 			DependencyProperty property,
 			object oldValue,
 			object newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 			, DependencyPropertyValuePrecedences oldPrecedence,
 			DependencyPropertyValuePrecedences newPrecedence,
 			bool bypassesPropagation
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 			Property = property;
 			OldValue = oldValue;
 			NewValue = newValue;
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 			OldPrecedence = oldPrecedence;
 			NewPrecedence = newPrecedence;
 			BypassesPropagation = bypassesPropagation;
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyProperty Property { get; }
 
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 		/// <summary>
 		/// Gets the dependency property value precedence of the new value
 		/// </summary>

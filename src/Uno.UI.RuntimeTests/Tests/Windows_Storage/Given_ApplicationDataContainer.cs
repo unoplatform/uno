@@ -164,9 +164,6 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void When_GetAllKeys()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -245,7 +242,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var value = "something";
 			var secondValue = "somethingElse";
 			SUT.Values.Add(key, value);
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => SUT.Values.Add(key, secondValue));
 		}
 
@@ -267,7 +264,7 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var key = "test";
 			var value = "something";
 			SUT.Values.Add(key, value);
-			Assert.ThrowsException<ArgumentException>(
+			Assert.ThrowsExactly<ArgumentException>(
 				() => SUT.Values.Add(key, null));
 		}
 

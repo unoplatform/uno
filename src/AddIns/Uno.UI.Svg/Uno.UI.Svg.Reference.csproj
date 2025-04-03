@@ -21,6 +21,11 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- The reference build does not need svg.skia sources -->
+		<Compile Remove="External/**/*.cs" />
+	</ItemGroup>
+
 	<Target Name="_UnoSvgOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>

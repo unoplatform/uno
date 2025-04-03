@@ -46,8 +46,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
-#if __IOS__
-		[Ignore("Fails on iOS with Fluent styles #18105")]
+#if __APPLE_UIKIT__
+		[Ignore("Fails on UIKit with Fluent styles #18105")]
 #endif
 		public void ValidateElementToIndexMapping()
 		{
@@ -319,9 +319,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Ensure that scrolling a nested repeater works when the 
 		// Itemtemplates are data templates.
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task NestedRepeaterWithDataTemplateScenario()
 		{
 			await NestedRepeaterWithDataTemplateScenario(disableAnimation: true);
@@ -329,10 +326,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
+#if __APPLE_UIKIT__
+		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
@@ -467,7 +462,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				for (int i = 0; i < 100; i++)
 				{
 					itemsSource.Add(new ObservableCollection<int>(Enumerable.Range(0, 5)));
-				};
+				}
 
 				rootRepeater.ItemsSource = itemsSource;
 			});
@@ -499,10 +494,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ScrollViewer scrolls vertically, but there is an inner 
 		// repeater which flows horizontally which needs corrections to be handled.
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#if __APPLE_UIKIT__
+		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyCorrectionsInNonScrollableDirection()
 		{
@@ -690,9 +683,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__ || __SKIA__
+#if __APPLE_UIKIT__ || __SKIA__
 		[Ignore("Fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyRepeaterDoesNotLeakItemContainers()

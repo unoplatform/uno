@@ -22,12 +22,9 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-#if __IOS__
+#if __APPLE_UIKIT__
 using Color = UIKit.UIColor;
 using View = UIKit.UIView;
-#elif __MACOS__
-using Color = AppKit.NSColor;
-using View = AppKit.NSView;
 #elif __ANDROID__
 using Color = Android.Resource.Color;
 using View = Android.Views.View;

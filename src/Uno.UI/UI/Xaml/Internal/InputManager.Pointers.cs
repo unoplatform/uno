@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using static Microsoft.UI.Xaml.UIElement;
 
 #if HAS_UNO_WINUI
 using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
@@ -131,7 +132,7 @@ partial class InputManager
 					// Raise the event to the target
 					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerDown(args);
-#if __IOS__
+#if __APPLE_UIKIT__
 					// Also as the FlyoutPopupPanel is being removed from the UI tree, we won't get any ProcessPointerUp, so we are forcefully causing it here.
 					args.Reset(canBubbleNatively: false);
 					reRouted.To.OnPointerUp(args);
@@ -163,7 +164,7 @@ partial class InputManager
 				return;
 			}
 
-#if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
+#if __ANDROID__ || __APPLE_UIKIT__ // Not needed on WASM as we do have native support of the exit event
 			// On iOS we use the RootVisual to raise the UWP-only exit event (in managed only)
 			// Note: This is useless for managed pointers where the Exit is raised properly
 
@@ -213,15 +214,27 @@ partial class InputManager
 		#endregion
 
 		#region Misc helpers
-		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
+		private PointerEventDispatchResult ReleaseCaptures(PointerRoutedEventArgs routedArgs)
 		{
-			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+			var result = default(PointerEventDispatchResult);
+			UIElement.BeginPointerEventDispatch();
+			try
 			{
-				foreach (var target in capture.Targets.ToList())
+				if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 				{
-					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+					foreach (var target in capture.Targets.ToList())
+					{
+						target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+
+					}
 				}
 			}
+			finally
+			{
+				result += UIElement.EndPointerEventDispatch();
+			}
+
+			return result;
 		}
 		#endregion
 	}

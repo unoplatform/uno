@@ -90,7 +90,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue #1018
+		[TestMethod] // Issue #1018
+		[Ignore]
 		public async Task CanPinFocusedElements()
 		{
 			// Setup a grouped repeater scenario with two groups each containing two items.
@@ -191,7 +192,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task CanReuseElementsDuringUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -301,7 +303,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public async Task ValidateElementEvents()
@@ -371,7 +373,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public async Task ValidateElementIndexChangedEventOnStableReset()
@@ -600,9 +602,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void ValidateDataContextDoesNotGetOverwritten()
 		{
 			const string c_element1DataContext = "Element1_DataContext";
@@ -639,9 +638,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void ValidateDataContextGetsPropagated()
 		{
 			const string c_element1DataContext = "Element1_DataContext";
@@ -678,7 +674,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task ValidateFocusMoveOnElementCleared()
 		{
 			CustomItemsSource dataSource = null;
@@ -721,7 +718,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task ValidateFocusMoveOnElementClearedWithUniqueIds()
 		{
 			CustomItemsSource dataSource = null;

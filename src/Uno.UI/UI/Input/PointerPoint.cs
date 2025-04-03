@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Windows.Devices.Input;
@@ -37,9 +38,15 @@ namespace Windows.UI.Input
 			Properties = properties;
 		}
 
+#nullable enable
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+		private global::Windows.UI.Input.PointerPoint? _wuxPoint;
+
 		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
 		{
+			_wuxPoint = point;
+			point._muxPoint = this;
+
 			FrameId = point.FrameId;
 			Timestamp = point.Timestamp;
 			PointerDevice = point.PointerDevice;
@@ -61,10 +68,14 @@ namespace Windows.UI.Input
 		public static global::Windows.UI.Input.PointerPoint op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 			=> muxPointerPoint;
 
-
 		public static implicit operator global::Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 		{
-			return new global::Windows.UI.Input.PointerPoint(
+			if (muxPointerPoint._wuxPoint is global::Windows.UI.Input.PointerPoint wuxPoint)
+			{
+				return wuxPoint;
+			}
+
+			wuxPoint = new global::Windows.UI.Input.PointerPoint(
 				muxPointerPoint.FrameId,
 				muxPointerPoint.Timestamp,
 				muxPointerPoint.PointerDevice,
@@ -73,11 +84,22 @@ namespace Windows.UI.Input
 				muxPointerPoint.Position,
 				muxPointerPoint.IsInContact,
 				(global::Windows.UI.Input.PointerPointProperties)muxPointerPoint.Properties);
+
+			wuxPoint._muxPoint = muxPointerPoint;
+			muxPointerPoint._wuxPoint = wuxPoint;
+
+			return wuxPoint;
 		}
+
+		public static implicit operator global::Microsoft.UI.Input.PointerPoint(global::Windows.UI.Input.PointerPoint wuxPointerPoint)
+			=> wuxPointerPoint._muxPoint as global::Microsoft.UI.Input.PointerPoint ?? new global::Microsoft.UI.Input.PointerPoint(wuxPointerPoint);
+#else
+		internal object? _muxPoint;
 #endif
+#nullable restore
 
 		internal PointerPoint At(Point position)
-			=> new PointerPoint(
+			=> new(
 				FrameId,
 				Timestamp,
 				PointerDevice,
@@ -87,7 +109,18 @@ namespace Windows.UI.Input
 				IsInContact,
 				Properties);
 
-		internal PointerIdentifier Pointer => new PointerIdentifier(PointerDevice.PointerDeviceType, PointerId);
+		internal PointerPoint At(Point rawPosition, Point position)
+			=> new(
+				FrameId,
+				Timestamp,
+				PointerDevice,
+				PointerId,
+				rawPosition: rawPosition,
+				position: position,
+				IsInContact,
+				Properties);
+
+		internal PointerIdentifier Pointer => new(PointerDevice.PointerDeviceType, PointerId);
 
 		public uint FrameId { get; }
 

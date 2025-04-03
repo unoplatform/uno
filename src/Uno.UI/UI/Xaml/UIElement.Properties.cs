@@ -17,7 +17,7 @@ using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 

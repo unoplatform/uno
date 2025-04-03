@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-#if __IOS__
+#if __APPLE_UIKIT__
 				// There are situations where between measurements scaledDimension and naturalDimension
 				// have a small difference in value (a few pixels) causing the measurement to go into an infinite loop.
 				// Related to: https://github.com/unoplatform/uno/issues/15254
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
 					newPlayer.SourceChanged += presenter.OnSourceChanged;
 
-#if __IOS__ || __ANDROID__ || __MACOS__
+#if __APPLE_UIKIT__ || __ANDROID__
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
 #endif
 
@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
-		private FrameworkElement GetLayoutOwner()
+		internal FrameworkElement GetLayoutOwner()
 		{
 			if (wrOwner?.TryGetTarget(out var owner) == true && owner is not null && !IsFullWindow)
 			{

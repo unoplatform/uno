@@ -11,11 +11,11 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowWrapper : NativeWindowWrapperBase
 {
-	private readonly MacOSWindowNative _window;
+	private readonly MacOSWindowNative _nativeWindow;
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
-		_window = nativeWindow;
+		_nativeWindow = nativeWindow;
 
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
@@ -26,30 +26,30 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		NativeUno.uno_window_get_position(nativeWindow.Handle, out var x, out var y);
 		OnHostPositionChanged(x, y);
 
-		RasterizationScale = (float)_window.Host.RasterizationScale;
+		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
 	{
-		RasterizationScale = (float)_window.Host.RasterizationScale;
+		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
-	public override object NativeWindow => _window;
+	public override object NativeWindow => _nativeWindow;
 
 	public override string Title
 	{
-		get => NativeUno.uno_window_get_title(_window.Handle);
-		set => NativeUno.uno_window_set_title(_window.Handle, value);
+		get => NativeUno.uno_window_get_title(_nativeWindow.Handle);
+		set => NativeUno.uno_window_set_title(_nativeWindow.Handle, value);
 	}
 
 	internal protected override void Activate()
 	{
-		NativeUno.uno_window_activate(_window.Handle);
+		NativeUno.uno_window_activate(_nativeWindow.Handle);
 	}
 
 	protected override void CloseCore()
 	{
-		NativeUno.uno_window_close(_window.Handle);
+		NativeUno.uno_window_close(_nativeWindow.Handle);
 	}
 
 	public override void Move(PointInt32 position)
@@ -57,7 +57,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// user input in physical pixels transformed into logical pixels
 		var x = position.X / RasterizationScale;
 		var y = position.Y / RasterizationScale;
-		NativeUno.uno_window_move(_window.Handle, x, y);
+		NativeUno.uno_window_move(_nativeWindow.Handle, x, y);
 	}
 
 	public override void Resize(SizeInt32 size)
@@ -65,7 +65,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// user input in physical pixels transformed into logical pixels
 		var w = size.Width / RasterizationScale;
 		var h = size.Height / RasterizationScale;
-		NativeUno.uno_window_resize(_window.Handle, w, h);
+		NativeUno.uno_window_resize(_nativeWindow.Handle, w, h);
 	}
 
 	private void OnHostPositionChanged(double x, double y)
@@ -95,13 +95,13 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
-		NativeUno.uno_window_enter_full_screen(_window.Handle);
-		return Disposable.Create(() => NativeUno.uno_window_exit_full_screen(_window.Handle));
+		NativeUno.uno_window_enter_full_screen(_nativeWindow.Handle);
+		return Disposable.Create(() => NativeUno.uno_window_exit_full_screen(_nativeWindow.Handle));
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new MacOSNativeOverlappedPresenter(_window));
+		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 }

@@ -46,6 +46,7 @@ To do so:
             <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net8.0-ios</OverrideTargetFramework> -->
             <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net8.0-android</OverrideTargetFramework> -->
             <!-- <OverrideTargetFramework Condition="''!='hint: MacCatalyst'">net8.0-maccatalyst</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: TvOS'">net8.0-tvos</OverrideTargetFramework> -->
         </PropertyGroup>
     </Project>
     ```

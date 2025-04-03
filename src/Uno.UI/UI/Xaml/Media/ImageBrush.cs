@@ -86,6 +86,13 @@ namespace Microsoft.UI.Xaml.Media
 					(_, _) => OnSourceChangedPartial(newValue, null)
 				);
 			}
+			else if (newValue is SvgImageSource svgImageSource)
+			{
+				_sourceDisposable.Disposable = svgImageSource.RegisterDisposablePropertyChangedCallback(
+					SvgImageSource.UriSourceProperty,
+					(_, _) => OnSourceChangedPartial(newValue, null)
+				);
+			}
 			else
 			{
 				_sourceDisposable.Disposable = null;
@@ -191,7 +198,7 @@ namespace Microsoft.UI.Xaml.Media
 			return location;
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __CROSSRUNTIME__
+#if __ANDROID__ || __APPLE_UIKIT__ || __CROSSRUNTIME__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

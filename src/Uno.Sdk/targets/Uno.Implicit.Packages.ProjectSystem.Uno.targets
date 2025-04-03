@@ -13,11 +13,11 @@
 		<_UnoProjectSystemPackageReference Remove="SkiaSharp.Views.Uno.WinUI" Condition="!$(UnoFeatures.Contains(';skia;')) AND $(IsBrowserWasm)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true' AND '$(IsBrowserWasm)' != 'true' ">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true' AND ('$(IsBrowserWasm)' != 'true' OR $(UnoFeatures.Contains(';skiarenderer;')))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND '$(IsPackable)' != 'true'">
+	<ItemGroup Condition=" ($(IsBrowserWasm) != 'true' OR $(UnoFeatures.Contains(';skiarenderer;'))) AND '$(IsPackable)' != 'true'">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';material;')) OR $(UnoFeatures.Contains(';cupertino;'))  OR $(IsDesktop) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Svg.Skia" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'" />
 	</ItemGroup>

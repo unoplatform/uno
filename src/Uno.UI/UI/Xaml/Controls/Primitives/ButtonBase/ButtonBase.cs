@@ -13,10 +13,8 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
-#elif __MACOS__
-using View = AppKit.NSView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else
@@ -141,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		partial void RegisterEvents();
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		private void OnCanExecuteChanged()
 		{
 			this.CoerceValue(IsEnabledProperty);

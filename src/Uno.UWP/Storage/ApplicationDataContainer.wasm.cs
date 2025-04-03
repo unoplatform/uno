@@ -40,9 +40,9 @@ namespace Windows.Storage
 			{
 				get
 				{
-					if (ApplicationDataContainerInterop.TryGetValue(_locality, key, out var value))
+					if (TryGetValue(key, out var value))
 					{
-						return DataTypeSerializer.Deserialize(value);
+						return value;
 					}
 					return null;
 				}

@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using Uno.UI;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.Core;
+using System.Diagnostics;
 
 namespace Microsoft.UI.Xaml;
 
@@ -52,9 +53,16 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
+#if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
 			windowType = WindowType.CoreWindow;
+		}
+#endif
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Creating new window (type:{windowType})");
 		}
 
 		InitialWindow ??= this;
@@ -101,6 +109,8 @@ partial class Window
 		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
 		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 	}
+
+	internal INativeWindowWrapper? NativeWrapper => _windowImplementation.NativeWindowWrapper;
 
 	internal static Window GetFromAppWindow(AppWindow appWindow)
 	{
@@ -240,7 +250,7 @@ partial class Window
 		if (_windowType is WindowType.CoreWindow)
 		{
 			WinUICoreServices.Instance.InitCoreWindowContentRoot();
-#if __WASM__ // We normally call SetHost from the NativeWindowWrapper on DesktopXamlSource targets, but for WASM we put it here.
+#if __WASM__ || __ANDROID__ || __IOS__ // We normally call SetHost from the NativeWindowWrapper on DesktopXamlSource targets, but for WASM we put it here.
 			WinUICoreServices.Instance.MainVisualTree!.ContentRoot.SetHost(this);
 #endif
 		}

@@ -9,7 +9,7 @@ using System.Text;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
 #else
 using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout;

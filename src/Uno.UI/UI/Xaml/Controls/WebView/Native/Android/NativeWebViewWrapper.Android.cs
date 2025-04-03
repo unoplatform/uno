@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,11 +54,14 @@ internal class NativeWebViewWrapper : INativeWebView
 			Android.Webkit.CookieManager.Instance.SetAcceptThirdPartyCookies(_webView, true);
 		}
 
+#if !ANDROID_SKIA
 		// The native webview control requires to have LayoutParameters to function properly.
 		_webView.LayoutParameters = new ViewGroup.LayoutParams(
 			ViewGroup.LayoutParams.MatchParent,
 			ViewGroup.LayoutParams.MatchParent);
+#endif
 
+#if !ANDROID_SKIA // We only have the flag for Android native. We can add it to Skia if needed.
 		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
 		{
 			//SetLayerType disables hardware acceleration for a single view.
@@ -65,6 +70,7 @@ internal class NativeWebViewWrapper : INativeWebView
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
 			_webView.SetLayerType(LayerType.Software, null);
 		}
+#endif
 	}
 
 	public string DocumentTitle

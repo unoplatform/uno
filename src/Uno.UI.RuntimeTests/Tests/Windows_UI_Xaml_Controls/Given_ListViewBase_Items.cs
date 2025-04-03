@@ -8,10 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -101,7 +99,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				listView.Items.Add(2);
 			}
-			catch (Exception) // Instead of Assert.ThrowsException as Uno throws InvalidOperationException, while UWP throws a generic Exception
+			catch (Exception) // Instead of Assert.ThrowsExactly as Uno throws InvalidOperationException, while UWP throws a generic Exception
 			{
 				thrown = true;
 			}

@@ -54,14 +54,14 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
 
 			// Values for automated tests
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			_pointerType.SelectedValue = PointerDeviceType.Touch.ToString();
 #else
 			_pointerType.SelectedValue = PointerDeviceType.Mouse.ToString();
 #endif
 		}
 
-#if __IOS__ // On iOS pen is handled exactly as if it was a finger ...
+#if __APPLE_UIKIT__ // On iOS pen is handled exactly as if it was a finger ...
 		private bool PenSupportsHover = false;
 #else
 		private bool PenSupportsHover = true;
@@ -341,7 +341,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-#if __IOS__
+#if __APPLE_UIKIT__
 					// KNOWN ISSUE:
 					//	On iOS as the Entered/Exited are generated on Pressed/Released, which are Handled by the Hyperlink,
 					//	we do not receive the expected Entered/Exited on parent control.

@@ -19,12 +19,9 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Uno.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
@@ -101,6 +98,7 @@ static partial class ViewExtensions
 
 		static IEnumerable<string> GetDetails(object x)
 		{
+#if true // positioning properties/hints
 			if (x is FrameworkElement { Parent: Grid } fe3)
 			{
 				int c = Grid.GetColumn(fe3), cspan = Grid.GetColumnSpan(fe3),
@@ -124,22 +122,38 @@ static partial class ViewExtensions
 			{
 				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 			}
-			// =====
+#endif
+#if false // binding: templated-parent and data-context
+			if (x is UIElement uie)
+			{
+#if HAS_UNO
+				yield return $"TP={FormatType(uie.GetTemplatedParent())}";
+#endif
+				yield return $"DC={FormatType(uie.DataContext)}";
+			}
+#endif
+#if false // native layout coordinates
 #if __ANDROID__
 			if (x is Android.Views.View v)
 			{
 				yield return $"LTRB={v.Left},{v.Top},{v.Right},{v.Bottom}";
 			}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			if (x is _View view && view.Superview is { })
 			{
 				var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);
 				yield return $"Abs=[Rect {view.Frame.Width:0.#}x{view.Frame.Height:0.#}@{abs.X:0.#},{abs.Y:0.#}]";
 			}
 #endif
+#endif
+#if true // framework layout properties
 			if (x is FrameworkElement fe)
 			{
-				yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
+				if (fe.Parent is FrameworkElement parent)
+				{
+					yield return $"XY={FormatPoint(fe.TransformToVisual(parent).TransformPoint(default))}";
+				}
+				yield return $"Actual={FormatSize(fe.ActualWidth, fe.ActualHeight)}";
 #if HAS_UNO
 				//yield return $"Available={FormatSize(fe.m_previousAvailableSize)}";
 #endif
@@ -149,18 +163,19 @@ static partial class ViewExtensions
 				//if ($"{(fe.IsMeasureDirty ? "M" : null)}{(fe.IsMeasureDirtyPath ? "m" : null)}{(fe.IsArrangeDirty ? "A" : null)}{(fe.IsArrangeDirtyPath ? "a" : null)}" is { Length: > 0 } dirty)
 				//	yield return $"Dirty={dirty}";
 #endif
-				yield return $"Constraints=[{fe.MinWidth},{fe.Width},{fe.MaxWidth}]x[{fe.MinHeight},{fe.Height},{fe.MaxHeight}]";
+				yield return $"Constraints=[{fe.MinWidth:0.#},{fe.Width:0.#},{fe.MaxWidth:0.#}]x[{fe.MinHeight:0.#},{fe.Height:0.#},{fe.MaxHeight:0.#}]";
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
 			}
 			if (x is ScrollViewer sv)
 			{
-				yield return $"Offset={sv.HorizontalOffset:0.#},{sv.VerticalOffset:0.#}";
-				yield return $"Viewport={sv.ViewportWidth:0.#}x{sv.ViewportHeight:0.#}";
-				yield return $"Extent={sv.ExtentWidth:0.#}x{sv.ExtentHeight:0.#}";
+				yield return $"Offset={FormatPoint(sv.HorizontalOffset, sv.VerticalOffset)}";
+				yield return $"Viewport={FormatSize(sv.ViewportWidth, sv.ViewportHeight)}";
+				yield return $"Extent={FormatSize(sv.ExtentWidth, sv.ExtentHeight)}";
 			}
 			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
 			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
+#endif
 
 			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
 			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
@@ -328,7 +343,7 @@ static partial class ViewExtensions
 
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__
 	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;

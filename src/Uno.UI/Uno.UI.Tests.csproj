@@ -23,6 +23,9 @@
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+		
+		<!-- We need all the intermediate assemblies to generator tests work properly -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 	</PropertyGroup>
@@ -60,7 +63,6 @@
 		<None Include="Resources\Values\Styles.xml" />
 		<None Include="Resources\IResourceRegistry.cs" />
 		<None Include="Resources\ResourceRegistry.cs" />
-		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -11,13 +11,13 @@ internal partial class NativeWindowWrapper
 {
 	internal static partial class NativeMethods
 	{
-		[JSImport("globalThis.Uno.UI.WindowManager.current.getWindowTitle")]
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.setFullScreenMode")]
 		internal static partial bool SetFullScreenMode(bool turnOn);
 
-		[JSImport("globalThis.Uno.UI.WindowManager.current.setWindowTitle")]
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.setWindowTitle")]
 		internal static partial void SetWindowTitle(string title);
 
 		[JSImport("globalThis.Uno.UI.WindowManager.current.resizeWindow")]

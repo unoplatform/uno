@@ -11,6 +11,15 @@
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
 
+		<!-- Enable the MSTest runner, this is an opt-in feature when not using MSTest.Sdk -->
+		<EnableMSTestRunner>true</EnableMSTestRunner>
+
+		<!-- Enable the NUnit runner, this is an opt-in feature -->
+		<EnableNUnitRunner>true</EnableNUnitRunner>
+
+		<TestingPlatformDotNetTestSupport>true</TestingPlatformDotNetTestSupport>
+		<TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
@@ -42,10 +51,15 @@
 		<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
 
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+		<RestoreEnablePackagePruning>true</RestoreEnablePackagePruning>
+	
+		<!-- Don't install GTK in CI, let the workflow do it to prevent concurrency issues -->
+		<SkipGtkInstall Condition=" '$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true' ">true</SkipGtkInstall>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.12.0-1.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.13.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -108,7 +122,8 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.WebAssembly.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Gtk.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.X11.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Win32.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
@@ -124,6 +139,8 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Windows.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
+
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.GooglePlay.netcoremobile.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Wasm.csproj</_AdjustedOutputProjects>
@@ -197,8 +214,10 @@
 		<IsIOS>false</IsIOS>
 		<IsIOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='ios'">true</IsIOS>
 
+		<IsTvOS>false</IsTvOS>
+		<IsTvOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='tvos'">true</IsTvOS>
+
 		<IsMacOS>false</IsMacOS>
-		<IsMacOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='macos'">true</IsMacOS>
 
 		<IsCatalyst>false</IsCatalyst>
 		<IsCatalyst Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='maccatalyst'">true</IsCatalyst>
@@ -206,13 +225,19 @@
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
 
+		<IsAppleUIKit>false</IsAppleUIKit>
+		<IsAppleUIKit Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsAppleUIKit>
+
+		<IsApple>false</IsApple>
+		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsApple>
+
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+		<UnoDisableNetAnalyzers Condition="$(MSBuildProjectName.Contains('Test'))">true</UnoDisableNetAnalyzers>
 		<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -220,6 +245,12 @@
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- Disable warning about wasm/skia long paths -->
+		<NoWarn>$(NoWarn);NU5123</NoWarn>
+		
+		<!-- YOUSSEF TODO: Fix doc comments and remove this NoWarn -->
+		<NoWarn>$(NoWarn);CS1711;CS1712;CS1572;CS1574;CS1570</NoWarn>
 
 		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
 		<NoWarn>$(NoWarn);CS0436</NoWarn>

@@ -63,6 +63,8 @@ public sealed partial class DiagnosticsOverlay
 			statusBar.Hiding += OnStatusBarChanged;
 			statusBar.Showing += OnStatusBarChanged;
 		}
+
+		_root.VisualTree.VisibleBoundsChanged += OnVisibleBoundsChanged;
 #endif
 
 		_isPlacementInit = true;
@@ -78,6 +80,8 @@ public sealed partial class DiagnosticsOverlay
 			statusBar.Hiding -= OnStatusBarChanged;
 			statusBar.Showing -= OnStatusBarChanged;
 		}
+
+		_root.VisualTree.VisibleBoundsChanged -= OnVisibleBoundsChanged;
 #endif
 	}
 
@@ -88,17 +92,7 @@ public sealed partial class DiagnosticsOverlay
 	public Rect GetSafeArea()
 	{
 #if HAS_UNO_WINUI
-		var bounds = _root.Bounds;
-		if (
-			_statusBar?.OccludedRect is { Height: > 0 } occludedRect
-#if __ANDROID__
-			&& (Window.Current?.IsStatusBarTranslucent() ?? true)
-#endif
-			)
-		{
-			bounds.Y += occludedRect.Height;
-			bounds.Height -= occludedRect.Height;
-		}
+		var bounds = _root.VisualTree.VisibleBounds;
 #else
 		var bounds = new Rect(default, _root.Size);
 #endif
@@ -131,6 +125,18 @@ public sealed partial class DiagnosticsOverlay
 		_location.X += _origin.HasFlag(PlacementOrigin.Right) ? -e.Delta.Translation.X : e.Delta.Translation.X;
 		_location.Y += _origin.HasFlag(PlacementOrigin.Bottom) ? -e.Delta.Translation.Y : e.Delta.Translation.Y;
 
+		if (e.IsInertial)
+		{
+			var area = GetSafeArea();
+			if (_location.X < 0 || _location.X > area.Width
+				|| _location.Y < 0 || _location.Y > area.Height)
+			{
+				e.Complete();
+
+				return;
+			}
+		}
+
 		ApplyLocation();
 	}
 
@@ -139,6 +145,9 @@ public sealed partial class DiagnosticsOverlay
 
 #if HAS_UNO_WINUI
 	private void OnStatusBarChanged(StatusBar sender, object args)
+		=> UpdatePlacement();
+
+	private void OnVisibleBoundsChanged(object? sender, EventArgs e)
 		=> UpdatePlacement();
 #endif
 

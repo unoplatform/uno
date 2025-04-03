@@ -7,6 +7,9 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
+		<!-- We need all the intermediate assemblies -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+
 		<!-- Too noisy for us right now -->
 		<EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
 	</PropertyGroup>

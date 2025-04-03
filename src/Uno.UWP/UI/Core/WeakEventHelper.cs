@@ -71,6 +71,17 @@ namespace Windows.UI.Core
 				_provider = provider ?? new DefaultTrimProvider();
 			}
 
+			public bool IsEmpty
+			{
+				get
+				{
+					lock (_lock)
+					{
+						return _handlers.Count == 0;
+					}
+				}
+			}
+
 			private bool Trim()
 			{
 				lock (_lock)
@@ -203,7 +214,19 @@ namespace Windows.UI.Core
 
 				if (weakHandler != null)
 				{
-					raise(weakHandler, s, e);
+#if __ANDROID__
+					// If the target is a IJavaPeerable that does not have a valid peer reference, there
+					// is no need to call the handler. If it's not a IJavaPeerable, call the target.
+					// This scenario may happen when the object is about to be collected and has already
+					// collected its native counterpart. We know that the target will likely try to use
+					// native methods, which will fail if the peer reference is not valid.
+					var javaPeerable = weakHandler.Target as Java.Interop.IJavaPeerable;
+					if (javaPeerable?.PeerReference.IsValid ?? true)
+#endif
+					{
+
+						raise(weakHandler, s, e);
+					}
 				}
 			};
 

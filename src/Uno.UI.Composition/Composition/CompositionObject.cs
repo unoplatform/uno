@@ -56,9 +56,11 @@ namespace Microsoft.UI.Composition
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 			=> TryUpdateFromProperties(Properties, propertyName, subPropertyName, propertyValue);
 
+		// TODO: Clone the animation object to support scenarios where the same animation is used on multiple objects
+
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (StartAnimationCore(propertyName, animation))
 			{
 				return;
@@ -104,6 +106,16 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		public void StartAnimation(string propertyName, CompositionAnimation animation, AnimationController animationController)
+		{
+			StartAnimation(propertyName, animation);
+
+			if (animation is KeyFrameAnimation keyFrameAnimation)
+			{
+				animationController.Initialize(this, propertyName, keyFrameAnimation);
+			}
+		}
+
 		private void ReEvaluateAnimation(CompositionAnimation animation)
 		{
 			if (_animations == null)
@@ -135,6 +147,37 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		private void ReEvaluateAnimation(KeyFrameAnimation animation, float progress)
+		{
+			if (_animations == null)
+			{
+				return;
+			}
+
+			foreach (var (key, value) in _animations)
+			{
+				if (value == animation)
+				{
+					var propertyName = key;
+					ReadOnlySpan<char> firstPropertyName;
+					ReadOnlySpan<char> subPropertyName;
+					var firstDotIndex = propertyName.IndexOf('.');
+					if (firstDotIndex > -1)
+					{
+						firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
+						subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
+					}
+					else
+					{
+						firstPropertyName = propertyName;
+						subPropertyName = default;
+					}
+
+					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate(progress));
+				}
+			}
+		}
+
 		public void StopAnimation(string propertyName)
 		{
 			if (_animations?.TryGetValue(propertyName, out var animation) == true)
@@ -145,27 +188,68 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		public AnimationController? TryGetAnimationController(string propertyName)
+		{
+			if (_animations?.TryGetValue(propertyName, out var animation) == true && animation is KeyFrameAnimation keyFrameAnimation)
+			{
+				return new(this, propertyName, keyFrameAnimation);
+			}
+
+			// TODO: verify if returning null is the correct behavior
+			return null;
+		}
+
+		// AnimationController only supports KeyFrameAnimations
+		internal void PauseAnimation(KeyFrameAnimation animation)
+		{
+			animation.AnimationFrame -= ReEvaluateAnimation;
+			animation.Pause();
+		}
+
+		internal void ResumeAnimation(KeyFrameAnimation animation)
+		{
+			animation.Resume();
+			animation.AnimationFrame += ReEvaluateAnimation;
+		}
+
+		internal void SeekAnimation(KeyFrameAnimation animation, float progress)
+		{
+			PauseAnimation(animation);
+			ReEvaluateAnimation(animation, progress);
+		}
+
+		internal KeyFrameAnimation? GetKeyFrameAnimation(string propertyName)
+		{
+			if (_animations?.TryGetValue(propertyName, out var animation) == true && animation is KeyFrameAnimation keyFrameAnimation)
+			{
+				return keyFrameAnimation;
+			}
+
+			return null;
+		}
+
 		public void Dispose() => DisposeInternal();
 
 		private protected virtual void DisposeInternal()
 		{
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 			=> false;
 #endif
 
-		private protected void SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field == value)
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
 		private protected void SetProperty(ref int field, int value, [CallerMemberName] string? propertyName = null)
@@ -216,28 +300,30 @@ namespace Microsoft.UI.Composition
 			OnPropertyChanged(propertyName, false);
 		}
 
-		private protected void SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field.Equals(value))
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
-		private protected void SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field.Equals(value))
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
 		private protected void SetProperty(ref Quaternion field, Quaternion value, [CallerMemberName] string? propertyName = null)

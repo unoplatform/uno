@@ -4,7 +4,7 @@
 		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -42,6 +42,8 @@
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
+
+		<TypeScriptCompile Include="..\Uno.UWP\bin\Uno.Wasm\$(Configuration)\$(TargetFramework)\javascript\*.d.ts" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
 		<UpToDateCheckInput Include="WasmCSS\**\*.css" />

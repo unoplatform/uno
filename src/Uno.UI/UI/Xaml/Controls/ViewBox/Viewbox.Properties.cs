@@ -3,11 +3,8 @@ using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 
-#if __ANDROID__
-#elif __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls

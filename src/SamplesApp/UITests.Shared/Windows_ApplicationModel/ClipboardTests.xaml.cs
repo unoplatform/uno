@@ -10,6 +10,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -102,6 +103,8 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
+		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
+
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
@@ -183,6 +186,13 @@ namespace UITests.Windows_ApplicationModel
 				bitmapImage.SetSource(await bitmapReference.OpenReadAsync());
 				Bitmap = bitmapImage;
 			}
+		}
+
+		private void CopyImage()
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/Formats/uno-overalls.bmp")));
+			Clipboard.SetContent(dataPackage);
 		}
 
 		private async void PasteStorageItems()

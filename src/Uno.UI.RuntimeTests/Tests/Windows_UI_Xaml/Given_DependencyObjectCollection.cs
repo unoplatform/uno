@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ObjectiveC;
 using Microsoft.UI.Xaml;
@@ -27,5 +28,17 @@ public class Given_DependencyObjectCollection
 		c.Add(c);
 
 		Assert.IsTrue(list.SequenceEqual(["One", "Two"]));
+	}
+
+	[TestMethod]
+	public void When_Indexer_Get_IndexOutOfRange()
+	{
+		Assert.IsNull(new DependencyObjectCollection()[int.MaxValue]);
+	}
+
+	[TestMethod]
+	public void When_Indexer_Get_NegativeIndex()
+	{
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new DependencyObjectCollection()[-1]);
 	}
 }

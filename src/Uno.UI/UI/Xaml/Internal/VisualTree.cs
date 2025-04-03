@@ -18,12 +18,8 @@ using Windows.Foundation;
 using Windows.UI;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
-#endif
-
-#if __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.Xaml.Core
@@ -259,9 +255,7 @@ namespace Uno.UI.Xaml.Core
 			//AddRoot(_connectedAnimationRoot));
 			AddRoot(FullWindowMediaRoot);
 
-#if !__MACOS__
 			AddRoot(PopupRoot);
-#endif
 
 			//AddRoot(_printRoot));
 			//AddRoot(_transitionRoot));
@@ -927,6 +921,8 @@ namespace Uno.UI.Xaml.Core
 				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
 		}
+
+		internal void OnVisibleBoundChanged() => VisibleBoundsChanged?.Invoke(this, EventArgs.Empty);
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		private bool IsMainVisualTree()

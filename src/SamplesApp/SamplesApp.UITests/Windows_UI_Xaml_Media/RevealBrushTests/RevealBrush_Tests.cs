@@ -12,6 +12,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.RevealBrushTests
 	[TestFixture]
 	class RevealBrush_Tests : SampleControlUITestBase
 	{
+#if HAS_UNO_WINUI
+		[Ignore("RevealBrush is not available for WinUI")]
+#endif
 		[Test]
 		[AutoRetry]
 		public void When_FallbackColor_Set()

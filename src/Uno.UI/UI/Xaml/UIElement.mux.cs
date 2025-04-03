@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
-		internal protected AutomationPeer? GetOrCreateAutomationPeer()
+		internal AutomationPeer? GetOrCreateAutomationPeer()
 		{
 			bool isPopupOpen = true;
 
@@ -1072,7 +1072,7 @@ namespace Microsoft.UI.Xaml
 			// are entered as well.
 			// The property we currently know it has an effect is Resources
 			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
-			if (this is FrameworkElement { Resources: { } resources })
+			if (this is FrameworkElement fe && fe.TryGetResources() is { } resources)
 			{
 				// Using ValuesInternal to avoid Enumerator boxing
 				foreach (var resource in resources.ValuesInternal)

@@ -26,7 +26,7 @@ using Microsoft.UI.Dispatching;
 using Windows.System;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
 using View = Android.Views.View;
@@ -397,6 +397,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			XamlRoot = placementTarget?.XamlRoot;
 			_popup.XamlRoot = XamlRoot;
 			_popup.PlacementTarget = placementTarget;
+			UpdatePopupPanelSizePartial();
 
 			if (showOptions != null)
 			{
@@ -483,6 +484,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			});
 		}
 
+		partial void UpdatePopupPanelSizePartial();
+
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;
@@ -542,6 +545,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				_popup.XamlRoot = XamlRoot;
 			}
+			UpdatePopupPanelSizePartial();
 
 			_popup.IsOpen = true;
 

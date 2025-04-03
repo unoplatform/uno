@@ -8,8 +8,8 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionShapeCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionShape>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionShape>
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Size
 		{
 			get

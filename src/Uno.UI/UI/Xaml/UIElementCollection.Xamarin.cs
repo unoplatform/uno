@@ -7,12 +7,9 @@ using Uno.UI.Controls;
 #if __ANDROID__
 using _View = Android.Views.View;
 using _BindableView = Uno.UI.Controls.BindableView;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 using _BindableView = Uno.UI.Controls.BindableUIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
-using _BindableView = Uno.UI.Controls.BindableNSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls

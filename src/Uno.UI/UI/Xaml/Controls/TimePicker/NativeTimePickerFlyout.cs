@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Windows.Globalization;
-using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal partial class NativeTimePickerFlyout : TimePickerFlyout
+internal partial class NativeTimePickerFlyout
 {
+	internal const long DEFAULT_TIME_TICKS = -1;
+
 	protected TimeSpan GetCurrentTime()
 	{
 		var calendar = new Calendar();

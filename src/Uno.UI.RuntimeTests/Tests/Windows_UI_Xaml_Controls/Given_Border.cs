@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
 		public async Task Check_Border_Margin(bool useCustomControl)
@@ -109,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				//Assert.AreEqual(new Vector3((float)expectedOffsetDimension, (float)expectedOffsetDimension, 0), customControl.ActualOffset);
 
 				Assert.AreEqual(expectedSizeInner, customControl.DesiredSize);
-				Assert.AreEqual(null, customControl.Clip);
+				Assert.IsNull(customControl.Clip);
 			}
 
 			// TODO: This assert currently fails.
@@ -119,7 +119,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Size(innerDimension, innerDimension), innerBorder.RenderSize);
 			Assert.AreEqual(new Vector2((float)innerDimension, (float)innerDimension), innerBorder.ActualSize);
 			Assert.AreEqual(expectedSizeInner, innerBorder.DesiredSize);
-			Assert.AreEqual(null, innerBorder.Clip);
+			Assert.IsNull(innerBorder.Clip);
+		}
+
+		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_Non_Empty_Null_Border()
+		{
+			static Border CreateBorder(Color color)
+			{
+				return new Border()
+				{
+					Width = 40,
+					Height = 40,
+					Background = new SolidColorBrush(color),
+				};
+			}
+			var container = new StackPanel() { Spacing = 10 };
+			var transparentParent = CreateBorder(Colors.Green);
+			var transparentBorder = CreateBorder(Colors.Red);
+			transparentBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
+			transparentBorder.BorderThickness = new Thickness(4);
+			transparentParent.Child = transparentBorder;
+
+			var nullParent = CreateBorder(Colors.Green);
+			var nullBorder = CreateBorder(Colors.Red);
+			nullBorder.BorderBrush = null;
+			nullBorder.BorderThickness = new Thickness(4);
+			nullParent.Child = nullBorder;
+
+			var noParent = CreateBorder(Colors.Green);
+			var noBorder = CreateBorder(Colors.Red);
+			noBorder.BorderThickness = new Thickness(0);
+			noParent.Child = noBorder;
+
+			container.Children.Add(transparentParent);
+			container.Children.Add(nullParent);
+			container.Children.Add(noParent);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			// screenshot of nullBorder should be the same of transparentBorder
+			var transparentBorderScreenshot = await UITestHelper.ScreenShot(transparentParent);
+			var nullBorderScreenshot = await UITestHelper.ScreenShot(nullParent);
+			await ImageAssert.AreEqualAsync(transparentBorderScreenshot, nullBorderScreenshot);
+
+			// screenshot of noBorder should be different
+			var noBorderScreenshot = await UITestHelper.ScreenShot(noParent);
+			await ImageAssert.AreNotEqualAsync(nullBorderScreenshot, noBorderScreenshot);
 		}
 
 		[TestMethod]
@@ -282,9 +332,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Verify that border is drawn with the same thickness with/without CornerRadius
 			const string white = "#FFFFFFFF";
 
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -334,10 +381,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			//Same colors but with the addition of a White background color underneath
 			const string lightPink = "#FF7F7F";
 			const string lightBlue = "#7F7FFF";
-
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
 
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
@@ -403,10 +446,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string red = "#FFFF0000";
 
-#if __MACOS__
-			Assert.Inconclusive(); //MACOS interprets colors differently
-#endif
-
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -446,10 +485,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const string blue = "#FF0000FF";
 
-#if __MACOS__
-			Assert.Inconclusive(); //MACOS interprets colors differently
-#endif
-
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -484,7 +519,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		[Ignore("Not supported yet")]
 #endif
 		[DataRow(true)]
@@ -554,10 +589,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
-#if __MACOS__
-			Assert.Inconclusive(); // MACOS interpret colors differently
-#endif
-#if __IOS__
+#if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -630,10 +662,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Nested_Element_Tapped()
 		{
 			var SUT = new Border()
@@ -669,10 +700,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Parent_DoubleTapped_When_Child_Has_Tapped()
 		{
 			var SUT = new Border()
@@ -712,9 +742,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently flaky on macOS, part of #9282 epic")]
-#endif
 		public async Task Border_CornerRadius_GradientBrush()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -889,7 +916,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// So if there's a child in the border, you can click it "through" the thickness of the border, but if there is no child,
 				// the border will be clicked.
 				{ new Point(24, 25), addBorderChild ? "rectangle" : "border" },
-				{ new Point(20, 125), addBorderChild ? "rectangle" : "border" },
+				{ new Point(21, 125), addBorderChild ? "rectangle" : "border" }, // (20, 125) passes on 100 % scaling, but not on 150 % scaling #19246
 				{ new Point(122, 126), addBorderChild ? "rectangle" : "border" },
 				{ new Point(121, 22), addBorderChild ? "rectangle" : "border" },
 				{ new Point(29, 123), addBorderChild ? "rectangle" : "border" },

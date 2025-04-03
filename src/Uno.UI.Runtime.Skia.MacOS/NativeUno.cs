@@ -4,6 +4,8 @@ using System.Runtime.InteropServices.Marshalling;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -238,6 +240,10 @@ internal static partial class NativeUno
 	internal static partial void uno_window_exit_full_screen(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_is_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_maximize(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -352,4 +358,135 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial nint uno_set_execute_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial nint uno_set_invoke_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_navigation_callbacks(
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> starting,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> finishing,
+		delegate* unmanaged[Cdecl]<IntPtr, long, void> notification,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> receiveWebMessage,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, CoreWebView2WebErrorStatus, void> failing
+		);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_dispose(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string uno_webview_get_title(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_webview_can_go_back(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_webview_can_go_forward(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_go_back(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_go_forward(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_navigate(nint webview, string? url, string? headers);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_load_html(nint webview, string? html);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_reload(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_stop(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_execute_script(nint webview, nint handle, string javascript);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_invoke_script(nint webview, nint handle, string javascript);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_mediaplayer_set_callbacks(
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> periodicPositionUpdate,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onRateChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, double, void> onVideoDimensionChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onDurationChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onReadyToPlay,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onBufferingProgressChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaOpened,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaEnded,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaFailed,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaStalled
+		);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_create();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_set_notifications(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_mediaplayer_is_video(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_mediaplayer_get_current_time(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_current_time(nint media, double seconds);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial float uno_mediaplayer_get_rate(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_rate(nint media, float rate);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_mediaplayer_set_source_path(nint media, string path);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_mediaplayer_set_source_uri(nint media, string uri);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_stretch(nint media, Stretch stretch);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_volume(nint media, float volume);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_pause(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_play(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_stop(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_toggle_mute(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_step_by(nint media, int frames);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_create_view();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 }

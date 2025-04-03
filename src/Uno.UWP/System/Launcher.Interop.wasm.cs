@@ -6,7 +6,7 @@ namespace __Windows.__System
 	{
 		internal static partial class NativeMethods
 		{
-			[JSImport("globalThis.Uno.UI.WindowManager.current.open")]
+			[JSImport("globalThis.Windows.System.Launcher.open")]
 			internal static partial string Open(string url);
 		}
 	}

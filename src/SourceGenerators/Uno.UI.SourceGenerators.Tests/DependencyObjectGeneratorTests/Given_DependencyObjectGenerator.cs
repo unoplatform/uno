@@ -29,14 +29,9 @@ public class Given_DependencyObjectGenerator
 	private const string TFMPrevious = "net8.0";
 	private const string TFMCurrent = "net9.0";
 
-	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
+	private static MetadataReference[] BuildUnoReferences()
 	{
-		string[] availableTargets = isAndroid
-			? [
-				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMPrevious}-android"),
-				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMCurrent}-android"),
-			]
-			: [
+		string[] availableTargets = [
 				// On CI the test assemblies set must be first, as it contains all
 				// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
 				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
@@ -60,6 +55,7 @@ public class Given_DependencyObjectGenerator
 		var unoTarget = availableTargets
 			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
 			.FirstOrDefault(File.Exists);
+
 		if (unoTarget is null)
 		{
 			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
@@ -82,7 +78,7 @@ public class Given_DependencyObjectGenerator
 			ReferenceAssemblies = _refAsmAndroid,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
 	}
@@ -98,7 +94,7 @@ public class Given_DependencyObjectGenerator
 
 			public class C : Android.Views.View, DependencyObject
 			{
-				public C(Context context) : base(context)
+				public C(Android.Views.Context context) : base(context)
 				{
 				}
 			
@@ -111,6 +107,12 @@ public class Given_DependencyObjectGenerator
 				public object GetAnimationBaseValue(DependencyProperty dp) => null;
 				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
+			}
+
+			namespace Android.Views
+			{
+				public class View(Context context) { }
+				public class Context { }
 			}
 			""";
 
@@ -165,9 +167,6 @@ public class Given_DependencyObjectGenerator
 	 using Microsoft.UI.Xaml;
 	 using Microsoft.UI.Xaml.Data;
 	 using Uno.Diagnostics.Eventing;
-	 #if __MACOS__
-	 using AppKit;
-	 #endif
 	 partial class OuterClass
 	 {
 	 	[global::Microsoft.UI.Xaml.Data.Bindable]
@@ -356,7 +355,7 @@ public class Given_DependencyObjectGenerator
 			ReferenceAssemblies = _refAsm,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
 		await test.RunAsync();
 	}
 }

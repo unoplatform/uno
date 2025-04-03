@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Windows.Foundation;
+using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
@@ -91,8 +92,13 @@ public partial class TextBox
 		// this textbox but GetPosition assumes that it is relative to the displayBlock, so we compensate.
 		// var position = e.GetPosition(displayBlock);
 		var position = displayBlock.TransformToVisual(this).Inverse.TransformPoint(e.GetPosition(displayBlock));
+
 		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
-		Select(index, 0);
+		if (index < SelectionStart || index >= SelectionStart + SelectionLength)
+		{
+			// Right tapping should move the caret to the current pointer location if outside the selection
+			Select(index, 0);
+		}
 
 		OpenContextMenu(position);
 	}
@@ -104,7 +110,7 @@ public partial class TextBox
 		var currentPosition = down.Position;
 
 		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayTicks
+			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayMicroseconds
 			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
@@ -158,7 +164,15 @@ public partial class TextBox
 			{
 				// single click
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				Select(index, 0);
+				if ((args.KeyModifiers & VirtualKeyModifiers.Shift) != 0)
+				{
+					var selectionInternalStart = _selection.selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
+					SelectInternal(selectionInternalStart, index - selectionInternalStart);
+				}
+				else
+				{
+					Select(index, 0);
+				}
 				_lastPointerDown = (currentPoint, 0);
 			}
 		}
@@ -176,7 +190,7 @@ public partial class TextBox
 
 		_isPressed = false;
 
-		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayTicks)
+		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
 			// Touch holding
 			OpenContextMenu(args.GetCurrentPoint(this).Position);
@@ -211,7 +225,7 @@ public partial class TextBox
 			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
 			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
 
-			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
 			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			Select(closerEnd, 0);
@@ -332,23 +346,20 @@ public partial class TextBox
 
 			_contextMenu.Items.Clear();
 
-			if (_selection.length == 0)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-			else
+			var hasSelection = _selection.length > 0;
+
+			if (!IsReadOnly && hasSelection)
 			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
+			}
+
+			if (hasSelection)
+			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+			}
+
+			if (!IsReadOnly)
+			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
 				if (CanUndo)
 				{
@@ -358,8 +369,9 @@ public partial class TextBox
 				{
 					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
 				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
+
+			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 
 			_contextMenu.ShowAt(this, p);
 		}

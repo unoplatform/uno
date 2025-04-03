@@ -29,16 +29,14 @@ using Windows.Foundation.Metadata;
 
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
@@ -396,7 +394,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("	Infinity")]
 		[DataRow("-Infinity ")]
 		[DataRow("	Infinity")]
-		[ExpectedException(typeof(ArgumentException))]
 #if !WINAPPSDK
 		[Ignore]
 #endif
@@ -405,10 +402,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new AssertionScope();
 
 			var sut = new ContentControl { Tag = variant };
-
-			sut.SetBinding(
-				FrameworkElement.WidthProperty,
-				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+			var binding = new Binding { Source = sut, Path = new PropertyPath("Tag") };
+			Assert.Throws<ArgumentException>(() => sut.SetBinding(FrameworkElement.WidthProperty, binding));
 		}
 
 		private sealed partial class MyPanel : Panel
@@ -524,7 +519,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __MACOS__ // #9282 for macOS
+#if __ANDROID__ // #9282 for macOS
 		[Ignore]
 #endif
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
@@ -552,11 +547,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
@@ -644,9 +636,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Measure(new Size(42.0, double.NaN));
 				SUT.Measure(new Size(double.NaN, 42.0));
 #else
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
+				Assert.ThrowsExactly<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
 #endif
 			});
 
@@ -716,10 +708,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
@@ -807,9 +796,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task TestVariousArrangedPosition(
 			string horizontal,
 			string vertical,
@@ -884,7 +870,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var resultStr = $"{GetStr(childDecorator)}|{GetStr(childBorder)}|{GetStr(innerChild)}";
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			var layout = parentBorder.ShowLocalVisualTree();
 #else
 			var layout = "";
@@ -924,9 +910,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_AreDimensionsConstrained_And_Margin()
 		{
 			const double setHeight = 45d;
@@ -951,9 +934,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
 			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };
@@ -1068,7 +1048,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sut.BaseUri);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_HasNativeChildren_Should_Measure_And_Arrange()
@@ -1109,7 +1089,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.Loading += (snd, e) => loadingCount++;
 			sut.Loaded += (snd, e) => loadedCount++;
 
-			hostPanel.Loading += async (snd, e) =>
+			hostPanel.Loading += (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
 

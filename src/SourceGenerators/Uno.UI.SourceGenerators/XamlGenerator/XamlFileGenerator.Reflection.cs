@@ -188,11 +188,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, Generation.IOSViewSymbol.Value);
 		}
 
-		private bool IsMacOSNSView(XamlType xamlType)
-		{
-			return IsType(xamlType, Generation.AppKitViewSymbol.Value);
-		}
-
 		private bool IsDependencyObject(XamlObjectDefinition component)
 			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
 
@@ -202,7 +197,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Is the type derived from the native view type on a Xamarin platform?
 		/// </summary>
-		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
+		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType);
 
 		/// <summary>
 		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
@@ -548,11 +543,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol GetType(string name, XamlObjectDefinition? objectDefinition = null)
+		private INamedTypeSymbol? ResolveType(string? name, XamlObjectDefinition? xmlnsContextProvider = null)
 		{
-			while (objectDefinition is not null)
+			if (name == null)
 			{
-				var namespaces = objectDefinition.Namespaces;
+				return null;
+			}
+
+			while (xmlnsContextProvider is not null)
+			{
+				var namespaces = xmlnsContextProvider.Namespaces;
 				if (namespaces is { Count: > 0 } && name.IndexOf(':') is int indexOfColon && indexOfColon > 0)
 				{
 					var ns = name.AsSpan().Slice(0, indexOfColon);
@@ -570,18 +570,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				objectDefinition = objectDefinition.Owner;
+				xmlnsContextProvider = xmlnsContextProvider.Owner;
 			}
 
-			var type = _findType!(name);
-
-			if (type == null)
-			{
-				throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
-			}
-
-			return type;
+			return _findType!(name);
 		}
+		private INamedTypeSymbol GetType(string name, XamlObjectDefinition? objectDefinition = null) =>
+			ResolveType(name, objectDefinition) ??
+			throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(name));
 
 		private INamedTypeSymbol GetType(XamlType type)
 		{

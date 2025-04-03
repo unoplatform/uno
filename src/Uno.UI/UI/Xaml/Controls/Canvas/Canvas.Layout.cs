@@ -9,11 +9,8 @@ using Uno.Foundation.Logging;
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
-using ObjCRuntime;
-#elif __MACOS__
-using _View = AppKit.NSView;
 using ObjCRuntime;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -59,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 						Height = desiredSize.Height,
 					};
 
-#if __IOS__
+#if __APPLE_UIKIT__
 					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
 #endif
 					child.EnsureLayoutStorage();

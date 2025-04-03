@@ -17,16 +17,15 @@ namespace Microsoft.UI.Composition
 
 		bool ISizedBrush.IsSized => true;
 
-		Vector2? ISizedBrush.Size
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+
+		Vector2? ISizedBrush.Size => Surface switch
 		{
-			get => Surface switch
-			{
-				SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
-				ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width, surface.Canvas.DeviceClipBounds.Height),
-				ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
-				_ => null
-			};
-		}
+			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
+			ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width / surface.Canvas.TotalMatrix.ScaleX, surface.Canvas.DeviceClipBounds.Height / surface.Canvas.TotalMatrix.ScaleY),
+			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
+			_ => null
+		};
 
 		private Rect GetArrangedImageRect(Size sourceSize, SKRect targetRect)
 		{
@@ -77,6 +76,8 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
+		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
+
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))
@@ -104,11 +105,7 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					// The image rescaling (i.e resampling) algorithm in the shader directly is really low quality (but really fast).
-					// There is no sound workaround for this at the moment. See https://github.com/unoplatform/uno/issues/17325.
-					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
-					// SkiaSharp 3 introduces new SKSamplingOptions. When we move to SkiaSharp 3, replace the line about with this one.
-					// var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
+					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
 					{
@@ -123,7 +120,6 @@ namespace Microsoft.UI.Composition
 					}
 
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
 				}
 			}
 			else if (Surface is ISkiaSurface skiaSurface)
@@ -132,11 +128,11 @@ namespace Microsoft.UI.Composition
 
 				if (skiaSurface.Surface is not null)
 				{
-					fillPaint.Shader = skiaSurface.Surface.Snapshot().ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
+					var matrix = TransformMatrix * Matrix3x2.CreateScale(1 / skiaSurface.Surface.Canvas.TotalMatrix.ScaleX);
+					var image = skiaSurface.Surface.Snapshot();
+
+					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
-					fillPaint.IsAutohinted = true;
-					fillPaint.IsDither = true;
 				}
 				else
 				{

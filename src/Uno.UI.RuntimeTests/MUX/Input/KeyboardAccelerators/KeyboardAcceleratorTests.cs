@@ -24,7 +24,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 
-[TestClass]
+[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaMobile)]
 public partial class KeyboardAcceleratorTests : MUXApiTestBase
 {
 	#region BasicKeyboardAcceleratorToolTipVerification
@@ -33,6 +33,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	public async Task ValidateKeyboardAcceleratorToolTipsOnPivot()
 	{
 		{
+			await TestServices.RunOnUIThread(async () =>
+			{
+				// Introducing a use of Pivot.set_Title so that the linker doesn't remove it :/
+				new Pivot() { Title = "Workaround" };
+			});
 			const string rootPanelXaml =
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
                         <Pivot x:Name='rootPivot' Title='Pivot With Keyboard Accelerator' >
@@ -394,6 +399,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task ValidateKeyboardAcceleratorEventNotInvokedWhenCollapsed()
 	{
 		const string rootPanelXaml =
@@ -620,6 +628,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerator behavior when multiple modifiers are required.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task ValidateKeyboardAcceleratorBehaviorWithMultipleModifiers()
 	{
 		const string rootPanelXaml =
@@ -932,7 +943,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		}
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 	[TestProperty("Description", "Validates the order and priority of accelerator operations.")]
 	public async Task ValidateOrderOfAcceleratorOperations()
 	{
@@ -2772,6 +2783,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	[TestProperty("Description", "Validates KeyboardAccelerators.Invoked event behavior when two accelerators are shared and the first is disabled.")]
 	public async Task VerifyParentOfDisabledControlCanBeInvoked()
 	{
+		await TestServices.RunOnUIThread(async () =>
+		{
+			// Introducing a use of FrameworkElement.set_AllowFocusWhenDisabled so that the linker doesn't remove it :/
+			new Button() { AllowFocusWhenDisabled = true };
+		});
 		const string rootPanelXaml =
 				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
                         <StackPanel x:Name='parentPanel'>
@@ -2967,6 +2983,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Validates that TryInvokeKeyboardAccelerator does not call locally scoped accelerators.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task VerifyTryInvokeKeyboardAcceleratorBehaviorForLocallyScopedAccelerator()
 	{
 		StackPanelWithProcessKeyboardAcceleratorOverride tryInvokePanel = null;
@@ -3315,11 +3334,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators and Text Input behavior. Key input in currently focused TextBox should only be used to generate text input.")]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 	[Ignore("We cannot simulate keyboard input into focused TextBox on Android, iOS, and WASM #17220")]
 #endif
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 	public async Task ValidateTextInputAndKeyboardAccelerator()
 	{
 		const string rootPanelXaml =
@@ -3427,6 +3446,9 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 	#region OverridingControlAccelerators
 	[TestMethod]
 	[TestProperty("Description", "Validates KeyboardAccelerators can override the control accelerators for TextBox.")]
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task VerifyKeyboardAcceleratorCanOverrideControlAccelerator()
 	{
 		const string rootPanelXaml =

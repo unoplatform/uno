@@ -25,7 +25,7 @@ using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 #endif
 
@@ -110,9 +110,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
-#endif
 
 		private InheritedPropertiesDisposable? InheritedProperties
 		{
@@ -1632,7 +1630,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (candidate is FrameworkElement fe)
 				{
-					if (fe.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return fe.Resources;
 					}
@@ -2044,7 +2042,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyMetadata.HasPropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -2060,7 +2058,7 @@ namespace Microsoft.UI.Xaml
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 );
@@ -2071,7 +2069,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -2084,7 +2082,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var callback = currentCallbacks[callbackIndex];
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);

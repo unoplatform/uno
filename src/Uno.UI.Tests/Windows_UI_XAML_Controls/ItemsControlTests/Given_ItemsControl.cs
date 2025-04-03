@@ -118,9 +118,6 @@ namespace Uno.UI.Tests.ItemsControlTests
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void When_OnItemsSourceChanged()
 		{
 			var count = 0;
@@ -200,9 +197,6 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void When_OnItemsSourceChanged_AfterReplace_ThenIndexesAreRecalculated()
 		{
 			void Operation(ObservableCollection<string> list)
@@ -515,9 +509,9 @@ namespace Uno.UI.Tests.ItemsControlTests
 			c.Add("Three");
 
 			SUT.ItemsSource = c;
-			Assert.AreEqual(count, 3);
+			Assert.AreEqual(3, count);
 
-			Assert.AreEqual(SUT.Items.Count, 3);
+			Assert.AreEqual(3, SUT.Items.Count);
 
 			using (c.BatchUpdate())
 			{
@@ -525,7 +519,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				c.Add("Five");
 			}
 
-			Assert.AreEqual(SUT.Items.Count, 5);
+			Assert.AreEqual(5, SUT.Items.Count);
 			Assert.AreEqual(count, FrameworkTemplatePool.IsPoolingEnabled ? 5 : 8);
 			Assert.IsNotNull(SUT.ContainerFromItem("One"));
 			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
@@ -557,20 +551,20 @@ namespace Uno.UI.Tests.ItemsControlTests
 			SUT.ItemsSource = c;
 
 			c.Add("One");
-			Assert.AreEqual(count, 1);
+			Assert.AreEqual(1, count);
 
 			c.Add("Two");
-			Assert.AreEqual(count, 2);
+			Assert.AreEqual(2, count);
 
 			c.Add("Three");
-			Assert.AreEqual(count, 3);
+			Assert.AreEqual(3, count);
 
-			Assert.AreEqual(SUT.Items.Count, 3);
+			Assert.AreEqual(3, SUT.Items.Count);
 
 			c.Add("Four");
 
-			Assert.AreEqual(SUT.Items.Count, 4);
-			Assert.AreEqual(count, 4);
+			Assert.AreEqual(4, SUT.Items.Count);
+			Assert.AreEqual(4, count);
 		}
 
 		private Style BuildBasicContainerStyle() =>

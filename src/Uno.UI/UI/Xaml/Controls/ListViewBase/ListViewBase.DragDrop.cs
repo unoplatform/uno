@@ -337,7 +337,7 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
-#if !__IOS__ // This correction doesn't apply on iOS
+#if !__APPLE_UIKIT__ // This correction doesn't apply on iOS
 						if (indexOfDraggedItem < newIndex)
 						{
 							// If we've moved items down, we have to take in consideration that the updatedIndex

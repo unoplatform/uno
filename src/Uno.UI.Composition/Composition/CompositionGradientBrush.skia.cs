@@ -17,6 +17,8 @@ namespace Microsoft.UI.Composition
 		private protected float[]? ColorPositions => _colorPositions;
 		private protected SKShaderTileMode TileMode => _tileMode;
 
+		internal override bool CanPaint() => true;
+
 		internal override sealed void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
 			if (!_isColorStopsValid)

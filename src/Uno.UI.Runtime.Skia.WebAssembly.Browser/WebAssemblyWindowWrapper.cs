@@ -1,0 +1,123 @@
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Threading;
+using Uno.Extensions;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.Graphics.Display;
+using Windows.System;
+using Windows.UI.Core;
+using Windows.UI.Input;
+using static Windows.UI.Input.PointerUpdateKind;
+using System.Runtime.CompilerServices;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+using Windows.UI.Text;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Hosting;
+using Uno.UI.Xaml.Controls;
+using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
+
+namespace Uno.UI.Runtime.Skia;
+
+internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
+{
+	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
+	private DisplayInformation _displayInformation;
+
+	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
+
+	public WebAssemblyWindowWrapper()
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
+		}
+
+		NativeMethods.Initialize(this);
+
+		_displayInformation = DisplayInformation.GetForCurrentView();
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+		_displayInformation.DpiChanged += (_, _) => RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+	}
+
+	public override object? NativeWindow => null;
+
+	public override string Title
+	{
+		get => NativeMethods.GetWindowTitle();
+		set => NativeMethods.SetWindowTitle(value);
+	}
+
+	internal void RaiseNativeSizeChanged(Size newWindowSize)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			Console.WriteLine($"RaiseNativeSizeChanged({newWindowSize.Width}, {newWindowSize.Height})");
+		}
+
+		Bounds = new Rect(default, newWindowSize);
+		VisibleBounds = new Rect(default, newWindowSize);
+	}
+
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
+
+	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
+
+	[JSExport]
+	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)
+	{
+		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		{
+			windowWrapper.RaiseNativeSizeChanged(new(width, height));
+		}
+		else
+		{
+			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+		}
+	}
+
+	[JSExport]
+	private static async Task PrefetchFonts()
+	{
+		var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
+		if (textFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
+		}
+
+		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+		if (symbolsFontSuccess)
+		{
+			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
+		}
+	}
+
+	internal string CanvasId
+		=> NativeMethods.GetCanvasId(this);
+
+	private static partial class NativeMethods
+	{
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.initialize")]
+		public static partial void Initialize([JSMarshalAs<JSType.Any>] object owner);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getContainerId")]
+		public static partial string GetContainerId([JSMarshalAs<JSType.Any>] object owner);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getCanvasId")]
+		public static partial string GetCanvasId([JSMarshalAs<JSType.Any>] object owner);
+
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
+		internal static partial string GetWindowTitle();
+
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.setWindowTitle")]
+		internal static partial void SetWindowTitle(string title);
+	}
+}
