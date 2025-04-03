@@ -9,7 +9,12 @@ namespace Uno.UI;
 /// <param name="ct">CancellationToken</param>
 /// <param name="intent">The Intent you want to send</param>
 /// <param name="requestCode">A specific Response code, this is useful if you send more than one type of request in parallel</param>
-internal class OnActivityResultArgs
+#if ANDROID_SKIA
+internal
+#else
+public
+#endif
+	class OnActivityResultArgs
 {
 	public OnActivityResultArgs(int requestCode, Result resultCode, Intent intent)
 	{

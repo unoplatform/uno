@@ -11,7 +11,12 @@ using System.Linq;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal class UnoTimePickerDialog : TimePickerDialog
+#if ANDROID_SKIA
+internal
+#else
+public
+#endif
+	class UnoTimePickerDialog : TimePickerDialog
 {
 	private Android.Widget.TimePicker _picker;
 	private int _minuteIncrement = 1;
