@@ -1455,8 +1455,10 @@ namespace Microsoft.UI.Xaml
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
 
+#pragma warning disable IDE0051 // Used by native implementation
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, out bool isOver)
 			=> ValidateAndUpdateCapture(args, isOver = IsOver(args.Pointer));
+#pragma warning restore IDE0051
 
 		// Used by all OnNativeXXX to validate and update the common over/pressed/capture states
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, bool isOver, bool forceRelease = false)
@@ -1561,7 +1563,7 @@ namespace Microsoft.UI.Xaml
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
 #endif
 		}
-#endregion
+		#endregion
 
 		#region Drag state (Updated by the RaiseDrag***, should not be updated externaly)
 		private HashSet<long> _draggingOver;

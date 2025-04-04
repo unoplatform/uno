@@ -228,7 +228,7 @@ static partial class UIElementExtensions
 		}
 
 		sb.Append(GetDebugIdentifier(elt));
-		
+
 		return sb.ToString();
 	}
 }
