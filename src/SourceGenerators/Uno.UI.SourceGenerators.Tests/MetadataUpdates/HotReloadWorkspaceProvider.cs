@@ -214,7 +214,8 @@ internal class HotReloadWorkspace
 
 		var currentSolution = workspace.CurrentSolution;
 		var frameworkReferences = BuildFrameworkReferences();
-		var references = BuildUnoReferences().Concat(frameworkReferences);
+		var unoReferences = UnoAssemblyHelper.LoadAssemblies();
+		var references = Enumerable.Concat(unoReferences, frameworkReferences);
 
 		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator()]);
 
@@ -424,51 +425,6 @@ internal class HotReloadWorkspace
 				.Where(f => !f.Contains(".Native", StringComparison.OrdinalIgnoreCase))
 				.Select(f => MetadataReference.CreateFromFile(f))
 				.ToArray();
-
-	private static PortableExecutableReference[] BuildUnoReferences()
-	{
-		const string configuration =
-#if DEBUG
-			"Debug";
-#else
-			"Release";
-#endif
-
-		var availableTargets = new[] {
-			// On CI the test assemblies set must be first, as it contains all
-			// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
-			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
-			Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
-			Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
-		};
-
-		var unoUIBase = Path.Combine(
-			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-			"..",
-			"..",
-			"..",
-			"..",
-			"..",
-			"Uno.UI",
-			"bin"
-			);
-
-		var unoTarget = availableTargets
-			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
-			.FirstOrDefault(File.Exists);
-
-		if (unoTarget is null)
-		{
-			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
-		}
-
-		return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
-					.Select(f => MetadataReference.CreateFromFile(f))
-					.ToArray();
-	}
 }
 
 sealed class MyGeneratorReference : AnalyzerReference

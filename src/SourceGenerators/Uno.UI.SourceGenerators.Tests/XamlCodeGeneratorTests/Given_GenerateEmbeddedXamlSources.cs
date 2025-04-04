@@ -45,7 +45,6 @@ public class Given_GenerateEmbeddedXamlSources
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
@@ -90,7 +89,6 @@ public class Given_GenerateEmbeddedXamlSources
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 

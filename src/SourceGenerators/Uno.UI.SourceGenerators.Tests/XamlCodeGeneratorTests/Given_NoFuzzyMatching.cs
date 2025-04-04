@@ -53,7 +53,6 @@ public class Given_NoFuzzyMatching
 				}
 			},
 			ReferenceAssemblies = _Dotnet.CurrentAndroid.WithUnoPackage(),
-			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -106,7 +105,6 @@ public class Given_NoFuzzyMatching
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
