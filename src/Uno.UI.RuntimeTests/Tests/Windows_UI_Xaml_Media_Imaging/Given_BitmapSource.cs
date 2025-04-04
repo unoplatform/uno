@@ -132,6 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_SetSource_Cloned_InMemoryRandomAccessStream()
 		{
@@ -161,6 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.IsTrue(success);
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_ImageBrush_Source_Changes()
