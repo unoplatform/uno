@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -13,6 +15,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+		private static readonly int _cacheMaxEntries = Uno.UI.FeatureConfiguration.Image.MaxBitmapImageCacheCount;
 		private static readonly Dictionary<string, LinkedListNode<Task<ImageData>>> _imageCache = new();
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
@@ -73,19 +76,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						{
 					if (!_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
 					{
+						Debug.Assert(_imageCache.Count <= _cacheMaxEntries);
+						if (_imageCache.Count == _cacheMaxEntries)
+						{
+							_imageCache.Values.First().List!.RemoveLast();
+						}
 						var tcs = new TaskCompletionSource<ImageData>();
-						if (_imageCache.Count == 0)
-						{
-							var list = new LinkedList<Task<ImageData>>();
-							cachedTaskNode = _imageCache[uri.PathAndQuery] = list.AddFirst(tcs.Task);
-						}
-						else
-						{
-							var enumerator = _imageCache.GetEnumerator();
-							enumerator.MoveNext();
-							var list = enumerator.Current.Value.List;
-							cachedTaskNode = _imageCache[uri.PathAndQuery] = list!.AddFirst(tcs.Task);
-						}
+						var list = _imageCache.Count == 0 ? new LinkedList<Task<ImageData>>() : _imageCache.Values.First().List;
+						cachedTaskNode = _imageCache[uri.PathAndQuery] = list!.AddFirst(tcs.Task);
 
 						_ = Task.Run(async () =>
 						{
