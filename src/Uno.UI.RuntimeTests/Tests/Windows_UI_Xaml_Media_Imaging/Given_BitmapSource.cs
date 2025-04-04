@@ -20,14 +20,17 @@ using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using Windows.Storage.Streams;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_BitmapSource
 	{
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_SetSource_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
@@ -48,7 +51,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_SetSourceAsync_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
@@ -70,7 +72,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_MsAppData()
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
@@ -93,7 +94,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if !WINAPPSDK
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_SetSource_Stream_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
@@ -113,7 +113,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_SetSourceAsync_Stream_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
@@ -134,7 +133,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
+		public async Task When_SetSource_Cloned_InMemoryRandomAccessStream()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			using var stream = await file.OpenStream(CancellationToken.None, FileAccessMode.Read, StorageOpenOptions.AllowOnlyReaders);
+
+			var byteArray = new byte[stream.Length];
+			await stream.ReadExactlyAsync(byteArray, 0, byteArray.Length);
+
+			var stream2 = new InMemoryRandomAccessStream();
+			await stream2.WriteAsync(byteArray.AsBuffer());
+			stream2.Seek(0);
+
+			var success = true;
+			try
+			{
+				var source = new BitmapImage();
+				source.SetSource(stream2);
+				var image = new Image();
+				await UITestHelper.Load(image, image1 => image1.IsLoaded);
+				image.Source = source;
+			}
+			catch (Exception)
+			{
+				success = false;
+			}
+
+			Assert.IsTrue(success);
+		}
+
+		[TestMethod]
 		public async Task When_ImageBrush_Source_Changes()
 		{
 			var imageBrush = new ImageBrush();
@@ -162,7 +190,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Uri_Nullified()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
