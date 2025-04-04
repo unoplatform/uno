@@ -9,7 +9,7 @@ namespace Microsoft.UI.Input
 	public partial class FocusChangedEventArgs
 	{
 		// Skipping already declared property Handled
-		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.set
 	}
 }

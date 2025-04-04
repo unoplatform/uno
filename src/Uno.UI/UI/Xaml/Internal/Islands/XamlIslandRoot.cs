@@ -9,11 +9,11 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Islands;
 
-internal partial class XamlIsland : Panel
+internal partial class XamlIslandRoot : Panel
 {
 	private readonly ContentManager _contentManager;
 
-	public XamlIsland()
+	public XamlIslandRoot()
 	{
 		_contentManager = new(this, false);
 		// TODO: Uno specific - additional root logic required by Uno.

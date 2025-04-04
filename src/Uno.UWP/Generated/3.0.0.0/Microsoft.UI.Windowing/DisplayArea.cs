@@ -63,9 +63,9 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.OuterBounds.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.IsPrimary.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.DisplayId.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.OuterBounds.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WorkArea.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

@@ -15,7 +15,7 @@ using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
-internal partial class XamlIsland
+internal partial class XamlIslandRoot
 {
 	private ContentRoot _contentRoot = null!;
 	private bool _isVisible;
@@ -199,7 +199,7 @@ internal partial class XamlIsland
 		}
 	}
 
-	internal static void OnSizeChangedStatic(XamlIsland xamlIslandRoot)
+	internal static void OnSizeChangedStatic(XamlIslandRoot xamlIslandRoot)
 	{
 		// TODO MZ: Implement this maybe
 		//xamlIslandRoot.ContentManager.OnWindowSizeChanged();
