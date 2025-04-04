@@ -39,8 +39,6 @@ namespace Microsoft.UI.Xaml
 
 		private InputPane _inputPane;
 
-		private bool _started;
-
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -221,7 +219,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -234,32 +231,19 @@ namespace Microsoft.UI.Xaml
 				ViewGroup.LayoutParams.MatchParent,
 				ViewGroup.LayoutParams.MatchParent);
 
-			SetContentView(RelativeLayout);
-		}
+			_skCanvasView = new UnoSKCanvasView(this);
+			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+			RelativeLayout.AddView(_skCanvasView);
 
-		protected override void OnStart()
-		{
-			base.OnStart();
+			_nativeLayerHost = new ClippedRelativeLayout(this);
+			_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+			RelativeLayout.AddView(NativeLayerHost);
 
-			// OnStart gets fired either after onCreate (first launch) or after onRestart
-			// (go out of app then back again). We only want to do this once, hence
-			// the flag.
-			if (!_started)
-			{
-				_started = true;
-
-				_skCanvasView = new UnoSKCanvasView(this);
-				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(_skCanvasView);
-
-				_nativeLayerHost = new ClippedRelativeLayout(this);
-				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
-					ViewGroup.LayoutParams.MatchParent,
-					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(NativeLayerHost);
-			}
+			FindViewById(global::Android.Views.Window.IdAndroidContent)!.ViewTreeObserver!.AddOnPreDrawListener(new ActivationPreDrawListener());
 		}
 
 		internal void InvalidateRender()
@@ -444,6 +428,24 @@ namespace Microsoft.UI.Xaml
 				{
 					canvas.ClipPath(PathParser.CreatePathFromPathData(Path.ToSvgPathData()));
 				}
+			}
+		}
+
+		private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+		{
+			public bool OnPreDraw()
+			{
+				// Only add the RelativeLayout to the activity after we're ready to draw.
+				// Otherwise, the splash screen ends too early (even if you return false here).
+				if (Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.IsLoaded ?? false)
+				{
+					var applicationActivity = ApplicationActivity.Instance;
+					applicationActivity.SetContentView(applicationActivity.RelativeLayout);
+					applicationActivity.FindViewById(global::Android.Views.Window.IdAndroidContent)!.ViewTreeObserver!.RemoveOnPreDrawListener(this);
+					return true;
+				}
+
+				return false;
 			}
 		}
 	}
