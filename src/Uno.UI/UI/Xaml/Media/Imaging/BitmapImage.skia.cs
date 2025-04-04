@@ -13,8 +13,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+		private static readonly Dictionary<string, LinkedListNode<Task<ImageData>>> _imageCache = new();
 		// TODO: Introduce LRU caching if needed
-		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
+		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -60,25 +61,47 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					var tcs = new TaskCompletionSource<ImageData>();
-					_ = Task.Run(async () =>
+					if (uri.IsLocalResource())
 					{
-						try
+						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+					}
+
+					if (!_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
+					{
+						var tcs = new TaskCompletionSource<ImageData>();
+						if (_imageCache.Count == 0)
 						{
-							if (uri.IsLocalResource())
+							var list = new LinkedList<Task<ImageData>>();
+							cachedTaskNode = _imageCache[uri.PathAndQuery] = list.AddFirst(tcs.Task);
+						}
+						else
+						{
+							var enumerator = _imageCache.GetEnumerator();
+							enumerator.MoveNext();
+							var list = enumerator.Current.Value.List;
+							cachedTaskNode = _imageCache[uri.PathAndQuery] = list!.AddFirst(tcs.Task);
+						}
+
+						_ = Task.Run(async () =>
+						{
+							try
 							{
-								uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+								tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
 							}
+							catch (Exception e)
+							{
+								tcs.TrySetResult(ImageData.FromError(e));
+							}
+						}, ct);
+					}
+					else
+					{
+						var list = cachedTaskNode.List;
+						list!.Remove(cachedTaskNode);
+						list.AddFirst(cachedTaskNode);
+					}
 
-							tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
-						}
-						catch (Exception e)
-						{
-							tcs.TrySetResult(ImageData.FromError(e));
-						}
-					}, ct);
-
-					var imageData = await tcs.Task;
+					var imageData = await cachedTaskNode.Value;
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						PixelWidth = 0;
@@ -125,7 +148,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		internal static string GetScaledPath(string rawPath)
 		{
 			// Avoid querying filesystem if we already seen this file
-			if (_scaledBitmapCache.TryGetValue(rawPath, out var result))
+			if (_scaledBitmapPathCache.TryGetValue(rawPath, out var result))
 			{
 				return result;
 			}
@@ -148,7 +171,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			result = applicableScale ?? originalLocalPath;
-			_scaledBitmapCache[rawPath] = result;
+			_scaledBitmapPathCache[rawPath] = result;
 			return result;
 
 			string FindApplicableScale(bool onlyMatching)
