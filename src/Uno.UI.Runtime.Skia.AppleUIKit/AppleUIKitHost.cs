@@ -14,7 +14,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-public class PlatformHost : ISkiaApplicationHost
+public class AppleUIKitHost : ISkiaApplicationHost
 {
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
@@ -23,7 +23,7 @@ public class PlatformHost : ISkiaApplicationHost
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public PlatformHost(Func<Application> appBuilder)
+	public AppleUIKitHost(Func<Application> appBuilder)
 	{
 		CreateAppAction = (ApplicationInitializationCallbackParams _) =>
 		{

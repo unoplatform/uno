@@ -6,7 +6,7 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        var host = new PlatformHost(() => new App());
+        var host = new WebAssemblyBrowserHost(() => new App());
         await host.Run();
     }
 }

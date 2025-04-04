@@ -27,8 +27,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.Apple.cs" Link="Controls\BringIntoViewMode.Apple.cs" />
-		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.UIKit.cs" Link="Controls\IRotationAwareViewController.UIKit.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
 	</ItemGroup>
 

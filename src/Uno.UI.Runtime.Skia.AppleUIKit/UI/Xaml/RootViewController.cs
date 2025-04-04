@@ -28,7 +28,7 @@ using SkiaEventArgs = SkiaSharp.Views.tvOS.SKPaintSurfaceEventArgs;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-internal class RootViewController : UINavigationController, IRotationAwareViewController, IAppleUIKitXamlRootHost
+internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
