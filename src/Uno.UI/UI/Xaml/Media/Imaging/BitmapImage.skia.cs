@@ -61,13 +61,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 
 					var tcs = new TaskCompletionSource<ImageData>();
+					var path = await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null);
 					_ = Task.Run(async () =>
 					{
 						try
 						{
 							if (uri.IsLocalResource())
 							{
-								uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+								uri = new Uri(path);
 							}
 
 							tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
