@@ -1996,8 +1996,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// the fully qualified type name.
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
-				findType = _metadataHelper.FindTypeByFullName(baseTypeString) as INamedTypeSymbol;
-				findType ??= _metadataHelper.FindTypeByFullName(baseTypeString + "Extension") as INamedTypeSymbol; // Support shortened syntax
+				findType = _metadataHelper.FindTypeByFullName(baseTypeString + "Extension") as INamedTypeSymbol; // Support shortened syntax
+				findType ??= _metadataHelper.FindTypeByFullName(baseTypeString) as INamedTypeSymbol;
 			}
 			else
 			{
