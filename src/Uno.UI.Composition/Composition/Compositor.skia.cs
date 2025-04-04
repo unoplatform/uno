@@ -106,7 +106,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, Action<SKCanvas, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, Action<SKCanvas, Visual>? postRenderAction, bool applyChildOptimization)
 	{
 		if (rootVisual is null)
 		{
@@ -118,7 +118,7 @@ public partial class Compositor
 			animation.RaiseAnimationFrame();
 		}
 
-		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
+		rootVisual.RenderRootVisual(canvas, null, postRenderAction, applyChildOptimization);
 
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{

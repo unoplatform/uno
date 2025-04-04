@@ -6,7 +6,6 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -58,7 +57,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 			canvas.Scale((float)dpi);
-			visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero, null);
+			visual.RenderRootVisual(canvas, offsetOverride: Vector2.Zero, null, false);
 
 			var img = surface.Snapshot();
 

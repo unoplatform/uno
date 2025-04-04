@@ -7,15 +7,16 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.Helpers;
-using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private const int PictureCollapsingOptimizationFrameThreshold = 150;
+	private const int PictureCollapsingOptimizationVisualCountThreshold = 100;
+
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
@@ -31,8 +32,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 	private SKPicture? _picture;
+	private SKPicture? _childrenPicture;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.SubtreePaintDirty;
+	private int _framesSinceSubtreePaintClean;
+
+	internal virtual int GetSubTreeVisualCount() => 1;
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -92,6 +97,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
+		InvalidateParentSubtree();
 		return !matrixDirty;
 	}
 
@@ -180,6 +186,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
+		InvalidateParentSubtree();
+	}
+
+	private void InvalidateParentSubtree()
+	{
+		var parent = this.Parent;
+		while (parent is not null && (parent._flags & VisualFlags.SubtreePaintDirty) == 0)
+		{
+			parent._childrenPicture?.Dispose();
+			parent._childrenPicture = null;
+			parent._flags |= VisualFlags.SubtreePaintDirty;
+			parent = parent.Parent;
+		}
 	}
 
 	public CompositionClip? Clip
@@ -231,7 +250,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
 	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
+	/// <param name="applyChildOptimization"> Applies heuristics to combine certain visual subtrees into one big SKPicture.</param>
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction, bool applyChildOptimization)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -267,7 +287,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (session)
 		{
-			Render(session, postRenderAction);
+			Render(session, postRenderAction, applyChildOptimization);
 		}
 
 		canvas.Restore();
@@ -278,7 +298,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
 	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
+	/// <param name="applyChildOptimization"> Applies heuristics to combine certain visual subtrees into one big SKPicture.</param>
+	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction, bool applyChildOptimization)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -286,10 +307,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			: string.Empty;
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
-
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		_framesSinceSubtreePaintClean++;
+		if ((_flags & VisualFlags.SubtreePaintDirty) == VisualFlags.SubtreePaintDirty)
 		{
-			return;
+			_framesSinceSubtreePaintClean = 0;
+			_flags &= ~VisualFlags.SubtreePaintDirty;
 		}
 
 		CreateLocalSession(in parentSession, out var session);
@@ -344,9 +366,35 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(postClip, antialias: true);
 			}
 
-			foreach (var child in GetChildrenInRenderOrder())
+			if (_childrenPicture is not null)
 			{
-				child.Render(in session, postRenderAction);
+				canvas.DrawPicture(_childrenPicture);
+			}
+			else if (_framesSinceSubtreePaintClean < PictureCollapsingOptimizationFrameThreshold
+					 || !applyChildOptimization
+					 || GetSubTreeVisualCount() < PictureCollapsingOptimizationVisualCountThreshold)
+			{
+				foreach (var child in GetChildrenInRenderOrder())
+				{
+					child.Render(in session, postRenderAction, applyChildOptimization);
+				}
+			}
+			else
+			{
+				var recorder = new SKPictureRecorder();
+				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				// child.Render will reapply the total transform matrix, so we need to invert ours.
+				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				using (childSession)
+				{
+					foreach (var child in GetChildrenInRenderOrder())
+					{
+						child.Render(in childSession, postRenderAction, applyChildOptimization: false);
+					}
+				}
+				_childrenPicture = recorder.EndRecording();
+				canvas.DrawPicture(_childrenPicture);
 			}
 		}
 	}
@@ -369,6 +417,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		return Offset;
 	}
+
 
 	internal virtual bool GetPrePaintingClipping(SKPath dst)
 	{
@@ -433,5 +482,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		IsNativeHostVisualInherited = 4,
 		MatrixDirty = 8,
 		PaintDirty = 16,
+		SubtreePaintDirty = 32, // some child in the subtree of this visual is dirty.
 	}
 }
