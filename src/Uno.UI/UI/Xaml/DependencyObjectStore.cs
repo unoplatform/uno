@@ -2171,13 +2171,11 @@ namespace Microsoft.UI.Xaml
 			var actualInstance = ActualInstance;
 			if (actualInstance is FrameworkElement fe && fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle))
 			{
-				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+				propertyDetails.SetValue(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 			}
 			else if (actualInstance is Control control && control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle))
 			{
-				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				propertyDetails.SetValue(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
+				propertyDetails.SetValue(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.DefaultStyle);
 			}
 		}
 
