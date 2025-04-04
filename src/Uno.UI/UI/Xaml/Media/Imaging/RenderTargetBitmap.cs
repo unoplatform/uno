@@ -94,8 +94,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #if __SKIA__
 		private protected override unsafe bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
 		{
-			var width = PixelWidth;
-			var height = PixelHeight;
+			int width = PixelWidth;
+			int height = PixelHeight;
 
 			if (_buffer is not { } buffer || _bufferSize <= 0 || width <= 0 || height <= 0)
 			{
@@ -103,10 +103,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				return false;
 			}
 
-			var copy = new UnmanagedArrayOfBytes(_buffer.Length);
+			UnmanagedArrayOfBytes copy = new UnmanagedArrayOfBytes(_buffer.Length);
 			Unsafe.CopyBlock(copy.Pointer.ToPointer(), _buffer.Pointer.ToPointer(), (uint)_buffer.Length);
 
-			var tcs = new TaskCompletionSource<ImageData>();
+			TaskCompletionSource<ImageData> tcs = new TaskCompletionSource<ImageData>();
 			_ = Task.Run(() =>
 			{
 				try
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				InvalidateImageSource();
 				return task.Result;
-			}, ct);
+			}, ct, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
 
 			return true;
 		}
