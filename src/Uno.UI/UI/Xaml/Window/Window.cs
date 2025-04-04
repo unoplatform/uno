@@ -53,13 +53,7 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
-#if !__SKIA__
-		if (_current is null && CoreApplication.IsFullFledgedApp)
-		{
-			windowType = WindowType.CoreWindow;
-		}
-#endif
-
+		windowType = WindowType.DesktopXamlSource; // Always use Desktop window type.
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Creating new window (type:{windowType})");
@@ -71,7 +65,6 @@ partial class Window
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
 			if (_current is not null && _current != this)
@@ -81,8 +74,6 @@ partial class Window
 					"Ensure you either use Window.Current only, or that you only create a single " +
 					"window instance and use it throughout your application.");
 			}
-
-			windowType = WindowType.CoreWindow;
 		}
 
 		_windowType = windowType;
