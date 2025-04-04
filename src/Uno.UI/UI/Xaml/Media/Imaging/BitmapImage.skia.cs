@@ -69,6 +69,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
 
+					if ((CreateOptions & BitmapCreateOptions.IgnoreImageCache) != 0)
+					{
+						_imageCache.Remove(uri.PathAndQuery);
+					}
+
 					if (!_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
 					{
 						Debug.Assert(_imageCache.Count <= _cacheMaxEntries);
