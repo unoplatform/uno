@@ -69,11 +69,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
                         // GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
                         uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
-					var tcs = new TaskCompletionSource<ImageData>();
-					_ = Task.Run(async () =>
+
+					if ((CreateOptions & BitmapCreateOptions.IgnoreImageCache) != 0)
 					{
-						try
-						{
+						_imageCache.Remove(uri.PathAndQuery);
+					}
+
 					if (!_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
 					{
 						Debug.Assert(_imageCache.Count <= _cacheMaxEntries);
