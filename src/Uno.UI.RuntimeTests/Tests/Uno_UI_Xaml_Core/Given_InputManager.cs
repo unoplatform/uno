@@ -680,7 +680,7 @@ public class Given_InputManager
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
 
-		finger.Press(new (sv.GetAbsoluteBounds().GetCenter().X, sv.GetAbsoluteBounds().Bottom - 5));
+		finger.Press(new(sv.GetAbsoluteBounds().GetCenter().X, sv.GetAbsoluteBounds().Bottom - 5));
 
 		elt.IsPointerOver.Should().BeTrue();
 		sv.IsPointerOver.Should().BeTrue();
