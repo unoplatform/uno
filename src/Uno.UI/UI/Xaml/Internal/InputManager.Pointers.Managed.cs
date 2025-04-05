@@ -552,7 +552,7 @@ internal partial class InputManager
 				// ** OR ** the pointer has been captured by a parent element so we didn't raised to released on the sub elements.
 
 				// Note: The event is propagated silently (public events won't be raised) as it's only to clear internal state
-				var ctx = new BubblingContext { IsInternal = true, IsCleanup = true };
+				var ctx = new BubblingContext { IsInternal = false, IsCleanup = true };
 				result = Raise(Released, pressedLeaf, routedArgs, ctx);
 			}
 
@@ -616,7 +616,7 @@ internal partial class InputManager
 					// This is to make sure to not leave element flagged as IsOver = true.
 					// Note: This means that, public listener of the exit events will **never** be raised for those elements.
 					// Note 2: This will try to also raise the exited event on the capture.ExplicitTarget (if any), but this will have no effect as we already did it!
-					var leaveCtx = new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble, Root = overStaleBranch.Value.Root };
+					var leaveCtx = new BubblingContext { IsCleanup = true, IsInternal = false, Mode = BubblingMode.Bubble, Root = overStaleBranch.Value.Root };
 					var leaveResult = Raise(Leave, overStaleBranch.Value.Leaf, args, leaveCtx);
 					isOriginalSourceStale |= leaveResult.VisualTreeAltered;
 					result += leaveResult;
@@ -647,10 +647,10 @@ internal partial class InputManager
 					result += enterCaptureResult;
 
 					// Second we make sure to also flag as IsOver true all elements in the branch
-					var enterCtx = new BubblingContext { IsCleanup = true, IsInternal = true, Mode = BubblingMode.Bubble };
+					var enterCtx = new BubblingContext { IsCleanup = true, IsInternal = false, Mode = BubblingMode.Bubble };
 					var enterResult = Raise(Enter, originalSource, args, enterCtx);
 					isOriginalSourceStale |= enterCaptureResult.VisualTreeAltered;
-					result += enterCaptureResult;
+					result += enterResult;
 				}
 			}
 			else
