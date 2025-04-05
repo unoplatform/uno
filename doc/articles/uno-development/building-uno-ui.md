@@ -89,10 +89,6 @@ It's recommended to build using the single-target approach, but it's also possib
 
 Inside Visual Studio, the number of platforms is restricted to limit the compilation time.
 
-## Building Uno.UI for macOS using Visual Studio for Mac
-
-See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS platform.
-
 ## Troubleshooting build issues
 
 Here are some tips when building the Uno solution and failures happen:
