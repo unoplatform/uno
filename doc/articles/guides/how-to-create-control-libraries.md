@@ -108,7 +108,7 @@ In a Control Class Library, [conditional XAML](xref:Uno.Development.PlatformSpec
 
 ## Library assets
 
-WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx:///[libraryname]/[assetname_file_name]` format.
+WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](xref:Uno.Features.FileManagement#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx:///[libraryname]/[assetname_file_name]` format.
 
 > [!IMPORTANT]
 > When using library assets with non-WinAppSDK targets, the library name should also be lower cased.
@@ -129,4 +129,4 @@ In both cases, for the build system to include the assets files, the following p
 ```
 
 > [!IMPORTANT]
-> WinAppSDK [does not support assets](https://github.com/microsoft/microsoft-ui-xaml/issues/6429) if the application is using the MSIX package mode. To use the unpackaged mode, [see this article](../features/winapp-sdk-specifics.md#unpackaged-application-support).
+> WinAppSDK [does not support assets](https://github.com/microsoft/microsoft-ui-xaml/issues/6429) if the application is using the MSIX package mode. To use the unpackaged mode, [see this article](xref:Uno.Features.WinAppSDK#un-packaged-application-support).
