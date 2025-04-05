@@ -1,6 +1,7 @@
 ---
 uid: Uno.Workshops.Counter.Xaml.DataBinding-Inline
 ---
+<!--markdownlint-disable MD041 -->
 - Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file, between the first `StackPanel` and the `Page` element.
 
     ```xml

@@ -1,6 +1,7 @@
 ---
 uid: Uno.Workshops.Counter.DataBinding
 ---
+<!--markdownlint-disable MD041-->
 - Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
