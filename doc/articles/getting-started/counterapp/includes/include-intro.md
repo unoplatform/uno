@@ -1,3 +1,7 @@
+---
+uid: Uno.Workshops.Counter.Intro-Inline
+---
+
 > [!NOTE]
 > Estimated time to complete: 10 minutes
 

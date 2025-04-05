@@ -1,3 +1,7 @@
+---
+uid: Uno.Workshops.Counter.Xaml.Image-Inline
+---
+
 - Open the **MainPage.xaml** file.
 - Replace the **`TextBlock`** with the following **`Image`** element.
 

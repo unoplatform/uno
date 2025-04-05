@@ -1,3 +1,7 @@
+---
+uid: Uno.Workshops.Counter.Xaml.Elements-Inline
+---
+
 - Update the **`StackPanel`** to remove the **`HorizontalAlignment`** property, as we'll be centering each of the nested elements individually.
 
     ```xml

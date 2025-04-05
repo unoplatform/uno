@@ -1,3 +1,6 @@
+---
+uid: Uno.Workshops.Counter.Csharp.Image-Inline
+---
 - Open the **MainPage.cs** file.
 - Replace the **`TextBlock`** with the following **`Image`** element.
 

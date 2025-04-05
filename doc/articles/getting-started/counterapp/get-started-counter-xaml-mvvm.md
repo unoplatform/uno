@@ -4,9 +4,9 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 # Counter App using XAML and MVVM
 
-[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM)  
+[Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM)
 
-[!INCLUDE [Intro](includes/include-intro.md)]
+[!INCLUDE [Intro](xref:Uno.Workshops.Counter.Intro-Inline)]
 
 In this tutorial you will learn how to:
 
@@ -17,7 +17,7 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#.
 
-[!INCLUDE [VS](includes/include-create.md)]
+[!INCLUDE [VS](xref:Uno.Workshops.Counter.Create-Inline)]
 
 ## [Visual Studio](#tab/vs)
 
@@ -69,103 +69,30 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](includes/include-solution.md)]
+[!INCLUDE [Counter Solution](xref:Uno.Workshops.Counter.Solution-Inline)]
 
 ![Counter Solution](Assets/counter-solution-xaml.png)
 
-[!INCLUDE [Main Window](includes/include-mainwindow.md)]
+[!INCLUDE [Main Window](xref:Uno.Workshops.Counter.MainWindow-Inline)]
 
-[!INCLUDE [Main Page - XAML](includes/include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - XAML](xref:Uno.Workshops.Counter.Xaml.MainPage-Inline)]
 
-[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](xref:Uno.Workshops.Counter.Mainpage-Layout-Inline)]
 
-[!INCLUDE [Main Page - Image](includes/include-image-xaml.md)]
+[!INCLUDE [Main Page - Image Xaml](xref:Uno.Workshops.Counter.Xaml.Image-Inline)]
 
-[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](xref:Uno.Workshops.Counter.Mainpage-Change-Layout-Inline)]
 
-[!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements Xaml](xref:Uno.Workshops.Counter.Xaml.Elements-Inline)]
 
-[!INCLUDE [View Model](includes/include-mvvm.md)]
+[!INCLUDE [View Model](xref:Uno.Workshops.Counter.MVVM)]
 
 ## Data Binding
 
 Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file, between the first `StackPanel` and the `Page` element.
+[!INCLUDE [Main Page - Data Binding Xaml](xref:Uno.Workshops.Counter.Xaml.DataBinding-Inline)]
 
-    ```xml
-    <Page.DataContext>
-        <local:MainViewModel />
-    </Page.DataContext>
-    ```
-
-- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Count`** property of the **`MainViewModel`**.
-
-    ```xml
-    <TextBlock Margin="12"
-               HorizontalAlignment="Center"
-               TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
-    </TextBlock>
-    ```
-
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **MainViewModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
-
-    ```xml
-    <TextBox Margin="12"
-             HorizontalAlignment="Center"
-             PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
-             TextAlignment="Center" />
-    ```
-
-- Add a new **`Button`** with a  **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
-
-    ```xml
-    <Button Margin="12"
-            HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
-            Content="Increment Counter by Step Size" />
-    ```
-
-The final code for **MainPage.xaml** should look like this:
-
-```xml
-<Page x:Class="Counter.MainPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Counter"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  <Page.DataContext>
-    <local:MainViewModel />
-  </Page.DataContext>
-  <StackPanel VerticalAlignment="Center">
-    <Image Width="150"
-           Height="150"
-           Margin="12"
-           HorizontalAlignment="Center"
-           Source="Assets/logo.png" />
-
-    <TextBox Margin="12"
-             HorizontalAlignment="Center"
-             PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
-             TextAlignment="Center" />
-
-    <TextBlock Margin="12"
-               HorizontalAlignment="Center"
-               TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
-    </TextBlock>
-
-    <Button Margin="12"
-            HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
-            Content="Increment Counter by Step Size" />
-  </StackPanel>
-</Page>
-```
-
-[!INCLUDE [Wrap Up](includes/include-wrap.md)]
+[!INCLUDE [Wrap Up](xref:Uno.Workshops.Counter.WrapUp-Inline)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVVM).

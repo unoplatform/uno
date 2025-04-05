@@ -1,3 +1,6 @@
+---
+uid: Uno.Workshops.Counter.Create-Inline
+---
 If you're a more experienced developer, you may want to skip this tutorial and jump straight to either the [SimpleCalculator](xref:Workshop.SimpleCalc.Overview) or the [TubePlayer](xref:Workshop.TubePlayer.Overview) sample. Both are more complex and will give you a better idea of what Uno Platform can do.
 
 ## Create the Application

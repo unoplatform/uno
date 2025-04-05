@@ -1,3 +1,6 @@
+---
+uid: Uno.Workshops.Counter.Csharp.MainPage
+---
 The layout for the `MainPage` is defined in the **MainPage.cs** file. This file contains the C# Markup that defines the layout of the application.
 
 ```csharp

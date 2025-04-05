@@ -1,3 +1,6 @@
+---
+uid: Uno.Workshops.Counter.Xaml.MainPage-Inline
+---
 The layout for the **MainPage** is defined in the **MainPage.xaml** file. This file contains the XAML markup that defines the layout of the application. Replace your **MainPage.xaml** with the contents below:
 
 ```xml

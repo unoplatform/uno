@@ -1,3 +1,7 @@
+---
+uid: Uno.Workshops.Counter.MainWindow-Inline
+---
+
 Before proceeding, you should select a target platform and run the application. For more information on debugging an application, see for [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022), [Visual Studio Code](xref:Uno.GettingStarted.CreateAnApp.VSCode), or [Rider](xref:Uno.GettingStarted.CreateAnApp.Rider).
 
 ## MainWindow and MainPage

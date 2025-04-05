@@ -4,9 +4,9 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 
 # Counter App using C# Markup and MVVM
 
-[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM)  
+[Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM)
 
-[!INCLUDE [Intro](includes/include-intro.md)]
+[!INCLUDE [Intro](xref:Uno.Workshops.Counter.Intro-Inline)]
 
 In this tutorial you will learn how to:
 
@@ -17,7 +17,7 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#.
 
-[!INCLUDE [VS](includes/include-create.md)]
+[!INCLUDE [VS](xref:Uno.Workshops.Counter.Create-Inline)]
 
 ## [Visual Studio](#tab/vs)
 
@@ -69,112 +69,30 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](includes/include-solution.md)]
+[!INCLUDE [Counter Solution](xref:Uno.Workshops.Counter.Solution-Inline)]
 
 ![Counter Solution](Assets/counter-solution-csharp.png)
 
-[!INCLUDE [Main Window](includes/include-mainwindow.md)]
+[!INCLUDE [Main Window](xref:Uno.Workshops.Counter.MainWindow-Inline)]
 
-[!INCLUDE [Main Page - C# Markup](includes/include-mainpage-csharp.md)]
+[!INCLUDE [Main Page - C# Markup](xref:Uno.Workshops.Counter.Csharp.MainPage)]
 
-[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](xref:Uno.Workshops.Counter.Mainpage-Layout-Inline)]
 
-[!INCLUDE [Main Page - Image](includes/include-image-csharp.md)]
+[!INCLUDE [Main Page - Image C# Markup](xref:Uno.Workshops.Counter.Csharp.Image-Inline)]
 
-[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](xref:Uno.Workshops.Counter.Mainpage-Change-Layout-Inline)]
 
-[!INCLUDE [Main Page - Other Elements](includes/include-elements-csharp.md)]
+[!INCLUDE [Main Page - Other Elements C# Markup](xref:Uno.Workshops.Counter.CSharp.Elements-Inline)]
 
-[!INCLUDE [View Model](includes/include-mvvm.md)]
+[!INCLUDE [View Model](xref:Uno.Workshops.Counter.MVVM)]
 
 ## Data Binding
 
 Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
+[!INCLUDE [Main Page - Data Binding](xref:Uno.Workshops.Counter.DataBinding)]
 
-    ```csharp
-    this.DataContext(new MainViewModel(), (page, vm) => page
-        .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
-        .Content(
-            ...
-        )
-    );
-    ```
-
-- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`MainViewModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
-
-    ```csharp
-    new TextBlock()
-        .Margin(12)
-        .HorizontalAlignment(HorizontalAlignment.Center)
-        .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-        .Text(() => vm.Count, txt => $"Counter: {txt}")
-    ```
-
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **`MainViewModel`**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
-
-    ```csharp
-    new TextBox()
-        .Margin(12)
-        .HorizontalAlignment(HorizontalAlignment.Center)
-        .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-        .PlaceholderText("Step Size")
-        .Text(x => x.Binding(() => vm.Step).TwoWay())
-    ```
-
-- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
-
-    ```csharp
-    new Button()
-        .Margin(12)
-        .HorizontalAlignment(HorizontalAlignment.Center)
-        .Command(() => vm.IncrementCommand)
-        .Content("Increment Counter by Step Size")
-    ```
-
-- The final code for **MainPage.cs** should look like this:
-
-    ```csharp
-    public sealed partial class MainPage : Page
-    {
-        public MainPage()
-        {
-            this.DataContext(new MainViewModel(), (page, vm) => page
-                .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
-                .Content(
-                    new StackPanel()
-                        .VerticalAlignment(VerticalAlignment.Center)
-                        .Children(
-                            new Image()
-                                .Margin(12)
-                                .HorizontalAlignment(HorizontalAlignment.Center)
-                                .Width(150)
-                                .Height(150)
-                                .Source("ms-appx:///Counter/Assets/logo.png"),
-                            new TextBox()
-                                .Margin(12)
-                                .HorizontalAlignment(HorizontalAlignment.Center)
-                                .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-                                .PlaceholderText("Step Size")
-                                .Text(x => x.Binding(() => vm.Step).TwoWay()),
-                            new TextBlock()
-                                .Margin(12)
-                                .HorizontalAlignment(HorizontalAlignment.Center)
-                                .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-                                .Text(() => vm.Count, txt => $"Counter: {txt}"),
-                            new Button()
-                                .Margin(12)
-                                .HorizontalAlignment(HorizontalAlignment.Center)
-                                .Command(() => vm.IncrementCommand)
-                                .Content("Increment Counter by Step Size")
-                        )
-                )
-            );
-        }
-    }
-    ```
-
-[!INCLUDE [Wrap Up](includes/include-wrap.md)]
+[!INCLUDE [Wrap Up](xref:Uno.Workshops.Counter.WrapUp-Inline)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVVM).
