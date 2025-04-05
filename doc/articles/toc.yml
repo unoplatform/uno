@@ -10,7 +10,7 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
-        
+
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
