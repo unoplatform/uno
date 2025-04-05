@@ -37,10 +37,9 @@ public partial class SvgImageSource : ImageSource
 	/// </summary>
 	/// <param name="uriSource"></param>
 	public SvgImageSource(Uri uriSource)
+		: this()
 	{
 		UriSource = uriSource;
-
-		Initialize();
 	}
 
 	private void Initialize()

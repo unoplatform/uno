@@ -27,6 +27,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
 		{
 			textBox.TextBoxView.UpdateTextFromNative(text);
+			textBox.SelectInternal(selectionStart, selectionLength);
 		}
 	}
 

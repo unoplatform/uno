@@ -223,29 +223,45 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void UpdateStackPanelDesiredPosition()
 		{
 			// When the items have SwipeMode.Execute, there is a parallax effect between the button and the swipe content.
-			var sign = m_createdContent == CreatedContent.Left || m_createdContent == CreatedContent.Top ? -1 : 1;
 
-			if (m_isHorizontal)
+			switch (m_createdContent)
 			{
-				if (m_swipeContentStackPanel.HorizontalAlignment == HorizontalAlignment.Stretch)
-				{
-					_desiredStackPanelPosition.X = (float)(sign * ActualWidth * 0.5 + _desiredPosition.X * 0.5);
-				}
-				else
-				{
-					_desiredStackPanelPosition.X = 0;
-				}
-			}
-			else
-			{
-				if (m_swipeContentStackPanel.VerticalAlignment == VerticalAlignment.Stretch)
-				{
-					_desiredStackPanelPosition.Y = (float)(sign * ActualHeight * 0.5 + _desiredPosition.Y * 0.5);
-				}
-				else
-				{
+				case CreatedContent.Left:
+					_desiredStackPanelPosition.X = (float)Math.Min(0, _desiredPosition.X - m_swipeContentStackPanel.ActualWidth);
 					_desiredStackPanelPosition.Y = 0;
-				}
+					break;
+				case CreatedContent.Right:
+					if (m_currentItems.Mode is SwipeMode.Execute)
+					{
+						_desiredStackPanelPosition.X = (float)(m_content.ActualWidth + _desiredPosition.X);
+					}
+					else
+					{
+						_desiredStackPanelPosition.X = (float)(m_content.ActualWidth * 0.5 + _desiredPosition.X * 0.5);
+					}
+					_desiredStackPanelPosition.Y = 0;
+					break;
+				case CreatedContent.Top:
+					_desiredStackPanelPosition.Y = (float)Math.Min(0, _desiredPosition.Y - m_swipeContentStackPanel.ActualHeight);
+					_desiredStackPanelPosition.X = 0;
+					break;
+				case CreatedContent.Bottom:
+					if (m_currentItems.Mode is SwipeMode.Execute)
+					{
+						_desiredStackPanelPosition.Y = (float)(m_content.ActualHeight + _desiredPosition.Y);
+					}
+					else
+					{
+						_desiredStackPanelPosition.Y = (float)(m_content.ActualHeight * 0.5 + _desiredPosition.Y * 0.5);
+					}
+					_desiredStackPanelPosition.X = 0;
+					break;
+				case CreatedContent.None:
+					_desiredStackPanelPosition.X = 0;
+					_desiredStackPanelPosition.Y = 0;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 

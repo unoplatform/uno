@@ -38,8 +38,7 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.netcoremobile.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.netcoremobile.csproj",
       "Uno.UI\\Uno.UI.netcoremobile.csproj",
-      "Uno.UWP\\Uno.netcoremobile.csproj",
-      "Uno.WinUIRevert\\Uno.WinUIRevert.csproj"
+      "Uno.UWP\\Uno.netcoremobile.csproj"
     ]
   }
 }

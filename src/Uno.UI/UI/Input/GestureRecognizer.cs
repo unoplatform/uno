@@ -2,6 +2,7 @@
 #if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -12,6 +13,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
+using Uno.UI.Input;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
@@ -50,6 +52,13 @@ namespace Windows.UI.Input
 		}
 
 		public bool IsActive => _gestures.Count > 0 || _manipulation != null;
+
+		/// <summary>
+		/// Defines which suspicious cases should be patched by the gesture recognizer.
+		/// </summary>
+		[UnoOnly]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public GestureRecognizerSuspiciousCases PatchCases { get; set; } = WinRTFeatureConfiguration.GestureRecognizer._defaultPatchSuspiciousCases;
 
 		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
 

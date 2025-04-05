@@ -98,7 +98,7 @@ public partial class ScrollContentPresenter
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
-#if __ANDROID__ // Adjust for region blocked by keyboard.
+#if __ANDROID__ || __SKIA__ // Adjust for region blocked by keyboard.
 		viewportHeight -= _occludedRectPadding.Bottom;
 #endif
 
@@ -191,7 +191,7 @@ public partial class ScrollContentPresenter
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
-#if __ANDROID__ // Adjust for region blocked by keyboard.
+#if __ANDROID__ || __SKIA__ // Adjust for region blocked by keyboard.
 		viewportHeight -= _occludedRectPadding.Bottom;
 #endif
 

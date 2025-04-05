@@ -1,5 +1,5 @@
 parameters:
-  UnoCheck_Version: '1.30.1'
+  UnoCheck_Version: '1.31.0-dev.12'
   UnoCheckParameters: ''
 
 steps:
@@ -10,14 +10,8 @@ steps:
 
   - powershell: |
       & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --skip unosdk --skip dotnetnewunotemplates --pre-major ${{ parameters.UnoCheckParameters }}
+      & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip maui --skip vswin --skip vsmac --skip unosdk --skip dotnetnewunotemplates --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
-    errorActionPreference: continue
-    ignoreLASTEXITCODE: true
-    retryCountOnTaskFailure: 3
-  - powershell: |
-      & dotnet workload install tvos
-    displayName: Install .NET tvOS Workload
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3

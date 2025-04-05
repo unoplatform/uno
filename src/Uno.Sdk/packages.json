@@ -322,5 +322,12 @@
 		"Uno.Themes.WinUI.Markup",
 		"Uno.Cupertino.WinUI"
 	  ]
+	},
+	{
+	  "group": "VlcNativeWindowsAssets",
+	  "version": "3.0.21",
+	  "packages": [
+		"VideoLAN.LibVLC.Windows"
+	  ]
 	}
   ]

@@ -11,6 +11,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
@@ -88,6 +91,43 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 		private int _bufferSize;
 
+#if __SKIA__
+		private protected override unsafe bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
+		{
+			var width = PixelWidth;
+			var height = PixelHeight;
+
+			if (_buffer is not { } buffer || _bufferSize <= 0 || width <= 0 || height <= 0)
+			{
+				asyncImage = default;
+				return false;
+			}
+
+			var copy = new UnmanagedArrayOfBytes(_buffer.Length);
+			Unsafe.CopyBlock(copy.Pointer.ToPointer(), _buffer.Pointer.ToPointer(), (uint)_buffer.Length);
+
+			var tcs = new TaskCompletionSource<ImageData>();
+			_ = Task.Run(() =>
+			{
+				try
+				{
+					tcs.TrySetResult(Open(buffer, _bufferSize, width, height));
+				}
+				catch (Exception e)
+				{
+					tcs.TrySetResult(ImageData.FromError(e));
+				}
+			}, ct);
+
+			asyncImage = tcs.Task.ContinueWith(task =>
+			{
+				InvalidateImageSource();
+				return task.Result;
+			}, ct);
+
+			return true;
+		}
+#else
 		/// <inheritdoc />
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
@@ -104,6 +144,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			InvalidateImageSource();
 			return image.HasData;
 		}
+#endif
 
 #if !HAS_RENDER_TARGET_BITMAP
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

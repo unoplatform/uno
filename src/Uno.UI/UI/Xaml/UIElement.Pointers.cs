@@ -16,7 +16,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
-
+using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -391,7 +391,10 @@ namespace Microsoft.UI.Xaml
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
-			var recognizer = new GestureRecognizer(this);
+			var recognizer = new GestureRecognizer(this)
+			{
+				PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForUiElement
+			};
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			// or to subscribe to events for platform specific needs (iOS)

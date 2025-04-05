@@ -99,7 +99,7 @@ namespace Windows.UI.Input
 #nullable restore
 
 		internal PointerPoint At(Point position)
-			=> new PointerPoint(
+			=> new(
 				FrameId,
 				Timestamp,
 				PointerDevice,
@@ -109,7 +109,18 @@ namespace Windows.UI.Input
 				IsInContact,
 				Properties);
 
-		internal PointerIdentifier Pointer => new PointerIdentifier(PointerDevice.PointerDeviceType, PointerId);
+		internal PointerPoint At(Point rawPosition, Point position)
+			=> new(
+				FrameId,
+				Timestamp,
+				PointerDevice,
+				PointerId,
+				rawPosition: rawPosition,
+				position: position,
+				IsInContact,
+				Properties);
+
+		internal PointerIdentifier Pointer => new(PointerDevice.PointerDeviceType, PointerId);
 
 		public uint FrameId { get; }
 

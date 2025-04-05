@@ -34,7 +34,7 @@ partial class SvgImageSource
 						new[] {
 							typeof(SKPicture),
 							typeof(SKSizeI),
-							typeof(SKMatrix),
+							typeof(SKMatrix).MakePointerType(),
 							typeof(SKPaint),
 							typeof(bool),
 							typeof(SKColorSpace),

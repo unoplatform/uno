@@ -135,7 +135,7 @@ public partial class Compositor
 
 		if (_runningAnimations.Count > 0)
 		{
-			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
+			CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget);
 		}
 	}
 
