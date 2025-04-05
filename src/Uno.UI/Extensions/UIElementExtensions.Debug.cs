@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -222,7 +223,7 @@ static partial class UIElementExtensions
 	internal static string GetDebugPath(this object elt)
 	{
 		var sb = new StringBuilder();
-		foreach (var parent in elt.GetParents().Reverse())
+		foreach (var parent in GetParents(elt).Reverse())
 		{
 			sb.AppendLine(parent.GetDebugIdentifier());
 		}
@@ -230,5 +231,19 @@ static partial class UIElementExtensions
 		sb.Append(GetDebugIdentifier(elt));
 
 		return sb.ToString();
+
+#if HAS_UNO
+		static IEnumerable<object> GetParents(object elt)
+			=> elt.GetParents();
+#else
+		static IEnumerable<object> GetParents(object elt)
+		{
+			while (elt is DependencyObject @do)
+			{
+				yield return @do;
+				elt = VisualTreeHelper.GetParent(@do);
+			}
+		}
+#endif
 	}
 }
