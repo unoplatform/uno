@@ -21,10 +21,12 @@ namespace Microsoft.UI.Composition
 	internal class TextVisual : Visual
 	{
 		private readonly WeakReference<TextBlock> _owner;
+		private readonly bool _isInsideTextBox;
 
-		public TextVisual(Compositor compositor, TextBlock owner) : base(compositor)
+		internal TextVisual(Compositor compositor, TextBlock owner, bool isInsideTextBox = false) : base(compositor)
 		{
 			_owner = new WeakReference<TextBlock>(owner);
+			_isInsideTextBox = isInsideTextBox;
 		}
 
 		internal override void Paint(in PaintingSession session)
@@ -36,5 +38,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal override bool CanPaint() => true;
+
+		internal override bool RequiresRepaintOnEveryFrame => _isInsideTextBox;
 	}
 }
