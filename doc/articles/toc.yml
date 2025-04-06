@@ -264,7 +264,7 @@
           - name: General guidance
             href: migrating-guidance.md
       - name: Silverlight
-        topicHref: guides/silverlight-migration/silverlight-migration-landing.md
+        topicHref: xref:Uno.SilverlightMigration.Landing
         href: guides/silverlight-migration/toc.yml
 
     - name: Publishing
@@ -322,12 +322,13 @@
     - name: Contributing
       items:
       - name: Overview
-        href: uno-development/contributing-intro.md
+        href: xref:Uno.Contributing.Intro
       - name: Code of Conduct
-        href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
+        href: ../../CODE_OF_CONDUCT.md
       - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
+        href: xref:Uno.Contributing.WaysToContribute
       - name: How Uno works
+        href: xref:Uno.Contributing.Internals.Overview
         items:
           - name: Overview
             href: xref:Uno.Contributing.Overview
