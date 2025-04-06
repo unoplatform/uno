@@ -28,6 +28,8 @@ partial class ItemsView : Control
 	// Number of CompositionTarget.Rendering event occurrences after bring-into-view completion before resetting m_bringIntoViewElement as the scroll anchoring element.
 	const byte c_renderingEventsPostBringIntoView = 4;
 
+#if !__ANDROID__ && !__IOS__
+	[NotImplemented("__ANDROID__", "__IOS__")]
 	public ItemsView()
 	{
 		//ITEMSVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
@@ -63,6 +65,7 @@ partial class ItemsView : Control
 
 		UpdateSelector();
 	}
+#endif
 
 	~ItemsView()
 	{
