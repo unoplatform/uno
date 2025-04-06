@@ -1,6 +1,7 @@
 ---
 uid: Uno.GetStarted
 ---
+<!--markdownlint-disable MD041 MD051-->
 
 ## Quick Start
 
@@ -10,7 +11,7 @@ uid: Uno.GetStarted
    b. If you run into issues with it, see [Troubleshooting Uno-Check](xref:UnoCheck.Troubleshooting)
 3. Download the Uno Platform extension for your IDE:
 
-   <!-- markdownlint-disable MD001 MD009 -->
+   <!-- markdownlint-disable MD001 MD009 MD033-->
 
    <div class="row">
 
