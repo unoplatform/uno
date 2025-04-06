@@ -155,20 +155,20 @@
     - name: Architecture
       items:
         - name: Supported Platforms
-          href: getting-started/requirements.md
+          href: xref:Uno.GettingStarted.Requirements
           items:
           - name: .NET Versions
-            href: net-version-support.md
+            href: xref:Uno.Development.NetVersionSupport
           - name: Working with Skia Desktop
             href: xref:Uno.Skia.Desktop
           - name: Working with the Linux Framebuffer
-            href: features/using-linux-framebuffer.md
+            href: xref:Uno.Skia.Linux.Framebuffer
         - name: Philosophy
-          href: concepts/overview/philosophy-of-uno.md
+          href: xref:Uno.Overview.Philosophy
         - name: How Uno Works
-          href: how-uno-works.md
+          href: xref:Uno.Development.HowItWorks
         - name: Best practices
-          href: best-practices-uno.md
+          href: xref:Uno.Development.BestPractices
 
     - name: Authoring
       items:
