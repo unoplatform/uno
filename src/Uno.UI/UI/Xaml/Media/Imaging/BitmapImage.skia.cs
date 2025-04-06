@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					{
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
-					
+
 					if (uri.IsLocalResource())
 					{
 						// GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
@@ -71,8 +71,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					{
 						try
 						{
-							
-
 							tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
 						}
 						catch (Exception e)
