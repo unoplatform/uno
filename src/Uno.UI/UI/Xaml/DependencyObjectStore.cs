@@ -1634,9 +1634,13 @@ namespace Microsoft.UI.Xaml
 					{
 						yield return fe.Resources;
 					}
-				}
 
-				candidate = candidate.GetParent() as DependencyObject ?? VisualTreeHelper.GetParent(candidate);
+					candidate = fe.Parent;
+				}
+				else
+				{
+					candidate = VisualTreeHelper.GetParent(candidate);
+				}
 			}
 
 			if (includeAppResources && Application.Current != null)
