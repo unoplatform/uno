@@ -11,7 +11,7 @@ using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public class HtmlWebViewElement : UIElement, INativeWebView
+internal class HtmlWebViewElement : UIElement, INativeWebView
 {
 	private CoreWebView2 _coreWebView;
 

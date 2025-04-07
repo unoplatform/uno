@@ -16,7 +16,7 @@ internal partial class UnoSkiaAppDelegate : UIApplicationDelegate
 
 	public override void FinishedLaunching(UIApplication application)
 	{
-		Application.Start(PlatformHost.CreateAppAction);
+		Application.Start(AppleUIKitHost.CreateAppAction);
 	}
 
 	private void SubscribeBackgroundNotifications()

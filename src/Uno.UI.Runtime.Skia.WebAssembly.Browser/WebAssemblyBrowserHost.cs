@@ -17,7 +17,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-public partial class PlatformHost : ISkiaApplicationHost, IXamlRootHost
+public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
@@ -32,7 +32,7 @@ public partial class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public PlatformHost(Func<Application> appBuilder)
+	public WebAssemblyBrowserHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
 
@@ -84,7 +84,7 @@ public partial class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 			DisplayInformation.GetForCurrentView();
 		}
 
-		PersistBootstrapperLoader();
+		NativeMethods.PersistBootstrapperLoader();
 
 		_renderer = new BrowserRenderer(this);
 
@@ -119,6 +119,9 @@ public partial class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 
 	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
 
-	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
-	public static partial void PersistBootstrapperLoader();
+	private static partial class NativeMethods
+	{
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
+		public static partial void PersistBootstrapperLoader();
+	}
 }
