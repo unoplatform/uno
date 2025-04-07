@@ -30,9 +30,12 @@ public partial class InMemoryRandomAccessStream : IStreamWrapper
 
 	public IRandomAccessStream CloneStream()
 	{
+		var position = Position;
 		var destination = new MemoryStream();
 		_stream.Position = 0;
 		_stream.CopyTo(destination);
+		destination.Seek((long)position, SeekOrigin.Begin);
+		_stream.Seek((long)position, SeekOrigin.Begin);
 		return new InMemoryRandomAccessStream(destination);
 	}
 
