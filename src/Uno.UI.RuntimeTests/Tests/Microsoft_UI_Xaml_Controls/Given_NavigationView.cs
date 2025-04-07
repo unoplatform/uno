@@ -16,6 +16,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
+using Color = Windows.UI.Color;
 #if __APPLE_UIKIT__
 using UIKit;
 #endif
@@ -216,8 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			var nvi = uc.FindFirstChild<NavigationViewItem>();
 			var bitmap = await UITestHelper.ScreenShot(nvi);
-			await bitmap.Save("ramez.png");
-			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Microsoft.UI.Colors.Parse("#1B0000"));
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
 	}
 }
