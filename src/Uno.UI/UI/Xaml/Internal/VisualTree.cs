@@ -881,12 +881,12 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual)
 				{
-					if (Window.CurrentSafe is null)
+					if (Window.CurrentSafe is not { } window)
 					{
 						throw new InvalidOperationException("Window.Current must be set.");
 					}
 
-					return Window.CurrentSafe.Bounds.Size;
+					return window.Bounds.Size;
 				}
 				else
 				{
