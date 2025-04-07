@@ -79,12 +79,12 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaPresenterExtensionType)
 		{
-			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), presenter => mediaPresenterExtensionType.GetConstructor([typeof(MediaPlayerPresenter)])!.Invoke([presenter]));
+			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), presenter => Activator.CreateInstance(mediaPresenterExtensionType, presenter)!);
 		}
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaExtensionType)
 		{
-			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => mediaExtensionType.GetConstructor([typeof(MediaPlayer)])!.Invoke([player]));
+			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
 	}
 
