@@ -16,13 +16,69 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property HasBorder
 		// Skipping already declared property HasTitleBar
 		// Skipping already declared property State
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int? PreferredMinimumWidth
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int? OverlappedPresenter.PreferredMinimumWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20OverlappedPresenter.PreferredMinimumWidth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "int? OverlappedPresenter.PreferredMinimumWidth");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int? PreferredMinimumHeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int? OverlappedPresenter.PreferredMinimumHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20OverlappedPresenter.PreferredMinimumHeight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "int? OverlappedPresenter.PreferredMinimumHeight");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int? PreferredMaximumWidth
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int? OverlappedPresenter.PreferredMaximumWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20OverlappedPresenter.PreferredMaximumWidth");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "int? OverlappedPresenter.PreferredMaximumWidth");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int? PreferredMaximumHeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int? OverlappedPresenter.PreferredMaximumHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20OverlappedPresenter.PreferredMaximumHeight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "int? OverlappedPresenter.PreferredMaximumHeight");
+			}
+		}
+#endif
 		// Skipping already declared property RequestedStartupState
-		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Restore()
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsMaximizable.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.HasTitleBar.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsAlwaysOnTop.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsAlwaysOnTop.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsMaximizable.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsMaximizable.set
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumHeight.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsMinimizable.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsMinimizable.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.IsModal.get
@@ -32,10 +88,18 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.State.get
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Maximize()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Minimize()
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.HasBorder.get
+		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Restore()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.SetBorderAndTitleBar(bool, bool)
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Minimize(bool)
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Restore(bool)
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.HasBorder.get
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumHeight.set
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.get
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.set
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMaximumWidth.get
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMaximumWidth.set
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMaximumHeight.get
+		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMaximumHeight.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.RequestedStartupState.get
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Create()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForContextMenu()

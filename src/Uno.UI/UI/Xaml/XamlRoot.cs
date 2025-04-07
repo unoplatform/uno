@@ -60,7 +60,7 @@ public sealed partial class XamlRoot
 
 				return Window.CurrentSafe.Bounds;
 			}
-			else if (rootElement is XamlIsland xamlIsland)
+			else if (rootElement is XamlIslandRoot xamlIsland)
 			{
 				var width = !double.IsNaN(xamlIsland.Width) ? xamlIsland.Width : 0;
 				var height = !double.IsNaN(xamlIsland.Height) ? xamlIsland.Height : 0;

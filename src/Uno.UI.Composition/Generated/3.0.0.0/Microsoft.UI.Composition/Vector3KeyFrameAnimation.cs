@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Vector3KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3)
 		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Skipping already declared method Microsoft.UI.Composition.Vector3KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector3)
 	}
 }

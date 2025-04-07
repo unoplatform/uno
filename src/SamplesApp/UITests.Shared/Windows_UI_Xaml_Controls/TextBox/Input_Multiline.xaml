@@ -20,21 +20,7 @@
 		         Text="{Binding MyInput, Mode=TwoWay}"
 		         TextWrapping="Wrap"
 		         AcceptsReturn="True" />
-		<TextBlock>TextWrapping="WrapWholeWords" / AcceptsReturn="True"</TextBlock>
-		<TextBox Header="Header Text:"
-		         MinHeight="120"
-		         MaxWidth="300"
-		         Text="{Binding MyInput, Mode=TwoWay}"
-		         TextWrapping="WrapWholeWords"
-		         AcceptsReturn="True" />
 		<TextBlock>TextWrapping="Wrap" / AcceptsReturn="False"</TextBlock>
-		<TextBox Header="Header Text:"
-		         MinHeight="120"
-		         MaxWidth="300"
-		         Text="{Binding MyInput, Mode=TwoWay}"
-		         TextWrapping="Wrap"
-		         AcceptsReturn="False" />
-		<TextBlock>TextWrapping="WrapWholeWords" / AcceptsReturn="False"</TextBlock>
 		<TextBox Header="Header Text:"
 		         MinHeight="120"
 		         MaxWidth="300"

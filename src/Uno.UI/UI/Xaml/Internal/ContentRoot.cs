@@ -129,7 +129,7 @@ internal partial class ContentRoot
 
 	internal XamlRoot? XamlRoot => VisualTree.XamlRoot;
 
-	internal XamlIsland? XamlIslandRoot { get; set; }
+	internal XamlIslandRoot? XamlIslandRoot { get; set; }
 
 	private void OnStateChanged()
 	{
