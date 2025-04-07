@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -77,6 +76,10 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
 
+		// We used to do this ApiExtensibility with ApiExtensionAttribute and a condition that makes it only run
+		// on Windows, but this causes problem on Wpf because we're registering Win32's MPE implementation even on WPF.
+		// This way, the Win32 MPE implementation is only registered when we're using
+		// Win32 host and we know for sure we're running the Win32 target.
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.Win32MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaPresenterExtensionType)
 		{
 			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), presenter => Activator.CreateInstance(mediaPresenterExtensionType, presenter)!);
