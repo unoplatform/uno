@@ -34,6 +34,19 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 > [!NOTE]
 > The `NSMicrophoneUsageDescription` key is required only if you are capturing videos. If you are only capturing photos, you can omit this key.
 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to the camera to take photos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to the microphone to record videos.</string>
+</dict>
+</plist>
+```
+
 > [!IMPORTANT]
 > iOS simulators do not have access to a camera. To test the camera functionality, you need to run the app on a physical device. When using a simulator, your app will open the Photo Library instead of the camera, but the functionality will work as expected once the app is deployed to a physical device.
 
