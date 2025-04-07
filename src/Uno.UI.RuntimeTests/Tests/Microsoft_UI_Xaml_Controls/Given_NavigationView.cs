@@ -215,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			using var _ = ThemeHelper.UseDarkTheme();
 			await UITestHelper.WaitForIdle();
 
-			var nvi = uc.FindFirstChild<NavigationViewItem>();
+			var nvi = uc.FindFirstDescendant<NavigationViewItem>();
 			var bitmap = await UITestHelper.ScreenShot(nvi);
 			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
