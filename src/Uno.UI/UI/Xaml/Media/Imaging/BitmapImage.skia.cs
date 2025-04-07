@@ -10,13 +10,15 @@ using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+		private readonly record struct KeyEntry(Task<ImageData> Task, long Timestamp);
 		private static readonly int _cacheMaxEntries = Uno.UI.FeatureConfiguration.Image.MaxBitmapImageCacheCount;
-		private static readonly Dictionary<string, LinkedListNode<Task<ImageData>>> _imageCache = new();
+		private static readonly Dictionary<string, LinkedListNode<KeyEntry>> _imageCache = new();
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
@@ -75,16 +77,39 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						_imageCache.Remove(uri.PathAndQuery);
 					}
 
-					if (!_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
+					var list = _imageCache.Count == 0
+						? new LinkedList<KeyEntry>()
+						: _imageCache.Values.First().List!;
+
+					var timeSpan = global::Windows.System.MemoryManager.AppMemoryUsageLevel switch
+					{
+						AppMemoryUsageLevel.OverLimit => TimeSpan.FromMinutes(.5),
+						AppMemoryUsageLevel.High => TimeSpan.FromMinutes(1),
+						AppMemoryUsageLevel.Medium => TimeSpan.FromMinutes(3),
+						AppMemoryUsageLevel.Low => TimeSpan.FromMinutes(5),
+						_ => throw new ArgumentOutOfRangeException()
+					};
+					while (list.Count > 0 && Stopwatch.GetElapsedTime(list.Last!.Value.Timestamp) > timeSpan)
+					{
+						list.RemoveLast();
+					}
+
+					if (_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
+					{
+						list.Remove(cachedTaskNode);
+						cachedTaskNode.Value = cachedTaskNode.Value with { Timestamp = Stopwatch.GetTimestamp() };
+						list.AddFirst(cachedTaskNode);
+					}
+					else
 					{
 						Debug.Assert(_imageCache.Count <= _cacheMaxEntries);
 						if (_imageCache.Count == _cacheMaxEntries)
 						{
-							_imageCache.Values.First().List!.RemoveLast();
+							list.RemoveLast();
 						}
+
 						var tcs = new TaskCompletionSource<ImageData>();
-						var list = _imageCache.Count == 0 ? new LinkedList<Task<ImageData>>() : _imageCache.Values.First().List;
-						cachedTaskNode = _imageCache[uri.PathAndQuery] = list!.AddFirst(tcs.Task);
+						cachedTaskNode = _imageCache[uri.PathAndQuery] = list.AddFirst(new KeyEntry(tcs.Task, Stopwatch.GetTimestamp()));
 
 						_ = Task.Run(async () =>
 						{
@@ -98,14 +123,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 							}
 						}, ct);
 					}
-					else
-					{
-						var list = cachedTaskNode.List;
-						list!.Remove(cachedTaskNode);
-						list.AddFirst(cachedTaskNode);
-					}
 
-					var imageData = await cachedTaskNode.Value;
+					var imageData = await cachedTaskNode.Value.Task;
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						PixelWidth = 0;
