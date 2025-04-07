@@ -11,25 +11,23 @@ namespace Uno.UI.Xaml.Controls;
 
 internal partial class ContentManager
 {
-	private readonly object _owner;
-	private readonly bool _isCoreWindowContent;
-
-	private UIElement? _content;
 	private RootVisual? _rootVisual;
 
 	public ContentManager(object owner, bool isCoreWindowContent)
 	{
-		_owner = owner;
-		_isCoreWindowContent = isCoreWindowContent;
+		m_owner = owner;
+		m_isUwpWindowContent = isCoreWindowContent;
 	}
 
 	public UIElement? Content
 	{
-		get => _content;
+		get => m_content;
 		set => SetContent(value);
 	}
 
-	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
+	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer => m_RootScrollViewer;
+
+	internal Microsoft.UI.Xaml.Controls.ScrollContentPresenter? RootSVContentPresenter => m_RootSVContentPresenter;
 
 	private void SetContent(UIElement? newContent)
 	{
@@ -41,7 +39,16 @@ internal partial class ContentManager
 			return;
 		}
 
-		if (_isCoreWindowContent)
+		ClearRootScrollViewer();
+
+		// We can't attach root ScrollViewer if the content is Canvas since we have an issue with Drts(graphics and SUnit).
+		// Create the root ScrollViewer if the content isn't Canvas.
+		if (newContent is not null && newContent is not Canvas)
+		{
+			CreateRootScrollViewer(newContent);
+		}
+
+		if (m_isUwpWindowContent)
 		{
 			if (WinUICoreServices.Instance.MainVisualTree is not { } visualTree)
 			{
@@ -65,7 +72,7 @@ internal partial class ContentManager
 					throw new InvalidOperationException("The root visual was not created.");
 				}
 
-				if (_owner is not Microsoft.UI.Xaml.Window window)
+				if (m_owner is not Microsoft.UI.Xaml.Window window)
 				{
 					throw new InvalidOperationException("Owner of ContentManager should be a Window");
 				}
@@ -85,7 +92,7 @@ internal partial class ContentManager
 #endif
 		}
 
-		_content = newContent;
+		m_content = newContent;
 	}
 
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
