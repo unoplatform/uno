@@ -9,6 +9,11 @@ namespace Windows.UI.Core.Preview;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public partial class SystemNavigationManagerPreview
 {
+	internal SystemNavigationManagerPreview()
+	{
+		// This constructor should not be externally visible.
+	}
+
 	/// <summary>
 	/// Returns the SystemNavigationManagerPreview object associated with the current window.
 	/// </summary>
