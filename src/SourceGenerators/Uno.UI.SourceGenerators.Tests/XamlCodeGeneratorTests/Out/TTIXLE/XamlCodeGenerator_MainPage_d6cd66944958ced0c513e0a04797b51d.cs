@@ -241,12 +241,17 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
+		}
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
 		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
@@ -482,6 +487,9 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
+				owner._component_1.SuspendXBind();
 			}
 		}
 		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)

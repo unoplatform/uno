@@ -199,6 +199,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 			void IBinding_Xaml_Object_With_Common_Properties_Bindings.StopTracking()
 			{
+				var owner = Owner;
 			}
 		}
 	}

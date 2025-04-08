@@ -129,6 +129,7 @@ namespace TestRepro
 
 			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -195,6 +196,10 @@ namespace TestRepro
 		{
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
+		}
+		private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			this.Bindings.StopTracking();
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
@@ -307,17 +312,8 @@ namespace TestRepro
 			{
 				var owner = Owner;
 				owner._component_0.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize(true);
-				owner.__ApplyMethod_1_Click_Initialize(true);
-				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_1.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize(true);
-				owner.__ApplyMethod_1_Click_Initialize(true);
-				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner._component_2.ApplyXBind();
-				owner.__ApplyMethod_0_Click_Initialize(true);
-				owner.__ApplyMethod_1_Click_Initialize(true);
-				owner.__ApplyMethod_2_Click_Initialize(true);
 				owner.__ApplyMethod_0_Click_Initialize(true);
 				owner.__ApplyMethod_1_Click_Initialize(true);
 				owner.__ApplyMethod_2_Click_Initialize(true);
@@ -332,6 +328,10 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
+				owner._component_0.SuspendXBind();
+				owner._component_1.SuspendXBind();
+				owner._component_2.SuspendXBind();
 			}
 		}
 	}

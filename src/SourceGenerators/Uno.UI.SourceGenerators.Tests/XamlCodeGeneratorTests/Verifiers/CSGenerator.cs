@@ -94,7 +94,6 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private readonly ResourceFile[] _resourceFiles;
 
 			public bool EnableFuzzyMatching { get; set; } = true;
-			public bool DisableBuildReferences { get; set; }
 			public Dictionary<string, string>? GlobalConfigOverride { get; set; }
 
 			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
@@ -216,10 +215,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
-				if (!DisableBuildReferences)
-				{
-					project = project.AddMetadataReferences(BuildUnoReferences());
-				}
+				project = project
+					.AddMetadataReferences(UnoAssemblyHelper.LoadAssemblies());
 
 				return base.ApplyCompilationOptions(project);
 			}
@@ -308,52 +305,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 				Directory.CreateDirectory(resourceDirectory);
 				File.WriteAllText(filePath, tree.GetText().ToString(), tree.Encoding);
 			}
-
-			private static MetadataReference[] BuildUnoReferences()
-			{
-				const string configuration =
-#if DEBUG
-					"Debug";
-#else
-					"Release";
-#endif
-
-				var availableTargets = new[] {
-					// On CI the test assemblies set must be first, as it contains all
-					// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
-					Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
-					Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
-					Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-					Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
-					Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
-					Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
-				};
-
-				var unoUIBase = Path.Combine(
-					Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
-					"..",
-					"..",
-					"..",
-					"..",
-					"..",
-					"Uno.UI",
-					"bin"
-					);
-
-				var unoTarget = availableTargets
-					.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
-					.FirstOrDefault(File.Exists);
-
-				if (unoTarget is null)
-				{
-					throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
-				}
-
-				return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
-							.Select(f => MetadataReference.CreateFromFile(Path.GetFullPath(f)))
-							.ToArray();
-			}
-
 		}
 	}
 }

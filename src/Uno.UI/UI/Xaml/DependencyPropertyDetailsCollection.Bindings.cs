@@ -48,6 +48,17 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void SuspendCompiledBindings()
+		{
+			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
+			var bindings = _bindings.Data;
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				bindings[i].SuspendCompiledSource();
+			}
+		}
+
 		/// <summary>
 		/// Applies the <see cref="Binding"/> instances which contain an ElementName property
 		/// </summary>
