@@ -32,7 +32,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 	private SKPicture? _picture;
-	private (SKBitmap bitmap, (float scaleX, float scaleY) scaleAtWhichBitmapWasDrawn)? _childrenBitmap;
+	private (SKBitmap bitmap, bool valid, SKCanvas canvas, (float scaleX, float scaleY) scaleAtWhichBitmapWasDrawn)? _childrenBitmap;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.SubtreePaintDirty;
 	private int _framesSinceSubtreePaintClean;
@@ -194,8 +194,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var parent = this.Parent;
 		while (parent is not null && (parent._flags & VisualFlags.SubtreePaintDirty) == 0)
 		{
-			parent._childrenBitmap?.bitmap.Dispose();
-			parent._childrenBitmap = null;
+			if (parent._childrenBitmap is not null)
+			{
+				parent._childrenBitmap = parent._childrenBitmap.Value with { valid = false };
+			}
 			parent._flags |= VisualFlags.SubtreePaintDirty;
 			parent = parent.Parent;
 		}
@@ -286,7 +288,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), canvas, canvas.Save()))
 		{
-			Render(session, postRenderAction);
+			Render(session, postRenderAction, skipDrawing: false);
 		}
 
 		canvas.Restore();
@@ -297,7 +299,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
 	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
+	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction, bool skipDrawing)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -326,36 +328,34 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(preClip, antialias: true);
 			}
 
-			if (canvas.IsClipEmpty)
-			{
-				return;
-			}
-
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
 			var saveCount = canvas.SaveCount;
 #endif
 
-			if (RequiresRepaintOnEveryFrame)
+			if (!skipDrawing)
 			{
-				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				Paint(session);
-			}
-			else
-			{
-				if ((_flags & VisualFlags.PaintDirty) != 0)
+				if (RequiresRepaintOnEveryFrame)
 				{
-					_flags &= ~VisualFlags.PaintDirty;
-					_recorder ??= new SKPictureRecorder();
-					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
-					_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
-					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					Paint(in recorderSession);
-					_picture = _recorder.EndRecording();
+					// why bother with a recorder when it's going to get repainted next frame? just paint directly
+					Paint(session);
 				}
+				else
+				{
+					if ((_flags & VisualFlags.PaintDirty) != 0)
+					{
+						_flags &= ~VisualFlags.PaintDirty;
+						_recorder ??= new SKPictureRecorder();
+						var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+						_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+						// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+						Paint(in recorderSession);
+						_picture = _recorder.EndRecording();
+					}
 
-				session.Canvas.DrawPicture(_picture);
+					session.Canvas.DrawPicture(_picture);
+				}
 			}
 #if DEBUG
 			Debug.Assert(saveCount == canvas.SaveCount);
@@ -368,72 +368,88 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(postClip, antialias: true);
 			}
 
-			if (canvas.IsClipEmpty)
-			{
-				return;
-			}
-
-			if (_childrenBitmap is { } childrenBitmap)
-			{
-				canvas.Save();
-				canvas.Scale(1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleX, 1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleY);
-				canvas.DrawBitmap(childrenBitmap.bitmap, 0, 0);
-				canvas.Restore();
-			}
-			else if (ShadowState is null)
+			if (skipDrawing)
 			{
 				foreach (var child in GetChildrenInRenderOrder())
 				{
-					child.Render(in session, postRenderAction);
+					child.Render(in session, postRenderAction, skipDrawing: true);
 				}
 			}
 			else
 			{
-				var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
-				var bitmap = new SKBitmap(new SKImageInfo((int)(canvas.LocalClipBounds.Width * scaleX), (int)(canvas.LocalClipBounds.Height * scaleY)));
-				var bitmapCanvas = new SKCanvas(bitmap);
-
-				// When we have DPI scaling, the canvas is scaled globally so that all the drawing operations are
-				// scaled, but this won't work for the draw-on-a-separate-bitmap-and-then-copy-it-over optimization
-				// we are doing here because the bitmap will be rasterized first and then scaled and the fidelity
-				// will be lost. Instead, we draw inside the bitmap with a scaling similar to that applied to the
-				// current canvas and when we copy the bitmap over to the canvas (using the DrawBitmap call below) we apply the
-				// inverse of that scaling. This way, the resolution of the visuals drawn inside the bitmap
-				// is kept.
-				var childrenRootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1);
-
-				// When we call child.Render, the child will apply their own TotalMatrix, but we're drawing
-				// on the secondary bitmap, not on the main canvas directly, so we only want the child to do
-				// its "local transform" not the total transform. To do that, we premultiply the inverse
-				// of this visual's TotalMatrix. The result for the child is
-				// child.TotalMatrix * inverse(this.TotalMatrix) =
-				// child."LocalMatrix" * this.TotalMatrix * inverse(this.TotalMatrix) =
-				// child."LocalMatrix"
-				Matrix4x4.Invert(TotalMatrix, out var invertedTotalMatrix);
-				childrenRootTransform = invertedTotalMatrix * childrenRootTransform;
-
-				_factory.CreateInstance(this, bitmapCanvas, ref childrenRootTransform, session.Opacity, out var bitmapSession);
-				using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), bitmapCanvas, bitmapCanvas.Save()))
+				if (_childrenBitmap is { valid: true } childrenBitmap)
 				{
-					bitmapCanvas.Clear(SKColors.Transparent);
-					var bitmapSaveCount = bitmapSession.Canvas.SaveLayer(ShadowState.Paint);
+					// We still need to go through the children to get the side effects
+					// (e.g. postRenderAction calls), but we don't actually draw anything.
 					foreach (var child in GetChildrenInRenderOrder())
 					{
-						child.Render(in bitmapSession, postRenderAction);
+						child.Render(in session, postRenderAction, skipDrawing: true);
 					}
-					bitmapSession.Canvas.RestoreToCount(bitmapSaveCount);
-				}
-				bitmapCanvas.Flush();
-				canvas.Save();
-				canvas.Scale(1 / scaleX, 1 / scaleY);
-				canvas.DrawBitmap(bitmap, 0, 0);
-				canvas.Restore();
 
-				// We set _childrenBitmap conditionally in case the subtree paint was invalidated
-				// while we're drawing the children bitmap.
-				if ((_flags & VisualFlags.SubtreePaintDirty) == 0)
+					canvas.Save();
+					canvas.Scale(1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleX, 1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleY);
+					canvas.DrawBitmap(childrenBitmap.bitmap, 0, 0);
+					canvas.Restore();
+				}
+				else if (ShadowState is null || canvas.IsClipEmpty)
 				{
-					_childrenBitmap = (bitmap, (scaleX, scaleY));
+					foreach (var child in GetChildrenInRenderOrder())
+					{
+						child.Render(in session, postRenderAction, skipDrawing: false);
+					}
+				}
+				else
+				{
+					var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
+
+					var imageInfo = new SKImageInfo(canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+					if (imageInfo != _childrenBitmap?.bitmap.Info)
+					{
+						_childrenBitmap?.bitmap.Dispose();
+						_childrenBitmap?.canvas.Dispose();
+						var b = new SKBitmap(imageInfo);
+						var bc = new SKCanvas(b);
+						_childrenBitmap = (b, true, bc, (scaleX, scaleY));
+					}
+
+					var (bitmap, bitmapCanvas) = (_childrenBitmap.Value.bitmap, _childrenBitmap.Value.canvas);
+
+					// When we have DPI scaling, the canvas is scaled globally so that all the drawing operations are
+					// scaled, but this won't work for the draw-on-a-separate-bitmap-and-then-copy-it-over optimization
+					// we are doing here because the bitmap will be rasterized first and then scaled and the fidelity
+					// will be lost. Instead, we draw inside the bitmap with a scaling similar to that applied to the
+					// current canvas and when we copy the bitmap over to the canvas (using the DrawBitmap call below) we apply the
+					// inverse of that scaling. This way, the resolution of the visuals drawn inside the bitmap
+					// is kept.
+					var childrenRootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1);
+
+					// When we call child.Render, the child will apply their own TotalMatrix, but we're drawing
+					// on the secondary bitmap, not on the main canvas directly, so we only want the child to do
+					// its "local transform" not the total transform. To do that, we premultiply the inverse
+					// of this visual's TotalMatrix. The result for the child is
+					// child.TotalMatrix * inverse(this.TotalMatrix) =
+					// child."LocalMatrix" * this.TotalMatrix * inverse(this.TotalMatrix) =
+					// child."LocalMatrix"
+					Matrix4x4.Invert(TotalMatrix, out var invertedTotalMatrix);
+					childrenRootTransform = invertedTotalMatrix * childrenRootTransform;
+
+					bitmapCanvas.Clear(SKColors.Transparent);
+
+					_factory.CreateInstance(this, bitmapCanvas, ref childrenRootTransform, session.Opacity, out var bitmapSession);
+					using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), bitmapCanvas, bitmapCanvas.Save()))
+					{
+						var bitmapSaveCount = bitmapSession.Canvas.SaveLayer(ShadowState.Paint);
+						foreach (var child in GetChildrenInRenderOrder())
+						{
+							child.Render(in bitmapSession, postRenderAction, skipDrawing: false);
+						}
+						bitmapSession.Canvas.RestoreToCount(bitmapSaveCount);
+					}
+					bitmapCanvas.Flush();
+					canvas.Save();
+					canvas.Scale(1 / scaleX, 1 / scaleY);
+					canvas.DrawBitmap(bitmap, 0, 0);
+					canvas.Restore();
 				}
 			}
 		}
