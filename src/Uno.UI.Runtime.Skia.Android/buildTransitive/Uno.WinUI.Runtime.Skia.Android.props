@@ -5,7 +5,7 @@
 		<UnoWinRTRuntimeIdentifier>Android</UnoWinRTRuntimeIdentifier>
 		<UnoUIRuntimeIdentifier>Skia</UnoUIRuntimeIdentifier>
 
-		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_ANDROID</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_ANDROID;__UNO_SKIA__;__UNO_SKIA_ANDROID__</DefineConstants>
 		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>
 
