@@ -32,7 +32,7 @@ public partial class Visual
 			RootTransform = ref rootTransform;
 			Opacity = opacity;
 
-			_saveCount = visual.ShadowState is { } shadow ? canvas.SaveLayer(shadow.Paint) : canvas.Save();
+			_saveCount = canvas.Save();
 		}
 
 		public void Dispose() => Canvas.RestoreToCount(_saveCount);

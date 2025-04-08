@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SkiaSharp;
 using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
@@ -13,6 +14,7 @@ public partial class Compositor
 {
 	private List<CompositionAnimation> _runningAnimations = new();
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
+	private int i;
 
 	static partial void Initialize()
 	{
@@ -118,7 +120,10 @@ public partial class Compositor
 			animation.RaiseAnimationFrame();
 		}
 
+		var start = Stopwatch.GetTimestamp();
 		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
+		var span = Stopwatch.GetElapsedTime(start);
+		Console.WriteLine($"Rendered frame {i++} in {span.TotalMilliseconds}ms");
 
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{

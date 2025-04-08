@@ -11,6 +11,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class ContainerVisual : Visual
 {
+	private int? _subtreeHeight;
 	private List<Visual>? _childrenInRenderOrder;
 	private bool _hasCustomRenderOrder;
 
@@ -20,7 +21,17 @@ public partial class ContainerVisual : Visual
 
 	partial void InitializePartial()
 	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+		Children.CollectionChanged += (_, _) =>
+		{
+			IsChildrenRenderOrderDirty = true;
+
+			var parent = this;
+			while (parent?._subtreeHeight != null)
+			{
+				parent._subtreeHeight = null;
+				parent = parent.Parent;
+			}
+		};
 
 		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 		Handle = GCHandle.ToIntPtr(_gcHandle);
@@ -144,5 +155,11 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	public override int GetSubTreeHeight()
+	{
+		_subtreeHeight ??= 1 + Children.InnerList.Aggregate(0, (acc, visual) => acc + visual.GetSubTreeHeight());
+		return _subtreeHeight.Value;
 	}
 }

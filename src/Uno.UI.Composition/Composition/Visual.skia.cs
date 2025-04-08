@@ -31,8 +31,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _zIndex;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 	private SKPicture? _picture;
+	private (SKBitmap bitmap, (float scaleX, float scaleY) scaleAtWhichBitmapWasDrawn)? _childrenBitmap;
 
-	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
+	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.SubtreePaintDirty;
+	private int _framesSinceSubtreePaintClean;
+
+	public virtual int GetSubTreeHeight() => 0;
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -92,6 +96,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
+		InvalidateParentSubtree();
 		return !matrixDirty;
 	}
 
@@ -180,6 +185,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_picture?.Dispose();
 		_picture = null;
 		_flags |= VisualFlags.PaintDirty;
+		InvalidateParentSubtree();
+	}
+
+	private void InvalidateParentSubtree()
+	{
+		var parent = this.Parent;
+		while (parent is not null && (parent._flags & VisualFlags.SubtreePaintDirty) == 0)
+		{
+			parent._childrenBitmap?.bitmap.Dispose();
+			parent._childrenBitmap = null;
+			parent._flags |= VisualFlags.SubtreePaintDirty;
+			parent = parent.Parent;
+		}
 	}
 
 	public CompositionClip? Clip
@@ -286,11 +304,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			: string.Empty;
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
-
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		_framesSinceSubtreePaintClean++;
+		if ((_flags & VisualFlags.SubtreePaintDirty) == VisualFlags.SubtreePaintDirty)
 		{
-			return;
+			_framesSinceSubtreePaintClean = 0;
 		}
+		_flags &= ~VisualFlags.SubtreePaintDirty;
 
 		CreateLocalSession(in parentSession, out var session);
 
@@ -305,6 +324,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
+			}
+
+			if (canvas.IsClipEmpty)
+			{
+				return;
 			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
@@ -344,9 +368,46 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(postClip, antialias: true);
 			}
 
-			foreach (var child in GetChildrenInRenderOrder())
+			if (canvas.IsClipEmpty)
 			{
-				child.Render(in session, postRenderAction);
+				return;
+			}
+
+			if (_childrenBitmap is not null)
+			{
+				canvas.DrawBitmap(_childrenBitmap.Value.bitmap, 0, 0);
+			}
+			else if (ShadowState is null)
+			{
+				foreach (var child in GetChildrenInRenderOrder())
+				{
+					child.Render(in session, postRenderAction);
+				}
+			}
+			else
+			{
+				var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
+				var bitmap = new SKBitmap(new SKImageInfo((int)(canvas.LocalClipBounds.Width * scaleX), (int)(canvas.LocalClipBounds.Height * scaleY)));
+				var bitmapCanvas = new SKCanvas(bitmap);
+				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+				rootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1) * rootTransform;
+				_factory.CreateInstance(this, bitmapCanvas, ref rootTransform, session.Opacity, out var bitmapSession);
+				using (bitmapSession)
+				{
+					bitmapCanvas.Clear(SKColors.Transparent);
+					var bitmapSaveCount = bitmapSession.Canvas.SaveLayer(ShadowState.Paint);
+					foreach (var child in GetChildrenInRenderOrder())
+					{
+						child.Render(in bitmapSession, postRenderAction);
+					}
+					bitmapSession.Canvas.RestoreToCount(bitmapSaveCount);
+				}
+				bitmapCanvas.Flush();
+				canvas.DrawBitmap(bitmap, 0, 0);
+				if ((_flags & VisualFlags.SubtreePaintDirty) == 0)
+				{
+					_childrenBitmap = (bitmap, (scaleX, scaleY));
+				}
 			}
 		}
 	}
@@ -433,5 +494,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		IsNativeHostVisualInherited = 4,
 		MatrixDirty = 8,
 		PaintDirty = 16,
+		SubtreePaintDirty = 32 // some child in the subtree of this visual is dirty.
 	}
 }
