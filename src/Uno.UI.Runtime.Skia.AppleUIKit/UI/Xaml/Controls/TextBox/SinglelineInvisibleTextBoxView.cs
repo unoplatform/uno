@@ -23,6 +23,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
 	private bool _settingTextFromManaged;
+	private bool _settingSelectionFromManaged;
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -159,7 +160,17 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	}
 
 	public void Select(int start, int length)
-		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+	{
+		try
+		{
+			_settingSelectionFromManaged = true;
+			SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+		}
+		finally
+		{
+			_settingSelectionFromManaged = false;
+		}
+	}
 
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
@@ -172,7 +183,10 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 			if (textBoxView != null && SelectedTextRange != value)
 			{
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
-				textBoxView.Owner.TextBox?.OnSelectionChanged();
+				if (!_settingSelectionFromManaged)
+				{
+					textBoxView.Owner.TextBox?.OnSelectionChanged();
+				}
 			}
 		}
 	}
