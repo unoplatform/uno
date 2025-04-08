@@ -196,11 +196,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			_textBoxView = CreateNativeView(textBox);
 			if (_textBoxView is UIView nativeView)
 			{
-				nativeView.UserInteractionEnabled = false;
 				nativeView.Alpha = 0.01f;
 			}
 			UpdateProperties();
-			SetNativeText(inputText ?? string.Empty);
+			SetText(inputText ?? string.Empty);
 		}
 	}
 
@@ -216,25 +215,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var updatedText = textBox.ProcessTextInput(text);
 			if (text != updatedText)
 			{
-				SetNativeText(updatedText);
+				SetText(updatedText);
 			}
 		}
 	}
 
 	private string? GetNativeText() => _textBoxView?.Text;
-
-	private void SetNativeText(string text)
-	{
-		if (_textBoxView is null)
-		{
-			return;
-		}
-
-		if (_textBoxView.Text != text)
-		{
-			_textBoxView.SetTextNative(text);
-		}
-	}
 
 	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
 		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
