@@ -6,6 +6,7 @@ namespace Windows.UI.Core.Preview;
 /// <summary>
 /// Provides a way for an app to respond to system provided close events.
 /// </summary>
+[Obsolete("SystemNavigationManagerPreview is no longer supported. Use Window.AppWindow.Closing instead.")]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public partial class SystemNavigationManagerPreview
 {
