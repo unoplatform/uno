@@ -80,7 +80,12 @@
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 			</PropertyGroup>
 
-			<PropertyGroup Condition="$(RuntimeIdentifier.Contains('arm64'))">
+			<!-- https://github.com/dotnet/runtime/issues/109966 -->
+			<PropertyGroup>
+				<_IsDedupEnabled>false</_IsDedupEnabled>
+			</PropertyGroup>
+			
+			<PropertyGroup>
 				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
 				<UseInterpreter>true</UseInterpreter>
@@ -216,6 +221,7 @@
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+				<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
 			</ItemGroup>
 
 			<ItemGroup>
