@@ -1,4 +1,4 @@
-@import "../variables";
+@use "../variables" as *;
 
 :root {
   --docsearch-primary-color: #{$blue} !important;
