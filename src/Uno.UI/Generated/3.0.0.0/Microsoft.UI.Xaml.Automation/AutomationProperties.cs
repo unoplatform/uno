@@ -308,13 +308,7 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.AccessibilityViewProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.GetAccessibilityView(Microsoft.UI.Xaml.DependencyObject)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetAccessibilityView(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Automation.Peers.AccessibilityView value)
-		{
-			element.SetValue(AccessibilityViewProperty, value);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.AutomationProperties.SetAccessibilityView(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Automation.Peers.AccessibilityView)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.ControlledPeersProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
