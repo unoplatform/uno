@@ -146,24 +146,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				return;
 			}
 
-#if __SKIA__
-			// Legacy system close handling, will be removed with https://github.com/unoplatform/uno-private/issues/922
-			var manager = SystemNavigationManagerPreview.GetForCurrentView();
-			if (manager is { HasConfirmedClose: false })
-			{
-				if (!manager.RequestAppClose())
-				{
-					// App closing was prevented, handle event
-					e.Cancel = true;
-
-					if (NativeWindowFactory.SupportsClosingCancellation)
-					{
-						return;
-					}
-				}
-			}
-#endif
-
 			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
 			{
 				if (this.Log().IsWarningEnabled())

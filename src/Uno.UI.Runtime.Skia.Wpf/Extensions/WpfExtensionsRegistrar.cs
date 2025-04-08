@@ -56,7 +56,6 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
-		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new WpfNativeWebViewProvider(o));
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WpfNativeOpenGLWrapper(xamlRoot));
 
