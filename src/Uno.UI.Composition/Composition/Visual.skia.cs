@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
@@ -283,7 +284,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						  opacity: 1.0f,
 						  out var session);
 
-		using (session)
+		using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), canvas, canvas.Save()))
 		{
 			Render(session, postRenderAction);
 		}
@@ -313,10 +314,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		CreateLocalSession(in parentSession, out var session);
 
-		using (session)
+		var canvas = session.Canvas;
+		using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), canvas, canvas.Save()))
 		{
-			var canvas = session.Canvas;
-
 			var preClip = _spareRenderPath;
 
 			preClip.Rewind();
@@ -373,9 +373,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				return;
 			}
 
-			if (_childrenBitmap is not null)
+			if (_childrenBitmap is { } childrenBitmap)
 			{
-				canvas.DrawBitmap(_childrenBitmap.Value.bitmap, 0, 0);
+				canvas.Save();
+				canvas.Scale(1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleX, 1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleY);
+				canvas.DrawBitmap(childrenBitmap.bitmap, 0, 0);
+				canvas.Restore();
 			}
 			else if (ShadowState is null)
 			{
@@ -389,10 +392,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
 				var bitmap = new SKBitmap(new SKImageInfo((int)(canvas.LocalClipBounds.Width * scaleX), (int)(canvas.LocalClipBounds.Height * scaleY)));
 				var bitmapCanvas = new SKCanvas(bitmap);
-				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				rootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1) * rootTransform;
-				_factory.CreateInstance(this, bitmapCanvas, ref rootTransform, session.Opacity, out var bitmapSession);
-				using (bitmapSession)
+
+				// When we have DPI scaling, the canvas is scaled globally so that all the drawing operations are
+				// scaled, but this won't work for the draw-on-a-separate-bitmap-and-then-copy-it-over optimization
+				// we are doing here because the bitmap will be rasterized first and then scaled and the fidelity
+				// will be lost. Instead, we draw inside the bitmap with a scaling similar to that applied to the
+				// current canvas and when we copy the bitmap over to the canvas (using the DrawBitmap call below) we apply the
+				// inverse of that scaling. This way, the resolution of the visuals drawn inside the bitmap
+				// is kept.
+				var childrenRootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1);
+
+				// When we call child.Render, the child will apply their own TotalMatrix, but we're drawing
+				// on the secondary bitmap, not on the main canvas directly, so we only want the child to do
+				// its "local transform" not the total transform. To do that, we premultiply the inverse
+				// of this visual's TotalMatrix. The result for the child is
+				// child.TotalMatrix * inverse(this.TotalMatrix) =
+				// child."LocalMatrix" * this.TotalMatrix * inverse(this.TotalMatrix) =
+				// child."LocalMatrix"
+				Matrix4x4.Invert(TotalMatrix, out var invertedTotalMatrix);
+				childrenRootTransform = invertedTotalMatrix * childrenRootTransform;
+
+				_factory.CreateInstance(this, bitmapCanvas, ref childrenRootTransform, session.Opacity, out var bitmapSession);
+				using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), bitmapCanvas, bitmapCanvas.Save()))
 				{
 					bitmapCanvas.Clear(SKColors.Transparent);
 					var bitmapSaveCount = bitmapSession.Canvas.SaveLayer(ShadowState.Paint);
@@ -403,7 +424,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					bitmapSession.Canvas.RestoreToCount(bitmapSaveCount);
 				}
 				bitmapCanvas.Flush();
+				canvas.Save();
+				canvas.Scale(1 / scaleX, 1 / scaleY);
 				canvas.DrawBitmap(bitmap, 0, 0);
+				canvas.Restore();
+
+				// We set _childrenBitmap conditionally in case the subtree paint was invalidated
+				// while we're drawing the children bitmap.
 				if ((_flags & VisualFlags.SubtreePaintDirty) == 0)
 				{
 					_childrenBitmap = (bitmap, (scaleX, scaleY));

@@ -31,11 +31,7 @@ public partial class Visual
 			Canvas = canvas;
 			RootTransform = ref rootTransform;
 			Opacity = opacity;
-
-			_saveCount = canvas.Save();
 		}
-
-		public void Dispose() => Canvas.RestoreToCount(_saveCount);
 
 		public readonly SKCanvas Canvas;
 
@@ -49,7 +45,5 @@ public partial class Visual
 			_opacityToColorFilter[(byte)(0xFF * Opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * Opacity)), SKBlendMode.Modulate);
 
 		private static readonly SKColorFilter[] _opacityToColorFilter = new SKColorFilter[256];
-
-		private readonly int _saveCount;
 	}
 }
