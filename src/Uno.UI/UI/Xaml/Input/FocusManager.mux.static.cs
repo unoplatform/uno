@@ -248,7 +248,7 @@ namespace Microsoft.UI.Xaml.Input
 				// Return error if call is without focus navigation option in islands/ desktop
 				if (pCore.GetHandle().InitializationType == InitializationType.IslandsOnly)
 				{
-					throw new InvalidOperationException("Focus navigation options must be set for desktop apps.");
+					throw new InvalidOperationException("Focus navigation options must be set, provide a SearchRoot in FindNextElementOptions.");
 				}
 
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
@@ -380,7 +380,7 @@ namespace Microsoft.UI.Xaml.Input
 			if (InIslandsMode())
 			{
 				// This api is not supported in islands/ desktop mode. 
-				throw new NotSupportedException("This API is not supported in desktop mode.");
+				throw new NotSupportedException("This API is no longer supported.");
 			}
 
 			XYFocusOptions xyFocusOptions = new XYFocusOptions();
@@ -395,7 +395,7 @@ namespace Microsoft.UI.Xaml.Input
 			if (InIslandsMode())
 			{
 				// This api is not supported in islands/ desktop mode. 
-				throw new NotSupportedException("This API is not supported in desktop mode.");
+				throw new NotSupportedException("This API is no longer supported.");
 			}
 
 			Rect hintRect = focusHintRectangle;
@@ -690,7 +690,7 @@ namespace Microsoft.UI.Xaml.Input
 				// Return error if FindNextElement is called without focus navigation option in islands/desktop
 				if (typeof(FocusManager).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(FocusManager).Log().LogError("FindNextElement override with FindNextElementOptions must be used in WinUI Desktop apps.");
+					typeof(FocusManager).Log().LogError("FindNextElement override with FindNextElementOptions must be used instead.");
 				}
 				return null;
 			}
