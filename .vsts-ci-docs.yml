@@ -18,7 +18,7 @@ pr:
 
 variables:
   windowsScaledPool: 'Windows2022-20241021-1'
-  linuxVMImage: 'ubuntu-latest'
+  linuxVMImage: 'ubuntu-22.04'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml
