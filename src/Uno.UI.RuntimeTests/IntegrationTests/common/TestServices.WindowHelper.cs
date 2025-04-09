@@ -11,10 +11,10 @@ using MUXControlsTestApp.Utilities;
 using System.Linq;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using UIElement = Microsoft.UI.Xaml.UIElement;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 #if HAS_UNO
 using DirectUI;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 #endif
 
