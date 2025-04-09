@@ -216,11 +216,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var initialScreenshot = await UITestHelper.ScreenShot(border);
 
 			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
-			bool opened = false;
-			bitmapImage.ImageOpened += (s, e) => opened = true;
-
+	
 			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitFor(() => opened);
+			await WindowHelper.WaitForOpened(bitmapImage);
 
 			var screenshotWithImage = await UITestHelper.ScreenShot(border);
 
@@ -238,6 +236,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			{
 				await WindowHelper.WaitForIdle();
 				await Task.Delay(100);
+
+				screenshotWithoutImage = await UITestHelper.ScreenShot(border);
 			}
 
 			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
