@@ -11,41 +11,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		public const int DefaultFrameRate = 60;
 
-		private Stopwatch _watch = new Stopwatch();
-		private TimeSpan? _delay;
-
 		public DispatcherAnimator(T from, T to, int frameRate = 0)
 			: base(from, to)
 		{
 		}
 
-		protected override void EnableFrameReporting() => CompositionTarget.Rendering += OnTargetFrame;
-		protected override void DisableFrameReporting() => CompositionTarget.Rendering -= OnTargetFrame;
-
-		private void OnTargetFrame(object sender, object args)
-		{
-			if (_delay != null)
-			{
-				if (_watch.Elapsed < _delay)
-				{
-					return;
-				}
-				else
-				{
-					_delay = null;
-					_watch.Stop();
-					_watch.Reset();
-				}
-			}
-
-			OnFrame(sender, args);
-		}
-
-		protected override void SetStartFrameDelay(long delayMs)
-		{
-			_delay = TimeSpan.FromMicroseconds(delayMs);
-			_watch.Restart();
-		}
+		protected override void EnableFrameReporting() => CompositionTarget.Rendering += base.OnFrame;
+		protected override void DisableFrameReporting() => CompositionTarget.Rendering -= base.OnFrame;
 
 		protected abstract override T GetUpdatedValue(long frame, T from, T to);
 	}
