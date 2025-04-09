@@ -96,14 +96,20 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #if !__TVOS__
 		// Dismiss on device rotation: this reproduces the windows behavior
 		UIApplication.Notifications
-			.ObserveDidChangeStatusBarOrientation((sender, args) =>
-				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
+			.ObserveDidChangeStatusBarOrientation(DismissPopups);
 #endif
 
 		// Dismiss when the app is entering background
 		UIApplication.Notifications
-			.ObserveWillResignActive((sender, args) =>
-				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
+			.ObserveWillResignActive(DismissPopups);
+	}
+
+	private void DismissPopups(object? sender, object? args)
+	{
+		if (_xamlRoot is not null)
+		{
+			VisualTreeHelper.CloseLightDismissPopups(_xamlRoot);
+		}
 	}
 
 	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _lastSvgClipPath = null; // Ensure the clip path is invalidated for next render.
