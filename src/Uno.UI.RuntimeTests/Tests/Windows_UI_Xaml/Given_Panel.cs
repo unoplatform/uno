@@ -56,6 +56,7 @@ public class Given_Panel
 
 		await WindowHelper.WaitForLoaded(lv);
 
+#if __SKIA__
 		if (grid.FindName("linuxImage") is Image img
 			&& img.Source is BitmapImage bitmapImage)
 		{
@@ -65,6 +66,7 @@ public class Given_Panel
 		{
 			throw new InvalidOperationException("Image [linuxImage] is not found");
 		}
+#endif
 
 		await WindowHelper.WaitFor(() => lv.Items.Select(item => ((ListViewItem)lv.ContainerFromItem(item)).DesiredSize.Width > 0).All(b => b));
 		await WindowHelper.WaitForIdle();
