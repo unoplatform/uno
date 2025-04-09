@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.Native)] // RedirectVisual requires composition
 public class Given_RedirectVisual
 {
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Source_Changes()
@@ -66,4 +67,5 @@ public class Given_RedirectVisual
 
 		await ImageAssert.AreEqualAsync(actualScreenshot, expectedScreenshot);
 	}
+#endif
 }
