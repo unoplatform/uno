@@ -121,7 +121,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ImageBrush()
 		{
-			ImageBrush brush = new() { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) };
+			var brush = new ImageBrush() { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) };
+			var brushOpenTask = WindowHelper.WaitForOpened(brush);
 
 			var SUT = new Path
 			{
@@ -156,11 +157,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 				}
 			};
 
-			var opened = false;
-			brush.ImageOpened += (s, e) => opened = true;
-
 			await UITestHelper.Load(SUT);
-			await WindowHelper.WaitFor(() => opened);
+			await brushOpenTask;
 
 			var screenShot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenShot, new Point(90, 50), "#FF38FF52");
