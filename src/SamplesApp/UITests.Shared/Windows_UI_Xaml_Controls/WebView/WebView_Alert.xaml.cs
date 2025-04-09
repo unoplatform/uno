@@ -20,6 +20,11 @@ namespace UITests.Shared.Windows_UI_Xaml
 			var html = (DataContext as WebViewViewModel).AlertHtml;
 			web.NavigateToString(html);
 		}
+
+		private async void StopScript(object sender, RoutedEventArgs e)
+		{
+			await web.CoreWebView2.ExecuteScriptAsync("count = -1;");
+		}
 #endif
 	}
 }

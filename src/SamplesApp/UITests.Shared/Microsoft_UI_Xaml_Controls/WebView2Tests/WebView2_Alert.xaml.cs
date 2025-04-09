@@ -20,5 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml
 			await web.EnsureCoreWebView2Async();
 			web.CoreWebView2.NavigateToString(html);
 		}
+
+		private async void StopScript(object sender, RoutedEventArgs e)
+		{
+			await web.CoreWebView2.ExecuteScriptAsync("count = -1;");
+		}
 	}
 }
