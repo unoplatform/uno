@@ -2,10 +2,12 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Microsoft.UI.Input;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
@@ -24,6 +26,12 @@ namespace Microsoft.UI.Xaml.Controls
 		, ICustomClippingElement
 #endif
 	{
+#nullable enable
+		private static readonly Action<string>? _trace = typeof(ScrollContentPresenter).Log().IsEnabled(LogLevel.Trace)
+			? typeof(ScrollContentPresenter).Log().Trace
+			: null;
+#nullable restore
+
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 		private ScrollOptions? _touchInertiaOptions;
 
@@ -147,15 +155,19 @@ namespace Microsoft.UI.Xaml.Controls
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			bool disableAnimation = false,
-			bool isIntermediate = false)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation), isIntermediate);
+			bool isIntermediate = false,
+			[CallerMemberName] string callerName = "",
+			[CallerLineNumber] int callerLine = -1)
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation), isIntermediate, callerName, callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,
 			double? verticalOffset = null,
 			float? zoomFactor = null,
 			ScrollOptions options = default,
-			bool isIntermediate = false)
+			bool isIntermediate = false,
+			[CallerMemberName] string callerName = "",
+			[CallerLineNumber] int callerLine = -1)
 		{
 			var success = true;
 
@@ -184,6 +196,8 @@ namespace Microsoft.UI.Xaml.Controls
 					VerticalOffset = scrollY;
 				}
 			}
+
+			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
 
 			Apply(options, isIntermediate);
 
