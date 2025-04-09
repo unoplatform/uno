@@ -13,7 +13,7 @@ stages:
 
     - task: Cache@2
       inputs:
-        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/ci/**
+        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/build/ci/**
         path: $(Pipeline.Workspace)/.npm
       displayName: Cache npm packages
 
