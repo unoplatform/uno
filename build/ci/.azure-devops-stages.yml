@@ -13,7 +13,7 @@ stages:
 
     - task: Cache@2
       inputs:
-        key: validation | $(Agent.OS) | $(Agent.JobName) | package-lock.json
+        key: validation | $(Agent.OS) | $(Build.SourcesDirectory)/ci/**
         path: $(Pipeline.Workspace)/.npm
       displayName: Cache npm packages
 
