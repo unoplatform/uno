@@ -3640,13 +3640,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Unfocused_Typing_Ends()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
-
 			var SUT = new TextBox
 			{
 				Width = 150
 			};
 
-			WindowHelper.WindowContent = SUT;
+			var sp = new StackPanel()
+			{
+				SUT,
+				new TextBox() { Text="focus dummy" }
+			};
+
+			WindowHelper.WindowContent = sp;
 
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForLoaded(SUT);
@@ -3665,6 +3670,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			VisualTree.GetFocusManagerForElement(SUT)!.TryMoveFocusInstance(FocusNavigationDirection.Next);
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(5000);
 
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
