@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
@@ -16,9 +15,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private readonly record struct KeyEntry(Task<ImageData> Task, long Timestamp);
-		private static readonly int _cacheMaxEntries = Uno.UI.FeatureConfiguration.Image.MaxBitmapImageCacheCount;
-		private static readonly Dictionary<string, LinkedListNode<KeyEntry>> _imageCache = new();
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
@@ -68,63 +64,35 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 					if (uri.IsLocalResource())
 					{
-                        // GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
-                        uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+						// GetScaledPath uses DisplayInformation so it needs to be called on the UI thread
+						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
 
-					if ((CreateOptions & BitmapCreateOptions.IgnoreImageCache) != 0)
-					{
-						_imageCache.Remove(uri.PathAndQuery);
-					}
+					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 
-					var list = _imageCache.Count == 0
-						? new LinkedList<KeyEntry>()
-						: _imageCache.Values.First().List!;
-
-					var timeSpan = global::Windows.System.MemoryManager.AppMemoryUsageLevel switch
+					if (ignoreCache
+						|| !BitmapImageCache.TryGetFromUri(uri, out Task<ImageData> imageDataTask))
 					{
-						AppMemoryUsageLevel.OverLimit => TimeSpan.FromMinutes(.5),
-						AppMemoryUsageLevel.High => TimeSpan.FromMinutes(1),
-						AppMemoryUsageLevel.Medium => TimeSpan.FromMinutes(3),
-						AppMemoryUsageLevel.Low => TimeSpan.FromMinutes(5),
-						_ => throw new ArgumentOutOfRangeException()
-					};
-					while (list.Count > 0 && Stopwatch.GetElapsedTime(list.Last!.Value.Timestamp) > timeSpan)
-					{
-						list.RemoveLast();
-					}
-
-					if (_imageCache.TryGetValue(uri.PathAndQuery, out var cachedTaskNode))
-					{
-						list.Remove(cachedTaskNode);
-						cachedTaskNode.Value = cachedTaskNode.Value with { Timestamp = Stopwatch.GetTimestamp() };
-						list.AddFirst(cachedTaskNode);
-					}
-					else
-					{
-						Debug.Assert(_imageCache.Count <= _cacheMaxEntries);
-						if (_imageCache.Count == _cacheMaxEntries)
-						{
-							list.RemoveLast();
-						}
-
-						var tcs = new TaskCompletionSource<ImageData>();
-						cachedTaskNode = _imageCache[uri.PathAndQuery] = list.AddFirst(new KeyEntry(tcs.Task, Stopwatch.GetTimestamp()));
-
-						_ = Task.Run(async () =>
+						imageDataTask = Task.Run(async () =>
 						{
 							try
 							{
-								tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
 							}
 							catch (Exception e)
 							{
-								tcs.TrySetResult(ImageData.FromError(e));
+								return ImageData.FromError(e);
 							}
 						}, ct);
+
+						if (FeatureConfiguration.Image.EnableBitmapImageCache)
+						{
+							BitmapImageCache.Add(uri, imageDataTask);
+						}
 					}
 
-					var imageData = await cachedTaskNode.Value.Task;
+					var imageData = await imageDataTask;
+
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						PixelWidth = 0;

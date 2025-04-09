@@ -293,6 +293,11 @@ namespace Uno.UI
 			/// positive integer.
 			/// </summary>
 			public static int MaxBitmapImageCacheCount { get; set; } = 100;
+
+			/// <summary>
+			/// On platforms that support caching BitmapImage assets, this enables caching.
+			/// </summary>
+			public static bool EnableBitmapImageCache { get; set; } = true;
 		}
 
 		public static class Interop
