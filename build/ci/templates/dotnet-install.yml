@@ -7,7 +7,7 @@ steps:
   - script: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR]$(Build.SourcesDirectory)/.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for macOS/Linux"
-    condition: eq(variables['Agent.OS'], 'Linux') or eq(variables['Agent.OS'], 'Darwin')
+    condition: or(eq(variables['Agent.OS'], 'Linux'), eq(variables['Agent.OS'], 'Darwin'))
 
   - script: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR]$(Build.SourcesDirectory)\.dotnet"
