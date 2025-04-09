@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using Windows.Storage.Streams;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -226,9 +227,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await ImageAssert.AreNotEqualAsync(initialScreenshot, screenshotWithImage);
 
 			bitmapImage.UriSource = null;
-			await WindowHelper.WaitForIdle();
 
 			var screenshotWithoutImage = await UITestHelper.ScreenShot(border);
+
+			var sw = Stopwatch.StartNew();
+			while (
+				!await ImageAssert.AreRenderTargetBitmapsEqualAsync(screenshotWithoutImage.Bitmap, initialScreenshot.Bitmap)
+				&& sw.ElapsedMilliseconds < 5000
+			)
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+			}
 
 			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
 		}

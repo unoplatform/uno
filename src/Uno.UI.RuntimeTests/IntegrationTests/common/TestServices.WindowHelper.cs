@@ -14,6 +14,8 @@ using UIElement = Microsoft.UI.Xaml.UIElement;
 
 #if HAS_UNO
 using DirectUI;
+using Microsoft.UI.Xaml.Media.Imaging;
+
 #endif
 
 #if WINAPPSDK
@@ -455,6 +457,45 @@ namespace Private.Infrastructure
 			public static void UnsetTestScaling()
 			{
 				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(0.0f);
+			}
+
+			internal static Task WaitForOpened(BitmapImage source)
+			{
+				var tcs = new TaskCompletionSource<bool>();
+
+				source.ImageOpened += (s, e) =>
+				{
+					tcs.TrySetResult(true);
+				};
+
+				source.ImageFailed += (s, e) =>
+				{
+					tcs.TrySetException(new Exception(e.ErrorMessage));
+				};
+
+				if (source.IsOpened)
+				{
+					tcs.TrySetResult(true);
+				}
+
+				return tcs.Task;
+			}
+
+			internal static Task WaitForOpened(ImageBrush source)
+			{
+				var tcs = new TaskCompletionSource<bool>();
+
+				source.ImageOpened += (s, e) =>
+				{
+					tcs.TrySetResult(true);
+				};
+
+				source.ImageFailed += (s, e) =>
+				{
+					tcs.TrySetException(new Exception(e.ErrorMessage));
+				};
+
+				return tcs.Task;
 			}
 #endif
 		}
