@@ -10,7 +10,6 @@ using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
 using Microsoft.UI.Windowing;
-using Windows.UI.Core.Preview;
 using Uno.Disposables;
 
 #if !HAS_UNO_WINUI
