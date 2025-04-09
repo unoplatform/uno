@@ -39,6 +39,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	public virtual int GetSubTreeHeight() => 0;
 
+	private bool DoBitmapOptimization(SKCanvas canvas) => ShadowState is not null && !canvas.IsClipEmpty && _framesSinceSubtreePaintClean > 10;
+
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
 	/// <summary>A visual is a NativeHost visual if it's directly set by SetAsNativeHostVisual or is a child of a NativeHost visual</summary>
@@ -317,141 +319,163 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		CreateLocalSession(in parentSession, out var session);
 
 		var canvas = session.Canvas;
-		using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), canvas, canvas.Save()))
+		using var restoreDisposable = new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), canvas, canvas.Save());
+
+		// Actions need to happen in this sequence
+		// 1: Pre-paint clipping
+		// 2. Paint (the real work is here)
+		// 3. postRenderAction
+		// 4. Post-paint clipping (affects children)
+		// 4. recurse on children
+
+		PrePaintClippingStep(this, ref session);
+
+		if (skipDrawing)
+		{
+			// Paint would go here, but we're skipping it for optimization purposes but theoretically
+			// at the time of writing a call to Paint here wouldn't harm correctness
+			postRenderAction?.Invoke(canvas, this);
+			PostPaintClippingStep(this, ref session);
+			RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: true);
+		}
+		else
+		{
+			if (_childrenBitmap is { valid: true } childrenBitmap)
+			{
+				// This is the equivalent of the painting step
+				canvas.Save();
+				canvas.Scale(1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleX, 1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleY);
+				canvas.DrawBitmap(childrenBitmap.bitmap, 0, 0);
+				canvas.Restore();
+
+				postRenderAction?.Invoke(canvas, this);
+				PostPaintClippingStep(this, ref session);
+				// We still need to go through the children to get the side effects
+				// (e.g. postRenderAction calls), but we don't actually draw anything.
+				RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: true);
+			}
+			else if (!DoBitmapOptimization(session.Canvas))
+			{
+				// This is the canonical path without any tricks or optimizations
+				PaintStep(this, ref session);
+				postRenderAction?.Invoke(canvas, this);
+				PostPaintClippingStep(this, ref session);
+				RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: false);
+			}
+			else // Optimization for expensive subtrees that don't change often: render to a secondary bitmap and copy the pixels over
+			{
+				// When we have DPI scaling, the canvas is scaled globally so that all the drawing operations are
+				// scaled, but this won't work for the draw-on-a-separate-bitmap-and-then-copy-it-over optimization
+				// we are doing here because the bitmap will be rasterized first and then scaled and the fidelity
+				// will be lost. Instead, we draw inside the bitmap with a scaling similar to that applied to the
+				// current canvas and when we copy the bitmap over to the canvas (using the DrawBitmap call below) we apply the
+				// inverse of that scaling. This way, the resolution of the visuals drawn inside the bitmap
+				// is kept.
+				var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
+				var childrenRootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1);
+				// When we call child.Render, the child will apply their own TotalMatrix, but we're drawing
+				// on the secondary bitmap, not on the main canvas directly, so we only want the child to do
+				// its "local transform" not the total transform. To do that, we premultiply the inverse
+				// of this visual's TotalMatrix. The result for the child is
+				// child.TotalMatrix * inverse(this.TotalMatrix) =
+				// child."LocalMatrix" * this.TotalMatrix * inverse(this.TotalMatrix) =
+				// child."LocalMatrix"
+				Matrix4x4.Invert(TotalMatrix, out var invertedTotalMatrix);
+				childrenRootTransform = invertedTotalMatrix * childrenRootTransform;
+
+				var (bitmap, bitmapCanvas) = GetOrCreateChildrenBitmap(this, ref session);
+				_factory.CreateInstance(this, bitmapCanvas, ref childrenRootTransform, session.Opacity, out var bitmapSession);
+				using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), bitmapCanvas, bitmapCanvas.Save()))
+				{
+					// This is the equivalent of the painting step
+					canvas.Flush();
+					bitmapCanvas.DrawSurface(canvas.Surface, -canvas.TotalMatrix.TransX, -canvas.TotalMatrix.TransY);
+					Paint(bitmapSession);
+					postRenderAction?.Invoke(canvas, this);
+					PostPaintClippingStep(this, ref session);
+					RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: false);
+				}
+				bitmapCanvas.Flush();
+				canvas.Save();
+				canvas.Scale(1 / scaleX, 1 / scaleY);
+				canvas.DrawBitmap(bitmap, 0, 0);
+				canvas.Restore();
+			}
+		}
+
+		static void PrePaintClippingStep(Visual visal, ref PaintingSession session)
 		{
 			var preClip = _spareRenderPath;
-
 			preClip.Rewind();
-
-			if (GetPrePaintingClipping(preClip))
+			if (visal.GetPrePaintingClipping(preClip))
 			{
-				canvas.ClipPath(preClip, antialias: true);
+				session.Canvas.ClipPath(preClip, antialias: true);
 			}
+		}
 
+		static void PaintStep(Visual visual, ref PaintingSession session)
+		{
+#if DEBUG
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
-#if DEBUG
-			var saveCount = canvas.SaveCount;
+			var sessionCanvas = session.Canvas;
+			var saveCount = sessionCanvas.SaveCount;
 #endif
-
-			if (!skipDrawing)
+			if (visual.RequiresRepaintOnEveryFrame)
 			{
-				if (RequiresRepaintOnEveryFrame)
-				{
-					// why bother with a recorder when it's going to get repainted next frame? just paint directly
-					Paint(session);
-				}
-				else
-				{
-					if ((_flags & VisualFlags.PaintDirty) != 0)
-					{
-						_flags &= ~VisualFlags.PaintDirty;
-						_recorder ??= new SKPictureRecorder();
-						var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
-						_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
-						// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-						Paint(in recorderSession);
-						_picture = _recorder.EndRecording();
-					}
-
-					session.Canvas.DrawPicture(_picture);
-				}
-			}
-#if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
-#endif
-
-			postRenderAction?.Invoke(canvas, this);
-
-			if (GetPostPaintingClipping() is { } postClip)
-			{
-				canvas.ClipPath(postClip, antialias: true);
-			}
-
-			if (skipDrawing)
-			{
-				foreach (var child in GetChildrenInRenderOrder())
-				{
-					child.Render(in session, postRenderAction, skipDrawing: true);
-				}
+				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				visual.Paint(session);
 			}
 			else
 			{
-				if (_childrenBitmap is { valid: true } childrenBitmap)
+				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
-					// We still need to go through the children to get the side effects
-					// (e.g. postRenderAction calls), but we don't actually draw anything.
-					foreach (var child in GetChildrenInRenderOrder())
-					{
-						child.Render(in session, postRenderAction, skipDrawing: true);
-					}
-
-					canvas.Save();
-					canvas.Scale(1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleX, 1 / childrenBitmap.scaleAtWhichBitmapWasDrawn.scaleY);
-					canvas.DrawBitmap(childrenBitmap.bitmap, 0, 0);
-					canvas.Restore();
+					visual._flags &= ~VisualFlags.PaintDirty;
+					_recorder ??= new SKPictureRecorder();
+					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+					visual.Paint(in recorderSession);
+					visual._picture = _recorder.EndRecording();
 				}
-				else if (ShadowState is null || canvas.IsClipEmpty)
-				{
-					foreach (var child in GetChildrenInRenderOrder())
-					{
-						child.Render(in session, postRenderAction, skipDrawing: false);
-					}
-				}
-				else
-				{
-					var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
 
-					var imageInfo = new SKImageInfo(canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
-					if (imageInfo != _childrenBitmap?.bitmap.Info)
-					{
-						_childrenBitmap?.bitmap.Dispose();
-						_childrenBitmap?.canvas.Dispose();
-						var b = new SKBitmap(imageInfo);
-						var bc = new SKCanvas(b);
-						_childrenBitmap = (b, true, bc, (scaleX, scaleY));
-					}
-
-					var (bitmap, bitmapCanvas) = (_childrenBitmap.Value.bitmap, _childrenBitmap.Value.canvas);
-
-					// When we have DPI scaling, the canvas is scaled globally so that all the drawing operations are
-					// scaled, but this won't work for the draw-on-a-separate-bitmap-and-then-copy-it-over optimization
-					// we are doing here because the bitmap will be rasterized first and then scaled and the fidelity
-					// will be lost. Instead, we draw inside the bitmap with a scaling similar to that applied to the
-					// current canvas and when we copy the bitmap over to the canvas (using the DrawBitmap call below) we apply the
-					// inverse of that scaling. This way, the resolution of the visuals drawn inside the bitmap
-					// is kept.
-					var childrenRootTransform = Matrix4x4.CreateScale(scaleX, scaleY, 1);
-
-					// When we call child.Render, the child will apply their own TotalMatrix, but we're drawing
-					// on the secondary bitmap, not on the main canvas directly, so we only want the child to do
-					// its "local transform" not the total transform. To do that, we premultiply the inverse
-					// of this visual's TotalMatrix. The result for the child is
-					// child.TotalMatrix * inverse(this.TotalMatrix) =
-					// child."LocalMatrix" * this.TotalMatrix * inverse(this.TotalMatrix) =
-					// child."LocalMatrix"
-					Matrix4x4.Invert(TotalMatrix, out var invertedTotalMatrix);
-					childrenRootTransform = invertedTotalMatrix * childrenRootTransform;
-
-					bitmapCanvas.Clear(SKColors.Transparent);
-
-					_factory.CreateInstance(this, bitmapCanvas, ref childrenRootTransform, session.Opacity, out var bitmapSession);
-					using (new DisposableStruct<SKCanvas, int>(static (c, count) => c.RestoreToCount(count), bitmapCanvas, bitmapCanvas.Save()))
-					{
-						var bitmapSaveCount = bitmapSession.Canvas.SaveLayer(ShadowState.Paint);
-						foreach (var child in GetChildrenInRenderOrder())
-						{
-							child.Render(in bitmapSession, postRenderAction, skipDrawing: false);
-						}
-						bitmapSession.Canvas.RestoreToCount(bitmapSaveCount);
-					}
-					bitmapCanvas.Flush();
-					canvas.Save();
-					canvas.Scale(1 / scaleX, 1 / scaleY);
-					canvas.DrawBitmap(bitmap, 0, 0);
-					canvas.Restore();
-				}
+				sessionCanvas.DrawPicture(visual._picture);
 			}
+#if DEBUG
+			Debug.Assert(saveCount == sessionCanvas.SaveCount);
+#endif
+		}
+
+		static void PostPaintClippingStep(Visual visual, ref PaintingSession session)
+		{
+			if (visual.GetPostPaintingClipping() is { } postClip)
+			{
+				session.Canvas.ClipPath(postClip, antialias: true);
+			}
+		}
+
+		static void RecurseOnChildrenStep(Visual visual, ref PaintingSession session, Action<SKCanvas, Visual>? postRenderAction, bool skipDrawing)
+		{
+			foreach (var child in visual.GetChildrenInRenderOrder())
+			{
+				child.Render(in session, postRenderAction, skipDrawing);
+			}
+		}
+
+		static (SKBitmap bitmap, SKCanvas canvas) GetOrCreateChildrenBitmap(Visual visual, ref PaintingSession session)
+		{
+			var canvas = session.Canvas;
+			var (scaleX, scaleY) = (canvas.TotalMatrix.ScaleX, canvas.TotalMatrix.ScaleY);
+			var imageInfo = new SKImageInfo(canvas.DeviceClipBounds.Width, canvas.DeviceClipBounds.Height);
+			if (imageInfo != visual._childrenBitmap?.bitmap.Info)
+			{
+				visual._childrenBitmap?.bitmap.Dispose();
+				visual._childrenBitmap?.canvas.Dispose();
+				var b = new SKBitmap(imageInfo);
+				var bc = new SKCanvas(b);
+				visual._childrenBitmap = (b, true, bc, (scaleX, scaleY));
+			}
+			return (visual._childrenBitmap.Value.bitmap, visual._childrenBitmap.Value.canvas);
 		}
 	}
 
