@@ -10,10 +10,7 @@ using Android.Widget;
 using AndroidX.Core.View;
 using Uno.Disposables;
 using Uno.UI.Extensions;
-using Windows.Devices.Sensors;
-using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Rect = Android.Graphics.Rect;
 
@@ -36,10 +33,13 @@ namespace Uno.UI
 
 		private readonly Activity _activity;
 		private readonly GlobalLayoutProvider _adjustNothingLayoutProvider, _adjustResizeLayoutProvider;
+		private double _cachedDensity;
 
 		public LayoutProvider(Activity activity)
 		{
 			this._activity = activity;
+
+			_cachedDensity = GetScale();
 
 			_adjustNothingLayoutProvider = new GlobalLayoutProvider(activity, null!, null!)
 			{
@@ -148,11 +148,37 @@ namespace Uno.UI
 
 		private void MeasureInsets(PopupWindow sender, WindowInsetsCompat insets)
 		{
-			//var systemInsets = insets.GetInsets(WindowInsetsCompat.Type.SystemBars())
-			//	.ToThickness()
-			//	.PhysicalToLogicalPixels();
+			var size = insets.GetInsets(WindowInsetsCompat.Type.SystemBars())
+				.ToThickness();
 
-			InsetsChanged?.Invoke(default);
+			var systemInsets = PhysicalToLogicalPixels(size);
+
+			InsetsChanged?.Invoke(systemInsets);
+		}
+
+		private Thickness PhysicalToLogicalPixels(Thickness size)
+		{
+			return new Thickness(
+				top: PhysicalToLogicalPixels(size.Top),
+				left: PhysicalToLogicalPixels(size.Left),
+				right: PhysicalToLogicalPixels(size.Right),
+				bottom: PhysicalToLogicalPixels(size.Bottom)
+			);
+		}
+
+		private double PhysicalToLogicalPixels(double value) => value / _cachedDensity;
+
+		private float GetScale()
+		{
+			float cachedDensity = 0;
+
+			if (Android.App.Application.Context.Resources is { } resources && resources.DisplayMetrics is not null)
+			{
+				using Android.Util.DisplayMetrics displayMetrics = resources.DisplayMetrics;
+				cachedDensity = displayMetrics.Density;
+			}
+
+			return cachedDensity;
 		}
 
 		private class GlobalLayoutProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener, AndroidX.Core.View.IOnApplyWindowInsetsListener
