@@ -473,6 +473,11 @@ namespace Private.Infrastructure
 					tcs.TrySetException(new Exception(e.ErrorMessage));
 				};
 
+				if (source.IsOpened)
+				{
+					tcs.TrySetResult(true);
+				}
+
 				return tcs.Task;
 			}
 
