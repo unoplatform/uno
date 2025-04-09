@@ -8,9 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using SkiaSharp;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Helpers;
-using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -39,7 +37,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	public virtual int GetSubTreeHeight() => 0;
 
-	private bool DoBitmapOptimization(SKCanvas canvas) => ShadowState is not null && !canvas.IsClipEmpty && _framesSinceSubtreePaintClean > 10;
+	private bool DoBitmapOptimization(ref PaintingSession session, Action<SKCanvas, Visual>? postRenderAction)
+		=> postRenderAction is null && // Airspace needs postRenderAction to have the right clip bounds, but the clip bounds on the bitmap canvas will be different
+		   ShadowState is not null && // Only shows are expensive enough to warrant this optimization at the moment
+		   session.Canvas.Surface is not null && // the canvas needs to be backed by a surface in order for the call to DrawSurface to work
+		   !session.Canvas.IsClipEmpty && // besides being obviously pointless to optimize, we cannot create a bitmap with zero dimensions
+		   _framesSinceSubtreePaintClean > 10; // if this subtree changes frequently, the cost of recreating the bitmap will be too high
 
 	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
 
@@ -354,7 +357,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// (e.g. postRenderAction calls), but we don't actually draw anything.
 				RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: true);
 			}
-			else if (!DoBitmapOptimization(session.Canvas))
+			else if (!DoBitmapOptimization(ref session, postRenderAction))
 			{
 				// This is the canonical path without any tricks or optimizations
 				PaintStep(this, ref session);
@@ -392,8 +395,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					bitmapCanvas.DrawSurface(canvas.Surface, -canvas.TotalMatrix.TransX, -canvas.TotalMatrix.TransY);
 					Paint(bitmapSession);
 					postRenderAction?.Invoke(canvas, this);
-					PostPaintClippingStep(this, ref session);
-					RecurseOnChildrenStep(this, ref session, postRenderAction, skipDrawing: false);
+					PostPaintClippingStep(this, ref bitmapSession);
+					RecurseOnChildrenStep(this, ref bitmapSession, postRenderAction, skipDrawing: false);
 				}
 				bitmapCanvas.Flush();
 				canvas.Save();
