@@ -242,12 +242,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Scroller is { } sv)
 			{
-				if (sv is
-					{
-						IsScrollInertiaEnabled: true,
-						HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
-						VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
-					})
+				if (CanScrollInertial(sv))
 				{
 					mode |= ManipulationModes.TranslateInertia;
 				}
@@ -269,15 +264,20 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		void IDirectManipulationHandler.OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta)
 		{
+			if (Scroller is not { } sv || unhandledDelta is { IsEmpty: true })
+			{
+				return;
+			}
+
 			if (args.IsInertial)
 			{
 				// When inertia is running, we do not want to chain the scroll to the parent SV
 				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
-				if (_touchInertiaOptions is null
-					|| args.Manipulation.GetInertiaNextTick() is not { } next)
+				if (_touchInertiaOptions is null // A scroll to has been requested (e.g. snap points?) - OR - inertia was not allowed in the InertiaStarting
+					|| args.Manipulation.GetInertiaNextTick() is not { } next) // Reached the end of the inertia
 				{
-					// A scroll to has been requested (e.g. snap points?), abort the manipulation.
+					// If unhandledDelta not empty but the current SV is not able to handle the inertia, we abort it
 					recognizer.CompleteGesture();
 					return;
 				}
@@ -305,24 +305,31 @@ namespace Microsoft.UI.Xaml.Controls
 					disableAnimation: true,
 					isIntermediate: true);
 
-				if (Scroller is { } sv)
+				if (!sv.IsHorizontalScrollChainingEnabled)
 				{
-					if (!sv.IsHorizontalScrollChainingEnabled)
-					{
-						unhandledDelta.Translation.X = 0;
-					}
+					unhandledDelta.Translation.X = 0;
+				}
 
-					if (!sv.IsVerticalScrollChainingEnabled)
-					{
-						unhandledDelta.Translation.Y = 0;
-					}
+				if (!sv.IsVerticalScrollChainingEnabled)
+				{
+					unhandledDelta.Translation.Y = 0;
 				}
 			}
 		}
 
 		/// <inheritdoc />
-		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer _, ManipulationInertiaStartingEventArgs args)
+		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args)
 		{
+			if (Scroller is not { } sv || !CanScrollInertial(sv))
+			{
+				// Inertia is starting but we cannot handle it.
+				// At this point we don't know if we another (child) SV we be able to handle it, so we do NOT abort the gesture.
+
+				_touchInertiaOptions = null; // Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
+
+				return;
+			}
+
 			// As we run animation by our own, we request to have pretty long delay between ticks to avoid too many updates.
 			args.Manipulation.Inertia!.Interval = TimeSpan.FromMilliseconds(100);
 
@@ -352,9 +359,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (args.IsInertial)
 			{
-				if (_touchInertiaOptions is null)
+				if (_touchInertiaOptions is null && Scroller is { } sv && CanScrollInertial(sv))
 				{
-					// Inertia has been aborted (snap points?), do not try to apply the final value.
+					// Inertia has been aborted (snap points?) -BUT WAS ALLOWED-, do not try to apply the final value.
 					return;
 				}
 			}
@@ -363,6 +370,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Set(disableAnimation: true, isIntermediate: false);
 		}
+
+		private static bool CanScrollInertial(ScrollViewer sv)
+			=> sv is
+			{
+				IsScrollInertiaEnabled: true,
+				HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
+				VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
+			};
+
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
