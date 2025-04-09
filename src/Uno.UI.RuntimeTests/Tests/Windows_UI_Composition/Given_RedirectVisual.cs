@@ -13,7 +13,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
-using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
