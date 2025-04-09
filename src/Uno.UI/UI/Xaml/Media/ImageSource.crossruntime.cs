@@ -107,11 +107,8 @@ namespace Microsoft.UI.Xaml.Media
 				{
 					asyncImg.ContinueWith(t =>
 					{
-						if (t.IsCompletedSuccessfully)
-						{
-							OnOpened(t.Result);
-						}
-					}, ct);
+						OnOpened(t.IsFaulted ? ImageData.FromError(t.Exception) : t.Result);
+					}, ct, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
 				}
 				else
 				{
