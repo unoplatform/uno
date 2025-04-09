@@ -16,15 +16,15 @@ steps:
     displayName: Install OpenJDK 11
     retryCountOnTaskFailure: 3
 
+  - task: Cache@2
+    condition: eq(variables['enable_dotnet_cache'], 'true')
+    inputs:
+      key: dotnet | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion)" | "${{ parameters.UnoCheckParameters }}"
+      path: $(DOTNET_INSTALL_DIR)
+    displayName: Set Cache for dotnet install
+
   - bash: |
       dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip dotnetnewunotemplates --skip androidemulator --skip maui --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3
-
-  - task: Cache@2
-    condition: eq(variables['enable_dotnet_cache'], 'true')
-    inputs:
-      key: dotnet | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion) " | "${{ parameters.UnoCheckParameters }}"
-      path: $(DOTNET_INSTALL_DIR)
-    displayName: Set Cache for dotnet install
