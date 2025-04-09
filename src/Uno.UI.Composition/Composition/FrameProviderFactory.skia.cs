@@ -15,6 +15,13 @@ internal static class FrameProviderFactory
 	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, [NotNullWhen(true)] out IFrameProvider? provider)
 	{
 		using var codec = SKCodec.Create(stream);
+
+		if (codec is null)
+		{
+			provider = null;
+			return false;
+		}
+
 		var imageInfo = codec.Info;
 		var frameInfos = codec.FrameInfo;
 		imageInfo = new SKImageInfo(imageInfo.Width, imageInfo.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
