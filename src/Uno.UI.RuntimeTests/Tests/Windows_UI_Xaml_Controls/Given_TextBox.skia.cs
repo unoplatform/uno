@@ -4055,6 +4055,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		public async Task When_PasswordBox_Focus_Changes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var stackPanel = new StackPanel()
+			{
+				Padding = new Thickness(10),
+				Spacing = 8
+			};
+			var button = new Button()
+			{
+				Content = "Focus"
+			};
+			var passwordBox = new PasswordBox
+			{
+				IsPasswordRevealButtonEnabled = false,
+				Width = 150
+			};
+
+			stackPanel.Children.Add(passwordBox);
+			stackPanel.Children.Add(button);
+
+			await UITestHelper.Load(stackPanel);
+
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			var screenshotEmpty = await UITestHelper.ScreenShot(passwordBox);
+
+			passwordBox.Password = "1234567890";
+			await WindowHelper.WaitForIdle();
+
+			var screenshotFilled = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreNotEqualAsync(screenshotEmpty, screenshotFilled);
+
+			button.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			var screenshotRefocused = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreEqualAsync(screenshotRefocused, screenshotFilled);
+		}
+
+		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
 		public async Task When_TextBox_Touch_Tapped_At_End()
 		{

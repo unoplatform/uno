@@ -141,8 +141,9 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		if (SecureTextEntry)
 		{
 			var text = Text;
-			Text = string.Empty;
-			InsertText(text ?? "");
+			SetTextNative(string.Empty); // Does not trigger TextChanged
+			InsertText(text ?? ""); // Does not trigger Text setter
+			OnTextChanged();
 		}
 
 		StartEditing();
