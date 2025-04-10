@@ -43,6 +43,7 @@
       "Uno.Foundation\\Uno.Foundation.netcoremobile.csproj",
       "Uno.Sdk\\Uno.Sdk.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
