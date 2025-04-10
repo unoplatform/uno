@@ -23,6 +23,10 @@ indent_size = 2
 
 [*.md]
 indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[*.{csproj,props,targets}]
 
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
