@@ -67,5 +67,8 @@ variables:
   # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
   #enable_package_cache: true
 
+  enable_dotnet_cache: true
+  GlobalUnoCheckVersion: '1.31.0-dev.12'
+
 stages:
 - template: build/ci/.azure-devops-stages.yml
