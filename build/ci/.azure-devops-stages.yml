@@ -134,7 +134,7 @@ stages:
   jobs:
   - template: .azure-devops-wasdk.yml
     parameters:
-      poolName: '$(windowsScaledPool)'
+      poolName: '$(windows2022HostedVMImage)'
 
 - stage: test_finalization
   displayName: Tests - Results
