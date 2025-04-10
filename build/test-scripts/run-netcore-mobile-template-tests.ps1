@@ -370,6 +370,17 @@ for($i = 0; $i -lt $projects.Length; $i++)
         continue
     }
 
+    # Disable most costly features to speed up the build
+    $extraArgs=@(
+        "-p:RunAOTCompilation=false",
+        "-p:MtouchUseLlvm=false",
+        "-p:MtouchLink=none",
+        "-p:WasmShellILLinkerEnabled=false",
+        "-p:UseInterpreter=true",
+        "-p:_IsDedupEnabled=false",
+        "-p:MtouchInterpreter=all"
+    );
+
     if ($buildWithNetCore)
     {
         if(!$usePublish)
@@ -384,7 +395,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
         $dotnetCommand = $usePublish ? "publish" : "build"
 
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
-        dotnet $dotnetCommand $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/release/msbuild.binlog
+        dotnet $dotnetCommand $release "$projectPath" $projectOptions $extraArgs -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
  
         dotnet clean $release $projectOptions "$projectPath"
@@ -400,7 +411,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $msbuild $debug /r /t:Clean "$projectPath" /bl:binlogs/$projectPath/$i/release/msbuild.binlog
 
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
-            & $msbuild $release /r "$projectPath" $projectOptions /bl:binlogs/$projectPath/$i/release/msbuild.binlog
+            & $msbuild $release /r "$projectPath" $projectOptions $extraArgs /bl:binlogs/$projectPath/$i/release/msbuild.binlog
             Assert-ExitCodeIsZero
 
             & $msbuild $release /r /t:Clean "$projectPath"

@@ -5,7 +5,8 @@ jobs:
 - job: Documentation
   displayName: 'Build Documentation WebSite'
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
