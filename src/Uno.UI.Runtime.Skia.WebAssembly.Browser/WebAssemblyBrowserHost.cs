@@ -88,28 +88,8 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 
 		_renderer = new BrowserRenderer(this);
 
-		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 		Application.Start(CreateApp);
 	}
-
-	//private void OnCoreWindowContentRootSet(object? sender, object e)
-	//{
-	//	var contentRoot = CoreServices.Instance
-	//		.ContentRootCoordinator
-	//		.CoreWindowContentRoot;
-	//	var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-	//	if (xamlRoot is null)
-	//	{
-	//		throw new InvalidOperationException("XamlRoot was not properly initialized");
-	//	}
-
-	//	contentRoot!.SetHost(this);
-	//	AppManager.XamlRootMap.Register(xamlRoot, this);
-
-	//	CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
-	//}
 
 	void IXamlRootHost.InvalidateRender()
 	{

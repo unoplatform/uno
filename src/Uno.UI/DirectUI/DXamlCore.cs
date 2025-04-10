@@ -83,7 +83,13 @@ namespace DirectUI
 		internal void OnCompositionContentStateChangedForUWP()
 		{
 			var contentRootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
-			var root = contentRootCoordinator.CoreWindowContentRoot;
+			var root = contentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
+			if (root is null)
+			{
+				// The CoreWindow is not initialized, ignore the content state change.
+				return;
+			}
+
 			var rootScale = RootScale.GetRootScaleForContentRoot(root);
 			if (rootScale is null) // Check that we still have an active tree
 			{

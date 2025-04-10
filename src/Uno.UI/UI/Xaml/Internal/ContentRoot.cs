@@ -82,8 +82,8 @@ internal partial class ContentRoot
 		switch (type)
 		{
 			case ContentRootType.CoreWindow:
-				MUX_ASSERT(coreServices.ContentRootCoordinator.CoreWindowContentRoot == null);
-				coreServices.ContentRootCoordinator.CoreWindowContentRoot = this;
+				MUX_ASSERT(coreServices.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot == null);
+				coreServices.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot = this;
 
 				FocusAdapter = new FocusManagerCoreWindowAdapter(this);
 				FocusManager.SetFocusObserver(new CoreWindowFocusObserver(this));

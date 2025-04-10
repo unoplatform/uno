@@ -207,7 +207,7 @@ internal abstract partial class RootScale
 		{
 			var coreServices = CoreServices.Instance; // TODO Uno: This should be DXamlServices::GetHandle()
 			var contentRootCoordinator = coreServices.ContentRootCoordinator;
-			if (contentRootCoordinator.CoreWindowContentRoot is { } root)
+			if (contentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot is { } root)
 			{
 				result = GetRootScaleForContentRoot(root);
 			}

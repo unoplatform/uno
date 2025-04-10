@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Input
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
 				var contentRootCoordinator = core.GetHandle().ContentRootCoordinator;
-				var contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
+				var contentRoot = contentRootCoordinator?.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 
 				if (contentRoot is null)
 				{
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Input
 			// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 			// ContentRoot, so explicitly return the CoreWindow content root.
 			var contentRootCoordinator = core.GetHandle().ContentRootCoordinator;
-			var contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
+			var contentRoot = contentRootCoordinator?.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 
 			if (contentRoot == null)
 			{
@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Input
 				}
 				else
 				{
-					contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
+					contentRoot = contentRootCoordinator?.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 				}
 
 				// If we are being passed in the public root visual of a XamlRoot as the SearchRoot, then override the SearchRoot to be the RootVisual.
@@ -255,7 +255,7 @@ namespace Microsoft.UI.Xaml.Input
 				// ContentRoot, so explicitly return the CoreWindow content root.
 				if (contentRoot == null)
 				{
-					contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
+					contentRoot = contentRootCoordinator?.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 				}
 				if (contentRoot == null)
 				{
@@ -577,7 +577,7 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
-				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 
 				if (contentRoot == null)
 				{
@@ -610,7 +610,7 @@ namespace Microsoft.UI.Xaml.Input
 			{
 				// For compat reasons, these FocusManager static APIs need to always use the CoreWindow as the
 				// ContentRoot, so explicitly return the CoreWindow content root.
-				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				var contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 
 				if (contentRoot == null)
 				{
@@ -734,7 +734,7 @@ namespace Microsoft.UI.Xaml.Input
 			}
 			else
 			{
-				contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.CoreWindowContentRoot;
+				contentRoot = DXamlCore.Current.GetHandle().ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
 			}
 
 			// If we are being passed in the public root visual of the XamlRoot as the SearchRoot, then override the SearchRoot to be the RootVisual.
