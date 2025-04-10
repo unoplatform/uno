@@ -5,7 +5,10 @@ using CoreGraphics;
 using Foundation;
 using Metal;
 using MetalKit;
+using Microsoft.Graphics.Display;
 using SkiaSharp;
+using UIKit;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
@@ -49,6 +52,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
 			SampleCount = 1;
+
+			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
+			PreferredFramesPerSecond = fps;
+
+			this.LogDebug()?.LogDebug($"UnoSKMetalView: {nameof(PreferredFramesPerSecond)} = {fps}");
 
 			Device = device;
 
