@@ -6,6 +6,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.Disposables;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -16,6 +17,7 @@ internal partial class ContentManager
 
 	private UIElement? _content;
 	private RootVisual? _rootVisual;
+	private readonly SerialDisposable _contentLoadedDisposable = new();
 
 	public ContentManager(object owner, bool isCoreWindowContent)
 	{
@@ -40,6 +42,8 @@ internal partial class ContentManager
 			// Content already set, ignore.
 			return;
 		}
+
+		_contentLoadedDisposable.Disposable = null;
 
 		if (_isCoreWindowContent)
 		{
@@ -85,7 +89,35 @@ internal partial class ContentManager
 #endif
 		}
 
+		if (newContent is FrameworkElement frameworkElement)
+		{
+			frameworkElement.Loaded += FrameworkElement_Loaded;
+
+			_contentLoadedDisposable.Disposable = Disposable.Create(() =>
+			{
+				frameworkElement.Loaded -= FrameworkElement_Loaded;
+			});
+		}
+		else if (newContent is not null)
+		{
+			NotifyContentLoaded();
+		}
+
 		_content = newContent;
+	}
+
+	private void FrameworkElement_Loaded(object sender, RoutedEventArgs e)
+	{
+		_contentLoadedDisposable.Disposable = null;
+		NotifyContentLoaded();
+	}
+
+	private void NotifyContentLoaded()
+	{
+		if (_owner is Window window)
+		{
+			window.NativeWrapper.
+		}
 	}
 
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)

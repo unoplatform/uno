@@ -41,4 +41,6 @@ internal interface IWindowImplementation
 	void Activate();
 
 	bool Close();
+
+	void NotifyContentLoaded();
 }
