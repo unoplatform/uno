@@ -21,6 +21,8 @@ public partial class Compositor
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
+	internal bool IsAnimating => _runningAnimations.Count > 0;
+
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)

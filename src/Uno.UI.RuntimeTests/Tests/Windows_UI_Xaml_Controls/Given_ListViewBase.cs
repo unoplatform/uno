@@ -2000,6 +2000,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6"), tolerance); // hovered
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_FastMouseWheelScroll_Then_ItemsRealized()
+		{
+			var container = new Grid { Height = 500, Width = 100 };
+			var sut = new ListView
+			{
+				ItemsSource = Enumerable.Range(0, 100),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+			container.Children.Add(sut);
+
+			var bounds = await UITestHelper.Load(container);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+			mouse.MoveTo(bounds.GetCenter());
+
+			var top1 = await UITestHelper.ScreenShot(sut);
+
+			for (var i = 0; i < 100; i++)
+			{
+				mouse.Wheel(-4096); // Fast scroll to the bottom
+			}
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			var bottom = await UITestHelper.ScreenShot(sut);
+			await ImageAssert.AreNotEqualAsync(top1, bottom);
+
+			for (var i = 0; i < 100; i++)
+			{
+				mouse.Wheel(4096); // Fast scroll to the bottom
+			}
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			var top2 = await UITestHelper.ScreenShot(sut);
+			ImageAssert.HasPixels(top1, ExpectedPixels.At(0, 0).Pixels(top2, new Rectangle(0, 0, 50, 500))); // Validate only the left to ignore the scroll bar
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if !__CROSSRUNTIME__

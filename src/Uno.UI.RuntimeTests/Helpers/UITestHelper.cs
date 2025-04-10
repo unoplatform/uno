@@ -68,7 +68,17 @@ public static class UITestHelper
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
-	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
+	public static async Task WaitForIdle(bool waitForCompositionAnimations = true)
+	{
+#if __SKIA__
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+		} while (waitForCompositionAnimations && TestServices.WindowHelper.WindowContent.Visual.Compositor.IsAnimating);
+#else
+		await TestServices.WindowHelper.WaitForIdle();
+#endif
+	}
 
 	/// <summary>
 	/// Takes a screen-shot of the given element.
