@@ -5,16 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
-using Windows.Application­Model;
+using Windows.ApplicationModel;
 using Windows.Graphics.Display;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
 		// TODO: Introduce LRU caching if needed
-		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
+		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -66,20 +68,31 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
 					}
 
-					var tcs = new TaskCompletionSource<ImageData>();
-					_ = Task.Run(async () =>
-					{
-						try
-						{
-							tcs.TrySetResult(await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct));
-						}
-						catch (Exception e)
-						{
-							tcs.TrySetResult(ImageData.FromError(e));
-						}
-					}, ct);
+					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 
-					var imageData = await tcs.Task;
+					if (ignoreCache
+						|| !BitmapImageCache.TryGetFromUri(uri, out Task<ImageData> imageDataTask))
+					{
+						imageDataTask = Task.Run(async () =>
+						{
+							try
+							{
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
+							}
+							catch (Exception e)
+							{
+								return ImageData.FromError(e);
+							}
+						}, ct);
+
+						if (FeatureConfiguration.Image.EnableBitmapImageCache)
+						{
+							BitmapImageCache.Add(uri, imageDataTask);
+						}
+					}
+
+					var imageData = await imageDataTask;
+
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						PixelWidth = 0;
@@ -126,7 +139,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		internal static string GetScaledPath(string rawPath)
 		{
 			// Avoid querying filesystem if we already seen this file
-			if (_scaledBitmapCache.TryGetValue(rawPath, out var result))
+			if (_scaledBitmapPathCache.TryGetValue(rawPath, out var result))
 			{
 				return result;
 			}
@@ -149,7 +162,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			result = applicableScale ?? originalLocalPath;
-			_scaledBitmapCache[rawPath] = result;
+			_scaledBitmapPathCache[rawPath] = result;
 			return result;
 
 			string FindApplicableScale(bool onlyMatching)
