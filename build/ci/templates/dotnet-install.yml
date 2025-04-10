@@ -4,12 +4,12 @@ steps:
       cp build/ci/net9/global.json global.json
     displayName: "Using .NET 9 global.json"
 
-  - script: |
+  - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for macOS/Linux"
     condition: or(eq(variables['Agent.OS'], 'Linux'), eq(variables['Agent.OS'], 'Darwin'))
 
-  - script: |
+  - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)\.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for Windows"
     condition: eq(variables['Agent.OS'], 'Windows_NT')
