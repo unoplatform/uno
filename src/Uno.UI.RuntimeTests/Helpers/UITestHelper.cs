@@ -74,7 +74,7 @@ public static class UITestHelper
 		do
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-		} while (waitForCompositionAnimations && TestServices.WindowHelper.WindowContent.Visual.Compositor.IsAnimating);
+		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
 #else
 		await TestServices.WindowHelper.WaitForIdle();
 #endif
