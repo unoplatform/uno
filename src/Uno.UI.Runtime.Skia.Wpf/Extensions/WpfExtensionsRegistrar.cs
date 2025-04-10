@@ -5,10 +5,8 @@ using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Extensions.System.Profile;
-using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
-using Uno.UI.Core.Preview;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
@@ -56,7 +54,6 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
-		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new WpfNativeWebViewProvider(o));
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WpfNativeOpenGLWrapper(xamlRoot));
 
