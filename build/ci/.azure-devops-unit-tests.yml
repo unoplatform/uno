@@ -41,6 +41,7 @@ jobs:
     inputs:
       packageType: 'sdk'
       version: '8.x'
+      installationPath: $(DOTNET_INSTALL_DIR)
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
