@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -180,6 +181,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1091")]
 		public async Task When_Theme_Changes_NVItem_Foreground()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var uc = (UserControl)XamlReader.Load(
 				"""
 				<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
