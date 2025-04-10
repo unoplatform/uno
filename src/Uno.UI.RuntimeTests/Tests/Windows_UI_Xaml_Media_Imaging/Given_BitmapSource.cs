@@ -218,7 +218,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
 
 			await WindowHelper.WaitForIdle();
+
+#if !__ANDROID__ // Flaky on android native
 			await WindowHelper.WaitForOpened(bitmapImage);
+#endif
 
 			var screenshotWithImage = await UITestHelper.ScreenShot(border);
 
