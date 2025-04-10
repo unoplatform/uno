@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -1811,15 +1811,6 @@
 		<Fields>
 			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
 			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
-
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
-			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
-
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
-			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
-
-			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
-			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>
@@ -2039,6 +2030,14 @@
 		</Events>
 
 		<Fields>
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
+
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
+
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>
