@@ -8,6 +8,9 @@ stages:
     pool:
       vmImage: $(linuxVMImage)
 
+    variables:
+      npm_config_cache: $(Pipeline.Workspace)/.npm
+
     steps:
     - checkout: self
       clean: true
