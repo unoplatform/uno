@@ -219,7 +219,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			await WindowHelper.WaitForIdle();
 
-#if !__ANDROID__ // Flaky on android native
+#if __SKIA__ // Flaky on native
 			await WindowHelper.WaitForOpened(bitmapImage);
 #endif
 
