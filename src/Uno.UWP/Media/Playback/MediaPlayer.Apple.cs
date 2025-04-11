@@ -172,7 +172,11 @@ namespace Windows.Media.Playback
 
 		private void InitializePlayer()
 		{
-			_player = new AVQueuePlayer();
+			_player = new AVQueuePlayer
+			{
+				ActionAtItemEnd = AVPlayerActionAtItemEnd.None
+			};
+
 			_videoLayer = AVPlayerLayer.FromPlayer(_player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
