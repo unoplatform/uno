@@ -46,6 +46,20 @@ internal partial class ContentManager
 
 		_contentLoadedDisposable.Disposable = null;
 
+		if (newContent is FrameworkElement frameworkElement)
+		{
+			frameworkElement.Loaded += FrameworkElement_Loaded;
+
+			_contentLoadedDisposable.Disposable = Disposable.Create(() =>
+			{
+				frameworkElement.Loaded -= FrameworkElement_Loaded;
+			});
+		}
+		else if (newContent is not null)
+		{
+			NotifyContentLoaded();
+		}
+
 		if (_isCoreWindowContent)
 		{
 			if (WinUICoreServices.Instance.MainVisualTree is not { } visualTree)
@@ -88,20 +102,6 @@ internal partial class ContentManager
 
 			AttachToWindow(_rootVisual, windowOuter);
 #endif
-		}
-
-		if (newContent is FrameworkElement frameworkElement)
-		{
-			frameworkElement.Loaded += FrameworkElement_Loaded;
-
-			_contentLoadedDisposable.Disposable = Disposable.Create(() =>
-			{
-				frameworkElement.Loaded -= FrameworkElement_Loaded;
-			});
-		}
-		else if (newContent is not null)
-		{
-			NotifyContentLoaded();
 		}
 
 		_content = newContent;
