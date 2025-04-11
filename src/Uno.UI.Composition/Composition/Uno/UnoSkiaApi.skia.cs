@@ -33,13 +33,4 @@ internal static class UnoSkiaApi
 
 	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
 	internal static extern unsafe void sk_rrect_set_rect_radii(IntPtr rrect, SKRect* rect, SKPoint* radii);
-
-	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
-	internal static extern unsafe void sk_textblob_builder_alloc_run_pos(IntPtr builder, IntPtr font, int count, SKRect* bounds, UnoSKRunBufferInternal* runbuffer);
-
-	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
-	internal static extern IntPtr sk_textblob_builder_make(IntPtr builder);
-
-	[DllImport(SKIA, CallingConvention = CallingConvention.Cdecl)]
-	internal static extern void sk_textblob_unref(IntPtr textBlob);
 }
