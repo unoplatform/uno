@@ -75,6 +75,7 @@
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
+		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
 	</ItemGroup>
 
 	<ItemGroup>
