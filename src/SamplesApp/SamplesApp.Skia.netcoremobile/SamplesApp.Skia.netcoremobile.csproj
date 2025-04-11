@@ -221,7 +221,6 @@
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-				<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
 			</ItemGroup>
 
 			<ItemGroup>
@@ -253,7 +252,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' or ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='ios' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='tvos')">
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
 			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
 			<Version>5.56.0</Version>
 		</PackageReference>
