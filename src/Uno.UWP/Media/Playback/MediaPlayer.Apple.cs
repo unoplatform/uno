@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,21 +97,20 @@ namespace Windows.Media.Playback
 			}
 
 			public EventHandler<AVPlayerItemErrorEventArgs> OnMediaFailed { get; }
-			private void OnMediaFailedCore(object sender, AVPlayerItemErrorEventArgs args)
+			private void OnMediaFailedCore(object? sender, AVPlayerItemErrorEventArgs args)
 				=> _target.GetTarget()?.OnMediaFailed(new Exception(args.Error.LocalizedDescription));
 
 			public EventHandler<NSNotificationEventArgs> OnMediaStalled { get; }
-			private void OnMediaStalledCore(object sender, NSNotificationEventArgs args)
+			private void OnMediaStalledCore(object? sender, NSNotificationEventArgs args)
 				=> _target.GetTarget()?.OnMediaFailed();
 
 			public EventHandler<NSNotificationEventArgs> OnMediaEnded { get; }
-			private void OnMediaEndedCore(object sender, NSNotificationEventArgs args)
+			private void OnMediaEndedCore(object? sender, NSNotificationEventArgs args)
 				=> _target.GetTarget()?.OnMediaEnded(sender, args);
 		}
 
 		private Observer _observer;
-
-		private AVQueuePlayer _player;
+		private AVQueuePlayer? _player;
 		private AVPlayerLayer _videoLayer;
 		private NSObject _periodicTimeObserverObject;
 		private NSObject _itemFailedToPlayToEndTimeNotification;
@@ -172,7 +172,11 @@ namespace Windows.Media.Playback
 
 		private void InitializePlayer()
 		{
-			_player = new AVQueuePlayer();
+			_player = new AVQueuePlayer
+			{
+				ActionAtItemEnd = AVPlayerActionAtItemEnd.None
+			};
+
 			_videoLayer = AVPlayerLayer.FromPlayer(_player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
@@ -181,9 +185,9 @@ namespace Windows.Media.Playback
 			var avSession = AVAudioSession.SharedInstance();
 			avSession.SetCategory(AVAudioSessionCategory.Playback);
 
-			NSError activationError = null;
-			avSession.SetActive(true, out activationError);
-			if (activationError != null)
+			avSession.SetActive(true, out var activationError);
+
+			if (activationError is not null && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().Warn($"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
@@ -228,9 +232,12 @@ namespace Windows.Media.Playback
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
-				_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
-				_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
+				if (_player?.CurrentItem is { } currentItem)
+				{
+					currentItem.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
+					currentItem.RemoveObserver(_observer, new NSString("status"), _player.Handle);
+					currentItem.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
+				}
 
 				switch (Source)
 				{
@@ -247,14 +254,16 @@ namespace Windows.Media.Playback
 						throw new InvalidOperationException("Unsupported media source type");
 				}
 
-				_player.CurrentItem.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
-				_player.CurrentItem.AddObserver(_observer, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
-				_player.CurrentItem.AddObserver(_observer, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
+				if (_player?.CurrentItem is { } playerCurrentItem)
+				{
+					playerCurrentItem.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
+					playerCurrentItem.AddObserver(_observer, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
+					playerCurrentItem.AddObserver(_observer, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
+					playerCurrentItem.SeekingWaitsForVideoCompositionRendering = true;
 
-				_player.CurrentItem.SeekingWaitsForVideoCompositionRendering = true;
-
-				// Adapt pitch to prevent "metallic echo" when changing playback rate
-				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
+					// Adapt pitch to prevent "metallic echo" when changing playback rate
+					playerCurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -264,6 +273,11 @@ namespace Windows.Media.Playback
 
 		private void Play(MediaPlaybackList playlist)
 		{
+			if (_player is null)
+			{
+				return;
+			}
+
 			foreach (var item in playlist.Items)
 			{
 				var asset = AVAsset.FromUrl(DecodeUri(item.Source.Uri));
@@ -273,6 +287,11 @@ namespace Windows.Media.Playback
 
 		private void Play(Uri uri)
 		{
+			if (_player is null)
+			{
+				return;
+			}
+
 			var nsAsset = AVAsset.FromUrl(DecodeUri(uri));
 			var streamingItem = AVPlayerItem.FromAsset(nsAsset);
 
@@ -337,11 +356,11 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void OnMediaEnded(object sender, NSNotificationEventArgs args)
+		private void OnMediaEnded(object? sender, NSNotificationEventArgs args)
 		{
 			MediaEnded?.Invoke(this, null);
 
-			if (Source is MediaPlaybackList && (AVPlayerItem)args.Notification.Object != _player.Items.Last())
+			if (Source is MediaPlaybackList && args.Notification.Object is AVPlayerItem avPlayerItem && avPlayerItem != _player?.Items.Last())
 			{
 				return;
 			}
@@ -349,7 +368,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		private void OnMediaFailed(Exception ex = null, string message = null)
+		private void OnMediaFailed(Exception? ex = null, string? message = null)
 		{
 			MediaFailed?.Invoke(
 				this,
@@ -364,7 +383,8 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
-				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
+
+				IsVideo = _player.CurrentItem.Tracks.Any(IsVideoTrack);
 
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
@@ -390,6 +410,16 @@ namespace Windows.Media.Playback
 				{
 					MediaOpened?.Invoke(this, null);
 				}
+			}
+
+			static bool IsVideoTrack(AVPlayerItemTrack track)
+			{
+				if (track.AssetTrack is not { } assetTrack)
+				{
+					return false;
+				}
+
+				return assetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video);
 			}
 		}
 
@@ -433,11 +463,11 @@ namespace Windows.Media.Playback
 
 		private void OnCurrentItemDurationChanged()
 		{
-			var duration = _player.CurrentItem.Duration;
+			var duration = _player?.CurrentItem?.Duration;
 
 			if (duration != CMTime.Indefinite)
 			{
-				PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(duration.Seconds);
+				PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(duration?.Seconds ?? 0);
 			}
 		}
 
@@ -477,7 +507,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				return TimeSpan.FromSeconds(_player.CurrentItem.CurrentTime.Seconds);
+				return TimeSpan.FromSeconds(_player?.CurrentItem?.CurrentTime.Seconds ?? 0);
 			}
 			set
 			{
