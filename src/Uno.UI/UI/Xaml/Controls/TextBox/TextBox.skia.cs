@@ -1221,7 +1221,7 @@ public partial class TextBox
 		return baseString;
 	}
 
-	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
+	partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText)
 	{
 		if (_isSkiaTextBox)
 		{
@@ -1236,7 +1236,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			_pendingSelection = (selectionStart + clipboardText.Length, 0);
+			_pendingSelection = (selectionStart + adjustedClipboardText.Length, 0);
 		}
 	}
 
