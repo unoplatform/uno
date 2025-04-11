@@ -1509,7 +1509,10 @@ public partial class TextBox
 
 		public void Hide()
 		{
-			XamlRoot!.InvalidateRender -= OnInvalidateRender;
+			if (XamlRoot is { })
+			{
+				XamlRoot.InvalidateRender -= OnInvalidateRender;
+			}
 			if (_popup is not null)
 			{
 				_popup.IsOpen = false;
