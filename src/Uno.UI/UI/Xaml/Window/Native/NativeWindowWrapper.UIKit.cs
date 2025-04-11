@@ -43,6 +43,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
+		_nativeWindow.RootViewController = _mainController;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
@@ -54,11 +55,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore()
-	{
-		_nativeWindow.RootViewController = _mainController;
-		_nativeWindow.MakeKeyAndVisible();
-	}
+	protected override void ShowCore() => _nativeWindow.MakeKeyAndVisible();
 
 	internal RootViewController MainController => _mainController;
 
