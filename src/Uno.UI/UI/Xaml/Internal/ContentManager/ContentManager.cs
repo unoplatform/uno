@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Disposables;
+using Uno.UI.Xaml.Islands;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -116,7 +117,15 @@ internal partial class ContentManager
 	{
 		if (_owner is Window window)
 		{
-			window.NativeWrapper.
+			window.NotifyContentLoaded();
+		}
+		else if (_owner is XamlIslandRoot xamlIslandRoot)
+		{
+			xamlIslandRoot.OwnerWindow?.NotifyContentLoaded();
+		}
+		else
+		{
+			throw new InvalidOperationException("Owner of ContentManager should be a Window or XamlIslandRoot");
 		}
 	}
 
