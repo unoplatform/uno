@@ -36,14 +36,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-#if __APPLE_UIKIT__
 				// There are situations where between measurements scaledDimension and naturalDimension
 				// have a small difference in value (a few pixels) causing the measurement to go into an infinite loop.
 				// Related to: https://github.com/unoplatform/uno/issues/15254
 				var ratio = (float)Math.Round(scaledOneDimension / naturalOneDimension, 1);
-#else
-				var ratio = scaledOneDimension / naturalOneDimension;
-#endif
+
 				return naturalOtherDimension * ratio;
 			}
 		}
