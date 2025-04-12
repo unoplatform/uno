@@ -50,7 +50,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	{
 		if (!OperatingSystem.IsBrowser())
 		{
-			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on the Wasm target with the skia backend.");
+			throw new NotSupportedException($"{nameof(BrowserHtmlElement)} is only supported on WebAssembly.");
 		}
 
 		ElementId = elementId;
