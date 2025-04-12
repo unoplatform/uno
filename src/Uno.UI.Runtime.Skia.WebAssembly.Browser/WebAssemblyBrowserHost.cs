@@ -14,6 +14,7 @@ using Uno.Media.Playback;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -67,6 +68,8 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
+			BrowserHtmlElement.Initialize();
+
 			var app = _appBuilder();
 			app.Host = this;
 

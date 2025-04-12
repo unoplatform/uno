@@ -1,6 +1,23 @@
-namespace Uno.UI.Runtime.Skia {
-	export class BrowserNativeElementHostingExtension {
+namespace Uno.UI.NativeElementHosting {
+	export class BrowserHtmlElement {
 		private static clipPath: SVGPathElement;
+
+		/** Native elements created with the BrowserHtmlElement class */
+		private static nativeHandlersMap: { [id: string]: any } = {};
+
+		private static dispatchEventNativeElementMethod: any;
+
+		public static async initialize() {
+			let anyModule = <any>window.Module;
+
+			if (anyModule.getAssemblyExports !== undefined) {
+				const browserExports = await anyModule.getAssemblyExports("Uno.UI");
+
+				BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
+			} else {
+				throw `BrowserHtmlElement: Unable to find dotnet exports`;
+			}
+		}
 
 		public static setSvgClipPathForNativeElementHost(path: string) {
 			if (!document.getElementById("unoNativeElementHostClipPath")) {
@@ -117,6 +134,110 @@ namespace Uno.UI.Runtime.Skia {
 
 			element.appendChild(btn);
 			element.addEventListener("pointerdown", _ => alert(`button ${text} clicked`));
+		}
+
+		public static setStyleString(elementId: string, name: string, value: string) {
+			const element = document.getElementById(elementId);
+
+			element.style.setProperty(name, value);
+		}
+
+		public static resetStyle(elementId: string, names: string[]) {
+			const element = document.getElementById(elementId);
+
+			for (const name of names) {
+				element.style.setProperty(name, "");
+			}
+		}
+
+		public static setClasses(elementId: string, cssClassesList: string[], classIndex: number) {
+			const element = document.getElementById(elementId);
+
+			for (let i = 0; i < cssClassesList.length; i++) {
+				if (i === classIndex) {
+					element.classList.add(cssClassesList[i]);
+				} else {
+					element.classList.remove(cssClassesList[i]);
+				}
+			}
+		}
+
+		public static setUnsetCssClasses(elementId: string, classesToUnset: string[]) {
+			const element = document.getElementById(elementId);
+
+			classesToUnset.forEach(c => {
+				element.classList.remove(c);
+			});
+		}
+
+		public static setAttribute(elementId: string, name: string, value: string) {
+			const element = document.getElementById(elementId);
+
+			element.setAttribute(name, value);
+		}
+
+		public static getAttribute(elementId: string, name: string) {
+			const element = document.getElementById(elementId);
+
+			return element.getAttribute(name);
+		}
+
+		public static removeAttribute(elementId: string, name: string) {
+			const element = document.getElementById(elementId);
+
+			element.removeAttribute(name);
+		}
+
+		public static setContentHtml(elementId: string, html: string) {
+			const element = document.getElementById(elementId);
+
+			element.innerHTML = html;
+		}
+
+		public static registerNativeHtmlEvent(owner: any, elementId: string, eventName: string, managedHandler: string) {
+			const element = document.getElementById(elementId);
+
+			if (!BrowserHtmlElement.dispatchEventNativeElementMethod) {
+				throw `BrowserHtmlElement: The initialize method has not been called`;
+			}
+
+			const eventHandler = (event: Event) => {
+				BrowserHtmlElement.dispatchEventNativeElementMethod(owner, eventName, managedHandler, event);
+			};
+
+			// Register the handler using a string representation of the managed handler
+			// the managed representation assumes that the string contains a unique id.
+			BrowserHtmlElement.nativeHandlersMap["" + managedHandler] = eventHandler;
+
+			element.addEventListener(eventName, eventHandler);
+		}
+
+		public static unregisterNativeHtmlEvent(elementId: string, eventName: string, managedHandler: any) {
+			const element = document.getElementById(elementId);
+
+			if (!BrowserHtmlElement.dispatchEventNativeElementMethod) {
+				throw `BrowserHtmlElement: The initialize method has not been called`;
+			}
+
+			const key = "" + managedHandler;
+			const eventHandler = BrowserHtmlElement.nativeHandlersMap[key];
+			if (eventHandler) {
+				element.removeEventListener(eventName, eventHandler);
+				delete BrowserHtmlElement.nativeHandlersMap[key];
+			}
+		}
+
+		public static invokeJS(command: string): string {
+			return String(eval(command) || "");
+		}
+
+		public static async invokeAsync(command: string): Promise<string> {
+			// Preseve the original emscripten marshalling semantics
+			// to always return a valid string.
+			var result = await eval(command);
+
+			return String(result || "");
+
 		}
 	}
 }
