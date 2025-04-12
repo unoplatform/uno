@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if (__SKIA__ || __WASM__) && HAS_UNO
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
@@ -8,14 +9,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.NativeElementHosting;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
-#if (__SKIA__ || __WASM__) && HAS_UNO
 [TestClass]
 public class Given_BrowserHtmlElement
 {
