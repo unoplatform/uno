@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
@@ -9,11 +10,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{
-		private WeakReference<MediaPlayerElement> wrOwner;
+		private WeakReference<MediaPlayerElement>? _wrOwner;
 
 		internal void SetOwner(MediaPlayerElement owner)
 		{
-			wrOwner = new WeakReference<MediaPlayerElement>(owner);
+			_wrOwner = new WeakReference<MediaPlayerElement>(owner);
 		}
 
 		private float GetScaledOtherDimension(
@@ -178,6 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Visibility = Visibility.Collapsed;
 			});
 		}
+
 		private void OnSourceChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -188,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal FrameworkElement GetLayoutOwner()
 		{
-			if (wrOwner?.TryGetTarget(out var owner) == true && owner is not null && !IsFullWindow)
+			if (_wrOwner?.TryGetTarget(out var owner) == true && owner is not null && !IsFullWindow)
 			{
 				return owner;
 			}
