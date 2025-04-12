@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -220,5 +221,10 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	/// </summary>
 	public void UnregisterHtmlEventHandler(string eventName, EventHandler<JSObject> handler)
 		=> UnregisterHtmlEventHandlerNative(eventName, handler);
+
+	public void Dispose()
+		=> DisposeNative();
+
+	partial void DisposeNative();
 }
 #endif

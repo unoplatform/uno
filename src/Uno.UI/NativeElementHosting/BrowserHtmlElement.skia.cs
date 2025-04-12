@@ -153,7 +153,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		}
 	}
 
-	public void Dispose()
+	partial void DisposeNative()
 	{
 		NativeMethods.DisposeHtmlElement(ElementId);
 	}

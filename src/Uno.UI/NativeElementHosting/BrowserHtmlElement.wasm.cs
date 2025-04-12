@@ -156,7 +156,7 @@ partial class BrowserHtmlElement
 		}
 	}
 
-	public void Dispose()
+	partial void DisposeNative()
 	{
 		NativeMethods.DisposeHtmlElement(UnoElementId);
 	}
