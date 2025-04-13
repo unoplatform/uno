@@ -143,6 +143,7 @@ namespace TestRepro
 			}
 			void IMainWindow_Bindings.StopTracking()
 			{
+				var owner = Owner;
 			}
 		}
 	}

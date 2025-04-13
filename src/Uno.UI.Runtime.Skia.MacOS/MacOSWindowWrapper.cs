@@ -5,7 +5,6 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
-using Windows.UI.Core.Preview;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 

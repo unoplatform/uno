@@ -23,7 +23,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.remove
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearRegionRects(global::Microsoft.UI.Input.NonClientRegionKind region)
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerMoved.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerMoved.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.add
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerPressed.remove
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerExited.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerReleased.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerReleased.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.RegionsChanged.add
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.add
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.PointerExited.add
+		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.ExitedMoveSize.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAllRegionRects()

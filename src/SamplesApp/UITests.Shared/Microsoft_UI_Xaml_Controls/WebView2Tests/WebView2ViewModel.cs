@@ -33,8 +33,11 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 	<body>
 		<h1>This page spam alert each 5 seconds.</h1>
 		<script>
-		let count = 0;
+		var count = 0;
 		function timer() {
+			if (count === -1) {
+				return;
+			}
 			count++;
 			alert('Spamming alert #' + count);
 			console.log(""Spamming alert #"" + count);

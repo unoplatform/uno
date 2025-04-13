@@ -1,5 +1,5 @@
-@import "../variables";
-@import "breakpoints";
+@use "../variables" as *;
+@use "breakpoints" as *;
 
 /**
  * General notes:
@@ -32,10 +32,9 @@
   position: fixed;
   width: 100%;
   min-height: 67px;
-  max-height: 67px;
+  max-height: 75px;
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
-
 
   &::after,
   &::before {
@@ -48,7 +47,6 @@
 
     @media (max-width: 1023px) {
       width: 100%;
-      // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
@@ -58,12 +56,10 @@
     }
   }
 
-
   #header-logo-container {
     width: 36px;
     vertical-align: middle;
     z-index: 9;
-
 
     img {
       width: 100%;
@@ -71,6 +67,12 @@
 
     @include media-breakpoint-up(lg) {
       min-width: 120px;
+    }
+  }
+
+  @media (max-width: 1600px) {
+    .navbar-collapse {
+      margin: 0 -30px !important;
     }
   }
 
@@ -91,6 +93,7 @@
 
     @media (max-width: 1023px) {
       display: block !important;
+
     }
   }
 
@@ -101,7 +104,7 @@
   nav {
     a {
       padding: 10px;
-      font-size: 13px;
+      font-size: 17px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
@@ -116,8 +119,28 @@
       }
 
       @include media-breakpoint-up(lg) {
-        font-size: 19px;
-        line-height: 17px;
+        font-size: 18px;
+      }
+
+      // Media queries for font size and padding adjustments
+      @media (min-width: 1024px) {
+        font-size: 14px !important;
+        padding: .4rem !important;
+      }
+
+      @media (min-width: 1280px) {
+        font-size: 16px !important;
+        padding: .8rem !important;
+      }
+
+      @media (min-width: 1366px) {
+        font-size: 16px !important;
+        padding: 1.12rem !important;
+      }
+
+      @media (min-width: 1600px) {
+        font-size: 18px !important;
+        padding: 1.12rem 1.28rem !important;
       }
     }
 
@@ -125,26 +148,19 @@
      * Top level menu items
      */
     & > ul > li {
-
       @include media-breakpoint-up(lg) {
         margin: 0 4px;
         align-self: center;
         min-width: max-content;
       }
 
-      @include media-breakpoint-up(navbar) {
-        margin: 0 16px;
-      }
-
       /**
        * menu-item-has-children means there is a submenu
        */
       &.menu-item-has-children {
-        // actual submenu
         position: relative;
 
         & > a {
-
           &::after {
             display: inline-block;
             text-rendering: auto;
@@ -173,9 +189,7 @@
             padding: 20px;
             top: 170% !important;
             left: -25% !important;
-
             flex-direction: column;
-
             box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
             background-color: $white;
           }
@@ -216,7 +230,6 @@
               padding-bottom: 14px;
               width:100%
             }
-
           }
 
           a {
@@ -242,12 +255,10 @@
             }
           }
 
-          // sub-menu columns
           ul {
             @extend .visibility-opacity-transition;
             display: flex;
             position: inherit;
-
             flex-direction: column;
 
             a {
@@ -256,7 +267,6 @@
           }
         }
 
-        // shows the submenu
         &:hover > ul {
           visibility: visible;
           opacity: 1;
@@ -284,7 +294,6 @@
       &.row-menu > ul {
         flex-direction: row;
       }
-
     }
   }
 
@@ -293,57 +302,91 @@
       display: block;
       border: none;
       border-radius: 8px;
-
       margin-left: 0;
-      padding: 8px 32px;
-
-      font-size: 16px;
       line-height: 24px;
       font-weight: 700;
-      min-width: 125px;
       text-align: center;
       text-transform: none;
       color: $black;
-
       background-color: $turquoise;
       background: linear-gradient(to top, $blue 50%, $turquoise 50%);
       background-size: 100% 200%;
       background-position: left top;
       transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
+      padding: 1.2rem 2.5rem !important;
 
       &:hover {
         color: $white;
         background-position: bottom left;
       }
+
+      @media (min-width: 1024px) {
+        font-size: 14px;
+        padding: 1.2rem 2.1rem !important;
+      }
     }
+  }
+
+  .custom-login-item {
+    a {
+      border: 2px solid $blue;
+      width: 100% !important;
+      text-transform: none !important;
+      color: $blue !important;
+      border-radius: 13px;
+      background-color: transparent;
+      background: linear-gradient(to top, $blue 50%, transparent 50%);
+      background-size: 100% 200%;
+      background-position: left top;
+      transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
+      padding: 1rem 1.6rem !important;
+
+      &:hover {
+        color: $white !important;
+        background-position: bottom left;
+      }
+
+      @media (max-width: 1023px) {
+        padding: 1.5rem 1.8rem !important;
+      }
+
+      @media (min-width: 1024px) {
+        margin-left: 0px !important;
+        padding: 1.2rem 1.6rem !important;
+      }
+
+      @media (min-width: 1280px) {
+        margin-left: 14px !important;
+      }
+    }
+  }
+}
+
+#header-container:has(#navbar[aria-expanded="true"]) {
+  @media (max-width: 1023px) {
+  transition: background 200ms ease-in-out;
+  background: $lightblue;
   }
 }
 
 #navbar {
   @media (max-width: 1023px) {
-
     overflow: auto !important;
-
     position: fixed;
     width: 100%;
     margin: 0;
     padding: 0;
-
-    padding-top: 67px;
+    padding-top: 40px;
     left: 0;
-
     text-align: left;
-
     background: $lightblue;
-
-    transition: height .4s ease .1s, opacity .6s ease;
     opacity: 0;
 
     &.collapse {
       height: 67px !important;
       display: none !important;
+      margin: 0 !important;
     }
-
 
     &.collapse.in {
       display: block !important;
@@ -360,11 +403,29 @@
         display: block;
         padding: 0;
 
-        &.get-started-btn {
-          position: absolute;
-          padding: 0 16px;
-          bottom: 10%;
+        &.get-started-btn,
+        &.custom-login-item {
+          display: flex;
           width: 100%;
+          margin: 20px 0 10px;
+          padding: 0 2rem;
+
+          a {
+            width: 100% !important;
+            font-size: 17px !important;
+            border-radius: 10px !important;
+          }
+        }
+
+        &.custom-login-item a {
+          font-size: 20px !important;
+          font-weight: 600;
+          border: 2px solid $blue;
+        }
+
+        &.get-started-btn a {
+          font-weight: 700;
+          text-align: left;
         }
 
         &.menu-item-has-children {
@@ -374,22 +435,26 @@
             position: relative;
             max-height: 0;
             padding: 0;
-
             overflow: hidden;
-            transition: all .5s ease;
+            transition: all 0.5s ease;
+            padding-left: 25px;
+            padding-right: 25px;
+
+            li {
+              padding-left: 20px;
+              padding-right: 20px;
+            }
           }
 
-          &.open {
-            ul {
-              max-height: 1500px;
-            }
+          &.open ul {
+            max-height: 1500px;
           }
         }
       }
 
       a {
         display: block;
-        padding: 10px 25px;
+        padding: 14px 25px;
       }
     }
   }
@@ -399,6 +464,7 @@
   position: fixed;
   top: 67px;
   width: 100%;
+
   z-index: 999;
-  background-color: #f8f8f8;
+  background: #f8f8f8;
 }

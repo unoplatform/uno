@@ -109,7 +109,7 @@ internal partial class VisualTree : IWeakReferenceProvider
 			return _applicationView;
 		}
 
-		if (RootElement is XamlIsland xamlIsland)
+		if (RootElement is XamlIslandRoot xamlIsland)
 		{
 			if (xamlIsland.OwnerWindow is Window ownerWindow)
 			{

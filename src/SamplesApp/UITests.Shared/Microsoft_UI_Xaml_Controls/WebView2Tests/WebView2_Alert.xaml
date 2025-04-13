@@ -12,5 +12,6 @@
 	<unoControls:StarStackPanel Sizes="*,Auto">
 		<mux:WebView2 x:Name="web" />
 		<Button Click="Load">LOAD WEBVIEW WITH ALERT SCRIPT</Button>
+		<Button Click="StopScript">STOP SCRIPT</Button>
 	</unoControls:StarStackPanel>
 </Page>

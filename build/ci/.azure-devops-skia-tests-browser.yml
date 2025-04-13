@@ -1,12 +1,5 @@
 parameters:
-  vmImage: ''
-  vmMacImage: ''
-  vmMacImageTest: ''
   vmLinuxImage: ''
-  vmLinuxPool: ''
-  xCodeRootTest: ''
-  xCodeRootBuild: ''
-  poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
@@ -14,7 +7,6 @@ jobs:
 ##
 ## Skia WebAssembly Browser
 ##
-
 - job: Skia_Browser_Runtime_Tests_Build
   displayName: 'Run Skia Browser Runtime Tests'
   timeoutInMinutes: 60

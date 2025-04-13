@@ -148,7 +148,6 @@ GetPointerPenInfo
 GetPointerTouchInfo
 GetPointerType
 GetRegionData
-GetSaveFileName
 GetWindowLong
 GetWindowPlacement
 GetWindowRect

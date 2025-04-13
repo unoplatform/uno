@@ -1,12 +1,5 @@
 parameters:
-  vmImage: ''
-  vmMacImage: ''
-  vmMacImageTest: ''
   vmLinuxImage: ''
-  vmLinuxPool: ''
-  xCodeRootTest: ''
-  xCodeRootBuild: ''
-  poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
@@ -16,7 +9,8 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
-  pool: ${{ parameters.vmLinuxPool }}
+  pool: 
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   variables:
     CombinedConfiguration: Release|Any CPU

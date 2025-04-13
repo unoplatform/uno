@@ -16,6 +16,10 @@ internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Colo
 	public SKPaint Paint =>
 		_paint ??= new SKPaint()
 		{
-			ImageFilter = SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor())
+			// Equivalent (I think) to SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor()) but much much faster
+			// Writing our own shader that does the same (basically takes the alpha value of the given pixel
+			// adjust by (Dx, Dy) and multiplies it by ShadowState.Color and "modulates" it with the original
+			// pixel) did not improve the numbers one bit.
+			ImageFilter = SKImageFilter.CreateMerge(SKImageFilter.CreateOffset(Dx, Dy, SKImageFilter.CreateCompose(SKImageFilter.CreateBlur(SigmaX, SigmaY), SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.ToSKColor(), SKBlendMode.Modulate)))), SKImageFilter.CreateOffset(0, 0))
 		};
 }

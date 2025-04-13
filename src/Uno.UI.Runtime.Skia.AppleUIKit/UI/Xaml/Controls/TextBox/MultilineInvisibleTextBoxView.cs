@@ -12,6 +12,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
 	private bool _settingTextFromManaged;
+	private bool _settingSelectionFromManaged;
 
 	public MultilineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -107,7 +108,17 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	}
 
 	public void Select(int start, int length)
-		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+	{
+		try
+		{
+			_settingSelectionFromManaged = true;
+			SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+		}
+		finally
+		{
+			_settingTextFromManaged = false;
+		}
+	}
 
 	/// <summary>
 	/// Workaround for https://github.com/unoplatform/uno/issues/9430
@@ -123,7 +134,10 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 			if (textBoxView != null && SelectedTextRange != value)
 			{
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
-				textBoxView.Owner.TextBox?.OnSelectionChanged();
+				if (!_settingSelectionFromManaged)
+				{
+					textBoxView.Owner.TextBox?.OnSelectionChanged();
+				}
 			}
 		}
 	}

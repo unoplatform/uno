@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaWasmFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_WASM;__WASM__;__UNO_WASM__</DefineConstants>
 		</PropertyGroup>
 
 

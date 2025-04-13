@@ -88,7 +88,7 @@ public partial class Popup
 				// In UWP, XamlRoot is set automatically to CoreWindow XamlRoot if not set beforehand.
 				if (XamlRoot is null && Child?.XamlRoot is null && WinUICoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
 				{
-					XamlRoot = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+					XamlRoot = WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 				}
 #endif
 
@@ -97,7 +97,7 @@ public partial class Popup
 				// being visible
 				PopupPanel.Visibility = Visibility.Visible;
 
-				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
 			}

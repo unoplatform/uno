@@ -91,15 +91,15 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Show()
+		public void MoveInZOrderBelow(global::Microsoft.UI.WindowId windowId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Show()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveInZOrderBelow(WindowId windowId)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -107,8 +107,7 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
@@ -160,20 +159,21 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void MoveInZOrderBelow(global::Microsoft.UI.WindowId windowId)
+		public void Show()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveInZOrderBelow(WindowId windowId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Show()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.FrameworkClosed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.FrameworkClosed.remove
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()

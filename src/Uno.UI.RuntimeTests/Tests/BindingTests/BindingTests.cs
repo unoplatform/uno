@@ -8,13 +8,14 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using SamplesApp.UITests;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class BindingTests
+public partial class BindingTests
 {
 	[TestMethod]
 	public async Task When_Binding_Setter_Value_In_Style()
@@ -153,4 +154,68 @@ public class BindingTests
 		Assert.AreEqual(200, SUT.XBoundBorder.ActualWidth);
 		Assert.AreEqual(200, SUT.XBoundBorder.ActualHeight);
 	}
+
+	[TestMethod]
+	public async Task When_XBind_Teardown_19641()
+	{
+		// This is a simplified repro of #19641.
+		// XBindTeardown_Setup contains an element with x:Bind to its VM.Text
+		// VM is a get-only property for: get => (Data)((Data_Wrapper)this.DataContext).Data;
+		// While the setup is unloaded, update to the "Data.Text" should not trigger the xBind to update from INotifyPropertyChanged,
+		// because that will cause a NullReferenceException that should not happen: ((Data_Wrapper)null).Data
+
+		var template = XamlHelper.LoadXaml<DataTemplate>("""
+			<DataTemplate xmlns:local="using:Uno.UI.RuntimeTests.Tests">
+				<local:XBindTeardown_Setup />
+			</DataTemplate>
+		""");
+		var host = new ContentControl()
+		{
+			ContentTemplateSelector = new LambdaDataTemplateSelector(
+				x => x is XBindTeardown_Setup.XBindTeardown_Setup_Data_Wrapper ? template : null
+			),
+		};
+
+		await UITestHelper.Load(host, x => x.IsLoaded);
+
+		var wrapper = new XBindTeardown_Setup.XBindTeardown_Setup_Data_Wrapper(new() { Text = "qwe" });
+
+		// cause a Setup instance to materialized, and connects its xbind
+		host.Content = wrapper;
+		await UITestHelper.WaitForIdle();
+
+		// the Setup will now be unloaded, and its xbind should no longer trigger, until reloaded
+		host.Content = null;
+		await UITestHelper.WaitForIdle();
+
+		// track VM access
+		var failed = false;
+		XBindTeardown_Setup.VMAccessDetected += (s, e) =>
+		{
+			if (s is XBindTeardown_Setup { DataContext: null })
+			{
+				failed = true;
+			}
+		};
+
+		// update the xbind binding source, and see if the xbind updates (note: it shouldn't)
+		wrapper.Data.Text = "asd";
+		Assert.IsFalse(failed);
+	}
+}
+partial class BindingTests
+{
+	public class LambdaDataTemplateSelector : DataTemplateSelector
+	{
+		private readonly Func<object, DataTemplate> _impl;
+
+		public LambdaDataTemplateSelector(Func<object, DataTemplate> impl)
+		{
+			this._impl = impl;
+		}
+
+		protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => _impl(item);
+	}
+
 }

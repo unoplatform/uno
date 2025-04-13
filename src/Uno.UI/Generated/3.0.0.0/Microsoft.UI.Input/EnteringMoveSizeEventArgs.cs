@@ -47,9 +47,9 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeWindowId.set
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeOperation.get
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeWindowId.get
+		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeOperation.get
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.PointerScreenPoint.get
+		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeWindowId.set
 	}
 }

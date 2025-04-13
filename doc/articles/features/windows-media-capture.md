@@ -5,13 +5,16 @@ uid: Uno.Features.Capture
 # Capture
 
 > [!TIP]
-> This article covers Uno-specific information for the `Windows.Media.Capture` namespace. For a full description of the feature and instructions on using it, see [Windows.Media.Capture Namespace](https://learn.microsoft.com/uwp/api/windows.media.capture).
+> This article covers Uno-specific information for the `Windows.Media.Capture` namespace. For a full description of the feature and its instructions, see [Windows.Media.Capture Namespace](https://learn.microsoft.com/uwp/api/windows.media.capture).
 
-- The `Windows.Media.Capture` namespace provides classes for the capture of photos, audio recordings, and videos.
+The `Windows.Media.Capture` namespace provides classes for capturing photos, audio recordings, and videos.
 
 ## `CameraCaptureUI`
 
-`CameraCaptureUI` is currently only supported on Android, iOS, and UWP. On other platforms, `CaptureFile` will return `null`.
+`CameraCaptureUI` is currently only supported on Android, iOS, and UWP. On other platforms, `CaptureFileAsync` will return `null`.
+
+> [!IMPORTANT]
+> `CaptureFileAsync` should only be called from the UI thread. Calling them from a background thread will throw an `InvalidOperationException`.
 
 ### Platform-specific
 
@@ -26,7 +29,26 @@ If you are planning to use the `CameraCaptureUI`, your app must declare `android
 
 #### iOS
 
-On iOS, `CameraCaptureUI` uses the native UIImagePickerController for capturing media. Ensure that the `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys are added to the `Info.plist` file to request the necessary permissions.
+On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture media. To request the necessary permissions, ensure that the `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys are added to the `Info.plist` file.
+
+> [!NOTE]
+> The `NSMicrophoneUsageDescription` key is required only if you are capturing videos. If you are only capturing photos, you can omit this key.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to the camera to take photos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to the microphone to record videos.</string>
+</dict>
+</plist>
+```
+
+> [!IMPORTANT]
+> iOS simulators do not have access to a camera. To test the camera functionality, you need to run the app on a physical device. When using a simulator, your app will open the Photo Library instead of the camera, but the functionality will work as expected once the app is deployed to a physical device.
 
 #### WinUI/UWP
 

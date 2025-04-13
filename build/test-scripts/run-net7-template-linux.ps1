@@ -135,8 +135,20 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
     $dotnetCommand = $usePublish ? "publish" : "build"
 
+    # Disable most costly features to speed up the build
+    $extraArgs=@(
+        "-p:RunAOTCompilation=false",
+        "-p:MtouchUseLlvm=false",
+        "-p:MtouchLink=none",
+        "-p:WasmShellILLinkerEnabled=false",
+        "-p:UseInterpreter=true",
+        "-p:_IsDedupEnabled=false",
+        "-p:MtouchInterpreter=all"
+    );
+
+
     Write-Host "Building Release $projectPath with $projectParameters"
-    dotnet $dotnetCommand $release "$projectPath" $projectParameters -bl:binlogs/$projectPath/$i/release.binlog
+    dotnet $dotnetCommand $release "$projectPath" $projectParameters $extraArgs -bl:binlogs/$projectPath/$i/release.binlog
     Assert-ExitCodeIsZero
 
     dotnet clean $release "$projectPath"

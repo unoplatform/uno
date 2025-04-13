@@ -226,11 +226,11 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ShowGestureFeedback.set
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideHorizontally.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.AutoProcessInertia.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideExact.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideExact.set
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideHorizontally.get
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaTranslationDeceleration.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideHorizontally.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideThresholds.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideThresholds.set
@@ -258,8 +258,8 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationExact.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.MouseWheelParameters.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ShowGestureFeedback.get
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.remove
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaTranslationDeceleration.get
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ShowGestureFeedback.set
+		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.CanBeDoubleTap(Microsoft.UI.Input.PointerPoint)
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.CompleteGesture()
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.ProcessDownEvent(Microsoft.UI.Input.PointerPoint)
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.ProcessMoveEvents(System.Collections.Generic.IList<Microsoft.UI.Input.PointerPoint>)
@@ -293,7 +293,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationInertiaStarting.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationInertiaStarting.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.add
-		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.CanBeDoubleTap(Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSliding.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSliding.remove
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.GestureRecognizer()

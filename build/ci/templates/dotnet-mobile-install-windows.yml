@@ -1,5 +1,4 @@
 parameters:
-  UnoCheck_Version: '1.31.0-dev.12'
   UnoCheckParameters: ''
 
 steps:
@@ -8,8 +7,15 @@ steps:
 
   - template: jdk-setup.yml
 
+  - task: Cache@2
+    condition: eq(variables['enable_dotnet_cache'], 'true')
+    inputs:
+      key: dotnet | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion)" | "${{ parameters.UnoCheckParameters }}"
+      path: $(DOTNET_INSTALL_DIR)
+    displayName: Set Cache for dotnet install
+
   - powershell: |
-      & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      & dotnet tool update --global uno.check --version $(GlobalUnoCheckVersion) --add-source https://api.nuget.org/v3/index.json
       & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip maui --skip vswin --skip vsmac --skip unosdk --skip dotnetnewunotemplates --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
     errorActionPreference: continue

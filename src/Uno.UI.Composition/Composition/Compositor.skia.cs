@@ -21,11 +21,15 @@ public partial class Compositor
 
 	internal bool? IsSoftwareRenderer { get; set; }
 
-	internal void RegisterAnimation(CompositionAnimation animation)
+	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
 			_runningAnimations.Add(animation);
+			if (visual is Visual { CompositionTarget: { } target })
+			{
+				CoreApplication.QueueInvalidateRender(target);
+			}
 		}
 	}
 

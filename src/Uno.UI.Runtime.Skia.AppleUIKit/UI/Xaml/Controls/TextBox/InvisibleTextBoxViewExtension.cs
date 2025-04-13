@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -86,6 +85,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
+			// In managed, we only use \r and convert all \n's to \r's to
+			// match WinUI, so when copying from managed to native, we convert
+			// \r to \n so that in the case of typing two newlines in a row,
+			// we get \n\n from native and not \r\n (the first converted by
+			// managed, the second was just typed
+			// before conversion) which looks like a single newline.
+			// cf. https://github.com/unoplatform/uno-private/issues/965
+			text = text.Replace('\r', '\n');
 			_textBoxView.SetTextNative(text);
 		}
 	}
@@ -187,8 +194,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = CreateNativeView(textBox);
+			if (_textBoxView is UIView nativeView)
+			{
+				nativeView.Alpha = 0.01f;
+			}
 			UpdateProperties();
-			SetNativeText(inputText ?? string.Empty);
+			SetText(inputText ?? string.Empty);
 		}
 	}
 
@@ -204,25 +215,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var updatedText = textBox.ProcessTextInput(text);
 			if (text != updatedText)
 			{
-				SetNativeText(updatedText);
+				SetText(updatedText);
 			}
 		}
 	}
 
 	private string? GetNativeText() => _textBoxView?.Text;
-
-	private void SetNativeText(string text)
-	{
-		if (_textBoxView is null)
-		{
-			return;
-		}
-
-		if (_textBoxView.Text != text)
-		{
-			_textBoxView.SetTextNative(text);
-		}
-	}
 
 	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
 		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);

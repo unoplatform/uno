@@ -108,6 +108,7 @@ partial class InputManager
 				foreach ((var manipPointer, var manip) in new Dictionary<PointerIdentifier, DirectManipulation>(_directManipulations))
 				{
 					if (manipPointer.Type != currentPointer.Type // Not the same type
+						|| manip.Recognizer.PendingManipulation is { Inertia: not null } // Manipulation is processing inertia, we want to stop it as soon as a new pointer is pressed
 						|| manip.Recognizer.PendingManipulation?.IsActive(currentPointer) is true) // Second press on the same pointer, we cancel the previous one!
 					{
 						if (_trace)

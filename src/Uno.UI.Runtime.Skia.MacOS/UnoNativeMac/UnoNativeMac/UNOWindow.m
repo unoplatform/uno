@@ -971,7 +971,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 
 - (bool)windowShouldClose:(NSWindow *)sender
 {
-    // see `ISystemNavigationManagerPreviewExtension`
+    // see `AppWindow.Closing`
     bool result = uno_get_window_should_close_callback()(self) ? YES : NO;
 #if DEBUG
     NSLog(@"UNOWindow %p windowShouldClose %@ -> %s", self, sender, result ? "true" : "false");

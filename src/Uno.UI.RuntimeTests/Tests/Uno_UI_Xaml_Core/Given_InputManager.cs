@@ -1,6 +1,7 @@
 ﻿#if HAS_INPUT_INJECTOR && !WINAPPSDK
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using FluentAssertions;
 using Microsoft.UI.Input;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO_WINUI
@@ -641,6 +643,73 @@ public class Given_InputManager
 		finger.Release(col2.GetAbsoluteBounds().GetCenter());
 
 		Assert.IsTrue(exited, "Exited should have been raised on col1 as part of the release.");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulation_Then_AllTreeSetOverAndPressedFalse()
+	{
+		ScrollViewer sv;
+		Border elt;
+		var ui = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 800,
+					}
+				}),
+			}
+		};
+
+		await UITestHelper.Load(ui);
+		var root = ui.XamlRoot!.Content!;
+		root.Should().NotBeNull();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Press(new(sv.GetAbsoluteBounds().GetCenter().X, sv.GetAbsoluteBounds().Bottom - 5));
+
+		elt.IsPointerOver.Should().BeTrue();
+		sv.IsPointerOver.Should().BeTrue();
+		ui.IsPointerOver.Should().BeTrue();
+		root.IsPointerOver.Should().BeTrue();
+
+		elt.IsPointerPressed.Should().BeTrue();
+		sv.IsPointerPressed.Should().BeTrue();
+		ui.IsPointerPressed.Should().BeTrue();
+		root.IsPointerPressed.Should().BeTrue();
+
+		// Scroll (cause direct manipulation to kick-in)
+		finger.MoveTo(new(sv.GetAbsoluteBounds().GetCenter().X, sv.GetAbsoluteBounds().Top + 5));
+
+		elt.IsPointerOver.Should().BeFalse();
+		sv.IsPointerOver.Should().BeFalse();
+		ui.IsPointerOver.Should().BeFalse();
+		root.IsPointerOver.Should().BeFalse();
+
+		elt.IsPointerPressed.Should().BeFalse();
+		sv.IsPointerPressed.Should().BeFalse();
+		ui.IsPointerPressed.Should().BeFalse();
+		root.IsPointerPressed.Should().BeFalse();
+
+		// This could be impacted by another test ... but if it fails it means that there is a bug in the InputManager!
+		root.GetAllChildren().OfType<UIElement>().Any(elt => elt.IsPointerOver).Should().BeFalse();
+		root.GetAllChildren().OfType<UIElement>().Any(elt => elt.IsPointerPressed).Should().BeFalse();
 	}
 
 	private CoreCursorType? GetCursorShape()

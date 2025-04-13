@@ -10,7 +10,6 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Graphics;
 using Windows.UI.Core;
-using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 

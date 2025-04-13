@@ -56,7 +56,7 @@ public partial class CompositionAnimation
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 #if __SKIA__
-		Compositor.RegisterAnimation(this);
+		Compositor.RegisterAnimation(this, compositionObject);
 #endif
 		return null;
 	}

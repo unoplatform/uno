@@ -40,6 +40,16 @@ namespace Uno.UI.Xaml
 		public static void ApplyXBind(this DependencyObject instance)
 			=> (instance as IDependencyObjectStoreProvider)?.Store.ApplyCompiledBindings();
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SuspendXBind(this DependencyObject instance)
+		{
+			// DependencyObjectStore, DependencyPropertyDetailsCollection, and BindingExpression
+			// all keeps track of the binding suspension state. Since we only care about x:Bind here,
+			// it would be easier to skip straight to the BindingExpression, ignoring the first two.
+			(instance as IDependencyObjectStoreProvider)?.Store.SuspendCompiledBindings();
+		}
+
+
 		public static void UpdateResourceBindings(this DependencyObject instance) => UpdateResourceBindings(instance, resourceContextProvider: null);
 		public static void UpdateResourceBindings(this DependencyObject instance, FrameworkElement? resourceContextProvider)
 		{

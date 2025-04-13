@@ -12,8 +12,6 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Win32</PackageId>
 
-		<PlatformTarget>x64</PlatformTarget>
-
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->

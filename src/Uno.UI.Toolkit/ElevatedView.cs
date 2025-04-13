@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -142,6 +143,13 @@ namespace Uno.UI.Toolkit
 
 		private void UpdateElevation()
 		{
+			// We limit the clip to reduce the size of the cached bitmap created by Uno's
+			// rendering logic as an optimization for the expensive drawing of shadows.
+			Clip = new RectangleGeometry
+			{
+				Rect = new Rect(-Elevation, -Elevation, RenderSize.Width + Elevation * 2, RenderSize.Height + Elevation * 2)
+			};
+
 			if (_border == null)
 			{
 				return; // not initialized yet

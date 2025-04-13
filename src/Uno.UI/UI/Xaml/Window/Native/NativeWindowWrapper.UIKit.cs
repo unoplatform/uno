@@ -32,6 +32,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		_nativeWindow = new NativeWindow();
 
 		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		_mainController.SetXamlRoot(xamlRoot);
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 

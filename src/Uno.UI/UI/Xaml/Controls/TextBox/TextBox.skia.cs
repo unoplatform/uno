@@ -16,6 +16,7 @@ using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
@@ -75,6 +76,8 @@ public partial class TextBox
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
+	private Rect? _lastEndCaretRect;
+	private Rect? _lastStartCaretRect;
 
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
@@ -227,22 +230,13 @@ public partial class TextBox
 
 					var inlines = displayBlock.Inlines;
 
-					var startThumbCaretVisible = false;
-					var endThumbCaretVisible = false;
-
-					inlines.DrawingFinished += () =>
+					inlines.DrawingStarted += () =>
 					{
-						if (!startThumbCaretVisible)
-						{
-							_selectionStartThumbfulCaret.Hide();
-						}
-						if (!endThumbCaretVisible)
-						{
-							_selectionEndThumbfulCaret.Hide();
-						}
-						startThumbCaretVisible = false;
-						endThumbCaretVisible = false;
+						_lastStartCaretRect = null;
+						_lastEndCaretRect = null;
 					};
+
+					inlines.DrawingFinished += UpdateFlyoutPosition;
 
 					inlines.CaretFound += args =>
 					{
@@ -262,31 +256,46 @@ public partial class TextBox
 									(float)caretRect.Bottom), caretPaint);
 						}
 
-						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
-							CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+						if (args.endCaret)
 						{
-							var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
-							var left = args.rect.GetMidX() - caret.Width / 2;
-							caret.Height = args.rect.Height + 16;
-							var transform = displayBlock.TransformToVisual(null);
-							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
-							{
-								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)), XamlRoot);
-								if (args.endCaret)
-								{
-									endThumbCaretVisible = true;
-								}
-								else
-								{
-									startThumbCaretVisible = true;
-								}
-							}
+							_lastEndCaretRect = args.rect;
+						}
+						else
+						{
+							_lastStartCaretRect = args.rect;
 						}
 					};
 				}
 			}
 
 			TextBoxView.SetTextNative(Text);
+		}
+	}
+
+	private void UpdateFlyoutPosition()
+	{
+		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+		{
+			foreach (var (rectNullable, caret) in (ReadOnlySpan<(Rect?, CaretWithStemAndThumb)>)[(_lastStartCaretRect, _selectionStartThumbfulCaret), (_lastEndCaretRect, _selectionEndThumbfulCaret)])
+			{
+				if (rectNullable is not { } rect)
+				{
+					caret.Hide();
+					continue;
+				}
+				var left = rect.GetMidX() - caret.Width / 2;
+				caret.Height = rect.Height + 16;
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
+				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
+				{
+					caret.ShowAt(transform.TransformPoint(new Point(left, rect.Top)), XamlRoot);
+				}
+			}
+		}
+		else
+		{
+			_selectionStartThumbfulCaret.Hide();
+			_selectionEndThumbfulCaret.Hide();
 		}
 	}
 
@@ -1477,11 +1486,33 @@ public partial class TextBox
 
 			_popup.HorizontalOffset = p.X;
 			_popup.VerticalOffset = p.Y;
-			_popup.IsOpen = true;
+			if (!_popup.IsOpen)
+			{
+				_popup.IsOpen = true;
+				// We don't have an event that fires when we actually render,
+				// so we have to settle for this somewhat-inaccurate approximation
+				// of dispatching an update call whenever InvalidateRender fires.
+				xamlRoot.InvalidateRender += OnInvalidateRender;
+			}
+		}
+
+		private void OnInvalidateRender()
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (FocusManager.GetFocusedElement(XamlRoot!) is TextBox textBox)
+				{
+					textBox.UpdateFlyoutPosition();
+				}
+			}, NativeDispatcherPriority.Idle);
 		}
 
 		public void Hide()
 		{
+			if (XamlRoot is { })
+			{
+				XamlRoot.InvalidateRender -= OnInvalidateRender;
+			}
 			if (_popup is not null)
 			{
 				_popup.IsOpen = false;

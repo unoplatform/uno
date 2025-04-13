@@ -22,8 +22,8 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.set
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.get
+		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.set
 		// Skipping already declared method Microsoft.UI.Windowing.CompactOverlayPresenter.Create()
 	}
 }

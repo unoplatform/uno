@@ -5,7 +5,8 @@ jobs:
 - job: WASDK_Build
   displayName: 'Build WinAppSDK Samples App'
 
-  pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|AnyCPU
