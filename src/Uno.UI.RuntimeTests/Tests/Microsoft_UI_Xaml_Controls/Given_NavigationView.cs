@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MUXC = Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
+using Microsoft.UI.Xaml.Markup;
+using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
+using Color = Windows.UI.Color;
 #if __APPLE_UIKIT__
 using UIKit;
 #endif
@@ -170,6 +175,55 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// verifying fix
 			Assert.IsTrue(fullyExpandedHeight > partiallyCollapsedHeight, $"Collapsing 'BB' should reduce item 'B' height: {fullyExpandedHeight} -> {partiallyCollapsedHeight}");
 			Assert.IsTrue(partiallyCollapsedHeight > fullyCollapsedHeight, $"Collapsing 'B' should reduce item 'B' height: {partiallyCollapsedHeight} -> {fullyCollapsedHeight}");
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1091")]
+		public async Task When_Theme_Changes_NVItem_Foreground()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var uc = (UserControl)XamlReader.Load(
+				"""
+				<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+							 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
+							 xmlns:controls="using:Uno.UI.Samples.Controls"
+							 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+							 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+							 xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+							 mc:Ignorable="d">
+				
+					<UserControl.Resources>
+						<Style x:Key="DefaultNavigationViewItemStyle" TargetType="muxc:NavigationViewItem">
+							<Setter Property="FontFamily" Value="XamlAutoFontFamily" />
+						</Style>
+						<Style x:Key="T1NavigationViewItemStyle"
+						       BasedOn="{StaticResource DefaultNavigationViewItemStyle}"
+						       TargetType="muxc:NavigationViewItem">
+							<Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+						</Style>
+					</UserControl.Resources>
+					
+					<NavigationView PaneDisplayMode="Left" IsPaneOpen="True">
+						<NavigationView.MenuItems>
+							<NavigationViewItem Background="Red" Content="Ramez" Style="{StaticResource T1NavigationViewItemStyle}" />
+						</NavigationView.MenuItems>
+					</NavigationView>
+				</UserControl>                  
+				""");
+
+			await UITestHelper.Load(uc);
+
+			using var _ = ThemeHelper.UseDarkTheme();
+			await UITestHelper.WaitForIdle();
+
+			var nvi = uc.FindFirstDescendant<NavigationViewItem>();
+			var bitmap = await UITestHelper.ScreenShot(nvi);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(new Point(), bitmap.Size), Color.FromArgb(0xFF, 0x1B, 0, 0));
 		}
 	}
 }

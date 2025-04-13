@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaWebAssemblyFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WEBASSEMBLY_BROWSER;__WASM__</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_WEBASSEMBLY_BROWSER;__WASM__;__UNO_SKIA__;__UNO_SKIA_WEBASSEMBLY_BROWSER__</DefineConstants>
 		</PropertyGroup>
 
 	</Target>

@@ -46,9 +46,9 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

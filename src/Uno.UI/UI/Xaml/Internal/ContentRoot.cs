@@ -82,8 +82,8 @@ internal partial class ContentRoot
 		switch (type)
 		{
 			case ContentRootType.CoreWindow:
-				MUX_ASSERT(coreServices.ContentRootCoordinator.CoreWindowContentRoot == null);
-				coreServices.ContentRootCoordinator.CoreWindowContentRoot = this;
+				MUX_ASSERT(coreServices.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot == null);
+				coreServices.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot = this;
 
 				FocusAdapter = new FocusManagerCoreWindowAdapter(this);
 				FocusManager.SetFocusObserver(new CoreWindowFocusObserver(this));
@@ -129,7 +129,7 @@ internal partial class ContentRoot
 
 	internal XamlRoot? XamlRoot => VisualTree.XamlRoot;
 
-	internal XamlIsland? XamlIslandRoot { get; set; }
+	internal XamlIslandRoot? XamlIslandRoot { get; set; }
 
 	private void OnStateChanged()
 	{

@@ -12,7 +12,7 @@ internal static class FxCallbacks
 	internal static void DxamlCore_OnCompositionContentStateChangedForUWP() => DXamlCore.Current.OnCompositionContentStateChangedForUWP();
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	internal static void XamlIslandRoot_OnSizeChanged(XamlIsland xamlIslandRoot) => XamlIsland.OnSizeChangedStatic(xamlIslandRoot);
+	internal static void XamlIslandRoot_OnSizeChanged(XamlIslandRoot xamlIslandRoot) => XamlIslandRoot.OnSizeChangedStatic(xamlIslandRoot);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static void XamlRoot_RaiseChanged(XamlRoot xamlRoot) => xamlRoot.RaiseChangedEvent();

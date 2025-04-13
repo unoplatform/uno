@@ -171,6 +171,8 @@ namespace Microsoft.UI.Xaml.Controls
 			_textVisual.Compositor.InvalidateRender(_textVisual);
 		}
 
+		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();

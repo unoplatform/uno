@@ -162,6 +162,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 					if (__rootInstance is FrameworkElement __fe)
 					{
 						__fe.Loading += __UpdateBindingsAndResources;
+						__fe.Unloaded += __StopTracking;
 					}
 					if (__rootInstance is DependencyObject d)
 					{
@@ -200,8 +201,10 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
-					var owner = this;
-					_component_0.UpdateResourceBindings();
+					_component_0.UpdateResourceBindings(resourceContextProvider: _component_1);
+				}
+				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+				{
 				}
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]

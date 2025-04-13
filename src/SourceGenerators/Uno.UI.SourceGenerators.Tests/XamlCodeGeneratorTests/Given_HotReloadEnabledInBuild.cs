@@ -55,7 +55,6 @@ public class Given_HotReloadEnabledInBuild
 				}
 			},
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
@@ -241,7 +240,6 @@ public class Given_HotReloadEnabledInBuild
 		var test = new Verify.Test(xamlFile)
 		{
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
-			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 

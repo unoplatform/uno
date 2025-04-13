@@ -362,7 +362,6 @@ public class Given_Parser
 					"""
 				}
 			},
-			DisableBuildReferences = true,
 			ReferenceAssemblies = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("SkiaSharp.Views.Uno.WinUI", "3.0.0-preview.3.1")]),
 		}.AddGeneratedSources();
 
@@ -410,7 +409,6 @@ public class Given_Parser
 					"""
 				}
 			},
-			DisableBuildReferences = true,
 			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage("5.3.114"),
 		}.AddGeneratedSources();
 

@@ -131,6 +131,7 @@ namespace TestRepro
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
+				var owner = Owner;
 			}
 		}
 	}

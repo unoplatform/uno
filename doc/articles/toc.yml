@@ -591,6 +591,8 @@
           href: features/using-winui2.md
         - name: Windowing
           href: features/windows-ui-xaml-window.md
+        - name: Preventing Window Closing
+          href: features/app-close-handler.md
         - name: x:Bind
           href: features/windows-ui-xbind.md
 
@@ -605,8 +607,6 @@
         href: features/android-tv.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
-      - name: App Close Handler
-        href: features/app-close-handler.md
       - name: App Suspension
         href: features/windows-ui-xaml-application.md
       - name: Application Data and Settings

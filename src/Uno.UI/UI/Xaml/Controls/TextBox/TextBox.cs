@@ -431,7 +431,7 @@ namespace Microsoft.UI.Xaml.Controls
 					_pendingSelection = (start, end - start);
 				}
 			}
-			else if (_isSkiaTextBox && !DeviceTargetHelper.IsUIKit())
+			else if (_isSkiaTextBox)
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.

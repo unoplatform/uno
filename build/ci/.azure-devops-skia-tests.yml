@@ -20,13 +20,6 @@ stages:
   - template: .azure-devops-skia-tests-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
@@ -38,26 +31,13 @@ stages:
   jobs:
   - template: .azure-devops-skia-tests-build-browser.yml
     parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
   - template: .azure-devops-skia-tests-browser.yml
     parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
@@ -69,26 +49,12 @@ stages:
   jobs:
   - template: .azure-devops-skia-tests-build-android.yml
     parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-skia-tests-android.yml
     parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 

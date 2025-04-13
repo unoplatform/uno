@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Oscillations
 		// Skipping already declared property Springiness
 		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Oscillations.get
-		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Springiness.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
 	}
 }

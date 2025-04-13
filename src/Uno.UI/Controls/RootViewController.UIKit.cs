@@ -1,5 +1,6 @@
 ﻿using System;
 using Foundation;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
 using UIKit;
@@ -10,6 +11,8 @@ namespace Uno.UI.Controls
 {
 	public partial class RootViewController : UINavigationController, IRotationAwareViewController
 	{
+		private XamlRoot _xamlRoot;
+
 		internal event Action VisibleBoundsChanged;
 
 		public RootViewController()
@@ -48,14 +51,12 @@ namespace Uno.UI.Controls
 #if !__TVOS__
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
-				.ObserveDidChangeStatusBarOrientation((sender, args) =>
-					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+				.ObserveDidChangeStatusBarOrientation(DismissPopups);
 #endif
 
 			// Dismiss when the app is entering background
 			UIApplication.Notifications
-				.ObserveWillResignActive((sender, args) =>
-					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+				.ObserveWillResignActive(DismissPopups);
 
 #if NET9_0_OR_GREATER
 			// iOS 17+ only
@@ -65,6 +66,16 @@ namespace Uno.UI.Controls
 			}
 #endif
 		}
+
+		private void DismissPopups(object sender, object args)
+		{
+			if (_xamlRoot is not null)
+			{
+				VisualTreeHelper.CloseLightDismissPopups(_xamlRoot);
+			}
+		}
+
+		internal void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
 		// This will handle when the status bar is showed / hidden by the system on iPhones
 		public override void ViewSafeAreaInsetsDidChange()

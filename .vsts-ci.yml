@@ -54,7 +54,7 @@ variables:
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
   windowsScaledPool: 'Windows2022-20241021-1'
-  linuxVMImage: 'ubuntu-latest'
+  linuxVMImage: 'ubuntu-22.04'
   linuxScaledPool: 'Ubuntu2204-20230918'
   macOSVMImage: 'macOS-15'
   macOSVMImage_UITests: 'macOS-14'
@@ -66,6 +66,9 @@ variables:
 
   # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
   #enable_package_cache: true
+
+  enable_dotnet_cache: true
+  GlobalUnoCheckVersion: '1.31.0-dev.12'
 
 stages:
 - template: build/ci/.azure-devops-stages.yml

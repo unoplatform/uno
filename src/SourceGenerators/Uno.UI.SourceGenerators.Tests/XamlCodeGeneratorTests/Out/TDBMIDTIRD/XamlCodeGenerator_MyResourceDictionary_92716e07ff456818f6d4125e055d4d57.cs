@@ -104,6 +104,7 @@ namespace TestRepro
 					if (__rootInstance is FrameworkElement __fe)
 					{
 						__fe.Loading += __UpdateBindingsAndResources;
+						__fe.Unloaded += __StopTracking;
 					}
 					if (__rootInstance is DependencyObject d)
 					{
@@ -142,9 +143,12 @@ namespace TestRepro
 				}
 				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
-					var owner = this;
 					_component_0.UpdateResourceBindings();
 					_component_0.ApplyXBind();
+				}
+				private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+				{
+					_component_0.SuspendXBind();
 				}
 				private static bool TryGetInstance_xBind_1(global::TestRepro.MyModel ___tctx, out object o)
 				{
@@ -288,6 +292,7 @@ namespace MyProject.__Resources
 				if (__rootInstance is FrameworkElement __fe)
 				{
 					__fe.Loading += __UpdateBindingsAndResources;
+					__fe.Unloaded += __StopTracking;
 				}
 				if (__rootInstance is DependencyObject d)
 				{
@@ -326,9 +331,12 @@ namespace MyProject.__Resources
 			}
 			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 			{
-				var owner = this;
 				_component_0.UpdateResourceBindings();
 				_component_0.ApplyXBind();
+			}
+			private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+			{
+				_component_0.SuspendXBind();
 			}
 			private static bool TryGetInstance_xBind_2(global::TestRepro.MyModel ___tctx, out object o)
 			{
@@ -382,6 +390,7 @@ namespace MyProject.__Resources
 				if (__rootInstance is FrameworkElement __fe)
 				{
 					__fe.Loading += __UpdateBindingsAndResources;
+					__fe.Unloaded += __StopTracking;
 				}
 				if (__rootInstance is DependencyObject d)
 				{
@@ -420,9 +429,12 @@ namespace MyProject.__Resources
 			}
 			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 			{
-				var owner = this;
 				_component_0.UpdateResourceBindings();
 				_component_0.ApplyXBind();
+			}
+			private void __StopTracking(object s, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+			{
+				_component_0.SuspendXBind();
 			}
 			private static bool TryGetInstance_xBind_3(global::TestRepro.MyModel ___tctx, out object o)
 			{

@@ -24,14 +24,14 @@ The structure of an Uno app created with the default Visual Studio template is [
 The most basic means of authoring platform-specific code is to use `#if` conditionals:
 
 ```csharp
-#if HAS_UNO
+#if __UNO__
 Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere");
 #else
 Console.WriteLine("Windows - Built with Microsoft's own tooling");
 #endif
 ```
 
-If the supplied condition is not met, e.g. if `HAS_UNO` is not defined, then the enclosed code will be ignored by the compiler.
+If the supplied condition is not met, e.g. if `__UNO__` is not defined, then the enclosed code will be ignored by the compiler.
 
 The following conditional symbols are predefined for each Uno platform:
 
@@ -43,15 +43,15 @@ The following conditional symbols are predefined for each Uno platform:
 | Catalyst        | `__MACCATALYST__`  | |
 | iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
 | WebAssembly     | `__WASM__`         | Only available in the `net9.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
-| Skia            | `HAS_UNO_SKIA`     | Only available in the `net9.0-desktop` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
-| _Non-Windows_   | `HAS_UNO`          | To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| Skia            | `__UNO_SKIA__`     | Only available in the `net9.0-desktop` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 
 > [!TIP]
 > Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
 
 ### Windows-specific code
 
-On `net9.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+On `net9.0-windows10.0.xxxxx` target framework, an Uno Platform application isn't using Uno.UI at all. It's compiled using Microsoft's own tooling. For that reason, the `__UNO__` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
 
 Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
 

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno;
+using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
@@ -30,6 +31,12 @@ partial class ItemsView : Control
 
 	public ItemsView()
 	{
+#if __ANDROID__ || __IOS__
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error("ItemsView is not supported on this platform (iOS, Android). For more information, visit https://aka.platform.uno/notimplemented#m=ItemsView");
+		}
+#endif
 		//ITEMSVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsView);

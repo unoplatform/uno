@@ -33,7 +33,7 @@ namespace Uno.UI
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
 #pragma warning disable 618
-	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity
+	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity, IActivityLifecycleEvents
 #pragma warning restore 618
 
 	{
@@ -54,7 +54,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Occurs when the <see cref="Current"/> activity changed.
 		/// </summary>
-		public static event EventHandler<CurrentActivityChangedEventArgs>? CurrentChanged;
+		internal static event EventHandler<CurrentActivityChangedEventArgs>? CurrentChanged;
 
 		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
@@ -192,6 +192,12 @@ namespace Uno.UI
 
 		protected override void OnCreate(Bundle? savedInstanceState)
 		{
+			var handler = Create;
+			if (handler != null)
+			{
+				handler.Invoke(this, savedInstanceState);
+			}
+
 			InnerCreate(savedInstanceState);
 			base.OnCreate(savedInstanceState);
 		}
@@ -213,6 +219,12 @@ namespace Uno.UI
 
 		protected override void OnStart()
 		{
+			var handler = Start;
+			if (handler != null)
+			{
+				handler.Invoke(this, EventArgs.Empty);
+			}
+
 			InnerStart();
 			base.OnStart();
 		}
@@ -288,6 +300,12 @@ namespace Uno.UI
 
 		protected override void OnStop()
 		{
+			var handler = Stop;
+			if (handler != null)
+			{
+				handler.Invoke(this, EventArgs.Empty);
+			}
+
 			InnerStop();
 			base.OnStop();
 		}
@@ -408,6 +426,39 @@ namespace Uno.UI
 			}
 
 			base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+
+		/// <summary>
+		/// Occurs when OnCreate is invoked on the activity.
+		/// </summary>
+		internal event EventHandler<Bundle?>? Create;
+
+		/// <summary>
+		/// Occurs when <see cref="OnStart"/> is invoked on the activity.
+		/// </summary>
+		internal event EventHandler? Start;
+
+		/// <summary>
+		/// Occurs when <see cref="OnStop"/> is invoked on the activity.
+		/// </summary>
+		internal event EventHandler? Stop;
+
+		event EventHandler<Bundle?>? IActivityLifecycleEvents.Create
+		{
+			add => Create += value;
+			remove => Create -= value;
+		}
+
+		event EventHandler? IActivityLifecycleEvents.Stop
+		{
+			add => Stop += value;
+			remove => Stop -= value;
+		}
+
+		event EventHandler? IActivityLifecycleEvents.Start
+		{
+			add => Start += value;
+			remove => Start -= value;
 		}
 
 		/// <summary>

@@ -24,15 +24,15 @@ namespace MyProject
 			if (!_initialized)
 			{
 				_initialized = true;
-				global::Uno.UI.GlobalStaticResources.Initialize();
 				global::Uno.UI.Toolkit.GlobalStaticResources.Initialize();
 				global::SkiaSharp.Views.Windows.GlobalStaticResources.Initialize();
-				global::Uno.UI.GlobalStaticResources.RegisterDefaultStyles();
+				global::Uno.UI.GlobalStaticResources.Initialize();
 				global::Uno.UI.Toolkit.GlobalStaticResources.RegisterDefaultStyles();
 				global::SkiaSharp.Views.Windows.GlobalStaticResources.RegisterDefaultStyles();
-				global::Uno.UI.GlobalStaticResources.RegisterResourceDictionariesBySource();
+				global::Uno.UI.GlobalStaticResources.RegisterDefaultStyles();
 				global::Uno.UI.Toolkit.GlobalStaticResources.RegisterResourceDictionariesBySource();
 				global::SkiaSharp.Views.Windows.GlobalStaticResources.RegisterResourceDictionariesBySource();
+				global::Uno.UI.GlobalStaticResources.RegisterResourceDictionariesBySource();
 			}
 		}
 		public static void RegisterDefaultStyles()

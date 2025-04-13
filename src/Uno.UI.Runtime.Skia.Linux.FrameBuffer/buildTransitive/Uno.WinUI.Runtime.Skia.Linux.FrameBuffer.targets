@@ -7,7 +7,7 @@
 	<Target Name="_UnoSkiaLinuxFBFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_LINUX_FB</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_LINUX_FB;__UNO_SKIA__;__UNO_SKIA_LINUX_FB__</DefineConstants>
 		</PropertyGroup>
 
 	</Target>

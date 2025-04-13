@@ -23,14 +23,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Insert(string, string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Insert(string, string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.HasKey(string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.GetView()
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Lookup(string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Remove(string)
 		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.InitialValueExpressionCollection.First()
 		// Processing: System.Collections.Generic.IDictionary<string, string>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, string>

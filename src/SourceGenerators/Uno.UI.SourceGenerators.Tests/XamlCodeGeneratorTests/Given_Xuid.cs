@@ -52,7 +52,6 @@ public class Given_Xuid
 				}
 			},
 			ReferenceAssemblies = _Dotnet.CurrentAndroid.WithUnoPackage(),
-			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

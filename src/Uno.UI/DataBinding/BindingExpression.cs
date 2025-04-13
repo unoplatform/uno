@@ -434,6 +434,13 @@ namespace Microsoft.UI.Xaml.Data
 				ApplyBinding();
 			}
 		}
+		internal void SuspendCompiledSource()
+		{
+			if (_isCompiledSource && ExplicitSource != null)
+			{
+				SuspendBinding();
+			}
+		}
 
 		internal void ApplyTemplateBindingParent()
 		{
@@ -615,6 +622,8 @@ namespace Microsoft.UI.Xaml.Data
 
 				_subscription.Disposable = null;
 			}
+
+			_isBindingSuspended = false;
 		}
 
 		internal void OnValueChanged(object o)

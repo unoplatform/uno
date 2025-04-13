@@ -1093,8 +1093,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		// Test is failing on iOS https://github.com/unoplatform/uno-private/issues/767
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
 		public async Task When_Pointer_RightClick_Selection()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1997,7 +1996,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Clipboard is currently not available on skia-WASM
 		// Newline handling is different on Skia.UIKit targets due to native input sync #788
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Paste_The_Same_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2055,7 +2054,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ActualHeight.Should().BeGreaterThan(height * 1.2);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[TestMethod]
 		public async Task When_Multiline_LineFeed()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2345,7 +2344,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Failing in Skia iOS CI - https://github.com/unoplatform/uno-private/issues/807
+		[TestMethod]
 		public async Task When_Multiline_Keyboard_Chunking()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2492,7 +2491,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(height, SUT.ActualHeight);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[TestMethod]
 		public async Task When_Text_Changed_Events()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2822,8 +2821,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(26, SUT.SelectionLength);
 		}
 
-		// Fails on Skia UIKit - https://github.com/unoplatform/uno-private/issues/802
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)]
+		[TestMethod]
 		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3640,13 +3638,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Unfocused_Typing_Ends()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
-
 			var SUT = new TextBox
 			{
 				Width = 150
 			};
 
-			WindowHelper.WindowContent = SUT;
+			var sp = new StackPanel()
+			{
+				SUT,
+				new TextBox() { Text="focus dummy" }
+			};
+
+			WindowHelper.WindowContent = sp;
 
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForLoaded(SUT);
@@ -3665,6 +3668,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			VisualTree.GetFocusManagerForElement(SUT)!.TryMoveFocusInstance(FocusNavigationDirection.Next);
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(5000);
 
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
@@ -4047,6 +4052,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
+		public async Task When_PasswordBox_Focus_Changes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var stackPanel = new StackPanel()
+			{
+				Padding = new Thickness(10),
+				Spacing = 8
+			};
+			var button = new Button()
+			{
+				Content = "Focus"
+			};
+			var passwordBox = new PasswordBox
+			{
+				IsPasswordRevealButtonEnabled = false,
+				Width = 150
+			};
+
+			stackPanel.Children.Add(passwordBox);
+			stackPanel.Children.Add(button);
+
+			await UITestHelper.Load(stackPanel);
+
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			var screenshotEmpty = await UITestHelper.ScreenShot(passwordBox);
+
+			passwordBox.Password = "1234567890";
+			await WindowHelper.WaitForIdle();
+
+			var screenshotFilled = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreNotEqualAsync(screenshotEmpty, screenshotFilled);
+
+			button.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+
+			// Re-focus
+			passwordBox.Focus(FocusState.Pointer);
+			await WindowHelper.WaitForIdle();
+			var screenshotRefocused = await UITestHelper.ScreenShot(passwordBox);
+
+			await ImageAssert.AreEqualAsync(screenshotRefocused, screenshotFilled);
 		}
 
 		[TestMethod]
