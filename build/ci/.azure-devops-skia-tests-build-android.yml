@@ -1,5 +1,5 @@
 parameters:
-  vmLinuxImage: ''
+  vmLinuxPool: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
@@ -9,8 +9,7 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
-  pool: 
-    vmImage: ${{ parameters.vmLinuxImage }}
+  pool: ${{ parameters.vmLinuxPool }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
