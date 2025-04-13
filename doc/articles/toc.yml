@@ -26,18 +26,18 @@
       items:
       - name: App Structure
         href: xref:Uno.Development.AppStructure
-      - name: Hot Reload
-        href: xref:Uno.Features.HotReload
+      - name: Getting Started with Hot Reload
+        href: xref:Uno.Studio.HotReload.GetStarted
 
-    - name: Troubleshoot
+    - name: Troubleshooting
       topicHref: xref:Uno.UI.CommonIssues
       items:
       - name: Overview
         href: xref:Uno.UI.CommonIssues
       - name: Sign in with Uno Platform
         href: xref:Uno.GetStarted.Licensing
-      - name: Hot Reload
-        topicHref: xref:Uno.Features.HotReload#troubleshooting
+      - name: Troubleshooting Hot Reload
+        href: xref:Uno.Studio.HotReload.Troubleshooting
       - name: Development Environments
         topicHref: xref:Uno.UI.CommonIssues.AllIDEs
         items:
@@ -421,22 +421,31 @@
 - name: Studio
   items:
     - name: Overview
-      href: xref:Uno.Platform.Studio.Overview
+      href: xref:Uno.Studio.Overview
     - name: Hot Reload
-      href: xref:Uno.Platform.Studio.HotReload.Overview
-    - name: Hot Design
-      href: xref:Uno.HotDesign.Overview
+      topicHref: xref:Uno.Studio.HotReload.Overview
       items:
       - name: Overview
-        href: xref:Uno.HotDesign.Overview
+        href: xref:Uno.Studio.HotReload.Overview
+      - name: Getting Started with Hot Reload
+        href: xref:Uno.Studio.HotReload.GetStarted
+      - name: Controls in Hot Reload
+        href: xref:Uno.Studio.HotReload.Controls
+      - name: Troubleshooting Hot Reload
+        href: xref:Uno.Studio.HotReload.Troubleshooting
+    - name: Hot Design
+      href: xref:Uno.Studio.HotDesign.Overview
+      items:
+      - name: Overview
+        href: xref:Uno.Studio.HotDesign.Overview
       - name: Getting Started with Hot Design
-        href: xref:Uno.HotDesign.GetStarted.Guide
+        href: xref:Uno.Studio.HotDesign.GetStarted.Guide
       - name: Counter Tutorial
-        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+        href: xref:Uno.Studio.HotDesign.GetStarted.CounterTutorial
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback
-      href: xref:Uno.Platform.Studio.Feedback
+      href: xref:Uno.Studio.Feedback
 
 - name: Reference
   items:
