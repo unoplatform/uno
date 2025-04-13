@@ -83,8 +83,8 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			var unoEffectiveRuntimeIdentifier = string.IsNullOrWhiteSpace(unoWinRTRuntimeIdentifier) 
-				? unoRuntimeIdentifier 
+			var unoEffectiveRuntimeIdentifier = string.IsNullOrWhiteSpace(unoWinRTRuntimeIdentifier)
+				? unoRuntimeIdentifier
 				: unoWinRTRuntimeIdentifier;
 
 			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
