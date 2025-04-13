@@ -37,7 +37,7 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
 	</ItemGroup>
 
