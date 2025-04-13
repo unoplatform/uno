@@ -76,12 +76,12 @@ uid: Uno.Studio.HotReload.Troubleshooting
     **Steps to change MSBuild output verbosity:**  
     1. Open **Tools > Options > Projects and Solutions > Build and Run**, then set **MSBuild output verbosity** to **Diagnostic** or the required level.
 
-       ![MSBuild output verbosity drop-down](../Assets/features/hotreload/vs-msbuild-output-verbosity.png)
+       ![MSBuild output verbosity drop-down](../Assets/vs-msbuild-output-verbosity.png)
     2. Restart Visual Studio, re-open your solution, and wait a few seconds.
     3. Go to **View > Output**.
     4. In the Output window, select `Uno Platform` from the drop-down.
 
-       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
+       ![`Uno Platform` output drop-down](../Assets/vs-uno-platform-logs.png)
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net9.0-windows10.xx`:
@@ -97,12 +97,12 @@ uid: Uno.Studio.HotReload.Troubleshooting
     **Steps to see the `Uno Platform - Hot Reload` output:**  
     1. In the status bar at the bottom left of VS Code, ensure `NameOfYourProject.csproj` is selected (by default `NameOfYourProject.sln` is selected).
 
-       ![.csproj selection in Visual Studio Code](../Assets/features/hotreload/vscode-csproj-selection.png)
+       ![.csproj selection in Visual Studio Code](../Assets/vscode-csproj-selection.png)
     2. Wait a few seconds.
     3. Go to **View > Output**.
     4. In the Output window, select `Uno Platform - Hot Reload` from the drop-down.
 
-       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
+       ![`Uno Platform` output drop-down](../Assets/vs-code-uno-platform-hr-output.png)
 - Depending on your machine's performance, the Hot Reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar (or using the "Uno Platform: Select Active Project" in the command palette) is not the solution file, but rather the project file (i.e. ending by `.csproj`).
 - Align the "Debug profile" (at the top of the "Run and Debug" pane) with the platform you chose to debug within the status bar (or using the "Uno Platform: Select the Target Platform Moniker (TFM)")
@@ -120,10 +120,10 @@ uid: Uno.Studio.HotReload.Troubleshooting
     **Steps to see the `Hot Reload` output:**  
     1. In the sidebar at the bottom left of Rider, click on the Uno Platform logo.
 
-       ![Uno Platform output logo](../Assets/features/hotreload/rider-uno-platform-output.png)
+       ![Uno Platform output logo](../Assets/rider-uno-platform-output.png)
     2. In the Output window, select **LEVEL: Trace** from the drop-down.
 
-       ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
+       ![Level output drop-down](../Assets/rider-output-level-trace.png)
 - Depending on your machine's performance, the Hot Reload engine may take a few moments to initialize and take your project modifications into account.
 - If Hot Reload does not function properly, you can try closing and reopening the solution.
 - The TCP port number used by the app to connect back to the IDE is located in the `<UnoRemoteControlPort>` property of the `[ProjectName].csproj.user` file. If the port number does not match the one found in the **Uno Platform** output window, close and reopen the solution.
