@@ -4,7 +4,7 @@ uid: Uno.Studio.Feedback
 
 # Providing Feedback for Uno Platform Studio
 
-We deeply value your feedback for **Uno Platform Studio** and its tools ([**Hot Design<sup>®</sup>**](xref:Uno.HotDesign.Overview), [**Hot Reload**](xref:Uno.Studio.HotReload.Overview), and [**Design-to-Code**](xref:Uno.Figma.GetStarted)) to ensure we can deliver the best possible experience.
+We deeply value your feedback for **Uno Platform Studio** and its tools ([**Hot Design<sup>®</sup>**](xref:Uno.Studio.HotDesign.Overview), [**Hot Reload**](xref:Uno.Studio.HotReload.Overview), and [**Design-to-Code**](xref:Uno.Figma.GetStarted)) to ensure we can deliver the best possible experience.
 
 > [!IMPORTANT]
 > To start using **Hot Design**, ensure you are signed in with your Uno Platform account. **Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in**.
@@ -12,7 +12,7 @@ We deeply value your feedback for **Uno Platform Studio** and its tools ([**Hot 
 > - Hot Design is available on all platforms. See the list of **[current known issues](https://aka.platform.uno/hot-design-known-issues)**.
 > - Hot Design **does not support C# Markup** and is **only available with XAML and .NET 9**.
 > - Hot Design is **not available for the WinAppSDK target framework (`netX.0-windowsX.X.X`)** at this time.
-> - Hot Design relies on **[Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview)** for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
+> - Hot Design relies on **[Hot Reload](xref:Uno.Studio.HotReload.Overview)** for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Studio.HotReload.Features#supported-features-per-os) before testing.
 
 Here’s how you can share your feedback:
 

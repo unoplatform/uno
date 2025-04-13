@@ -14,7 +14,7 @@ uid: Uno.Studio.Overview
 
 It includes three key tools, each purpose-built to streamline your workflow:
 
-- **[Hot Design®](xref:Uno.Studio.HotDesign.Overview)**  
+- **[Hot Design<sup>®</sup>](xref:Uno.Studio.HotDesign.Overview)**  
   The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease.
 
   [➜ Learn more about Hot Design<sup>®</sup>](xref:Uno.HotDesign.GetStarted.Guide)
