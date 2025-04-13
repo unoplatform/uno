@@ -1,5 +1,5 @@
 ---
-uid: Uno.Platform.Studio.HotReload.Features
+uid: Uno.Studio.HotReload.Features
 ---
 
 ## Key Features of HotReload
