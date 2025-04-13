@@ -43,8 +43,8 @@
 				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
 
 			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
 		<!-- 
