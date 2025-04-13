@@ -1,5 +1,5 @@
 ---
-uid: Uno.HotDesign.GetStarted.Guide
+uid: Uno.Studio.HotDesign.GetStarted.Guide
 ---
 
 # Getting Started with Hot Design®
@@ -17,8 +17,8 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
+> - Hot Design relies on [Hot Reload](xref:Uno.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Studio.HotReload.Features#supported-features-per-os) before testing.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Studio.Feedback).
 >
 > [!IMPORTANT]
 > If you're new to developing with Uno Platform, make sure to set up your environment by [following our getting started guide](xref:Uno.GetStarted).
@@ -189,4 +189,4 @@ You can interact with the canvas using the following mouse and keyboard shortcut
 
 ### Tutorial
 
-For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design®](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
+For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design®](xref:Uno.Studio.HotDesign.GetStarted.CounterTutorial) tutorial.

@@ -1,12 +1,12 @@
 ---
-uid: Uno.Platform.Studio.Overview
+uid: Uno.Studio.Overview
 ---
 
 # Uno Platform Studio Overview
 
 **Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity, be it for design handoff, to radically improving developer inner dev loop with Hot Reload and the industry-first, cross-platform runtime visual designer for .NET, Hot Design®. **Uno Platform Studio** empowers developers to stay in their flow, enabling seamless cross-platform app development for every platform .NET runs on.
 
-![Introducing Uno Platform Studio](assets/introducing-uno-platform-studio.png)
+![Introducing Uno Platform Studio](Assets/introducing-uno-platform-studio.png)
 
 ## What is Uno Platform Studio?
 
@@ -14,15 +14,15 @@ uid: Uno.Platform.Studio.Overview
 
 It includes three key tools, each purpose-built to streamline your workflow:
 
-- **[Hot Design®](xref:Uno.HotDesign.Overview)**  
+- **[Hot Design®](xref:Uno.Studio.HotDesign.Overview)**  
   The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease.
 
   [➜ Learn more about Hot Design®](xref:Uno.HotDesign.GetStarted.Guide)
 
-- **[Hot Reload](xref:Uno.Features.HotReload)**  
+- **[Hot Reload](xref:Uno.Studio.HotReload.Overview)**  
   Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop.
 
-  [➜ Learn more about Hot Reload](xref:Uno.HotReload.GetStarted.Guide)
+  [➜ Learn more about Hot Reload](xref:Uno.Studio.HotReload.GetStarted)
 
 - **[Design-to-Code](xref:Uno.Figma.GetStarted)**
   Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff.
