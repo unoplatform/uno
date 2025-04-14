@@ -23,6 +23,6 @@ partial class ContentManager
 		rootElement.Frame = nativeWindowWrapper.MainController.View!.Bounds;
 		rootElement.AutoresizingMask = UIViewAutoresizing.All;
 
-		rootElement.DispatcherQueue.TryEnqueue(NotifyContentLoaded);
+		rootElement.DispatcherQueue.TryEnqueue(window.NotifyContentLoaded);
 	}
 }
