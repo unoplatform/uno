@@ -89,11 +89,11 @@
 	</Target>
 
 	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
-		<RuntimeAssetsSelectorTask_v0
+		<RuntimeAssetsValidatorTask_v0
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
-		</RuntimeAssetsSelectorTask_v0>
+		</RuntimeAssetsValidatorTask_v0>
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
