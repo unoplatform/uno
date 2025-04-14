@@ -62,10 +62,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 
@@ -139,7 +135,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="WasmScripts\AppManifest.js" />
 		<None Remove="WasmScripts\TestRunner.js" />
 	</ItemGroup>
 
