@@ -1336,7 +1336,7 @@
 						</Grid.Clip>
 						<Grid x:Name="ContentRoot"
 							  VerticalAlignment="Top"
-							  Margin="{TemplateBinding Padding}"
+							  Padding="{TemplateBinding Padding}"
 							  Height="{TemplateBinding Height}"
 							  MinHeight="{ThemeResource AppBarThemeCompactHeight}"
 							  Background="{TemplateBinding Background}"
