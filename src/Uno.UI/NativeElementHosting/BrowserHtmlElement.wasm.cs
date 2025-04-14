@@ -124,12 +124,12 @@ partial class BrowserHtmlElement
 	private static bool DispatchEventNativeElementMethod(
 		[JSMarshalAs<JSType.Any>] object owner,
 		string eventName,
-		[JSMarshalAs<JSType.Any>] object eventHandler,
+		[JSMarshalAs<JSType.Any>] object eventWrapper,
 		JSObject payload)
 	{
-		if (eventHandler is EventWrapper handler)
+		if (eventWrapper is EventWrapper wrapper)
 		{
-			handler.handler(owner, payload);
+			wrapper.handler(owner, payload);
 
 			return true;
 		}

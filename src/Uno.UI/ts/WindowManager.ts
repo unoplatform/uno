@@ -1352,7 +1352,7 @@ namespace Uno.UI {
 		}
 
 		/**
-		 * Creates a native element from BrowserHtlpElement.
+		 * Creates a native element from BrowserHttpElement.
 		 */
 		public createNativeElement(elementId: string, unoElementId: number, tagname: string): void {
 			const element = document.createElement(tagname);
@@ -1360,7 +1360,7 @@ namespace Uno.UI {
 			(<any>element).unoId = unoElementId;
 
 			// Add the html element to list of elements
-			this.allActiveElementsById[unoElementId] = element;
+			this.allActiveElementsById[this.handleToString(unoElementId)] = element;
 		}
 
 		/**
