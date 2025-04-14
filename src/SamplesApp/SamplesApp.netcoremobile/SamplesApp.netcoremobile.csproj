@@ -232,6 +232,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<UnoSplashScreen
+			 Include="Assets\Splash\splash_screen.svg"
+			 BaseSize="128,128"
+			 Color="#512BD4" />
+		<UnoIcon 
+			Include="Assets\Icons\icon.svg"
+			ForegroundFile="Assets\Icons\icon_foreground.svg"
+			Color="#FF0000" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
