@@ -36,7 +36,6 @@
 		
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		
-		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
