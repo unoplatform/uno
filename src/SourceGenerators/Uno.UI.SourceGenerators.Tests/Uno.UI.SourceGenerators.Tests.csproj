@@ -51,7 +51,6 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
