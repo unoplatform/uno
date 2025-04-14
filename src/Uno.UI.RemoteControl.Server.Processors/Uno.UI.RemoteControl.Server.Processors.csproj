@@ -25,15 +25,6 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
-
-		<!-- Avoid transitive dependency from Microsoft.Build on 7.0.3 which has a vulnerability -->
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-
-		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 6.0.0 which has a vulnerability -->
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
-
-		<!-- Avoid transitive dependency from System.Security.Cryptography.Xml on 8.0.0 which has a vulnerability -->
-		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
