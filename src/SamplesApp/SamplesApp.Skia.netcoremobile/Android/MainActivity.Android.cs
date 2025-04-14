@@ -41,6 +41,8 @@ namespace SamplesApp.Droid
 
 		protected override void OnCreate(Bundle bundle)
 		{
+			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
+
 			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
 			if (externalFilesDir != null)
 			{
