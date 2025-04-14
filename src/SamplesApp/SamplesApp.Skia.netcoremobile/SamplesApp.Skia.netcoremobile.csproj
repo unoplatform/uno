@@ -320,7 +320,7 @@
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios17.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios17.0'">
 	  <CodesignKey>Apple Development: Created via API (L89KS38JH3)</CodesignKey>
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>

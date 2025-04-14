@@ -17,7 +17,7 @@ To package your app:
 
 - Create a self-signed certificate:
   - Open the solution in Visual Studio 2022
-  - Ensure that the active debugging target framework is `net9.0-windows10.0.xxxxx` (Please upvote [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Double-clicking-on-a-PackageAppxmanifes/10658683))
+  - Ensure that the active debugging target framework is `net10.0-windows10.0.xxxxx` (Please upvote [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Double-clicking-on-a-PackageAppxmanifes/10658683))
   - Double-click on the `Package.appxmanifest` file
   - Navigate to the `Packaging` tab
   - Click the **Choose certificate** button
@@ -28,7 +28,7 @@ To package your app:
 - Build the app on the command line with the following command:
 
   ```shell
-  msbuild /r /p:TargetFramework=net9.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
+  msbuild /r /p:TargetFramework=net10.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=Sideloading /p:AppxPackageDir="C:/temp/output/" /p:AppxPackageSigningEnabled=true
   ```
 
 To package your app for the Microsoft App Store, the process is similar to creating a self-signed app package with just a minor difference:
@@ -37,7 +37,7 @@ To package your app for the Microsoft App Store, the process is similar to creat
 - Build the app on the command line with the following command:
 
   ```shell
-  msbuild /r /p:TargetFramework=net9.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=StoreUpload /p:AppxPackageDir="C:/temp/output/"
+  msbuild /r /p:TargetFramework=net10.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=StoreUpload /p:AppxPackageDir="C:/temp/output/"
   ```
 
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
@@ -80,7 +80,7 @@ To build your solution:
 - Then run this command:
 
   ```shell
-  msbuild /p:TargetFramework=net9.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:PublishSignedPackage=true /p:AppxPackageDir="C:/temp/output/"
+  msbuild /p:TargetFramework=net10.0-windows10.0.26100 /p:Configuration=Release /p:Platform=x64 /p:PublishSignedPackage=true /p:AppxPackageDir="C:/temp/output/"
   ```
 
   Notice that this command does not contain the `/r`.

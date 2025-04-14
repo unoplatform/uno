@@ -81,7 +81,7 @@ jobs:
 
     - name: Pin .NET Version
       run: |
-        cp build/ci/net9/global.json global.json
+        cp build/ci/net10/global.json global.json
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3
@@ -114,7 +114,7 @@ jobs:
       shell: bash
       run: |
         cd src/SamplesApp/SamplesApp.Skia.Generic
-        dotnet build SamplesApp.Skia.Generic.csproj -f net9.0 -c Release -p:UnoTargetFrameworkOverride=net9.0 /bl:ios-netcoremobile-sampleapp.binlog
+        dotnet build SamplesApp.Skia.Generic.csproj -f net10.0 -c Release -p:UnoTargetFrameworkOverride=net10.0 /bl:ios-netcoremobile-sampleapp.binlog
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

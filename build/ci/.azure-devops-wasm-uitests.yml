@@ -24,23 +24,23 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-mobile-install-linux.yml
     parameters:
-      UnoCheckParameters: '--tfm net9.0-browserwasm'
+      UnoCheckParameters: '--tfm net10.0-browserwasm'
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net9.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
+      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net10.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
 
-    displayName: 'Build sample app (net9.0)'
+    displayName: 'Build sample app (net10.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net9.0)'
+    displayName: 'Publish Wasm Site (net10.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/publish/wwwroot
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net10.0/publish/wwwroot
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/bin/site-net9.0-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.artifactstagingdirectory)/bin/site-net10.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -72,7 +72,7 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net9.0'
+    SITE_SUFFIX: 'net10.0'
 
   steps:
   - checkout: self
@@ -94,7 +94,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net9.0-WinUI" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net10.0-WinUI" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -134,21 +134,21 @@ jobs:
   strategy:
     matrix:
       net9_default:
-        SITE_SUFFIX: 'net9.0-WinUI'
+        SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '5m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
       net9_benchmarks:
-        SITE_SUFFIX: 'net9.0-WinUI'
+        SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
       net9_winui_runtimetests_group_00:
-        SITE_SUFFIX: 'net9.0-WinUI'
+        SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
@@ -157,7 +157,7 @@ jobs:
         IS_UI_TESTS: false
 
       net9_winui_runtimetests_group_01:
-        SITE_SUFFIX: 'net9.0-WinUI'
+        SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
@@ -166,7 +166,7 @@ jobs:
         IS_UI_TESTS: false
 
       net9_winui_runtimetests_group_02:
-        SITE_SUFFIX: 'net9.0-WinUI'
+        SITE_SUFFIX: 'net10.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2

@@ -77,8 +77,8 @@ It is a good practice to use Roslyn analyzers to validate your code during compi
 When building for Android, the following messages may happen:
 
 ```text
-obj\Debug\net8.0-android\android\AndroidManifest.xml : warning XA4218: Unable to find //manifest/application/uses-library at path: C:\Program Files (x86)\Android\android-sdk\platforms\android-34\optional\androidx.window.extensions.jar
-obj\Debug\net8.0-android\android\AndroidManifest.xml : warning XA4218: Unable to find //manifest/application/uses-library at path: C:\Program Files (x86)\Android\android-sdk\platforms\android-34\optional\androidx.window.sidecar.jar
+obj\Debug\net9.0-android\android\AndroidManifest.xml : warning XA4218: Unable to find //manifest/application/uses-library at path: C:\Program Files (x86)\Android\android-sdk\platforms\android-34\optional\androidx.window.extensions.jar
+obj\Debug\net9.0-android\android\AndroidManifest.xml : warning XA4218: Unable to find //manifest/application/uses-library at path: C:\Program Files (x86)\Android\android-sdk\platforms\android-34\optional\androidx.window.sidecar.jar
 ```
 
 Those messages are from a [known .NET for Android issue](https://github.com/xamarin/xamarin-android/issues/6809) and can be ignored as they are not impacting the build output.
