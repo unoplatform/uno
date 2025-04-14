@@ -287,6 +287,14 @@ class TextInputConnection : BaseInputConnection
 				// PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
 				return false;
 			}
+			else if (evt.KeyCode == Keycode.Back || evt.KeyCode == Keycode.Del)
+			{
+				// For cases where the backspace key is not handled by the system, we need to
+				// handle it ourselves. Also, useful for when using a hardware keyboard.				
+				// related to: https://github.com/unoplatform/uno-private/issues/1121
+				var handled = DeleteSurroundingText(1, 0);
+				return handled;
+			}
 			else
 			{
 				// Enter a character.
@@ -736,4 +744,6 @@ class TextInputConnection : BaseInputConnection
 
 		return base.TakeSnapshot();
 	}
+
+	
 }
