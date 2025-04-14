@@ -200,7 +200,7 @@ var Uno;
                     loop: true,
                     autoplay: properties.autoplay,
                     name: `Lottie-${properties.elementId}`,
-                    renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
+                    renderer: "svg",
                     container: containerElement,
                     rendererSettings: {
                         // https://github.com/airbnb/lottie-web/wiki/Renderer-Settings
