@@ -30,6 +30,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
 
 		<!-- Include Wasm+DOM runtime only when requested or if the Wasm+Skia renderer is disabled -->
