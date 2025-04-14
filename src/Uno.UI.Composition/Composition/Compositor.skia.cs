@@ -1,9 +1,10 @@
-﻿#nullable enable
+﻿#define PRINT_FRAME_TIMES
+#nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SkiaSharp;
-using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 
@@ -13,6 +14,9 @@ public partial class Compositor
 {
 	private List<CompositionAnimation> _runningAnimations = new();
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
+#if PRINT_FRAME_TIMES
+	private int _frameNumber;
+#endif
 
 	static partial void Initialize()
 	{
@@ -122,7 +126,14 @@ public partial class Compositor
 			animation.RaiseAnimationFrame();
 		}
 
+#if PRINT_FRAME_TIMES
+		var start = Stopwatch.GetTimestamp();
+#endif
 		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
+#if PRINT_FRAME_TIMES
+		var span = Stopwatch.GetElapsedTime(start);
+		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
+#endif
 
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{

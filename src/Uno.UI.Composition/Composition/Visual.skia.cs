@@ -307,46 +307,73 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(preClip, antialias: true);
 			}
 
-			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
-			// be specific to that visual and should not affect the rendering of any other visual.
-#if DEBUG
-			var saveCount = canvas.SaveCount;
-#endif
-
-			if (RequiresRepaintOnEveryFrame)
+			if (ShadowState is null)
 			{
-				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				Paint(session);
+				PaintStep(this, session);
+				postRenderAction?.Invoke(canvas, this);
+				PostPaintingClipStep(this, canvas);
+				foreach (var child in GetChildrenInRenderOrder())
+				{
+					child.Render(in session, postRenderAction);
+				}
 			}
 			else
 			{
-				if ((_flags & VisualFlags.PaintDirty) != 0)
+				var recorder = new SKPictureRecorder();
+				var recordingCanvas = recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
+				// child.Render will reapply the total transform matrix, so we need to invert ours.
+				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+				PaintStep(this, childSession);
+				postRenderAction?.Invoke(canvas, this);
+				PostPaintingClipStep(this, canvas);
+				foreach (var child in GetChildrenInRenderOrder())
 				{
-					_flags &= ~VisualFlags.PaintDirty;
+					child.Render(in childSession, postRenderAction);
+				}
+				var childrenPicture = recorder.EndRecording();
+				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
+				canvas.DrawPicture(childrenPicture);
+			}
+		}
+
+		static void PaintStep(Visual visual, PaintingSession session)
+		{
+			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+			// be specific to that visual and should not affect the rendering of any other visual.
+#if DEBUG
+			var saveCount = session.Canvas.SaveCount;
+#endif
+			if (visual.RequiresRepaintOnEveryFrame)
+			{
+				// why bother with a recorder when it's going to get repainted next frame? just paint directly
+				visual.Paint(session);
+			}
+			else
+			{
+				if ((visual._flags & VisualFlags.PaintDirty) != 0)
+				{
+					visual._flags &= ~VisualFlags.PaintDirty;
 					_recorder ??= new SKPictureRecorder();
 					var recordingCanvas = _recorder.BeginRecording(new SKRect(-999999, -999999, 999999, 999999));
-					_factory.CreateInstance(this, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					Paint(in recorderSession);
-					_picture = _recorder.EndRecording();
+					visual.Paint(in recorderSession);
+					visual._picture = _recorder.EndRecording();
 				}
 
-				session.Canvas.DrawPicture(_picture);
+				session.Canvas.DrawPicture(visual._picture);
 			}
 #if DEBUG
-			Debug.Assert(saveCount == canvas.SaveCount);
+			Debug.Assert(saveCount == session.Canvas.SaveCount);
 #endif
+		}
 
-			postRenderAction?.Invoke(canvas, this);
-
-			if (GetPostPaintingClipping() is { } postClip)
+		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
+		{
+			if (visual.GetPostPaintingClipping() is { } postClip)
 			{
 				canvas.ClipPath(postClip, antialias: true);
-			}
-
-			foreach (var child in GetChildrenInRenderOrder())
-			{
-				child.Render(in session, postRenderAction);
 			}
 		}
 	}
