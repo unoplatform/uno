@@ -62,6 +62,10 @@
 		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="System.CommandLine" />
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
+			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
+		</PackageReference>
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
