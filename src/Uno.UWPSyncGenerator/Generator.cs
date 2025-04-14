@@ -147,8 +147,8 @@ namespace Uno.UWPSyncGenerator
 
 			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
-			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-ios17.0");
-			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-tvos17.0");
+			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-ios18.0");
+			_tvOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-tvos18.0");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net9.0-android");
 			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net9.0");
 
