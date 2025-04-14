@@ -201,6 +201,13 @@
 	  ]
 	},
 	{
+	  "group": "AndroidXSplashScreen",
+	  "version": "1.0.1.14",
+	  "packages": [
+	    "Xamarin.AndroidX.Core.SplashScreen"
+	  ]
+	},
+	{
 	  "group": "AndroidXAppCompat",
 	  "version": "1.7.0.5",
 	  "packages": [

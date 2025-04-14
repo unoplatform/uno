@@ -55,6 +55,7 @@
 				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"
 				AndroidXLegacySupportV4Version="@(AndroidXLegacySupportV4Version)"
+				AndroidXSplashScreenVersion="@(AndroidXSplashScreenVersion)"
 				AndroidXAppCompatVersion="@(AndroidXAppCompatVersion)"
 				AndroidXRecyclerViewVersion="@(AndroidXRecyclerViewVersion)"
 				AndroidXActivityVersion="@(AndroidXActivityVersion)"
