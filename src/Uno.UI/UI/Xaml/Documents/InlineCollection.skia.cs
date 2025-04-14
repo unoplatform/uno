@@ -808,6 +808,11 @@ namespace Microsoft.UI.Xaml.Documents
 					var count = positions.Length;
 					fontInfo.SKFont.GetGlyphPaths(glyphs, (path, matrix) =>
 					{
+						if (path is null)
+						{
+							// There are cases in CI where path is null. The cause is currently unknown.
+							return;
+						}
 						var pos = new Span<SKPoint>((void*)posAsIntPtr, count);
 						canvas.Save();
 						canvas.Translate(pos[index].X, pos[index].Y + y);
