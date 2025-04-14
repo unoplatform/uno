@@ -31,7 +31,7 @@ namespace SamplesApp.Droid
 		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
-		Theme = "@style/AppTheme"
+		Theme = "@style/Theme.App.Starting"
 	)]
 	public class Application : Microsoft.UI.Xaml.NativeApplication
 	{

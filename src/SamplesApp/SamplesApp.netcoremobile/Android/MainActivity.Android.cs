@@ -6,14 +6,16 @@ using Android.Views;
 using Java.Interop;
 using Uno.UI;
 using Uno.UI.Composition;
+using static AndroidX.Core.SplashScreen.SplashScreen;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
 			Exported = true,
 			MainLauncher = true,
-			WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden,
-			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
+			Label = "@string/ApplicationName",
+			ConfigurationChanges = ActivityHelper.AllConfigChanges,
+			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
 	[IntentFilter(
@@ -34,6 +36,13 @@ namespace SamplesApp.Droid
 	public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
+
+		protected override void OnCreate(Bundle bundle)
+		{
+			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
+
+			base.OnCreate(bundle);
+		}
 
 		[Export("RunTest")]
 		public string RunTest(string metadataName) => App.RunTest(metadataName);
@@ -106,7 +115,6 @@ namespace SamplesApp.Droid
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
 		}
-
 
 		class PixelCopyListener : Java.Lang.Object, PixelCopy.IOnPixelCopyFinishedListener
 		{
