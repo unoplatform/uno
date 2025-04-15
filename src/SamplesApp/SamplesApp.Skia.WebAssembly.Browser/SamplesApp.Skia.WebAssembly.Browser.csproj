@@ -91,8 +91,8 @@
 		<Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\*.Runtime.Skia.WebAssembly.Browser.props" />
-	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive\*.Runtime.Skia.WebAssembly.Browser.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
