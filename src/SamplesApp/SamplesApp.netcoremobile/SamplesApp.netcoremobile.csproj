@@ -235,11 +235,12 @@
 		<UnoSplashScreen
 			 Include="Assets\Splash\splash_screen.svg"
 			 BaseSize="128,128"
-			 Color="#512BD4" />
+			 Color="#00ffffff" />
 		<UnoIcon 
 			Include="Assets\Icons\icon.svg"
 			ForegroundFile="Assets\Icons\icon_foreground.svg"
-			Color="#FF0000" />
+			ForegroundScale="0.65"
+			Color="#ffffff" />
 	</ItemGroup>
 
 	<ItemGroup>
