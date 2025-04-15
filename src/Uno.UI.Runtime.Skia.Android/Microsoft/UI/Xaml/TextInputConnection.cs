@@ -744,6 +744,4 @@ class TextInputConnection : BaseInputConnection
 
 		return base.TakeSnapshot();
 	}
-
-	
 }
