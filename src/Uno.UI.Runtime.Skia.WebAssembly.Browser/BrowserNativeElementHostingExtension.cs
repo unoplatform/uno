@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.NativeElementHosting;
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 
 namespace Uno.UI.Runtime.Skia;
@@ -61,25 +62,25 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	private static partial class NativeMethods
 	{
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.isNativeElement")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.isNativeElement")]
 		internal static partial bool IsNativeElement(string content);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.attachNativeElement")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.attachNativeElement")]
 		internal static partial bool AttachNativeElement(string content);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.detachNativeElement")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.detachNativeElement")]
 		internal static partial bool DetachNativeElement(string content);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.arrangeNativeElement")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.arrangeNativeElement")]
 		internal static partial bool ArrangeNativeElement(string content, double x, double y, double width, double height);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.createSampleComponent")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.createSampleComponent")]
 		internal static partial void CreateSampleComponent(string parentId, string text);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.changeNativeElementOpacity")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.changeNativeElementOpacity")]
 		internal static partial string ChangeNativeElementOpacity(string content, double opacity);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserNativeElementHostingExtension)}.setSvgClipPathForNativeElementHost")]
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHost")]
 		internal static partial string SetSvgClipPathForNativeElementHost(string path);
 	}
 }

@@ -49,7 +49,7 @@ stages:
   jobs:
   - template: .azure-devops-skia-tests-build-android.yml
     parameters:
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
   - template: .azure-devops-skia-tests-android.yml

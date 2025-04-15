@@ -41,7 +41,7 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="SkiaSharp" Version="3.119.0-preview.1.2" />
-		<PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0-preview.1.2" />
+		<PackageReference Include="HarfBuzzSharp" Version="8.3.1.1-preview.1.2" />
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 

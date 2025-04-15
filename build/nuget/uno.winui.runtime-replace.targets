@@ -43,8 +43,8 @@
 				PathInPackage="uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
 
 			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Condition=" '$(Optimize)' != 'true' " Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_LibraryUnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
 		<!-- 
@@ -86,6 +86,14 @@
 		<Error
 			Text="The package(s) [@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)] do not define the UnoRuntimeEnabledPackage.PackageBasePath metadata. Make sure to add one to specify the current location of the targets file."
 			Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
+	</Target>
+
+	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
+		<RuntimeAssetsValidatorTask_v0
+			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
+			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
+		</RuntimeAssetsValidatorTask_v0>
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->

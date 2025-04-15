@@ -38,7 +38,7 @@
 			transitively flowing through SkiaSharp's dependencies
 		 -->
 		<PackageReference Include="Microsoft.Win32.SystemEvents" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 	</ItemGroup>
 
 	<ItemGroup>
