@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-using System.Diagnostics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
@@ -33,7 +31,7 @@ internal static class SkiaRenderHelper
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
-	/// or null if the entire window is drawn.
+	/// minus the native view areas.
 	/// </summary>
 	public static SKPath RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKCanvas canvas)
 	{

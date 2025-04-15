@@ -2,11 +2,14 @@
 //#define TRACE_COMPOSITION
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.PooledObjects;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Composition;
@@ -16,6 +19,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
+	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
@@ -321,11 +325,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
-				PaintStep(this, childSession);
-				PostPaintingClipStep(this, canvas);
-				foreach (var child in GetChildrenInRenderOrder())
+				using (childSession)
 				{
-					child.Render(in childSession);
+					PaintStep(this, childSession);
+					PostPaintingClipStep(this, canvas);
+					foreach (var child in GetChildrenInRenderOrder())
+					{
+						child.Render(in childSession);
+					}
 				}
 				var childrenPicture = recorder.EndRecording();
 				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
@@ -376,12 +383,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	internal void GetNativeViewPath(SKPath clipFromParent, SKPath outPath)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (this is { Opacity: 0 } or { IsVisible: false } || clipFromParent.IsEmpty)
 		{
 			return;
 		}
 
-		var localClipCombinedByClipFromParent = new SKPath();
+		var localClipCombinedByClipFromParent = _pathPool.Allocate();
+		using var rentedArrayDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localClipCombinedByClipFromParent);
+		localClipCombinedByClipFromParent.Rewind();
+
 		if (GetPrePaintingClipping(_spareRenderPath))
 		{
 			localClipCombinedByClipFromParent.AddPath(_spareRenderPath);
