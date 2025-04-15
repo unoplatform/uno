@@ -46,7 +46,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<!--<PackageReference Include="SkiaSharp.NativeAssets.Android" />
@@ -61,9 +61,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.*">
+		<Content Include="build/*.*">
 			<Pack>true</Pack>
-			<PackagePath>buildTransitive</PackagePath>
+			<PackagePath>build</PackagePath>
 		</Content>
 	</ItemGroup>
 

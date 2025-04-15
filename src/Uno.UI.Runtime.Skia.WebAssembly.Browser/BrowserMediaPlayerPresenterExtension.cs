@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia;
 

@@ -22,6 +22,14 @@ partial class NativeWindowFactory
 
 	public static bool SupportsMultipleWindows => _nativeWindowFactory.Value?.SupportsMultipleWindows ?? false;
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot) =>
-		_nativeWindowFactory.Value?.CreateWindow(window, xamlRoot) ?? null;
+	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
+	{
+		if (_nativeWindowFactory.Value is not { } windowFactory)
+		{
+			throw new InvalidOperationException(
+				"Window factory was not registered. Please ensure that you set up the application initialization " +
+				"properly for this Skia target by following the migration docs.");
+		}
+		return windowFactory.CreateWindow(window, xamlRoot);
+	}
 }

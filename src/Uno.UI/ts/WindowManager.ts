@@ -119,6 +119,10 @@ namespace Uno.UI {
 		private cursorStyleRule: CSSStyleRule;
 
 		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
+
+		/** Native elements created with the BrowserHtmlElement class */
+		private nativeHandlersMap: { [id: string]: any } = {};
+
 		private uiElementRegistrations: {
 			[id: string]: {
 				typeName: string;
@@ -129,6 +133,7 @@ namespace Uno.UI {
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static dispatchEventNativeElementMethod: any;
 		private static focusInMethod: any;
 		private static dispatchSuspendingMethod: any;
 		private static getDependencyPropertyValueMethod: any;
@@ -1346,6 +1351,82 @@ namespace Uno.UI {
 			this.removeLoading();
 		}
 
+		/**
+		 * Creates a native element from BrowserHttpElement.
+		 */
+		public createNativeElement(elementId: string, unoElementId: number, tagname: string): void {
+			const element = document.createElement(tagname);
+			element.id = elementId;
+			(<any>element).unoId = unoElementId;
+
+			// Add the html element to list of elements
+			this.allActiveElementsById[this.handleToString(unoElementId)] = element;
+		}
+
+		/**
+		 * Dispose a native element
+		 */
+		public disposeNativeElement(unoElementId: number): void {
+			this.destroyViewInternal(unoElementId);
+		}
+
+		/**
+		 * Attaches a native element to a known UIElement-backed element.
+		 */
+		public attachNativeElement(ownerId: number, unoElementId: number): void {
+			var ownerView = this.getView(ownerId);
+			var elementView = this.getView(unoElementId);
+
+			ownerView.appendChild(elementView);
+		}
+
+		/**
+		 * Detaches a native element to a known UIElement-backed element.
+		 */
+		public detachNativeElement(unoElementId: number): void {
+			var view = this.getView(unoElementId);
+
+			view.parentElement.removeChild(view);
+		}
+
+		/**
+		 * Registers a managed event handler
+		 */
+		public registerNativeHtmlEvent(
+			owner: any,
+			unoElementId: any,
+			eventName: string,
+			managedHandler: any
+		) {
+			const element = this.getView(unoElementId);
+
+			const eventHandler = (event: Event) => {
+				WindowManager.dispatchEventNativeElementMethod(owner, eventName, managedHandler, event);
+			};
+
+			// Register the handler using a string representation of the managed handler
+			// the managed representation assumes that the string contains a unique id.
+			this.nativeHandlersMap["" + managedHandler] = eventHandler;
+
+			element.addEventListener(eventName, eventHandler);
+		}
+
+		/**
+		 * Unregisters a managed handler from its element
+		 */
+		public unregisterNativeHtmlEvent(
+			unoElementId: any,
+			eventName: string,
+			managedHandler: any) {
+			const element = this.getView(unoElementId);
+			const key = "" + managedHandler;
+			const eventHandler = this.nativeHandlersMap[key];
+			if (eventHandler) {
+				element.removeEventListener(eventName, eventHandler);
+				delete this.nativeHandlersMap[key];
+			}
+		}
+
 		private init() {
 
 			if (UnoAppManifest.displayName) {
@@ -1367,6 +1448,7 @@ namespace Uno.UI {
 
 				WindowManager.resizeMethod = exports.Microsoft.UI.Xaml.Window.Resize;
 				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.dispatchEventNativeElementMethod = exports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
 				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
 				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
 				WindowManager.keyTrackingMethod = (<any>globalThis).DotnetExports.Uno.Uno.UI.Core.KeyboardStateTracker.UpdateKeyStateNative;

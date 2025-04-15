@@ -1070,11 +1070,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 		}
 
-		var textBlock = new ImplicitTextBlock(this);
-		textBlock.SetTemplatedParent(this);
-
 		if (!IsNativeHost)
 		{
+			var textBlock = new ImplicitTextBlock(this);
+			textBlock.SetTemplatedParent(this);
+
 			TemplateBind(TextBlock.TextProperty, nameof(Content));
 			TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
 			TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
@@ -1087,10 +1087,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				{
 					RelativeSource = RelativeSource.TemplatedParent
 				});
-		}
 
-		ContentTemplateRoot = textBlock;
-		IsUsingDefaultTemplate = true;
+			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
+		}
 	}
 
 	partial void RegisterContentTemplateRoot();

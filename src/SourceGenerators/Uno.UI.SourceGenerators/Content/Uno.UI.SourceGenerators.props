@@ -73,6 +73,8 @@
 		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoRuntimeIdentifier" />
+		<CompilerVisibleProperty Include="UnoWinRTRuntimeIdentifier" />
+		<CompilerVisibleProperty Include="UnoUIRuntimeIdentifier" />
 		<CompilerVisibleProperty Include="UnoHotReloadMode" />
 
 		<CompilerVisibleProperty Include="SolutionFileName" />

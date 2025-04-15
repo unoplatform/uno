@@ -75,13 +75,21 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void CheckMetadataUpdatesSupport()
 		{
+			// Single layer uno runtime identifier
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
-			//var targetFramework = GetMSBuildProperty("TargetFramework");
+
+			// two layer uno runtime identifier, UnoWinRTRuntimeIdentifier defines the actual running target.
+			var unoWinRTRuntimeIdentifier = GetMSBuildProperty("UnoWinRTRuntimeIdentifier");
+
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
+			var unoEffectiveRuntimeIdentifier = string.IsNullOrWhiteSpace(unoWinRTRuntimeIdentifier)
+				? unoRuntimeIdentifier
+				: unoWinRTRuntimeIdentifier;
+
 			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
-			var isSkia = unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
-			var isWasm = unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
+			var isSkia = unoEffectiveRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
+			var isWasm = unoEffectiveRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
 
 			var devServerEnabled = isForcedMetadata
 

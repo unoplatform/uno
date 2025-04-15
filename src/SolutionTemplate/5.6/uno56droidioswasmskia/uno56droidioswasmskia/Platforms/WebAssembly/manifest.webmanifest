@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "uno56droidioswasmskia",
+  "display": "standalone",
+  "name": "uno56droidioswasmskia",
+  "short_name": "uno56droidioswasmskia",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

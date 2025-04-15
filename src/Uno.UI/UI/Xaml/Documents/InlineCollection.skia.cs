@@ -21,15 +21,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
 
-		// This is safe as a static field.
-		// 1) It's only accessed from UI thread.
-		// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
-		// See https://api.skia.org/classSkTextBlobBuilder.html#abf5e20208fd5656981191a3778ee5fef:
-		// > Resets SkTextBlobBuilder to its initial empty state, allowing it to be reused to build a new set of runs.
-		// The reset to the initial state happens here:
-		// https://github.com/google/skia/blob/d29cc3fe182f6e8a8539004a6a4ee8251677a6fd/src/core/SkTextBlob.cpp#L652-L656
-		private static SKTextBlobBuilder _textBlobBuilder = new();
-
 		private readonly List<RenderLine> _renderLines = new();
 
 		private bool _invalidationPending;
@@ -719,16 +710,13 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				if (segmentSpan.GlyphsLength > 0)
 				{
-					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
-					positions.CopyTo(run1.GetPositionSpan(segmentSpan.GlyphsLength));
-					glyphs.CopyTo(run1.GetGlyphSpan(segmentSpan.GlyphsLength));
-
-					// Roughly equivalent to:
-					//   using var textBlob = _textBlobBuilder.Build();
-					//   canvas.DrawText(textBlob, 0f, y, paint);
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions,
+						glyphs,
+						canvas,
+						y,
+						paint);
 				}
 			}
 			else
@@ -771,35 +759,68 @@ namespace Microsoft.UI.Xaml.Documents
 
 				if (startOfSelection > 0) // pre selection
 				{
-					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
-					positions.Slice(0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
-					glyphs.Slice(0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(0, startOfSelection),
+						glyphs.Slice(0, startOfSelection),
+						canvas,
+						y,
+						paint);
 				}
 
 				if (endOfSelection - startOfSelection > 0) // selection
 				{
-					var run2 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, endOfSelection - startOfSelection);
-					positions.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
-					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
 					var color = paint.Color;
 					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(startOfSelection, endOfSelection - startOfSelection),
+						glyphs.Slice(startOfSelection, endOfSelection - startOfSelection),
+						canvas,
+						y,
+						paint);
 					paint.Color = color;
 				}
 
 				if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
 				{
-					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
-					positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
-					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+					DrawText(
+						fontInfo,
+						positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection),
+						glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection),
+						canvas,
+						y,
+						paint);
+				}
+			}
+
+			// This is functionally equivalent to SKTextBlob.DrawText but dodges a bug in SkiaSharp3 implementation
+			// for this method on WebGL.
+			static unsafe void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+				SKCanvas canvas, float y, SKPaint paint)
+			{
+				int index = 0;
+				// Using pointers here is to get around safety measures that prevent using by-ref objects like spans
+				// inside a lambda.
+				fixed (SKPoint* posAsSKPointPtr = positions)
+				{
+					var posAsIntPtr = new IntPtr(posAsSKPointPtr);
+					var count = positions.Length;
+					fontInfo.SKFont.GetGlyphPaths(glyphs, (path, matrix) =>
+					{
+						if (path is null)
+						{
+							// There are cases in CI where path is null. The cause is currently unknown.
+							return;
+						}
+						var pos = new Span<SKPoint>((void*)posAsIntPtr, count);
+						canvas.Save();
+						canvas.Translate(pos[index].X, pos[index].Y + y);
+						canvas.Concat(matrix);
+						canvas.DrawPath(path, paint);
+						canvas.Restore();
+						index++;
+					});
 				}
 			}
 		}

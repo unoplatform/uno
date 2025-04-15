@@ -194,10 +194,6 @@
         href: xref:Uno.Development.HostWebAssemblyApp
       - name: Using Skia Desktop (macOS)
         href: xref:Uno.Skia.macOS
-      - name: Legacy Topics
-        items:
-        - name: Working with Skia+GTK
-          href: features/using-skia-gtk.md
 
     - name: Debugging
       items:
