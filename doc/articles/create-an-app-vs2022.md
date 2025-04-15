@@ -21,10 +21,15 @@ To create an Uno Platform app:
 
 1. Choose a template preset to build your application
 
-    ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.png)
+    ![Uno Platform Template Wizard - detailed overview](getting-started/wizard/assets/intro.png)
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project template wizard and all its options, see [this](xref:Uno.GettingStarted.UsingWizard).
+
+    > [!NOTE]
+    > Skia rendering is now the default rendering engine in Uno Platform templates. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
+
+    ![Uno Platform Template Wizard - renderer options](getting-started/wizard/assets/renderer.png)
 
 1. Click the create button
 
