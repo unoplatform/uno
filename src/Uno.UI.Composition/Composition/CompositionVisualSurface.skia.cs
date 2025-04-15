@@ -56,7 +56,7 @@ namespace Microsoft.UI.Composition
 
 				var previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
-				SourceVisual.RenderRootVisual(_surface.Canvas, SourceOffset, null);
+				SourceVisual.RenderRootVisual(_surface.Canvas, SourceOffset);
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Composition
 					session.Canvas.ClipRect(new SKRect(0, 0, int.MaxValue, int.MaxValue));
 				}
 
-				SourceVisual.RenderRootVisual(session.Canvas, SourceOffset, null);
+				SourceVisual.RenderRootVisual(session.Canvas, SourceOffset);
 				session.Canvas.RestoreToCount(save);
 			}
 		}
