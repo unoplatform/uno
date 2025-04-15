@@ -69,7 +69,7 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/iconapp.appiconset</string>
+	<string>Assets.xcassets/icon.appiconset</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
