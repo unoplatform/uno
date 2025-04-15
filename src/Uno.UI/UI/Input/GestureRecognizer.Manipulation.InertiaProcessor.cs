@@ -192,7 +192,7 @@ namespace Windows.UI.Input
 					var angular = GetValue(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration, t, previousCumulative.Rotation);
 					var expansion = GetValue(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration, t, previousCumulative.Expansion);
 
-					var scale = _isScaleInertiaEnabled ? (_owner._origins.Distance + expansion) / _owner._origins.Distance : 1;
+					var scale = _isScaleInertiaEnabled ? (_owner._origins.State.Distance + expansion) / _owner._origins.State.Distance : 1;
 
 					var delta = new ManipulationDelta
 					{
