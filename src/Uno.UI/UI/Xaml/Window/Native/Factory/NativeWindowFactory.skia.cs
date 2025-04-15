@@ -30,6 +30,6 @@ partial class NativeWindowFactory
 				"Window factory was not registered. Please ensure that you set up the application initialization " +
 				"properly for this Skia target by following the migration docs.");
 		}
-		return windowFactory.CreateWindow(window, xamlRoot) ?? null;
+		return windowFactory.CreateWindow(window, xamlRoot);
 	}
 }
