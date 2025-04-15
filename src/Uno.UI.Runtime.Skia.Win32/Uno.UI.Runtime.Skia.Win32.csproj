@@ -28,7 +28,7 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="EdgeWebView" PrivateAssets="all" />
 
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 	</ItemGroup>
 
 	<ItemGroup>

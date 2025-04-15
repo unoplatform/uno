@@ -7,7 +7,7 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
-		<_UnoProjectSystemPackageReference Include="Uno.UniversalImageLoader" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.UniversalImageLoader" Condition=" !$(UnoFeatures.Contains(';skiarenderer;')) " ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.AppCompat" ProjectSystem="true" />
@@ -24,6 +24,10 @@
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
 </Project>

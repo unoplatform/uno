@@ -16,6 +16,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Media.Playback;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia;
 

@@ -29,7 +29,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 

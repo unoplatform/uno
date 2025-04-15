@@ -288,11 +288,11 @@
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 
-	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\buildTransitive\*.Runtime.Skia.Android.props" />
-	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\buildTransitive\*.Runtime.Skia.Android.targets" />
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
 
-	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\buildTransitive\*.Runtime.Skia.AppleUIKit.props" />
-	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\buildTransitive\*.Runtime.Skia.AppleUIKit.targets" />
+	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
+	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />

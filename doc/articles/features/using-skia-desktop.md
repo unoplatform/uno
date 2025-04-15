@@ -74,9 +74,9 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 ```xml
 <ItemGroup>
    <PackagReference Include="SkiaSharp" Version="3.119.0-preview.1.2" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="3.119.0-preview.1.2" />
    <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0-preview.1.2" />
    <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="3.119.0-preview.1.2" />
+   <PackagReference Include="HarfBuzzSharp" Version="8.3.1.1-preview.1.2" />
 </ItemGroup>
 ```
 

@@ -30,7 +30,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfbuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
 	</ItemGroup>
