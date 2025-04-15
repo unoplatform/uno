@@ -1,4 +1,4 @@
-﻿#define PRINT_FRAME_TIMES
+﻿// #define PRINT_FRAME_TIMES
 #nullable enable
 
 using System;
@@ -114,7 +114,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, Action<SKCanvas, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
 	{
 		if (rootVisual is null)
 		{
@@ -129,7 +129,7 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(canvas, null, postRenderAction);
+		rootVisual.RenderRootVisual(canvas, null);
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");

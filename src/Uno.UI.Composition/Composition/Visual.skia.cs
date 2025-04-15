@@ -230,8 +230,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	/// <param name="postRenderAction">An action that gets invoked right after each visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, Action<SKCanvas, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -267,7 +266,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (session)
 		{
-			Render(session, postRenderAction);
+			Render(session);
 		}
 
 		canvas.Restore();
@@ -277,8 +276,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
-	private void Render(in PaintingSession parentSession, Action<SKCanvas, Visual>? postRenderAction)
+	private void Render(in PaintingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -310,11 +308,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (ShadowState is null)
 			{
 				PaintStep(this, session);
-				postRenderAction?.Invoke(canvas, this);
 				PostPaintingClipStep(this, canvas);
 				foreach (var child in GetChildrenInRenderOrder())
 				{
-					child.Render(in session, postRenderAction);
+					child.Render(in session);
 				}
 			}
 			else
@@ -325,11 +322,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
 				PaintStep(this, childSession);
-				postRenderAction?.Invoke(canvas, this);
 				PostPaintingClipStep(this, canvas);
 				foreach (var child in GetChildrenInRenderOrder())
 				{
-					child.Render(in childSession, postRenderAction);
+					child.Render(in childSession);
 				}
 				var childrenPicture = recorder.EndRecording();
 				canvas.DrawPicture(childrenPicture, ShadowState.ShadowOnlyPaint);
@@ -375,6 +371,41 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				canvas.ClipPath(postClip, antialias: true);
 			}
+		}
+	}
+
+	internal void GetNativeViewPath(SKPath clipFromParent, SKPath outPath)
+	{
+		if (this is { Opacity: 0 } or { IsVisible: false })
+		{
+			return;
+		}
+
+		var localClipCombinedByClipFromParent = new SKPath();
+		if (GetPrePaintingClipping(_spareRenderPath))
+		{
+			localClipCombinedByClipFromParent.AddPath(_spareRenderPath);
+		}
+		else
+		{
+			localClipCombinedByClipFromParent.AddRect(new SKRect(0, 0, Size.X, Size.Y));
+		}
+		localClipCombinedByClipFromParent.Transform(TotalMatrix.ToSKMatrix(), localClipCombinedByClipFromParent);
+		localClipCombinedByClipFromParent.Op(clipFromParent, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+
+		if (IsNativeHostVisual || CanPaint())
+		{
+			outPath.Op(localClipCombinedByClipFromParent, IsNativeHostVisual ? SKPathOp.Union : SKPathOp.Difference, outPath);
+		}
+
+		if (GetPostPaintingClipping() is { } postClip)
+		{
+			postClip.Transform(TotalMatrix.ToSKMatrix(), postClip);
+			localClipCombinedByClipFromParent.Op(postClip, SKPathOp.Intersect, localClipCombinedByClipFromParent);
+		}
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.GetNativeViewPath(localClipCombinedByClipFromParent, outPath);
 		}
 	}
 

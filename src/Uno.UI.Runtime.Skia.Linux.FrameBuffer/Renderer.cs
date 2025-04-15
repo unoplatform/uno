@@ -70,7 +70,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface.Canvas, rootVisual, null);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface.Canvas, rootVisual);
 				}
 				else
 				{
