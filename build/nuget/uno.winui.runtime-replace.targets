@@ -88,6 +88,14 @@
 			Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
 	</Target>
 
+	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
+		<RuntimeAssetsValidatorTask_v0
+			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
+			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
+		</RuntimeAssetsValidatorTask_v0>
+	</Target>
+
 	<!-- Force a rebuild on runtime files changes -->
 	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!='' OR '$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!=''">
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />

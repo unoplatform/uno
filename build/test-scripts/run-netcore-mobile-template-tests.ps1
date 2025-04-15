@@ -315,8 +315,8 @@ $projects =
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
-    # 5.6 Wasm+Skia
-    @(4, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
+    # 5.6 Android/ios/Wasm+Skia
+    @(4, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
