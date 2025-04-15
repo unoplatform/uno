@@ -260,7 +260,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<!--<PackageReference Include="Uno.Resizetizer" />-->
+		<PackageReference Include="Uno.Resizetizer" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 	</ItemGroup>
 
@@ -287,6 +287,17 @@
 	  <Folder Include="Properties\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<UnoSplashScreen
+			 Include="Assets\Splash\splash_screen.svg"
+			 BaseSize="128,128"
+			 Color="#00ffffff" />
+		<UnoIcon
+			Include="Assets\Icons\icon.svg"
+			ForegroundFile="Assets\Icons\icon_foreground.svg"
+			ForegroundScale="0.65"
+			Color="#ffffff" />
+	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 
