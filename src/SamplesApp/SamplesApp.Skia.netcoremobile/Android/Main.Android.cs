@@ -40,7 +40,8 @@ using Uno.UI;
 namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
-		Label = "@string/ApplicationName",
+		Label = "@string/SamplesAppName",
+		Icon = "@mipmap/icon",
 		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
