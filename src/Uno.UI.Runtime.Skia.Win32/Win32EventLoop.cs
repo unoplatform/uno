@@ -123,6 +123,10 @@ namespace Uno.UI.Runtime.Skia.Win32
 			}
 			else if (timeout.HasValue)
 			{
+				// In the common case, we never hit this path as the dispatcher runs inside the message pump and
+				// will continue to have messages. This only hits when the app is idle and we need to stop
+				// spamming PeekMessage. Instead, we use GetMessage but we make sure to unblock it every
+				// second to see if we should continue or not, otherwise the GetMessage call could be stuck forever.
 				var cts = new CancellationTokenSource();
 				_ = Task.Run(async () =>
 				{
