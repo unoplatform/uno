@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Win32
@@ -100,7 +103,12 @@ namespace Uno.UI.Runtime.Skia.Win32
 		public static bool HasMessages()
 			=> PInvoke.PeekMessage(out var msg, HWND.Null, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE);
 
-		public static bool RunOnce()
+		/// <summary>
+		/// By default, uses PeekMessage to get a message if available and does nothing if
+		/// the message pump is empty. If the timeout is set, blocks with GetMessage for
+		/// the duration of the timeout and then exits if there are no messages.
+		/// </summary>
+		public static void RunOnce(TimeSpan? timeout = null)
 		{
 			// We prioritize WM_PAINT messages so that we keep painting as fast
 			// as Windows needs us to even if the message queue is full of other
@@ -112,11 +120,31 @@ namespace Uno.UI.Runtime.Skia.Win32
 			{
 				PInvoke.TranslateMessage(msg);
 				PInvoke.DispatchMessage(msg);
-				return true;
 			}
-			else
+			else if (timeout.HasValue)
 			{
-				return false;
+				var cts = new CancellationTokenSource();
+				_ = Task.Run(async () =>
+				{
+					await Task.Delay(timeout.Value, cts.Token);
+
+					if (!cts.IsCancellationRequested)
+					{
+						// This sends an UnoWin32DispatcherMsg and unblocks the GetMessage call.
+						NativeDispatcher.Main.Enqueue(() => { });
+					}
+				}, cts.Token);
+
+				if (PInvoke.GetMessage(out var msg2, HWND.Null, 0, 0).Value != -1)
+				{
+					cts.Cancel();
+					PInvoke.TranslateMessage(msg2);
+					PInvoke.DispatchMessage(msg2);
+				}
+				else
+				{
+					typeof(Win32EventLoop).LogError()?.Error($"{nameof(PInvoke.GetMessage)} failed: {Win32Helper.GetErrorMessage()}");
+				}
 			}
 		}
 	}
