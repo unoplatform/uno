@@ -12,6 +12,9 @@ partial class ContentManager
 	{
 		WindowManagerInterop.SetRootElement(rootElement.HtmlId);
 		UpdateRootAttributes(rootElement);
+
+		// Simulate content loaded (native WASM cannot load before Window is activated).
+		rootElement.DispatcherQueue.TryEnqueue(window.NotifyContentLoaded);
 	}
 
 	private static void UpdateRootAttributes(UIElement rootElement)
