@@ -342,6 +342,7 @@ namespace Windows.UI.Input
 						_contacts.onStart = _contacts.current;
 						IsDragManipulation = true;
 
+						CommitChanges(changeSet);
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started, _contacts.onStart));
@@ -407,6 +408,7 @@ namespace Windows.UI.Input
 						break;
 
 					case ManipulationStatus.Started when IsDragManipulation:
+						CommitChanges(changeSet);
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing, _contacts.onStart));
