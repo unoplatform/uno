@@ -1,4 +1,4 @@
-// Portions of this files are Copyright 2013 The Flutter Authors. All rights reserved.
+﻿// Portions of this files are Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of these portions of source code is governed by a BSD-style license that can be
 // found in the THIRD-PARTY-NOTICES.md file.
 
@@ -303,8 +303,9 @@ class TextInputConnection : BaseInputConnection
 				if (selEnd > selStart)
 				{
 					// Delete the selection.
-					SetSelection(selStart, selEnd);
+					BeginBatchEdit();
 					_editable.Delete(selStart, selEnd);
+					EndBatchEdit();
 					return true;
 				}
 
