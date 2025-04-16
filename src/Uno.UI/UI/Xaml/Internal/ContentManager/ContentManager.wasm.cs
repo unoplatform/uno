@@ -12,9 +12,12 @@ partial class ContentManager
 	{
 		WindowManagerInterop.SetRootElement(rootElement.HtmlId);
 		UpdateRootAttributes(rootElement);
-
-		// Simulate content loaded (native WASM cannot load before Window is activated).
-		rootElement.DispatcherQueue.TryEnqueue(window.NotifyContentLoaded);
+		if (rootElement.XamlRoot is { } xamlRoot)
+		{
+			// This will requrest the initial tick to get the root element to load
+			xamlRoot.InvalidateMeasure();
+			xamlRoot.InvalidateArrange();
+		}
 	}
 
 	private static void UpdateRootAttributes(UIElement rootElement)
@@ -32,11 +35,5 @@ partial class ContentManager
 		{
 			rootElement.RemoveAttribute("data-use-hand-cursor-interaction");
 		}
-	}
-
-	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
-	{
-		xamlRoot.InvalidateMeasure();
-		xamlRoot.InvalidateArrange();
 	}
 }
