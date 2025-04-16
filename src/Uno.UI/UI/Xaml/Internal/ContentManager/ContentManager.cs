@@ -105,6 +105,10 @@ internal partial class ContentManager
 		}
 
 		_content = newContent;
+
+#if IS_UNIT_TESTS // Tests rely on synchronous window activation.
+		NotifyContentLoaded();
+#endif
 	}
 
 	private void FrameworkElement_Loaded(object sender, RoutedEventArgs e)
