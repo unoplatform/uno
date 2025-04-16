@@ -13,6 +13,8 @@ using System.Linq;
 using System.Reflection;
 using Uno;
 using Uno.UI.Helpers;
+using Newtonsoft.Json.Linq;
+using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
@@ -126,12 +128,12 @@ internal sealed class HotReloadAgent : IDisposable
 
 		if (!methodFound)
 		{
-			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
+			_log($"No invocable methods found on metadata handler type '{handlerType}'. " +
 				$"Allowed methods are ClearCache, UpdateApplication");
 		}
 		else
 		{
-			_log($"Invokable methods found on metadata handler type '{handlerType}'. ");
+			_log($"Invocable methods found on metadata handler type '{handlerType}'. ");
 		}
 
 		Action<Type[]?> CreateAction(MethodInfo update)
@@ -206,7 +208,7 @@ internal sealed class HotReloadAgent : IDisposable
 		return sortedAssemblies;
 	}
 
-	public void ApplyDeltas(IReadOnlyList<UpdateDelta> deltas)
+	public void ApplyDeltas(IReadOnlyList<UpdateDelta> deltas, IRemoteControlClient rcClient)
 	{
 		for (var i = 0; i < deltas.Count; i++)
 		{
@@ -217,7 +219,7 @@ internal sealed class HotReloadAgent : IDisposable
 				{
 					_log($"Applying delta to {assembly} / {moduleId}");
 
-					ApplyUpdate(assembly, item);
+					ApplyUpdate(assembly, item, rcClient);
 				}
 			}
 
@@ -248,9 +250,35 @@ internal sealed class HotReloadAgent : IDisposable
 		}
 	}
 
-	private static void ApplyUpdate(Assembly assembly, UpdateDelta item)
+	private static void ApplyUpdate(Assembly assembly, UpdateDelta item, IRemoteControlClient? rcClient)
 	{
-		System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, item.MetadataDelta, item.ILDelta, item.PdbBytes ?? ReadOnlySpan<byte>.Empty);
+		try
+		{
+			// if the debugger is attached then try to use it for hot-reload (works only with Uno's debugger)
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+				// If attached, forward the deltas to the debugger. This will only work for our own custom (mono-based) debugger.
+				// see https://github.com/mono/debugger-libs/blob/c0353072de4a6cd4813964a0536c48df3e9ceb4e/Mono.Debugger.Soft/Mono.Debugger.Soft/ModuleMirror.cs#L78
+				var m = new Uno.UI.RemoteControl.HotReload.Messages.HotReloadThruDebuggerMessage()
+				{
+					ModuleId = item.ModuleId.ToString(),
+					MetadataDelta = Convert.ToBase64String(item.MetadataDelta),
+					ILDelta = Convert.ToBase64String(item.ILDelta),
+					PdbBytes = item.PdbBytes != null ? Convert.ToBase64String(item.PdbBytes) : ""
+				};
+				rcClient?.SendMessage(m);
+			}
+			else
+			{
+				// Apply the deltas directly - this won't work when the debugger is attached
+				// see https://github.com/dotnet/runtime/blob/aca5f6bdd995919411448379aea3651eb1f68133/src/mono/mono/metadata/icall.c#L5505
+				System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, item.MetadataDelta, item.ILDelta, item.PdbBytes ?? ReadOnlySpan<byte>.Empty);
+			}
+		}
+		catch
+		{
+			// In case the (mono debugger) is not the one provided by Uno for VS Code
+		}
 	}
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Hot reload is only expected to work when trimming is disabled.")]
@@ -296,7 +324,7 @@ internal sealed class HotReloadAgent : IDisposable
 		{
 			foreach (var item in deltas)
 			{
-				ApplyUpdate(assembly, item);
+				ApplyUpdate(assembly, item, null);
 			}
 
 			_log("Deltas applied.");
