@@ -7,6 +7,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_Window
 {
+	[TestInitialize]
+	public void Init()
+	{
+		UnitTestsApp.App.EnsureApplication();
+	}
+
 	[TestMethod]
 	public void New_Window_Becomes_Current()
 	{
