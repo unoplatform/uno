@@ -12,6 +12,9 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
+using System.Threading.Tasks;
+using Uno.UI;
+using Windows.UI.Text;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -119,6 +122,7 @@ namespace Microsoft.UI.Xaml
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				InitializationCompleted();
+				PreloadFonts();
 
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
@@ -129,6 +133,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
+
+		private static void PreloadFonts()
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// WASM does the font preloading before removing the splash via PrefetchFonts.
+				return;
+			}
+			var _ = Uno.UI.Xaml.FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
+			_ = Uno.UI.Xaml.FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+		}
 	}
 
 	internal interface IApplicationEvents
