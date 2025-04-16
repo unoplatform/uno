@@ -1,6 +1,7 @@
 ﻿using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
 
@@ -14,9 +15,12 @@ internal partial class UnoSkiaAppDelegate : UIApplicationDelegate
 		SubscribeBackgroundNotifications();
 	}
 
-	public override void FinishedLaunching(UIApplication application)
+	public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 	{
+		this.LogDebug()?.LogDebug($"Application finished launching");
 		Application.Start(AppleUIKitHost.CreateAppAction);
+
+		return true;
 	}
 
 	private void SubscribeBackgroundNotifications()
@@ -46,12 +50,14 @@ internal partial class UnoSkiaAppDelegate : UIApplicationDelegate
 
 	private void OnLeavingBackground(NSNotification notification)
 	{
+		this.LogDebug()?.LogDebug($"Application leaving background");
 		Application.Current?.RaiseResuming();
 		Application.Current?.RaiseLeavingBackground(() => NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true));
 	}
 
 	private void OnActivated(NSNotification notification)
 	{
+		this.LogDebug()?.LogDebug($"Application activated");
 		NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 	}
 
