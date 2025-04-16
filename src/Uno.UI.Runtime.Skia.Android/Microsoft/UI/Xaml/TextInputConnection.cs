@@ -287,6 +287,29 @@ class TextInputConnection : BaseInputConnection
 				// PerformEditorAction((ImeAction)_editorInfo.ImeOptions & ImeAction.ImeMaskAction);
 				return false;
 			}
+			else if (evt.KeyCode == Keycode.Del)
+			{
+				// For cases where the backspace key is not handled by the system, we need to
+				// handle it ourselves. Also, useful for when using a hardware keyboard.
+				// related to: https://github.com/unoplatform/uno-private/issues/1121
+				int selStart = ClampIndexToEditable(Selection.GetSelectionStart(_editable));
+				int selEnd = ClampIndexToEditable(Selection.GetSelectionEnd(_editable));
+				if (selStart == selEnd && selStart > 0)
+				{
+					// Extend selection to left of the last character
+					selStart = TextUtils.GetOffsetBefore(_editable, selStart);
+				}
+
+				if (selEnd > selStart)
+				{
+					// Delete the selection.
+					SetSelection(selStart, selEnd);
+					_editable.Delete(selStart, selEnd);
+					return true;
+				}
+
+				return false;
+			}
 			else
 			{
 				// Enter a character.
@@ -311,6 +334,11 @@ class TextInputConnection : BaseInputConnection
 		return false;
 	}
 
+	private int ClampIndexToEditable(int index)
+	{
+		int clamped = Math.Max(0, Math.Min(_editable.Length(), index));
+		return clamped;
+	}
 
 	private bool HandleHorizontalMovement(bool isLeft, bool isShiftPressed)
 	{
