@@ -1618,7 +1618,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Unbound_FullFlyout()
+		public Task When_Unbound_FullFlyout_Any() =>
+			When_Unbound_FullFlyout_Impl(skiaFullScreen: false);
+
+		[ConditionalTest(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaMobile)]
+		[RunsOnUIThread]
+		public Task When_Unbound_FullFlyout_SkiaMobile() =>
+			// canvas for skia mobile is in absolute fullscreen, including area taken by status bar or bottom navigation bar.
+			When_Unbound_FullFlyout_Impl(skiaFullScreen: true);
+
+		private async Task When_Unbound_FullFlyout_Impl(bool skiaFullScreen)
 		{
 			var host = new Button
 			{
@@ -1674,10 +1683,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForLoaded(presenter);
 
 				var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				var expected = skiaFullScreen
+					? host.XamlRoot.Size
+					: new Size(bounds.Width, bounds.Height);
 
 				Assert.IsTrue(
 					presenter.ActualWidth >= bounds.Width && presenter.ActualHeight >= bounds.Height,
-					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, VisibleBounds={bounds.Width}x{bounds.Height}");
+					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, {(skiaFullScreen ? "XamlRoot.Bounds" : "VisibleBounds")}={expected.Width}x{expected.Height}");
 			}
 			finally
 			{
