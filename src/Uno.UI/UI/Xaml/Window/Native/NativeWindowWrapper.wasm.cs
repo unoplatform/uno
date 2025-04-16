@@ -48,8 +48,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 		WindowManagerInterop.WindowActivate();
 	}
 
-	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
-
 	public override string Title
 	{
 		get => NativeMethods.GetWindowTitle();
@@ -65,4 +63,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	public override void Move(PointInt32 position) => NativeMethods.MoveWindow(position.X, position.Y);
 
 	public override void Resize(SizeInt32 size) => NativeMethods.ResizeWindow(size.Width, size.Height);
+
+	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 }
