@@ -325,9 +325,6 @@ namespace Windows.UI.Input
 
 			private void NotifyUpdate()
 			{
-				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
-				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
-
 				var changeSet = StageChanges();
 				var pointerAdded = changeSet.ActivePointerCount > changeSet.ParentCommit.PointerCount;
 				var pointerRemoved = changeSet.ActivePointerCount < changeSet.ParentCommit.PointerCount;
@@ -336,7 +333,7 @@ namespace Windows.UI.Input
 				{
 					case ManipulationStatus.Starting when IsBeginningOfDragManipulation():
 						// On UWP if the element was configured to allow both Drag and Manipulations,
-						// both events are going to be raised (... until the drag "content" is being render an captures all pointers).
+						// both events are going to be raised (... until the drag "content" is being render and captures all pointers).
 						// This results as a manipulation started which is never completed.
 						// If user uses double touch the manipulation will however start and complete when user adds / remove the 2nd finger.
 						// On Uno, as allowing both Manipulations and drop on the same element is really a stretch case (and is bugish on UWP),
@@ -350,7 +347,9 @@ namespace Windows.UI.Input
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Started, _contacts.onStart));
 						break;
 
-					case ManipulationStatus.Starting when pointerAdded:
+					case ManipulationStatus.Starting when changeSet.ActivePointerCount > 1:
+						// When a second pointer is added while we are in starting state, we start the manipulation no mater the threshold!
+						// Note: We don't rely on the `pointerAdded` here as we didn't commit any changes yet!
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
