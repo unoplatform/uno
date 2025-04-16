@@ -39,6 +39,10 @@ namespace Windows.UI.Input
 				private readonly bool _isRotateInertiaEnabled;
 				private readonly bool _isScaleInertiaEnabled;
 
+				internal const double DefaultDesiredDisplacementDeceleration = .001;
+				internal const double DefaultDesiredRotationDeceleration = .0001;
+				internal const double DefaultDesiredExpansionDeceleration = .001;
+
 				// Those values can be customized by the application through the ManipInertiaStartingArgs.Inertia<Tr|Rot|Exp>Behavior
 				public double DesiredDisplacement = NaN;
 				public double DesiredDisplacementDeceleration = NaN;
@@ -112,15 +116,15 @@ namespace Windows.UI.Input
 					// Default values are **inspired** by https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#smooth-object-animation-using-the-velocity-and-deceleration-properties
 					if (IsNaN(DesiredDisplacementDeceleration))
 					{
-						DesiredDisplacementDeceleration = .001;
+						DesiredDisplacementDeceleration = DefaultDesiredDisplacementDeceleration;
 					}
 					if (IsNaN(DesiredRotationDeceleration))
 					{
-						DesiredRotationDeceleration = .0001;
+						DesiredRotationDeceleration = DefaultDesiredRotationDeceleration;
 					}
 					if (IsNaN(DesiredExpansionDeceleration))
 					{
-						DesiredExpansionDeceleration = .001;
+						DesiredExpansionDeceleration = DefaultDesiredExpansionDeceleration;
 					}
 				}
 

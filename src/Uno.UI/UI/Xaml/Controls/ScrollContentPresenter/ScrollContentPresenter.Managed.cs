@@ -361,14 +361,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var inertia = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
-			var v0 = (CanHorizontallyScroll && ExtentWidth > 0, CanVerticallyScroll && ExtentHeight > 0) switch
+			if (OperatingSystem.IsIOS())
 			{
-				(true, false) => args.Velocities.Linear.X,
-				(false, true) => args.Velocities.Linear.Y,
-				(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
-				_ => 0
-			};
-			inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+				var v0 = (CanHorizontallyScroll && ExtentWidth > 0, CanVerticallyScroll && ExtentHeight > 0) switch
+				{
+					(true, false) => args.Velocities.Linear.X,
+					(false, true) => args.Velocities.Linear.Y,
+					(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
+					_ => 0
+				};
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+			}
+			else if (OperatingSystem.IsAndroid())
+			{
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+			}
 
 			// We run animation scroll animations by our own, so we request to the inertia processor to give us info for the next few ms, and we start a composition scroll animation.
 			var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
