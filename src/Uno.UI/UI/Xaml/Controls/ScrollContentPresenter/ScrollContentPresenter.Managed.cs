@@ -304,7 +304,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
-				if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next) 
+				if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next)
 				{
 					_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
 
