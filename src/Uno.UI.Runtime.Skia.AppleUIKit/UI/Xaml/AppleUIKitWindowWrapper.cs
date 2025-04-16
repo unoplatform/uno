@@ -68,6 +68,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
+		this.LogDebug()?.LogDebug("Native window ShowCore");
 		_nativeWindow.MakeKeyAndVisible();
 		IsVisible = true;
 	}
