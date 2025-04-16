@@ -141,8 +141,9 @@ namespace Microsoft.UI.Xaml
 				// WASM does the font preloading before removing the splash via PrefetchFonts.
 				return;
 			}
-			var _ = Uno.UI.Xaml.FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
-			_ = Uno.UI.Xaml.FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+
+			var _ = Uno.UI.Xaml.FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+			_ = Uno.UI.Xaml.FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
 		}
 	}
 
