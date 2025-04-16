@@ -20,6 +20,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase, INativeWin
 	{
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
 	}
 
 	public override object NativeWindow => null;
