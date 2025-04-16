@@ -645,15 +645,16 @@ namespace Windows.UI.Input
 			}
 			#endregion
 
-			internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaNextTick()
+			internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaTickAligned(ref TimeSpan dueIn, out int ticks)
 			{
 				if (_inertia is null)
 				{
+					ticks = -1;
 					return null;
 				}
 
 				var current = _head.SumOfDelta;
-				var cumulative = _inertia.GetNextCumulative();
+				var cumulative = _inertia.GetCumulativeTickAligned(ref dueIn, out ticks);
 				var delta = ComputeDelta(current, cumulative);
 
 				return (delta, cumulative);
@@ -944,7 +945,7 @@ namespace Windows.UI.Input
 
 				public PointerPoint? Pointer2 = default;
 
-				public PointsState State { get; private set; } = new (
+				public PointsState State { get; private set; } = new(
 					pointer1.Timestamp,
 					pointer1.RawPosition, // RawPosition => cf. Note in UpdateComputedValues().
 					Distance: 0,

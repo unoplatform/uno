@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 		private ScrollOptions? _touchInertiaOptions;
+		private int _touchInertiaSkipTicks;
+		private static readonly TimeSpan _defaultTouchIndependentAnimationDuration = TimeSpan.FromMilliseconds(80); // Inertia processors is configured to be at 25 fps, with 80 we skip half of the ticks.
+		private static readonly TimeSpan _defaultTouchIndependentAnimationOverlap = TimeSpan.FromMilliseconds(5); // Duration of the animation to run after the expected next tick, to make sure we don't have a gap between animations.
 
 		private bool _canHorizontallyScroll;
 		public bool CanHorizontallyScroll
@@ -288,10 +291,23 @@ namespace Microsoft.UI.Xaml.Controls
 				// When inertia is running, we do not want to chain the scroll to the parent SV
 				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
-				if (_touchInertiaOptions is null // A scroll to has been requested (e.g. snap points?) - OR - inertia was not allowed in the InertiaStarting
-					|| args.Manipulation.GetInertiaNextTick() is not { } next) // Reached the end of the inertia
+				if (_touchInertiaOptions is null)
 				{
-					// If unhandledDelta not empty but the current SV is not able to handle the inertia, we abort it
+					// A scroll to has been requested (e.g. snap points?) - OR - inertia was not allowed in the InertiaStarting
+					recognizer.CompleteGesture();
+					return;
+				}
+
+				if (--_touchInertiaSkipTicks > 0)
+				{
+					return;
+				}
+
+				var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
+				if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next) 
+				{
+					_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
+
 					recognizer.CompleteGesture();
 					return;
 				}
