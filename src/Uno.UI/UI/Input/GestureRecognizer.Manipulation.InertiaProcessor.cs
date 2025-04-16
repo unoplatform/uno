@@ -237,7 +237,10 @@ namespace Windows.UI.Input
 				private double GetCompletionTime(double v0, double d)
 					=> Math.Abs(v0) / (2 * d);
 
-				private double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
+				internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
+					=> Math.Abs(v0) / (2 * durationMs);
+
+				private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
 				/// <inheritdoc />

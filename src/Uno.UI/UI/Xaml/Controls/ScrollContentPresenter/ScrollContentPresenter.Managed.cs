@@ -360,15 +360,23 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// As we run animation by our own, we request to have pretty long delay between ticks to avoid too many updates.
-			args.Manipulation.Inertia!.Interval = TimeSpan.FromMilliseconds(100);
+			var inertia = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
+			var v0 = (CanHorizontallyScroll && ExtentWidth > 0, CanVerticallyScroll && ExtentHeight > 0) switch
+			{
+				(true, false) => args.Velocities.Linear.X,
+				(false, true) => args.Velocities.Linear.Y,
+				(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
+				_ => 0
+			};
+			inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
 
-			// Once the Interval is set, we try to begin animation up to the next (i.e. first) tick
-			if (args.Manipulation.GetInertiaNextTick() is { } next)
+			// We run animation scroll animations by our own, so we request to the inertia processor to give us info for the next few ms, and we start a composition scroll animation.
+			var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
+			if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is { } next)
 			{
 				// First we configure custom scrolling options to match what we just configured on the processor
-				// Note: We configure animation to run a bit longer that a single tick to make sure to not have delay between animations
-				_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: TimeSpan.FromMilliseconds(105));
+				// Note: We configure animation to run a bit longer than tick to make sure to not have delay between animations
+				_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
 
 				// Then we start the animation
 				Set(
