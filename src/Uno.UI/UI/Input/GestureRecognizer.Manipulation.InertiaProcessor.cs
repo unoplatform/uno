@@ -90,15 +90,6 @@ namespace Windows.UI.Input
 				/// </remarks>
 				public TimeSpan Elapsed => _timer.LastTickElapsed;
 
-				/// <summary>
-				/// Gets or sets the interval between each tick of the inertia processor
-				/// </summary>
-				public TimeSpan Interval
-				{
-					get => _timer.Interval;
-					set => _timer.Interval = value;
-				}
-
 				private void CompleteConfiguration()
 				{
 					// Be aware this method will be invoked twice in case of GetNextCumulative().
@@ -171,15 +162,33 @@ namespace Windows.UI.Input
 					=> _cumulative0.Add(_inertiaCumulative);
 
 				/// <summary>
-				/// Gets the **expected** next cumulative delta, including the manipulation cumulative when this processor was started
+				/// Gets the **expected** cumulative delta at the tick expected close to the given time, including the manipulation cumulative when this processor was started.
 				/// </summary>
 				/// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
-				/// <returns></returns>
-				public ManipulationDelta GetNextCumulative()
+				public ManipulationDelta GetCumulativeTickAligned(ref TimeSpan dueIn, out int ticks)
 				{
 					CompleteConfiguration(); // Make sure to compute desired values in case this method is being invoked during the OnManipulationInertiaStarting event
 
-					var dueIn = _timer.Interval; // We ignore the time spent since last tick as it's irrelevant for usage of this method
+					var interval = _timer.Interval;
+					if (dueIn <= TimeSpan.Zero)
+					{
+						ticks = 1;
+						dueIn = interval;
+					}
+					else
+					{
+						var linearX = GetCompletionTime(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration);
+						var linearY = GetCompletionTime(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration);
+						var angular = GetCompletionTime(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration);
+						var expansion = GetCompletionTime(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration);
+
+						var maxTicks = Math.Max(linearX, Math.Max(linearY, Math.Max(angular, expansion))) * TimeSpan.TicksPerMillisecond;
+						var dueInTicks = Math.Min(dueIn.Ticks, maxTicks);
+
+						ticks = Math.Max(1, (int)Math.Round(dueInTicks / interval.Ticks));
+						dueIn = ticks * interval;
+					}
+
 					var inertiaCumulative = GetInertiaCumulative((_timer.LastTickElapsed + dueIn).TotalMilliseconds, _inertiaCumulative);
 
 					return _cumulative0.Add(inertiaCumulative);
@@ -221,6 +230,12 @@ namespace Windows.UI.Input
 
 				private bool IsCompleted(double v0, double d, double t)
 					=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
+
+				private double GetCompletionTime(bool enabled, double v0, double d)
+					=> enabled ? GetCompletionTime(v0, d) : 0;
+
+				private double GetCompletionTime(double v0, double d)
+					=> Math.Abs(v0) / (2 * d);
 
 				private double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
