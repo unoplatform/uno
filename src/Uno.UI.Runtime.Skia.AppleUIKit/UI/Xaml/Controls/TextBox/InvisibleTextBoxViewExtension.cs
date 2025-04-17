@@ -135,7 +135,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_owner.TextBox is { } textBox)
 		{
-			EnsureTextBoxView(textBox);
+			UpdateProperties();
 		}
 	}
 
