@@ -169,13 +169,17 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			try
 			{
-				if (Debugger.IsAttached && !_runningInsideVSCodeExtension)
+				if (Debugger.IsAttached)
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					// the work is done elsewhere but we don't want to report an error
+					if (!_runningInsideVSCodeExtension)
 					{
-						this.Log().Error("Hot Reload is not supported when the debugger is attached.");
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
+						}
+						_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 					}
-					_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 
 					return;
 				}
@@ -200,7 +204,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					};
 
 					_status.ConfigureSourceForNextOperation(HotReloadSource.DevServer);
-					_agent?.ApplyDeltas(new[] { delta }, _rcClient);
+					_agent?.ApplyDeltas(new[] { delta });
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
