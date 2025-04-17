@@ -88,9 +88,9 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(XamlRoot) :
+				null;
 			var focusedContainer = focusedElement as SelectorItem;
 
 			if (args.Key == VirtualKey.Enter ||
