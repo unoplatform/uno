@@ -108,26 +108,26 @@
 		<PackageReference Update="System.Formats.Asn1" Version="8.0.1" />
 		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
-		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
-		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
 
-		<PackageReference Update="HarfBuzzSharp" Version="$(HarfbuzzSharpVersion)" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="$(HarfbuzzSharpVersion)" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="$(HarfbuzzSharpVersion)" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfbuzzSharpVersion)" />
-		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="$(HarfbuzzSharpVersion)" />
-		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
+		<PackageReference Update="HarfBuzzSharp" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" NoWarn="NU5104" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
