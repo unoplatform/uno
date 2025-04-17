@@ -37,7 +37,7 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 #endif
 #if IS_RUNTIME_UI_TESTS
 	// https://github.com/unoplatform/uno/issues/9080
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
 #else
 	[Test]
 #endif
