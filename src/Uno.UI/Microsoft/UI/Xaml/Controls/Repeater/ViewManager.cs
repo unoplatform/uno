@@ -908,15 +908,19 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		void UpdateFocusedElement()
 		{
+			var owner = m_owner as UIElement;
 			UIElement focusedElement = null;
+			DependencyObject child = null;
 
-			var focusedObject = m_owner?.XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(m_owner.XamlRoot);
-			if (focusedObject is DependencyObject child)
+			var xamlRoot = owner?.XamlRoot;
+			if (xamlRoot is not null)
+			{
+				child = FocusManager.GetFocusedElement(xamlRoot) as DependencyObject;
+			}
+
+			if (child is not null)
 			{
 				var parent = CachedVisualTreeHelpers.GetParent(child);
-				var owner = (UIElement)m_owner;
 
 				// Find out if the focused element belongs to one of our direct
 				// children.
