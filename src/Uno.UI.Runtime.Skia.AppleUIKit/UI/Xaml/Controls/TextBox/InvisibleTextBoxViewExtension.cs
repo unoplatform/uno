@@ -29,6 +29,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// This happens when the managed TextBox receives Focus with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
+			if (!_textBoxView.IsFirstResponder)
+			{
+				_textBoxView.BecomeFirstResponder();
+			}
 			return;
 		}
 
