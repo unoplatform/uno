@@ -398,7 +398,7 @@ namespace Windows.UI.Input
 						}
 						break;
 
-					case ManipulationStatus.Starting when pointerRemoved:
+					case ManipulationStatus.Starting when pointerRemoved || changeSet.ActivePointerCount == 0:
 					case ManipulationStatus.Started when pointerRemoved:
 					// For now we complete the Manipulation as soon as a pointer was removed.
 					// This is not the UWP behavior where for instance you can scale multiple times by releasing only one finger.
