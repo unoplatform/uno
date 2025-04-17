@@ -324,11 +324,13 @@ class TextInputConnection : BaseInputConnection
 					EndBatchEdit();
 					return true;
 				}
-				else if (selStart == selEnd && selStart < _editable.Length())
+
+				if (selStart == selEnd && selStart < _editable.Length())
 				{
 					BeginBatchEdit();
 					_editable.Delete(selStart, selStart + 1);
 					EndBatchEdit();
+					return true;
 				}
 
 				return false;
