@@ -68,7 +68,7 @@ internal class X11AirspaceRenderHelper : IDisposable
 			using (new SKAutoCanvasRestore(maskCanvas, true))
 			{
 				maskCanvas.Clear(SKColor.Empty);
-				maskCanvas.ClipPath(path);
+				maskCanvas.ClipPath(path, operation: SKClipOperation.Intersect, antialias: true);
 				maskCanvas.Clear(SKColors.White);
 				maskCanvas.Flush();
 				_maskSurface.Snapshot();
