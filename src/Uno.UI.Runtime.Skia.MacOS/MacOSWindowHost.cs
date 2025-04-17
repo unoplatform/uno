@@ -305,7 +305,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
-			return FocusManager.GetFocusedElement() == null ? 0 : 1;
+			var root = window?._xamlRoot;
+			return root is null || FocusManager.GetFocusedElement(root) == null ? 0 : 1;
 		}
 		catch (Exception e)
 		{
