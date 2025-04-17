@@ -55,11 +55,5 @@ namespace Microsoft.UI.Xaml.Input
 		public InertiaTranslationBehavior TranslationBehavior { get; set; } // Ctor is internal, so we don't support external set!
 		public InertiaRotationBehavior RotationBehavior { get; set; } // Ctor is internal, so we don't support external set!
 		public InertiaExpansionBehavior ExpansionBehavior { get; set; } // Ctor is internal, so we don't support external set!
-
-		internal TimeSpan Interval
-		{
-			get => _processor.Interval;
-			set => _processor.Interval = value;
-		}
 	}
 }
