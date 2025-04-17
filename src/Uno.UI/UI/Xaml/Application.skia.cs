@@ -142,8 +142,8 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var _ = Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-			_ = Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
+			var _ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+			_ = FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
 		}
 	}
 
