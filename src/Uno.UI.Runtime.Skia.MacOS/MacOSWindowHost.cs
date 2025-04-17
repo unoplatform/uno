@@ -86,7 +86,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-				if (path is { })
+				if (!path.IsEmpty)
 				{
 					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, path.ToSvgPathData());
 				}
@@ -119,7 +119,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		// we can't cache anything since the texture will be different on next calls
-		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
+		using var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture));
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
 
 		surface.Canvas.Scale(scale, scale);
@@ -305,7 +305,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
-			return FocusManager.GetFocusedElement() == null ? 0 : 1;
+			var root = window?._xamlRoot;
+			return root is null || FocusManager.GetFocusedElement(root) == null ? 0 : 1;
 		}
 		catch (Exception e)
 		{

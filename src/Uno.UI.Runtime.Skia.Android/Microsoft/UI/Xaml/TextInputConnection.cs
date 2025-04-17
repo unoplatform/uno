@@ -303,8 +303,33 @@ class TextInputConnection : BaseInputConnection
 				if (selEnd > selStart)
 				{
 					// Delete the selection.
-					SetSelection(selStart, selEnd);
+					BeginBatchEdit();
 					_editable.Delete(selStart, selEnd);
+					EndBatchEdit();
+					return true;
+				}
+
+				return false;
+			}
+			// Handles the [DEL] key on virtual keyboards. Found on very few devices / keyboards.
+			else if (evt.KeyCode == Keycode.ForwardDel)
+			{
+				int selStart = ClampIndexToEditable(Selection.GetSelectionStart(_editable));
+				int selEnd = ClampIndexToEditable(Selection.GetSelectionEnd(_editable));
+
+				if (selStart < selEnd)
+				{
+					BeginBatchEdit();
+					_editable.Delete(selStart, selEnd);
+					EndBatchEdit();
+					return true;
+				}
+
+				if (selStart == selEnd && selStart < _editable.Length())
+				{
+					BeginBatchEdit();
+					_editable.Delete(selStart, selStart + 1);
+					EndBatchEdit();
 					return true;
 				}
 
