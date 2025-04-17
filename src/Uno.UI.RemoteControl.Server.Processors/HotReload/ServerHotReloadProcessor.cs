@@ -60,9 +60,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				case UpdateFile.Name:
 					await ProcessUpdateFile(frame.GetContent<UpdateFile>());
 					break;
-				case HotReloadThruDebuggerMessage.Name:
-					await ProcessHotReloadThruDebugger(frame.GetContent<HotReloadThruDebuggerMessage>());
-					break;
 			}
 		}
 
@@ -647,31 +644,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			await Notify(HotReloadEvent.ProcessingFiles, HotReloadEventSource.IDE);
 
 			return result.IsSuccess;
-		}
-		#endregion
-
-		#region HotReloadThruDebuggerMessage
-		private async Task<bool> ProcessHotReloadThruDebugger(HotReloadThruDebuggerMessage message)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug("Relaying Hot Reload message to IDE / debugger.");
-			}
-
-			try
-			{
-				var request = new HotReloadThruDebuggerIdeMessage(message.ModuleId, message.MetadataDelta, message.ILDelta, message.PdbBytes);
-				await _remoteControlServer.SendMessageToIDEAsync(request);
-				return true;
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().LogError(ex, "Failed to relay Hot Reload message to IDE / debugger.");
-				}
-				return false;
-			}
 		}
 		#endregion
 

@@ -9,12 +9,13 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public const string Name = nameof(ConfigureServer);
 		private Dictionary<string, string>? _msbuildPropertiesCache;
 
-		public ConfigureServer(string projectPath, string[] metadataUpdateCapabilities, bool enableMetadataUpdates, string[] msbuildPropertiesRaw)
+		public ConfigureServer(string projectPath, string[] metadataUpdateCapabilities, bool enableMetadataUpdates, string[] msbuildPropertiesRaw, bool enableHotReloadThruDebugger)
 		{
 			ProjectPath = projectPath;
 			MetadataUpdateCapabilities = metadataUpdateCapabilities;
 			MSBuildPropertiesRaw = msbuildPropertiesRaw;
 			EnableMetadataUpdates = enableMetadataUpdates;
+			EnableHotReloadThruDebugger = enableHotReloadThruDebugger;
 		}
 
 		public string ProjectPath { get; set; }
@@ -24,6 +25,8 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public string[] MetadataUpdateCapabilities { get; set; }
 
 		public bool EnableMetadataUpdates { get; set; }
+
+		public bool EnableHotReloadThruDebugger { get; set; }
 
 		public string Scope => WellKnownScopes.HotReload;
 
