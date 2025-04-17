@@ -811,7 +811,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				// We avoid using SKTextBlob on WASM as it can cause WebGL errors that lead to text not being
 				// rendered. This only happens with SkiaSharp 3
-				if (OperatingSystem.IsBrowser() && !FeatureConfiguration.Rendering.AvoidSKTextBlobOnSkiaWasm)
+				if (OperatingSystem.IsBrowser() && FeatureConfiguration.Rendering.AvoidSKTextBlobOnSkiaWasm)
 				{
 					int index = 0;
 					// Using pointers here is to get around safety measures that prevent using by-ref objects like spans
