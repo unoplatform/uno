@@ -31,10 +31,10 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 		=> RunTest("_singleSelection_noClick", clicked: false);
 
 	[AutoRetry]
-#if !__SKIA__ // Mouse test on skia is flaky 
 	[InjectedPointer(PointerDeviceType.Touch)]
-#endif
+#if !__SKIA__ // Mouse test on skia is flaky 
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#endif
 #if IS_RUNTIME_UI_TESTS
 	// https://github.com/unoplatform/uno/issues/9080
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
