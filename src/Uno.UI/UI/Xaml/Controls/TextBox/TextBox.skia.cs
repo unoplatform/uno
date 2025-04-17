@@ -162,7 +162,13 @@ public partial class TextBox
 		_currentlyTyping = newValue;
 	}
 
-	partial void OnUnloadedPartial() => _timer.Stop();
+	partial void OnUnloadedPartial()
+	{
+		_timer.Stop();
+        _selectionStartThumbfulCaret?.Hide();
+        _selectionEndThumbfulCaret?.Hide();
+        CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
