@@ -124,9 +124,9 @@ namespace Microsoft.UI.Xaml
 			{
 				if (FocusManager.GetFocusedElement(xamlRoot) is not FrameworkElement element)
 				{
-					element = WinUICoreServices.Instance.VisualRoot;
+					element = WinUICoreServices.Instance.VisualRoot as FrameworkElement;
 				}
-
+	
 				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 				{
 					CanBubbleNatively = false,
