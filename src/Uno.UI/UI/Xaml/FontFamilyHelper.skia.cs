@@ -8,9 +8,8 @@ using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Media;
 
-namespace Uno.UI.Xaml;
+namespace Uno.UI.Xaml.Media;
 
 public static partial class FontFamilyHelper
 {
