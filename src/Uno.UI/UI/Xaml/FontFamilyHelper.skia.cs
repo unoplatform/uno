@@ -8,10 +8,11 @@ using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Media;
 
-namespace Uno.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml;
 
-public static partial class FontFamilyHelper
+internal static partial class FontFamilyHelper
 {
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
