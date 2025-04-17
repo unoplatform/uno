@@ -383,9 +383,15 @@ public partial class Window : UIWindow
 		{
 			// Get the actual focused element in case the element gets its focus programmatically, rather than a hit test
 			var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+   			UIView? view = null;
 			if (xamlRoot is not null)
 			{
-				var view = FocusManager.GetFocusedElement(xamlRoot) as UIView ?? _focusedView;
+				view = FocusManager.GetFocusedElement(xamlRoot) as UIView;
+			}
+			view ??= _focusedView;
+
+   			if (view is not null)
+	  		{
 				MakeVisible(view, FocusedViewBringIntoViewOnKeyboardOpensMode, useForcedAnimation: isOpeningKeyboard);
 			}
 		}
