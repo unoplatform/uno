@@ -713,9 +713,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Only handle the up/down keys when focus is on the more/expand button.
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(xamlRoot) :
+				null;
 			if (m_tpExpandButton == focusedElement)
 			{
 				bool isOpen = IsOpen;
@@ -760,9 +760,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ShiftFocusVerticallyInOverflow(bool topToBottom, bool allowFocusWrap = true)
 		{
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElement = XamlRoot is { } xamlRoot ?
+				FocusManager.GetFocusedElement(xamlRoot) :
+				null;
 			DependencyObject? referenceElement = null;
 
 			if (topToBottom)
@@ -815,9 +815,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// focus is currently on the first/last item depending on direction.
 			if (!shouldFocusLeaveOverflow)
 			{
-				var focusedElement = XamlRoot is null ?
-					FocusManager.GetFocusedElement() :
-					FocusManager.GetFocusedElement(XamlRoot);
+				var focusedElement = XamlRoot is { } xamlRoot ?
+					FocusManager.GetFocusedElement(xamlRoot) :
+					null;
 				DependencyObject? referenceElement = null;
 
 				if (isShiftKeyPressed)
@@ -1047,9 +1047,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Determine whether we should shift focus horizontally.
 			if (m_tpContentControl is { })
 			{
-				var focusedElement = XamlRoot is null ?
-					FocusManager.GetFocusedElement() :
-					FocusManager.GetFocusedElement(XamlRoot);
+				var focusedElement = XamlRoot is { } xamlRoot ?
+					FocusManager.GetFocusedElement(XamlRoot) :
+					null;
 
 				// Don't do it if focus is in the custom content area.
 				var isChildOfContentControl = m_tpContentControl.IsAncestorOf(focusedElement as DependencyObject);
