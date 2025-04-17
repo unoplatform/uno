@@ -39,6 +39,10 @@ namespace Windows.UI.Input
 				private readonly bool _isRotateInertiaEnabled;
 				private readonly bool _isScaleInertiaEnabled;
 
+				internal const double DefaultDesiredDisplacementDeceleration = .001;
+				internal const double DefaultDesiredRotationDeceleration = .0001;
+				internal const double DefaultDesiredExpansionDeceleration = .001;
+
 				// Those values can be customized by the application through the ManipInertiaStartingArgs.Inertia<Tr|Rot|Exp>Behavior
 				public double DesiredDisplacement = NaN;
 				public double DesiredDisplacementDeceleration = NaN;
@@ -90,15 +94,6 @@ namespace Windows.UI.Input
 				/// </remarks>
 				public TimeSpan Elapsed => _timer.LastTickElapsed;
 
-				/// <summary>
-				/// Gets or sets the interval between each tick of the inertia processor
-				/// </summary>
-				public TimeSpan Interval
-				{
-					get => _timer.Interval;
-					set => _timer.Interval = value;
-				}
-
 				private void CompleteConfiguration()
 				{
 					// Be aware this method will be invoked twice in case of GetNextCumulative().
@@ -121,15 +116,15 @@ namespace Windows.UI.Input
 					// Default values are **inspired** by https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#smooth-object-animation-using-the-velocity-and-deceleration-properties
 					if (IsNaN(DesiredDisplacementDeceleration))
 					{
-						DesiredDisplacementDeceleration = .001;
+						DesiredDisplacementDeceleration = DefaultDesiredDisplacementDeceleration;
 					}
 					if (IsNaN(DesiredRotationDeceleration))
 					{
-						DesiredRotationDeceleration = .0001;
+						DesiredRotationDeceleration = DefaultDesiredRotationDeceleration;
 					}
 					if (IsNaN(DesiredExpansionDeceleration))
 					{
-						DesiredExpansionDeceleration = .001;
+						DesiredExpansionDeceleration = DefaultDesiredExpansionDeceleration;
 					}
 				}
 
@@ -171,15 +166,33 @@ namespace Windows.UI.Input
 					=> _cumulative0.Add(_inertiaCumulative);
 
 				/// <summary>
-				/// Gets the **expected** next cumulative delta, including the manipulation cumulative when this processor was started
+				/// Gets the **expected** cumulative delta at the tick expected close to the given time, including the manipulation cumulative when this processor was started.
 				/// </summary>
 				/// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
-				/// <returns></returns>
-				public ManipulationDelta GetNextCumulative()
+				public ManipulationDelta GetCumulativeTickAligned(ref TimeSpan dueIn, out int ticks)
 				{
 					CompleteConfiguration(); // Make sure to compute desired values in case this method is being invoked during the OnManipulationInertiaStarting event
 
-					var dueIn = _timer.Interval; // We ignore the time spent since last tick as it's irrelevant for usage of this method
+					var interval = _timer.Interval;
+					if (dueIn <= TimeSpan.Zero)
+					{
+						ticks = 1;
+						dueIn = interval;
+					}
+					else
+					{
+						var linearX = GetCompletionTime(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration);
+						var linearY = GetCompletionTime(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration);
+						var angular = GetCompletionTime(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration);
+						var expansion = GetCompletionTime(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration);
+
+						var maxTicks = Math.Max(linearX, Math.Max(linearY, Math.Max(angular, expansion))) * TimeSpan.TicksPerMillisecond;
+						var dueInTicks = Math.Min(dueIn.Ticks, maxTicks);
+
+						ticks = Math.Max(1, (int)Math.Round(dueInTicks / interval.Ticks));
+						dueIn = ticks * interval;
+					}
+
 					var inertiaCumulative = GetInertiaCumulative((_timer.LastTickElapsed + dueIn).TotalMilliseconds, _inertiaCumulative);
 
 					return _cumulative0.Add(inertiaCumulative);
@@ -192,7 +205,7 @@ namespace Windows.UI.Input
 					var angular = GetValue(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration, t, previousCumulative.Rotation);
 					var expansion = GetValue(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration, t, previousCumulative.Expansion);
 
-					var scale = _isScaleInertiaEnabled ? (_owner._origins.Distance + expansion) / _owner._origins.Distance : 1;
+					var scale = _isScaleInertiaEnabled ? (_owner._origins.State.Distance + expansion) / _owner._origins.State.Distance : 1;
 
 					var delta = new ManipulationDelta
 					{
@@ -222,7 +235,16 @@ namespace Windows.UI.Input
 				private bool IsCompleted(double v0, double d, double t)
 					=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
 
-				private double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
+				private double GetCompletionTime(bool enabled, double v0, double d)
+					=> enabled ? GetCompletionTime(v0, d) : 0;
+
+				private double GetCompletionTime(double v0, double d)
+					=> Math.Abs(v0) / (2 * d);
+
+				internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
+					=> Math.Abs(v0) / (2 * durationMs);
+
+				private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
 				/// <inheritdoc />
