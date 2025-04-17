@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml
 				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
 			}
 
-			var xamlRoot = Window.InitialWindow?.Content?.XamlRoot;
+			var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
 
 			try
 			{
