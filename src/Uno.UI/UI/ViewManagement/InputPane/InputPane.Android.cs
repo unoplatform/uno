@@ -24,7 +24,15 @@ namespace Windows.UI.ViewManagement
 		{
 			_padScrollContentPresenter?.Dispose(); // Restore padding
 
-			if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
+			var initialWindow = Window.InitialWindow;
+			if (initialWindow is null)
+			{
+				return;
+			}
+
+			var xamlRoot = initialWindow.Content?.XamlRoot;
+
+			if (xamlRoot is not null && Visible && FocusManager.GetFocusedElement(xamlRoot) is UIElement focusedElement)
 			{
 				if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
 				{
