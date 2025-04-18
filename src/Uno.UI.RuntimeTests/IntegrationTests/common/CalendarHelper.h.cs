@@ -375,11 +375,8 @@ namespace Private.Infrastructure
 
 		internal static void CheckFocusedItem()
 		{
-#if WINAPPSDK
-			var item = FocusManager.GetFocusedElement();
-#else
 			var item = FocusManager.GetFocusedElement((TestServices.WindowHelper.WindowContent as UIElement)?.XamlRoot);
-#endif
+
 			TestServices.LOG_OUTPUT("Type of focused item is: %s", item.GetType().FullName);
 			var itemAsFE = (FrameworkElement)(item);
 			if (itemAsFE is { })
