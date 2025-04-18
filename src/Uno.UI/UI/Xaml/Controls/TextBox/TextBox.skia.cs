@@ -165,9 +165,9 @@ public partial class TextBox
 	partial void OnUnloadedPartial()
 	{
 		_timer.Stop();
-        _selectionStartThumbfulCaret?.Hide();
-        _selectionEndThumbfulCaret?.Hide();
-        CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		_selectionStartThumbfulCaret?.Hide();
+		_selectionEndThumbfulCaret?.Hide();
+		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
