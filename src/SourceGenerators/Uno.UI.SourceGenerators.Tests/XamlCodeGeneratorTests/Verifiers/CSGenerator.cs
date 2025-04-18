@@ -253,7 +253,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 			public TestBase AddGeneratedSources()
 			{
 				var expectedPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
-				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
+				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames().OrderBy(r => r))
 				{
 					if (!resourceName.StartsWith(expectedPrefix))
 					{
