@@ -27,7 +27,7 @@ To create an Uno Platform app:
     > For a detailed overview of the Uno Platform project template wizard and all its options, see [this](xref:Uno.GettingStarted.UsingWizard).
 
     > [!NOTE]
-    > Skia rendering is now the default rendering engine in Uno Platform templates. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
+    > Starting with Uno.Sdk 6.0, Skia rendering is now the default rendering engine in Uno Platform templates. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
 
     ![Uno Platform Template Wizard - renderer options](getting-started/wizard/assets/renderer.png)
 
