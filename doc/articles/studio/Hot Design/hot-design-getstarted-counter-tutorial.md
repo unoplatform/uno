@@ -1,5 +1,5 @@
 ---
-uid: Uno.HotDesign.GetStarted.CounterTutorial
+uid: Uno.Studio.HotDesign.GetStarted.CounterTutorial
 ---
 
 # Create a Counter App with Hot Design®
@@ -25,8 +25,8 @@ This tutorial will guide you through using Hot Design to create a simple counter
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
+> - Hot Design relies on [Hot Reload](xref:Uno.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Studio.HotReload.Features#supported-features-per-os) before testing.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Studio.Feedback).
 
 ## Set Up Your Environment for Hot Design
 
@@ -93,7 +93,7 @@ The template will create a solution with a single cross-platform project, named 
 ### [Command Line](#tab/cli)
 
 > [!NOTE]
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](https://aka.platform.uno/dotnet-new-templates).
+> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 

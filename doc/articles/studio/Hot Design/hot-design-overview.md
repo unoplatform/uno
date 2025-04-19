@@ -1,5 +1,5 @@
 ---
-uid: Uno.HotDesign.Overview
+uid: Uno.Studio.HotDesign.Overview
 ---
 
 # Hot Design® Overview
@@ -9,8 +9,8 @@ uid: Uno.HotDesign.Overview
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
+> - Hot Design relies on [Hot Reload](xref:Uno.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Studio.HotReload.Features) before testing.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Studio.Feedback).
 
 Welcome to **Hot Design**, a next-generation runtime visual designer for cross-platform .NET applications!
 
@@ -20,11 +20,11 @@ Welcome to **Hot Design**, a next-generation runtime visual designer for cross-p
 
 **Hot Design** transforms your live, running app into a real-time visual designer that works with any IDE on any OS. It allows you to make UI changes on the fly without restarting your app or losing state, while seamlessly synchronizing your XAML code and visual designs.
 
-In addition, [Hot Reload](xref:Uno.Features.HotReload) works seamlessly with **Hot Design**, allowing you to see UI changes instantly without rebuilding your app. This boosts productivity, reduces iteration time, and provides real-time feedback for both visual and functional tweaks in your UI. Hot Reload also includes a visual indicator to help you monitor changes as you develop, further enhancing your workflow.
+In addition, [Hot Reload](xref:Uno.Studio.HotReload.Overview) works seamlessly with **Hot Design**, allowing you to see UI changes instantly without rebuilding your app. This boosts productivity, reduces iteration time, and provides real-time feedback for both visual and functional tweaks in your UI. Hot Reload also includes a visual indicator to help you monitor changes as you develop, further enhancing your workflow.
 
 **Hot Design** is part of the **Uno Platform Studio**, a suite of tools designed to streamline your cross-platform app development and boost productivity.
 
-[➜ Learn more about Uno Platform Studio](xref:Uno.Platform.Studio.Overview)
+[➜ Learn more about Uno Platform Studio](xref:Uno.Studio.Overview)
 
 ### Key Features
 
@@ -54,8 +54,8 @@ By simplifying UI development and accelerating your workflow, **Hot Design** hel
 
 ## Next Steps
 
-- **[Get Started Guide](xref:Uno.HotDesign.GetStarted.Guide)**
+- **[Get Started Guide](xref:Uno.Studio.HotDesign.GetStarted.Guide)**
   Getting started with setting up **Hot Design** and exploring the key areas and features of the visual designer it offers.
 
-- **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**
+- **[Counter App Tutorial](xref:Uno.Studio.HotDesign.GetStarted.CounterTutorial)**
   A hands-on walkthrough for building the [Counter App](xref:Uno.Workshop.Counter) using **Hot Design**, showcasing its features and workflow in action.
