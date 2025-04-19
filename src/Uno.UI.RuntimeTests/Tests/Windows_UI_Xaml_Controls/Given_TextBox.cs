@@ -29,6 +29,8 @@ using Windows.UI.Input.Preview.Injection;
 using Windows.Foundation;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Windows.UI.ViewManagement;
+using Private.Infrastructure;
 
 
 #if WINAPPSDK
@@ -1025,6 +1027,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
 			textBox.ActualHeight.Should().BeApproximately(textBox.MinHeight, 0.1);
 		}
+
+#if HAS_UNO
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Focus_Immediately()
+		{
+			var inputPaneShown = false;
+			void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+			{
+				inputPaneShown = !args.OccludedRect.IsEmpty;
+			}
+			try
+			{
+				InputPane.GetForCurrentView().Showing += Given_TextBox_Showing;
+				var textBox = new TextBox();
+				textBox.MaxLength = 10;
+				TestServices.WindowHelper.WindowContent = textBox;
+				textBox.Focus(FocusState.Pointer);
+				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => inputPaneShown);
+			}
+			finally
+			{
+				InputPane.GetForCurrentView().Showing -= Given_TextBox_Showing;
+			}
+		}
+#endif
+
+		private void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args) => throw new NotImplementedException();
 
 		[TestMethod]
 		public async Task When_Size_Zero_Default()

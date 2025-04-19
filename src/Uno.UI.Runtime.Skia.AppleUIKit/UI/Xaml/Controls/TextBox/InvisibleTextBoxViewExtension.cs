@@ -25,10 +25,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	public void StartEntry()
 	{
 		// StartEntry can be called twice without any EndEntry.
-		// So,  do nothing if we already have non-null _nativeEditText.
-		// This happens when the managed TextBox receives Focus with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
+		// This happens when the managed TextBox receives Focus
+		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
+			if (!_textBoxView.IsFirstResponder)
+			{
+				_textBoxView.BecomeFirstResponder();
+			}
 			return;
 		}
 
@@ -135,7 +139,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_owner.TextBox is { } textBox)
 		{
-			EnsureTextBoxView(textBox);
+			UpdateProperties();
 		}
 	}
 
