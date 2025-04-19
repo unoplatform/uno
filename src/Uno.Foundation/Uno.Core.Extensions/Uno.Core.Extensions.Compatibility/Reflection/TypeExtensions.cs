@@ -35,10 +35,12 @@ namespace Uno.Extensions
 		}
 
 #if WINAPPSDK || WINPRT || XAMARIN
+#pragma warning disable IL2070
 		public static IEnumerable<ConstructorInfo> GetConstructors(this TypeInfo type)
 		{
 			return type.DeclaredConstructors;
 		}
+#pragma warning restore IL2070
 #endif
 
 #if !WINAPPSDK

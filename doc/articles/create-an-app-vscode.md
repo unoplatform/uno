@@ -87,7 +87,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next, click on the target framework to select `net9.0-browserwasm | Debug`
+1. Next, click on the target framework to select `net10.0-browserwasm | Debug`
 
 ![status bar](Assets/quick-start/vs-code-browserwasm-project.png)
 
@@ -105,7 +105,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo, ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-desktop | Debug`
+1. Next click on the target framework to select `net10.0-desktop | Debug`
 
 ![status bar](Assets/quick-start/vs-code-desktop-project.png)
 
@@ -151,7 +151,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-android | Debug`
+1. Next click on the target framework to select `net10.0-android | Debug`
 1. Then select the device to debug with. You will need to connect an Android device or [create an Android emulator](https://developer.android.com/studio/run/managing-avds).
 
 ![status bar](Assets/quick-start/vs-code-android-project.png)
@@ -173,7 +173,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-ios | Debug`
+1. Next click on the target framework to select `net10.0-ios | Debug`
 1. Then select the device to debug with. You will need to connect an iOS device or [use an installed iOS simulator](https://developer.apple.com/documentation/xcode/installing-additional-simulator-runtimes).
 
 ![status bar](Assets/quick-start/vs-code-ios-project.png)
@@ -198,7 +198,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-maccatalyst | Debug`
+1. Next click on the target framework to select `net10.0-maccatalyst | Debug`
 1. The `This Mac` device will be pre-selected. On Apple Silicon (arm64) Macs you will have the option to use `This Mac using Rosetta` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-maccatalyst-project.png)
@@ -220,7 +220,7 @@ In VS Code :
 In the status bar :
 
 1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-windows10.0.xxxxx | Debug`
+1. Next click on the target framework to select `net10.0-windows10.0.xxxxx | Debug`
 1. The `This Computer` device will be pre-selected. On ARM64-based computers, you will have the option to use `This Computer using emulation` to debug `x64` applications
 
 ![status bar](Assets/quick-start/vs-code-windows-project.png)
