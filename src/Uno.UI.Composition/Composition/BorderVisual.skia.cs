@@ -132,7 +132,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
 			if (_backgroundClip?.GetClipPath(this) is { } bgClip)
 			{
-				session.Canvas.ClipPath(bgClip);
+				session.Canvas.ClipPath(bgClip, SKClipOperation.Intersect, true);
 			}
 			backgroundShape.Render(in session);
 			session.Canvas.Restore();
