@@ -135,13 +135,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 
-	public void UpdateNativeView()
-	{
-		if (_owner.TextBox is { } textBox)
-		{
-			UpdateProperties();
-		}
-	}
+	public void UpdateNativeView() => UpdateProperties();
 
 	public void UpdateProperties()
 	{
