@@ -117,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
 		public async Task When_RepeatForever_ShouldLoop() // Flaky - #9080
 		{
 			async Task Do()

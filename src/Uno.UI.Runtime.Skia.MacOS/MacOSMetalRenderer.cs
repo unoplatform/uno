@@ -27,23 +27,4 @@ internal static class MacOSMetalRenderer
 		}
 		return context;
 	}
-
-	private static readonly ConstructorInfo? _rt = typeof(GRBackendRenderTarget).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, [typeof(nint), typeof(bool)], null);
-
-	public static unsafe GRBackendRenderTarget? CreateTarget(GRContext context, double nativeWidth, double nativeHeight, nint texture)
-	{
-		// note: size is doubled for retina displays
-		var info = new GRMtlTextureInfoNative() { Texture = texture };
-		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, &info);
-		if (nt == IntPtr.Zero)
-		{
-			if (typeof(MacOSMetalRenderer).Log().IsEnabled(LogLevel.Error))
-			{
-				typeof(MacOSMetalRenderer).Log().Error("Failed to initialize Skia with Metal backend.");
-			}
-			return null;
-		}
-		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
-		return (GRBackendRenderTarget)_rt?.Invoke(new object[] { nt, true })!;
-	}
 }

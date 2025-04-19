@@ -30,6 +30,21 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
+	</ItemGroup>
+	
+	<ItemGroup Condition="
+			   (
+				   $(UnoFeatures.Contains(';lottie;')) 
+				   OR $(UnoFeatures.Contains(';svg;')) 
+				   OR $(UnoFeatures.Contains(';material;')) 
+				   OR $(UnoFeatures.Contains(';cupertino;'))
+			   )
+			   AND $(UnoFeatures.Contains(';skiarenderer;'))">
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
+	</ItemGroup>
+
 	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
 
 		<!-- Include Wasm+DOM runtime only when requested or if the Wasm+Skia renderer is disabled -->

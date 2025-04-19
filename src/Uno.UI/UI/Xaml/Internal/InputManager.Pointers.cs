@@ -189,7 +189,7 @@ partial class InputManager
 			// but Uno does not have it on all targets yet.
 			var focusedElement = _inputManager.ContentRoot.XamlRoot is { } xamlRoot
 				? FocusManager.GetFocusedElement(xamlRoot)
-				: FocusManager.GetFocusedElement();
+				: null;
 			if (!isHandled // so isAfterHandledUp is false!
 				&& _canUnFocusOnNextLeftPointerRelease
 				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased

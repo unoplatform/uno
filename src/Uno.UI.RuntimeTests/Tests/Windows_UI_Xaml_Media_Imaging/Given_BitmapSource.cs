@@ -192,6 +192,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await WindowHelper.WaitFor(() => imageOpened);
 		}
 
+#if __SKIA__
+		[Ignore("Flaky for skia targets: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		[TestMethod]
 		public async Task When_Uri_Nullified()
 		{

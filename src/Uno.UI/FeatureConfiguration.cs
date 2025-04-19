@@ -863,6 +863,13 @@ namespace Uno.UI
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// On skia/wasm, this toggles whether we use SKTextBlob and SKTextBlobBuilder to render text.
+			/// If true, we instead use SKFont.GetGlyphPaths to get the paths to be drawn and draw them like
+			/// any other path. This avoids bugs in skia's WebGL implementation.
+			/// </summary>
+			public static bool AvoidSKTextBlobOnSkiaWasm { get; set; } = true;
 		}
 
 		public static class DependencyProperty

@@ -236,7 +236,15 @@ public partial class TextBox
 						_lastEndCaretRect = null;
 					};
 
-					inlines.DrawingFinished += UpdateFlyoutPosition;
+					inlines.DrawingFinished += () =>
+					{
+						// Only invalidate the carets after drawing is complete
+						// to avoid modifying the children visuals while they are being enumerated.
+						NativeDispatcher.Main.Enqueue(() =>
+						{
+							UpdateFlyoutPosition();
+						}, NativeDispatcherPriority.Normal);
+					};
 
 					inlines.CaretFound += args =>
 					{

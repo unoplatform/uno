@@ -32,10 +32,12 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
+#if !__SKIA__ // Mouse test on skia is flaky 
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#endif
 #if IS_RUNTIME_UI_TESTS
 	// https://github.com/unoplatform/uno/issues/9080
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaIOS)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
 #else
 	[Test]
 #endif

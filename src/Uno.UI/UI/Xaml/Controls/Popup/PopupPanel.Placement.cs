@@ -128,15 +128,15 @@ partial class PopupPanel
 		return popup.PlacementTarget.GetBoundsRectRelativeTo(this);
 	}
 
-	protected virtual Rect CalculatePopupPlacement(Popup popup, Size desiredSize, Size maxSize)
+	protected virtual Rect CalculatePopupPlacement(Popup popup, Size childDesiredSize, Size maxSize)
 	{
 		var anchorRect = GetAnchorRect(popup);
 
 		var visibleBounds = GetVisibleBounds();
 
 		// Make sure the desiredSize fits in the panel
-		desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
-		desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
+		childDesiredSize.Width = Math.Min(childDesiredSize.Width, visibleBounds.Width);
+		childDesiredSize.Height = Math.Min(childDesiredSize.Height, visibleBounds.Height);
 
 		// Try all placements...
 		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(popup.DesiredPlacement, FullPlacementRequested);
@@ -146,13 +146,13 @@ partial class PopupPanel
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
+			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for childDesiredSize={childDesiredSize}, maxSize={maxSize}");
 		}
 
 		var halfAnchorWidth = anchorRect.Width / 2;
 		var halfAnchorHeight = anchorRect.Height / 2;
-		var halfChildWidth = desiredSize.Width / 2;
-		var halfChildHeight = desiredSize.Height / 2;
+		var halfChildWidth = childDesiredSize.Width / 2;
+		var halfChildHeight = childDesiredSize.Height / 2;
 
 		var finalRect = default(Rect);
 
@@ -167,7 +167,7 @@ partial class PopupPanel
 				case FlyoutBase.MajorPlacementMode.Top:
 					finalPosition = new Point(
 						x: anchorRect.Left + halfAnchorWidth - halfChildWidth + popup.HorizontalOffset,
-						y: anchorRect.Top - PopupPlacementTargetMargin - desiredSize.Height + popup.VerticalOffset);
+						y: anchorRect.Top - PopupPlacementTargetMargin - childDesiredSize.Height + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Bottom:
 					finalPosition = new Point(
@@ -176,7 +176,7 @@ partial class PopupPanel
 					break;
 				case FlyoutBase.MajorPlacementMode.Left:
 					finalPosition = new Point(
-						x: anchorRect.Left - PopupPlacementTargetMargin - desiredSize.Width + popup.HorizontalOffset,
+						x: anchorRect.Left - PopupPlacementTargetMargin - childDesiredSize.Width + popup.HorizontalOffset,
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Right:
@@ -185,41 +185,51 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
-#if !__APPLE_UIKIT__
-					desiredSize = visibleBounds.Size
+#if __SKIA__
+					// For skia-ios/droid, we let the flyout to occupy the entire area available,
+					// as dictated by the root skia-canvas. This extends into status bar, and bottom bar if present.
+					childDesiredSize = m_unclippedDesiredSize
+#elif !__APPLE_UIKIT__
+					childDesiredSize = visibleBounds.Size
 #else
 					// The mobile status bar should always remain visible.
 					// On droid, this panel is placed beneath the status bar.
 					// On iOS, this panel will cover the status bar, so we have to substract it out.
-					desiredSize = new Size(ActualWidth, ActualHeight)
+					childDesiredSize = new Size(ActualWidth, ActualHeight)
 						.Subtract(0, visibleBounds.Y)
 #endif
 						.AtMost(maxSize);
 					finalPosition = new Point(
-						x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
-						y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight));
+#if __SKIA__
+						x: FindOptimalOffset(childDesiredSize.Width, visibleBounds.X, visibleBounds.Width, (Parent as FrameworkElement)?.ActualWidth ?? ActualWidth),
+						y: FindOptimalOffset(childDesiredSize.Height, visibleBounds.Y, visibleBounds.Height, (Parent as FrameworkElement)?.ActualHeight ?? ActualHeight)
+#else
+						x: FindOptimalOffset(childDesiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
+						y: FindOptimalOffset(childDesiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight)
+#endif
+					);
 
-					double FindOptimalOffset(double length, double visibleOffset, double visibleLength, double constraint)
+					double FindOptimalOffset(double desired, double visibleOffset, double visibleLength, double constraint)
 					{
 						// Center the flyout inside the first area that fits: within visible bounds, below status bar, the screen
-						if (visibleLength >= length)
+						if (visibleLength >= desired)
 						{
-							return visibleOffset + (visibleLength - length) / 2;
+							return visibleOffset + (visibleLength - desired) / 2;
 						}
-						if (constraint - visibleOffset >= length)
+						if (constraint - visibleOffset >= desired)
 						{
-							return visibleOffset + ((constraint - visibleOffset) - length) / 2;
+							return visibleOffset + ((constraint - visibleOffset) - desired) / 2;
 						}
 						else
 						{
-							return (constraint - length) / 2;
+							return constraint == 0 ? 0 : (constraint - desired) / 2;
 						}
 					}
 					break;
 				default: // Other unsupported placements
 					finalPosition = new Point(
-						x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-						y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+						x: (visibleBounds.Width - childDesiredSize.Width) / 2.0,
+						y: (visibleBounds.Height - childDesiredSize.Height) / 2.0);
 					break;
 			}
 
@@ -233,7 +243,7 @@ partial class PopupPanel
 					fits = TestAndCenterAlignWithinLimits(
 						anchorRect.X,
 						anchorRect.Width,
-						desiredSize.Width,
+						childDesiredSize.Width,
 						visibleBounds.Left,
 						visibleBounds.Right,
 						justification,
@@ -246,7 +256,7 @@ partial class PopupPanel
 					fits = TestAndCenterAlignWithinLimits(
 						anchorRect.Y,
 						anchorRect.Height,
-						desiredSize.Height,
+						childDesiredSize.Height,
 						visibleBounds.Top,
 						visibleBounds.Bottom,
 						justification,
@@ -256,7 +266,7 @@ partial class PopupPanel
 				}
 			}
 
-			finalRect = new Rect(finalPosition, desiredSize);
+			finalRect = new Rect(finalPosition, childDesiredSize);
 
 			if (fits && RectHelper.Union(visibleBounds, finalRect).Equals(visibleBounds))
 			{

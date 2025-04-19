@@ -10,7 +10,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Microsoft.UI.Xaml.Media;
-using Com.Nostra13.Universalimageloader.Core;
 using Windows.Foundation.Metadata;
 using Uno.Extensions;
 using Windows.ApplicationModel.Activation;

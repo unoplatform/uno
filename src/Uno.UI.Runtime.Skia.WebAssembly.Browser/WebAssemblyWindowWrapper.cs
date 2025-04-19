@@ -24,6 +24,8 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
+using Windows.Graphics;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -55,6 +57,18 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		get => NativeMethods.GetWindowTitle();
 		set => NativeMethods.SetWindowTitle(value);
 	}
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		SetFullScreenMode(true);
+		return Disposable.Create(() => SetFullScreenMode(false));
+	}
+
+	public override void Move(PointInt32 position) => NativeMethods.MoveWindow(position.X, position.Y);
+
+	public override void Resize(SizeInt32 size) => NativeMethods.ResizeWindow(size.Width, size.Height);
+
+	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
 
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
@@ -102,22 +116,4 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal string CanvasId
 		=> NativeMethods.GetCanvasId(this);
-
-	private static partial class NativeMethods
-	{
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.initialize")]
-		public static partial void Initialize([JSMarshalAs<JSType.Any>] object owner);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getContainerId")]
-		public static partial string GetContainerId([JSMarshalAs<JSType.Any>] object owner);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getCanvasId")]
-		public static partial string GetCanvasId([JSMarshalAs<JSType.Any>] object owner);
-
-		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
-		internal static partial string GetWindowTitle();
-
-		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.setWindowTitle")]
-		internal static partial void SetWindowTitle(string title);
-	}
 }

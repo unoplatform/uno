@@ -17,6 +17,5 @@ internal static class UnoTarget
 
 	// Legacy
 	public const string SkiaWpf = "skia-wpf";
-	public const string SkiaGtk = "skia-gtk";
 	public const string SkiaLinuxFramebuffer = "skia-linux-fb";
 }
