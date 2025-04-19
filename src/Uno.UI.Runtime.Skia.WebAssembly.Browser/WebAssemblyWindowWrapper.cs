@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
-using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
+using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Uno.Disposables;
 
