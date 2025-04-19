@@ -314,6 +314,7 @@ namespace SamplesApp
 #if DEBUG && (__SKIA__ || __WASM__)
 			_mainWindow!.EnableHotReload();
 #endif
+			//await Task.Delay(3000); // Artificial delay to simulate asynchronous activation
 			_mainWindow!.Activate();
 			_wasActivated = true;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);

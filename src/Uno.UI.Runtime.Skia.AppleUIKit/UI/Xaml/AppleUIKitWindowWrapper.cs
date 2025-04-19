@@ -42,7 +42,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
 
-
 		_inputPane = InputPane.GetForCurrentView();
 
 #if !__TVOS__
@@ -53,6 +52,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
+		_nativeWindow.RootViewController = _mainController;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
@@ -68,7 +68,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		_nativeWindow.RootViewController = _mainController;
+		this.LogDebug()?.LogDebug("Native window ShowCore");
 		_nativeWindow.MakeKeyAndVisible();
 		IsVisible = true;
 	}

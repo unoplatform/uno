@@ -74,6 +74,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_skCanvasView.Paused = true;
 		_skCanvasView.EnableSetNeedsDisplay = true;
 		_skCanvasView.FramebufferOnly = false;
+		_skCanvasView.AutoResizeDrawable = true;
 #endif
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;

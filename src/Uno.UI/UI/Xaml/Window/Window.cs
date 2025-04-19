@@ -45,7 +45,6 @@ partial class Window
 
 	private bool _initialized;
 	private Brush? _background;
-	private bool _splashScreenDismissed;
 	private WindowType _windowType;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
@@ -174,11 +173,7 @@ partial class Window
 	public UIElement? Content
 	{
 		get => _windowImplementation.Content;
-		set
-		{
-			_windowImplementation.Content = value;
-			TryDismissSplashScreen();
-		}
+		set => _windowImplementation.Content = value;
 	}
 
 	/// <summary>
@@ -303,25 +298,9 @@ partial class Window
 
 	internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
-	public void Activate()
-	{
-		_windowImplementation.Activate();
-
-		TryDismissSplashScreen();
-	}
+	public void Activate() => _windowImplementation.Activate();
 
 	public void Close() => _windowImplementation.Close();
-
-	private void TryDismissSplashScreen()
-	{
-		if (Content != null && !_splashScreenDismissed)
-		{
-			DismissSplashScreenPlatform();
-			_splashScreenDismissed = true;
-		}
-	}
-
-	partial void DismissSplashScreenPlatform();
 
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
@@ -353,6 +332,8 @@ partial class Window
 		}
 	}
 
+	internal void NotifyContentLoaded() => _windowImplementation.NotifyContentLoaded();
+
 	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
 		=> WeakEventHelper.RegisterEvent(
 			_backgroundChangedHandlers ??= new(),
@@ -375,8 +356,5 @@ partial class Window
 		);
 	}
 
-	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
-	{
-		_sizeChangedHandlers?.Invoke(this, e);
-	}
+	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
 }

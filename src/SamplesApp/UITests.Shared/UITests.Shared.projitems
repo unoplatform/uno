@@ -9745,6 +9745,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Animations\custom-indeterminate.json" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Animations\squirrel.json" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppIcon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AppLogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AppLogoSmall.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Asset_GetFileFromApplicationUriAsync_Nested.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSave.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSuggestBox.png" />
