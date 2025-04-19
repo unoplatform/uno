@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var _ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+			_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 			_ = FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
 		}
 	}
