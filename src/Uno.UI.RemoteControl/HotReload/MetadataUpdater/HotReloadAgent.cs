@@ -13,8 +13,6 @@ using System.Linq;
 using System.Reflection;
 using Uno;
 using Uno.UI.Helpers;
-using Newtonsoft.Json.Linq;
-using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
