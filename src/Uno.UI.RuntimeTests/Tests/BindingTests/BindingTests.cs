@@ -11,7 +11,6 @@ using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests;
 
