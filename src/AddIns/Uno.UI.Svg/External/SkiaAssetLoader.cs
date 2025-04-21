@@ -10,7 +10,7 @@ using Model = global::Svg.Model;
 
 namespace Uno.Svg.Skia;
 
-internal class SkiaAssetLoader : Model.IAssetLoader
+internal class SkiaAssetLoader : Model.ISvgAssetLoader
 {
     private readonly SkiaModel _skiaModel;
 
