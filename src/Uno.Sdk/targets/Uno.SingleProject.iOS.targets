@@ -13,6 +13,14 @@
 		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements-$(Configuration).plist') ">$(iOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<ItemGroup Condition=" '$(UnoDisableMEDITrimmingWorkaround)' == '' ">
+		<!-- 
+		Workaround for iOS requiring Microsoft.Extensions.DependencyInjection to be 
+		excluded from linking on devices when logging is enabled
+		-->
+		<TrimmerRootAssembly Include="Microsoft.Extensions.DependencyInjection" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' ">
 		<None Include="$(iOSProjectFolder)Info.plist" LogicalName="Info.plist" />
 
