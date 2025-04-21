@@ -34,6 +34,7 @@ If issues persist, additional troubleshooting information is available in [this 
 - [Common issues on WebAssembly](xref:Uno.UI.CommonIssues.Wasm)
 - [Common issues on Skia (X11/macOS/Framebuffer/Windows)](xref:Uno.UI.CommonIssues.Skia)
 - [Common issues on iOS/mac Catalyst](xref:Uno.UI.CommonIssues.IosCatalyst)
+- [Common issues on Android](xref:Uno.UI.CommonIssues.Android)
 
 ## Build Errors
 
