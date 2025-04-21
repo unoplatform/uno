@@ -13,7 +13,7 @@
 		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements-$(Configuration).plist') ">$(iOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
 	</PropertyGroup>
 
-	<ItemGroup Conditon=" '$(UnoDisableMEDITrimmingWorkaround)' == '' ">
+	<ItemGroup Condition=" '$(UnoDisableMEDITrimmingWorkaround)' == '' ">
 		<!-- 
 		Workaround for iOS requiring Microsoft.Extensions.DependencyInjection to be 
 		excluded from linking on devices when logging is enabled
