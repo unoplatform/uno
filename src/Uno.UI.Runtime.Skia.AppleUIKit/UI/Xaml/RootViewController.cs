@@ -71,9 +71,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_skCanvasView = new SkiaCanvas();
 #if !__TVOS__
 		_skCanvasView.SetOwner(this);
-		_skCanvasView.Paused = true;
-		_skCanvasView.EnableSetNeedsDisplay = true;
-		_skCanvasView.FramebufferOnly = false;
 #endif
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
@@ -121,13 +118,11 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #if __TVOS__
 	private void OnPaintSurface(object? sender, SkiaEventArgs e)
 	{
-		var surface = e.Surface;
-
-		OnPaintSurfaceInner(surface, surface.Canvas);
+		OnPaintSurfaceInner(e.Surface.Canvas);
 	}
 #endif
 
-	internal void OnPaintSurfaceInner(SKSurface surface, SKCanvas canvas)
+	internal void OnPaintSurfaceInner(SKCanvas canvas)
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
@@ -139,7 +134,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			{
 				int width = (int)View!.Frame.Width;
 				int height = (int)View!.Frame.Height;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas);
 				if (!path.IsEmpty)
 				{
 					var svgPath = path.ToSvgPathData();
@@ -267,7 +262,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void InvalidateRender() =>
 #if !__TVOS__
-		_skCanvasView?.SetNeedsDisplay();
+		_skCanvasView?.QueueRender();
 #else
 		_skCanvasView?.LayoutSubviews();
 #endif
