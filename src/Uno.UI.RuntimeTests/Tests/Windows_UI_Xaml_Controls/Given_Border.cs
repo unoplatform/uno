@@ -845,6 +845,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
+		[ConditionalTest(IgnoredPlatforms = (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
+		[RequiresScaling(1.0f)]
+		public async Task When_CornerRadius_AntiAliasing()
+		{
+			var background = new Border
+			{
+				Width = 60,
+				Height = 60,
+				Background = new SolidColorBrush(Colors.Green),
+			};
+
+			var roundedCorner = new Border
+			{
+				Width = 60,
+				Height = 60,
+				CornerRadius = new CornerRadius(30),
+				Background = new SolidColorBrush(Colors.Red),
+			};
+
+			var stackPanel = new Grid()
+			{
+				Children =
+				{
+					background,
+					roundedCorner
+				}
+			};
+
+			await UITestHelper.Load(stackPanel);
+			// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
+			var screenShot = await UITestHelper.ScreenShot(stackPanel);
+
+			var image = new Image()
+			{
+				Height = 60,
+				Width = 60,
+				Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
+			};
+			await UITestHelper.Load(image);
+			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+		}
+#endif
+
+#if HAS_UNO
 		[TestMethod]
 #if !__SKIA__
 		[Ignore("Only skia accurately hittests CorderRadius")]
