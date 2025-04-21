@@ -448,8 +448,12 @@ namespace Microsoft.UI.Xaml
 		internal void OnRequestedThemeChanged()
 		{
 			ApplySystemOverlaysTheming();
+			RequestedThemeChanged?.Invoke();
+
 			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
+
+		internal event Action RequestedThemeChanged;
 
 		partial void ApplySystemOverlaysTheming();
 
