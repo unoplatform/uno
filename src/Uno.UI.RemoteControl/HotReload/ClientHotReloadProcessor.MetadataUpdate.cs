@@ -114,7 +114,11 @@ partial class ClientHotReloadProcessor
 
 			UpdateGlobalResources(updatedTypes);
 
+#if HAS_UNO_WINUI
 			var rootElement = window.Content?.XamlRoot?.VisualTree.RootElement;
+#else
+			var rootElement = window.Content?.XamlRoot?.Content;
+#endif
 			if (rootElement is null)
 			{
 				if (_log.IsEnabled(LogLevel.Error))
