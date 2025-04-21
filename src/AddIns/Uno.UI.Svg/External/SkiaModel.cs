@@ -475,7 +475,7 @@ internal class SkiaModel
                         arithmeticImageFilter.EforcePMColor,
                         ToSKImageFilter(arithmeticImageFilter.Background),
                         ToSKImageFilter(arithmeticImageFilter.Foreground),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateArithmetic(
                         arithmeticImageFilter.K1,
                         arithmeticImageFilter.K2,
@@ -497,7 +497,7 @@ internal class SkiaModel
                         ToSKBlendMode(blendModeImageFilter.Mode),
                         ToSKImageFilter(blendModeImageFilter.Background),
                         ToSKImageFilter(blendModeImageFilter.Foreground),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateBlendMode(
                         ToSKBlendMode(blendModeImageFilter.Mode),
                         ToSKImageFilter(blendModeImageFilter.Background),
@@ -510,7 +510,7 @@ internal class SkiaModel
                         blurImageFilter.SigmaX,
                         blurImageFilter.SigmaY,
                         ToSKImageFilter(blurImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateBlur(
                         blurImageFilter.SigmaX,
                         blurImageFilter.SigmaY,
@@ -527,7 +527,7 @@ internal class SkiaModel
                     ? SkiaSharp.SKImageFilter.CreateColorFilter(
                         ToSKColorFilter(colorFilterImageFilter.ColorFilter)!,
                         ToSKImageFilter(colorFilterImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateColorFilter(
                         ToSKColorFilter(colorFilterImageFilter.ColorFilter)!,
                         ToSKImageFilter(colorFilterImageFilter.Input));
@@ -539,7 +539,7 @@ internal class SkiaModel
                         dilateImageFilter.RadiusX,
                         dilateImageFilter.RadiusY,
                         ToSKImageFilter(dilateImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateDilate(
                         dilateImageFilter.RadiusX,
                         dilateImageFilter.RadiusY,
@@ -559,7 +559,7 @@ internal class SkiaModel
                         displacementMapEffectImageFilter.Scale,
                         ToSKImageFilter(displacementMapEffectImageFilter.Displacement)!,
                         ToSKImageFilter(displacementMapEffectImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateDisplacementMapEffect(
                         ToSKColorChannel(displacementMapEffectImageFilter.XChannelSelector),
                         ToSKColorChannel(displacementMapEffectImageFilter.YChannelSelector),
@@ -576,7 +576,7 @@ internal class SkiaModel
                         distantLitDiffuseImageFilter.SurfaceScale,
                         distantLitDiffuseImageFilter.Kd,
                         ToSKImageFilter(distantLitDiffuseImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateDistantLitDiffuse(
                         ToSKPoint3(distantLitDiffuseImageFilter.Direction),
                         ToSKColor(distantLitDiffuseImageFilter.LightColor),
@@ -594,7 +594,7 @@ internal class SkiaModel
                         distantLitSpecularImageFilter.Ks,
                         distantLitSpecularImageFilter.Shininess,
                         ToSKImageFilter(distantLitSpecularImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateDistantLitSpecular(
                         ToSKPoint3(distantLitSpecularImageFilter.Direction),
                         ToSKColor(distantLitSpecularImageFilter.LightColor),
@@ -610,7 +610,7 @@ internal class SkiaModel
                         erodeImageFilter.RadiusX,
                         erodeImageFilter.RadiusY,
                         ToSKImageFilter(erodeImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateErode(
                         erodeImageFilter.RadiusX,
                         erodeImageFilter.RadiusY,
@@ -650,7 +650,7 @@ internal class SkiaModel
                         ToSKShaderTileMode(matrixConvolutionImageFilter.TileMode),
                         matrixConvolutionImageFilter.ConvolveAlpha,
                         ToSKImageFilter(matrixConvolutionImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateMatrixConvolution(
                         ToSKSizeI(matrixConvolutionImageFilter.KernelSize),
                         matrixConvolutionImageFilter.Kernel,
@@ -671,7 +671,7 @@ internal class SkiaModel
                 return mergeImageFilter.Clip is { } clip
                     ? SkiaSharp.SKImageFilter.CreateMerge(
                         ToSKImageFilters(mergeImageFilter.Filters),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip	))
                     : SkiaSharp.SKImageFilter.CreateMerge(
                         ToSKImageFilters(mergeImageFilter.Filters));
             }
@@ -682,7 +682,7 @@ internal class SkiaModel
                         offsetImageFilter.Dx,
                         offsetImageFilter.Dy,
                         ToSKImageFilter(offsetImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateOffset(
                         offsetImageFilter.Dx,
                         offsetImageFilter.Dy,
@@ -698,7 +698,7 @@ internal class SkiaModel
                 var shader = paintImageFilter.Paint.Shader ?? SKShader.CreateColor(paintImageFilter.Paint.Color!.Value, SKColorSpace.Srgb);
 
                 return paintImageFilter.Clip is { } clip
-                    ? SkiaSharp.SKImageFilter.CreateShader(ToSKShader(shader), dither: false, cropRect: ToSKRect(clip.Rect))
+                    ? SkiaSharp.SKImageFilter.CreateShader(ToSKShader(shader), dither: false, cropRect: ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateShader(ToSKShader(shader), dither: false);
             }
             case ShaderImageFilter shaderImageFilter:
@@ -712,7 +712,7 @@ internal class SkiaModel
                     ? SkiaSharp.SKImageFilter.CreateShader(
                         ToSKShader(shaderImageFilter.Shader),
                         shaderImageFilter.Dither,
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateShader(
                         ToSKShader(shaderImageFilter.Shader),
                         shaderImageFilter.Dither);
@@ -737,7 +737,7 @@ internal class SkiaModel
                         pointLitDiffuseImageFilter.SurfaceScale,
                         pointLitDiffuseImageFilter.Kd,
                         ToSKImageFilter(pointLitDiffuseImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreatePointLitDiffuse(
                         ToSKPoint3(pointLitDiffuseImageFilter.Location),
                         ToSKColor(pointLitDiffuseImageFilter.LightColor),
@@ -755,7 +755,7 @@ internal class SkiaModel
                         pointLitSpecularImageFilter.Ks,
                         pointLitSpecularImageFilter.Shininess,
                         ToSKImageFilter(pointLitSpecularImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreatePointLitSpecular(
                         ToSKPoint3(pointLitSpecularImageFilter.Location),
                         ToSKColor(pointLitSpecularImageFilter.LightColor),
@@ -776,7 +776,7 @@ internal class SkiaModel
                         spotLitDiffuseImageFilter.SurfaceScale,
                         spotLitDiffuseImageFilter.Kd,
                         ToSKImageFilter(spotLitDiffuseImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateSpotLitDiffuse(
                         ToSKPoint3(spotLitDiffuseImageFilter.Location),
                         ToSKPoint3(spotLitDiffuseImageFilter.Target),
@@ -800,7 +800,7 @@ internal class SkiaModel
                         spotLitSpecularImageFilter.Ks,
                         spotLitSpecularImageFilter.SpecularExponent,
                         ToSKImageFilter(spotLitSpecularImageFilter.Input),
-                        ToSKRect(clip.Rect))
+                        ToSKRect(clip))
                     : SkiaSharp.SKImageFilter.CreateSpotLitSpecular(
                         ToSKPoint3(spotLitSpecularImageFilter.Location),
                         ToSKPoint3(spotLitSpecularImageFilter.Target),
