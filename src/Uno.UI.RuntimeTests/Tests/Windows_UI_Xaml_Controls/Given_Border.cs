@@ -844,7 +844,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(bitmap2, bitmap2Expected, imperceptibilityThreshold: 0.7);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop & RuntimeTestPlatforms.SkiaMacOS)]
+#if HAS_UNO
+		[ConditionalTest(IgnoredPlatforms = (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
 		[RequiresScaling(1.0f)]
 		public async Task When_CornerRadius_AntiAliasing()
 		{
@@ -885,6 +886,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(image);
 			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
 		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]
