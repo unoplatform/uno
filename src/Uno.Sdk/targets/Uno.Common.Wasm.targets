@@ -17,6 +17,8 @@
 		<!-- Disable assets generation for libraries -->
 		<StaticWebAssetsEnabled Condition=" $(OutputType) != 'Exe' ">false</StaticWebAssetsEnabled>
 
+		<WasmShellEnableIDBFS Condition=" '$(WasmShellEnableIDBFS)' == '' AND $(UnoFeatures.Contains(';skiarenderer;'))">true</WasmShellEnableIDBFS>
+
 		<!-- Workaround for https://github.com/dotnet/runtime/pull/109866 -->
 		<IsBrowserWasmProject Condition=" $(OutputType) != 'Exe' ">false</IsBrowserWasmProject>
 

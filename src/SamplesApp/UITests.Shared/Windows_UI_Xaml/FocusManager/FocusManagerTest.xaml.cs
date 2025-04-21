@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.FocusTests
 {
-	[SampleControlInfo("Focus", "FocusManagerTest", Description = "Validate FocusManager.GetFocusedElement()")]
+	[SampleControlInfo("Focus", "FocusManagerTest", Description = "Validate FocusManager.GetFocusedElement")]
 	public sealed partial class FocusManagerTest : UserControl
 	{
 		public FocusManagerTest()

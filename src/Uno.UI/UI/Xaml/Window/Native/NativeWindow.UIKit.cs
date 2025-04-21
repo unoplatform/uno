@@ -111,7 +111,8 @@ public partial class Window : UIWindow
 
 			try
 			{
-				if (_ownerEvents is { })
+				var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+				if (_ownerEvents is { } && xamlRoot is not null)
 				{
 					_ownerEvents.RaiseKeyUp(args);
 
@@ -120,7 +121,7 @@ public partial class Window : UIWindow
 						CanBubbleNatively = false
 					};
 
-					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+					(FocusManager.GetFocusedElement(xamlRoot) as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
 
 					handled = true;
 				}
@@ -170,7 +171,8 @@ public partial class Window : UIWindow
 
 			try
 			{
-				if (_ownerEvents is { })
+				var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+				if (_ownerEvents is { } && xamlRoot is not null)
 				{
 					_ownerEvents.RaiseKeyDown(args);
 
@@ -179,7 +181,7 @@ public partial class Window : UIWindow
 						CanBubbleNatively = false
 					};
 
-					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+					(FocusManager.GetFocusedElement(xamlRoot) as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
 
 					handled = true;
 				}
@@ -380,8 +382,18 @@ public partial class Window : UIWindow
 		else
 		{
 			// Get the actual focused element in case the element gets its focus programmatically, rather than a hit test
-			var view = FocusManager.GetFocusedElement() as UIView ?? _focusedView;
-			MakeVisible(view, FocusedViewBringIntoViewOnKeyboardOpensMode, useForcedAnimation: isOpeningKeyboard);
+			var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+			UIView? view = null;
+			if (xamlRoot is not null)
+			{
+				view = FocusManager.GetFocusedElement(xamlRoot) as UIView;
+			}
+			view ??= _focusedView;
+
+			if (view is not null)
+			{
+				MakeVisible(view, FocusedViewBringIntoViewOnKeyboardOpensMode, useForcedAnimation: isOpeningKeyboard);
+			}
 		}
 	}
 

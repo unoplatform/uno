@@ -17,8 +17,8 @@ namespace SamplesApp.Droid
 	[Activity(
 			Exported = true,
 			MainLauncher = true,
-			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode
+			WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
 		)]
 	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
 	[IntentFilter(

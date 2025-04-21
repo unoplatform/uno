@@ -74,6 +74,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
 					_source.AppendIndented($".GenericApply(__that, __nameScope, ({_exposeContextMethod}");
 
+					AnalyzerSuppressionsGenerator.GenerateTrimExclusions(_inner);
 					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {_closureName}, {_topLevelType} __that, global::Microsoft.UI.Xaml.NameScope __nameScope)");
 				}
 				else
