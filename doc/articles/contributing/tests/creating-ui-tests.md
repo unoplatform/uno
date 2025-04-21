@@ -1,12 +1,12 @@
 ---
-uid: Uno.Contributing.CreateUITests
+uid: Uno.Contributing.Tests.CreateUITests
 ---
 
 # Creating automated UI tests
 
 Internally Uno.UI uses automated UI tests using the [Uno.UITest framework](https://github.com/unoplatform/Uno.UITest). These tests run out-of-process relative to the application itself. They can simulate user interaction, and can also record and verify on-screen pixels.
 
-UI tests contribute significantly to the CI build time, and for many purposes a test in [Uno.UI.RuntimeTests](creating-runtime-tests.md) could be sufficient. You should write a `Uno.UITest`-based UI test if:
+UI tests contribute significantly to the CI build time, and for many purposes a test in [Uno.UI.RuntimeTests](./creating-runtime-tests.md) could be sufficient. You should write a `Uno.UITest`-based UI test if:
 
 - you need user interaction to put the app in a state that reproduces the bug, and/or
 - you need to verify the final visual output onscreen.
@@ -16,10 +16,10 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 - you can put the app in the required state programmatically, and
 - you can verify the correct behavior programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
 
-  For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](../contributing/guidelines/creating-tests.md).
+  For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](./creating-tests.md).
 
 > [!NOTE]
-> [Platform runtime unit tests](../contributing/guidelines/creating-tests.md) are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
+> [Platform runtime unit tests](./creating-tests.md) are generally preferred to UI tests as their execution performance is generally faster than UI Tests.
 
 ## Running UI tests locally
 
@@ -47,7 +47,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
 ## Adding a new test
 
-1. Typically the first step is to [add a sample to the SamplesApp](working-with-the-samples-apps.md) that reproduces the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
+1. Typically the first step is to [add a sample to the SamplesApp](../working-with-the-samples-apps.md) that reproduces the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
 2. The UI test fixtures themselves are located in [SamplesApp.UITests](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests). Locate the test class corresponding to the control or class you want to create a test for. If you need to add a new test class, create the file as `Namespace_In_Snake_Case/ControlNameTests/ControlName_Tests.cs`. The class should inherit from `SampleControlUITestBase` and be marked with the `[TestFixture]` attribute.
 3. Add your test, making sure to include the `[Test]` and `[AutoRetry]` attributes. (The `[AutoRetry]` attributes indicates that the test should be retried if it fails. Currently it's required for all tests.)
 
