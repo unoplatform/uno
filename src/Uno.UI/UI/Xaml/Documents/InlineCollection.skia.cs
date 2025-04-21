@@ -804,50 +804,16 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 
-			// This is functionally equivalent to SKTextBlob.DrawText but dodges a bug in SkiaSharp3 implementation
-			// for this method on WebGL.
-			static unsafe void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+			static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
 				SKCanvas canvas, float y, SKPaint paint)
 			{
-				// We avoid using SKTextBlob on WASM as it can cause WebGL errors that lead to text not being
-				// rendered. This only happens with SkiaSharp 3
-				if (OperatingSystem.IsBrowser() && FeatureConfiguration.Rendering.AvoidSKTextBlobOnSkiaWasm)
-				{
-					int index = 0;
-					// Using pointers here is to get around safety measures that prevent using by-ref objects like spans
-					// inside a lambda.
-					fixed (SKPoint* posAsSKPointPtr = positions)
-					{
-						var posAsIntPtr = new IntPtr(posAsSKPointPtr);
-						var count = positions.Length;
-						fontInfo.SKFont.GetGlyphPaths(glyphs, (path, matrix) =>
-						{
-							if (path is null)
-							{
-								// There are cases in CI where path is null. The cause is currently unknown.
-								return;
-							}
-
-							var pos = new Span<SKPoint>((void*)posAsIntPtr, count);
-							canvas.Save();
-							canvas.Translate(pos[index].X, pos[index].Y + y);
-							canvas.Concat(matrix);
-							canvas.DrawPath(path, paint);
-							canvas.Restore();
-							index++;
-						});
-					}
-				}
-				else
-				{
-					_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
-					// Roughly equivalent to:
-					//   using var textBlob = _textBlobBuilder.Build();
-					//   canvas.DrawText(textBlob, 0f, y, paint);
-					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
-				}
+				_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+				// Roughly equivalent to:
+				//   using var textBlob = _textBlobBuilder.Build();
+				//   canvas.DrawText(textBlob, 0f, y, paint);
+				var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+				UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+				UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 			}
 		}
 
