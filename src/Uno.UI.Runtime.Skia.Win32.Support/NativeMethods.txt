@@ -141,6 +141,7 @@ GetClipboardData
 GetDC
 GetDpiForWindow
 GetKeyState
+GetMessage
 GetMessageTime
 GetMonitorInfo
 GetPointerInfo

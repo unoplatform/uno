@@ -67,7 +67,11 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 						CanBubbleNatively = false
 					};
 
-					(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+					var xamlRoot = Window.InitialWindow?.Content?.XamlRoot;
+					if (xamlRoot is not null && FocusManager.GetFocusedElement(xamlRoot) is FrameworkElement fe)
+					{
+						fe.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+					}
 
 					handled = true;
 				}
