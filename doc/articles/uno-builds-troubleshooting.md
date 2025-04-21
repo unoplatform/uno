@@ -8,9 +8,9 @@ uid: Uno.Development.Troubleshooting
 
 If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](https://www.nuget.org/packages/Uno.Check) should be your first step. Find installation instructions and other details [here](external/uno.check/doc/using-uno-check.md).
 
-## Multi-projects structure considerations
+## Multi-targeting considerations
 
-Uno uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
+Uno Platform projects use multi-targeting, for which each target framework has to be built individually for some errors to disappear from the **Error List** window (notice the **Project** column values).
 In order to clear the **Error List** window, build the whole solution completely once.
 Subsequently, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
@@ -64,3 +64,11 @@ To generate a binlog file from the command line:
   ```
 
 - Once the build has finished, a file named `msbuild.binlog` is generated next to the `.csproj` file.
+
+## Common Build errors troubleshooting
+
+### iOS: Verification of iOS environment is running. Please try again in a moment
+
+When building for an iOS physical device, the following error may happen in your build `Verification of iOS environment is running. Please try again in a moment.`. If this happens and your Visual Studio is connected to your mac, you may need to ensure that you have selected a provisioning profile.
+
+Make sure to [configure your apple account](https://learn.microsoft.com/en-us/dotnet/maui/ios/device-provisioning/automatic-provisioning?view=net-maui-9.0#enable-automatic-provisioning), or in some cases, selecting the development team and provisioning profile is required.
