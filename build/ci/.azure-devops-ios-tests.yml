@@ -113,7 +113,7 @@ jobs:
 
 - job: iOS_TestFlight
   displayName: 'Build iOS Samples App - TestFlight'
-  # condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
 
   strategy:
     matrix:
