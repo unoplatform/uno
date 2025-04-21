@@ -112,8 +112,20 @@ jobs:
       ArtifactType: Container
 
 - job: iOS_TestFlight
-  displayName: 'Build iOS Samples App For TestFlight'
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: 'Build iOS Samples App - TestFlight'
+  # condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+
+  strategy:
+    matrix:
+      Native:
+        _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile'
+        _ArtifactName: 'ios-testflight'
+        _VariantName: 'Native'
+
+      Skia:
+        _BuildFolder: '$(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.Skia.netcoremobile'
+        _ArtifactName: 'ios-skia-testflight'
+        _VariantName: 'Skia'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -142,7 +154,13 @@ jobs:
     displayName: Install Provisioning Profile
     inputs:
       provisioningProfileLocation: secureFiles
-      provProfileSecureFile: Uno_Dev_Samples.mobileprovision
+      provProfileSecureFile: 'Uno_Dev_Samples.mobileprovision'
+
+  - task: InstallAppleProvisioningProfile@1
+    displayName: Install Provisioning Profile
+    inputs:
+      provisioningProfileLocation: secureFiles
+      provProfileSecureFile: 'Uno_Dev_Samples_Skia.mobileprovision'
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -159,7 +177,7 @@ jobs:
   - template: templates/gitversion.yml
 
   - bash: |
-      cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
+      cd $(_BuildFolder)
       dotnet publish \
         -f net9.0-ios \
         -c Release \
@@ -176,7 +194,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-ios/ios-arm64/publish
+      SourceFolder: $(_BuildFolder)/bin/Release/net9.0-ios/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false
@@ -188,7 +206,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: ios-testflight
+      ArtifactName: $(_ArtifactName)
       ArtifactType: Container
 
 ##

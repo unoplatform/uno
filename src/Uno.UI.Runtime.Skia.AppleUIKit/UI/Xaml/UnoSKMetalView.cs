@@ -1,8 +1,10 @@
 ﻿#if !__TVOS__
 using System;
+using System.Threading;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
+using IOSurface;
 using Metal;
 using MetalKit;
 using Microsoft.Graphics.Display;
@@ -19,16 +21,19 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private readonly IMTLCommandQueue? _queue;
 
 		private RootViewController? _owner;
+		private SKPicture? _picture;
+		private CADisplayLink _link;
+		private Thread? _renderThread;
 
 		public UnoSKMetalView()
 			: base(CGRect.Empty, null)
 		{
+			_link = CADisplayLink.Create(() => this.Draw());
 			var device = MTLDevice.SystemDefault;
 
 			if (device == null)
 			{
 				Console.WriteLine("Metal is not supported on this device.");
-
 				return;
 			}
 
@@ -53,6 +58,16 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
 			SampleCount = 1;
 
+#if !__TVOS__
+			FramebufferOnly = false;
+
+			// Disable UIKit’s display‑link
+			Paused = true;
+
+			// We're drawing ourselves
+			EnableSetNeedsDisplay = false;
+#endif
+
 			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 			PreferredFramesPerSecond = fps;
 
@@ -61,9 +76,53 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			Device = device;
 
 			Delegate = this;
+
+			StartRenderThread();
+		}
+
+		private void StartRenderThread()
+		{
+			_renderThread = new Thread(() =>
+			{
+				var currentThread = NSThread.Current;
+				currentThread.QualityOfService = NSQualityOfService.UserInteractive;
+				currentThread.Name = "UnoSKMetalViewRenderThread";
+
+				_link.PreferredFrameRateRange = new CAFrameRateRange()
+				{
+					Minimum = 30,
+					Preferred = PreferredFramesPerSecond,
+					Maximum = PreferredFramesPerSecond
+				};
+
+				_link.AddToRunLoop(NSRunLoop.Current, NSRunLoopMode.Default);
+
+				NSRunLoop.Current.Run();   // blocks forever
+			})
+			{
+				IsBackground = true,
+				Name = "UnoSKMetalViewRenderThread"
+			};
+			_renderThread.Start();
 		}
 
 		internal void SetOwner(RootViewController owner) => _owner = owner;
+
+		public void QueueRender()
+		{
+			var recorder = new SKPictureRecorder();
+			var canvas = recorder.BeginRecording(new SKRect(-9999, -9999, 9999, 9999));
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+				_owner!.OnPaintSurfaceInner(canvas);
+
+				var picture = recorder.EndRecording();
+
+				Interlocked.Exchange(ref _picture, picture);
+			}
+
+			_link.Paused = false;
+		}
 
 		void IMTKViewDelegate.DrawableSizeWillChange(MTKView view, CGSize size)
 		{
@@ -75,6 +134,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
+			var currentPicture = Volatile.Read(ref _picture);
+
 			var size = DrawableSize;
 
 			var width = (int)size.Width;
@@ -98,7 +159,14 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				canvas = surface.Canvas;
 
 				// Paint
-				_owner!.OnPaintSurfaceInner(surface, canvas);
+				using (new SKAutoCanvasRestore(canvas, true))
+				{
+					// start drawing
+					if (_picture is { } picture)
+					{
+						canvas.DrawPicture(picture);
+					}
+				}
 
 				// Flush
 				_context!.Flush(submit: true);
@@ -122,6 +190,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
 			}
+
+			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture));
 		}
 	}
 }
