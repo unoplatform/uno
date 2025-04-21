@@ -36,3 +36,7 @@ To resolve this issue, download [Xcodes](https://www.xcodes.app). Inside Xcodes.
 When building for an iOS physical device, the following error may happen in your build `Verification of iOS environment is running. Please try again in a moment.`. If this happens and your Visual Studio is connected to your Mac, you may need to ensure that you have selected a provisioning profile.
 
 Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/dotnet/maui/ios/device-provisioning/automatic-provisioning?view=net-maui-9.0#enable-automatic-provisioning), or in some cases, selecting the development team and provisioning profile is required.
+
+## Additional troubleshooting
+
+You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).
