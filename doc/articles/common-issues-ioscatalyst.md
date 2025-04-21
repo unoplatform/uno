@@ -30,3 +30,9 @@ When switching to an iOS debugging target in VS Code, you might encounter an err
 ```
 
 To resolve this issue, download [Xcodes](https://www.xcodes.app). Inside Xcodes.app, select the correct version of Xcode and click the **Make Active** button to make it the default Xcode for your Mac. After completing this step, you can speed up the process and use the new default Xcode for simulators. On VS Code, open the Command Palette and select `Developer: Reload Window`. This should resolve the error when switching to an iOS debugging target in VS Code.
+
+## Build stops with `Verification of iOS environment is running. Please try again in a moment`
+
+When building for an iOS physical device, the following error may happen in your build `Verification of iOS environment is running. Please try again in a moment.`. If this happens and your Visual Studio is connected to your Mac, you may need to ensure that you have selected a provisioning profile.
+
+Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/dotnet/maui/ios/device-provisioning/automatic-provisioning?view=net-maui-9.0#enable-automatic-provisioning), or in some cases, selecting the development team and provisioning profile is required.

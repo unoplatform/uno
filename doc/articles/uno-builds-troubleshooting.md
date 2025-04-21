@@ -67,8 +67,4 @@ To generate a binlog file from the command line:
 
 ## Common Build errors troubleshooting
 
-### iOS: Verification of iOS environment is running. Please try again in a moment
-
-When building for an iOS physical device, the following error may happen in your build `Verification of iOS environment is running. Please try again in a moment.`. If this happens and your Visual Studio is connected to your Mac, you may need to ensure that you have selected a provisioning profile.
-
-Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/dotnet/maui/ios/device-provisioning/automatic-provisioning?view=net-maui-9.0#enable-automatic-provisioning), or in some cases, selecting the development team and provisioning profile is required.
+You can also browse the [common issues list](xref:Uno.UI.CommonIssues.AllIDEs) for build errors and their resolutions.
