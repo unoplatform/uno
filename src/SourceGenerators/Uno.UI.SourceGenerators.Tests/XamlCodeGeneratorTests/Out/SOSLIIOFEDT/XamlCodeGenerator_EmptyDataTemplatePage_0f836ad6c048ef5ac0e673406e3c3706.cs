@@ -41,6 +41,8 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706 = "ms-appx:///TestProject/";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -101,10 +103,14 @@ namespace TestRepro
 		{
 			this.Bindings.UpdateResources();
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_0(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L7:4");
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.ListView __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			/* _isTopLevelDictionary:False */
@@ -113,10 +119,14 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 12, 4);
 			__p1.CreationComplete();
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_2(global::System.Object __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/EmptyDataTemplatePage.xaml#L15:6");
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Button __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			__nameScope.RegisterName("ButtonWithEmptyDataTemplate", __p1);
@@ -124,17 +134,23 @@ namespace TestRepro
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 13, 4);
 			__p1.CreationComplete();
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_4(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706, "file:///C:/Project/0/EmptyDataTemplatePage.xaml", 11, 3);
 			__p1.CreationComplete();
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_5(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			// Source 0\EmptyDataTemplatePage.xaml (Line 1:3)
 			
 			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 		}
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyMethod_6(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			/* _isTopLevelDictionary:False */
@@ -196,6 +212,8 @@ namespace TestRepro
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IEmptyDataTemplatePage_Bindings Bindings;
 		#pragma warning restore 0169
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class EmptyDataTemplatePage_Bindings : IEmptyDataTemplatePage_Bindings
 		{

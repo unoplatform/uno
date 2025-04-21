@@ -118,11 +118,13 @@ namespace Microsoft.UI.Xaml
 				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
 			}
 
+			var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+
 			try
 			{
-				if (FocusManager.GetFocusedElement() is not FrameworkElement element)
+				if (FocusManager.GetFocusedElement(xamlRoot) is not FrameworkElement element)
 				{
-					element = WinUICoreServices.Instance.MainRootVisual;
+					element = WinUICoreServices.Instance.VisualRoot as FrameworkElement;
 				}
 
 				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)

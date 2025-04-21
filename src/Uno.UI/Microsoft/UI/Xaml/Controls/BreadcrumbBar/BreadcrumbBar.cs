@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\Breadcrumb\BreadcrumbBar.cpp, tag winui3/release/1.5.3, commit 2a60e27
+// MUX Reference controls\dev\Breadcrumb\BreadcrumbBar.cpp, tag winui3/release/1.7.1, commit 5f27a786ac
 
 #nullable enable
 
@@ -411,8 +411,6 @@ public partial class BreadcrumbBar : Control
 				ellipsisItem.SetValue(AutomationProperties.AccessibilityViewProperty, accessibilityView);
 			}
 
-			var itemsSourceView = itemsRepeater.ItemsSourceView;
-
 			// For every BreadcrumbBar item we set the index (starting from 1 for the root/highest-level item)
 			// accessibilityIndex is the index to be assigned to each item
 			// itemToIndex is the real index and it may differ from accessibilityIndex as we must only index the visible items
@@ -487,11 +485,9 @@ public partial class BreadcrumbBar : Control
 
 	private bool MoveFocus(int indexIncrement)
 	{
-		if (m_itemsRepeater is { } itemsRepeater)
+		if (m_itemsRepeater is { } itemsRepeater && XamlRoot is { } xamlRoot)
 		{
-			var focusedElem = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedElem = FocusManager.GetFocusedElement(xamlRoot);
 
 			if (focusedElem is UIElement focusedElement)
 			{

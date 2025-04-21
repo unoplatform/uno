@@ -13,6 +13,7 @@ using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -20,6 +21,15 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
+
+		// This is safe as a static field.
+		// 1) It's only accessed from UI thread.
+		// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
+		// See https://api.skia.org/classSkTextBlobBuilder.html#abf5e20208fd5656981191a3778ee5fef:
+		// > Resets SkTextBlobBuilder to its initial empty state, allowing it to be reused to build a new set of runs.
+		// The reset to the initial state happens here:
+		// https://github.com/google/skia/blob/d29cc3fe182f6e8a8539004a6a4ee8251677a6fd/src/core/SkTextBlob.cpp#L652-L656
+		private static SKTextBlobBuilder _textBlobBuilder = new();
 
 		private readonly List<RenderLine> _renderLines = new();
 
@@ -799,28 +809,44 @@ namespace Microsoft.UI.Xaml.Documents
 			static unsafe void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
 				SKCanvas canvas, float y, SKPaint paint)
 			{
-				int index = 0;
-				// Using pointers here is to get around safety measures that prevent using by-ref objects like spans
-				// inside a lambda.
-				fixed (SKPoint* posAsSKPointPtr = positions)
+				// We avoid using SKTextBlob on WASM as it can cause WebGL errors that lead to text not being
+				// rendered. This only happens with SkiaSharp 3
+				if (OperatingSystem.IsBrowser() && FeatureConfiguration.Rendering.AvoidSKTextBlobOnSkiaWasm)
 				{
-					var posAsIntPtr = new IntPtr(posAsSKPointPtr);
-					var count = positions.Length;
-					fontInfo.SKFont.GetGlyphPaths(glyphs, (path, matrix) =>
+					int index = 0;
+					// Using pointers here is to get around safety measures that prevent using by-ref objects like spans
+					// inside a lambda.
+					fixed (SKPoint* posAsSKPointPtr = positions)
 					{
-						if (path is null)
+						var posAsIntPtr = new IntPtr(posAsSKPointPtr);
+						var count = positions.Length;
+						fontInfo.SKFont.GetGlyphPaths(glyphs, (path, matrix) =>
 						{
-							// There are cases in CI where path is null. The cause is currently unknown.
-							return;
-						}
-						var pos = new Span<SKPoint>((void*)posAsIntPtr, count);
-						canvas.Save();
-						canvas.Translate(pos[index].X, pos[index].Y + y);
-						canvas.Concat(matrix);
-						canvas.DrawPath(path, paint);
-						canvas.Restore();
-						index++;
-					});
+							if (path is null)
+							{
+								// There are cases in CI where path is null. The cause is currently unknown.
+								return;
+							}
+
+							var pos = new Span<SKPoint>((void*)posAsIntPtr, count);
+							canvas.Save();
+							canvas.Translate(pos[index].X, pos[index].Y + y);
+							canvas.Concat(matrix);
+							canvas.DrawPath(path, paint);
+							canvas.Restore();
+							index++;
+						});
+					}
+				}
+				else
+				{
+					_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+					// Roughly equivalent to:
+					//   using var textBlob = _textBlobBuilder.Build();
+					//   canvas.DrawText(textBlob, 0f, y, paint);
+					var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+					UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+					UnoSkiaApi.sk_textblob_unref(textBlobHandle);
 				}
 			}
 		}

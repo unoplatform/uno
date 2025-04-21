@@ -19,9 +19,9 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
-	private MediaPlayerPresenter _presenter;
+	private readonly MediaPlayerPresenter _presenter;
 	private MacOSMediaPlayerExtension? _playerExtension;
-	private nint _nativeView;
+	private readonly nint _nativeView;
 
 	private MacOSMediaPlayerPresenterExtension(object owner)
 	{

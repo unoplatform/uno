@@ -11,6 +11,7 @@
 		<_UnoProjectSystemPackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.AppCompat" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Core.SplashScreen" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.RecyclerView" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Activity" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Browser" ProjectSystem="true" />

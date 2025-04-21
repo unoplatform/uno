@@ -446,6 +446,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			writer.AppendLineIndented("private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
+			AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
 				if (IsApplication(controlBaseType))
@@ -911,9 +912,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (Scope(ns, className))
 						{
+							AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
-							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
 							using (writer.BlockInvariant($"public class {className}"))
 							{
 								BuildBaseUri(writer);
@@ -1227,6 +1227,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"private {bindingsInterfaceName} Bindings;");
 				writer.AppendLineIndented($"#pragma warning restore 0169");
 
+				AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 				writer.AppendLineIndented($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
 				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
 				{
@@ -1340,9 +1341,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
-
-					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
-					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
+					AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
@@ -1783,8 +1782,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			using (ResourceOwnerScope())
 			{
-				writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
-				writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
+				AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
 				writer.AppendLineIndented($"private object {initializerName}(object {CurrentResourceOwner}) =>");
 				using (writer.Indent())
 				{

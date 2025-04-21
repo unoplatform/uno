@@ -25,5 +25,15 @@ namespace Uno.UI.SourceGenerators
 				writer.AppendLineIndented(suppress);
 			}
 		}
+
+		/// <summary>
+		/// Outputs UnconditionalSuppressMessage attributes for known trimming warnings.
+		/// These cannot be #pragma disable because the IL Linker cannot see them.
+		/// </summary>
+		internal static void GenerateTrimExclusions(IIndentedStringBuilder writer)
+		{
+			writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\", Justification = \"Generated code\")]"); // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access
+			writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\", Justification = \"Generated code\")]"); // Method with parameters or return value with 'DynamicallyAccessedMembersAttribute' is accessed via reflection
+		}
 	}
 }

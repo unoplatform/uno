@@ -309,6 +309,7 @@ id timeObserver;
 
 - (id)init {
     self.player = [[AVQueuePlayer alloc] init];
+    self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     self.videoLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.isVideo = NO;
 #if DEBUG_MEDIAPLAYER
