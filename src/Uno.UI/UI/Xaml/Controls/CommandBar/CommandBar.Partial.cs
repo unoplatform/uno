@@ -880,7 +880,8 @@ namespace Microsoft.UI.Xaml.Controls
 						// otherwise we'll end up moving focus back into the overflow menu.
 						m_skipProcessTabStopOverride = true;
 
-						FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+						var focusManager = VisualTree.GetFocusManagerForElement(this);
+						focusManager?.TryMoveFocusInstance(FocusNavigationDirection.Next);
 						DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 
 						m_skipProcessTabStopOverride = false;
