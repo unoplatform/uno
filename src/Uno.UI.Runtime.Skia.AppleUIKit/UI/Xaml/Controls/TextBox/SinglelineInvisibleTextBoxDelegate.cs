@@ -7,6 +7,11 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Windows.System;
+using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -72,14 +77,9 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 				});
 		}
 
-		var textBox = textField as SinglelineInvisibleTextBoxView;
-		if (textBox != null)
+		if (OnKey('\n'))
 		{
-			// TODO:MZ:
-			//if (_textBoxView.GetTarget()?.OnKey('\n') ?? false)
-			//{
-			//	return false;
-			//}
+			return false;
 		}
 
 		return true;
@@ -105,5 +105,26 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 		{
 			textBox.Unfocus();
 		}
+	}
+
+	private bool OnKey(char key)
+	{
+		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
+		{
+			return false;
+		}
+
+		var virtualKey = CharacterExtensions.ToVirtualKey(key);
+		var keyRoutedEventArgs = new KeyRoutedEventArgs(this, virtualKey, VirtualKeyModifiers.None)
+		{
+			CanBubbleNatively = false
+		};
+
+		var downHandled = textBox.RaiseEvent(UIElement.KeyDownEvent, keyRoutedEventArgs);
+
+		keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
+		var upHandled = textBox.RaiseEvent(UIElement.KeyUpEvent, keyRoutedEventArgs);
+
+		return downHandled || upHandled;
 	}
 }
