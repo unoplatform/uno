@@ -21,6 +21,7 @@ internal class X11AirspaceRenderHelper : IDisposable
 	private readonly int _bytesPerMaskScanline;
 	private readonly IntPtr _display;
 	private readonly IntPtr _window;
+	private string? _lastSvgClipPath;
 
 	public X11AirspaceRenderHelper(IntPtr display, IntPtr window, int width, int height)
 	{
@@ -44,12 +45,19 @@ internal class X11AirspaceRenderHelper : IDisposable
 		_maskData = Marshal.AllocHGlobal(height * _bytesPerMaskScanline);
 	}
 
-	public unsafe void XShapeClip(SKPath? path)
+	public unsafe void XShapeClip(SKPath path)
 	{
 		if (!_xShapesPresent!.Value)
 		{
 			return;
 		}
+
+		if (path?.ToSvgPathData() is var svgPathData && svgPathData == _lastSvgClipPath)
+		{
+			return;
+		}
+
+		_lastSvgClipPath = svgPathData;
 
 		using var xLock = X11Helper.XLock(_display);
 

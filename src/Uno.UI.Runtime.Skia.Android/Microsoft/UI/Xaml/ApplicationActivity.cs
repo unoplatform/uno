@@ -134,7 +134,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -420,29 +420,37 @@ namespace Microsoft.UI.Xaml
 
 		internal class ClippedRelativeLayout : RelativeLayout
 		{
-			private SKPath? _path;
+			private SKPath _path = new SKPath();
+			private Path _androidPath = new Path();
+			private string _svgClipPath = "";
 
 			public ClippedRelativeLayout(Context context) : base(context)
 			{
 				SetWillNotDraw(false);
 			}
 
-			public SKPath? Path
+			public SKPath Path
 			{
 				get => _path;
 				set
 				{
-					_path = value;
-					Invalidate();
+					var svgClipPath = value.ToSvgPathData();
+					if (_svgClipPath != svgClipPath)
+					{
+						_path = value;
+						_svgClipPath = svgClipPath;
+						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath);
+						Invalidate();
+					}
 				}
 			}
 
 			protected override void OnDraw(Canvas canvas)
 			{
 				base.OnDraw(canvas);
-				if (Path is not null)
+				if (!string.IsNullOrEmpty(_svgClipPath))
 				{
-					canvas.ClipPath(PathParser.CreatePathFromPathData(Path.ToSvgPathData()));
+					canvas.ClipPath(_androidPath);
 				}
 			}
 		}
