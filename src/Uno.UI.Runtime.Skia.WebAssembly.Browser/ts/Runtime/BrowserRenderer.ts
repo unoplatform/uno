@@ -11,7 +11,6 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvas = undefined;
 			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
-			window.addEventListener("resize", x => this.setCanvasSize());
 			this.buildImports();
 		}
 
@@ -36,15 +35,13 @@ namespace Uno.UI.Runtime.Skia {
 			var w = width * scale
 			var h = height * scale;
 
-			if (this.canvas) {
-				if (this.canvas.width !== w)
-					this.canvas.width = w;
-				if (this.canvas.height !== h)
-					this.canvas.height = h;
+			if (this.canvas.width !== w)
+				this.canvas.width = w;
+			if (this.canvas.height !== h)
+				this.canvas.height = h;
 
-				this.canvas.style.width = `${width}px`;
-				this.canvas.style.height = `${height}px`;
-			}
+			this.canvas.style.width = `${width}px`;
+			this.canvas.style.height = `${height}px`;
 
 			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
 			// blank and will cause a flickering effect when you drag the window's border to resize.
@@ -94,7 +91,8 @@ namespace Uno.UI.Runtime.Skia {
 
 			// read values
 			this.canvas = canvas;
-			this.setCanvasSize();
+			this.setCanvasSize();			
+			window.addEventListener("resize", x => this.setCanvasSize());
 			return {
 				ctx: this.glCtx,
 				fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
