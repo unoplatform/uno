@@ -3029,7 +3029,9 @@ public partial class NavigationView : ContentControl
 
 		bool shouldHandleFocus = true;
 		var nviImpl = nvi;
-		var nextFocusableElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Up);
+		var options = new FindNextElementOptions();
+		options.SearchRoot = XamlRoot.Content;
+		var nextFocusableElement = FocusManager.FindNextElement(FocusNavigationDirection.Up, options);
 
 		if (nextFocusableElement is NavigationViewItem nextFocusableNVI)
 		{
