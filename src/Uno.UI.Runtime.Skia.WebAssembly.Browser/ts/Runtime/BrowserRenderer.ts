@@ -36,13 +36,15 @@ namespace Uno.UI.Runtime.Skia {
 			var w = width * scale
 			var h = height * scale;
 
-			if (this.canvas.width !== w)
-				this.canvas.width = w;
-			if (this.canvas.height !== h)
-				this.canvas.height = h;
+			if (this.canvas) {
+				if (this.canvas.width !== w)
+					this.canvas.width = w;
+				if (this.canvas.height !== h)
+					this.canvas.height = h;
 
-			this.canvas.style.width = `${width}px`;
-			this.canvas.style.height = `${height}px`;
+				this.canvas.style.width = `${width}px`;
+				this.canvas.style.height = `${height}px`;
+			}
 
 			// We request to repaint on the next frame. Without this, the first frame after resizing the window will be
 			// blank and will cause a flickering effect when you drag the window's border to resize.
