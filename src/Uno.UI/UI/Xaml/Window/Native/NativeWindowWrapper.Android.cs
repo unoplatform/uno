@@ -57,18 +57,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 
-	internal void OnNativeActivated(CoreWindowActivationState state)
-	{
-		ActivationState = state;
-
-		MUX.Application.Current.RequestedThemeChanged += () =>
-		{
-			if (MUX.Application.Current.InitializationComplete)
-			{
-				Instance.ApplySystemOverlaysTheming();
-			}
-		};
-	}
+	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosing();
 
@@ -106,6 +95,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	protected override void ShowCore()
 	{
+		MUX.Application.Current.RequestedThemeChanged += () =>
+		{
+			if (MUX.Application.Current.InitializationComplete)
+			{
+				ApplySystemOverlaysTheming();
+			}
+		};
+
 		ApplySystemOverlaysTheming();
 		RemovePreDrawListener();
 	}
