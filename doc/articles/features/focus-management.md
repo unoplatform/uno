@@ -14,6 +14,7 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 
 - Use `GetFocusedElement(XamlRoot)` instead of `GetFocusedElement()`.
 - Use `TryMoveFocus` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
+- Use `TryMoveFocusAsync` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
 - Use `FindNextElement` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
 - Use the aforementioned `FindNextElement` overload instead of `FindNextFocusableElement`.
 - Always provide an element in the visual tree to `FindFirstFocusableElement` and `FindLastFocusableElement`.
