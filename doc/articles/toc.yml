@@ -54,8 +54,6 @@
         items:
         - name: WebAssembly
           href: xref:Uno.UI.CommonIssues.Wasm
-        - name: UWP
-          href: xref:Uno.UI.CommonIssues.UWP
         - name: Skia (Gtk/Wpf/Framebuffer)
           href: xref:Uno.UI.CommonIssues.Skia
         - name: iOS/mac Catalyst
