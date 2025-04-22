@@ -33,7 +33,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
-	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
 	private SKPicture? _picture;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty;
@@ -119,6 +119,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				_flags &= ~VisualFlags.MatrixDirty;
 
+				var isLocalMatrixIdentity = true;
+
 				// Start out with the final matrix of the parent
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
@@ -129,19 +131,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					0, 1, 0, 0,
 					0, 0, 1, 0,
 					totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y, 0, 1);
-				matrix = offsetMatrix * matrix;
+				if (!offsetMatrix.IsIdentity)
+				{
+					isLocalMatrixIdentity = false;
+					matrix = offsetMatrix * matrix;
+				}
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 				if (GetTransform() is { IsIdentity: false } transform)
 				{
+					isLocalMatrixIdentity = false;
 					matrix = transform * matrix;
 				}
 
-				_totalMatrix = matrix;
-
+				_totalMatrix = (matrix, isLocalMatrixIdentity);
 			}
 
-			return _totalMatrix;
+			return _totalMatrix.matrix;
 
 			Matrix4x4 GetTransform()
 			{
@@ -478,19 +484,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, out session);
 
-		Matrix4x4 totalMatrix;
-
-		if (Unsafe.IsNullRef(ref rootTransform))
+		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
 		{
-			totalMatrix = TotalMatrix;
+			Matrix4x4 totalMatrix;
+
+			if (Unsafe.IsNullRef(ref rootTransform))
+			{
+				totalMatrix = TotalMatrix;
+			}
+			else
+			{
+				totalMatrix = TotalMatrix * rootTransform;
+			}
+
+			// this avoids the matrix copying in canvas.SetMatrix()
+			UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
 		}
+#if DEBUG
 		else
 		{
-			totalMatrix = TotalMatrix * rootTransform;
+			global::System.Diagnostics.Debug.Assert(canvas.TotalMatrix == TotalMatrix.ToSKMatrix());
 		}
-
-		// this avoids the matrix copying in canvas.SetMatrix()
-		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
+#endif
 	}
 
 	[Flags]
