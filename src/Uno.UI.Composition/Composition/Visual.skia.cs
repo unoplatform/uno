@@ -503,7 +503,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 		else
 		{
-			global::System.Diagnostics.Debug.Assert(canvas.TotalMatrix == TotalMatrix.ToSKMatrix());
+			Debug.Assert(Unsafe.IsNullRef(ref rootTransform) ? canvas.TotalMatrix == TotalMatrix.ToSKMatrix() : canvas.TotalMatrix == (TotalMatrix * rootTransform).ToSKMatrix());
 		}
 #endif
 	}
