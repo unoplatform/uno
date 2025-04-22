@@ -130,12 +130,15 @@ namespace Uno.UI.Runtime.Skia.Win32
 				var cts = new CancellationTokenSource();
 				_ = Task.Run(async () =>
 				{
-					await Task.Delay(timeout.Value, cts.Token);
-
-					if (!cts.IsCancellationRequested)
+					try
 					{
+						await Task.Delay(timeout.Value, cts.Token);
 						// This sends an UnoWin32DispatcherMsg and unblocks the GetMessage call.
 						NativeDispatcher.Main.Enqueue(() => { });
+					}
+					catch (TaskCanceledException)
+					{
+						// No need to unblock anything.
 					}
 				}, cts.Token);
 
