@@ -603,7 +603,7 @@ internal partial class InputManager
 					var leaveCaptureCtx = new BubblingContext { Mode = BubblingMode.IgnoreParents };
 					var leaveCaptureResult = Raise(Leave, captureTarget, args, leaveCaptureCtx);
 
-					// If this fails, it means we have to update HitTest to capture the list of elements tonto which the event should be raised,
+					// If this fails, it means we have to update HitTest to capture the list of elements onto which the event should be raised,
 					// and update the event bubbling logic to use that list instead of relying on dynamic parent discovery!
 					Debug.Assert(leaveCaptureResult.VisualTreeAltered is false);
 
