@@ -11,3 +11,7 @@ This error may occur when deploying an application to a physical device with ARM
 ```xml
   <RuntimeIdentifiers Condition="$(TargetFramework.Contains('-android'))">android-arm;android-arm64;android-x86;android-x64</RuntimeIdentifiers>
 ```
+
+## Additional troubleshooting
+
+You can get additional build [troubleshooting information here](xref:Uno.Development.Troubleshooting).
