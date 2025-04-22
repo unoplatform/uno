@@ -15,6 +15,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
+using MUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -94,6 +95,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	protected override void ShowCore()
 	{
+		MUX.Application.Current.RequestedThemeChanged += () =>
+		{
+			if (MUX.Application.Current.InitializationComplete)
+			{
+				ApplySystemOverlaysTheming();
+			}
+		};
+
 		ApplySystemOverlaysTheming();
 		RemovePreDrawListener();
 	}
