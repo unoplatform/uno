@@ -17,7 +17,6 @@ using Windows.Graphics.Display;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
-
 #if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 #else
@@ -31,6 +30,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
 	private SkiaCanvas? _skCanvasView;
+	private InputLayer? _inputLayer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
@@ -67,26 +67,40 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void Initialize()
 	{
+		var view = View!;
+
+		_inputLayer = new InputLayer();
+		_inputLayer.Frame = view.Bounds;
+		_inputLayer.AutoresizingMask = UIViewAutoresizing.All;
+		// We inject the input layer directly as `View` in order to get all pointer events, including under the nativeOverlayLayer (unless handled by native view)
+		// Note: We must have a layer (compared to override TouchesXXX methods in this class) in order to be able to properly get the multitouch events.
+		View = view = _inputLayer;
+
 		_textInputLayer = new UIView();
+		view.AddSubview(_textInputLayer);
+
 		_skCanvasView = new SkiaCanvas();
 #if !__TVOS__
 		_skCanvasView.SetOwner(this);
 #endif
-		_skCanvasView.Frame = View!.Bounds;
+		_skCanvasView.Frame = view.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
 #if __TVOS__
 		_skCanvasView.PaintSurface += OnPaintSurface;
 #endif
-		View!.AddSubview(_textInputLayer);
-		View!.AddSubview(_skCanvasView);
+		view.AddSubview(_skCanvasView);
+
+		_inputLayer = new InputLayer();
+		_inputLayer.Frame = view.Bounds;
+		_inputLayer.AutoresizingMask = UIViewAutoresizing.All;
+		view.AddSubview(_inputLayer);
 
 		var nativeOverlayLayer = new NativeOverlayLayer();
-		nativeOverlayLayer.Frame = View!.Bounds;
+		nativeOverlayLayer.Frame = view.Bounds;
 		nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
 		nativeOverlayLayer.SubviewsChanged += NativeOverlayLayer_SubviewsChanged;
 		_nativeOverlayLayer = nativeOverlayLayer;
-
-		View!.AddSubview(_nativeOverlayLayer);
+		view.AddSubview(_nativeOverlayLayer);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
@@ -284,30 +298,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
 	}
 #endif
-
-	public override void TouchesBegan(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this.View!, touches, evt);
-		base.TouchesBegan(touches, evt);
-	}
-
-	public override void TouchesMoved(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesMoved(this.View!, touches, evt);
-		base.TouchesMoved(touches, evt);
-	}
-
-	public override void TouchesEnded(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesEnded(this.View!, touches, evt);
-		base.TouchesEnded(touches, evt);
-	}
-
-	public override void TouchesCancelled(NSSet touches, UIEvent? evt)
-	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this.View!, touches, evt);
-		base.TouchesCancelled(touches, evt);
-	}
 
 	public override void MotionEnded(UIEventSubtype motion, UIEvent? evt)
 	{
