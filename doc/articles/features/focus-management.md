@@ -13,11 +13,14 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 `FocusManager` class is `static`, but can operate in multi-window environment. To handle this correctly, some methods provide overloads allowing the user to specify a `XamlRoot` or `UIElement` the operation should be executed against. The overloads that do not have this capability will throw an exception.
 
 - Use `GetFocusedElement(XamlRoot)` instead of `GetFocusedElement()`.
-- Use `TryMoveFocus` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
-- Use `TryMoveFocusAsync` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
-- Use `FindNextElement` overload with `FindNextElementOptions` instance which has `SearchRoot` set to any `UIElement` in the visual tree.
+- Use `TryMoveFocus` overload with `FindNextElementOptions` instance which has `SearchRoot` set to an `UIElement` in the visual tree or `XamlRoot.Content`.
+- Use `TryMoveFocusAsync` overload with `FindNextElementOptions` instance which has `SearchRoot` set to an `UIElement` in the visual tree or `XamlRoot.Content`.
+- Use `FindNextElement` overload with `FindNextElementOptions` instance which has `SearchRoot` set to an `UIElement` in the visual tree or `XamlRoot.Content`.
 - Use the aforementioned `FindNextElement` overload instead of `FindNextFocusableElement`.
 - Always provide an element in the visual tree to `FindFirstFocusableElement` and `FindLastFocusableElement`.
+
+> [!NOTE]
+> `SearchRoot` in `FindNextElementOptions` is the root from which the next focus candidate to receive navigation focus is identified. Therefore the the methods will behave differently based on which element is used.
 
 ## Keyboard focus
 
