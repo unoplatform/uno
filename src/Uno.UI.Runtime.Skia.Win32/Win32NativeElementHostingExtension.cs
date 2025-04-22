@@ -23,8 +23,9 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 	private static HWND _enumProcRet;
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
+	private static string? _lastFinalSvgClipPath;
 
-	private SKPath _tempPath = new();
+	private readonly SKPath _tempPath = new();
 	private Rect _lastArrangeRect;
 
 	private HWND Hwnd
@@ -73,10 +74,10 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			return;
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathChanged += OnRenderingNegativePathChanged;
+		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
 
-	private unsafe void OnRenderingNegativePathChanged(object? sender, SKPath path)
+	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
 		if (path != _lastClipPath)
 		{
@@ -88,6 +89,13 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
 		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
+
+		if (_tempPath.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath)
+		{
+			return;
+		}
+
+		_lastFinalSvgClipPath = svgPathData;
 
 		Debug.Assert(_tempPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
 		GpPath* gpPath = null;
@@ -222,7 +230,7 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathChanged -= OnRenderingNegativePathChanged;
+		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
@@ -248,7 +256,7 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		OnRenderingNegativePathChanged(this, _lastClipPath);
+		OnRenderingNegativePathReevaluated(this, _lastClipPath);
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
