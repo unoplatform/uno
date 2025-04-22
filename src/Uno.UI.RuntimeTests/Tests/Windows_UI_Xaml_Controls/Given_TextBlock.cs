@@ -22,6 +22,7 @@ using System.Drawing;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
@@ -605,6 +606,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.AreEqual(SUT.XamlRoot, inline.XamlRoot);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Inlines_Transitively_Change()
+		{
+			var SUT = new TextBlock();
+
+			await UITestHelper.Load(SUT, tb => tb.IsLoaded);
+
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			span.Inlines.Add(new Run() { Text = "text" });
+
+			await UITestHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
 		}
 
 #if __WASM__
