@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using System.ComponentModel;
 
 
 namespace Microsoft.UI.Xaml.Input
@@ -48,6 +49,10 @@ namespace Microsoft.UI.Xaml.Input
 		/// <summary>
 		/// Retrieves the last element that can receive focus based on the specified scope.
 		/// </summary>
+		/// <remarks>
+		/// The <paramref name="searchScope"/> parameter should always be set to a non-null value,
+		/// otherwise null is returned.
+		/// </remarks>
 		/// <param name="searchScope">The root object from which to search. If null, the search scope is the current window.</param>
 		/// <returns>The first focusable object.</returns>
 		public static DependencyObject? FindFirstFocusableElement(DependencyObject? searchScope) =>
@@ -56,6 +61,10 @@ namespace Microsoft.UI.Xaml.Input
 		/// <summary>
 		/// Retrieves the last element that can receive focus based on the specified scope.
 		/// </summary>
+		/// <remarks>
+		/// The <paramref name="searchScope"/> parameter should always be set to a non-null value,
+		/// otherwise null is returned.
+		/// </remarks>
 		/// <param name="searchScope">The root object from which to search. If null, the search scope is the current window.</param>
 		/// <returns>The first focusable object.</returns>
 		public static DependencyObject? FindLastFocusableElement(DependencyObject? searchScope) =>
@@ -70,6 +79,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// <remarks>We recommend using this method instead of <see cref="FindNextFocusableElement(FocusNavigationDirection)" />.
 		/// FindNextFocusableElement retrieves a UIElement, which returns null if the next focusable element
 		/// is not a UIElement (such as a Hyperlink object).</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static DependencyObject? FindNextElement(FocusNavigationDirection focusNavigationDirection)
 		{
 			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
@@ -118,6 +129,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="focusNavigationDirection">The direction that focus moves from element to element within the application UI.</param>
 		/// <returns>Next focusable view depending on FocusNavigationDirection, null if focus cannot be set in the specified direction.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static UIElement? FindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
 			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
@@ -136,6 +149,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// <param name="focusNavigationDirection">The direction that focus moves from element to element within the app UI.</param>
 		/// <param name="hintRect">A bounding rectangle used to influence which element is most likely to be considered the next to receive focus.</param>
 		/// <returns>Next focusable view depending on FocusNavigationDirection, null if focus cannot be set in the specified direction.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use FindNextElement overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static UIElement? FindNextFocusableElement(FocusNavigationDirection focusNavigationDirection, Rect hintRect)
 		{
 			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
@@ -152,6 +167,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// Retrieves the element in the UI that has focus, if any.
 		/// </summary>
 		/// <returns>The object that has focus. Typically, this is a Control class.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use GetFocusedElement overload with XamlRoot parameter.", false)]
 		public static object? GetFocusedElement() => GetFocusedElementImpl();
 
 		/// <summary>
@@ -196,6 +213,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// If the focus is on the last element in the tab order and FocusNavigationDirection.Next is specified, focus moves to the first element.
 		/// Other directions are not supported on all platforms.
 		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use TryMoveFocus overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static bool TryMoveFocus(FocusNavigationDirection focusNavigationDirection)
 		{
 			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
@@ -258,6 +277,8 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <param name="focusNavigationDirection">The direction that focus moves from element to element within the app UI.</param>
 		/// <returns>The <see cref="FocusMovementResult" /> that indicates whether focus was successfully set.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use TryMoveFocusAsync overload with FindNextElementOptions and set its SearchRoot property to any element in the visual tree.", false)]
 		public static IAsyncOperation<FocusMovementResult> TryMoveFocusAsync(FocusNavigationDirection focusNavigationDirection)
 		{
 			if (!Enum.IsDefined(typeof(FocusNavigationDirection), focusNavigationDirection))
