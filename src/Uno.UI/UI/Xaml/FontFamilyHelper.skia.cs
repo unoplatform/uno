@@ -54,8 +54,11 @@ internal static partial class FontFamilyHelper
 		}
 
 		var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
-		var manifestStream = await manifestFile.OpenStreamForReadAsync();
-		var manifest = FontManifestHelpers.DeserializeManifest(manifestStream);
+		FontManifest? manifest = null;
+		using (var manifestStream = await manifestFile.OpenStreamForReadAsync())
+		{
+			manifest = FontManifestHelpers.DeserializeManifest(manifestStream);
+		}
 
 		if (manifest is null)
 		{
