@@ -23,7 +23,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
-using FontFamilyHelper = Uno.UI.Xaml.Media.FontFamilyHelper;
+using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Uno.Disposables;
 
@@ -101,16 +101,27 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	[JSExport]
 	private static async Task PrefetchFonts()
 	{
-		var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(new Uri(FeatureConfiguration.Font.DefaultTextFontFamily));
-		if (textFontSuccess)
-		{
-			typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
-		}
-
 		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 		if (symbolsFontSuccess)
 		{
 			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
+		}
+
+		if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
+		{
+			var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
+			if (textFontSuccess)
+			{
+				typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
+			}
+		}
+		else
+		{
+			await FontFamilyHelper.PreloadAsync(
+				FeatureConfiguration.Font.DefaultTextFontFamily,
+				FontWeights.Normal,
+				FontStretch.Normal,
+				FontStyle.Normal);
 		}
 	}
 
