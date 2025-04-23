@@ -8,10 +8,10 @@ namespace Uno.UI.Xaml.Controls;
 
 internal static class InputReturnTypeExtensions
 {
-	public static string ToEnterKeyHintValue(this InputReturnType inputReturnType) => inputReturnType switch
-	{
-		InputReturnType.Default => "",
-		_ when Enum.IsDefined(typeof(InputReturnType), inputReturnType) => inputReturnType.ToString().ToLowerInvariant(),
-		_ => throw new ArgumentOutOfRangeException($"Invalid value of InputReturnType ({inputReturnType})"),
-	};
+	public static string ToEnterKeyHintValue(this InputReturnType inputReturnType) =>
+		inputReturnType switch
+		{
+			_ when Enum.IsDefined(typeof(InputReturnType), inputReturnType) => inputReturnType.ToString().ToLowerInvariant(),
+			_ => "",
+		};
 }
