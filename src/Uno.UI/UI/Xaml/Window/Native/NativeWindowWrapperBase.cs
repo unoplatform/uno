@@ -51,6 +51,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	internal protected Window? Window => _window;
 
+	internal bool AssociatedWithManagedWindow => _window != null && _xamlRoot != null;
+
 	public bool WasShown { get; private set; }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
