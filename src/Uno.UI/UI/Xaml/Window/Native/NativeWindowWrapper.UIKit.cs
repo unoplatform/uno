@@ -1,23 +1,20 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.Graphics;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using Microsoft.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -65,6 +62,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #endif
 		_nativeWindow.RootViewController = _mainController;
 		ObserveOrientationAndSize();
+
+		if (Window is null)
+		{
+			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
+		}
+		Window.NotifyContentLoaded();
 	}
 
 	public override NativeWindow? NativeWindow => _nativeWindow;
