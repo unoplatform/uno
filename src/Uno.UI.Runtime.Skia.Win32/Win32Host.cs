@@ -126,7 +126,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
-		CompositionTarget.UseGenericTimer = true;
+		CompositionTargetTimer.Start();
 	}
 
 	protected override Task RunLoop()
