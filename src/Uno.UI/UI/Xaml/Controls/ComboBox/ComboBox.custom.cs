@@ -109,6 +109,14 @@ public partial class ComboBox : Selector
 			//	border.Child 
 			//}
 
+#if HAS_UNO
+			if (IsLoaded)
+			{
+				popup.Closed -= OnPopupClosed;
+				popup.Closed += OnPopupClosed;
+			}
+#endif
+
 			popup.CustomLayouter = new DropDownLayouter(this, popup);
 
 			popup.IsLightDismissEnabled = true;
