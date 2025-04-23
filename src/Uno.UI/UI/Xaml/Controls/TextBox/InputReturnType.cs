@@ -68,18 +68,6 @@ public enum InputReturnType
 	Route,
 
 	/// <summary>
-	/// Typically used to indicate a "Google" action.
-	/// </summary>
-	/// <remarks>Only supported on Apple targets.</remarks>
-	Google,
-
-	/// <summary>
-	/// Typically used to indicate a "Yahoo" action.
-	/// </summary>
-	/// <remarks>Only supported on Apple targets.</remarks>
-	Yahoo,
-
-	/// <summary>
 	/// Typically used to indicate a "Emergency Call" action.
 	/// </summary>
 	/// <remarks>Only supported on Apple targets.</remarks>
