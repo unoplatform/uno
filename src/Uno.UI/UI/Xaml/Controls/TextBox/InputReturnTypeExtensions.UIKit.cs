@@ -8,9 +8,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal static class InputReturnTypeExtensions
 {
-	public static UIReturnKeyType ToUIReturnKeyType(this InputReturnType inputReturnType)
-	{
-		return inputReturnType switch
+	public static UIReturnKeyType ToUIReturnKeyType(this InputReturnType inputReturnType) =>
+		inputReturnType switch
 		{
 			InputReturnType.Default => UIReturnKeyType.Default,
 			InputReturnType.Go => UIReturnKeyType.Go,
@@ -21,5 +20,4 @@ internal static class InputReturnTypeExtensions
 			InputReturnType.Previous => UIReturnKeyType.Previous,
 			_ => UIReturnKeyType.Default
 		};
-	}
 }

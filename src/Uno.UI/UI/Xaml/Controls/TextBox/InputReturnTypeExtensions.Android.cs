@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Android.Views.InputMethods;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal static class InputReturnTypeExtensions
 {
-	public static ImeAction ToImeAction(this InputReturnType inputReturnType)
-	{
-		return inputReturnType switch
+	public static ImeAction ToImeAction(this InputReturnType inputReturnType) =>
+		inputReturnType switch
 		{
 			InputReturnType.Default => ImeAction.None,
 			InputReturnType.Go => ImeAction.Go,
@@ -21,5 +16,4 @@ internal static class InputReturnTypeExtensions
 			InputReturnType.Previous => ImeAction.Previous,
 			_ => ImeAction.None
 		};
-	}
 }
