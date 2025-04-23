@@ -1,18 +1,12 @@
-﻿using Foundation;
-using System;
-using System.Linq;
-using UIKit;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel;
-using ObjCRuntime;
-using Windows.Globalization;
-using Windows.Graphics.Display;
-using Uno.Extensions;
-using Windows.UI.Core;
-using Uno.Foundation.Logging;
+﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
-using Uno.UI.Xaml.Controls;
+using Foundation;
+using ObjCRuntime;
+using UIKit;
+using Uno.Foundation.Logging;
+using Windows.ApplicationModel.Activation;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
@@ -22,6 +16,7 @@ namespace Microsoft.UI.Xaml
 	public partial class Application : UIApplicationDelegate
 	{
 		private const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+		private const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 
 		private bool _preventSecondaryActivationHandling;
 
@@ -44,6 +39,20 @@ namespace Microsoft.UI.Xaml
 		internal static bool HasSceneManifest() =>
 			(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
 			NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
+
+		public override bool RespondsToSelector(Selector sel)
+		{
+			// if the app is not a multi-window app, then we cannot override the GetConfiguration method
+			if (sel?.Name == GetConfigurationSelectorName && !HasSceneManifest())
+			{
+				return false;
+			}
+
+			return base.RespondsToSelector(sel);
+		}
+
+		public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
+			new(UIApplicationSceneManifestKey, connectingSceneSession.Role);
 
 		/// <summary>
 		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
