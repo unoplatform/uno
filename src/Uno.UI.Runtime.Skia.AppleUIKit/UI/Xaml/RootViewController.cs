@@ -90,11 +90,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #endif
 		view.AddSubview(_skCanvasView);
 
-		_inputLayer = new InputLayer();
-		_inputLayer.Frame = view.Bounds;
-		_inputLayer.AutoresizingMask = UIViewAutoresizing.All;
-		view.AddSubview(_inputLayer);
-
 		var nativeOverlayLayer = new NativeOverlayLayer();
 		nativeOverlayLayer.Frame = view.Bounds;
 		nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
