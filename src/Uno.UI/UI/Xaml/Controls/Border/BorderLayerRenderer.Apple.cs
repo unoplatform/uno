@@ -64,7 +64,7 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.BorderBrush,
 			_borderInfoProvider.BorderThickness,
 			_borderInfoProvider.CornerRadius);
-		if (!newState.Equals(_currentState) || forceUpdate)
+		if (!newState.Equals((BorderLayerState)_currentState) || forceUpdate)
 		{
 			_layerDisposable.Disposable = null;
 			_layerDisposable.Disposable = InnerCreateLayer(_owner, _owner.Layer, newState, out var updatedBoundsPath);
