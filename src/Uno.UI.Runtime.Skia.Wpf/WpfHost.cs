@@ -88,7 +88,7 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
-		CompositionTarget.UseGenericTimer = true;
+		CompositionTargetTimer.Start();
 	}
 
 	private void StartApp()
