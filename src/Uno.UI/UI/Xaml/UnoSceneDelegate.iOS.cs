@@ -33,12 +33,8 @@ public class UnoSceneDelegate : UISceneDelegate
 		{
 			throw new InvalidOperationException("No window wrapper available for the scene.");
 		}
-		var wrapper = NativeWindowWrapper.AwaitingScene.Dequeue();
-		if (wrapper is null)
-		{
-			throw new InvalidOperationException("No window wrapper available for the scene.");
-		}
 
+		var wrapper = NativeWindowWrapper.AwaitingScene.Dequeue();
 		wrapper.SetNativeWindow(window);
 	}
 
