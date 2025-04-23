@@ -320,11 +320,13 @@ namespace Microsoft.UI.Xaml.Controls
 				: baseValue;
 		}
 
-		private void OnReturnKeyTypeChanged(UIReturnKeyType newValue)
+		private void OnReturnKeyTypeChanged(UIReturnKeyType newValue) => SetUIReturnKeyType(newValue);
+
+		internal void SetUIReturnKeyType(UIReturnKeyType returnKeyType)
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.ReturnKeyType = newValue;
+				_textBoxView.ReturnKeyType = returnKeyType;
 			}
 		}
 
