@@ -3,13 +3,13 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
-		private EnterKeyHint? _enterKeyHint;
 
 		internal TextBoxView TextBoxView => _textBoxView;
 
@@ -54,8 +54,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
-
-			ApplyEnterKeyHint();
 		}
 
 		partial void OnTappedPartial()
