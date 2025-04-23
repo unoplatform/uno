@@ -15,6 +15,9 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.NativeElementHosting;
+using Uno.Helpers;
+using Microsoft.Windows.AppLifecycle;
+using Windows.ApplicationModel.Activation;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -65,7 +68,6 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
-
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			BrowserHtmlElement.Initialize();
@@ -91,6 +93,17 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 
 		_renderer = new BrowserRenderer(this);
 
+		// Check for protocol launch activation.
+		var arguments = NativeMethods.GetSearchParams();
+		if (!string.IsNullOrEmpty(arguments))
+		{
+			if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
+			{
+				var appInstance = AppInstance.GetCurrent();
+				appInstance.SetActivatedEventArgs(AppActivationArguments.CreateProtocol(new(activationUri, ApplicationExecutionState.NotRunning)));
+			}
+		}
+
 		Application.Start(CreateApp);
 	}
 
@@ -106,5 +119,8 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.persistBootstrapperLoader")]
 		public static partial void PersistBootstrapperLoader();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getSearchParams")]
+		public static partial string GetSearchParams();
 	}
 }
