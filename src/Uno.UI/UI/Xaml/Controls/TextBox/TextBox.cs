@@ -29,6 +29,7 @@ using DirectUI;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+using Uno.UI.Xaml.Controls;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
@@ -221,6 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextWrappingChanged();
 			OnFocusStateChanged(FocusState.Unfocused, FocusState, initial: true);
 			OnTextCharacterCasingChanged(CharacterCasing);
+			OnInputReturnTypeChanged(TextBoxExtensions.GetInputReturnType(this), initial: true);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -265,6 +267,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void InitializePropertiesPartial();
+
+		internal void OnInputReturnTypeChanged(InputReturnType inputReturnType, bool initial)
+		{
+			if (inputReturnType != InputReturnType.Default || !initial)
+			{
+				SetInputReturnTypePlatform(inputReturnType);
+			}
+		}
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 
 		#region Text DependencyProperty
 

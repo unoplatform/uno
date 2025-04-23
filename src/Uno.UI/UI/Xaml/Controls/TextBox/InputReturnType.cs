@@ -4,7 +4,7 @@
 /// Defines constants that customize the appearance 
 /// of the Enter key on the virtual keyboard.
 /// </summary>
-public enum EnterKeyHint
+public enum InputReturnType
 {
 	/// <summary>
 	/// Default value, matches "" (empty string) in HTML.
