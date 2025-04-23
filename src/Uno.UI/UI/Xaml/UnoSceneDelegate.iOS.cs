@@ -38,6 +38,8 @@ public class UnoSceneDelegate : UISceneDelegate
 		{
 			throw new InvalidOperationException("No window wrapper available for the scene.");
 		}
+
+		wrapper.SetNativeWindow(window);
 	}
 
 	public override void DidDisconnect(UIScene scene)

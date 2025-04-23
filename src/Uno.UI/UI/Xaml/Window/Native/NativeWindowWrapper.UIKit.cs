@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
@@ -68,6 +70,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		_nativeWindow.RootViewController = _mainController;
 		ObserveOrientationAndSize();
 		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+
+		if (Window is null)
+		{
+			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
+		}
+		Window.NotifyContentLoaded();
 	}
 
 	public override NativeWindow? NativeWindow => _nativeWindow;
