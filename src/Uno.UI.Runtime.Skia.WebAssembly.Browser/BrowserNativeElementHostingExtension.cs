@@ -11,6 +11,7 @@ namespace Uno.UI.Runtime.Skia;
 internal partial class BrowserNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _presenter;
+	private static string _lastSvgClipPath = "";
 
 	public BrowserNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -49,7 +50,14 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		NativeMethods.ChangeNativeElementOpacity(((BrowserHtmlElement)content).ElementId, opacity);
 	}
 
-	public static void SetSvgClipPathForNativeElementHost(string path) => NativeMethods.SetSvgClipPathForNativeElementHost(path);
+	public static void SetSvgClipPathForNativeElementHost(string path)
+	{
+		if (_lastSvgClipPath != path)
+		{
+			_lastSvgClipPath = path;
+			NativeMethods.SetSvgClipPathForNativeElementHost(path);
+		}
+	}
 
 	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize) => availableSize;
 
