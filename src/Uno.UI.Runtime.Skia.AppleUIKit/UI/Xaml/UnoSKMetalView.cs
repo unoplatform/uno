@@ -140,6 +140,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			var width = (int)size.Width;
 			var height = (int)size.Height;
+			this.LogDebug()?.LogDebug($"UnoSKMetalView: Draw {width}x{height}");
 
 			if (width <= 0 || height <= 0)
 			{
