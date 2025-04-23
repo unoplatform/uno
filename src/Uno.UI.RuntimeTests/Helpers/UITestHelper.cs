@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -67,6 +68,14 @@ public static class UITestHelper
 		}
 		await TestServices.WindowHelper.WaitForIdle();
 	}
+
+	public static Task WaitFor(
+		Func<bool> condition,
+		int timeoutMS = 1000,
+		string? message = null,
+		[CallerMemberName] string? callerMemberName = null,
+		[CallerLineNumber] int lineNumber = 0
+	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
 
 	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
 
