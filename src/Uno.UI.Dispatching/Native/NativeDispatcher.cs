@@ -425,8 +425,6 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal void WakeUp()
 		{
-			// CheckThreadAccess();
-
 			if (Interlocked.Increment(ref _globalCount) == 1)
 			{
 				EnqueueNative(NativeDispatcherPriority.Normal);

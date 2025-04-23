@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition
 			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
 			if (shouldStop)
 			{
-				Stop(this);
+				Stop();
 			}
 
 			return value;
@@ -56,9 +56,9 @@ namespace Microsoft.UI.Composition
 			return _keyframeEvaluator!.Evaluate(progress);
 		}
 
-		internal override void Stop(CompositionObject compositionObject)
+		internal override void Stop()
 		{
-			base.Stop(compositionObject);
+			base.Stop();
 			Stopped?.Invoke(this, EventArgs.Empty);
 		}
 

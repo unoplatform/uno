@@ -54,6 +54,8 @@ public partial class CompositionAnimation
 	}
 
 #if __SKIA__
+	// TODO: This should not be here as it is possible to re-use animations across
+	// CompositionObjects.
 	CompositionObject? _currentCompositionObject;
 #endif
 
@@ -68,7 +70,7 @@ public partial class CompositionAnimation
 
 	internal virtual object? Evaluate() => null;
 
-	internal virtual void Stop(CompositionObject compositionObject)
+	internal virtual void Stop()
 	{
 #if __SKIA__
 		if (_currentCompositionObject is not null)

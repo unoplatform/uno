@@ -81,20 +81,19 @@ namespace Microsoft.UI.Xaml
 				{
 					if (_continuousTargets.Count == 0)
 					{
-						if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Trace))
+						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
-							typeof(ApplicationLanguages).Log().Trace($"OnSetContinuousRender({enabled}) detach (Count:{_continuousTargets.Count})");
+							this.Log().Trace($"OnSetContinuousRender({enabled}) detach (Count:{_continuousTargets.Count})");
 						}
 
-						Console.WriteLine();
 						// We have at least one target, we need to start the render loop
 						CompositionTarget.Rendering -= OnContinuousRender;
 					}
 					else
 					{
-						if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Trace))
+						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
-							typeof(ApplicationLanguages).Log().Trace($"OnSetContinuousRender({enabled}) attach (Count:{_continuousTargets.Count})");
+							this.Log().Trace($"OnSetContinuousRender({enabled}) attach (Count:{_continuousTargets.Count})");
 						}
 
 						// We have at least one target, we need to start the render loop
@@ -106,9 +105,9 @@ namespace Microsoft.UI.Xaml
 
 		private void OnContinuousRender(object? sender, object e)
 		{
-			if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Trace))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(ApplicationLanguages).Log().Trace($"OnContinuousRender");
+				this.Log().Trace($"OnContinuousRender");
 			}
 
 			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
@@ -166,9 +165,9 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
-					if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						typeof(ApplicationLanguages).Log().Debug("InvariantCulture mode is enabled");
+						this.Log().Debug("InvariantCulture mode is enabled");
 					}
 				}
 			}

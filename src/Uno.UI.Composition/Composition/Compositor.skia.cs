@@ -36,13 +36,13 @@ public partial class Compositor
 			{
 				_runningAnimations.Add(animation);
 
-				if (!_runningTargets.TryGetValue(target, out int count))
+				if (_runningTargets.TryGetValue(target, out int count))
 				{
-					_runningTargets[target] = 1;
+					_runningTargets[target] = count + 1;
 				}
 				else
 				{
-					_runningTargets[target]++;
+					_runningTargets[target] = 1;
 				}
 
 				CoreApplication.SetContinuousRender(target, true);
@@ -60,13 +60,16 @@ public partial class Compositor
 			{
 				if (_runningTargets.TryGetValue(target, out int count))
 				{
-					_runningTargets[target]--;
 
 					if (count == 1)
 					{
 						_runningTargets.Remove(target);
 
 						CoreApplication.SetContinuousRender(target, false);
+					}
+					else
+					{
+						_runningTargets[target] = count - 1;
 					}
 				}
 			}
