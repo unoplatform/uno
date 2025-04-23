@@ -19,6 +19,7 @@ using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
 using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -50,7 +51,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
+
+		AwaitingScene.Enqueue(this);
 	}
+
+	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
 	[MemberNotNull(nameof(_nativeWindow))]
 	internal void SetNativeWindow(NativeWindow nativeWindow)
