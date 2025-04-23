@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
-		private const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+		internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
 		private const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 
 		private bool _preventSecondaryActivationHandling;
