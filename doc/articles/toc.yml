@@ -10,7 +10,7 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
-        
+
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
@@ -155,20 +155,20 @@
     - name: Architecture
       items:
         - name: Supported Platforms
-          href: getting-started/requirements.md
+          href: xref:Uno.GettingStarted.Requirements
           items:
           - name: .NET Versions
-            href: net-version-support.md
+            href: xref:Uno.Development.NetVersionSupport
           - name: Working with Skia Desktop
             href: xref:Uno.Skia.Desktop
           - name: Working with the Linux Framebuffer
-            href: features/using-linux-framebuffer.md
+            href: xref:Uno.Skia.Linux.Framebuffer
         - name: Philosophy
-          href: concepts/overview/philosophy-of-uno.md
+          href: xref:Uno.Overview.Philosophy
         - name: How Uno Works
-          href: how-uno-works.md
+          href: xref:Uno.Development.HowItWorks
         - name: Best practices
-          href: best-practices-uno.md
+          href: xref:Uno.Development.BestPractices
 
     - name: Authoring
       items:
@@ -214,7 +214,7 @@
         href: guides/uno-islands.md
       - name: Native Views with Mobile
         href: native-views.md
-      - name: Native Views with Skia 
+      - name: Native Views with Skia
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
@@ -258,7 +258,7 @@
           - name: General guidance
             href: migrating-guidance.md
       - name: Silverlight
-        topicHref: guides/silverlight-migration/silverlight-migration-landing.md
+        topicHref: xref:Uno.SilverlightMigration.Landing
         href: guides/silverlight-migration/toc.yml
 
     - name: Publishing
@@ -316,12 +316,13 @@
     - name: Contributing
       items:
       - name: Overview
-        href: uno-development/contributing-intro.md
+        href: xref:Uno.Contributing.Intro
       - name: Code of Conduct
-        href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
+        href: ../../CODE_OF_CONDUCT.md
       - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
+        href: xref:Uno.Contributing.WaysToContribute
       - name: How Uno works
+        href: xref:Uno.Contributing.Internals.Overview
         items:
           - name: Overview
             href: uno-development/uno-internals-overview.md
@@ -360,17 +361,20 @@
       - name: Guidelines for code style
         href: contributing/guidelines/code-style.md
       - name: Using the SamplesApp
-        href: uno-development/working-with-the-samples-apps.md
+        href: xref:Uno.Contributing.SamplesApp
       - name: Guidelines for creating tests
+        href: xref:Uno.Contributing.Tests.CreatingTests
         items:
           - name: Overview
-            href: contributing/guidelines/creating-tests.md
+            href: xref:Uno.Contributing.Tests.CreatingTests
           - name: Mocked unit tests (Uno.UI.Tests)
-            href: uno-development/creating-mocked-tests.md
+            href: xref:Uno.Contributing.Tests.Creating-mocked-tests.md
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
-            href: uno-development/creating-runtime-tests.md
+            href: xref:Uno.Contributing.Tests.CreateRuntimeTests
           - name: UI tests with Uno.UITest
-            href: uno-development/creating-ui-tests.md
+            href: xref:Uno.Contributing.Tests.CreateUITests
+          - name: Testing PowerShell Scripts with Pester
+            href: Uno.Contributing.Tests.PowerShell-Pester-Tests
       - name: Debugging Solution Templates
         href: uno-development/debugging-templates.md
       - name: Conventional Commits format

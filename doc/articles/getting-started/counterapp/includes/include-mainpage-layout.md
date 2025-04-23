@@ -1,10 +1,14 @@
+---
+uid: Uno.Workshops.Counter.Mainpage-Layout-Inline
+---
+
 This defines a page with a background set to the theme resource **ApplicationPageBackgroundThemeBrush**, meaning it will adapt to the theme (**Dark** or **Light**) of the application.
 
 The page contains a **`StackPanel`**, which will lay out controls in a vertical stack and is aligned in the center of the page, both horizontally and vertically. The **`StackPanel`** contains a single **`TextBlock`** control, which displays the text `Hello Uno Platform` and is aligned in the horizontal center of the **StackPanel**.
 
 ## Add a Control
 
-We're going to replace the existing **`TextBlock`** with an **`Image`** but before we can do this, we need to add the image file to the application. Download this [SVG image](../Assets/logo.svg) and add it to the **Assets** folder. At this point, you should rebuild the application in order for the image to be included in the application package.
+We're going to replace the existing **`TextBlock`** with an **`Image`** but before we can do this, we need to add the image file to the application. Download this <a alt="Uno Platform Logo Download" href="../Assets/logo.svg" download="logo">SVG Image</a> and add it to the **Assets** folder. At this point, you should rebuild the application in order for the image to be included in the application package.
 
 > [!NOTE]
 > If you're working in Visual Studio, select the newly added **logo.svg** file in the **Solution Explorer**, open the **Properties** tool window, and make sure the **Build Action** property is set to **`UnoImage`**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **`UnoImage`** for all files in the **Assets** folder.
