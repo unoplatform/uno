@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.AppLifecycle
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppInstance
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		internal AppInstance()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsCurrent
 		{
@@ -23,7 +23,7 @@ namespace Microsoft.Windows.AppLifecycle
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Key
 		{
@@ -57,7 +57,7 @@ namespace Microsoft.Windows.AppLifecycle
 			throw new global::System.NotImplementedException("The member IAsyncAction AppInstance.RedirectActivationToAsync(AppActivationArguments args) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppInstance.RedirectActivationToAsync%28AppActivationArguments%20args%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.AppLifecycle.AppActivationArguments GetActivatedEventArgs()
 		{
@@ -76,14 +76,14 @@ namespace Microsoft.Windows.AppLifecycle
 			throw new global::System.NotImplementedException("The member AppRestartFailureReason AppInstance.Restart(string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppRestartFailureReason%20AppInstance.Restart%28string%20arguments%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Windows.AppLifecycle.AppInstance GetCurrent()
 		{
 			throw new global::System.NotImplementedException("The member AppInstance AppInstance.GetCurrent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstance%20AppInstance.GetCurrent%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Microsoft.Windows.AppLifecycle.AppInstance> GetInstances()
 		{
@@ -97,7 +97,7 @@ namespace Microsoft.Windows.AppLifecycle
 			throw new global::System.NotImplementedException("The member AppInstance AppInstance.FindOrRegisterForKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstance%20AppInstance.FindOrRegisterForKey%28string%20key%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<global::Microsoft.Windows.AppLifecycle.AppActivationArguments> Activated
 		{
