@@ -58,6 +58,8 @@
           href: xref:Uno.UI.CommonIssues.Skia
         - name: iOS/mac Catalyst
           href: xref:Uno.UI.CommonIssues.IosCatalyst
+        - name: Android
+          href: xref:Uno.UI.CommonIssues.Android
       - name: Build Errors
         topicHref: xref:Uno.Development.Troubleshooting
         items:
