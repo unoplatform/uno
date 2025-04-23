@@ -27,6 +27,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Windows.Storage.Pickers;
 using AndroidX.Activity;
 using Windows.Extensions;
+using Uno.WinUI.Runtime.Skia.Android;
 
 
 namespace Microsoft.UI.Xaml
@@ -36,6 +37,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private UnoSKCanvasView? _skCanvasView;
 		private ClippedRelativeLayout? _nativeLayerHost;
+		private CompositionTargetChoreographer _choreographer;
 
 		private InputPane _inputPane;
 
@@ -62,7 +64,7 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 		}
 
-		[MemberNotNull(nameof(_inputPane))]
+		[MemberNotNull(nameof(_inputPane), nameof(_choreographer))]
 		private void Initialize()
 		{
 			Instance = this;
@@ -70,6 +72,7 @@ namespace Microsoft.UI.Xaml
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
+			_choreographer = new();
 
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
 		}

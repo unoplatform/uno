@@ -8,9 +8,11 @@ using IOSurface;
 using Metal;
 using MetalKit;
 using Microsoft.Graphics.Display;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
@@ -163,7 +165,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				using (new SKAutoCanvasRestore(canvas, true))
 				{
 					// start drawing
-					if (_picture is { } picture)
+					if (currentPicture is { } picture)
 					{
 						canvas.DrawPicture(picture);
 					}
@@ -192,7 +194,18 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)surface)?.Dispose();
 			}
 
-			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture));
+			if (CompositionTarget.IsRenderingActive)
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Dispatch next rendering");
+				}
+
+				NativeDispatcher.Main.DispatchRendering();
+			}
+
+			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture))
+				&& !CompositionTarget.IsRenderingActive;
 		}
 	}
 }

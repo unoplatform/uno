@@ -1,18 +1,21 @@
-﻿// #define PRINT_FRAME_TIMES
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SkiaSharp;
+using Uno.UI.Composition;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {
 	private List<CompositionAnimation> _runningAnimations = new();
+	private Dictionary<ICompositionTarget, int> _runningTargets = new();
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
 #if PRINT_FRAME_TIMES
 	private int _frameNumber;
@@ -29,19 +32,44 @@ public partial class Compositor
 	{
 		if (animation.IsTrackedByCompositor)
 		{
-			_runningAnimations.Add(animation);
 			if (visual is Visual { CompositionTarget: { } target })
 			{
-				CoreApplication.QueueInvalidateRender(target);
+				_runningAnimations.Add(animation);
+
+				if (!_runningTargets.TryGetValue(target, out int count))
+				{
+					_runningTargets[target] = 1;
+				}
+				else
+				{
+					_runningTargets[target]++;
+				}
+
+				CoreApplication.SetContinuousRender(target, true);
 			}
 		}
 	}
 
-	internal void UnregisterAnimation(CompositionAnimation animation)
+	internal void UnregisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
 			_runningAnimations.Remove(animation);
+
+			if (visual is Visual { CompositionTarget: { } target })
+			{
+				if (_runningTargets.TryGetValue(target, out int count))
+				{
+					_runningTargets[target]--;
+
+					if (count == 1)
+					{
+						_runningTargets.Remove(target);
+
+						CoreApplication.SetContinuousRender(target, false);
+					}
+				}
+			}
 		}
 	}
 
