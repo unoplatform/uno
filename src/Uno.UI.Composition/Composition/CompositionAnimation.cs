@@ -53,9 +53,14 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
+#if __SKIA__
+	CompositionObject? _currentCompositionObject;
+#endif
+
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 #if __SKIA__
+		_currentCompositionObject = compositionObject;
 		Compositor.RegisterAnimation(this, compositionObject);
 #endif
 		return null;
@@ -63,10 +68,13 @@ public partial class CompositionAnimation
 
 	internal virtual object? Evaluate() => null;
 
-	internal virtual void Stop()
+	internal virtual void Stop(CompositionObject compositionObject)
 	{
 #if __SKIA__
-		Compositor.UnregisterAnimation(this);
+		if (_currentCompositionObject is not null)
+		{
+			Compositor.UnregisterAnimation(this, _currentCompositionObject);
+		}
 #endif
 	}
 

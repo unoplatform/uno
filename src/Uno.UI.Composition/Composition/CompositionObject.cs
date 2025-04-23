@@ -183,7 +183,7 @@ namespace Microsoft.UI.Composition
 			if (_animations?.TryGetValue(propertyName, out var animation) == true)
 			{
 				animation.AnimationFrame -= ReEvaluateAnimation;
-				animation.Stop();
+				animation.Stop(this);
 				_animations.Remove(propertyName);
 			}
 		}

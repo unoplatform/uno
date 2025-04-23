@@ -2,6 +2,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -77,6 +78,10 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 		CoreDispatcher.DispatchOverride = MacOSDispatcher.DispatchNativeSingle;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+		// We do not have a display timer on this target, we can use
+		// a constant timer.
+		CompositionTarget.UseGenericTimer = true;
 	}
 
 	private void StartApp()

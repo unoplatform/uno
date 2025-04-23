@@ -94,8 +94,6 @@ namespace Uno.UI.Dispatching
 
 			Action? action = null;
 
-			var didEnqueue = false;
-
 			for (var p = 0; p <= 3; p++)
 			{
 				var queue = @this._queues[p];
@@ -110,8 +108,6 @@ namespace Uno.UI.Dispatching
 
 						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
-							didEnqueue = true;
-
 							@this.EnqueueNative(@this._currentPriority);
 						}
 
@@ -125,11 +121,6 @@ namespace Uno.UI.Dispatching
 			// Restore the priority to the default for native events
 			// (i.e. not dispatched by this running loop)
 			@this._currentPriority = NativeDispatcherPriority.Normal;
-
-			if (!didEnqueue && @this.Rendering != null)
-			{
-				@this.DispatchWakeUp();
-			}
 		}
 
 		/// <remarks>
@@ -158,17 +149,12 @@ namespace Uno.UI.Dispatching
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
-
-		private async void DispatchWakeUp()
-		{
-			await Task.Delay(RenderingEventThrottle);
-
-			if (Rendering != null)
-			{
-				WakeUp();
-			}
-		}
 #endif
+
+		internal void DispatchRendering()
+		{
+			WakeUp();
+		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
@@ -439,7 +425,7 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal void WakeUp()
 		{
-			CheckThreadAccess();
+			// CheckThreadAccess();
 
 			if (Interlocked.Increment(ref _globalCount) == 1)
 			{
@@ -473,8 +459,6 @@ namespace Uno.UI.Dispatching
 		internal event EventHandler<object>? Rendering;
 
 		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
-
-		internal int RenderingEventThrottle;
 
 		public static class TraceProvider
 		{
