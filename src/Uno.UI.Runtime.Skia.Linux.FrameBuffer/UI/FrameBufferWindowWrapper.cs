@@ -11,7 +11,7 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<FrameBufferWindowWrapper> _instance = new Lazy<FrameBufferWindowWrapper>(() => new());
 
-	public FrameBufferWindowWrapper(Window window, XamlRoot xamlRoot)
+	public FrameBufferWindowWrapper()
 	{
 		var displayInformation = DisplayInformation.GetForCurrentViewSafe();
 		RasterizationScale = (float)displayInformation.RawPixelsPerViewPixel;
