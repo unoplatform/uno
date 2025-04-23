@@ -6,6 +6,8 @@ using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
 using System.Diagnostics;
 using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -138,6 +140,16 @@ internal partial class BrowserRenderer
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
+		}
+
+		if (CompositionTarget.IsRenderingActive)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Dispatch next rendering");
+			}
+
+			NativeDispatcher.Main.DispatchRendering();
 		}
 	}
 

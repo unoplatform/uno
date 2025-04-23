@@ -48,8 +48,10 @@ public partial class ExpressionAnimation : CompositionAnimation
 	internal override object? Evaluate()
 		=> _parsedExpression?.Evaluate(this);
 
-	internal override void Stop()
+	internal override void Stop(CompositionObject compositionObject)
 	{
+		base.Stop(compositionObject);
+
 		_parsedExpression?.Dispose();
 		_parsedExpression = null;
 	}
