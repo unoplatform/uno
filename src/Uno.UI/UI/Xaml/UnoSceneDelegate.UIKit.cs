@@ -11,12 +11,21 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
+#if UIKIT_SKIA
+using NativeWindow = Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml.AppleUIKitWindow;
+#else
+using NativeWindow = Uno.UI.Controls.Window;
+#endif
+
 namespace Microsoft.UI.Xaml;
 
 [System.Runtime.Versioning.SupportedOSPlatform("ios13.0")]
 [System.Runtime.Versioning.SupportedOSPlatform("tvos13.0")]
 public class UnoSceneDelegate : UISceneDelegate
 {
+	internal const string UnoSceneConfigurationKey = "__UNO_DEFAULT_SCENE_CONFIGURATION__";
+	internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+
 	[Export("window")]
 	public UIWindow? Window { get; set; }
 
@@ -26,7 +35,7 @@ public class UnoSceneDelegate : UISceneDelegate
 		var windowScene = scene as UIWindowScene;
 
 		// Always instantiate UIWindow within WillConnect
-		var window = new Uno.UI.Controls.Window(windowScene!);
+		var window = new NativeWindow(windowScene!);
 		Window = window;
 
 		if (NativeWindowWrapper.AwaitingScene.Count == 0)
@@ -56,4 +65,8 @@ public class UnoSceneDelegate : UISceneDelegate
 	{
 
 	}
+
+	internal static bool HasSceneManifest() =>
+		(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
+		NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
 }
