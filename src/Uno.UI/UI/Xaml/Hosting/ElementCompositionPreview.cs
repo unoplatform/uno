@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Microsoft.UI.Composition;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Hosting;
 
@@ -32,7 +33,7 @@ public partial class ElementCompositionPreview
 			// TODO: Switch to CompositionTargetGetter and assign a lambda instead.
 			// This will make the Visual usable even if GetElementVisual is called when
 			// the element is not loaded (note that XamlRoot is null when element isn't yet loaded)
-			CompositionTarget = element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget,
+			CompositionTarget = element.XamlRoot?.VisualTree?.ContentRoot.CompositionTarget,
 		};
 #endif
 	}

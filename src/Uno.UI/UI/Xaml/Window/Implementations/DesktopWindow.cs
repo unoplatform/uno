@@ -23,9 +23,9 @@ internal class DesktopWindow : BaseWindowImplementation
 	{
 		_windowChrome = new WindowChrome(Window);
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
-		_desktopWindowXamlSource.AttachToWindow(Window);
 		_desktopWindowXamlSource.Content = _windowChrome;
 		base.Initialize();
+		_desktopWindowXamlSource.AttachToWindow(Window);
 	}
 
 	/// <summary>
