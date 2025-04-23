@@ -26,13 +26,17 @@ using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal abstract class BaseWindowImplementation : IWindowImplementation
+internal abstract partial class BaseWindowImplementation : IWindowImplementation
 {
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
 
 	private bool _isClosing;
 	private bool _isClosed;
+
+	private bool _contentLoaded;
+	private bool _activationRequested;
+	private bool _splashDismissed;
 
 	private AppWindowClosingEventArgs? _appWindowClosingEventArgs;
 
@@ -93,9 +97,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			SetVisibleBoundsFromNative();
 		}
 
-		NativeWindowWrapper?.Show(true);
-
-		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+		_activationRequested = true;
+		TryActivate();
 	}
 
 	[MemberNotNull(nameof(NativeWindowWrapper))]
@@ -359,4 +362,32 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnVisibilityChanged(args);
 		VisibilityChanged?.Invoke(Window, args);
 	}
+
+	public void NotifyContentLoaded()
+	{
+		_contentLoaded = true;
+
+		TryActivate();
+	}
+
+	private void TryActivate()
+	{
+		// To actually activate, both conditions must be true:
+		// 1. The content must be loaded
+		// 2. The activation must be requested by the user
+		if (_contentLoaded && _activationRequested)
+		{
+			NativeWindowWrapper?.Show(true);
+
+			OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
+
+			if (!_splashDismissed)
+			{
+				DismissSplashScreenPlatform();
+				_splashDismissed = true;
+			}
+		}
+	}
+
+	partial void DismissSplashScreenPlatform();
 }

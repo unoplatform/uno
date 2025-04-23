@@ -112,7 +112,14 @@ namespace Microsoft.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 
 			// Force a schedule to let the dotnet exports be initialized properly
-			DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+			if (OperatingSystem.IsBrowser())
+			{
+				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+			}
+			else
+			{
+				_current.InvokeOnLaunched();
+			}
 		}
 
 		private void InvokeOnLaunched()
