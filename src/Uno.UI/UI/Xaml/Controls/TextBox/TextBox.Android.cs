@@ -144,6 +144,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			OnImeOptionsChanged(inputReturnType.ToImeAction());
+
 		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{
 			if (_textBoxView == null)
