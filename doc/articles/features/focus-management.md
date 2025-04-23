@@ -20,7 +20,7 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 - Always provide an element in the visual tree to `FindFirstFocusableElement` and `FindLastFocusableElement`.
 
 > [!NOTE]
-> `SearchRoot` in `FindNextElementOptions` is the root from which the next focus candidate to receive navigation focus is identified. Therefore the the methods will behave differently based on which element is used.
+> `SearchRoot` in `FindNextElementOptions` is the root from which the next focus candidate to receive navigation focus is identified. Therefore, the methods will behave differently based on which element is used.
 
 ## Keyboard focus
 
