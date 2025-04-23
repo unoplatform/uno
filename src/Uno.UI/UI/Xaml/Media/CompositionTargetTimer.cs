@@ -17,9 +17,14 @@ internal class CompositionTargetTimer
 
 	internal static void Start()
 	{
+#if __SKIA__
 		CompositionTarget.RenderingActiveChanged += UpdateTimer;
+#else
+		throw new PlatformNotSupportedException();
+#endif
 	}
 
+#if __SKIA__
 	private static void UpdateTimer()
 	{
 		if (CompositionTarget.IsRenderingActive)
@@ -32,4 +37,5 @@ internal class CompositionTargetTimer
 			_renderTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 		}
 	}
+#endif
 }
