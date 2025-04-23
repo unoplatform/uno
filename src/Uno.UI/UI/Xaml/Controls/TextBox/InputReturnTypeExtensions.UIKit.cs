@@ -21,8 +21,6 @@ internal static class InputReturnTypeExtensions
 			InputReturnType.Continue => UIReturnKeyType.Continue,
 			InputReturnType.Join => UIReturnKeyType.Join,
 			InputReturnType.Route => UIReturnKeyType.Route,
-			InputReturnType.Google => UIReturnKeyType.Google,
-			InputReturnType.Yahoo => UIReturnKeyType.Yahoo,
 			InputReturnType.EmergencyCall => UIReturnKeyType.EmergencyCall,
 			_ => UIReturnKeyType.Default
 		};
