@@ -7,7 +7,7 @@
 public enum InputReturnType
 {
 	/// <summary>
-	/// Default value, matches "" (empty string) in HTML.
+	/// Default value.
 	/// </summary>
 	Default,
 
