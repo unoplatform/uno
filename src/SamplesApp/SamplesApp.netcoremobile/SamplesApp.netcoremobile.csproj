@@ -265,6 +265,7 @@
 	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(NBGV_AssemblyInformationalVersion)'!=''">
 		<PropertyGroup>
 			<_VersionCode>$(NBGV_VersionHeight)</_VersionCode>
+			<_VersionCode Condition=" '$(_VersionCode)' == '' ">0</_VersionCode>
 			<_VersionCode Condition="$(VersionCodeOffset) != ''">$([MSBuild]::Add($(_VersionCode), $(VersionCodeOffset)))</_VersionCode>
 
 			<ApplicationDisplayVersion>$([System.DateTime]::Now.ToString(`yyMMddHHmm`)).$(_VersionCode)</ApplicationDisplayVersion>
