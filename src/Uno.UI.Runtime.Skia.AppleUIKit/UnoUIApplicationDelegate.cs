@@ -13,7 +13,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 [Register("UnoUIApplicationDelegate")]
 public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 {
-	internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
 	private const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 
 	public UnoUIApplicationDelegate()
@@ -29,14 +28,10 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		return true;
 	}
 
-	internal static bool HasSceneManifest() =>
-		(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
-		NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
-
 	public override bool RespondsToSelector(Selector? sel)
 	{
 		// if the app is not a multi-window app, then we cannot override the GetConfiguration method
-		if (sel?.Name == GetConfigurationSelectorName && !HasSceneManifest())
+		if (sel?.Name == GetConfigurationSelectorName && !UnoSceneDelegate.HasSceneManifest())
 		{
 			return false;
 		}
@@ -45,7 +40,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	}
 
 	public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
-		new(UIApplicationSceneManifestKey, connectingSceneSession.Role);
+		new(UnoSceneDelegate.UnoSceneConfigurationKey, connectingSceneSession.Role);
 
 	private void SubscribeBackgroundNotifications()
 	{

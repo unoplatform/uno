@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.UI.Controls;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
@@ -25,7 +26,7 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private AppleUIKitWindow _nativeWindow;
+	private AppleUIKitWindow? _nativeWindow;
 
 	private RootViewController _mainController;
 	private readonly DisplayInformation _displayInformation;
@@ -39,7 +40,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		Instance ??= this;
-		if (!Application.HasSceneManifest())
+		if (!UnoSceneDelegate.HasSceneManifest())
 		{
 			SetNativeWindow(new AppleUIKitWindow());
 		}
@@ -50,7 +51,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
-		ObserveOrientationAndSize();
 
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
 		// otherwise, a black screen may appear. 
@@ -61,10 +61,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if !__TVOS__
 		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
-#endif
-
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
@@ -84,19 +80,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 		_nativeWindow.RootViewController = _mainController;
 		ObserveOrientationAndSize();
-
-		if (Window is null)
-		{
-			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
-		}
-		Window.NotifyContentLoaded();
 	}
 
 	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
 	public static NativeWindowWrapper? Instance { get; private set; }
 
-	public override AppleUIKitWindow NativeWindow => _nativeWindow;
+	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -138,6 +128,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		var newWindowSize = GetWindowSize();
 
 		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
@@ -147,6 +142,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void ObserveOrientationAndSize()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 #if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications
