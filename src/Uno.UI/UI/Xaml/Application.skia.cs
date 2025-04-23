@@ -19,6 +19,7 @@ using Uno.UI;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
+using Microsoft.Windows.AppLifecycle;
 using Windows.Storage;
 
 
@@ -97,6 +98,15 @@ namespace Microsoft.UI.Xaml
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			_startInvoked = true;
+
+			var appInstance = AppInstance.GetCurrent();
+			if (appInstance.GetActivatedEventArgs() is null)
+			{
+				// If no specific activation was set yet, fall back to launch activated event args.
+				appInstance.SetActivatedEventArgs(new AppActivationArguments(
+					ExtendedActivationKind.Launch,
+					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
+			}
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
