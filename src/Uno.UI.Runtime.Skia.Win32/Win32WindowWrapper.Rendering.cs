@@ -16,7 +16,7 @@ internal partial class Win32WindowWrapper
 	private Size? _lastSize;
 	private SKSurface? _surface;
 
-	public event EventHandler<SKPath>? RenderingNegativePathChanged;
+	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
 	private void Paint()
 	{
@@ -59,7 +59,7 @@ internal partial class Win32WindowWrapper
 			{
 				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface.Canvas);
-				RenderingNegativePathChanged?.Invoke(this, path);
+				RenderingNegativePathReevaluated?.Invoke(this, path);
 			}
 			finally
 			{
