@@ -20,6 +20,11 @@ using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Web.WebView2.Core;
+using Uno.UI.NativeElementHosting;
+using Uno.Helpers;
+using Microsoft.Windows.AppLifecycle;
+using Windows.ApplicationModel.Activation;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -129,6 +134,17 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 		try
 		{
+			// Check for protocol launch activation.
+			var arguments = NativeMethods.GetSearchParams();
+			if (!string.IsNullOrEmpty(arguments))
+			{
+				if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
+				{
+					var appInstance = AppInstance.GetCurrent();
+					appInstance.SetActivatedEventArgs(AppActivationArguments.CreateProtocol(new(activationUri, ApplicationExecutionState.NotRunning)));
+				}
+			}
+		
 			Application.Start(CreateApp);
 
 			if (!wasRunning)
@@ -161,5 +177,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		public static partial void PersistBootstrapperLoader();
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.removeLoading")]
 		public static partial void RemoveLoading();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getSearchParams")]
+		public static partial string GetSearchParams();
 	}
 }
