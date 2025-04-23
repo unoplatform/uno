@@ -41,6 +41,10 @@
 		<DebugSymbols>true</DebugSymbols>
 
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\AppManifest.js" />
+	</ItemGroup>
 
 	<!--
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

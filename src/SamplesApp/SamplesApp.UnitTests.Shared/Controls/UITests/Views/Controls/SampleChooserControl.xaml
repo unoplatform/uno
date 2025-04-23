@@ -43,8 +43,6 @@
 				<Setter Property="Margin" Value="4" />
 				<Setter Property="Background"
 						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
-				<Setter Property="Height"
-								Value="36" />
 			</Style>
 
 			<Style x:Key="BaseTitleContainerStyle"
@@ -291,11 +289,7 @@
 
 					<!-- Title -->
 					<StackPanel Grid.Column="2">
-						<TextBlock
-							Style="{StaticResource Typo03}"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Center"
-							Text="Uno Samples" />
+						<Image Source="ms-appx:///Assets/AppLogoSmall.png" Width="32" Margin="0,0,0,2" />
 						<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
 						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
 					</StackPanel>

@@ -85,17 +85,4 @@
 	<ItemGroup>
 		<Folder Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<UnoIcon
-			Include="$(MSBuildThisFileDirectory)Icons\iconapp.svg"
-			ForegroundFile="$(MSBuildThisFileDirectory)Icons\appconfig.svg"
-			ForegroundScale="0.65"
-			Color="#00000000" />
-		<UnoSplashScreen
-			Include="$(MSBuildThisFileDirectory)Splash\splash_screen.svg"
-			BaseSize="128,128"
-			Color="#FFFFFF" />
-
-	</ItemGroup>
 </Project>

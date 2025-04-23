@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -63,8 +64,12 @@ public partial class BindingTests
 			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
 		}
 
+		var activated = false;
 		var SUT = new XBindInWindow();
+		SUT.Activated += (s, e) => activated = true;
 		SUT.Activate();
+
+		await TestServices.WindowHelper.WaitFor(() => activated);
 		try
 		{
 			Assert.AreEqual(0, SUT.ClickCount);
