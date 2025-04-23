@@ -166,7 +166,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 					else if (args.OriginalKey == VirtualKey.GamepadDPadDown)
 					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Next))
+						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Next, GetFindNextElementOptions(false /*useThisAsSearchRoot*/)))
 						{
 							args.Handled = true;
 							return;
@@ -182,7 +182,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 					else if (args.OriginalKey == VirtualKey.GamepadDPadUp)
 					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous))
+						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous, GetFindNextElementOptions(false /*useThisAsSearchRoot*/)))
 						{
 							args.Handled = true;
 							return;
@@ -191,43 +191,23 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					args.Handled = HandleEdgeCaseFocus(true, args.OriginalSource);
 					break;
 				case VirtualKey.Right:
-					if (args.OriginalKey != VirtualKey.GamepadDPadRight)
+					if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right,
+						GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadRight)))
 					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right, GetFindNextElementOptions()))
-						{
-							args.Handled = true;
-							return;
-						}
-					}
-					else
-					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right))
-						{
-							args.Handled = true;
-							return;
-						}
+						args.Handled = true;
+						return;
 					}
 					args.Handled = HandleEdgeCaseFocus(false, args.OriginalSource);
 					break;
 
 				case VirtualKey.Left:
-					if (args.OriginalKey != VirtualKey.GamepadDPadLeft)
+					if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right,
+						GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadLeft)))
 					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left, GetFindNextElementOptions()))
-						{
-							args.Handled = true;
-							return;
-						}
+						args.Handled = true;
+						return;
 					}
-					else
-					{
-						if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left))
-						{
-							args.Handled = true;
-							return;
-						}
-					}
-					args.Handled = HandleEdgeCaseFocus(true, args.OriginalSource);
+					args.Handled = HandleEdgeCaseFocus(false, args.OriginalSource);
 					break;
 			}
 		}
@@ -297,10 +277,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			return false;
 		}
 
-		private FindNextElementOptions GetFindNextElementOptions()
+		private FindNextElementOptions GetFindNextElementOptions(bool useThisAsSearchRoot)
 		{
 			var findNextElementOptions = new FindNextElementOptions();
-			findNextElementOptions.SearchRoot = this;
+			findNextElementOptions.SearchRoot = useThisAsSearchRoot ? this : XamlRoot.Content;
 			return findNextElementOptions;
 		}
 
