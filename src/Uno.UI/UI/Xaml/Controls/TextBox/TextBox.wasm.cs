@@ -207,29 +207,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnRightTapped(e);
 		}
-		
-		partial void OnEnterKeyHintChangedPartial(EnterKeyHint enterKeyHint)
-		{
-			_enterKeyHint = enterKeyHint;
-			ApplyEnterKeyHint();
-		}
 
-		private void ApplyEnterKeyHint()
-		{
-			if (_enterKeyHint is not { } enterKeyHint ||
-				TextBoxView is not { } textBoxView)
-			{
-				return;
-			}
-
-			var enterKeyHintValue = enterKeyHint switch
-			{
-				EnterKeyHint.Default => "",
-				_ when Enum.IsDefined(typeof(EnterKeyHint), enterKeyHint) => enterKeyHint.ToString().ToLowerInvariant(),
-				_ => throw new ArgumentOutOfRangeException($"Invalid value of EnterKeyHint ({enterKeyHint})"),
-			};
-
-			textBoxView.SetAttribute("enterkeyhint", enterKeyHintValue);
-		}
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			TextBoxView?.SetAttribute("enterkeyhint", inputReturnType.ToEnterKeyHintValue());
 	}
 }

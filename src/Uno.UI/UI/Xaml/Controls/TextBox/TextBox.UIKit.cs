@@ -330,6 +330,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			SetUIReturnKeyType(inputReturnType.ToUIReturnKeyType());
+
 		#endregion
 
 		#region KeyboardAppearance DependendcyProperty
