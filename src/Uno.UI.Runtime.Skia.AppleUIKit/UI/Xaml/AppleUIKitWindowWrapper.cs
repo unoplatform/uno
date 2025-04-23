@@ -39,7 +39,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		Instance ??= this;
-		_nativeWindow = new();
+		if (!Application.HasSceneManifest())
+		{
+			SetNativeWindow(new AppleUIKitWindow());
+		}
 
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
@@ -67,7 +70,29 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
+
+		AwaitingScene.Enqueue(this);
 	}
+
+	[MemberNotNull(nameof(_nativeWindow))]
+	internal void SetNativeWindow(AppleUIKitWindow nativeWindow)
+	{
+		_nativeWindow = nativeWindow;
+
+#if __MACCATALYST__
+		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
+#endif
+		_nativeWindow.RootViewController = _mainController;
+		ObserveOrientationAndSize();
+
+		if (Window is null)
+		{
+			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
+		}
+		Window.NotifyContentLoaded();
+	}
+
+	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
 	public static NativeWindowWrapper? Instance { get; private set; }
 
