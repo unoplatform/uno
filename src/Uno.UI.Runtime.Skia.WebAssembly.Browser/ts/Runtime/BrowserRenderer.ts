@@ -11,7 +11,6 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvas = undefined;
 			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
-			window.addEventListener("resize", x => this.setCanvasSize());
 			this.buildImports();
 		}
 
@@ -92,7 +91,8 @@ namespace Uno.UI.Runtime.Skia {
 
 			// read values
 			this.canvas = canvas;
-			this.setCanvasSize();
+			this.setCanvasSize();			
+			window.addEventListener("resize", x => this.setCanvasSize());
 			return {
 				ctx: this.glCtx,
 				fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
