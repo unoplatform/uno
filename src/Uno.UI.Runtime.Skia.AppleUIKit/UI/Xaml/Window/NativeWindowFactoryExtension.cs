@@ -13,8 +13,7 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
 	public bool SupportsClosingCancellation => false;
 
-	// TODO Uno: While supported by the OS, we currently only support single window. Later switch to UIApplication.SharedApplication.SupportsMultipleScenes;
-	public bool SupportsMultipleWindows => false;
+	public bool SupportsMultipleWindows => true;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot) =>
 		new NativeWindowWrapper(window, xamlRoot);
