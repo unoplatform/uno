@@ -125,8 +125,6 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 		return true;
 	}
 
-	private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(10);
-
 	/// <summary>
 	/// This method enables UI Tests to get the output path
 	/// of the current application, in the context of the simulator.
