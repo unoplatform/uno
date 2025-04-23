@@ -33,6 +33,8 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     MVUX;
     Configuration;
     Http;
+    HttpRefit;
+    HttpKiota;
     Serialization;
     Localization;
     Navigation;
@@ -60,7 +62,9 @@ Here are the supported features:
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
-| `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) including the use of [Refit](xref:Uno.Extensions.Http.Overview#refit) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                       |
+| `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
+| `HttpRefit`          | Adds support for strongly-typed REST API clients via [Refit](xref:Uno.Extensions.Http.Overview#refit)                                                                           |
+| `HttpKiota`          | Adds support for OpenAPI-generated clients via [Kiota](xref:Uno.Extensions.Http.Overview#kiota)                                                                           |
 | `Localization`       | Adds support for [Localization](xref:Uno.Extensions.Localization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                           |
 | `Logging`            | Adds support for [Logging](xref:Uno.Extensions.Logging.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
