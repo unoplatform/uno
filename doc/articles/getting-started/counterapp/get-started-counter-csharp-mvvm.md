@@ -151,7 +151,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
                                 .HorizontalAlignment(HorizontalAlignment.Center)
                                 .Width(150)
                                 .Height(150)
-                                .Source("ms-appx:///Counter/Assets/logo.png"),
+                                .Source("ms-appx:///Assets/logo.png"),
                             new TextBox()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)
