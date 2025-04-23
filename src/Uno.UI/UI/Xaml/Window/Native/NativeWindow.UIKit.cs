@@ -14,9 +14,9 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.ViewManagement;
-using Windows.UI.Core;
 using Windows.Foundation;
-using Windows.System;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if !__TVOS__
 using WebKit;
@@ -63,6 +63,17 @@ public partial class Window : UIWindow
 	public Window()
 		: base(UIScreen.MainScreen.Bounds)
 	{
+		Initialize();
+	}
+
+	public Window(UIWindowScene scene) : base(scene)
+	{
+		Initialize();
+	}
+
+	[MemberNotNull(nameof(_inputPane))]
+	private void Initialize()
+	{
 		_inputPane = InputPane.GetForCurrentView();
 		_inputPane.Window = this;
 
@@ -72,8 +83,6 @@ public partial class Window : UIWindow
 #endif
 		UIApplication.Notifications.ObserveDidEnterBackground(OnApplicationEnteredBackground);
 		UIApplication.Notifications.ObserveContentSizeCategoryChanged(OnContentSizeCategoryChanged);
-
-		//NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, OnKeyboardWillShow);
 
 		FocusedViewBringIntoViewOnKeyboardOpensMode = BringIntoViewMode.BottomRightOfViewPort;
 		FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;

@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
+using Uno.UI;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -20,6 +23,21 @@ public class UnoSceneDelegate : UISceneDelegate
 	[Export("scene:willConnectToSession:options:")]
 	public override void WillConnect(UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions)
 	{
+		var windowScene = scene as UIWindowScene;
+
+		// Always instantiate UIWindow within WillConnect
+		var window = new Uno.UI.Controls.Window(windowScene!);
+		Window = window;
+
+		if (NativeWindowWrapper.AwaitingScene.Count == 0)
+		{
+			throw new InvalidOperationException("No window wrapper available for the scene.");
+		}
+		var wrapper = NativeWindowWrapper.AwaitingScene.Dequeue();
+		if (wrapper is null)
+		{
+			throw new InvalidOperationException("No window wrapper available for the scene.");
+		}
 	}
 
 	public override void DidDisconnect(UIScene scene)
@@ -32,9 +50,9 @@ public class UnoSceneDelegate : UISceneDelegate
 
 	}
 
-	public override void DidBecomeActive(UIScene scene) => base.DidBecomeActive(scene);
+	public override void DidBecomeActive(UIScene scene) { }
 
-	public override void WillResignActive(UIScene scene) => base.WillResignActive(scene);
+	public override void WillResignActive(UIScene scene) { }
 
 	public override void DidEnterBackground(UIScene scene)
 	{
