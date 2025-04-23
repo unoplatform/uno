@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
@@ -16,44 +18,54 @@ using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private NativeWindow _nativeWindow;
+	private NativeWindow? _nativeWindow;
 
 	private RootViewController _mainController;
 #if !__TVOS__
-	private NSObject _orientationRegistration;
+	private NSObject? _orientationRegistration;
 #endif
 	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_nativeWindow = new NativeWindow();
+		if (!Application.HasSceneManifest())
+		{
+			SetNativeWindow(new NativeWindow());
+		}
 
 		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
+		_mainController.View ??= new UIView(CGRect.Empty);
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
-		ObserveOrientationAndSize();
-
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
-
 		SubscribeBackgroundNotifications();
-
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
-#endif
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
 	}
 
-	public override NativeWindow NativeWindow => _nativeWindow;
+	[MemberNotNull(nameof(_nativeWindow))]
+	internal void SetNativeWindow(NativeWindow nativeWindow)
+	{
+		_nativeWindow = nativeWindow;
+
+#if __MACCATALYST__
+		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
+#endif
+		_nativeWindow.RootViewController = _mainController;
+		ObserveOrientationAndSize();
+		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+	}
+
+	public override NativeWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -68,6 +80,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void RaiseNativeSizeChanged()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		var newWindowSize = GetWindowSize();
 
 		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
@@ -77,6 +94,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void ObserveOrientationAndSize()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 #if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications
