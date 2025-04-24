@@ -49,6 +49,10 @@ namespace Microsoft.UI.Xaml.Controls
 			set => _canHorizontallyScroll = value;
 		}
 
+		internal bool CanEffectivelyHorizontallyScroll
+			=> CanHorizontallyScroll // allowed to scroll
+			&& (HorizontalOffset > 0 || ExtentWidth > 0); // can effectively scroll
+
 		private bool _canVerticallyScroll;
 		public bool CanVerticallyScroll
 		{
@@ -59,6 +63,10 @@ namespace Microsoft.UI.Xaml.Controls
 			;
 			set => _canVerticallyScroll = value;
 		}
+
+		internal bool CanEffectivelyVerticallyScroll
+			=> CanVerticallyScroll // allowed to scroll
+			&& (VerticalOffset > 0 || ExtentHeight > 0); // can effectively scroll
 
 		public double HorizontalOffset { get; private set; }
 
@@ -247,19 +255,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var mode = ManipulationModes.None;
-			if (CanVerticallyScroll && ExtentHeight > 0)
-			{
-				mode |= ManipulationModes.TranslateY;
-			}
-
-			if (CanHorizontallyScroll && ExtentWidth > 0)
+			if (CanEffectivelyHorizontallyScroll)
 			{
 				mode |= ManipulationModes.TranslateX;
 			}
 
+			if (CanEffectivelyVerticallyScroll)
+			{
+				mode |= ManipulationModes.TranslateY;
+			}
+
 			if (Scroller is { } sv)
 			{
-				if (CanScrollInertial(sv))
+				if (sv.IsScrollInertiaEnabled)
 				{
 					mode |= ManipulationModes.TranslateInertia;
 				}
@@ -288,15 +296,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (args.IsInertial)
 			{
-				// When inertia is running, we do not want to chain the scroll to the parent SV
-				unhandledDelta = UI.Input.ManipulationDelta.Empty;
-
 				if (_touchInertiaOptions is null)
 				{
-					// A scroll to has been requested (e.g. snap points?) - OR - inertia was not allowed in the InertiaStarting
-					recognizer.CompleteGesture();
+					// A scroll to has been requested - OR - inertia was not allowed in the InertiaStarting (e.g. snap points?)
+					// Note: we do not stop the processor to let parent SV handle it (if any)
 					return;
 				}
+
+				// When inertia is running, we do not want to chain the scroll to the parent SV
+				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
 				if (--_touchInertiaSkipTicks > 0)
 				{
@@ -306,13 +314,12 @@ namespace Microsoft.UI.Xaml.Controls
 				var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
 				if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next)
 				{
-					_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
-
-					recognizer.CompleteGesture();
+					// Weird case, we do not have a next tick (we should always have at least the inertia processor interval), ignore it
 					return;
 				}
 
 				// If inertial, we try to animate up to the next tick instead of applying current value synchronously
+				_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
 				Set(
 					horizontalOffset: HorizontalOffset - next.Delta.Translation.X,
 					verticalOffset: VerticalOffset - next.Delta.Translation.Y,
@@ -350,7 +357,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args)
 		{
-			if (Scroller is not { } sv || !CanScrollInertial(sv))
+			var canScrollHorizontally = CanEffectivelyHorizontallyScroll;
+			var canScrollVertically = CanEffectivelyVerticallyScroll;
+			if (Scroller is not { IsScrollInertiaEnabled: true } sv
+				|| (!canScrollHorizontally && !canScrollVertically)
+				|| recognizer.PendingManipulation is null) // Stop by a child element (e.g. a child SV that is scrolling to a mandatory snap-point)
 			{
 				// Inertia is starting but we cannot handle it.
 				// At this point we don't know if we another (child) SV we be able to handle it, so we do NOT abort the gesture.
@@ -361,23 +372,70 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var inertia = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
-			if (OperatingSystem.IsIOS())
+			if (double.IsNaN(inertia.DesiredDisplacementDeceleration)) // Make computation only on first SV (not on parents)
 			{
-				var v0 = (CanHorizontallyScroll && ExtentWidth > 0, CanVerticallyScroll && ExtentHeight > 0) switch
+				if (OperatingSystem.IsIOS())
 				{
-					(true, false) => args.Velocities.Linear.X,
-					(false, true) => args.Velocities.Linear.Y,
-					(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
-					_ => 0
-				};
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
-			}
-			else if (OperatingSystem.IsAndroid())
-			{
-				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+					var v0 = (canScrollHorizontally, canScrollVertically) switch
+					{
+						(true, false) => args.Velocities.Linear.X,
+						(false, true) => args.Velocities.Linear.Y,
+						(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
+						_ => 0
+					};
+					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+				}
+				else if (OperatingSystem.IsAndroid())
+				{
+					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+				}
+				else
+				{
+					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
+				}
 			}
 
-			// We run animation scroll animations by our own, so we request to the inertia processor to give us info for the next few ms, and we start a composition scroll animation.
+			// If we have snap points, we disable the inertia support (for local SV).
+			// However, we determine the final value of the inertia to snap on the right snap-point.
+			var shouldSnapHorizontally = canScrollHorizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
+			var shouldSnapVertically = canScrollVertically && sv is { VerticalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
+			if (shouldSnapHorizontally || shouldSnapVertically)
+			{
+				// Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
+				_touchInertiaOptions = null;
+
+				// We somehow handle the inertia ourselves, so we complete the gesture right now (prevent parents to also handle it).
+				// Note: We must make sure to invoke CompleteGesture() before the `Set` below as the complete will invoke the OnCompleted handler.
+				recognizer.CompleteGesture();
+
+				double? h = null, v = null;
+
+				if (shouldSnapHorizontally)
+				{
+					var v0 = args.Velocities.Linear.X;
+					var duration = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(v0, inertia.DesiredDisplacementDeceleration);
+					var endValue = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0, inertia.DesiredDisplacementDeceleration, duration);
+
+					h = HorizontalOffset - endValue;
+				}
+
+				if (shouldSnapVertically )
+				{
+					var v0 = args.Velocities.Linear.Y;
+					var duration = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(v0, inertia.DesiredDisplacementDeceleration);
+					var endValue = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0, inertia.DesiredDisplacementDeceleration, duration);
+
+					v = VerticalOffset - endValue;
+				}
+
+				sv.AdjustOffsetsForSnapPoints(ref h, ref v, null);
+				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false);
+
+				return;
+			}
+
+			// We let the inertia start ...
+			// ... but we run animation scroll animations by our own, so we request to the inertia processor to give us info for the next few ms, and we start a composition scroll animation.
 			var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
 			if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is { } next)
 			{
@@ -402,27 +460,16 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (args.IsInertial)
+			if (args.IsInertial && _touchInertiaOptions is null)
 			{
-				if (_touchInertiaOptions is null && Scroller is { } sv && CanScrollInertial(sv))
-				{
-					// Inertia has been aborted (snap points?) -BUT WAS ALLOWED-, do not try to apply the final value.
-					return;
-				}
+				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
+				return;
 			}
 
 			_touchInertiaOptions = null;
 
 			Set(disableAnimation: true, isIntermediate: false);
 		}
-
-		private static bool CanScrollInertial(ScrollViewer sv)
-			=> sv is
-			{
-				IsScrollInertiaEnabled: true,
-				HorizontalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle,
-				VerticalSnapPointsType: not SnapPointsType.OptionalSingle and not SnapPointsType.MandatorySingle
-			};
 
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
