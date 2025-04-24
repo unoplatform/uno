@@ -1,8 +1,8 @@
-using System;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.UI.Runtime.Skia;
@@ -58,12 +58,12 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	public void StartEntry()
 	{
-		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false);
+		NativeMethods.Focus(_view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false, GetInputModeValue(), GetEnterKeyHintValue());
 		InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
 		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
 	}
 
-	public void EndEntry() => NativeMethods.Focus(false, _view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false);
+	public void EndEntry() => NativeMethods.Blur();
 
 	public void UpdateSize() => NativeMethods.UpdateSize(_view.DisplayBlock.ActualWidth, _view.DisplayBlock.ActualHeight);
 
@@ -89,11 +89,37 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	// Since we don't actually use the <input /> visually, do we don't need to take care of any of the visual aspects
 	public void UpdateNativeView() { }
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
-	public void UpdateProperties() { }
+	public void UpdateProperties()
+	{
+		if (GetEnterKeyHintValue() is { } enterKeyHintValue)
+		{
+			NativeMethods.SetEnterKeyHint(enterKeyHintValue);
+		}
+	}
+
 	public int GetSelectionStart() => 0;
 	public int GetSelectionLength() => 0;
 	public int GetSelectionStartBeforeKeyDown() => 0;
 	public int GetSelectionLengthBeforeKeyDown() => 0;
+
+	private string GetEnterKeyHintValue()
+	{
+		if (_view?.TextBox is { } textBox)
+		{
+			return TextBoxExtensions.GetInputReturnType(textBox).ToEnterKeyHintValue();
+		}
+
+		return "";
+	}
+
+	private string GetInputModeValue()
+	{
+		if (_view?.TextBox is { } textBox)
+		{
+			return textBox.InputScope.ToInputModeValue();
+		}
+		return "";
+	}
 
 	private static partial class NativeMethods
 	{
@@ -104,7 +130,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void SetText(string text);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial void Focus(bool focused, bool isPassword, string? text, bool acceptsReturn);
+		public static partial void Focus(bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
+		public static partial void Blur();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updateSize")]
 		public static partial void UpdateSize(double width, double height);
@@ -114,5 +143,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.updateSelection")]
 		public static partial void UpdateSelection(int start, int length, string direction);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setEnterKeyHint")]
+		public static partial void SetEnterKeyHint(string setEnterKeyHint);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setInputMode")]
+		public static partial void SetInputMode(string inputMode);
 	}
 }

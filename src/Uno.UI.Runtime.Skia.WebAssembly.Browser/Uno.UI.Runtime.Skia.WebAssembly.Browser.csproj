@@ -74,6 +74,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.wasm.cs" Link="UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.wasm.cs" />
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeExtensions.wasm.cs" Link="UI\Xaml\Controls\TextBox\InputScopeExtensions.wasm.cs" />
 	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.Interop.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Interop.wasm.cs" />
 	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
 	</ItemGroup>
@@ -123,10 +125,6 @@
 
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-
 	</ItemGroup>
 
 </Project>
