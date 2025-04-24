@@ -104,8 +104,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	{
 		get
 		{
-			long timestamp = _pauseTimestamp is null ? _compositor.TimestampInTicks - _totalPause : _pauseTimestamp.Value;
-
+			var timestamp = _pauseTimestamp ?? _compositor.TimestampInTicks - _totalPause;
 			var elapsed = new TimeSpan(timestamp - _startTimestamp);
 			if (elapsed >= _totalDuration)
 			{
@@ -115,6 +114,29 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 			elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
 
 			return (float)elapsed.Ticks / _duration.Ticks;
+		}
+	}
+
+	/// <summary>
+	/// The time remaining until the animation completes.
+	/// </summary>
+	public TimeSpan Remaining
+	{
+		get
+		{
+			if (_totalDuration == TimeSpan.MaxValue)
+			{
+				return TimeSpan.MaxValue;
+			}
+
+			var timestamp = _pauseTimestamp ?? _compositor.TimestampInTicks - _totalPause;
+			var elapsed = new TimeSpan(timestamp - _startTimestamp);
+			if (elapsed >= _totalDuration)
+			{
+				return TimeSpan.Zero;
+			}
+
+			return _totalDuration - elapsed;
 		}
 	}
 }

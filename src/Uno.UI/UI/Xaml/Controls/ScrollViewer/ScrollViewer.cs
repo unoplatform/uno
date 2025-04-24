@@ -1237,9 +1237,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
-			var h = horizontalOffset == HorizontalOffset ? null : (double?)horizontalOffset;
-			var v = verticalOffset == VerticalOffset ? null : (double?)verticalOffset;
-
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 
@@ -1269,8 +1266,8 @@ namespace Microsoft.UI.Xaml.Controls
 							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();
 						}
 
-						_horizontalOffsetForSnapPoints = h ?? horizontalOffset;
-						_verticalOffsetForSnapPoints = v ?? verticalOffset;
+						_horizontalOffsetForSnapPoints = horizontalOffset;
+						_verticalOffsetForSnapPoints = verticalOffset;
 
 						_snapPointsTimer.Start();
 					}

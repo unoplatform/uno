@@ -73,5 +73,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal float Progress => _keyframeEvaluator!.Progress;
+
+		internal TimeSpan Remaining => _keyframeEvaluator!.Remaining;
 	}
 }
