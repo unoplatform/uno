@@ -251,8 +251,15 @@ namespace Microsoft.UI.Composition
 
 		private protected virtual void DisposeInternal()
 		{
-			// For now, Composition is Dispatcher affine
-			Dispatching.DispatcherQueue.Main.TryEnqueue(StopAllAnimations);
+			if (Dispatching.DispatcherQueue.Main.HasThreadAccess)
+			{
+				StopAllAnimations();
+			}
+			else
+			{
+				// For now, Composition is Dispatcher affine
+				Dispatching.DispatcherQueue.Main.TryEnqueue(StopAllAnimations);
+			}
 		}
 
 #if __APPLE_UIKIT__

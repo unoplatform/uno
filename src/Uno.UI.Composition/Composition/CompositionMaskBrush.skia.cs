@@ -54,7 +54,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override void DisposeInternal()
 		{
-			base.Dispose();
+			base.DisposeInternal();
 
 			_sourcePaint?.Dispose();
 			_maskPaint?.Dispose();
