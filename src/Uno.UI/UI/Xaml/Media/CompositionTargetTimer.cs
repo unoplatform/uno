@@ -11,31 +11,14 @@ namespace Microsoft.UI.Xaml.Media;
 /// Use a generic frame timer instead of the native one, generally 
 /// in the context of desktop targets.
 /// </summary>
-internal class CompositionTargetTimer
+internal partial class CompositionTargetTimer
 {
-	private static Timer? _renderTimer;
-
 	internal static void Start()
 	{
 #if __SKIA__
-		CompositionTarget.RenderingActiveChanged += UpdateTimer;
+		StartInternal();
 #else
 		throw new PlatformNotSupportedException();
 #endif
 	}
-
-#if __SKIA__
-	private static void UpdateTimer()
-	{
-		if (CompositionTarget.IsRenderingActive)
-		{
-			_renderTimer ??= new Timer(_ => NativeDispatcher.Main.DispatchRendering());
-			_renderTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1 / FeatureConfiguration.CompositionTarget.FrameRate));
-		}
-		else
-		{
-			_renderTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-		}
-	}
-#endif
 }
