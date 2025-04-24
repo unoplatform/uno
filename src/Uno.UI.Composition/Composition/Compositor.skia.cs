@@ -135,6 +135,7 @@ public partial class Compositor
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
 #endif
 
+		var transitionsCount = _backgroundTransitions.Count;
 		for (var current = _backgroundTransitions.First; current != null; current = current.Next)
 		{
 			var transition = current.Value;
@@ -148,7 +149,7 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0)
+		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
 			CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget);
 		}
