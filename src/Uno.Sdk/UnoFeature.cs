@@ -48,6 +48,12 @@ public enum UnoFeature
 	Http,
 
 	[UnoArea(UnoArea.Extensions)]
+	HttpKiota,
+
+	[UnoArea(UnoArea.Extensions)]
+	HttpRefit,
+
+	[UnoArea(UnoArea.Extensions)]
 	Localization,
 
 	[UnoArea(UnoArea.Extensions)]
