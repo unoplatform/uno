@@ -208,7 +208,7 @@ public partial class TextBox
 
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
 	{
-
+		TextBoxView?.UpdateProperties();
 	}
 
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
