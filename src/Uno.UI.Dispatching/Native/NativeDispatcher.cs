@@ -153,7 +153,10 @@ namespace Uno.UI.Dispatching
 
 		internal void DispatchRendering()
 		{
-			WakeUp();
+			if (Rendering != null)
+			{
+				WakeUp();
+			}
 		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
@@ -425,12 +428,15 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal void WakeUp()
 		{
-			if (Interlocked.Increment(ref _globalCount) == 1)
+			lock (_gate)
 			{
-				EnqueueNative(NativeDispatcherPriority.Normal);
-			}
+				if (Interlocked.Increment(ref _globalCount) == 1)
+				{
+					EnqueueNative(NativeDispatcherPriority.Normal);
+				}
 
-			Interlocked.Decrement(ref _globalCount);
+				Interlocked.Decrement(ref _globalCount);
+			}
 		}
 
 		/// <summary>
