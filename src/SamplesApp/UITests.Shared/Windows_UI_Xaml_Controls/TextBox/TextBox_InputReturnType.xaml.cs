@@ -1,9 +1,12 @@
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
-using Uno.UI.Xaml.Controls;
 using System;
 using System.Linq;
+
+#if HAS_UNO
+using Uno.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
