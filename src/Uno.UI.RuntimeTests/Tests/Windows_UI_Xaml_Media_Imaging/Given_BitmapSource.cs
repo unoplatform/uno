@@ -195,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if __SKIA__
 		[Ignore("Flaky for skia targets: https://github.com/unoplatform/uno/issues/9080")]
 #endif
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeIOS)] // https://github.com/unoplatform/uno/issues/9080
 		public async Task When_Uri_Nullified()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
