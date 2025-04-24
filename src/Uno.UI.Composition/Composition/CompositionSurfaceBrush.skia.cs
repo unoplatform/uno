@@ -115,7 +115,7 @@ namespace Microsoft.UI.Composition
 					SKShader imageShader;
 					var sigmaX = scs.Image.Width / bounds.Width;
 					var sigmaY = scs.Image.Height / bounds.Height;
-					if (sigmaX < 3 && sigmaY < 3)
+					if (sigmaX < 3 || sigmaY < 3)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}

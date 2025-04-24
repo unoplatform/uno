@@ -77,9 +77,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 			// Sub-pixel alignment is different with SkiaSharp 3
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
-			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
-			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
+			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
+			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
+			Assert.AreEqual(new Rect(44, 40, 19, 18), yellowBounds);
 			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
 #else
 			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
