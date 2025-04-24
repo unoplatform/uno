@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using Android.Content;
+﻿using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Text;
-using Android.Util;
 using Android.Views;
 using Android.Views.Autofill;
 using Android.Views.InputMethods;
-using AndroidX.Annotations;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -24,6 +19,7 @@ internal sealed class TextInputPlugin
 	private readonly InputMethodManager? _imm;
 	private readonly AutofillManager? _afm;
 	private InputTypes _inputTypes = InputTypes.TextVariationNormal;
+	private ImeAction _imeAction;
 	private TextInputConnection? _inputConnection;
 	private EditorInfo? _editorInfo;
 
@@ -110,11 +106,18 @@ internal sealed class TextInputPlugin
 	internal void ShowTextInput(TextBox textBox)
 	{
 		_inputTypes = ConvertInputScope(textBox);
+		_imeAction = TextBoxExtensions.GetInputReturnType(textBox).ToImeAction();
 
 		if (_editorInfo is not null)
 		{
 			_editorInfo.InputType = _inputTypes;
+
 			_editorInfo.ImeOptions = ImeFlags.NoFullscreen;
+
+			if (_imeAction != ImeAction.None)
+			{
+				_editorInfo.ImeOptions |= (ImeFlags)_imeAction;
+			}
 		}
 
 		_view.RequestFocus();
@@ -250,6 +253,11 @@ internal sealed class TextInputPlugin
 			_editorInfo = editorInfo;
 			_editorInfo.InputType = _inputTypes;
 			_editorInfo.ImeOptions = ImeFlags.NoFullscreen;
+
+			if (_imeAction != ImeAction.None)
+			{
+				_editorInfo.ImeOptions |= (ImeFlags)_imeAction;
+			}
 		}
 
 		return _inputConnection = new TextInputConnection(_view, editorInfo ?? new(), HandleKeyEvent);
