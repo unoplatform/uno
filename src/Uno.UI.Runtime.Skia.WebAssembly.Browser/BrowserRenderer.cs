@@ -45,6 +45,13 @@ internal partial class BrowserRenderer
 		_host = host;
 
 		_nativeSwapChainPanel = NativeMethods.CreateInstance(this);
+
+		CompositionTarget.RenderingActiveChanged += CompositionTarget_RenderingActiveChanged;
+	}
+
+	private void CompositionTarget_RenderingActiveChanged()
+	{
+		NativeMethods.SetContinousRender(_nativeSwapChainPanel, CompositionTarget.IsRenderingActive);
 	}
 
 	private void Initialize()
@@ -206,5 +213,8 @@ internal partial class BrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
 		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setContinousRender")]
+		internal static partial void SetContinousRender(JSObject nativeSwapChainPanel, bool enabled);
 	}
 }

@@ -5,6 +5,7 @@ namespace Uno.UI.Runtime.Skia {
 		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
+		continousRender: boolean;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
@@ -49,6 +50,14 @@ namespace Uno.UI.Runtime.Skia {
 			BrowserRenderer.invalidate(this);
 		}
 
+		static setContinousRender(instance: BrowserRenderer, enabled: boolean) {
+			instance.continousRender = enabled;
+
+			if (enabled) {
+				BrowserRenderer.invalidate(instance);
+			}
+		}
+
 		static invalidate(instance: BrowserRenderer) {
 			// add the draw to the next frame
 			window.requestAnimationFrame(() => {
@@ -57,6 +66,10 @@ namespace Uno.UI.Runtime.Skia {
 					(<any>window).GL.makeContextCurrent(instance.glCtx);
 
 					instance.requestRender();
+
+					if (instance.continousRender) {
+						window.requestAnimationFrame(() => BrowserRenderer.invalidate(instance));
+					}
 				}
 			});
 		}
