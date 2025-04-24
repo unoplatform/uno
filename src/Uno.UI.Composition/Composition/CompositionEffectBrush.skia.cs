@@ -1617,6 +1617,8 @@ $$"""
 
 	private protected override void DisposeInternal()
 	{
+		base.DisposeInternal();
+
 		_filter?.Dispose();
 	}
 
