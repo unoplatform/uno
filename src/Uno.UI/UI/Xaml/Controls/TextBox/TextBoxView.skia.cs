@@ -17,7 +17,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
+		private readonly ITextBoxViewExtension? _textBoxViewExtension;
+		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
 		private readonly ManagedWeakReference _textBox;
 		private bool _isPasswordRevealed;
@@ -38,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DisplayBlock = new TextBlock { MinWidth = InlineCollection.CaretThickness, IsTextBoxDisplay = true };
 			SetFlowDirectionAndTextAlignment();
 
-			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -47,20 +48,30 @@ namespace Microsoft.UI.Xaml.Controls
 						"for this Skia target. Functionality will be limited.");
 				}
 			}
+
+			if (_overlayTextBoxViewExtension is null)
+			{
+				ApiExtensibility.CreateInstance(this, out _textBoxViewExtension);
+			}
+			else
+			{
+				// IOverlayTextBoxViewExtension derives from ITextBoxViewExtension.
+				_textBoxViewExtension = _overlayTextBoxViewExtension;
+			}
 		}
 
 		internal bool IsPasswordBox { get; }
 
 		public (int start, int length) SelectionBeforeKeyDown =>
-			(_textBoxExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _textBoxExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
+			(_overlayTextBoxViewExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _overlayTextBoxViewExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
 
-		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
+		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
 		public TextBox? TextBox => !_textBox.IsDisposed ? _textBox.Target as TextBox : null;
 
-		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
+		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 
-		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
+		internal int GetSelectionLength() => _overlayTextBoxViewExtension?.GetSelectionLength() ?? 0;
 
 		public TextBlock DisplayBlock { get; }
 
@@ -68,12 +79,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateDisplayBlockText(text);
 
-			_textBoxExtension?.SetText(text);
+			_overlayTextBoxViewExtension?.SetText(text);
 		}
 
 		internal void Select(int start, int length)
 		{
-			_textBoxExtension?.Select(start, length);
+			_overlayTextBoxViewExtension?.Select(start, length);
 		}
 
 		internal void SetFlowDirectionAndTextAlignment()
@@ -110,13 +121,13 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void OnForegroundChanged(Brush brush)
 		{
 			DisplayBlock.Foreground = brush;
-			_textBoxExtension?.UpdateProperties();
+			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
 			DisplayBlock.SelectionHighlightColor = brush;
-			_textBoxExtension?.UpdateProperties();
+			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
 		internal void OnFocusStateChanged(FocusState focusState)
@@ -127,11 +138,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_textBoxExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry();
 				}
 				else
 				{
-					_textBoxExtension?.EndEntry();
+					_overlayTextBoxViewExtension?.EndEntry();
 				}
 			}
 			else if (!_isSkiaTextBox)
@@ -139,7 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (focusState != FocusState.Unfocused)
 				{
 					DisplayBlock.Opacity = 0;
-					_textBoxExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry();
 
 					var selectionStart = this.GetSelectionStart();
 
@@ -147,18 +158,18 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
 
-						_textBoxExtension?.Select(cursorPosition, 0);
+						_overlayTextBoxViewExtension?.Select(cursorPosition, 0);
 					}
 				}
 				else
 				{
-					_textBoxExtension?.EndEntry();
+					_overlayTextBoxViewExtension?.EndEntry();
 					DisplayBlock.Opacity = 1;
 				}
 			}
 		}
 
-		internal void UpdateTheme() => _textBoxExtension?.UpdateProperties();
+		internal void UpdateTheme() => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void UpdateFont()
 		{
@@ -176,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
-			_textBoxExtension?.SetPasswordRevealState(revealState);
+			_overlayTextBoxViewExtension?.SetPasswordRevealState(revealState);
 			if (TextBox is { } textBox)
 			{
 				UpdateDisplayBlockText(textBox.Text);
@@ -211,7 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
+		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
 
 		private void UpdateDisplayBlockText(string text)
 		{
@@ -234,6 +245,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void UpdateProperties() => _textBoxExtension?.UpdateProperties();
+		internal void UpdateProperties() => _textBoxViewExtension?.UpdateProperties();
 	}
 }
