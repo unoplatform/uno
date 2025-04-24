@@ -181,7 +181,7 @@ public partial class ClientHotReloadProcessor
 
 		internal void ResignCurrent()
 		{
-			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for teh current UI thread.");
+			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for the current UI thread.");
 			_opForCurrentUiThread = null;
 		}
 		#endregion
