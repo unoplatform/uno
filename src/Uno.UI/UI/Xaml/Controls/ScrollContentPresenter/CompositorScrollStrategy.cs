@@ -22,6 +22,18 @@ namespace Microsoft.UI.Xaml.Controls
 			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
 			var visual = view.Visual;
 
+			// No matter the `options.DisableAnimation`, if we have an animation running
+			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
+				// ... that is animating to (almost) the same target value
+				&& Vector2.DistanceSquared(visual.AnchorPoint, target) < 4
+				// ... and which is about to complete
+				&& controller.Remaining < TimeSpan.FromMilliseconds(50))
+			{
+				// We keep the animation running, making sure that we are abruptly stopping scrolling animation
+				// due to completion of the inertia processor a bit earlier than the animation itself.
+				return;
+			}
+
 			if (options.DisableAnimation)
 			{
 				visual.StopAnimation(nameof(Visual.AnchorPoint));

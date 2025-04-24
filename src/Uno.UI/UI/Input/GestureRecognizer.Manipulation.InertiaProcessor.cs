@@ -227,7 +227,7 @@ namespace Windows.UI.Input
 					};
 
 				// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
-				private float GetValue(double v0, double d, double t)
+				internal static float GetValue(double v0, double d, double t)
 					=> v0 >= 0
 						? (float)(v0 * t - d * Math.Pow(t, 2))
 						: -(float)(-v0 * t - d * Math.Pow(t, 2));
@@ -238,7 +238,7 @@ namespace Windows.UI.Input
 				private double GetCompletionTime(bool enabled, double v0, double d)
 					=> enabled ? GetCompletionTime(v0, d) : 0;
 
-				private double GetCompletionTime(double v0, double d)
+				internal static double GetCompletionTime(double v0, double d)
 					=> Math.Abs(v0) / (2 * d);
 
 				internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
