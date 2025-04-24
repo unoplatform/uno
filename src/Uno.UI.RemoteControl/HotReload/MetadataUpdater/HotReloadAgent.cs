@@ -126,12 +126,12 @@ internal sealed class HotReloadAgent : IDisposable
 
 		if (!methodFound)
 		{
-			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
+			_log($"No invocable methods found on metadata handler type '{handlerType}'. " +
 				$"Allowed methods are ClearCache, UpdateApplication");
 		}
 		else
 		{
-			_log($"Invokable methods found on metadata handler type '{handlerType}'. ");
+			_log($"Invocable methods found on metadata handler type '{handlerType}'. ");
 		}
 
 		Action<Type[]?> CreateAction(MethodInfo update)
@@ -250,6 +250,8 @@ internal sealed class HotReloadAgent : IDisposable
 
 	private static void ApplyUpdate(Assembly assembly, UpdateDelta item)
 	{
+		// Apply the deltas directly - this won't work when the debugger is attached
+		// see https://github.com/dotnet/runtime/blob/aca5f6bdd995919411448379aea3651eb1f68133/src/mono/mono/metadata/icall.c#L5505
 		System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, item.MetadataDelta, item.ILDelta, item.PdbBytes ?? ReadOnlySpan<byte>.Empty);
 	}
 
