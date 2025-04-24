@@ -27,6 +27,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.UIKit.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" Link="UI\Xaml\Controls\TextBox\InputScopeHelper.UIKit.cs" />
 	</ItemGroup>
 

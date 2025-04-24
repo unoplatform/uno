@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -150,7 +151,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 
-		_textBoxView.ReturnKeyType = textBox.InputScope == InputScopes.Search ? UIReturnKeyType.Search : UIReturnKeyType.Default;
+		var inputReturnType = TextBoxExtensions.GetInputReturnType(textBox);
+		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
 		if (textBox.IsSpellCheckEnabled)
 		{
