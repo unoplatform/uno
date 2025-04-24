@@ -234,6 +234,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void UpdateProperties() => _textBoxViewExtension?.UpdateProperties();
+		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
 	}
 }
