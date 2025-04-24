@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;
@@ -30,6 +31,10 @@ namespace SkiaSharpExample
 		private static void Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
+
+#if IS_CI_OR_DEBUG
+			FeatureConfiguration.CompositionTarget.FrameRate = 15;
+#endif
 
 			SkiaHost? host = default;
 			var builder = SkiaHostBuilder.Create()
