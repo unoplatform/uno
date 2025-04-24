@@ -226,6 +226,11 @@ namespace Microsoft.UI.Xaml.Controls
 			SetAttribute("inputmode", inputmodeValue);
 		}
 
+		private void SetInputReturnType(InputReturnType inputReturnType)
+		{
+			SetAttribute("enterkeyhint", inputReturnType.ToEnterKeyHintValue());
+		}
+
 		public int SelectionStart
 		{
 			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
