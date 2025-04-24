@@ -320,7 +320,7 @@ window_close_fn_ptr uno_get_window_close_callback(void);
 
 void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
 
-void* uno_window_get_metal(UNOWindow* window);
+void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
