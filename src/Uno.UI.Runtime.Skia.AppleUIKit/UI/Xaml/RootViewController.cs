@@ -30,7 +30,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
 	private SkiaCanvas? _skCanvasView;
-	private InputLayer? _inputLayer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
@@ -68,13 +67,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	public void Initialize()
 	{
 		var view = View!;
-
-		_inputLayer = new InputLayer();
-		_inputLayer.Frame = view.Bounds;
-		_inputLayer.AutoresizingMask = UIViewAutoresizing.All;
-		// We inject the input layer directly as `View` in order to get all pointer events, including under the nativeOverlayLayer (unless handled by native view)
-		// Note: We must have a layer (compared to override TouchesXXX methods in this class) in order to be able to properly get the multitouch events.
-		View = view = _inputLayer;
 
 		_textInputLayer = new UIView();
 		view.AddSubview(_textInputLayer);
