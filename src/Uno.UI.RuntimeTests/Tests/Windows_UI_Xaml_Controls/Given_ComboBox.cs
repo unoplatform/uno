@@ -1368,6 +1368,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_ComboBox_Popup_Dismissed()
+		{
+			// test case built against https://github.com/unoplatform/uno/issues/20014
+
+			var sut = new ComboBox()
+			{
+				ItemsSource = Enumerable.Range(0, 3).ToArray(),
+				Visibility = Visibility.Collapsed,
+			};
+
+			// load the collapsed control into the visual tree
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			// then let it become visible
+			sut.Visibility = Visibility.Visible;
+			await UITestHelper.WaitForLoaded(sut);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// focus the control
+			// This is required, otherwise DropDownClosed would be triggered by focus shift instead, which is not what we are testing here.
+			// [ComboBox > ComboBoxItem > ComboBox] doesnt trigger that mechanism, but [other-control > ComboBoxItem > ComboBox] will do.
+			// We are trying to validate if the ComboBox properly subscribes to the Popup::Closed event, and in turn raises DropDownClosed.
+			sut.Focus(FocusState.Programmatic);
+
+			// open the popup
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
+
+			// track event firing
+			var dropDownClosedFired = false;
+			sut.DropDownClosed += (s, e) => dropDownClosedFired = true;
+
+			// close the popup as if the user had light-dismissed it
+			popup.IsOpen = false;
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsDropDownOpen, "ComboBox.IsDropDownOpen is still true");
+			Assert.IsTrue(dropDownClosedFired, "DropDownClosed event was not fired");
+		}
+
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{
 			public enum Themes
