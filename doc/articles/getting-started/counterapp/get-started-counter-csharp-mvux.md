@@ -89,7 +89,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **`MainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
+As the application uses MVUX, the `MainModel` class is used to generate a bindable ViewModel, `MainViewModel`. We can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
 - Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 

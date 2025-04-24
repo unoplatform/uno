@@ -119,7 +119,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
              TextAlignment="Center" />
     ```
 
-- Add a new **`Button`** with a  **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
+- Update the **`Button`** by adding a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"
