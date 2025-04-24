@@ -149,6 +149,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ApplyInputScope(InputScope scope) => _textBoxView?.SetInputScope(scope);
 
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) => _textBoxView?.SetInputReturnType(inputReturnType);
+
 		partial void SelectPartial(int start, int length)
 		{
 			_textBoxView?.Select(start, length);
@@ -205,8 +207,5 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnRightTapped(e);
 		}
-
-		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
-			TextBoxView?.SetAttribute("enterkeyhint", inputReturnType.ToEnterKeyHintValue());
 	}
 }

@@ -1,9 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
-internal interface IOverlayTextBoxViewExtension
+internal interface IOverlayTextBoxViewExtension : ITextBoxViewExtension
 {
 	bool IsOverlayLayerInitialized(XamlRoot xamlRoot);
 
@@ -32,6 +33,4 @@ internal interface IOverlayTextBoxViewExtension
 	int GetSelectionStartBeforeKeyDown();
 
 	int GetSelectionLengthBeforeKeyDown();
-
-	void UpdateProperties();
 }
