@@ -123,6 +123,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
+		HashSet<DependencyObject> rememberAllVisited = [];
+
 		try
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = true;
@@ -136,8 +138,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 					virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
 				}
 
+				rememberAllVisited.Add(current);
+
 				current = focusManager.GetNextTabStop(current);
-				if (current == firstFocusable)
+				if (current is not null && rememberAllVisited.Contains(current))
 				{
 					break;
 				}
