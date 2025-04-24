@@ -128,7 +128,7 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
-      UITEST_ALLOW_RERUN: 'true'
+      UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
