@@ -195,7 +195,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 							y = (y / scale - vy);
 							x2 = (x2 / scale - vx);
 							y2 = (y2 / scale - vy);
-							cgPath.AddQuadCurveToPoint(default, x, y, x2, y2);
+							cgPath.AddQuadCurveToPoint(x, y, x2, y2);
 							break;
 
 						case 'L':
