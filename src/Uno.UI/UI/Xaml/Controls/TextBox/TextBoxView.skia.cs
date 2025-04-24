@@ -17,7 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly ITextBoxViewExtension? _textBoxViewExtension;
 		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
 		private readonly ManagedWeakReference _textBox;
@@ -47,16 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 						"No TextBoxView implementation is available " +
 						"for this Skia target. Functionality will be limited.");
 				}
-			}
-
-			if (_overlayTextBoxViewExtension is null)
-			{
-				ApiExtensibility.CreateInstance(this, out _textBoxViewExtension);
-			}
-			else
-			{
-				// IOverlayTextBoxViewExtension derives from ITextBoxViewExtension.
-				_textBoxViewExtension = _overlayTextBoxViewExtension;
 			}
 		}
 
