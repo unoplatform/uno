@@ -112,7 +112,7 @@ stages:
       vmMacOSImage: '$(macOSVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
-  
+
 - stage: ios_tests
   displayName: Tests - iOS
   dependsOn:
@@ -154,6 +154,26 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: ios_testflight
+  displayName: iOS - Testflight
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-ios-testflight.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      vmImageTest: '$(macOSVMImage_UITests)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+
+  - template: .azure-devops-publish-ios-testflight.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      vmImageTest: '$(macOSVMImage_UITests)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+      
 ##
 ## Publishing
 ##
