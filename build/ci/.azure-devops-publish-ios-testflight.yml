@@ -3,6 +3,7 @@ jobs:
   displayName: 'Publish iOS Testflight Native'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
   environment: 'Uno UI TestFlight'
+  dependsOn: iOS_TestFlight
   pool:
     vmImage: macos-latest
   strategy:
@@ -32,6 +33,7 @@ jobs:
   displayName: 'Publish iOS Testflight Skia'
   environment: 'Uno UI TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  dependsOn: iOS_TestFlight
   pool:
     vmImage: macos-latest
   strategy:
