@@ -2,6 +2,7 @@ jobs:
 - deployment: 'iOS_Publish_Native'
   displayName: 'Publish iOS Testflight Native'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  environment: 'Uno UI TestFlight'
   pool:
     vmImage: macos-latest
   strategy:
@@ -29,6 +30,7 @@ jobs:
 
 - deployment: 'iOS_Publish_Skia'
   displayName: 'Publish iOS Testflight Skia'
+  environment: 'Uno UI TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
   pool:
     vmImage: macos-latest
