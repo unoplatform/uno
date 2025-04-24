@@ -31,6 +31,7 @@
 		<Compile Include="..\Uno.UI\ActivityHelper.Android.cs" />
 		<Compile Include="..\Uno.UI\Extensions\PermissionsHelper.Android.cs" Link="PermissionsHelper.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" Link="Microsoft\UI\Xaml\Controls\TextBox\InputReturnTypeExtensions.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\NativeTimePickerFlyout.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\TimePicker\UnoTimePickerDialog.Android.cs" />
