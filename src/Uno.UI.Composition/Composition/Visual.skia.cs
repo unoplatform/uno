@@ -259,8 +259,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
-		canvas.Save();
-
 		if (offsetOverride is { } offset)
 		{
 			var totalOffset = GetTotalOffset();
@@ -276,10 +274,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (session)
 		{
+			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
+			// omitted.
+			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 			Render(session);
 		}
-
-		canvas.Restore();
 	}
 
 	/// <summary>
