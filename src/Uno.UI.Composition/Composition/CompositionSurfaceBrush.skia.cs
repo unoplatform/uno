@@ -113,17 +113,18 @@ namespace Microsoft.UI.Composition
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
 					SKShader imageShader;
-					var resizeRatio = bounds.Width * bounds.Height / scs.Image.Width / scs.Image.Height;
-					if (resizeRatio > 0.5)
+					var sigmaX = scs.Image.Width / bounds.Width;
+					var sigmaY = scs.Image.Height / bounds.Height;
+					if (sigmaX < 3 && sigmaY < 3)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}
 					else
 					{
 						// Severe Downsampling : we use a gaussian blur instead of Catmull-Rom which is absolutely
-						// terrible when downsampling.
-						var sigma = 1 / resizeRatio;
-
+						// terrible when downsampling. We can't use a blur SKImageFilter because the bluring will happen
+						// after resizing, so we're forced to write the blurring shader manually. Ideally, we should
+						// implement a Lanczos resampling shader.
 						if (_effect is null)
 						{
 							_effect = SKRuntimeEffect.CreateShader(ImageDownsamplingShader, out var error);
@@ -136,7 +137,8 @@ namespace Microsoft.UI.Composition
 						var uniforms = new SKRuntimeEffectUniforms(_effect)
 						{
 							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
-							{ "sigma", sigma }
+							{ "sigmaX", sigmaX },
+							{ "sigmaY", sigmaY }
 						};
 						var children = new SKRuntimeEffectChildren(_effect)
 						{
@@ -197,7 +199,8 @@ namespace Microsoft.UI.Composition
 			"""
 			uniform shader image;
 			uniform vec2 imageSize;
-			uniform float sigma;
+			uniform float sigmaX;
+			uniform float sigmaY;
 
 			const float PI = 3.14159265359;
 
@@ -215,7 +218,7 @@ namespace Microsoft.UI.Composition
 				// but SKSL (and GLSL) don't allow variable-length loops.
 				for (float x = -2; x <= 2; x += 1.0) {
 					for (float y = -2; y <= 2; y += 1.0) {
-						float weight = gaussian(x, sigma) * gaussian(y, sigma);
+						float weight = gaussian(x, sigmaX) * gaussian(y, sigmaY);
 						finalColor += image.eval(texCoords + vec2(x, y)) * weight;
 						totalWeight += weight;
 					}
