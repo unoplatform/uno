@@ -1,0 +1,58 @@
+jobs:
+- deployment: 'iOS_Publish_Native'
+  displayName: 'Publish iOS Testflight Native'
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  environment: 'Uno UI TestFlight'
+  pool:
+    vmImage: macos-latest
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
+        - download: none
+
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: 'ios-testflight'
+            targetPath: '$(Pipeline.Workspace)/drop'
+          displayName: Download artifacts
+
+        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+          displayName: 'Publish to the App Store TestFlight track'
+          inputs:
+            serviceEndpoint: 'Uno Platform Inc. (App Store)'
+            appIdentifier: 'uno.platform.samplesdev'
+            ipaPath: '$(Pipeline.Workspace)/drop/TestFlight/SamplesApp.ipa'
+            shouldSkipWaitingForProcessing: true
+            appSpecificId: 6466657985
+            teamId: 'Uno Platform Inc.'
+
+- deployment: 'iOS_Publish_Skia'
+  displayName: 'Publish iOS Testflight Skia'
+  environment: 'Uno UI TestFlight'
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  pool:
+    vmImage: macos-latest
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
+        - download: none
+
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: 'ios-skia-testflight'
+            targetPath: '$(Pipeline.Workspace)/drop'
+          displayName: Download artifacts
+
+        - task: ms-vsclient.app-store.app-store-release.AppStoreRelease@1
+          displayName: 'Publish to the App Store TestFlight track'
+          inputs:
+            serviceEndpoint: 'Uno Platform Inc. (App Store)'
+            appIdentifier: uno.platform.samplesapp.skia
+            ipaPath: '$(Pipeline.Workspace)/drop/TestFlight/SamplesApp.ipa'
+            shouldSkipWaitingForProcessing: true
+            appSpecificId: 6744930330
+            teamId: 'Uno Platform Inc.'
