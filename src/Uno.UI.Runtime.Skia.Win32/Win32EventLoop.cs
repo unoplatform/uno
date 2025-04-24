@@ -132,9 +132,19 @@ namespace Uno.UI.Runtime.Skia.Win32
 				{
 					try
 					{
-						await Task.Delay(timeout.Value, cts.Token);
+						for (var i = 0; i < 10; i++)
+						{
+							await Task.Delay(timeout.Value / 10);
+							if (cts.IsCancellationRequested)
+							{
+								return;
+							}
+						}
 						// This sends an UnoWin32DispatcherMsg and unblocks the GetMessage call.
-						NativeDispatcher.Main.Enqueue(() => { });
+						if (!cts.IsCancellationRequested)
+						{
+							NativeDispatcher.Main.Enqueue(() => { });
+						}
 					}
 					catch (TaskCanceledException)
 					{
