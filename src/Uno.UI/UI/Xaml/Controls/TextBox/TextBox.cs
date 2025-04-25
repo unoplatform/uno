@@ -1251,12 +1251,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
 
-			if (!originalDeleteButtonVisibilityChangedSinceLastUpdateScrolling && changed)
-			{
-				// Request an update of the ScrollViewer position
-				DispatcherQueue.TryEnqueue(UpdateScrolling);
-			}
+			DispatchUpdateScrolling();
 #endif
+		}
+
+		bool _pendingUpdateScrolling;
+
+		private void DispatchUpdateScrolling()
+		{
+			if (!_pendingUpdateScrolling)
+			{
+				_pendingUpdateScrolling = true;
+
+				// We may be pushing scrolling updates too often
+				// when pushing keystrokes programmatically.
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					_pendingUpdateScrolling = false;
+
+					UpdateScrolling();
+				});
+			}
 		}
 
 		/// <summary>
