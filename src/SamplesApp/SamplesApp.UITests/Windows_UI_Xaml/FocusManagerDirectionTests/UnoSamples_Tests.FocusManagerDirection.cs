@@ -68,6 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		[AutoRetry]
 		public void FocusManager_FocusDirection_Up_Validation()
 		{
@@ -85,6 +86,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		[AutoRetry]
 		public void FocusManager_FocusDirection_Down_Validation()
 		{
@@ -102,7 +104,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 		}
 
 		[Test]
-		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		public void FocusManager_FocusDirection_Left_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_FocusDirection");
@@ -119,6 +121,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 		[AutoRetry]
 		public void FocusManager_FocusDirection_Right_Validation()
 		{
