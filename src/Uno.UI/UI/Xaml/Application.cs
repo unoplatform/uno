@@ -125,6 +125,15 @@ namespace Microsoft.UI.Xaml
 				BackButtonIntegration.Initialize();
 
 				InitializePartial();
+
+				var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
+				if (appInstance.GetActivatedEventArgs() is null)
+				{
+					// If no specific activation was set yet, fall back to launch activated event args.
+					appInstance.SetActivatedEventArgs(
+						AppActivationArguments.CreateLaunch(
+							new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
+				}
 			}
 			else
 			{
@@ -825,14 +834,6 @@ namespace Microsoft.UI.Xaml
 			// DrawingFactory.Current — Uno.UI.Composition.Skia.SkiaBackend.Register() for a Skia build, or
 			// Uno.UI.Composition.Drawing.ManagedBackend.Register() for a SkiaSharp-free build. Missing registration
 			// surfaces as a clear DrawingFactory.Current "no backend registered" exception.
-			var appInstance = AppInstance.GetCurrent();
-			if (appInstance.GetActivatedEventArgs() is null)
-			{
-				// If no specific activation was set yet, fall back to launch activated event args.
-				appInstance.SetActivatedEventArgs(new AppActivationArguments(
-					ExtendedActivationKind.Launch,
-					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
-			}
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
