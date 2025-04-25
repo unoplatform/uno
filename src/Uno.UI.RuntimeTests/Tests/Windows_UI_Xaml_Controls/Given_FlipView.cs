@@ -546,7 +546,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.WheelUp();
 			Assert.AreEqual(0, flipView.SelectedIndex);
 		}
-#endif
 
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
@@ -700,6 +699,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, flipView.SelectedIndex);
 		}
+#endif
 	}
 
 #if __SKIA__ || __WASM__
