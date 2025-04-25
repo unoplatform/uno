@@ -1509,7 +1509,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (shouldSnap)
 			{
-				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor);
+				AdjustOffsetsForSnapPoints(ref horizontalOffset, ref verticalOffset, zoomFactor, canBypassSingle: true);
 			}
 
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
