@@ -41,6 +41,7 @@ public partial class TextBox
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
+	private bool _renderingRegistered;
 
 
 	private SelectionDetails _selection;
@@ -417,13 +418,28 @@ public partial class TextBox
 	private void UpdateScrolling() => UpdateScrolling(true);
 
 	private void UpdateScrollingRendering(object sender, object arg)
-		=> UpdateScrolling(true);
+	{
+		UpdateScrolling(true);
+		UnsubscribeForScrollingRendering();
+	}
 
 	private void SubscribeForScrollingRendering()
-		=> CompositionTarget.Rendering += UpdateScrollingRendering;
+	{
+		if (!_renderingRegistered)
+		{
+			_renderingRegistered = true;
+			CompositionTarget.Rendering += UpdateScrollingRendering;
+		}
+	}
 
 	private void UnsubscribeForScrollingRendering()
-		=> CompositionTarget.Rendering -= UpdateScrollingRendering;
+	{
+		if (_renderingRegistered)
+		{
+			_renderingRegistered = false;
+			CompositionTarget.Rendering -= UpdateScrollingRendering;
+		}
+	}
 
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
@@ -440,12 +456,7 @@ public partial class TextBox
 			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
 			{
 				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
-
 				SubscribeForScrollingRendering();
-			}
-			else
-			{
-				UnsubscribeForScrollingRendering();
 			}
 
 			var horizontalOffset = sv.HorizontalOffset;
@@ -463,6 +474,7 @@ public partial class TextBox
 
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
+			Console.WriteLine($"Update Scrolling ({newHorizontalOffset}, {newVerticalOffset}");
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
 	}
