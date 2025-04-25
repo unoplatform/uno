@@ -11,17 +11,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private IScrollSnapPointsInfo _snapPointsInfo;
 
-		internal void AdjustOffsetsForSnapPoints(ref double? horizontalOffset, ref double? verticalOffset, float? zoomFactor)
+		internal void AdjustOffsetsForSnapPoints(ref double? horizontalOffset, ref double? verticalOffset, float? zoomFactor, bool canBypassSingle = false)
 		{
 			if (horizontalOffset is { } hOffset)
 			{
 				var maxOffset = Math.Max(0d, ExtentWidth - ViewportWidth);
+				var currentOffset = canBypassSingle ? hOffset : HorizontalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
 					isForHorizontalOffset: true,
 					minOffset: 0d,
 					maxOffset: maxOffset,
-					HorizontalOffset,
+					currentOffset,
 					ExtentWidth,
 					ViewportWidth,
 					zoomFactor ?? ZoomFactor,
@@ -32,12 +33,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (verticalOffset is { } vOffset)
 			{
 				var maxOffset = Math.Max(0d, ExtentHeight - ViewportHeight);
+				var currentOffset = canBypassSingle ? vOffset : VerticalOffset;
 
 				AdjustOffsetWithMandatorySnapPoints(
 					isForHorizontalOffset: false,
 					minOffset: 0d,
 					maxOffset: maxOffset,
-					VerticalOffset,
+					currentOffset,
 					ExtentHeight,
 					ViewportHeight,
 					zoomFactor ?? ZoomFactor,
