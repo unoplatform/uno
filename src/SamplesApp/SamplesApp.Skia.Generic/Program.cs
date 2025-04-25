@@ -32,10 +32,6 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
-#if IS_CI_OR_DEBUG
-			FeatureConfiguration.CompositionTarget.FrameRate = 15;
-#endif
-
 			SkiaHost? host = default;
 			var builder = SkiaHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
