@@ -5462,6 +5462,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPicker_Bitmap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPickerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -9698,6 +9702,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Xaml_CodeGen\BindableMetadataGlobalizationTest.xaml.cs">
       <DependentUpon>BindableMetadataGlobalizationTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPicker_Bitmap.xaml.cs">
+      <DependentUpon>FileOpenPicker_Bitmap.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileOpenPickerTests.xaml.cs">
       <DependentUpon>FileOpenPickerTests.xaml</DependentUpon>
