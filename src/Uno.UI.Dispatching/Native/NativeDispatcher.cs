@@ -144,7 +144,7 @@ namespace Uno.UI.Dispatching
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}
-			else if (dispatcher.Rendering == null && dispatcher.Log().IsEnabled(LogLevel.Debug))
+			else if (!dispatcher.IsRendering && dispatcher.Log().IsEnabled(LogLevel.Debug))
 			{
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
@@ -153,7 +153,7 @@ namespace Uno.UI.Dispatching
 
 		internal void DispatchRendering()
 		{
-			if (Rendering != null)
+			if (IsRendering)
 			{
 				WakeUp();
 			}

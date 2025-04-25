@@ -142,7 +142,11 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			var width = (int)size.Width;
 			var height = (int)size.Height;
-			this.LogDebug()?.LogDebug($"UnoSKMetalView: Draw {width}x{height}");
+
+			if (this.Log().IsTraceEnabled())
+			{
+				this.Log().Trace($"UnoSKMetalView: Draw {width}x{height}");
+			}
 
 			if (width <= 0 || height <= 0)
 			{
@@ -192,16 +196,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)drawable)?.Dispose();
 				((IDisposable?)canvas)?.Dispose();
 				((IDisposable?)surface)?.Dispose();
-			}
-
-			if (CompositionTarget.IsRenderingActive)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Dispatch next rendering");
-				}
-
-				NativeDispatcher.Main.DispatchRendering();
 			}
 
 			_link.Paused = ReferenceEquals(currentPicture, Volatile.Read(ref _picture))
