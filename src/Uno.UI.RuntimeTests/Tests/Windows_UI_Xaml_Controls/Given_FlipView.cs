@@ -692,7 +692,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			finger.Drag(
 				from: new(rect.Right - 10, rect.GetCenter().Y),
-				to: new(rect.Right - 30 /* less than center */, rect.GetCenter().Y), 
+				to: new(rect.Right - 30 /* less than center */, rect.GetCenter().Y),
 				steps: 5,
 				stepOffsetInMilliseconds: 1);
 
