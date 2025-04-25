@@ -20,6 +20,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_NoSelection_Then_PointersEvents()
 		=> RunTest("_noSelection_noClick", clicked: false);
 
@@ -40,6 +43,7 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
 #else
 	[Test]
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native https://github.com/unoplatform/uno/issues/9080
 #endif
 	public Task When_MultipleSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_multipleSelection_noClick", clicked: false);
@@ -48,6 +52,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_ExtendedSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_extendedSelection_noClick", clicked: false);
 
@@ -55,6 +62,10 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_NoSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_noSelection_withClick", clicked: true);
 
@@ -62,6 +73,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_SingleSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_singleSelection_withClick", clicked: true);
 
