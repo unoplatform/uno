@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Similar to UWP, the video should keep playing while changing mode.
 			if (!IsTogglingFullscreen)
 			{
-				MediaPlayer.Stop();
+				MediaPlayer?.Stop();
 			}
 
 			base.OnUnloaded();

@@ -17,6 +17,8 @@ using Uno.Helpers;
 using Uno.Media.Playback;
 using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
+using Windows.Web.Http.Headers;
+using Uno.Logging;
 
 #if IS_MPE_X11
 [assembly: ApiExtension(
@@ -318,9 +320,19 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	public void Dispose()
 	{
-		_timerDisposable.Dispose();
-		_mediaPlayerToExtension.Remove(Player);
-		VlcPlayer.Dispose();
+		try
+		{
+			_timerDisposable?.Dispose();
+			_mediaPlayerToExtension.Remove(Player);
+			VlcPlayer.Dispose();
+		}
+		catch (Exception)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to dispose MediaPlayerExtension");
+			}
+		}
 	}
 
 	private void OnPlaying(object? _, EventArgs _1)
