@@ -448,10 +448,7 @@ namespace Microsoft.UI.Xaml
 			protected override void OnDraw(Canvas canvas)
 			{
 				base.OnDraw(canvas);
-				if (!string.IsNullOrEmpty(_svgClipPath))
-				{
-					canvas.ClipPath(_androidPath);
-				}
+				canvas.ClipPath(_androidPath);
 			}
 		}
 	}
