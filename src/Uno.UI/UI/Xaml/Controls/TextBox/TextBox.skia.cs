@@ -41,7 +41,6 @@ public partial class TextBox
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
-	private bool _renderingRegistered;
 
 
 	private SelectionDetails _selection;
@@ -169,7 +168,6 @@ public partial class TextBox
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-		UnsubscribeForScrollingRendering();
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -417,29 +415,6 @@ public partial class TextBox
 
 	private void UpdateScrolling() => UpdateScrolling(true);
 
-	private void UpdateScrollingRendering(object sender, object arg)
-	{
-		UpdateScrolling(true);
-		UnsubscribeForScrollingRendering();
-	}
-
-	private void SubscribeForScrollingRendering()
-	{
-		if (!_renderingRegistered)
-		{
-			_renderingRegistered = true;
-			CompositionTarget.Rendering += UpdateScrollingRendering;
-		}
-	}
-
-	private void UnsubscribeForScrollingRendering()
-	{
-		if (_renderingRegistered)
-		{
-			_renderingRegistered = false;
-			CompositionTarget.Rendering -= UpdateScrollingRendering;
-		}
-	}
 
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
@@ -453,12 +428,6 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
-			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
-			{
-				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
-				SubscribeForScrollingRendering();
-			}
-
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
@@ -474,7 +443,6 @@ public partial class TextBox
 
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
-			Console.WriteLine($"Update Scrolling ({newHorizontalOffset}, {newVerticalOffset}");
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
 	}
