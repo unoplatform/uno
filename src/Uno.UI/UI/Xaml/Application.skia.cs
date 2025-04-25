@@ -204,15 +204,6 @@ namespace Microsoft.UI.Xaml
 		{
 			_startInvoked = true;
 
-			var appInstance = AppInstance.GetCurrent();
-			if (appInstance.GetActivatedEventArgs() is null)
-			{
-				// If no specific activation was set yet, fall back to launch activated event args.
-				appInstance.SetActivatedEventArgs(new AppActivationArguments(
-					ExtendedActivationKind.Launch,
-					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
-			}
-
 			SynchronizationContext.SetSynchronizationContext(
 				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
