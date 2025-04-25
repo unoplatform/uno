@@ -1247,9 +1247,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if __SKIA__
+			var originalDeleteButtonVisibilityChangedSinceLastUpdateScrolling = _deleteButtonVisibilityChangedSinceLastUpdateScrolling;
+
 			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
 
-			if (changed)
+			if (!originalDeleteButtonVisibilityChangedSinceLastUpdateScrolling && changed)
 			{
 				// Request an update of the ScrollViewer position
 				DispatcherQueue.TryEnqueue(UpdateScrolling);

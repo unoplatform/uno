@@ -20,6 +20,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
+using System.Diagnostics;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -356,7 +357,10 @@ public partial class TextBox
 			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
-		_selection = (start, length, _selection.selectionEndsAtTheStart);
+
+		var selection = (start, length, _selection.selectionEndsAtTheStart);
+		var selectionChanged = selection != _selection;
+		_selection = selection;
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
@@ -378,7 +382,11 @@ public partial class TextBox
 				_timer.Start(); // restart
 			}
 
-			UpdateScrolling();
+			if (selectionChanged)
+			{
+				Console.WriteLine($"Update scrolling from selection {_selection}");
+				UpdateScrolling();
+			}
 			UpdateDisplaySelection();
 		}
 	}
@@ -414,7 +422,6 @@ public partial class TextBox
 	}
 
 	private void UpdateScrolling() => UpdateScrolling(true);
-
 
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
