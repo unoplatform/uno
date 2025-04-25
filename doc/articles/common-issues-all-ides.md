@@ -60,7 +60,7 @@ In this case, when `LayoutUpdated` is first fired, you add a new child to the `S
 
 ## Cannot build with both Uno.WinUI and Uno.UI NuGet packages referenced
 
-This issue generally happens when referencing an Uno.UI (using UWP APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
+This issue generally happens when referencing an Uno.UI (using WinUI APIs) NuGet package in an application that uses Uno.WinUI (Using WinAppSDK APIs).
 
 For instance, if your application has `<PackageReference Include="Uno.WinUI"` in the `csproj` files, this means that you'll need to reference WinUI versions of NuGet packages.
 
