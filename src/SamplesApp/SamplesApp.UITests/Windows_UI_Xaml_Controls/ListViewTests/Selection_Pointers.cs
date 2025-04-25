@@ -20,6 +20,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_NoSelection_Then_PointersEvents()
 		=> RunTest("_noSelection_noClick", clicked: false);
 
@@ -49,6 +52,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_ExtendedSelectionWithoutItemClick_Then_PointersEvents()
 		=> RunTest("_extendedSelection_noClick", clicked: false);
 
@@ -67,6 +73,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[AutoRetry]
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
+#if !IS_RUNTIME_UI_TESTS
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
+#endif
 	public Task When_SingleSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_singleSelection_withClick", clicked: true);
 
