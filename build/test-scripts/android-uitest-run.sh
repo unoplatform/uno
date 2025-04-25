@@ -186,6 +186,17 @@ then
 	echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
 	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
 
+	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+		export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64`
+
+		echo "UITEST_RUNTIME_TESTS_FILTER=$UITEST_RUNTIME_TESTS_FILTER" >> samplesapp-environment.txt
+
+		# echo the failed filter list, if not empty
+		if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
+			echo "Tests to run: $UNO_TESTS_FAILED_LIST"
+		fi
+	fi
+
 	# Push the environment file to the device
 	$ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samplesapp-environment.txt
 
