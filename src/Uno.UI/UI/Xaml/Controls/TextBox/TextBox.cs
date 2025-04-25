@@ -1251,8 +1251,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (changed)
 			{
-				// Request an update of the scrollviewer position
-				UpdateScrolling();
+				// Request an update of the ScrollViewer position
+				DispatcherQueue.TryEnqueue(UpdateScrolling);
 			}
 #endif
 		}
