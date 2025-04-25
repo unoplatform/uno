@@ -646,14 +646,13 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
     window_close = close;
 }
 
-void* uno_window_get_metal_context(UNOWindow* window)
+void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
-    id device = uno_application_get_metal_device();
-    id queue = window.metalViewDelegate.queue;
+    *device = (__bridge void *)(uno_application_get_metal_device());
+    *queue = (__bridge void *)(window.metalViewDelegate.queue);
 #if DEBUG
     NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
 #endif
-    return gr_direct_context_make_metal(device, queue);
 }
 
 CGFloat readNextCoord(const char *svg, int *position, long length)
