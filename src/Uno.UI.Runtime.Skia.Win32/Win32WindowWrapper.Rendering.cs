@@ -36,6 +36,11 @@ internal partial class Win32WindowWrapper
 			return;
 		}
 
+		if (clientRect.IsEmpty)
+		{
+			return;
+		}
+
 		if (_surface is null || _lastSize != clientRect.Size)
 		{
 			_lastSize = clientRect.Size;
