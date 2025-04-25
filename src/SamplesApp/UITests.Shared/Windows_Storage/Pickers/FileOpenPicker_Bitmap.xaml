@@ -10,6 +10,5 @@
 
     <StackPanel>
 		<Button x:Name="OpenPickerButton" Click="OpenPickerButton_Click" Content="Open File Picker" Margin="10" Width="200" Height="50" HorizontalAlignment="Center"/>
-		<Image x:Name="TargetImage" Margin="10" HorizontalAlignment="Center" Width="400" Height="400" Stretch="Uniform" />
 	</StackPanel>
 </Page>
