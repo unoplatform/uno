@@ -44,9 +44,6 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests \
-			| Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];
 	then
@@ -64,6 +61,13 @@ else
 	then
 		export TEST_FILTERS=" \
 			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests \
+		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == '5' ];
+	then
+		export TEST_FILTERS=" \
+			Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests \
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 	then
