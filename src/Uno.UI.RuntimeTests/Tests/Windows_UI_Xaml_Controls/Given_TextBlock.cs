@@ -607,6 +607,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Inlines_Transitively_Change()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+			var SUT = new TextBlock();
+
+			await UITestHelper.Load(SUT, tb => tb.IsLoaded);
+
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			span.Inlines.Add(new Run() { Text = "text" });
+
+			await UITestHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color);
+		}
+#endif
+
 #if __WASM__
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
