@@ -123,6 +123,15 @@ namespace Microsoft.UI.Xaml
 				BackButtonIntegration.Initialize();
 
 				InitializePartial();
+
+				var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
+				if (appInstance.GetActivatedEventArgs() is null)
+				{
+					// If no specific activation was set yet, fall back to launch activated event args.
+					appInstance.SetActivatedEventArgs(
+						AppActivationArguments.CreateLaunch(
+							new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
+				}
 			}
 			else
 			{
@@ -823,15 +832,6 @@ namespace Microsoft.UI.Xaml
 		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
 			_startInvoked = true;
-
-			var appInstance = AppInstance.GetCurrent();
-			if (appInstance.GetActivatedEventArgs() is null)
-			{
-				// If no specific activation was set yet, fall back to launch activated event args.
-				appInstance.SetActivatedEventArgs(new AppActivationArguments(
-					ExtendedActivationKind.Launch,
-					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
-			}
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
