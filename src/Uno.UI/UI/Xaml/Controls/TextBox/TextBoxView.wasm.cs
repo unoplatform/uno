@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
