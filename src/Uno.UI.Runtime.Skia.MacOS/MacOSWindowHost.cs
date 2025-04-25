@@ -51,8 +51,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		switch (host.RenderSurfaceType)
 		{
 			case RenderSurfaceType.Metal:
-				var ctx = NativeUno.uno_window_get_metal_context(_nativeWindow.Handle);
-				_context = MacOSMetalRenderer.CreateContext(ctx);
+				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out var device, out var queue);
+				var ctx = new GRMtlBackendContext()
+				{
+					DeviceHandle = device,
+					QueueHandle = queue,
+				};
+				_context = GRContext.CreateMetal(ctx);
 				break;
 			case RenderSurfaceType.Software:
 				break;

@@ -275,7 +275,7 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_resizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isResizable);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial nint uno_window_get_metal_context(nint window);
+	internal static partial void uno_window_get_metal_handles(nint window, out nint device, out nint queue);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);
