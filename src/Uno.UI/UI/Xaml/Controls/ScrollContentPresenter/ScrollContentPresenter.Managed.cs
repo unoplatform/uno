@@ -419,7 +419,7 @@ namespace Microsoft.UI.Xaml.Controls
 					h = HorizontalOffset - endValue;
 				}
 
-				if (shouldSnapVertically )
+				if (shouldSnapVertically)
 				{
 					var v0 = args.Velocities.Linear.Y;
 					var duration = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(v0, inertia.DesiredDisplacementDeceleration);
