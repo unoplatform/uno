@@ -46,6 +46,8 @@ parameters:
     value: '03'
   - key: '4'
     value: '04'
+  - key: '5'
+    value: '05'
 
 jobs:
 - job: iOS_Build
@@ -120,13 +122,13 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
       JobDisplayName: 'iOS Automated Tests ${{ AutomatedTestGroup.value }}'
-      JobTimeoutInMinutes: 120
+      JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
-      UITEST_ALLOW_RERUN: 'true'
+      UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
@@ -141,7 +143,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
       JobDisplayName: 'iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
-      JobTimeoutInMinutes: 120
+      JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
