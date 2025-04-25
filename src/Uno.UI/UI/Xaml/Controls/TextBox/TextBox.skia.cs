@@ -168,6 +168,7 @@ public partial class TextBox
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		UnsubscribeForScrollingRendering();
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -415,6 +416,15 @@ public partial class TextBox
 
 	private void UpdateScrolling() => UpdateScrolling(true);
 
+	private void UpdateScrollingRendering(object sender, object arg)
+		=> UpdateScrolling(true);
+
+	private void SubscribeForScrollingRendering()
+		=> CompositionTarget.Rendering += UpdateScrollingRendering;
+
+	private void UnsubscribeForScrollingRendering()
+		=> CompositionTarget.Rendering -= UpdateScrollingRendering;
+
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
@@ -430,8 +440,12 @@ public partial class TextBox
 			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
 			{
 				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
-				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
-				DispatcherQueue.TryEnqueue(UpdateScrolling);
+
+				SubscribeForScrollingRendering();
+			}
+			else
+			{
+				UnsubscribeForScrollingRendering();
 			}
 
 			var horizontalOffset = sv.HorizontalOffset;
