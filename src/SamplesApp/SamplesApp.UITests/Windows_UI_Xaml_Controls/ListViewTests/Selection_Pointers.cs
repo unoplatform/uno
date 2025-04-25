@@ -57,9 +57,9 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 	[InjectedPointer(PointerDeviceType.Touch)]
 	[InjectedPointer(PointerDeviceType.Mouse)]
 
-	#if !IS_RUNTIME_UI_TESTS
+#if !IS_RUNTIME_UI_TESTS
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Flaky on iOS native
-	#endif
+#endif
 	public Task When_NoSelectionWithItemClick_Then_PointersEvents()
 		=> RunTest("_noSelection_withClick", clicked: true);
 
