@@ -14,14 +14,25 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage.Pickers;
+using System.Collections.ObjectModel;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.Storage;
+using Windows.UI.Core;
 using WinRT.Interop;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using SamplesApp;
 
 namespace UITests.Windows_Storage.Pickers;
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
+
+[Sample("Windows.Storage", IsManualTest = true,
+	Description =
+"""
+ Select an image file. After confirming the dialog, it should be displayed in a dialog.
+"""
+)]
 public sealed partial class FileOpenPicker_Bitmap : Page
 {
 	public FileOpenPicker_Bitmap()
@@ -29,7 +40,7 @@ public sealed partial class FileOpenPicker_Bitmap : Page
 		this.InitializeComponent();
 	}
 
-	private async void FileOpenPickerButton_Click(object sender, RoutedEventArgs e)
+	private async void OpenPickerButton_Click(object sender, RoutedEventArgs e)
 	{
 		var picker = new FileOpenPicker();
 		picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
@@ -78,7 +89,7 @@ public sealed partial class FileOpenPicker_Bitmap : Page
 
 	private void InitForWin(object instance) // `object` here can be replaced by whatever type of 1st param of InitializeWithWindow.Initialize
 	{
-		var handle = WindowNative.GetWindowHandle(App.Instance.MainWindow);
+		var handle = WindowNative.GetWindowHandle(App.MainWindow);
 		InitializeWithWindow.Initialize(instance, handle);
 	}
 }
