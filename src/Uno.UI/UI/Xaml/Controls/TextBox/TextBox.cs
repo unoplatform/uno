@@ -1255,6 +1255,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
+
+#if __SKIA__
 		bool _pendingUpdateScrolling;
 
 		private void DispatchUpdateScrolling()
@@ -1273,6 +1275,7 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Respond to text input from user interaction.
