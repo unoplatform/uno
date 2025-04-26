@@ -1989,25 +1989,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
 			if (ns == xamlType.PreferredXamlNamespace)
-    		{
-		        // It looks like FindType always returns null in this code path.
+			{
+				// It looks like FindType always returns null in this code path.
 				// So, we avoid the costly call here.
-		        return null;
-		    }
-			
+				return null;
+			}
+
 			// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
 			// In this case, we'll have `baseTypeString` as
 			// the fully qualified type name.
 			// In this case, we go through this code path as it's much more efficient than FindType.
-    		var baseTypeString = $"{ns}.{xamlType.Name}";
-    
-		    // Try finding the type with "Extension" suffix first, then without
-		    return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+			var baseTypeString = $"{ns}.{xamlType.Name}";
+
+			// Try finding the type with "Extension" suffix first, then without
+			return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
 		}
 
 		private INamedTypeSymbol? FindMarkupExtensionType(string fullTypeName)
 		{
-    		return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
+			return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
 		}
 
 		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
