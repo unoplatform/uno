@@ -111,13 +111,15 @@ namespace Microsoft.UI.Xaml
 
 			callback(new ApplicationInitializationCallbackParams());
 
-			// Force a schedule to let the dotnet exports be initialized properly
 			if (OperatingSystem.IsBrowser())
 			{
+				// Force a schedule to let the dotnet exports be initialized properly
 				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
 			}
 			else
 			{
+				// Other platforms can be synchronous, except iOS that requires
+				// the creation of the window to be synchronous to avoid a black screen.
 				_current.InvokeOnLaunched();
 			}
 		}
