@@ -592,7 +592,7 @@
         - name: Windowing
           href: features/windows-ui-xaml-window.md
         - name: x:Bind
-          href: features/windows-ui-xbind.md
+          href: xref:Uno.Features.WinUIxBind
 
       - name: 3rd-party libraries
         href: supported-libraries.md
