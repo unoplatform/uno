@@ -1988,7 +1988,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
-			INamedTypeSymbol? findType;
 			if (ns == xamlType.PreferredXamlNamespace)
     		{
 		        // It looks like FindType always returns null in this code path.
