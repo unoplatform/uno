@@ -159,6 +159,18 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
+#if __WASM__
+		// Synchronous dispatching to the dispatcher is required for Wasm
+		// This is must be used only when originating from the requestAnimationFrame callback
+		internal void SynchronousDispatchRendering()
+		{
+			if (IsRendering)
+			{
+				DispatchItems();
+			}
+		}
+#endif
+
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
 			if (!_trace.IsEnabled)
