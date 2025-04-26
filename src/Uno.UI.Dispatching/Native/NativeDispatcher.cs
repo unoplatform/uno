@@ -160,10 +160,24 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __WASM__
+		long _lastDispatchRendering;
+
 		// Synchronous dispatching to the dispatcher is required for Wasm
 		// This is must be used only when originating from the requestAnimationFrame callback
 		internal void SynchronousDispatchRendering()
 		{
+			var lastDispatch = _lastDispatchRendering;
+			_lastDispatchRendering = Stopwatch.GetTimestamp();
+
+			if (Stopwatch.GetElapsedTime(lastDispatch) < DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration)
+			{
+				if (this.Log().IsTraceEnabled())
+				{
+					this.Log().Trace($"Skipping frame for configured {DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration}");
+				}
+				return;
+			}
+
 			if (IsRendering)
 			{
 				DispatchItems();

@@ -92,11 +92,24 @@ namespace Uno.UI
 
 		public static class CompositionTarget
 		{
+			private static float _frameRate = 60;
+
 			/// <summary>
 			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
 			/// This property is used by desktop skia renderers.
 			/// </summary>
-			public static float FrameRate { get; set; } = 60;
+			public static float FrameRate
+			{
+				get => _frameRate;
+				set
+				{
+					_frameRate = value;
+
+					// Use this to avoid because we do not depend on the wasm binaries
+					// at this layer (we use the reference binaries).
+					DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration = TimeSpan.FromSeconds(1.0 / _frameRate);
+				}
+			}
 		}
 
 		public static class ContentPresenter
