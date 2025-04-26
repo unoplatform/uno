@@ -1,6 +1,10 @@
-using System;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using UIKit;
@@ -11,6 +15,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -25,6 +30,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private RootViewController _mainController;
 	private readonly DisplayInformation _displayInformation;
 	private InputPane _inputPane;
+	private XamlRoot _xamlRoot;
 
 #if !__TVOS__
 	private NSObject? _orientationRegistration;
@@ -37,6 +43,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
+		_xamlRoot = xamlRoot;
 		AppManager.XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
@@ -52,7 +59,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
-		_nativeWindow.RootViewController = _mainController;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
@@ -69,8 +75,70 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	protected override void ShowCore()
 	{
 		this.LogDebug()?.LogDebug("Native window ShowCore");
-		_nativeWindow.MakeKeyAndVisible();
-		IsVisible = true;
+		var launchName = NSBundle.MainBundle.ObjectForInfoDictionary("UILaunchStoryboardName") as NSString;
+
+		if (!string.IsNullOrEmpty(launchName))
+		{
+			// Create a temporary view controller that replicates
+			// the launch storyboard, if any. As we're rendering using
+			// an metal view, a black screen may appear otherwise.
+
+			if (this.Log().IsDebugEnabled())
+			{
+				this.Log().Debug($"Using storyboard {launchName} as an extended Splash Screen");
+			}
+
+			var storyboard = UIStoryboard.FromName(launchName, null);
+			var splashVC = storyboard.InstantiateInitialViewController();
+
+			_nativeWindow.RootViewController = splashVC;
+			_nativeWindow.MakeKeyAndVisible();
+		}
+		else
+		{
+			_nativeWindow.RootViewController = _mainController;
+			_nativeWindow.MakeKeyAndVisible();
+			IsVisible = true;
+		}
+
+		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
+		{
+			void OnLoaded(object sender, object args)
+			{
+				if (this.Log().IsDebugEnabled())
+				{
+					this.Log().Debug($"ShowCore: Root loaded");
+				}
+
+				// Requeue after the current loaded event so we let all
+				// controls render properly.
+				Microsoft.UI.Dispatching.DispatcherQueue.Main.TryEnqueue(
+					priority: DispatcherQueuePriority.High, () =>
+					{
+						if (this.Log().IsDebugEnabled())
+						{
+							this.Log().Debug($"ShowCore: Showing main content");
+						}
+
+						_nativeWindow.MakeKeyAndVisible();
+
+						// Fade the app's content over the extended splash screen
+						UIView.Transition(
+							_nativeWindow,
+							0.25f,
+							UIViewAnimationOptions.TransitionCrossDissolve,
+							() => _nativeWindow.RootViewController = _mainController,
+							null
+						);
+
+						IsVisible = true;
+
+						fe.Loaded -= OnLoaded;
+					});
+			}
+
+			fe.Loaded += OnLoaded;
+		}
 	}
 
 	internal RootViewController MainController => _mainController;
