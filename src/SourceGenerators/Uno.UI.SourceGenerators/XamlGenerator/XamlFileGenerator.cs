@@ -5835,7 +5835,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string? GetObjectUid(XamlObjectDefinition objectDefinition)
 		{
 			string? objectUid = null;
-			var localizedObject = FindMember(objectDefinition, "Uid", XamlConstants.PresentationXamlXmlNamespace);
+			var localizedObject = FindMember(objectDefinition, "Uid", XamlConstants.XamlXmlNamespace);
 			if (localizedObject?.Value != null)
 			{
 				objectUid = localizedObject.Value.ToString();
