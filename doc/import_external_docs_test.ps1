@@ -21,15 +21,15 @@ $external_docs = @{
 
 # In case you want to import a specific branch wich is not already committed in the uno-origin Repository, specify custom Git URLs for specific repositories and uncomment the following lines:
 # $contributor_git_urls = @{
-#     "uno.themes" = "https://github.com/contributor-fork/uno.themes"
+#     "uno.themes" = "https://github.com/contributor-fork/"
 # }
 
 # dot import the main script
-./import_external_docs.ps1
+. "$PSScriptRoot\import_external_docs.ps1"
 
 # call the function to import external docs
-Invoke-ImportExternalDocs -branches $external_docs -custom_git_urls $contributor_git_urls
+Invoke-ImportExternalDocs -branches $external_docs # -custom_git_urls $contributor_git_urls
 
-docfx build -Path $PSScriptRoot.Replace('import_external_docs_test.ps1', 'docfx.json')
+docfx build docfx.json
 
-dotnet-serve --open-browser:$PSScriptRoot.Replace('import_external_docs_test.ps1', '_site/articles/intro.html')
+dotnet-serve --open-browser:_site/articles/intro.html

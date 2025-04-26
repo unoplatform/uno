@@ -44,6 +44,7 @@ function Invoke-ImportExternalDocs {
         $external_docs
 
         $ErrorActionPreference = 'Stop'
+       
         if (-Not (Test-Path articles\external)) {
             mkdir articles\external -ErrorAction Continue
         }
@@ -58,13 +59,13 @@ function Invoke-ImportExternalDocs {
 
         # Heads - Release
         foreach ($repoPath in $external_docs.keys) {
-            if ($branches.Contains($repoPath)) {
+            if ($custom_git_urls -ne $null -and $custom_git_urls.ContainsKey($repoPath)) {
                 $repoUrl = "$custom_git_url$repoPath"
             }
             else {
                 $repoUrl = "$uno_git_url$repoPath"
             }
-
+            Write-Output "Importing $repoPath from $repoUrl..."
             $repoBranch = $external_docs[$repoPath]
 
             # if the repository is already cloned, just update it, not clone it again, because git will otherwise fail
