@@ -1989,29 +1989,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
 			INamedTypeSymbol? findType;
-			if (ns != xamlType.PreferredXamlNamespace)
-			{
-				// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
-				// In this case, we'll have `baseTypeString` as
-				// the fully qualified type name.
-				// In this case, we go through this code path as it's much more efficient than FindType.
-				var baseTypeString = $"{ns}.{xamlType.Name}";
-				findType = _metadataHelper.FindTypeByFullName(baseTypeString + "Extension") as INamedTypeSymbol; // Support shortened syntax
-				findType ??= _metadataHelper.FindTypeByFullName(baseTypeString) as INamedTypeSymbol;
-			}
-			else
-			{
-				// It looks like FindType always returns null in this code path.
+			if (ns == xamlType.PreferredXamlNamespace)
+    		{
+		        // It looks like FindType always returns null in this code path.
 				// So, we avoid the costly call here.
-				return null;
-			}
+		        return null;
+		    }
+			
+			// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
+			// In this case, we'll have `baseTypeString` as
+			// the fully qualified type name.
+			// In this case, we go through this code path as it's much more efficient than FindType.
+    		var baseTypeString = $"{ns}.{xamlType.Name}";
+    
+		    // Try finding the type with "Extension" suffix first, then without
+		    return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+		}
 
-			if (findType?.Is(Generation.MarkupExtensionSymbol.Value) ?? false)
-			{
-				return findType;
-			}
-
-			return null;
+		private INamedTypeSymbol? FindMarkupExtensionType(string fullTypeName)
+		{
+    		return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
 		}
 
 		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
