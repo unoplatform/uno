@@ -1,7 +1,7 @@
-echo 'Updating docfx tool...'
+Write-Output 'Updating docfx tool...'
 dotnet tool update --global docfx
 
-echo 'Updating dotnet-serve tool...'
+Write-Output 'Updating dotnet-serve tool...'
 dotnet tool update --global dotnet-serve
 
 $external_docs = @{
@@ -19,8 +19,17 @@ $external_docs = @{
     "uno.samples"        = "master"
 }
 
-./import_external_docs $external_docs
+# In case you want to import a specific branch wich is not already committed in the uno-origin Repository, specify custom Git URLs for specific repositories and uncomment the following lines:
+# $contributor_git_urls = @{
+#     "uno.themes" = "https://github.com/contributor-fork/uno.themes"
+# }
 
-docfx
+# dot import the main script
+./import_external_docs.ps1
 
-dotnet-serve --open-browser:_site/articles/intro.html
+# call the function to import external docs
+Invoke-ImportExternalDocs -branches $external_docs -custom_git_urls $contributor_git_urls
+
+docfx build -Path $PSScriptRoot.Replace('import_external_docs_test.ps1', 'docfx.json')
+
+dotnet-serve --open-browser:$PSScriptRoot.Replace('import_external_docs_test.ps1', '_site/articles/intro.html')
