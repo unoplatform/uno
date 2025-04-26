@@ -156,7 +156,11 @@ internal partial class BrowserRenderer
 				this.Log().Trace($"Dispatch next rendering");
 			}
 
-			NativeDispatcher.Main.DispatchRendering();
+			// Force a loop of the dispatcher, so that the Rendering Event
+			// even can be raised. It is done synchronously because we're already
+			// on a timed callback and it won't requeue immediately like a standard
+			// dispatcher dispatch would.
+			NativeDispatcher.Main.SynchronousDispatchRendering();
 		}
 	}
 
