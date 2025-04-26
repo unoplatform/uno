@@ -11,10 +11,19 @@ using System.Threading.Tasks;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Microsoft.UI.Composition;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+
+#if __SKIA__
+using System.Runtime.InteropServices;
+using SkiaSharp;
+using System.Runtime.InteropServices.JavaScript;
+#endif
 
 namespace Uno.Helpers;
 
-internal static class ImageSourceHelpers
+internal static partial class ImageSourceHelpers
 {
 	private static HttpClient? _httpClient;
 
@@ -32,21 +41,71 @@ internal static class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct)
+	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true)
 	{
-		var surface = new Microsoft.UI.Composition.SkiaCompositionSurface();
-		var result = surface.LoadFromStream(imageStream);
+		var buffer = new byte[imageStream.Length - imageStream.Position];
+		var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+		var handleFreed = false;
+		using var handleDisposable = Disposable.Create(() =>
+		{
+			if (!handleFreed)
+			{
+				gcHandle.Free();
+			}
+		});
+
+		var memory = new Memory<byte>(buffer);
+		var readCount = await imageStream.ReadAsync(memory, ct);
+
+		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi)
+		{
+			var decodedBufferObject = await LoadFromArray(buffer[..readCount]);
+
+			if (decodedBufferObject.GetPropertyAsString("error") is { } errorMessage)
+			{
+				typeof(ImageSourceHelpers).LogError()?.Error($"Failed to load image with the browser Canvas API. Falling back to SKCodec-based loading/decoding: {errorMessage}");
+			}
+			else
+			{
+				var width = decodedBufferObject.GetPropertyAsInt32("width");
+				var height = decodedBufferObject.GetPropertyAsInt32("height");
+
+				if (width == 0 || height == 0)
+				{
+					return ImageData.Empty;
+				}
+
+				var bytes = decodedBufferObject.GetPropertyAsByteArray("bytes");
+				SKImage image;
+				unsafe
+				{
+					fixed (void* ptr = bytes)
+					{
+						image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), (_, _) => gcHandle.Free());
+					}
+				}
+
+				return ImageData.FromCompositionSurface(new SkiaCompositionSurface(image));
+			}
+		}
+
+		var surface = new SkiaCompositionSurface();
+		var result = surface.LoadFromStream(new MemoryStream(buffer));
 
 		if (result.success)
 		{
-			return Task.FromResult(ImageData.FromCompositionSurface(surface));
+			return ImageData.FromCompositionSurface(surface);
 		}
 		else
 		{
 			var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
-			return Task.FromResult(ImageData.FromError(exception));
+			return ImageData.FromError(exception);
 		}
 	}
+
+	// https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/6.0/byte-array-interop#receive-byte-array-in-javascript-from-net-1
+	[JSImport($"globalThis.Uno.UI.Runtime.Skia.ImageLoader.loadFromArray")]
+	private static partial Task<JSObject> LoadFromArray(byte[] array);
 #endif
 
 	public static async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
@@ -65,8 +124,11 @@ internal static class ImageSourceHelpers
 		=> await GetImageDataFromUri(uri, ReadFromStreamAsBytesAsync, ct);
 
 #if __SKIA__
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct)
-		=> await GetImageDataFromUri(uri, ReadFromStreamAsCompositionSurface, ct);
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct) =>
+		await GetImageDataFromUri(uri,
+			// add more animation formats here if needed
+			(s, token) => ReadFromStreamAsCompositionSurface(s, token, !uri.AbsolutePath.EndsWith(".gif", StringComparison.InvariantCultureIgnoreCase)),
+			ct);
 #endif
 
 	public static async Task<ImageData> GetImageDataFromUri(Uri uri, Func<Stream, CancellationToken, Task<ImageData>> imageDataCreator, CancellationToken ct)
