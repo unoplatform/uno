@@ -1,6 +1,7 @@
 param(
-  [Parameter(ValueFromPipeLineByPropertyName = $true)]
-  $branches = $null
+    [Parameter(ValueFromPipeLineByPropertyName = $true)]
+    $branches = $null,
+    $custom_git_url = $null
 )
 
 Set-PSDebug -Trace 1
@@ -22,27 +23,23 @@ $external_docs = @{
 
 $uno_git_url = "https://github.com/unoplatform/"
 
-if($branches -ne $null)
-{
-    foreach ($repo in $branches.keys)
-    {
+if ($branches -ne $null) {
+    foreach ($repo in $branches.keys) {
         $branch = $branches[$repo]
 
         $external_docs[$repo] = $branch
     }
 }
 
-echo "Current setup:"
+Write-Output "Current setup:"
 $external_docs
 
 $ErrorActionPreference = 'Stop'
 
-function Assert-ExitCodeIsZero()
-{
-    if ($LASTEXITCODE -ne 0)
-    {
-        popd
-        popd
+function Assert-ExitCodeIsZero() {
+    if ($LASTEXITCODE -ne 0) {
+        Push-Location
+        Push-Location
 
         Set-PSDebug -Off
 
@@ -50,12 +47,11 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-if (-Not (Test-Path articles\external))
-{
+if (-Not (Test-Path articles\external)) {
     mkdir articles\external -ErrorAction Continue
 }
 
-pushd articles\external
+Push-Location articles\external
 
 # ensure long paths are supported on Windows
 git config --global core.longpaths true
@@ -64,38 +60,42 @@ $detachedHeadConfig = git config --get advice.detachedHead
 git config advice.detachedHead false
 
 # Heads - Release
-foreach ($repoPath in $external_docs.keys)
-{
-    $repoUrl = "$uno_git_url$repoPath"
+foreach ($repoPath in $external_docs.keys) {
+    if ($branches.Contains($repoPath)) {
+        $repoUrl = "$custom_git_url$repoPath"
+    }
+    else {
+        $repoUrl = "$uno_git_url$repoPath"
+    }
+
     $repoBranch = $external_docs[$repoPath]
-        
-    if (-Not (Test-Path $repoPath))
-    {        
-        echo "Cloning $repoPath ($repoUrl@$repoBranch)..."
+
+    # if the repository is already cloned, just update it, not clone it again, because git will otherwise fail
+    if (-Not (Test-Path $repoPath -and (Get-Location -Stack).Path -contains (Resolve-Path $repoPath).Path)) {
+        Write-Output "Cloning $repoPath ($repoUrl@$repoBranch)..."
         git clone $repoUrl $repoPath
         Assert-ExitCodeIsZero
     }
 
-    pushd $repoPath
+    Push-Location $repoPath
 
-    echo "Checking out $repoUrl@$repoBranch..."
+    Write-Output "Checking out $repoUrl@$repoBranch..."
     git fetch
     git checkout --force $repoBranch
     Assert-ExitCodeIsZero
 
     # if not detached
-    if ((git symbolic-ref -q HEAD) -ne $null)
-    {
-        echo "Resetting to $repoUrl@$repoBranch..."
+    if ((git symbolic-ref -q HEAD) -ne $null) {
+        Write-Output "Resetting to $repoUrl@$repoBranch..."
         git reset --hard origin/$repoBranch
         Assert-ExitCodeIsZero
     }
 
-    popd
+    Pop-Location
 }
 
 git config advice.detachedHead $detachedHeadConfig
 
-popd
+Pop-Location
 
 Set-PSDebug -Off
