@@ -98,4 +98,25 @@ git config advice.detachedHead $detachedHeadConfig
 
 Pop-Location
 
-Set-PSDebug -Off
+        if ($hasErrors) {
+            Write-Output "Some external repositories failed to import or update. Check the logs for details."
+        }
+        else {
+            Write-Output "All external repositories are imported and up to date."
+        }
+        Write-Output "All external repositories are imported and up to date."
+    }
+}
+
+function Assert-ExitCodeIsZero {
+    param (
+        [string]$ErrorMessage = "A command failed with a non-zero exit code."
+    )
+    Set-PSDebug -Off
+    if ($LASTEXITCODE -ne 0) {
+        $script:hasErrors = $true
+        # Provide detailed context about the failure
+        Write-Error "$ErrorMessage Exit code: $LASTEXITCODE"
+        throw "Command failed with exit code $LASTEXITCODE."
+    }
+}
