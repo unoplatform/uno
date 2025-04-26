@@ -68,7 +68,7 @@ function Invoke-ImportExternalDocs {
             $repoBranch = $external_docs[$repoPath]
 
             # if the repository is already cloned, just update it, not clone it again, because git will otherwise fail
-            if (-Not (Test-Path $repoPath -and (Get-Location -Stack).Path -contains (Resolve-Path $repoPath).Path)) {
+            if (-Not (Test-Path $repoPath)) {
                 Write-Output "Cloning $repoPath ($repoUrl@$repoBranch)..."
                 git clone $repoUrl $repoPath
                 Assert-ExitCodeIsZero -ErrorMessage "Failed to clone repository $repoUrl."
