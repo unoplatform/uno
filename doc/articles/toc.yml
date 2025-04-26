@@ -595,7 +595,7 @@
         - name: Preventing Window Closing
           href: features/app-close-handler.md
         - name: x:Bind
-          href: features/windows-ui-xbind.md
+          href: xref:Uno.Features.WinUIxBind
 
       - name: 3rd-party libraries
         href: supported-libraries.md
