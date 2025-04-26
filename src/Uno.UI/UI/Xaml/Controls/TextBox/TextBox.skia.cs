@@ -384,7 +384,6 @@ public partial class TextBox
 
 			if (selectionChanged)
 			{
-				Console.WriteLine($"Update scrolling from selection {_selection}");
 				UpdateScrolling();
 			}
 			UpdateDisplaySelection();
