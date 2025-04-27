@@ -115,6 +115,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				await Task.Delay(millisecondsDelay);
 				values.Add(transform.X);
 			}
+
+			storyboard.Stop();
 		}
 
 		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.Skia)]
@@ -156,7 +158,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 					RepeatBehavior = RepeatBehavior.Forever,
 					Duration = TimeSpan.FromMilliseconds(500 * timeResolutionScaling),
 				}.BindTo(target, nameof(Rectangle.Width));
-				animation.ToStoryboard().Begin();
+				var storyboard = animation.ToStoryboard();
+				storyboard.Begin();
 
 				// In an ideal world, the measurements would be [0 or 50,10,20,30,40] repeated 10 times.
 				var list = new List<double>();
@@ -188,6 +191,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				Assert.IsTrue(incrementSizes.Count(x => x >= 3) >= 8, $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
 
 				double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
+
+				storyboard.Stop();
 			}
 
 			await TestHelper.RetryAssert(Do, 10);
