@@ -49,6 +49,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.NavigationBarHidden = true;
 		ObserveOrientationAndSize();
 
+		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
+		// otherwise, a black screen may appear. 
+		TryCreateExtendedSplashscreen();
+
 		_inputPane = InputPane.GetForCurrentView();
 
 #if !__TVOS__
@@ -74,33 +78,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		this.LogDebug()?.LogDebug("Native window ShowCore");
-		var launchName = NSBundle.MainBundle.ObjectForInfoDictionary("UILaunchStoryboardName") as NSString;
-
-		if (!string.IsNullOrEmpty(launchName))
-		{
-			// Create a temporary view controller that replicates
-			// the launch storyboard, if any. As we're rendering using
-			// an metal view, a black screen may appear otherwise.
-
-			if (this.Log().IsDebugEnabled())
-			{
-				this.Log().Debug($"Using storyboard {launchName} as an extended Splash Screen");
-			}
-
-			var storyboard = UIStoryboard.FromName(launchName, null);
-			var splashVC = storyboard.InstantiateInitialViewController();
-
-			_nativeWindow.RootViewController = splashVC;
-			_nativeWindow.MakeKeyAndVisible();
-		}
-		else
-		{
-			_nativeWindow.RootViewController = _mainController;
-			_nativeWindow.MakeKeyAndVisible();
-			IsVisible = true;
-		}
-
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
 			void OnLoaded(object sender, object args)
@@ -138,6 +115,41 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			}
 
 			fe.Loaded += OnLoaded;
+		}
+	}
+
+	/// <summary>
+	/// Create a temporary view controller that replicates
+	/// the launch storyboard, if any. As we're rendering using
+	/// an metal view, a black screen may appear otherwise.
+	///
+	/// IMPORTANT: This method needs to be called synchronously with 
+	/// `UnoSkiaAppDelegate.FinishedLaunching`. Asynchronously, a black 
+	/// screen may appear.
+	/// </summary>
+	private void TryCreateExtendedSplashscreen()
+	{
+		this.LogDebug()?.LogDebug("Native window ShowCore");
+		var launchName = NSBundle.MainBundle.ObjectForInfoDictionary("UILaunchStoryboardName") as NSString;
+
+		if (!string.IsNullOrEmpty(launchName))
+		{
+			// 
+
+			if (this.Log().IsDebugEnabled())
+			{
+				this.Log().Debug($"Using storyboard {launchName} as an extended Splash Screen");
+			}
+
+			var storyboard = UIStoryboard.FromName(launchName, null);
+			var splashVC = storyboard.InstantiateInitialViewController();
+
+			_nativeWindow.RootViewController = splashVC;
+			_nativeWindow.MakeKeyAndVisible();
+		}
+		else
+		{
+			_nativeWindow.RootViewController = _mainController;
 		}
 	}
 
