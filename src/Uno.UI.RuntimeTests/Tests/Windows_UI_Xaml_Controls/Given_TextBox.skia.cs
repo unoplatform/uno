@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
-using Windows.UI;
-using Windows.UI.Input.Preview.Injection;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using FluentAssertions;
 using MUXControlsTestApp.Utilities;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Core;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
-using System.Runtime.InteropServices;
-using Windows.Foundation;
-using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -4127,6 +4127,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_First_Second_Tap_Caret_Thumb_Shows()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.CaretMode is TextBox.CaretDisplayMode.ThumblessCaretHidden or TextBox.CaretDisplayMode.ThumblessCaretShowing);
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+		}
+
+		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
 		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
 		{
@@ -4161,6 +4188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(selectionChangedToStart, "SelectionChanged event should not be triggered when TextBox text is changed.");
 		}
+
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
