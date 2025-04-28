@@ -37,7 +37,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private UnoSKCanvasView? _skCanvasView;
 		private ClippedRelativeLayout? _nativeLayerHost;
-		private CompositionTargetChoreographer _choreographer;
 
 		private InputPane _inputPane;
 
@@ -64,7 +63,7 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 		}
 
-		[MemberNotNull(nameof(_inputPane), nameof(_choreographer))]
+		[MemberNotNull(nameof(_inputPane))]
 		private void Initialize()
 		{
 			Instance = this;
@@ -72,7 +71,6 @@ namespace Microsoft.UI.Xaml
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
-			_choreographer = new();
 
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
 		}
