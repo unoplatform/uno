@@ -7,6 +7,10 @@ public static class DispatchingFeatureConfiguration
 {
 	internal static class DispatcherQueue
 	{
-		public static TimeSpan FrameDuration { get; set; } = TimeSpan.FromMilliseconds(1 / 60.0);
+		/// <summary>
+		/// This property is used to throttle the number of frames dispatched
+		/// to the UI thread under webassembly.
+		/// </summary>
+		public static double WebAssemblyFrameRate { get; set; } = 60.0;
 	}
 }
