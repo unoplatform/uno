@@ -95,8 +95,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				var clip = path.IsEmpty ? null : path.ToSvgPathData();
 				if (clip != _lastSvgClipPath)
 				{
-					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip);
-					_lastSvgClipPath = clip;
+					// if too early it's possible that the native element has not been arranged yet
+					// so the position and dimension of the element are not yet correct (0,0,0,0)
+					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+					{
+						_lastSvgClipPath = clip;
+					}
 				}
 			}
 		}

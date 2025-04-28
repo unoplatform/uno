@@ -62,7 +62,7 @@ void uno_window_exit_full_screen(NSWindow *window);
 void uno_window_minimize(NSWindow *window, bool activateWindow);
 void uno_window_restore(NSWindow *window, bool activateWindow);
 
-void uno_window_clip_svg(UNOWindow* window, const char* svg);
+bool uno_window_clip_svg(UNOWindow* window, const char* svg);
 
 typedef NS_ENUM(sint32, OverlappedPresenterState) {
     OverlappedPresenterStateMaximized,
