@@ -134,29 +134,34 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				int width = (int)View!.Frame.Width;
 				int height = (int)View!.Frame.Height;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas);
-				if (!path.IsEmpty)
-				{
-					var svgPath = path.ToSvgPathData();
-					if (svgPath != _lastSvgClipPath)
-					{
-						_lastSvgClipPath = svgPath;
-						ClipBySvgPath(svgPath);
-					}
-				}
-				else if (_lastSvgClipPath != null && _nativeOverlayLayer is { } view)
-				{
-					// If the path is empty, we need to clear the mask of the native overlay layer
-					// to avoid showing the previous clip.
-					var mask = view.Layer.Mask as CAShapeLayer;
-					if (mask != null)
-					{
-						mask.Path = null;
-						mask.FillColor = UIColor.Clear.CGColor;
-					}
-
-					_lastSvgClipPath = null;
-				}
+				UpdateNativeClipping(path);
 			}
+		}
+	}
+
+	private void UpdateNativeClipping(SKPath path)
+	{
+		if (!path.IsEmpty)
+		{
+			var svgPath = path.ToSvgPathData();
+			if (svgPath != _lastSvgClipPath)
+			{
+				_lastSvgClipPath = svgPath;
+				ClipBySvgPath(svgPath);
+			}
+		}
+		else if (_lastSvgClipPath != null && _nativeOverlayLayer is { } view)
+		{
+			// If the path is empty, we need to clear the mask of the native overlay layer
+			// to avoid showing the previous clip.
+			var mask = view.Layer.Mask as CAShapeLayer;
+			if (mask != null)
+			{
+				mask.Path = null;
+				mask.FillColor = UIColor.Clear.CGColor;
+			}
+
+			_lastSvgClipPath = null;
 		}
 	}
 
