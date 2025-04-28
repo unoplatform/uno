@@ -86,7 +86,7 @@ namespace Microsoft.UI.Xaml
 							this.Log().Trace($"OnSetContinuousRender({enabled}) detach (Count:{_continuousTargets.Count})");
 						}
 
-						// We have at least one target, we need to start the render loop
+						// We have no targets anymore, unhook from the composition target
 						CompositionTarget.Rendering -= OnContinuousRender;
 					}
 					else
