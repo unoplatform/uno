@@ -4141,6 +4141,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
+		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var selectionChangedToStart = false;
+
+			var displayBlock = SUT.TextBoxView.DisplayBlock;
+			displayBlock.SelectionChanged += (s, e) =>
+			{
+				if (displayBlock.SelectionStart.Offset == 0)
+				{
+					selectionChangedToStart = true;
+				}
+			};
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Text = "Some Text 2";
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(selectionChangedToStart, "SelectionChanged event should not be triggered when TextBox text is changed.");
+		}
+		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
 		{
