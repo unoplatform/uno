@@ -14,6 +14,7 @@ using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -125,6 +126,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;
 
 			SizeChanged += OnSizeChanged;
+
+			// We do not have a display timer on this target, we can use
+			// a constant timer.
+			CompositionTargetTimer.Start();
 		}
 
 		/// <summary>
