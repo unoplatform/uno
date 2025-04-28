@@ -196,6 +196,16 @@ namespace Uno.UI.Samples.Tests
 			unitTestsControl._ciTestsGroupCountCache = (int)e.NewValue;
 		}
 
+		public string CITestFilter
+		{
+			get { return (string)GetValue(CITestFilterProperty); }
+			set { SetValue(CITestFilterProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for CITestFilter.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty CITestFilterProperty =
+			DependencyProperty.Register("CITestFilter", typeof(string), typeof(UnitTestsControl), new PropertyMetadata(""));
+
 		public string NUnitTestResultsDocument
 		{
 			get => (string)GetValue(NUnitTestResultsDocumentProperty);
@@ -1174,13 +1184,28 @@ namespace Uno.UI.Samples.Tests
 				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
 
 				var totalCount = 0;
+				Dictionary<int, MethodInfo[]> filteredGroups = new();
+
 				for (int i = 0; i < _ciTestsGroupCountCache; i++)
 				{
 					var testGroup = GetFilteredTests(types, _ciTestsGroupCountCache, i);
-					var testCount = testGroup.SelectMany(t => t.Tests).Count();
+					var tests = testGroup.SelectMany(t => t.Tests);
+					var testCount = tests.Count();
 					totalCount += testCount;
 
+					filteredGroups.Add(i, [.. tests]);
+
 					this.Log().Info($"Filtered group {i}: {testCount} tests");
+				}
+
+				// Ensure that tests are not present in multiple groups
+				var allTests = filteredGroups.SelectMany(t => t.Value).ToArray();
+				var allTestsCount = allTests.Length;
+				var distinctTestsCount = allTests.Distinct().Count();
+
+				if (allTestsCount != distinctTestsCount)
+				{
+					throw new Exception($"Test filter inconsistent (Got {allTestsCount}, expected {distinctTestsCount})");
 				}
 
 				var unfilteredTestCount = GetFilteredTests(types, -1, -1).SelectMany(t => t.Tests).Count();

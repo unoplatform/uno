@@ -231,29 +231,6 @@ jobs:
       failTaskOnFailedTests: false
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
-   ## Second ui tests run
-  - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      SITE_SUFFIX: "$(SITE_SUFFIX)"
-
-    displayName: 'Running UI Tests'
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      testRunTitle: 'WebAssembly Test Run 2 $(SITE_SUFFIX) - $(UITEST_AUTOMATED_GROUP)'
-      testResultsFormat: 'NUnit'
-      failTaskOnFailedTests: true
-      # This is the second run, if TestResult-original.xml is missing *and* this is a UI tests run, we fail.
-      failTaskOnMissingResultsFile: $(IS_UI_TESTS)
-      searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
-
   - task: PublishTestResults@2
     condition: always()
     inputs:

@@ -49,6 +49,14 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
   - template: templates/dotnet-install.yml
 
   - template: templates/linux-install-deps.yml
@@ -74,3 +82,12 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
+      ArtifactType: Container
