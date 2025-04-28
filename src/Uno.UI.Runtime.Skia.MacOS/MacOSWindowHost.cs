@@ -35,6 +35,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private SKSurface? _surface;
 	private int _rowBytes;
 	private bool _initializationCompleted;
+	private string? _lastSvgClipPath;
 
 	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
@@ -91,9 +92,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-				if (!path.IsEmpty)
+				var clip = path.IsEmpty ? null : path.ToSvgPathData();
+				if (clip != _lastSvgClipPath)
 				{
-					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, path.ToSvgPathData());
+					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip);
+					_lastSvgClipPath = clip;
 				}
 			}
 		}
