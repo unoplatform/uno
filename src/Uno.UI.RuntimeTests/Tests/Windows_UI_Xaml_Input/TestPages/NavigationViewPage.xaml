@@ -111,7 +111,7 @@
                                                             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
                                                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
                                                             <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                                                            <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+                                                            <!--<contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />-->
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="FlyoutPresenter">
@@ -665,7 +665,7 @@
             <Setter Property="UseSystemFocusVisuals" Value="True" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="TabNavigation" Value="Once" />
-            <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+            <!--<contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:NavigationViewItem">
@@ -719,7 +719,7 @@
                                             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
                                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
                                             <Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />
-                                            <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+                                            <!--<contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />-->
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="FlyoutPresenter">
