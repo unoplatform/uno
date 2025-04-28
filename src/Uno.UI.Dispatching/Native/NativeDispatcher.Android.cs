@@ -13,7 +13,7 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		private static readonly string[] _animationArray = new[] { "Animation" };
+		private static readonly string[] _animationArray = ["Animation"];
 
 		private Handler _handler;
 		private NativeDispatcherImplementor _implementor;
@@ -35,6 +35,9 @@ namespace Uno.UI.Dispatching
 
 			_choreographer = Choreographer.Instance;
 			_animationImplementor = new FrameCallbackImplementor(DispatchItemsToChoreographer);
+
+			// VSync calls are run from the dispatcher (choreographer based)
+			UseSynchronousDispatchRendering = true;
 		}
 
 		partial void EnqueueNative(NativeDispatcherPriority priority)
@@ -56,6 +59,19 @@ namespace Uno.UI.Dispatching
 			_choreographer.PostFrameCallback(_animationImplementor);
 
 			return operation;
+		}
+
+
+		/// <summary>
+		/// Synchronous dispatching to the dispatcher when coming from the choreographer only.
+		/// Aligned with UseSynchronousDispatchRendering.
+		/// </summary>
+		internal void SynchronousDispatchRendering()
+		{
+			if (IsRendering)
+			{
+				DispatchItems();
+			}
 		}
 
 		private void DispatchItemsToChoreographer()
