@@ -930,7 +930,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-#if HAS_UNO && __SKIA__
+#if HAS_UNO
 			// The animation may take some time to finish
 
 			await WindowHelper.WaitFor(() =>
