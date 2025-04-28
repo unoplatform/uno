@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (GetTemplatedParent() is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+			if (!IsTextBoxDisplay)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
