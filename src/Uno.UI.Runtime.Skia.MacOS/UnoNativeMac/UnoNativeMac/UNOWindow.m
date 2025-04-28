@@ -760,8 +760,25 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                 view.layer.mask = mask = [[CAShapeLayer alloc] init];
             }
             mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
-            mask.path = path;
             mask.fillRule = kCAFillRuleEvenOdd;
+            mask.path = path;
+        }
+    } else {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ reset", window, window.contentView.layer.description);
+#endif
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
+#if DEBUG
+            NSLog(@"uno_window_clip_svg reset subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
+#endif
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask != nil) {
+                mask.fillColor = NSColor.clearColor.CGColor;
+                mask.fillRule = kCAFillRuleEvenOdd;
+                mask.path = nil;
+            }
         }
     }
 }
