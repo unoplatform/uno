@@ -10,7 +10,7 @@
 		<UnoIconForegroundScale Condition="$(UnoIconForegroundScale) == ''">0.65</UnoIconForegroundScale>
 		<UnoIconBackgroundColor Condition="$(UnoIconBackgroundColor) == ''">#00000000</UnoIconBackgroundColor>
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
-		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">128,128</UnoSplashScreenBaseSize>
+		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">300,300</UnoSplashScreenBaseSize>
 		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
 
 		<!-- Support net8.0, without a platform identifier -->
