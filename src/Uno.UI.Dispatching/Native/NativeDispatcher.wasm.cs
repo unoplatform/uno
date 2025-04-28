@@ -92,11 +92,12 @@ namespace Uno.UI.Dispatching
 		internal void SynchronousDispatchRendering()
 		{
 			var elapsed = Stopwatch.GetElapsedTime(_lastDispatchRendering);
-			if (elapsed < DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration)
+			var delta = TimeSpan.FromSeconds(1 / DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate);
+			if (elapsed < delta)
 			{
 				if (this.Log().IsTraceEnabled())
 				{
-					this.Log().Trace($"Skipping frame ({elapsed} < {DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration})");
+					this.Log().Trace($"Skipping frame ({elapsed} < {delta})");
 				}
 				return;
 			}
