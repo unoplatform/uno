@@ -18,7 +18,9 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			this.InitializeComponent();
 		}
 
+#if HAS_UNO
 		public InputReturnType[] InputReturnTypes { get; } = Enum.GetValues<InputReturnType>().ToArray();
+#endif
 
 		private void SetHintClick(object sender, object e)
 		{
