@@ -984,7 +984,7 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
-    // the UNOMetalViewDelegate has it's own resize callback but we need something for the software fallback
+    // the UNOMetalViewDelegate has its own resize callback but we need something for the software fallback
     if (self.metalViewDelegate == nil) {
         // consider the title bar height
         CGSize size = [self contentRectForFrameRect: self.frame].size;
