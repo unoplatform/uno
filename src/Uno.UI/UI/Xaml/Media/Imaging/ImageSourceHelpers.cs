@@ -44,22 +44,11 @@ internal static partial class ImageSourceHelpers
 	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
-		var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-		var handleFreed = false;
-		using var handleDisposable = Disposable.Create(() =>
-		{
-			if (!handleFreed)
-			{
-				gcHandle.Free();
-			}
-		});
-
-		var memory = new Memory<byte>(buffer);
-		var readCount = await imageStream.ReadAsync(memory, ct);
+		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
 
 		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi)
 		{
-			var decodedBufferObject = await LoadFromArray(buffer[..readCount]);
+			var decodedBufferObject = await LoadFromArray(buffer);
 
 			if (decodedBufferObject.GetPropertyAsString("error") is { } errorMessage)
 			{
@@ -79,13 +68,28 @@ internal static partial class ImageSourceHelpers
 				SKImage image;
 				unsafe
 				{
+					var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 					fixed (void* ptr = bytes)
 					{
-						image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), (_, _) => gcHandle.Free());
+						try
+						{
+							image = SKImage.FromPixels(new SKPixmap(new SKImageInfo(width, height, SKColorType.Rgba8888), new IntPtr(ptr)), (_, _) =>
+							{
+								gcHandle.Free();
+							});
+							if (image == null)
+							{
+								throw new InvalidOperationException($"{nameof(SKImage)}.{nameof(SKImage.FromPixels)} returned null.");
+							}
+							return ImageData.FromCompositionSurface(new SkiaCompositionSurface(image));
+						}
+						catch (Exception e)
+						{
+							gcHandle.Free();
+							return ImageData.FromError(e);
+						}
 					}
 				}
-
-				return ImageData.FromCompositionSurface(new SkiaCompositionSurface(image));
 			}
 		}
 
