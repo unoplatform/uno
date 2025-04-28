@@ -65,7 +65,17 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT", runtimeTestGroupCount);
 		}
 
-		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath} (UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")})");
+		if (argsPairs.TryGetValue("--runtime-test-filter", out var runtimeTestFilter))
+		{
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
+		}
+
+		Console.WriteLine(
+			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
+			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
+			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{

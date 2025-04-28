@@ -56,7 +56,8 @@ namespace SamplesApp.Droid
 				string[] knownVariables = [
 					"UITEST_RUNTIME_TEST_GROUP",
 					"UITEST_RUNTIME_TEST_GROUP_COUNT",
-					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+					"UITEST_RUNTIME_AUTOSTART_RESULT_FILE",
+					"UITEST_RUNTIME_TESTS_FILTER"
 				];
 
 				foreach (var key in extras.KeySet())

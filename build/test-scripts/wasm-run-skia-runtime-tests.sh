@@ -28,13 +28,32 @@ python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
 python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
 sleep 10
 
-RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
-RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
-UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
+export RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
+export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
+export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
+
+if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64`
+
+    # Replace the `=` with `!` to avoid url encoding issues
+    UITEST_RUNTIME_TESTS_FILTER=${UITEST_RUNTIME_TESTS_FILTER//=/!}
+
+	# echo the failed filter list, if not empty
+	if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
+		echo "Tests to run: $UNO_TESTS_FAILED_LIST"
+	fi
+else
+    export UITEST_RUNTIME_TESTS_FILTER=""
+fi
 
 rawurlencode "$RESULTS_FILE"
+RESULTS_FILE_ENCODED=$ENCODED_RESULT
 
-RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}"
+rawurlencode "$UITEST_RUNTIME_TESTS_FILTER"
+UITEST_RUNTIME_TESTS_FILTER_ENCODED=$ENCODED_RESULT
+
+RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${RESULTS_FILE_ENCODED}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}&--runtime-test-filter=${UITEST_RUNTIME_TESTS_FILTER_ENCODED}"
 
 TRY_COUNT=0
 
@@ -73,6 +92,21 @@ if ! test -f "$RESULTS_CANARY_FILE"; then
     exit 1
 fi
 
-while ! test -f "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"; do
+while ! test -f "$RESULTS_FILE"; do
     sleep 10
 done
+
+## Export the failed tests list for reuse in a pipeline retry
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
+echo "Running NUnitTransformTool"
+
+## Fail the build when no test results could be read
+dotnet run fail-empty $RESULTS_FILE
+
+if [ $? -eq 0 ]; then
+	dotnet run list-failed $RESULTS_FILE $UNO_TESTS_FAILED_LIST
+fi
+
+popd
