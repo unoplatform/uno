@@ -100,6 +100,7 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$S
 export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
 export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
+export UNO_TESTS_RUNTIMETESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-runtime-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
@@ -197,6 +198,23 @@ then
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
 	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
+
+	# $UNO_TESTS_RUNTIMETESTS_FAILED_LIST file exists
+	if [ -f "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" ]; then
+
+		# if the  only contains `invalid-test-for-retry`, exit the script
+		if [ `cat "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then
+			echo "The file $UNO_TESTS_RUNTIMETESTS_FAILED_LIST does not contain tests to re-run, skipping."
+			exit 0
+		fi
+
+		export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_RUNTIMETESTS_FAILED_LIST | base64`
+
+		# echo the failed filter list, if not empty
+		if [ -n "$SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER" ]; then
+			echo "Tests to run: $SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER"
+		fi
+	fi
 
 	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
@@ -305,6 +323,16 @@ dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 if [ $? -eq 0 ]; then
 	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+fi
+
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+	## Fail the build when no runtime test results could be read
+	dotnet run fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
+
+	if [ $? -eq 0 ]; then
+		dotnet run list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
+	fi
 fi
 
 popd

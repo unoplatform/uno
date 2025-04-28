@@ -31,6 +31,7 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
 export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
+export UNO_RUNTIME_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-runtimetest-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'Default' ];
@@ -55,6 +56,16 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invali
 	# other test to rerun. We can skip this run.
 	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
 	exit 0
+fi
+
+
+if [ -f "$UNO_RUNTIME_TESTS_FAILED_LIST" ]; then
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_RUNTIME_TESTS_FAILED_LIST | base64`
+
+	# echo the failed filter list, if not empty
+	if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
+		echo "Tests to run: $UITEST_RUNTIME_TESTS_FILTER"
+	fi
 fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
@@ -109,6 +120,16 @@ dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 if [ $? -eq 0 ]; then
 	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+fi
+
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+	## Fail the build when no runtime test results could be read
+	dotnet run fail-empty $UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH
+
+	if [ $? -eq 0 ]; then
+		dotnet run list-failed $UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH $UNO_RUNTIME_TESTS_FAILED_LIST
+	fi
 fi
 
 popd
