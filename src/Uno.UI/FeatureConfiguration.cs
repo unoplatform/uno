@@ -105,9 +105,9 @@ namespace Uno.UI
 				{
 					_frameRate = value;
 
-					// Use this to avoid because we do not depend on the wasm binaries
+					// Use this because we do not depend on the wasm dispatching binaries
 					// at this layer (we use the reference binaries).
-					DispatchingFeatureConfiguration.DispatcherQueue.FrameDuration = TimeSpan.FromSeconds(1.0 / _frameRate);
+					DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate = _frameRate;
 				}
 			}
 		}
