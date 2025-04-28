@@ -38,9 +38,16 @@ public sealed partial class XamlRoot
 		if (
 			// Don't requeue if there's already a render request queued
 			!_renderQueued
+			&&
+			(
+				// If NativeDispatcher.Rendering is not called
+				// synchronously, then we can queue the render
+				!NativeDispatcher.Main.UseSynchronousDispatchRendering
 
-			// Don't queue is continuous rendering is enabled
-			&& !CompositionTarget.IsRenderingActive)
+				// Don't queue if continuous rendering is enabled
+				|| !CompositionTarget.IsRenderingActive
+			)
+		)
 		{
 			_renderQueued = true;
 
