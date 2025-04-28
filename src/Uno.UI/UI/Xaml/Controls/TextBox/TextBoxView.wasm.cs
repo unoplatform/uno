@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void SetInputScope(InputScope scope) =>
 			SetAttribute("inputmode", scope.ToInputModeValue());
 
-		private void SetInputReturnType(InputReturnType inputReturnType) =>
+		internal void SetInputReturnType(InputReturnType inputReturnType) =>
 			SetAttribute("enterkeyhint", inputReturnType.ToEnterKeyHintValue());
 
 		public int SelectionStart
