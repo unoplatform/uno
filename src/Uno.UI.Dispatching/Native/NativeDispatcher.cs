@@ -44,6 +44,13 @@ namespace Uno.UI.Dispatching
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		/// <summary>
+		/// This is used by dependents of the Rendering event to determine if
+		/// `SynchronousDispatchRendering` will be used. This is essentially a
+		/// special case for WebAssembly which is single-threaded.
+		/// </summary>
+		internal bool UseSynchronousDispatchRendering { get; private set; }
+
 		private NativeDispatcher()
 		{
 			Debug.Assert(
