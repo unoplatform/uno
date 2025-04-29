@@ -75,6 +75,10 @@
 
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Storage\Pickers\FileSystemAccessApiInformation.cs" Link="Storage\Pickers\FileSystemAccessApiInformation.cs" />
+	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\Cookie.cs" Link="Web\Http\Cookie.cs" />
+	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\CookieManager.cs" Link="Web\Http\CookieManager.cs" />
+	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\CookieSameSite.cs" Link="Web\Http\CookieSameSite.cs" />
+	  <Compile Include="..\Uno.UI.Runtime.WebAssembly\Web\Http\SetCookieRequest.cs" Link="Web\Http\SetCookieRequest.cs" />
 	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.Interop.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Interop.wasm.cs" />
 	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
 	</ItemGroup>
@@ -124,10 +128,6 @@
 
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Storage\Pickers\" />
 	</ItemGroup>
 
 </Project>
