@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml
 				if (appInstance.GetActivatedEventArgs() is null)
 				{
 					// Default to launch activation args
-					appInstance.SetActivatedEventArgs(
+					appInstance.SetOrRaiseActivation(
 						AppActivationArguments.CreateLaunch(
 							new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 				}
@@ -440,6 +440,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvokeOnActivated(IActivatedEventArgs args)
 		{
+			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(args));
 			OnActivated(args);
 			WasLaunched = true;
 		}
