@@ -8,10 +8,10 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-[Register("UnoSkiaAppDelegate")]
-internal partial class UnoSkiaAppDelegate : UIApplicationDelegate
+[Register("UnoUIApplicationDelegate")]
+public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 {
-	public UnoSkiaAppDelegate()
+	public UnoUIApplicationDelegate()
 	{
 		SubscribeBackgroundNotifications();
 	}
