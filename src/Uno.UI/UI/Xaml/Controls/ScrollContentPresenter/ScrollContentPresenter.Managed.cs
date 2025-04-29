@@ -126,8 +126,10 @@ namespace Microsoft.UI.Xaml.Controls
 			sv.PointerWheelChanged += PointerWheelScroll;
 
 			// Touch and pen scroll support
+			// Note: We add handler on this (not SV) in order to make sure to get it first
+			//		 (and especially before the RefreshContainers - which subscribe to the same event on the SV)
 			var handler = new PointerEventHandler(TryEnableDirectManipulation);
-			sv.AddHandler(PointerPressedEvent, handler, handledEventsToo: true);
+			AddHandler(PointerPressedEvent, handler, handledEventsToo: true);
 
 			_eventSubscriptions.Disposable = Disposable.Create(() =>
 			{
