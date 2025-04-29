@@ -3,19 +3,31 @@
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Android.App;
-using Java.Interop;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.StartScreen;
 using Android.Content;
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
+=======
+using Android.OS;
+using Android.Runtime;
+using Java.Interop;
+>>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
 using Uno.Extensions;
-using Windows.Foundation.Metadata;
-using System.ComponentModel;
 using Uno.Foundation.Logging;
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+=======
+using Uno.UI.Hosting;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+using Windows.UI.StartScreen;
+using Application = Microsoft.UI.Xaml.Application;
+>>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml
 {
@@ -113,7 +125,12 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 #if ANDROID_SKIA
+=======
+					// The app does not exist yet at this point (the host is built in CreateHost() below),
+					// so the arguments are stashed and picked up by Application.InvokeOnLaunched.
+>>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
 					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
 #else
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
@@ -129,7 +146,21 @@ namespace Microsoft.UI.Xaml
 							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
 						}
 
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+=======
+						if (_isRunning)
+						{
+							// Application.Current rather than a cached instance: the app is created by the
+							// host built in CreateHost(), which this type never sees.
+							Application.Current?.InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+						}
+						else
+						{
+							Application.SetActivationUri(uri);
+						}
+
+>>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
 						handled = true;
 					}
 					else
