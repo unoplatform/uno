@@ -330,9 +330,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatePlaceholderVisibility();
 
-			UpdateButtonStates();
-
 			OnTextChangedPartial();
+
+			// Update states after the text has changed, since we're
+			// using selection values to compute SV scrolling.
+			UpdateButtonStates();
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
@@ -1246,8 +1248,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __SKIA__
 			_deleteButtonVisibilityChangedSinceLastUpdateScrolling |= changed;
+
+			DispatchUpdateScrolling();
 #endif
 		}
+
+
+#if __SKIA__
+		bool _pendingUpdateScrolling;
+
+		private void DispatchUpdateScrolling()
+		{
+			if (!_pendingUpdateScrolling)
+			{
+				_pendingUpdateScrolling = true;
+
+				// We may be pushing scrolling updates too often
+				// when pushing keystrokes programmatically.
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					_pendingUpdateScrolling = false;
+
+					UpdateScrolling();
+				});
+			}
+		}
+#endif
 
 		/// <summary>
 		/// Respond to text input from user interaction.

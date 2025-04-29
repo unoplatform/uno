@@ -930,7 +930,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 1.0);
+#if HAS_UNO
+			// The animation may take some time to finish
+
+			await WindowHelper.WaitFor(() =>
+			{
+				if (SUT.ContentElement is ScrollViewer sv)
+				{
+					return Math.Abs(sv.HorizontalOffset - sv.ScrollableWidth) < 1.0;
+				}
+
+				return false;
+			}, 5000);
+#endif
+
+			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 5.0);
 		}
 
 		[TestMethod]

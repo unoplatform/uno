@@ -92,14 +92,24 @@ namespace Uno.UI
 
 		public static class CompositionTarget
 		{
+			private static float _frameRate = 60;
+
 			/// <summary>
-			/// The delay between invocations of the <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
-			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
-			///
-			/// This property is only used on WebAssembly.
+			/// Suggested frame rate for <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event.
+			/// This property is used by desktop skia renderers.
 			/// </summary>
-			/// <remarks>The <see cref="Microsoft.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
-			public static int RenderEventThrottle { get; set; } = 30;
+			public static float FrameRate
+			{
+				get => _frameRate;
+				set
+				{
+					_frameRate = value;
+
+					// Use this because we do not depend on the wasm dispatching binaries
+					// at this layer (we use the reference binaries).
+					DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate = _frameRate;
+				}
+			}
 		}
 
 		public static class ContentPresenter

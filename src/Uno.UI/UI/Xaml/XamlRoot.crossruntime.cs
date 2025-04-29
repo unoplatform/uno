@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
@@ -34,7 +35,19 @@ public sealed partial class XamlRoot
 
 	internal void QueueInvalidateRender()
 	{
-		if (!_renderQueued)
+		if (
+			// Don't requeue if there's already a render request queued
+			!_renderQueued
+			&&
+			(
+				// If NativeDispatcher.Rendering is not called
+				// synchronously, then we can queue the render
+				!NativeDispatcher.Main.UseSynchronousDispatchRendering
+
+				// Don't queue if continuous rendering is enabled
+				|| !CompositionTarget.IsRenderingActive
+			)
+		)
 		{
 			_renderQueued = true;
 
@@ -49,6 +62,7 @@ public sealed partial class XamlRoot
 			if (_renderQueued)
 			{
 				_renderQueued = false;
+
 				InvalidateRender();
 			}
 		}, NativeDispatcherPriority.Idle); // Idle is necessary to avoid starving the Normal queue on some platforms (specifically skia/android), otherwise When_Child_Empty_List times out
