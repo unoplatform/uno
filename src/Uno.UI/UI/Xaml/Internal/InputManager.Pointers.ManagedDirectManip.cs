@@ -335,7 +335,10 @@ partial class InputManager
 
 			/// <inheritdoc />
 			public void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta)
-				=> Tracker.ReceiveManipulationDelta(args.Delta.Translation);
+			{
+				Tracker.ReceiveManipulationDelta(unhandledDelta.Translation);
+				unhandledDelta = ManipulationDelta.Empty;
+			}
 
 			/// <inheritdoc />
 			public void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args)
