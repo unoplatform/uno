@@ -1,23 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	[RequiresFullWindow]
 	public partial class Given_RefreshContainer
 	{
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_Stretch_Child()
 		{
 			var grid = new Grid();
@@ -51,6 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_Child_Empty_List()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -116,6 +121,206 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			{
 				deferral = args.GetDeferral(); // Keep refreshing
 			}
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ListViewNestedAndSwipeUpAndDown_Then_ScrollList()
+		{
+			var sut = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+			};
+
+			var rect = await UITestHelper.Load(sut);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
+
+			// Slowly swipe up (scroll down - no inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y - 50),
+				steps: 5,
+				stepOffsetInMilliseconds: 100);
+
+			await UITestHelper.WaitForIdle();
+
+			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.DeepPink));
+
+			// Slowly swipe down (scroll up - no inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 50),
+				steps: 5,
+				stepOffsetInMilliseconds: 100);
+
+			await UITestHelper.WaitForIdle();
+
+			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ListViewNestedAndSwipeDown_Then_RefreshRequested()
+		{
+			var sut = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+			};
+
+			var requested = 0;
+			sut.RefreshRequested += (snd, e) =>
+			{
+				requested++;
+				e.GetDeferral().Complete();
+			};
+
+			var rect = await UITestHelper.Load(sut);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			// Slowly swipe down (scroll up - no inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 100),
+				steps: 5,
+				stepOffsetInMilliseconds: 100);
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(1, requested);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ListViewNestedAndFlickDown_Then_RefreshRequested()
+		{
+			var sut = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+			};
+
+			var requested = 0;
+			sut.RefreshRequested += (snd, e) =>
+			{
+				requested++;
+				e.GetDeferral().Complete();
+			};
+
+			var rect = await UITestHelper.Load(sut);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			// Fast swipe down (scroll up - with inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 200),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(1, requested);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ListViewNestedAndSwipeUpThenFlickDown_Then_ScrollThenShowIndicatorButDoNotRequest()
+		{
+			var sut = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+			};
+
+			var requested = 0;
+			sut.RefreshRequested += (snd, e) =>
+			{
+				requested++;
+				e.GetDeferral().Complete();
+			};
+
+			var rect = await UITestHelper.Load(sut);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			// Slowly swipe up (scroll down - no inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y - 100),
+				steps: 5,
+				stepOffsetInMilliseconds: 100);
+
+			await UITestHelper.WaitForIdle();
+
+			// Fast swipe down (scroll up - with inertia)
+			finger.Drag(
+				from: rect.GetCenter(),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 600),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			await UITestHelper.WaitForIdle();
+
+			var pixel = (await UITestHelper.ScreenShot(sut))[50, 1];
+			Assert.IsTrue(pixel != Colors.Chartreuse && pixel != Colors.DeepPink);
+			Assert.AreEqual(0, requested);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_ListViewNestedAndTapItem_Then_ItemSelected()
+		{
+			ListView lv;
+			var sut = new RefreshContainer
+			{
+				Width = 100,
+				Height = 300,
+				Content = lv = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+			};
+
+			var rect = await UITestHelper.Load(sut);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			Assert.AreEqual(-1, lv.SelectedIndex);
+
+			// Tap
+			finger.Press(rect.GetCenter());
+			finger.Release(rect.GetCenter());
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreNotEqual(-1, lv.SelectedIndex);
 		}
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
