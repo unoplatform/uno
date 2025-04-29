@@ -115,6 +115,8 @@ namespace Microsoft.UI.Xaml
 
 		internal bool InitializationComplete => _initializationComplete;
 
+		internal bool WasLaunched { get; private set; }
+
 		partial void InitializePartial();
 
 		private static void RegisterExtensions()
@@ -310,9 +312,35 @@ namespace Microsoft.UI.Xaml
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+
+		internal void InvokeOnActivated(IActivatedEventArgs args)
+		{
+
+		}
+
+		internal void InvokeOnLaunched(LaunchActivatedEventArgs args)
+		{
+			if (!WasLaunched)
+			{
+#if __SKIA__ || __WASM__
+				using var _ = WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop);
+#endif
+				BeforeOnLaunchedPlatform();
+			}
+
+			// OnLaunched should execute only for full apps, not for individual islands.
+			if (CoreApplication.IsFullFledgedApp)
+			{
+				OnLaunched(args);
+			}
+
+			WasLaunched = true;
+		}
+
+		partial void BeforeOnLaunchedPlatform();
 
 		internal void InitializationCompleted()
 		{

@@ -127,7 +127,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
+				InvokeOnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}
 

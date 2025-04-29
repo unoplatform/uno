@@ -118,21 +118,12 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void InvokeOnLaunched()
+		partial void BeforeOnLaunchedPlatform()
 		{
 			InitializeSystemTheme();
 
-			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
-			{
-				InitializationCompleted();
-				PreloadFonts();
-
-				// OnLaunched should execute only for full apps, not for individual islands.
-				if (CoreApplication.IsFullFledgedApp)
-				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
-				}
-			}
+			InitializationCompleted();
+			PreloadFonts();
 		}
 
 		private static void PreloadFonts()
