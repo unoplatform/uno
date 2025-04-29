@@ -223,12 +223,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		partial void BeforeOnLaunchedPlatform()
+		private void PrepareOnLaunched()
 		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop);
 			InitializeSystemTheme();
 
 			InitializationCompleted();
 			PreloadFonts();
+
+			var launchActivatedEventArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
+			InvokeOnLaunched(launchActivatedEventArgs);
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
