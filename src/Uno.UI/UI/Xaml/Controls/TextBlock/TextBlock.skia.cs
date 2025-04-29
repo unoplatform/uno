@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LostFocus += (_, _) => UpdateSelectionRendering();
 		}
 
-		internal bool IsTextBoxDisplay { get; set; }
+		internal bool IsTextBoxDisplay { get; init; }
 
 #if DEBUG
 		private protected override void OnLoaded()
