@@ -3845,7 +3845,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.RaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)] // needs paste permission
 		public async Task When_MaxLine_Paste()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
