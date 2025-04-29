@@ -63,6 +63,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 							?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
+						_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out var disableBindableTypeProvidersGeneration);
+
 						_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
 						_intermediatePath = Path.Combine(
 							_projectDirectory,
@@ -88,11 +90,20 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 												 type.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol))
 												 || additionalLinkerHintSymbols.Contains(type)
 											 )
-											 select LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName())).ToArray();
+											 select LinkerHintsHelpers.GetPropertyAvailableName(type.GetFullMetadataName())).ToList();
 
-						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(propertyNames));
+						if (!disableBindableTypeProvidersGeneration)
+						{
+							// Also generate the linker hint for the BindableMetadataProvider class itself
+							// so we can disable all references to the types altogether during the XAML trimming pass.
+							propertyNames.Add(LinkerHintsHelpers.GetPropertyAvailableName($"{_defaultNamespace}.BindableMetadataProvider"));
+						}
 
-						GenerateLinkerSubstitutionDefinition(propertyNames);
+						var propertyNamesArray = propertyNames.ToArray();
+
+						context.AddSource("DependencyObjectAvailability", GenerateTypeProviders(propertyNamesArray));
+
+						GenerateLinkerSubstitutionDefinition(propertyNamesArray);
 					}
 				}
 				catch (OperationCanceledException)
