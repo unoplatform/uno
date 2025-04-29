@@ -5,6 +5,8 @@ namespace Uno.UI.Runtime.Skia {
 		requestRender: any;
 		static anyGL: any;
 		glCtx: any;
+		continousRender: boolean;
+		queued: boolean;
 
 		constructor(managedHandle: number) {
 			this.managedHandle = managedHandle;
@@ -49,16 +51,46 @@ namespace Uno.UI.Runtime.Skia {
 			BrowserRenderer.invalidate(this);
 		}
 
+		static setContinousRender(instance: BrowserRenderer, enabled: boolean) {
+			instance.continousRender = enabled;
+
+			if (enabled) {
+				BrowserRenderer.invalidate(instance);
+			}
+		}
+
 		static invalidate(instance: BrowserRenderer) {
-			// add the draw to the next frame
-			window.requestAnimationFrame(() => {
+
+			const render = () => {
+				// Allow for another queuing to happen in callees of `requestRender`
+				instance.queued = false;
+
 				if (instance.requestRender) {
 					// make current for this canvas instance
 					(<any>window).GL.makeContextCurrent(instance.glCtx);
 
 					instance.requestRender();
+
+					if (
+						// If we're in continuous render mode, we need to requeue
+						instance.continousRender
+
+						// unless there's already another queueued render
+						&& !instance.queued) {
+						window.requestAnimationFrame(() => {
+							instance.queued = true;
+							render();
+						});
+					}
 				}
-			});
+			};
+
+			if (!instance.queued) {
+				instance.queued = true;
+
+				// add the draw to the next frame
+				window.requestAnimationFrame(() => render());
+			}
 		}
 
 		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {

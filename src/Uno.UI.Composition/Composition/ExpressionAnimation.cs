@@ -50,6 +50,8 @@ public partial class ExpressionAnimation : CompositionAnimation
 
 	internal override void Stop()
 	{
+		base.Stop();
+
 		_parsedExpression?.Dispose();
 		_parsedExpression = null;
 	}

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -20,7 +21,22 @@ public partial class ContainerVisual : Visual
 
 	partial void InitializePartial()
 	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+		Children.CollectionChanged += (s, e) =>
+		{
+			IsChildrenRenderOrderDirty = true;
+
+			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
+				&& e.OldItems is not null)
+			{
+				foreach (var i in e.OldItems)
+				{
+					if (i is CompositionObject compositionObject)
+					{
+						compositionObject.StopAllAnimations();
+					}
+				}
+			}
+		};
 
 		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 		Handle = GCHandle.ToIntPtr(_gcHandle);

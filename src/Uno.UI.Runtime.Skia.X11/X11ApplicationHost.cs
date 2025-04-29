@@ -1,23 +1,24 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
-using Windows.Storage.Pickers;
-using Windows.UI.Core;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices.Marshalling;
-using Microsoft.UI.Xaml.Controls;
-using Uno.Helpers.Theming;
+using Windows.Storage.Pickers;
+using Windows.UI.Core;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -92,6 +93,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}, UI.Dispatching.NativeDispatcherPriority.Normal);
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+		// We do not have a display timer on this target, we can use
+		// a constant timer.
+		CompositionTargetTimer.Start();
 	}
 
 	internal static int RenderFrameRate { get; private set; }

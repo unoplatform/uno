@@ -9,9 +9,13 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal class AndroidSkiaXamlRootHost : IXamlRootHost
 {
+	private AndroidChoreographerHandler _choreographerHandler;
+
 	public AndroidSkiaXamlRootHost(XamlRoot xamlRoot)
 	{
 		XamlRootMap.Register(xamlRoot, this);
+
+		_choreographerHandler = new();
 	}
 
 	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();

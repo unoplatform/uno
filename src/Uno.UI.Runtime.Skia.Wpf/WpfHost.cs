@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
@@ -84,6 +85,10 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 	{
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = (d, p) => _dispatcher.BeginInvoke(d, p == Uno.UI.Dispatching.NativeDispatcherPriority.Idle ? DispatcherPriority.SystemIdle : DispatcherPriority.Render);
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
+
+		// We do not have a display timer on this target, we can use
+		// a constant timer.
+		CompositionTargetTimer.Start();
 	}
 
 	private void StartApp()

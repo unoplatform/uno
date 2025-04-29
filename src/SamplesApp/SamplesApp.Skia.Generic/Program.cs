@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;

@@ -16,6 +16,7 @@ using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
@@ -155,6 +156,10 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+			// We do not have a display timer on this target, we can use
+			// a constant timer.
+			CompositionTargetTimer.Start();
 
 			FrameBufferInputProvider.Instance.Initialize();
 
