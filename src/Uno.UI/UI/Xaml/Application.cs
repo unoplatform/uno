@@ -34,6 +34,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Foundation;
 using Windows.UI.Core;
 using System.Threading;
@@ -45,7 +46,6 @@ using Microsoft.UI.Text;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
-using Microsoft.Windows.AppLifecycle;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 
 namespace Microsoft.UI.Xaml
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Xaml
 				var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
 				if (appInstance.GetActivatedEventArgs() is null)
 				{
-					// If no specific activation was set yet, fall back to launch activated event args.
+					// Default to launch activation args
 					appInstance.SetActivatedEventArgs(
 						AppActivationArguments.CreateLaunch(
 							new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
@@ -423,25 +423,18 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
-		protected virtual void OnActivated(IActivatedEventArgs args) { }
+		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
 		internal void InvokeOnActivated(IActivatedEventArgs args)
 		{
-
+			OnActivated(args);
+			WasLaunched = true;
 		}
 
 		internal void InvokeOnLaunched(LaunchActivatedEventArgs args)
 		{
-			if (!WasLaunched)
-			{
-#if __SKIA__ || __WASM__
-				using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
-#endif
-				BeforeOnLaunchedPlatform();
-			}
-
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp)
 			{
@@ -450,8 +443,6 @@ namespace Microsoft.UI.Xaml
 
 			WasLaunched = true;
 		}
-
-		partial void BeforeOnLaunchedPlatform();
 
 		internal void InitializationCompleted()
 		{
@@ -906,28 +897,21 @@ namespace Microsoft.UI.Xaml
 
 		private void PrepareOnLaunched()
 		{
-			ProtocolActivatedEventArgs? protocolArgs = null;
-			if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
-			{
-				// Android hands the protocol URI over before the app exists, see NativeApplication.
-				protocolArgs = new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning);
-				_activationUri = null;
-			}
-
-			InvokeOnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
-
-			if (protocolArgs is not null && CoreApplication.IsFullFledgedApp)
-			{
-				OnActivated(protocolArgs);
-			}
-		}
-
-		partial void BeforeOnLaunchedPlatform()
-		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
 			InitializeSystemTheme();
 
 			InitializationCompleted();
 			FontPreloadTask = PreloadFonts();
+
+			var launchActivatedEventArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
+			InvokeOnLaunched(launchActivatedEventArgs);
+
+			if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
+			{
+				// Android hands the protocol URI over before the app exists, see NativeApplication.
+				InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+				_activationUri = null;
+			}
 		}
 
 		private static async Task PreloadFonts()
