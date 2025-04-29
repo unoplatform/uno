@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.ApplicationModel.Core;
 
 namespace Microsoft.Windows.AppLifecycle;
 
@@ -50,8 +51,21 @@ public partial class AppInstance
 	/// <returns>The collection of all running instances of the app.</returns>
 	public static IList<AppInstance> GetInstances() => [_current.Value];
 
-	internal void SetActivatedEventArgs(AppActivationArguments args) =>
-		_appActivationArguments = args ?? throw new ArgumentNullException(nameof(args));
-
-	internal void RaiseActivatedEvent(AppActivationArguments args) => Activated?.Invoke(this, args ?? throw new ArgumentNullException(nameof(args)));
+	/// <summary>
+	/// This method either sets the activation arguments if the app is not yet launched,
+	/// or raises the Activated event if the app is already launched.
+	/// </summary>
+	/// <param name="args">App activation arguments.</param>
+	internal void SetOrRaiseActivation(AppActivationArguments args)
+	{
+		if (!CoreApplication.WasLaunched)
+		{
+			// If these are the initial activation arguments for launch, store them for later.
+			_appActivationArguments = args ?? throw new ArgumentNullException(nameof(args));
+		}
+		else
+		{
+			Activated?.Invoke(this, args ?? throw new ArgumentNullException(nameof(args)));
+		}
+	}
 }
