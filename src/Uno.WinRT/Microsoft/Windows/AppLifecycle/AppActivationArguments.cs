@@ -1,3 +1,4 @@
+using System;
 using Windows.ApplicationModel.Activation;
 
 namespace Microsoft.Windows.AppLifecycle;
@@ -26,4 +27,11 @@ public partial class AppActivationArguments
 	internal static AppActivationArguments CreateLaunch(LaunchActivatedEventArgs launchArgs) => new AppActivationArguments(ExtendedActivationKind.Launch, launchArgs);
 
 	internal static AppActivationArguments CreateProtocol(ProtocolActivatedEventArgs protocolArgs) => new AppActivationArguments(ExtendedActivationKind.Protocol, protocolArgs);
+
+	internal static AppActivationArguments FromActivatedEventArgs(IActivatedEventArgs args)
+	{
+		var extendedKind = (ExtendedActivationKind)(int)args.Kind;
+		var data = args;
+		return new AppActivationArguments(extendedKind, data);
+	}
 }
