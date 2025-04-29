@@ -67,6 +67,7 @@ namespace Microsoft.UI.Xaml
 
 		[ThreadStatic]
 		private static string _argumentsOverride;
+
 		static Application()
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
@@ -116,7 +117,11 @@ namespace Microsoft.UI.Xaml
 
 		internal bool InitializationComplete => _initializationComplete;
 
-		internal bool WasLaunched { get; private set; }
+		internal bool WasLaunched
+		{
+			get => CoreApplication.WasLaunched;
+			private set => CoreApplication.WasLaunched = value;
+		}
 
 		partial void InitializePartial();
 
@@ -168,6 +173,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal bool IsSuspended { get; set; }
+
+		internal static void SetArguments(string arguments) => _argumentsOverride = arguments;
 
 		private void InitializeSystemTheme()
 		{
@@ -313,9 +320,9 @@ namespace Microsoft.UI.Xaml
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
 		internal void InvokeOnActivated(IActivatedEventArgs args)
 		{
