@@ -17,7 +17,8 @@ namespace Uno.UI.Hosting;
 /// <para>
 /// Why <c>internal</c>: this helper relies on otherwise non-public Uno internals
 /// (<see cref="LaunchActivatedEventArgs"/>'s parameterless constructor and the
-/// <c>protected internal</c> <see cref="Application.OnLaunched"/> override hook).
+/// <c>internal</c> <c>Application.InvokeOnLaunched</c> entry point that drives the
+/// <see cref="Application.OnLaunched"/> override hook).
 /// Exposing it as <c>public</c> would invite app-developer code to call it directly,
 /// where it would silently bypass the platform's normal activation pipeline and
 /// drop the activation arguments the OS actually delivered.
@@ -87,6 +88,6 @@ internal static class SecondaryApplicationLauncher
 			throw new ArgumentNullException(nameof(app));
 		}
 
-		app.OnLaunched(CreateDefaultLaunchActivatedEventArgs());
+		app.InvokeOnLaunched(CreateDefaultLaunchActivatedEventArgs());
 	}
 }
