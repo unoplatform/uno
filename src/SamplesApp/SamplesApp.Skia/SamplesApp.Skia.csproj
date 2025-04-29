@@ -15,6 +15,9 @@
 
 		<!-- In external apps, this will flow from NuGet package props -->
 		<SupportsFontManifest>true</SupportsFontManifest>
+		
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 	</PropertyGroup>
 
 	<PropertyGroup>
