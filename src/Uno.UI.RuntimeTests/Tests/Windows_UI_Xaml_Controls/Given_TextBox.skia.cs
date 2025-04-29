@@ -3737,8 +3737,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
 		}
 
-<<<<<<< HEAD
-=======
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno.chefs/issues/1472")]
 		public async Task When_PasswordBox_Focus_Changes()
@@ -3880,7 +3878,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
->>>>>>> 1d80eed04e (test: add When_MaxLine_Paste)
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)

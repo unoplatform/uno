@@ -1337,23 +1337,18 @@ namespace Microsoft.UI.Xaml.Controls
 				try
 				{
 					clipboardText = await content.GetTextAsync();
+					PasteFromClipboard(clipboardText);
 				}
 				catch (InvalidOperationException e)
 				{
-					clipboardText = "";
-
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
 					}
 				}
-				var selectionStart = SelectionStart;
-				var selectionLength = SelectionLength;
-				var currentText = Text;
+			});
+		}
 
-<<<<<<< HEAD
-				if (selectionLength > 0)
-=======
 		/// <summary>
 		/// Copies content from the OS clipboard into the text control.
 		/// </summary>
@@ -1399,42 +1394,16 @@ namespace Microsoft.UI.Xaml.Controls
 				_suppressCurrentlyTyping = false;
 				_clearHistoryOnTextChanged = true;
 				if (Text.IsNullOrEmpty())
->>>>>>> c823cfa231 (fix(TextBox): fix MaxLength to work correctly with paste)
 				{
-					currentText = currentText.Remove(selectionStart, selectionLength);
+					// On WinUI, the caret never has thumbs if there is no text
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				}
-
-				currentText = currentText.Insert(selectionStart, clipboardText);
-
-				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
-
-#if __SKIA__
-				try
-				{
-					_clearHistoryOnTextChanged = false;
-					_suppressCurrentlyTyping = true;
-#else
-				{
-#endif
-					ProcessTextInput(currentText);
-				}
-#if __SKIA__
-				finally
-				{
-					_suppressCurrentlyTyping = false;
-					_clearHistoryOnTextChanged = true;
-					if (Text.IsNullOrEmpty())
-					{
-						// On WinUI, the caret never has thumbs if there is no text
-						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-					}
-				}
+			}
 #endif
 
 #if !IS_UNIT_TESTS && !__MACOS__
-				RaisePaste(new TextControlPasteEventArgs());
+			RaisePaste(new TextControlPasteEventArgs());
 #endif
-			});
 		}
 
 		partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText);
