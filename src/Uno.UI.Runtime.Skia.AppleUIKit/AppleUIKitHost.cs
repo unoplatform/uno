@@ -24,10 +24,8 @@ internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 	}
 
 	public void SetUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
-		where T : UnoUIApplicationDelegate
-	{
+		where T : UnoUIApplicationDelegate =>
 		_uiApplicationDelegateOverride = typeof(T);
-	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
 
