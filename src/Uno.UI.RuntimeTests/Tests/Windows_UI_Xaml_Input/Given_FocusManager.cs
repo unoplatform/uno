@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Microsoft.UI.Xaml;
@@ -11,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -526,6 +526,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
 		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/868")]
+		public async Task When_Focus_TextBox_Inside_NavigationView()
+		{
+			var SUT = new NavigationViewPage();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			SUT.NavigationViewControl.IsPaneOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var suggestBox = SUT.SearchBox;
+
+			var waitForFocusToComplete = Task.Delay(5000);
+
+			var focusSearchBox = TestServices.RunOnUIThread(() =>
+			{
+				// We need to validate that we are returning from this operation.
+				suggestBox.Focus(FocusState.Programmatic);
+			});
+
+			var completedTask = await Task.WhenAny(focusSearchBox, waitForFocusToComplete);
+			if (completedTask == waitForFocusToComplete)
+			{
+				Assert.Fail("AutoSuggestBox did not get the focus");
+			}
+
+			suggestBox.Text = "Test";
+
+			SUT.NavigationViewControl.IsPaneOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.NavigationViewControl.IsPaneOpen);
+		}
+
 
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)
 		{
