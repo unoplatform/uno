@@ -562,6 +562,8 @@
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
+        - name: Customizing the UIApplicationDelegate on iOS
+          href: xref:Uno.Features.CustomizingUIApplicationDelegate
         - name: Dialogs
           href: features/dialogs.md
         - name: Fluent styles
