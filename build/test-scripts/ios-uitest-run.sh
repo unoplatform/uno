@@ -1,5 +1,6 @@
 ﻿#!/bin/bash
 set -euo pipefail
+set -m # enable background jobs
 IFS=$'\n\t'
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
