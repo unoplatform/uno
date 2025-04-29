@@ -86,10 +86,10 @@ public partial class TextBox
 
 	internal ContentControl ContentElement => _contentElement;
 
-	private CaretDisplayMode CaretMode
+	internal CaretDisplayMode CaretMode
 	{
 		get => _caretMode;
-		set
+		private set
 		{
 			if (_caretMode != value)
 			{
@@ -1381,7 +1381,7 @@ public partial class TextBox
 	internal override bool IsDelegatingFocusToTemplateChild()
 		=> OperatingSystem.IsBrowser();
 
-	private enum CaretDisplayMode
+	internal enum CaretDisplayMode
 	{
 		ThumblessCaretHidden,
 		ThumblessCaretShowing,
