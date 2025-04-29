@@ -42,7 +42,6 @@ using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
 using Microsoft.Windows.AppLifecycle;
-using System.Threading.Tasks;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
