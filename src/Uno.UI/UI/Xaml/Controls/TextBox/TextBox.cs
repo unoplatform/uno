@@ -1100,7 +1100,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
-		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args, bool wasFocused);
 
 		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 
@@ -1109,9 +1109,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerReleased(args);
 
+			bool wasFocused = FocusState != FocusState.Unfocused;
 			if (!ShouldFocusOnPointerPressed(args))
 			{
-				var wasFocused = FocusState != FocusState.Unfocused;
 				Focus(FocusState.Pointer);
 #if __SKIA__
 				if (wasFocused)
@@ -1132,7 +1132,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			args.Handled = true;
 
-			OnPointerReleasedPartial(args);
+			OnPointerReleasedPartial(args, wasFocused);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)

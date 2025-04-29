@@ -178,7 +178,7 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
+	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args, bool wasFocused)
 	{
 		_mouseMultiTapChunk = null;
 
@@ -197,11 +197,11 @@ public partial class TextBox
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
-			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, wasFocused);
 		}
 	}
 
-	private void TouchTap(Point point)
+	private void TouchTap(Point point, bool wasFocused)
 	{
 		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
 
@@ -227,7 +227,11 @@ public partial class TextBox
 
 			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
-			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			if (wasFocused) // If we were not focused before, caret should be initially thumbless.
+			{
+				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			}
+
 			Select(closerEnd, 0);
 		}
 	}
@@ -315,7 +319,7 @@ public partial class TextBox
 		if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), e.GetCurrentPoint(null)))
 		{
 			e.Handled = true;
-			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
 		}
 	}
 
