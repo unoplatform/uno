@@ -141,7 +141,20 @@ namespace Microsoft.UI.Xaml
 
 		internal bool InitializationComplete => _initializationComplete;
 
-		internal bool WasLaunched { get; private set; }
+		// Per-instance, because several Application instances can coexist (one per ALC) and each
+		// still needs its own OnLaunched. CoreApplication.WasLaunched is the process-wide mirror
+		// AppInstance reads, since it cannot see Application.
+		private bool _wasLaunched;
+
+		internal bool WasLaunched
+		{
+			get => _wasLaunched;
+			private set
+			{
+				_wasLaunched = value;
+				CoreApplication.WasLaunched = value;
+			}
+		}
 
 		partial void InitializePartial();
 
@@ -317,9 +330,9 @@ namespace Microsoft.UI.Xaml
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
 		internal void InvokeOnActivated(IActivatedEventArgs args)
 		{
