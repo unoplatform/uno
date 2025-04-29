@@ -1,5 +1,5 @@
 // Uncomment to get additional reference tracking
-//#define TRACK_REFS
+#define TRACK_REFS
 #nullable enable
 
 using System;
@@ -314,7 +314,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if __APPLE_UIKIT__ || __ANDROID__
+#if TRACK_REFS || __APPLE_UIKIT__ || __ANDROID__
 			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
 			if (activeControls != 0)
 			{
@@ -352,7 +352,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
 
-#if __APPLE_UIKIT__ || __ANDROID__
+#if TRACK_REFS || __APPLE_UIKIT__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
