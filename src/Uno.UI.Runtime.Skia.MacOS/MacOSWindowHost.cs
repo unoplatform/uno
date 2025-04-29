@@ -35,6 +35,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private SKSurface? _surface;
 	private int _rowBytes;
 	private bool _initializationCompleted;
+	private string? _lastSvgClipPath;
 
 	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
@@ -91,9 +92,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
-				if (!path.IsEmpty)
+				var clip = path.IsEmpty ? null : path.ToSvgPathData();
+				if (clip != _lastSvgClipPath)
 				{
-					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, path.ToSvgPathData());
+					// if too early it's possible that the native element has not been arranged yet
+					// so the position and dimension of the element are not yet correct (0,0,0,0)
+					if (NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip))
+					{
+						_lastSvgClipPath = clip;
+					}
 				}
 			}
 		}

@@ -671,7 +671,7 @@ CGFloat readNextCoord(const char *svg, int *position, long length)
     return result;
 }
 
-void uno_window_clip_svg(UNOWindow* window, const char* svg)
+bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
     if (svg) {
         CGFloat scale = window.screen.backingScaleFactor;
@@ -681,8 +681,13 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
         NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
         for (int i = 0; i < subviews.count; i++) {
             NSView* view = subviews[i];
-            CGFloat vx = view.frame.origin.x;
-            CGFloat vy = view.frame.origin.y;
+            NSRect frame = view.frame;
+            // if called too early the element might not have been arranged and it's values cannot be used yet
+            if (NSIsEmptyRect(frame))
+                return false;
+
+            CGFloat vx = frame.origin.x;
+            CGFloat vy = frame.origin.y;
 #if DEBUG
             NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
 #endif
@@ -760,10 +765,28 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                 view.layer.mask = mask = [[CAShapeLayer alloc] init];
             }
             mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
-            mask.path = path;
             mask.fillRule = kCAFillRuleEvenOdd;
+            mask.path = path;
+        }
+    } else {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ reset", window, window.contentView.layer.description);
+#endif
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
+#if DEBUG
+            NSLog(@"uno_window_clip_svg reset subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
+#endif
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask != nil) {
+                mask.fillColor = NSColor.clearColor.CGColor;
+                mask.fillRule = kCAFillRuleEvenOdd;
+                mask.path = nil;
+            }
         }
     }
+    return true;
 }
 
 @implementation UNOWindow : NSWindow
