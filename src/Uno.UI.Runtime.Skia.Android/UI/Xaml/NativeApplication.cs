@@ -4,22 +4,22 @@
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using Android.App;
-using Java.Interop;
-using Windows.ApplicationModel.Activation;
-using Windows.UI.StartScreen;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Java.Interop;
 using Uno.Extensions;
-using Windows.Foundation.Metadata;
-using System.ComponentModel;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.UI.StartScreen;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml
 {
@@ -129,6 +129,8 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
+					// The app does not exist yet at this point (the host is built in CreateHost() below),
+					// so the arguments are stashed and picked up by Application.InvokeOnLaunched.
 					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
 					handled = true;
 				}
@@ -145,7 +147,7 @@ namespace Microsoft.UI.Xaml
 						{
 							// Application.Current rather than a cached instance: the app is created by the
 							// host built in CreateHost(), which this type never sees.
-							Application.Current?.OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+							Application.Current?.InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 						}
 						else
 						{
