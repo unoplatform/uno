@@ -144,6 +144,12 @@ xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 # check for the presence of idb, and install it if it's not present
 export PATH=$PATH:~/.local/bin
 
+##
+## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
+##
+echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
+
 if ! command -v idb &> /dev/null
 then
 	echo "Installing idb"
@@ -156,20 +162,17 @@ else
 	echo "Using idb from:" `command -v idb`
 fi
 
-##
-## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
-##
-echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
-
 # echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 # xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" &
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
 popd
+
+# Come back to the idb install
+fg
 
 cd $BUILD_SOURCESDIRECTORY/build
 
