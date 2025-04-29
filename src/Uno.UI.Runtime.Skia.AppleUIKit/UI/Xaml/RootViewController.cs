@@ -9,12 +9,10 @@ using ObjCRuntime;
 using SkiaSharp;
 using UIKit;
 using Uno.Helpers.Theming;
-using Uno.UI.Controls;
 using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 #if __IOS__
@@ -136,102 +134,115 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				int width = (int)View!.Frame.Width;
 				int height = (int)View!.Frame.Height;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, canvas);
-				if (!path.IsEmpty)
-				{
-					var svgPath = path.ToSvgPathData();
-					if (svgPath != _lastSvgClipPath)
-					{
-						_lastSvgClipPath = svgPath;
-						ClipBySvgPath(svgPath);
-					}
-				}
+				UpdateNativeClipping(path);
 			}
+		}
+	}
+
+	private void UpdateNativeClipping(SKPath path)
+	{
+		if (!path.IsEmpty)
+		{
+			var svgPath = path.ToSvgPathData();
+			if (svgPath != _lastSvgClipPath)
+			{
+				_lastSvgClipPath = svgPath;
+				ClipBySvgPath(svgPath);
+			}
+		}
+		else if (_lastSvgClipPath != null && _nativeOverlayLayer is { } view)
+		{
+			// If the path is empty, we need to clear the mask of the native overlay layer
+			// to avoid showing the previous clip.
+			var mask = view.Layer.Mask as CAShapeLayer;
+			if (mask != null)
+			{
+				mask.Path = null;
+				mask.FillColor = UIColor.Clear.CGColor;
+			}
+
+			_lastSvgClipPath = null;
 		}
 	}
 
 	private void ClipBySvgPath(string svg)
 	{
-		if (svg != null)
+		if (svg != null && _nativeOverlayLayer is { } view)
 		{
 			var cgPath = new CGPath();
 			var length = svg.Length;
 
 			var scale = UIScreen.MainScreen.Scale;
 
-			var subviews = _nativeOverlayLayer!.Subviews;
-			for (int i = 0; i < subviews.Length; i++)
+			var vx = view.Frame.X;
+			var vy = view.Frame.Y;
+
+			for (int index = 0; index < length;)
 			{
-				var view = subviews[i];
-				var vx = view.Frame.X;
-				var vy = view.Frame.Y;
-
-				for (int index = 0; index < length;)
+				nfloat x, y, x2, y2;
+				char op = svg[index];
+				switch (op)
 				{
-					nfloat x, y, x2, y2;
-					char op = svg[index];
-					switch (op)
-					{
-						case 'M':
-							index++; // skip M
-							x = ReadNextSvgCoord(svg, ref index, length);
-							index++; // skip separator
-							y = ReadNextSvgCoord(svg, ref index, length);
+					case 'M':
+						index++; // skip M
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
 
-							x = (x / scale - vx);
-							y = (y / scale - vy);
-							cgPath.MoveToPoint(x, y);
-							break;
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						cgPath.MoveToPoint(x, y);
+						break;
 
-						case 'Q':
-							index++; // skip Z
-							x = ReadNextSvgCoord(svg, ref index, length);
-							index++; // skip separator
-							y = ReadNextSvgCoord(svg, ref index, length);
-							index++; // skip separator
-							x2 = ReadNextSvgCoord(svg, ref index, length);
-							index++; // skip separator
-							y2 = ReadNextSvgCoord(svg, ref index, length);
-							// there might not be a separator (not required before the next op)
-							x = (x / scale - vx);
-							y = (y / scale - vy);
-							x2 = (x2 / scale - vx);
-							y2 = (y2 / scale - vy);
-							cgPath.AddQuadCurveToPoint(x, y, x2, y2);
-							break;
+					case 'Q':
+						index++; // skip Z
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						x2 = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y2 = ReadNextSvgCoord(svg, ref index, length);
+						// there might not be a separator (not required before the next op)
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						x2 = (x2 / scale - vx);
+						y2 = (y2 / scale - vy);
+						cgPath.AddQuadCurveToPoint(x, y, x2, y2);
+						break;
 
-						case 'L':
-							index++; // skip L
-							x = ReadNextSvgCoord(svg, ref index, length);
-							index++; // skip separator
-							y = ReadNextSvgCoord(svg, ref index, length);
+					case 'L':
+						index++; // skip L
+						x = ReadNextSvgCoord(svg, ref index, length);
+						index++; // skip separator
+						y = ReadNextSvgCoord(svg, ref index, length);
 
-							x = (x / scale - vx);
-							y = (y / scale - vy);
-							cgPath.AddLineToPoint(x, y);
-							break;
+						x = (x / scale - vx);
+						y = (y / scale - vy);
+						cgPath.AddLineToPoint(x, y);
+						break;
 
-						case 'Z':
-							index++; // skip Z
-							cgPath.CloseSubpath();
-							break;
+					case 'Z':
+						index++; // skip Z
+						cgPath.CloseSubpath();
+						break;
 
-						default:
-							index++; // skip unknown op
-							break;
-					}
+					default:
+						index++; // skip unknown op
+						break;
 				}
-
-				var mask = view.Layer.Mask as CAShapeLayer;
-				if (mask == null)
-				{
-					mask = new CAShapeLayer();
-					view.Layer.Mask = mask;
-				}
-
-				mask.FillColor = UIColor.Blue.CGColor; // anything but clear color
-				mask.Path = cgPath;
-				mask.FillRule = CAShapeLayer.FillRuleEvenOdd;
 			}
+
+			var mask = view.Layer.Mask as CAShapeLayer;
+			if (mask == null)
+			{
+				mask = new CAShapeLayer();
+				view.Layer.Mask = mask;
+			}
+
+			mask.FillColor = UIColor.Blue.CGColor; // anything but clear color
+			mask.Path = cgPath;
+			mask.FillRule = CAShapeLayer.FillRuleEvenOdd;
 		}
 	}
 
