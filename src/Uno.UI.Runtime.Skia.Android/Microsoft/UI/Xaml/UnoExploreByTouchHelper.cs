@@ -24,6 +24,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private ConditionalWeakTable<DependencyObject, object> _cwtElementToId = new();
 	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
 	private int _currentId;
+	private readonly HashSet<DependencyObject> _rememberAllVisited = [];
 
 	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 
@@ -136,8 +137,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 					virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
 				}
 
+				_rememberAllVisited.Add(current);
+
 				current = focusManager.GetNextTabStop(current);
-				if (current == firstFocusable)
+				if (current is not null && _rememberAllVisited.Contains(current))
 				{
 					break;
 				}
@@ -146,6 +149,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		finally
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = false;
+			_rememberAllVisited.Clear();
 		}
 	}
 
