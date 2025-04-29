@@ -509,9 +509,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			~Holder()
 			{
-				lock (_lock)
+				try
 				{
-					_update(--_counter);
+					lock (_lock)
+					{
+						_update(--_counter);
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Failed to finalize holder: " + ex);
 				}
 			}
 

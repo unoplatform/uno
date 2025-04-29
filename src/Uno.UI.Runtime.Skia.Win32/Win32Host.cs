@@ -27,6 +27,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -122,6 +123,10 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	{
 		CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+		// We do not have a display timer on this target, we can use
+		// a constant timer.
+		CompositionTargetTimer.Start();
 	}
 
 	protected override Task RunLoop()

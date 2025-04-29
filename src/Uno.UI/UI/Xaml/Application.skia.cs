@@ -15,6 +15,8 @@ using Windows.Globalization;
 using System.Threading.Tasks;
 using Uno.UI;
 using Windows.UI.Text;
+using System.Collections.Generic;
+using Microsoft.UI.Composition;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -34,6 +36,8 @@ namespace Microsoft.UI.Xaml
 		[ThreadStatic]
 		private static string? _argumentsOverride;
 
+		private static HashSet<Visual> _continuousTargets = new();
+
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
 
@@ -47,22 +51,90 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
-			CoreApplication.SetInvalidateRender(compositionTarget =>
-			{
-				Debug.Assert(compositionTarget is null or CompositionTarget);
+			CoreApplication.SetInvalidateRender(OnInvalidateRender, OnSetContinuousRender);
+		}
 
-				if (compositionTarget is CompositionTarget { Root: { } root })
+		private void OnSetContinuousRender(object? compositionTarget, bool enabled)
+		{
+			Debug.Assert(compositionTarget is null or CompositionTarget);
+
+			if (compositionTarget is CompositionTarget { Root: { } root })
+			{
+				var originalCount = _continuousTargets.Count;
+
+				if (_continuousTargets.Contains(root))
 				{
-					foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+					if (!enabled)
 					{
-						if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
-						{
-							xRoot.QueueInvalidateRender();
-							return;
-						}
+						_continuousTargets.Remove(root);
 					}
 				}
-			});
+				else
+				{
+					if (enabled)
+					{
+						_continuousTargets.Add(root);
+					}
+				}
+
+				if (originalCount != _continuousTargets.Count)
+				{
+					if (_continuousTargets.Count == 0)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"OnSetContinuousRender({enabled}) detach (Count:{_continuousTargets.Count})");
+						}
+
+						// We have no targets anymore, unhook from the composition target
+						CompositionTarget.Rendering -= OnContinuousRender;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"OnSetContinuousRender({enabled}) attach (Count:{_continuousTargets.Count})");
+						}
+
+						// We have at least one target, we need to start the render loop
+						CompositionTarget.Rendering += OnContinuousRender;
+					}
+				}
+			}
+		}
+
+		private void OnContinuousRender(object? sender, object e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"OnContinuousRender");
+			}
+
+			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (cRoot?.XamlRoot is { } xRoot && _continuousTargets.Contains(xRoot.VisualTree.RootElement.Visual))
+				{
+					xRoot.RaiseInvalidateRender();
+					return;
+				}
+			}
+		}
+
+		private void OnInvalidateRender(object? compositionTarget)
+		{
+			Debug.Assert(compositionTarget is null or CompositionTarget);
+
+			if (compositionTarget is CompositionTarget { Root: { } root })
+			{
+				foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				{
+					if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
+					{
+						xRoot.QueueInvalidateRender();
+						return;
+					}
+				}
+			}
 		}
 
 		internal ISkiaApplicationHost? Host { get; set; }
@@ -93,9 +165,9 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
-					if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						typeof(ApplicationLanguages).Log().Debug("InvariantCulture mode is enabled");
+						this.Log().Debug("InvariantCulture mode is enabled");
 					}
 				}
 			}

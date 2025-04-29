@@ -6,6 +6,8 @@ using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
 using System.Diagnostics;
 using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -43,6 +45,13 @@ internal partial class BrowserRenderer
 		_host = host;
 
 		_nativeSwapChainPanel = NativeMethods.CreateInstance(this);
+
+		CompositionTarget.RenderingActiveChanged += CompositionTarget_RenderingActiveChanged;
+	}
+
+	private void CompositionTarget_RenderingActiveChanged()
+	{
+		NativeMethods.SetContinousRender(_nativeSwapChainPanel, CompositionTarget.IsRenderingActive);
 	}
 
 	private void Initialize()
@@ -139,6 +148,20 @@ internal partial class BrowserRenderer
 		{
 			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
 		}
+
+		if (CompositionTarget.IsRenderingActive)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Dispatch next rendering");
+			}
+
+			// Force a loop of the dispatcher, so that the Rendering Event
+			// even can be raised. It is done synchronously because we're already
+			// on a timed callback and it won't requeue immediately like a standard
+			// dispatcher dispatch would.
+			NativeDispatcher.Main.SynchronousDispatchRendering();
+		}
 	}
 
 	[JSExport]
@@ -194,5 +217,8 @@ internal partial class BrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.invalidate")]
 		internal static partial void Invalidate(JSObject nativeSwapChainPanel);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setContinousRender")]
+		internal static partial void SetContinousRender(JSObject nativeSwapChainPanel, bool enabled);
 	}
 }

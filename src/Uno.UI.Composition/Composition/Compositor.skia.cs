@@ -1,18 +1,23 @@
-﻿// #define PRINT_FRAME_TIMES
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using SkiaSharp;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {
-	private List<CompositionAnimation> _runningAnimations = new();
+	private Dictionary<CompositionAnimation, ICompositionTarget> _runningAnimations = new();
+	private Dictionary<ICompositionTarget, int> _runningTargets = new();
 	private LinkedList<ColorBrushTransitionState> _backgroundTransitions = new();
 #if PRINT_FRAME_TIMES
 	private int _frameNumber;
@@ -29,19 +34,63 @@ public partial class Compositor
 	{
 		if (animation.IsTrackedByCompositor)
 		{
-			_runningAnimations.Add(animation);
 			if (visual is Visual { CompositionTarget: { } target })
 			{
-				CoreApplication.QueueInvalidateRender(target);
+				_runningAnimations.Add(animation, target);
+
+				if (_runningTargets.TryGetValue(target, out int count))
+				{
+					_runningTargets[target] = count + 1;
+				}
+				else
+				{
+					_runningTargets[target] = 1;
+				}
+
+				if (this.Log().IsTraceEnabled())
+				{
+					this.Log().Trace($"Register running targets {target.GetHashCode():X8}={count} Animations={_runningAnimations.Count}");
+				}
+
+				CoreApplication.SetContinuousRender(target, true);
 			}
 		}
 	}
 
-	internal void UnregisterAnimation(CompositionAnimation animation)
+	internal void UnregisterAnimation(CompositionAnimation animation, CompositionObject visual)
 	{
 		if (animation.IsTrackedByCompositor)
 		{
-			_runningAnimations.Remove(animation);
+			if (_runningAnimations.TryGetValue(animation, out var target))
+			{
+				_runningAnimations.Remove(animation);
+
+				if (_runningTargets.TryGetValue(target, out int count))
+				{
+					if (this.Log().IsTraceEnabled())
+					{
+						this.Log().Trace($"Unregister running targets {target.GetHashCode():X8}={count - 1} Animations={_runningAnimations.Count}");
+					}
+
+					if (count == 1)
+					{
+						_runningTargets.Remove(target);
+
+						CoreApplication.SetContinuousRender(target, false);
+					}
+					else
+					{
+						_runningTargets[target] = count - 1;
+					}
+				}
+			}
+			else
+			{
+				if (this.Log().IsDebugEnabled())
+				{
+					this.Log().Debug($"Cannot unregister unknown animation");
+				}
+			}
 		}
 	}
 
@@ -121,7 +170,7 @@ public partial class Compositor
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		foreach (var animation in _runningAnimations.ToArray())
+		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
 			animation.RaiseAnimationFrame();
 		}
