@@ -111,6 +111,8 @@ public static partial class CoreApplication
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
 
+	internal static bool WasLaunched { get; set; }
+
 	/// <summary>
 	/// Sets the invalidateRender and setContinuousRender callbacks for this layer.
 	/// </summary>
@@ -136,5 +138,4 @@ public static partial class CoreApplication
 	/// </summary>
 	internal static void QueueInvalidateRender(object visual)
 		=> _invalidateRender?.Invoke(visual);
-
 }
