@@ -59,20 +59,9 @@ partial class InputManager
 			=> RegisterDirectManipulationTargetCore(pointer, directManipulationTarget);
 
 		internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, InteractionTracker tracker)
-		{
-			var manip = RegisterDirectManipulationTargetCore(pointer.Pointer, new InteractionTrackerToDirectManipulationHandler(tracker));
-			if (!manip.HasStarted)
-			{
-				// We consider the manipulation active as soon as we have an interaction tracker.
-				// This is only to ensure compatibility with the current behavior (redirection is probably enabled only when the manipulation has started).
-				// But this could cause a double start threshold (one for the request to redirect and a second for the gesture recignizer to start)
-				// and it should be revisited to determine if we should also forcefully start the GestureRecognizer.
-				manip.HasStarted = true;
-				manip.Recognizer.ProcessDownEvent(pointer);
-			}
-		}
+			=> RegisterDirectManipulationTargetCore(pointer.Pointer, new InteractionTrackerToDirectManipulationHandler(tracker));
 
-		private DirectManipulation RegisterDirectManipulationTargetCore(PointerIdentifier pointer, IDirectManipulationHandler directManipulationTarget)
+		private void RegisterDirectManipulationTargetCore(PointerIdentifier pointer, IDirectManipulationHandler directManipulationTarget)
 		{
 			ref var manip = ref CollectionsMarshal.GetValueRefOrAddDefault(_directManipulations ??= new(), pointer, out var exists);
 			if (exists)
@@ -88,8 +77,6 @@ partial class InputManager
 			{
 				Trace($"[DirectManipulation] [{pointer}] Redirection requested to {directManipulationTarget.GetDebugName()}");
 			}
-
-			return manip;
 		}
 
 		private bool IsRedirectedToDirectManipulation(PointerIdentifier pointerId)
