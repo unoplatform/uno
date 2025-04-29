@@ -14,6 +14,7 @@ internal partial class VisualTree : IWeakReferenceProvider
 {
 	private const int UnoTopZIndex = int.MaxValue - 100;
 	private const int FocusVisualZIndex = UnoTopZIndex + 1;
+	internal const int TextBoxTouchKnobPopupZIndex = FocusVisualZIndex + 1;
 
 	private ManagedWeakReference? _selfWeakReference;
 	private Windows.UI.ViewManagement.ApplicationView? _applicationView;

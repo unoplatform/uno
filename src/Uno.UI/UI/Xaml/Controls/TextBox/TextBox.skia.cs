@@ -21,6 +21,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 using System.Diagnostics;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -1499,6 +1500,7 @@ public partial class TextBox
 				IsLightDismissEnabled = false,
 				XamlRoot = xamlRoot
 			};
+			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
 
 			Canvas.SetZIndex(_popup, DefaultZIndex);
 
