@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
@@ -14,12 +13,10 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
-using System.Threading.Tasks;
 using Uno.UI;
 using Windows.UI.Text;
 using System.Collections.Generic;
 using Microsoft.UI.Composition;
-using Microsoft.Windows.AppLifecycle;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
@@ -36,13 +33,7 @@ namespace Microsoft.UI.Xaml
 		[ThreadStatic]
 		private static Application _current;
 
-		[ThreadStatic]
-		private static string? _argumentsOverride;
-
 		private static HashSet<Visual> _continuousTargets = new();
-
-		internal static void SetArguments(string arguments)
-			=> _argumentsOverride = arguments;
 
 		partial void InitializePartial()
 		{
@@ -213,13 +204,13 @@ namespace Microsoft.UI.Xaml
 			if (OperatingSystem.IsBrowser())
 			{
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(_current.PrepareOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				_current.InvokeOnLaunched();
+				_current.PrepareOnLaunched();
 			}
 		}
 
