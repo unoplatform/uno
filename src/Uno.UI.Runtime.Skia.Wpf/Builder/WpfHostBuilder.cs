@@ -9,9 +9,10 @@ using System.Runtime.Loader;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Hosting;
 
 internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 {
@@ -180,7 +181,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		set => _wpfApplication = value;
 	}
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
 		=> new WpfHost(appBuilder, _wpfApplication);
 
 	private static class NativeMethods
