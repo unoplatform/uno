@@ -12,7 +12,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf;
 
-namespace Uno.UI.Hosting;
+namespace Uno.UI.Runtime.Skia;
 
 internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 {

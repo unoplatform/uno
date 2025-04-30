@@ -8,7 +8,7 @@ namespace Uno.UI.Runtime.Skia;
 
 public static class HostBuilder
 {
-	public static ISkiaHostBuilder UseLinuxFrameBuffer(this ISkiaHostBuilder builder)
+	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new FramebufferHostBuilder());
 		return builder;

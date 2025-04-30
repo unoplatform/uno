@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
+using Uno.UI.Runtime.Skia;
 using Windows.UI.WebUI;
 
 namespace Uno.UI.Hosting;
