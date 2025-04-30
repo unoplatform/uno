@@ -793,6 +793,8 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 
 @implementation UNOWindow : NSWindow
 
+NSEventModifierFlags _previousFlags;
+
 + (void)initialize {
     windows = [[NSMutableSet alloc] initWithCapacity:10];
 }
@@ -894,11 +896,19 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 #endif
             break;
         }
-#if DEBUG
         case NSEventTypeFlagsChanged: {
-            NSLog(@"NSEventTypeFlagsChanged: %@", event); // FIXME: needed ?
+            // raise separate events for each modifiers and for key up and down
+            handled |= [self processModifiers:NSEventModifierFlagControl event:event];
+            handled |= [self processModifiers:NSEventModifierFlagOption event:event];
+            handled |= [self processModifiers:NSEventModifierFlagShift event:event];
+            handled |= [self processModifiers:NSEventModifierFlagCommand event:event];
+            _previousFlags = event.modifierFlags;
+#if DEBUG
+            NSLog(@"NSEventTypeFlagsChanged: %@ handled? %s", event, handled ? "true" : "false");
+#endif
             break;
         }
+#if DEBUG
         default: {
             NSLog(@"Unhandled Event: %@", event);
             break;
@@ -970,6 +980,35 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
     if (!handled) {
         [super sendEvent:event];
     }
+}
+
+- (BOOL)processModifiers:(NSEventModifierFlags)candidate event:(NSEvent*)event {
+    NSEventModifierFlags flags = event.modifierFlags;
+    bool down = (_previousFlags & candidate) == 0 && (flags & candidate) != 0;
+    bool up = (_previousFlags & candidate) != 0 && (flags & candidate) == 0;
+
+    VirtualKey key = VirtualKeyNone;
+    VirtualKeyModifiers mod = VirtualKeyModifiersNone;
+    unsigned short scanCode = 0;
+    UniChar unicode = 0;
+    if (down || up) {
+        scanCode = event.keyCode;
+        key = get_virtual_key(scanCode);
+        mod = get_modifiers(candidate);
+        unicode = get_unicode(event);
+    }
+
+    bool handled = false;
+    if (down) {
+        handled |= uno_get_window_key_down_callback()(self, key, mod, scanCode, unicode);
+    }
+    if (up) {
+        handled |= uno_get_window_key_up_callback()(self, key, mod, scanCode, unicode);
+    }
+#if DEBUG
+    NSLog(@"NSEventTypeFlagsChanged: down: %s up: %s", down ? "TRUE" : "false", up ? "TRUE" : "false");
+#endif
+    return handled;
 }
 
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {
