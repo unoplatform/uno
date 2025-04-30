@@ -111,6 +111,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <inheritdoc />
+		internal override bool HitTest(Point point)
+			=> true; // Makes sure to get pointers events, even if no background.
+
 		private void HookScrollEvents(ScrollViewer sv)
 		{
 			UnhookScrollEvents(sv);
