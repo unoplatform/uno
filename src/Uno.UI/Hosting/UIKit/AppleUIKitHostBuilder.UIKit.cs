@@ -9,8 +9,6 @@ namespace Uno.UI.Hosting;
 
 internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder
 {
-	private Type? _uiApplicationDelegateOverride;
-
 	public AppleUIKitHostBuilder()
 	{
 	}
@@ -18,5 +16,5 @@ internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder
 	public bool IsSupported => DeviceTargetHelper.IsUIKit();
 
 	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType) =>
-		new AppleUIKitHost(appBuilder, _uiApplicationDelegateOverride);
+		new AppleUIKitHost(appType);
 }
