@@ -9,7 +9,7 @@ export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-resul
 export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos-runtime-tests-results.xml
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -b 0`
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
