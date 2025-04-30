@@ -546,6 +546,165 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.WheelUp();
 			Assert.AreEqual(0, flipView.SelectedIndex);
 		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchMoveLessThanHalfItem_Then_DoNotFlip()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			finger.Drag(
+				from: new(rect.Right - 10, rect.GetCenter().Y),
+				to: new(rect.Right - 30 /* less than center */, rect.GetCenter().Y),
+				steps: 5,
+				stepOffsetInMilliseconds: 500);
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchMoveMoreThanHalfItem_Then_FlipOneItem()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			finger.Drag(
+				from: new(rect.Right - 10, rect.GetCenter().Y),
+				to: new(rect.Left - 10, rect.GetCenter().Y),
+				steps: 5,
+				stepOffsetInMilliseconds: 500);
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(1, flipView.SelectedIndex);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchFlick_Then_FlipOneItem()
+		{
+			var flipView = new FlipView()
+			{
+				Width = 100,
+				Height = 100,
+				Items =
+				{
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+					},
+					new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					},
+				}
+			};
+
+			var rect = await UITestHelper.Load(flipView);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var finger = injector.GetFinger();
+
+			finger.Drag(
+				from: new(rect.Right - 10, rect.GetCenter().Y),
+				to: new(rect.Right - 30 /* less than center */, rect.GetCenter().Y),
+				steps: 5,
+				stepOffsetInMilliseconds: 1);
+
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(1, flipView.SelectedIndex);
+		}
 #endif
 	}
 

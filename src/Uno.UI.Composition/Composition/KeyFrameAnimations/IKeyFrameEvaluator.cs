@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Composition;
+﻿using System;
+
+namespace Microsoft.UI.Composition;
 
 internal interface IKeyFrameEvaluator
 {
@@ -8,4 +10,9 @@ internal interface IKeyFrameEvaluator
 	void Resume();
 
 	float Progress { get; }
+
+	/// <summary>
+	/// The time remaining until the animation completes.
+	/// </summary>
+	TimeSpan Remaining { get; }
 }
