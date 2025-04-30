@@ -34,7 +34,7 @@ export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64`
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
 
     # Replace the `=` with `!` to avoid url encoding issues
     UITEST_RUNTIME_TESTS_FILTER=${UITEST_RUNTIME_TESTS_FILTER//=/!}
