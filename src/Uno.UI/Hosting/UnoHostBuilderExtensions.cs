@@ -1,11 +1,15 @@
-﻿namespace Uno.UI.Runtime.Skia;
+﻿#nullable enable
 
-public static class SkiaHostBuilderExtensions
+using System;
+
+namespace Uno.UI.Hosting;
+
+public static class UnoPlatformHostBuilderExtensions
 {
 	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
-	public static ISkiaHostBuilder App(this ISkiaHostBuilder builder, Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public static IUnoPlatformHostBuilder App(this IUnoPlatformHostBuilder builder, Func<Microsoft.UI.Xaml.Application> appBuilder)
 	{
 		builder.AppBuilder = appBuilder;
 		return builder;
@@ -14,7 +18,7 @@ public static class SkiaHostBuilderExtensions
 	/// <summary>
 	/// Provides an action to be executed after the SkiaHost has been initialized, and before the run loop starts.
 	/// </summary>
-	public static ISkiaHostBuilder AfterInit(this ISkiaHostBuilder builder, Action action)
+	public static IUnoPlatformHostBuilder AfterInit(this IUnoPlatformHostBuilder builder, Action action)
 	{
 		builder.AfterInit = action;
 		return builder;

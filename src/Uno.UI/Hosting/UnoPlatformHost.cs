@@ -1,7 +1,11 @@
+#nullable enable
 
-namespace Uno.UI.Runtime.Skia;
+using System;
+using System.Threading.Tasks;
 
-public abstract class SkiaHost
+namespace Uno.UI.Hosting;
+
+public abstract class UnoPlatformHost
 {
 	internal Action? AfterInit { get; set; }
 
@@ -21,10 +25,7 @@ public abstract class SkiaHost
 		}
 	}
 
-	public async Task RunAsync()
-	{
-		await RunCore();
-	}
+	public async Task RunAsync() => await RunCore();
 
 	protected abstract void Initialize();
 
