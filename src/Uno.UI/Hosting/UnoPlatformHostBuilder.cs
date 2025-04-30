@@ -37,7 +37,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	{
 		if (_appBuilder is null)
 		{
-			throw new InvalidOperationException($"No app builder delegate was provided");
+			throw new InvalidOperationException($"No app builder delegate was provided via the .App extension method.");
 		}
 
 		foreach (var hostBuilderFunc in _hostBuilders)
