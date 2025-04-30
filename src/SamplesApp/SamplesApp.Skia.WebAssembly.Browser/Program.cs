@@ -1,4 +1,8 @@
-﻿using Uno.UI.Runtime.Skia.WebAssembly.Browser;
+﻿using Uno.UI.Hosting;
 
-var host = new WebAssemblyBrowserHost(() => new SamplesApp.App());
-await host.Run();
+var host = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseWebAssembly()
+	.Build();
+
+await host.RunAsync();
