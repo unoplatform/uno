@@ -1,8 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿#nullable enable
 
-namespace Uno.UI.Runtime.Skia;
+using System;
+using Microsoft.UI.Xaml;
 
-public interface ISkiaHostBuilder
+namespace Uno.UI.Hosting;
+
+public interface IUnoPlatformHostBuilder
 {
 	internal Func<Application>? AppBuilder { get; set; }
 
@@ -10,5 +13,5 @@ public interface ISkiaHostBuilder
 
 	internal void AddHostBuilder(Func<IPlatformHostBuilder> hostBuilder);
 
-	public SkiaHost Build();
+	public UnoPlatformHost Build();
 }
