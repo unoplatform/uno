@@ -222,8 +222,7 @@ namespace Microsoft.UI.Xaml
 			InitializationCompleted();
 			PreloadFonts();
 
-			var launchActivatedEventArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
-			InvokeOnLaunched(launchActivatedEventArgs);
+			InvokeOnLaunched(null);
 		}
 
 		private static void PreloadFonts()
