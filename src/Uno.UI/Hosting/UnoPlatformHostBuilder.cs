@@ -15,6 +15,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private List<Func<IPlatformHostBuilder>> _hostBuilders = new();
 	private Func<Application>? _appBuilder;
 	private Action? _afterInitAction;
+	private Type? _appType;
 
 	private UnoPlatformHostBuilder() { }
 
@@ -35,7 +36,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	public UnoPlatformHost Build()
 	{
-		if (_appBuilder is null)
+		if (_appBuilder is null || _appType is null)
 		{
 			throw new InvalidOperationException($"No app builder delegate was provided via the .App extension method.");
 		}
@@ -51,7 +52,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 					this.Log().Debug($"Using host builder {hostBuilder.GetType()}");
 				}
 
-				var host = hostBuilder.Create(_appBuilder);
+				var host = hostBuilder.Create(_appBuilder, _appType);
 
 				host.AfterInitAction = _afterInitAction;
 
