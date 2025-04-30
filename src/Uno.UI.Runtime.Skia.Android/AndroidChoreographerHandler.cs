@@ -14,6 +14,7 @@ internal class AndroidChoreographerHandler
 {
 	private Choreographer _choreographer;
 	private FrameCallbackImplementor _animationImplementor;
+	private bool _pendingCallback;
 
 	public AndroidChoreographerHandler()
 	{
@@ -26,20 +27,26 @@ internal class AndroidChoreographerHandler
 
 	private void OnChoreographerTick()
 	{
+		_pendingCallback = false;
+
 		if (NativeDispatcher.Main.IsRendering)
 		{
 			// We're invoking the dispatcher synchronously as we're already
 			// on the UI thread and running in continuous mode.
-
 			NativeDispatcher.Main.SynchronousDispatchRendering();
-			ApplicationActivity.Instance?.InvalidateRender();
 
 			DispatchNextChoreographerTick();
 		}
 	}
 
 	private void DispatchNextChoreographerTick()
-		=> _choreographer.PostFrameCallback(_animationImplementor);
+	{
+		if (!_pendingCallback)
+		{
+			_pendingCallback = true;
+			_choreographer.PostFrameCallback(_animationImplementor);
+		}
+	}
 
 	internal sealed class FrameCallbackImplementor : Java.Lang.Object, Choreographer.IFrameCallback
 	{
