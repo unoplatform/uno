@@ -35,9 +35,6 @@ namespace Uno.UI.Dispatching
 
 			_choreographer = Choreographer.Instance;
 			_animationImplementor = new FrameCallbackImplementor(DispatchItemsToChoreographer);
-
-			// VSync calls are run from the dispatcher (choreographer based)
-			UseSynchronousDispatchRendering = true;
 		}
 
 		partial void EnqueueNative(NativeDispatcherPriority priority)
@@ -61,10 +58,8 @@ namespace Uno.UI.Dispatching
 			return operation;
 		}
 
-
 		/// <summary>
 		/// Synchronous dispatching to the dispatcher when coming from the choreographer only.
-		/// Aligned with UseSynchronousDispatchRendering.
 		/// </summary>
 		internal void SynchronousDispatchRendering()
 		{
