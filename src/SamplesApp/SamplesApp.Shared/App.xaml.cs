@@ -351,14 +351,6 @@ namespace SamplesApp
 
 		private async Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
 		{
-			var dlg = new MessageDialog(
-					$"PreviousState - {args.PreviousExecutionState}, " +
-					$"Uri - {args.Uri}",
-					"Application activated via protocol");
-			if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
-			{
-				await dlg.ShowAsync();
-			}
 		}
 
 		private void ActivateMainWindow()
