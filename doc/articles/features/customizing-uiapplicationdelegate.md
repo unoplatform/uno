@@ -23,9 +23,9 @@ You then need to inform Uno Platform to use this custom class instead of the bui
 using Uno.UI.Hosting;
 
 var host = UnoPlatformHostBuilder.Create()
-	.App(() => new SamplesApp.App())
-	.UseAppleUIKit(builder => builder.UseUIApplicationDelegate<MyApplicationDelegate>())
-	.Build();
+    .App(() => new SamplesApp.App())
+    .UseAppleUIKit(builder => builder.UseUIApplicationDelegate<MyApplicationDelegate>())
+    .Build();
 
 host.Run();
 ```
