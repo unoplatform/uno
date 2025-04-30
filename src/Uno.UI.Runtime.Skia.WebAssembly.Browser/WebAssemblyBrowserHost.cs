@@ -18,7 +18,7 @@ using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHost
+public partial class WebAssemblyBrowserHost : UnoPlatformHost, ISkiaApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
@@ -40,21 +40,7 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
-	public async Task Run()
-	{
-		try
-		{
-			Initialize();
-
-			await Task.Delay(-1);
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"App failed to initialize: {e}");
-		}
-	}
-
-	private void Initialize()
+	protected override void Initialize()
 	{
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
