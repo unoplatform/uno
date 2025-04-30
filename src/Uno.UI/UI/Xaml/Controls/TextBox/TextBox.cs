@@ -409,30 +409,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (MaxLength > 0 && baseString.Length > MaxLength)
 			{
+				// Reject the new string if it's longer than the MaxLength
+#if __SKIA__
+				_pendingSelection = null;
+#endif
 				return DependencyProperty.UnsetValue;
 			}
 
-#if __SKIA__
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
-				if (_pendingSelection is { } selection)
-				{
-					var start = Math.Min(selection.start, baseString.Length);
-					var end = Math.Min(selection.start + selection.length, baseString.Length);
-					_pendingSelection = (start, end - start);
-				}
 			}
+#if __SKIA__
 			else if (_isSkiaTextBox)
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
 				baseString = RemoveLF(baseString);
 			}
-#else
-			if (!AcceptsReturn)
+
+			// make sure this coercion doesn't cause the pending selection to be out of range
+			if (_pendingSelection is { } selection2)
 			{
-				baseString = GetFirstLine(baseString);
+				var start = Math.Min(selection2.start, baseString.Length);
+				var end = Math.Min(selection2.start + selection2.length, baseString.Length);
+				_pendingSelection = (start, end - start);
 			}
 #endif
 
@@ -1336,59 +1337,76 @@ namespace Microsoft.UI.Xaml.Controls
 				try
 				{
 					clipboardText = await content.GetTextAsync();
+					PasteFromClipboard(clipboardText);
 				}
 				catch (InvalidOperationException e)
 				{
-					clipboardText = "";
-
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
 						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
 					}
 				}
-				var selectionStart = SelectionStart;
-				var selectionLength = SelectionLength;
-				var currentText = Text;
-
-				if (selectionLength > 0)
-				{
-					currentText = currentText.Remove(selectionStart, selectionLength);
-				}
-
-				currentText = currentText.Insert(selectionStart, clipboardText);
-
-				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
-
-#if __SKIA__
-				try
-				{
-					_clearHistoryOnTextChanged = false;
-					_suppressCurrentlyTyping = true;
-#else
-				{
-#endif
-					ProcessTextInput(currentText);
-				}
-#if __SKIA__
-				finally
-				{
-					_suppressCurrentlyTyping = false;
-					_clearHistoryOnTextChanged = true;
-					if (Text.IsNullOrEmpty())
-					{
-						// On WinUI, the caret never has thumbs if there is no text
-						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-					}
-				}
-#endif
-
-#if !IS_UNIT_TESTS && !__MACOS__
-				RaisePaste(new TextControlPasteEventArgs());
-#endif
 			});
 		}
 
-		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		internal void PasteFromClipboard(string clipboardText)
+		{
+			if (IsReadOnly)
+			{
+				return;
+			}
+
+			var selectionStart = SelectionStart;
+			var selectionLength = SelectionLength;
+			var currentText = Text;
+			var adjustedClipboardText = clipboardText;
+
+			if (selectionLength > 0)
+			{
+				currentText = currentText.Remove(selectionStart, selectionLength);
+			}
+
+			if (MaxLength > 0)
+			{
+				var clipboardRangeToBePasted = Math.Max(0, Math.Min(clipboardText.Length, MaxLength - currentText.Length));
+				adjustedClipboardText = clipboardText[..clipboardRangeToBePasted];
+			}
+
+			currentText = currentText.Insert(selectionStart, adjustedClipboardText);
+			PasteFromClipboardPartial(adjustedClipboardText, selectionStart, currentText);
+
+#if __SKIA__
+			try
+			{
+				_clearHistoryOnTextChanged = false;
+				_suppressCurrentlyTyping = true;
+#else
+			{
+#endif
+				ProcessTextInput(currentText);
+			}
+#if __SKIA__
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+				_clearHistoryOnTextChanged = true;
+				if (Text.IsNullOrEmpty())
+				{
+					// On WinUI, the caret never has thumbs if there is no text
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				}
+			}
+#endif
+
+#if !IS_UNIT_TESTS && !__MACOS__
+			RaisePaste(new TextControlPasteEventArgs());
+#endif
+		}
+
+		partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
