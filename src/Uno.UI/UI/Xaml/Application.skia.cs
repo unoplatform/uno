@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// #define REPORT_FPS
+
+#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -52,6 +54,32 @@ namespace Microsoft.UI.Xaml
 			}
 
 			CoreApplication.SetInvalidateRender(OnInvalidateRender, OnSetContinuousRender);
+
+			NativeDispatcher.Main.Rendered += OnRendered;
+		}
+
+#if REPORT_FPS
+		static FrameRateLogger _renderFpsLogger = new FrameRateLogger(typeof(Application), "Render");
+#endif
+		private void OnRendered()
+		{
+#if REPORT_FPS
+			_renderFpsLogger.ReportFrame();
+#endif
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"OnRendered");
+			}
+
+			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (cRoot?.XamlRoot is { } xRoot)
+				{
+					xRoot.InvalidateRender();
+					return;
+				}
+			}
 		}
 
 		private void OnSetContinuousRender(object? compositionTarget, bool enabled)
@@ -105,19 +133,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnContinuousRender(object? sender, object e)
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"OnContinuousRender");
-			}
-
-			foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				if (cRoot?.XamlRoot is { } xRoot && _continuousTargets.Contains(xRoot.VisualTree.RootElement.Visual))
-				{
-					xRoot.RaiseInvalidateRender();
-					return;
-				}
-			}
+			// Intentionally empty to force enable continous mode.
 		}
 
 		private void OnInvalidateRender(object? compositionTarget)

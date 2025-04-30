@@ -1514,7 +1514,7 @@ public partial class TextBox
 				// We don't have an event that fires when we actually render,
 				// so we have to settle for this somewhat-inaccurate approximation
 				// of dispatching an update call whenever InvalidateRender fires.
-				xamlRoot.InvalidateRender += OnInvalidateRender;
+				xamlRoot.RenderInvalidated += OnInvalidateRender;
 			}
 		}
 
@@ -1533,7 +1533,7 @@ public partial class TextBox
 		{
 			if (XamlRoot is { })
 			{
-				XamlRoot.InvalidateRender -= OnInvalidateRender;
+				XamlRoot.RenderInvalidated -= OnInvalidateRender;
 			}
 			if (_popup is not null)
 			{

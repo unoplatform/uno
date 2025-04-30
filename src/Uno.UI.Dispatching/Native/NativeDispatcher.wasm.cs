@@ -36,10 +36,6 @@ namespace Uno.UI.Dispatching
 			{
 				throw new InvalidOperationException($"NativeDispatcher must be initialized on the main thread.");
 			}
-
-			// We're rendering directly from the requestAnimationFrame
-			// see `SynchronousDispatchRendering`
-			UseSynchronousDispatchRendering = true;
 		}
 
 		internal static bool IsThreadingSupported { get; }
