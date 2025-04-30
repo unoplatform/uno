@@ -7,12 +7,12 @@ namespace Uno.UI.Hosting;
 
 public abstract class UnoPlatformHost
 {
-	internal Action? AfterInit { get; set; }
+	internal Action? AfterInitAction { get; set; }
 
 	private Task RunCore()
 	{
 		Initialize();
-		AfterInit?.Invoke();
+		AfterInitAction?.Invoke();
 		return RunLoop();
 	}
 

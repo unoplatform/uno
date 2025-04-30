@@ -6,6 +6,7 @@ using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;
@@ -32,8 +33,8 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
-			SkiaHost? host = default;
-			var builder = SkiaHostBuilder.Create()
+			UnoPlatformHost? host = default;
+			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
 				.AfterInit(() =>
 				{

@@ -14,7 +14,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 {
 	private List<Func<IPlatformHostBuilder>> _hostBuilders = new();
 	private Func<Application>? _appBuilder;
-	private Action? _afterInit;
+	private Action? _afterInitAction;
 
 	private UnoPlatformHostBuilder() { }
 
@@ -24,10 +24,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		set => _appBuilder = value;
 	}
 
-	Action? IUnoPlatformHostBuilder.AfterInit
+	Action? IUnoPlatformHostBuilder.AfterInitAction
 	{
-		get => _afterInit;
-		set => _afterInit = value;
+		get => _afterInitAction;
+		set => _afterInitAction = value;
 	}
 
 	public static UnoPlatformHostBuilder Create()
@@ -53,7 +53,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 				var host = hostBuilder.Create(_appBuilder);
 
-				host.AfterInit = _afterInit;
+				host.AfterInitAction = _afterInitAction;
 
 				return host;
 			}
