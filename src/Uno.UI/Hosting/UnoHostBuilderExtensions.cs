@@ -16,7 +16,7 @@ public static class UnoPlatformHostBuilderExtensions
 	}
 
 	/// <summary>
-	/// Provides an action to be executed after the SkiaHost has been initialized, and before the run loop starts.
+	/// Provides an action to be executed after the UnoPlatformHost has been initialized, and before the run loop starts.
 	/// </summary>
 	public static IUnoPlatformHostBuilder AfterInit(this IUnoPlatformHostBuilder builder, Action action)
 	{
