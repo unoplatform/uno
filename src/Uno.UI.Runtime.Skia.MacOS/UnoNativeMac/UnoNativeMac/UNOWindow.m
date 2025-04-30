@@ -191,8 +191,10 @@ bool uno_window_resize(NSWindow *window, double width, double height)
     bool result = false;
     if (window) {
         NSRect frame = window.frame;
-        frame.size = CGSizeMake(width, height);
-        [window setFrame:frame display:true animate:true];
+        // consider the titlebar height when re-sizing the window
+        CGSize content = [window contentRectForFrameRect: frame].size;
+        frame.size = CGSizeMake(width, height + (frame.size.height - content.height));
+        [window setFrame:frame display:true animate:false];
         result = true;
     }
     return result;
