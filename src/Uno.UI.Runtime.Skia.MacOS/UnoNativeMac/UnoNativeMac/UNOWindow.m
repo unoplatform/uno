@@ -191,8 +191,10 @@ bool uno_window_resize(NSWindow *window, double width, double height)
     bool result = false;
     if (window) {
         NSRect frame = window.frame;
-        frame.size = CGSizeMake(width, height);
-        [window setFrame:frame display:true animate:true];
+        // consider the titlebar height when re-sizing the window
+        CGSize content = [window contentRectForFrameRect: frame].size;
+        frame.size = CGSizeMake(width, height + (frame.size.height - content.height));
+        [window setFrame:frame display:true animate:false];
         result = true;
     }
     return result;
@@ -984,11 +986,15 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
 }
 
 - (void)windowDidResize:(NSNotification *)notification {
-    CGSize size = self.frame.size;
+    // the UNOMetalViewDelegate has its own resize callback but we need something for the software fallback
+    if (self.metalViewDelegate == nil) {
+        // consider the title bar height
+        CGSize size = [self contentRectForFrameRect: self.frame].size;
 #if DEBUG
-    NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, size.width, size.height);
+        NSLog(@"UNOWindow %p windowDidResize %@ w: %g h: %g", self, notification, size.width, size.height);
 #endif
-    uno_get_window_resize_event_callback()(self, size.width, size.height);
+        uno_get_window_resize_event_callback()(self, size.width, size.height);
+    }
 }
 
 - (bool)windowShouldClose:(NSWindow *)sender
