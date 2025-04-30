@@ -85,7 +85,7 @@ namespace Uno.UI.Dispatching
 		/// Synchronous dispatching to the dispatcher is required for Wasm.
 		/// This must be called *only* when originating from the `requestAnimationFrame` callback
 		/// </summary>
-		internal void SynchronousDispatchRendering()
+		partial void SynchronousDispatchRenderingPartial()
 		{
 			var elapsed = Stopwatch.GetElapsedTime(_lastDispatchRendering);
 			var delta = TimeSpan.FromSeconds(1 / DispatchingFeatureConfiguration.DispatcherQueue.WebAssemblyFrameRate);
