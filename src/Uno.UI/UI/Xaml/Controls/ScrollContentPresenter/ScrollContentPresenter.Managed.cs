@@ -49,10 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 			set => _canHorizontallyScroll = value;
 		}
 
-		internal bool CanEffectivelyHorizontallyScroll
-			=> CanHorizontallyScroll // allowed to scroll
-			&& (HorizontalOffset > 0 || ExtentWidth > 0); // can effectively scroll
-
 		private bool _canVerticallyScroll;
 		public bool CanVerticallyScroll
 		{
@@ -64,9 +60,34 @@ namespace Microsoft.UI.Xaml.Controls
 			set => _canVerticallyScroll = value;
 		}
 
-		internal bool CanEffectivelyVerticallyScroll
-			=> CanVerticallyScroll // allowed to scroll
-			&& (VerticalOffset > 0 || ExtentHeight > 0); // can effectively scroll
+		private ScrollableOffsets GetScrollableOffsets()
+		{
+			var hOffset = HorizontalOffset;
+			var vOffset = VerticalOffset;
+
+			double up, down, left, right;
+			if (CanVerticallyScroll)
+			{
+				up = -vOffset;
+				down = Math.Max(0, ExtentHeight - ViewportHeight) - vOffset;
+			}
+			else
+			{
+				up = down = 0;
+			}
+
+			if (CanHorizontallyScroll)
+			{
+				left = -hOffset;
+				right = Math.Max(0, ExtentWidth - ViewportWidth) - hOffset;
+			}
+			else
+			{
+				left = right = 0;
+			}
+
+			return new(up, down, left, right);
+		}
 
 		public double HorizontalOffset { get; private set; }
 
@@ -138,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				sv.PointerWheelChanged -= PointerWheelScroll;
-				sv.RemoveHandler(PointerPressedEvent, handler);
+				RemoveHandler(PointerPressedEvent, handler);
 			});
 		}
 
@@ -261,12 +282,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var mode = ManipulationModes.None;
-			if (CanEffectivelyHorizontallyScroll)
+			var scrollable = GetScrollableOffsets();
+			if (scrollable.Horizontally)
 			{
 				mode |= ManipulationModes.TranslateX;
 			}
 
-			if (CanEffectivelyVerticallyScroll)
+			if (scrollable.Vertically)
 			{
 				mode |= ManipulationModes.TranslateY;
 			}
@@ -304,23 +326,24 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_touchInertiaOptions is null)
 				{
-					// A scroll to has been requested - OR - inertia was not allowed in the InertiaStarting (e.g. snap points?)
+					// A scroll to has been requested - OR - inertia was not allowed in the InertiaStarting (e.g. snap points / end of scroll)
 					// Note: we do not stop the processor to let parent SV handle it (if any)
 					return;
 				}
 
-				// When inertia is running, we do not want to chain the scroll to the parent SV
+				// We handle inertia locally, in that case we do not want to chain the scroll to the parent SV
 				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
 				if (--_touchInertiaSkipTicks > 0)
 				{
+					// Skipping this dependent update frame (composition animation is still running)
 					return;
 				}
 
 				var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
 				if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next)
 				{
-					// Weird case, we do not have a next tick (we should always have at least the inertia processor interval), ignore it
+					// Weird case, we do not have a next tick (we should always have at least the inertia processor interval), ignore it (expecting a complete soon)
 					return;
 				}
 
@@ -334,17 +357,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var hOffset = HorizontalOffset;
-				var vOffset = VerticalOffset;
-				var deltaX = Math.Clamp(-unhandledDelta.Translation.X, -hOffset, Math.Max(0, ExtentWidth - ViewportWidth) - hOffset);
-				var deltaY = Math.Clamp(-unhandledDelta.Translation.Y, -vOffset, Math.Max(0, ExtentHeight - ViewportHeight) - vOffset);
+				var scrollable = GetScrollableOffsets();
+				var deltaX = Math.Clamp(-unhandledDelta.Translation.X, scrollable.Left, scrollable.Right);
+				var deltaY = Math.Clamp(-unhandledDelta.Translation.Y, scrollable.Up, scrollable.Down);
 
 				unhandledDelta.Translation.X += deltaX;
 				unhandledDelta.Translation.Y += deltaY;
 
 				Set(
-					horizontalOffset: hOffset + deltaX,
-					verticalOffset: vOffset + deltaY,
+					horizontalOffset: HorizontalOffset + deltaX,
+					verticalOffset: VerticalOffset + deltaY,
 					disableAnimation: true,
 					isIntermediate: true);
 
@@ -361,13 +383,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args)
+		void IDirectManipulationHandler.OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled)
 		{
-			var canScrollHorizontally = CanEffectivelyHorizontallyScroll;
-			var canScrollVertically = CanEffectivelyVerticallyScroll;
+			if (isHandled)
+			{
+				_touchInertiaOptions = null; // Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
+
+				return;
+			}
+
+			var scrollable = GetScrollableOffsets();
+			var direction = GetDirection(args.Velocities);
 			if (Scroller is not { IsScrollInertiaEnabled: true } sv
-				|| (!canScrollHorizontally && !canScrollVertically)
-				|| recognizer.PendingManipulation is null) // Stop by a child element (e.g. a child SV that is scrolling to a mandatory snap-point)
+				|| !scrollable.IsValid(direction) // Nothing to scroll
+				|| recognizer.PendingManipulation is null) // Stopped by a child element (e.g. a child SV that is scrolling to a mandatory snap-point) - safety, should already be isHandled = true
 			{
 				// Inertia is starting but we cannot handle it.
 				// At this point we don't know if we another (child) SV we be able to handle it, so we do NOT abort the gesture.
@@ -377,34 +406,33 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			isHandled = true;
+
 			var inertia = args.Manipulation.Inertia ?? throw new InvalidOperationException("Inertia processor is not available.");
-			if (double.IsNaN(inertia.DesiredDisplacementDeceleration)) // Make computation only on first SV (not on parents)
+			if (OperatingSystem.IsIOS())
 			{
-				if (OperatingSystem.IsIOS())
+				var v0 = (scrollable.Horizontally, scrollable.Vertically) switch
 				{
-					var v0 = (canScrollHorizontally, canScrollVertically) switch
-					{
-						(true, false) => args.Velocities.Linear.X,
-						(false, true) => args.Velocities.Linear.Y,
-						(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
-						_ => 0
-					};
-					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
-				}
-				else if (OperatingSystem.IsAndroid())
-				{
-					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
-				}
-				else
-				{
-					inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
-				}
+					(true, false) => args.Velocities.Linear.X,
+					(false, true) => args.Velocities.Linear.Y,
+					(true, true) => (Math.Abs(args.Velocities.Linear.X) + Math.Abs(args.Velocities.Linear.Y)) / 2,
+					_ => 0
+				};
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.GetDecelerationFromDesiredDuration(v0, 2750);
+			}
+			else if (OperatingSystem.IsAndroid())
+			{
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration / 2;
+			}
+			else
+			{
+				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
 			}
 
 			// If we have snap points, we disable the inertia support (for local SV).
 			// However, we determine the final value of the inertia to snap on the right snap-point.
-			var shouldSnapHorizontally = canScrollHorizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
-			var shouldSnapVertically = canScrollVertically && sv is { VerticalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
+			var shouldSnapHorizontally = scrollable.Horizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
+			var shouldSnapVertically = scrollable.Vertically && sv is { VerticalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
 			if (shouldSnapHorizontally || shouldSnapVertically)
 			{
 				// Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
@@ -477,11 +505,71 @@ namespace Microsoft.UI.Xaml.Controls
 			Set(disableAnimation: true, isIntermediate: false);
 		}
 
+		private ScrollDirection GetDirection(ManipulationVelocities velocities)
+		{
+			var direction = default(ScrollDirection);
+
+			direction |= velocities.Linear.X switch
+			{
+				< 0 => ScrollDirection.Right,
+				> 0 => ScrollDirection.Left,
+				_ => default
+			};
+			direction |= velocities.Linear.Y switch
+			{
+				< 0 => ScrollDirection.Down,
+				> 0 => ScrollDirection.Up,
+				_ => default
+			};
+
+			return direction;
+		}
+
 
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 #endif
+
+		private record struct ScrollableOffsets(double Up, double Down, double Left, double Right)
+		{
+			public bool Vertically { get; } = Up < 0 || Down > 0;
+
+			public bool Horizontally { get; } = Left < 0 || Right > 0;
+
+			public bool None => !Vertically && !Horizontally;
+
+			public bool IsValid(ScrollDirection direction)
+			{
+				if (direction.HasFlag(ScrollDirection.Up) && Up < 0)
+				{
+					return true;
+				}
+				if (direction.HasFlag(ScrollDirection.Down) && Down > 0)
+				{
+					return true;
+				}
+				if (direction.HasFlag(ScrollDirection.Left) && Left < 0)
+				{
+					return true;
+				}
+				if (direction.HasFlag(ScrollDirection.Right) && Right > 0)
+				{
+					return true;
+				}
+
+				return false;
+			}
+		}
+
+		[Flags]
+		private enum ScrollDirection
+		{
+			Up = 1 << 1,
+			Down = 1 << 2,
+			Left = 1 << 3,
+			Right = 1 << 4
+		}
 	}
 }
 #endif
