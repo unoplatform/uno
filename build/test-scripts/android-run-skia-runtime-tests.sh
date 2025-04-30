@@ -15,7 +15,7 @@ export LOGS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/android-skia-$ANDROID_SIMULATOR
 mkdir -p $LOGS_PATH
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64`
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
