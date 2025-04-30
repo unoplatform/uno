@@ -9,7 +9,7 @@ public interface IUnoPlatformHostBuilder
 {
 	internal Func<Application>? AppBuilder { get; set; }
 
-	internal Action? AfterInit { get; set; }
+	internal Action? AfterInitAction { get; set; }
 
 	internal void AddHostBuilder(Func<IPlatformHostBuilder> hostBuilder);
 

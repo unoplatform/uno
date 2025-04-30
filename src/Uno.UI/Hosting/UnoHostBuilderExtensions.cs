@@ -20,7 +20,7 @@ public static class UnoPlatformHostBuilderExtensions
 	/// </summary>
 	public static IUnoPlatformHostBuilder AfterInit(this IUnoPlatformHostBuilder builder, Action action)
 	{
-		builder.AfterInit = action;
+		builder.AfterInitAction = action;
 		return builder;
 	}
 }
