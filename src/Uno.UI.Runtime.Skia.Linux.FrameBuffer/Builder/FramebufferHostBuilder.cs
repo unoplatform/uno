@@ -13,6 +13,6 @@ internal class FramebufferHostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsLinux();
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new FrameBufferHost(appBuilder);
 }

@@ -1,22 +1,15 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI.Hosting.UIKit;
 
 namespace Uno.UI.Hosting;
 
 public static class HostBuilder
 {
-	public static IUnoPlatformHostBuilder UseAppleUIKit(this IUnoPlatformHostBuilder builder, Action<IAppleUIKitHostBuilder>? appleUIKitBuilder = null)
+	public static IUnoPlatformHostBuilder UseAppleUIKit(this IUnoPlatformHostBuilder builder)
 	{
-		builder.AddHostBuilder(() =>
-		{
-			var platformBuilder = new AppleUIKitHostBuilder();
-			if (appleUIKitBuilder is not null)
-			{
-				appleUIKitBuilder?.Invoke(platformBuilder);
-			}
-			return platformBuilder;
-		});
+		builder.AddHostBuilder(() => new AppleUIKitHost());
 
 		return builder;
 	}

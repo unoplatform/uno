@@ -13,6 +13,6 @@ internal class Win32HostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsWindows();
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new Win32Host(appBuilder);
 }

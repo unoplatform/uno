@@ -181,7 +181,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		set => _wpfApplication = value;
 	}
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new WpfHost(appBuilder, _wpfApplication);
 
 	private static class NativeMethods

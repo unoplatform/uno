@@ -30,6 +30,6 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new X11ApplicationHost(appBuilder, _renderFrameRate);
 }
