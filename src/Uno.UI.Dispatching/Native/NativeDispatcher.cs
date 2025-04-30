@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// #define REPORT_FPS
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -157,27 +159,17 @@ namespace Uno.UI.Dispatching
 		}
 #endif
 
-		static long _lastRenderShow = Stopwatch.GetTimestamp();
-		static int qpsCounter;
+#if REPORT_FPS
+		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
+#endif
 
 		internal void DispatchRendering()
 		{
-			var now = Stopwatch.GetTimestamp();
-			var elapsed = Stopwatch.GetElapsedTime(_lastRenderShow).TotalSeconds;
-			qpsCounter++;
-
-			if (Stopwatch.GetElapsedTime(_lastRenderShow).TotalSeconds >= 1)
-			{
-				var fps = Math.Round(qpsCounter / elapsed, 2);
-				Console.WriteLine($"NativeDispatcher: DispatchRendering/s = {fps}");
-
-				qpsCounter = 0;
-				_lastRenderShow = now;
-			}
-
-
 			if (IsRendering)
 			{
+#if REPORT_FPS
+				_dispatchRenderingLogger.ReportFrame();
+#endif
 				WakeUp();
 			}
 		}
