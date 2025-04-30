@@ -19,7 +19,7 @@ internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder, IAppleUIKit
 	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType) =>
 		new AppleUIKitHost(appBuilder, _uiApplicationDelegateOverride);
 
-	public IAppleUIKitSkiaHostBuilder UseUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All] T>()
+	public IAppleUIKitSkiaHostBuilder UseUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
 		where T : UnoUIApplicationDelegate
 	{
 		_uiApplicationDelegateOverride = typeof(T);
