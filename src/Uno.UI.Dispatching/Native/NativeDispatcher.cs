@@ -44,13 +44,6 @@ namespace Uno.UI.Dispatching
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		/// <summary>
-		/// This is used by dependents of the Rendering event to determine if
-		/// `SynchronousDispatchRendering` will be used. This is essentially a
-		/// special case for WebAssembly which is single-threaded.
-		/// </summary>
-		internal bool UseSynchronousDispatchRendering { get; private set; }
-
 		private NativeDispatcher()
 		{
 			Debug.Assert(
@@ -125,6 +118,12 @@ namespace Uno.UI.Dispatching
 
 			RunAction(@this, action);
 
+			if (@this.Rendering != null)
+			{
+				// If we raised the Rendering event we can render composition tree.
+				@this.Rendered?.Invoke();
+			}
+
 			// Restore the priority to the default for native events
 			// (i.e. not dispatched by this running loop)
 			@this._currentPriority = NativeDispatcherPriority.Normal;
@@ -158,8 +157,25 @@ namespace Uno.UI.Dispatching
 		}
 #endif
 
+		static long _lastRenderShow = Stopwatch.GetTimestamp();
+		static int qpsCounter;
+
 		internal void DispatchRendering()
 		{
+			var now = Stopwatch.GetTimestamp();
+			var elapsed = Stopwatch.GetElapsedTime(_lastRenderShow).TotalSeconds;
+			qpsCounter++;
+
+			if (Stopwatch.GetElapsedTime(_lastRenderShow).TotalSeconds >= 1)
+			{
+				var fps = Math.Round(qpsCounter / elapsed, 2);
+				Console.WriteLine($"NativeDispatcher: DispatchRendering/s = {fps}");
+
+				qpsCounter = 0;
+				_lastRenderShow = now;
+			}
+
+
 			if (IsRendering)
 			{
 				WakeUp();
@@ -467,7 +483,14 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
+		// Dispatching for the CompositionTarget.Rendering event
 		internal event EventHandler<object>? Rendering;
+
+#pragma warning disable CS0067
+		// Dispatching for the compositor to actually render the frame only called
+		// when there are subscribers to Rendering
+		internal event Action? Rendered;
+#pragma warning restore CS0067
 
 		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 
