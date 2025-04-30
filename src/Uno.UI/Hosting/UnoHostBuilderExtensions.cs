@@ -9,9 +9,11 @@ public static class UnoPlatformHostBuilderExtensions
 	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
-	public static IUnoPlatformHostBuilder App(this IUnoPlatformHostBuilder builder, Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public static IUnoPlatformHostBuilder App<TApplication>(this IUnoPlatformHostBuilder builder, Func<TApplication> appBuilder)
+		where TApplication : Microsoft.UI.Xaml.Application
 	{
 		builder.AppBuilder = appBuilder;
+		builder.SetAppType<TApplication>();
 		return builder;
 	}
 

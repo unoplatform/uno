@@ -16,7 +16,7 @@ internal partial class AppleUIKitHostBuilder : IPlatformHostBuilder, IAppleUIKit
 
 	public bool IsSupported => DeviceTargetHelper.IsUIKit();
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder) =>
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType) =>
 		new AppleUIKitHost(appBuilder, _uiApplicationDelegateOverride);
 
 	public IAppleUIKitSkiaHostBuilder UseUIApplicationDelegate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All] T>()

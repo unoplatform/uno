@@ -7,18 +7,11 @@ using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.UI.Hosting;
 
-#if SKIA_UIKIT
-using HostType = Uno.UI.Runtime.Skia.SkiaHost;
-#else
-using HostType = Uno.UI.Hosting.UnoPlatformHost;
-#endif
-
 namespace Uno.UI.Hosting.UIKit;
 
-internal class AppleUIKitHost : HostType, ISkiaApplicationHost
+internal class AppleUIKitHost : UnoPlatformHost
 {
-	private readonly Func<Application> _appBuilder;
-	private readonly Type? _uiApplicationDelegateOverride;
+	private readonly Type _appType;
 
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
@@ -27,10 +20,9 @@ internal class AppleUIKitHost : HostType, ISkiaApplicationHost
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public AppleUIKitHost(Func<Application> appBuilder, Type? uiApplicationDelegateOverride)
+	public AppleUIKitHost(Type appType)
 	{
-		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
-		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
+		_appType = appType ?? throw new ArgumentNullException(nameof(appType));
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
@@ -43,14 +35,12 @@ internal class AppleUIKitHost : HostType, ISkiaApplicationHost
 	{
 		try
 		{
-			if (_uiApplicationDelegateOverride is null)
+			if (_appType is null)
 			{
 				throw new InvalidOperationException("UIApplicationDelegate must be provided for UIKit native");
 			}
 
-			var delegateType = _uiApplicationDelegateOverride;
-
-			UIApplication.Main(Environment.GetCommandLineArgs(), null, delegateType);
+			UIApplication.Main(Environment.GetCommandLineArgs(), null, _appType);
 
 			return Task.CompletedTask;
 		}

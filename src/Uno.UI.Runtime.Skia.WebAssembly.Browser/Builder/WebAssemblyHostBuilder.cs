@@ -12,6 +12,6 @@ internal partial class WebAssemblyHostBuilder : IPlatformHostBuilder
 
 	public bool IsSupported => true;
 
-	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new WebAssemblyBrowserHost(appBuilder);
 }

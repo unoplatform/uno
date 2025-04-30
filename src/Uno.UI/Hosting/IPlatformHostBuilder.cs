@@ -9,5 +9,5 @@ internal interface IPlatformHostBuilder
 {
 	bool IsSupported { get; }
 
-	UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder);
+	UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type applicationType);
 }
