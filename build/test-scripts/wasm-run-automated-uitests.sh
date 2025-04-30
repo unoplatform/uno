@@ -60,7 +60,7 @@ fi
 
 
 if [ -f "$UNO_RUNTIME_TESTS_FAILED_LIST" ]; then
-	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_RUNTIME_TESTS_FAILED_LIST | base64`
+	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_RUNTIME_TESTS_FAILED_LIST | base64 -w 0`
 
 	# echo the failed filter list, if not empty
 	if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
