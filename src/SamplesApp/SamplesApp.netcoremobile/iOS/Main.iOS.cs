@@ -8,10 +8,7 @@ using Uno.UI.Hosting;
 
 var host = UnoPlatformHostBuilder.Create()
 	.App(() => new App())
-	.UseAppleUIKit(builder =>
-	{
-		builder.UseUIApplicationDelegate<App>();
-	})
+	.UseAppleUIKit()
 	.Build();
 
 host.Run();
