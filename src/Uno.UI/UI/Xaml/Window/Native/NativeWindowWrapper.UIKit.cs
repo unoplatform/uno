@@ -27,7 +27,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 #endif
 	private readonly DisplayInformation _displayInformation;
 
-	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_nativeWindow = new NativeWindow();
 
