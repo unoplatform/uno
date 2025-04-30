@@ -142,6 +142,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 	}
 
+#if !__TVOS__
 	private void OnFrameDrawn()
 	{
 		// On each frame, while we're using continuous rendering,
@@ -156,6 +157,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			NativeDispatcher.Main.DispatchRendering();
 		}
 	}
+#endif
 
 	private void UpdateNativeClipping(SKPath path)
 	{
