@@ -155,6 +155,14 @@ When the `SkiaRenderer` feature is enabled, the `Uno.WinUI.Runtime.WebAssembly` 
 
 This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
 
+### UNOB0018: Code signing cannot be applied on files with extended attributes (e.g. iCloud)
+
+On macOS code signing will fail if the project's output is located inside a directory that is backed up using [iCloud](https://www.icloud.com). This is because iCloud adds some extended attributes to files and directories while `codesign` will refuse to sign such files.
+
+ref: https://developer.apple.com/library/archive/qa/qa1940/_index.html
+
+Solution: Move your Uno solution/project(s) to a different location, one that is not backed up by iCloud.
+
 ## Compiler Errors
 
 ### UNO0001
