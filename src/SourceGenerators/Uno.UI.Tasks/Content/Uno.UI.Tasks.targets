@@ -310,7 +310,7 @@
 			PrepareForILLink;
 		</_UnoLinkerHintsPass1DependsOnTargets>
 		<_UnoLinkerHintsPass1BeforeTargets>
-			$(_UnoLinkerHintsPass1DependsOnTargets);
+			$(_UnoLinkerHintsPass1BeforeTargets);
 			BuildDist;
 			_RunILLink;
 		</_UnoLinkerHintsPass1BeforeTargets>
@@ -361,7 +361,11 @@
 		</LinkerHintGeneratorTask_v0>
 
 		<ItemGroup>
-			<RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" Trim="true" />
+			<!--
+			 Align with latest https://github.com/dotnet/runtime/blob/dbb3f759798208ca7463059e0c87c0f45704b62f/src/tools/illink/src/ILLink.Tasks/build/Microsoft.NET.ILLink.targets#L303
+			 We need to execute after PrepareForILLink but before _RunILLink which copies RuntimeHostConfigurationOption before we can edit it.
+			-->
+			<_TrimmerFeatureSettings Include="@(_LinkerHintOutputFeatures)" Trim="true" />
 		</ItemGroup>
 	</Target>
 
