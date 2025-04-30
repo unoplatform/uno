@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Navigation;
 using Windows.UI.WebUI;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Hosting;
 
 public static class HostBuilder
 {
-	public static ISkiaHostBuilder UseWindows(this ISkiaHostBuilder builder, Action<IWindowsSkiaHostBuilder> windowsBuilder = null)
+	public static IUnoPlatformHostBuilder UseWindows(this IUnoPlatformHostBuilder builder, Action<IWindowsSkiaHostBuilder> windowsBuilder = null)
 	{
 		builder.AddHostBuilder(() =>
 		{
