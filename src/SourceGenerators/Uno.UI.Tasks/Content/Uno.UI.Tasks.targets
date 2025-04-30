@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">Uno.UI.Tasks</UnoUIMSBuildTasksPath>
 		<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
-		
+
 		<_IsXamlTrimmingAvailable>true</_IsXamlTrimmingAvailable>
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
@@ -13,7 +13,7 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
-	
+
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
@@ -50,7 +50,7 @@
 		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">uikit</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(_UnoUnderlyingPlatform)'=='' AND '$(UnoRuntimeIdentifier)'=='Skia'">skia</_UnoUnderlyingPlatform>
-</PropertyGroup>
+	</PropertyGroup>
 
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
@@ -117,8 +117,8 @@
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='UIKit'" Include="@(GeneratedFiles)" />
 			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
 			<LibraryResourceDirectories Condition="'@(_UnoAndroidResources->Count ())' != '0' " Include="$(_ResourceOutputPath)\r">
-                <StampFile>$(_ResourceStampFile)</StampFile>
-            </LibraryResourceDirectories>
+				<StampFile>$(_ResourceStampFile)</StampFile>
+			</LibraryResourceDirectories>
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 
 			<!-- Clear temporary group -->
@@ -155,13 +155,13 @@
 		<!-- Assets -->
 		<PropertyGroup>
 			<UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
-			
+
 			<_UnoIosAppManifest>$(AppBundleManifest)</_UnoIosAppManifest>
 
 			<!-- Required for older Xamarin versions -->
 			<_UnoIosAppManifest Condition="'$(_UnoIosAppManifest)'==''">$(_AppManifest)</_UnoIosAppManifest>
 		</PropertyGroup>
-		
+
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(_UnoUnderlyingPlatform)"
 							DefaultLanguage="$(DefaultLanguage)"
@@ -304,20 +304,33 @@
 	<!--
 	  XAML Resources Trimming
 	  -->
+	<PropertyGroup>
+		<_UnoLinkerHintsPass1DependsOnTargets>
+			$(_UnoLinkerHintsPass1DependsOnTargets);
+			PrepareForILLink;
+		</_UnoLinkerHintsPass1DependsOnTargets>
+		<_UnoLinkerHintsPass1BeforeTargets>
+			$(_UnoLinkerHintsPass1DependsOnTargets);
+			BuildDist;
+			_RunILLink;
+		</_UnoLinkerHintsPass1BeforeTargets>
+	</PropertyGroup>
+	
 
 	<Target Name="_UnoLinkerHintsPass1"
 		  Condition="
 			'$(IsUnoHead)'=='true'
 			and '$(UnoXamlResourcesTrimming)'=='true'
 			and $(_IsXamlTrimmingAvailable)"
-		  BeforeTargets="BuildDist;PrepareForILLink">
+		  DependsOnTargets="$(_UnoLinkerHintsPass1DependsOnTargets)"
+		  BeforeTargets="$(_UnoLinkerHintsPass1BeforeTargets)">
 
 		<Error Condition="'$(ILLinkTasksAssembly)'==''" Text="The property 'ILLinkTasksAssembly' wasn't set. You need to set _RequiresILLinkPack MSBuild property to true, or reference Microsoft.NET.ILLink.Tasks NuGet package with version same as your TargetFramework version." />
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
 			<_UnoLinkerHintsPass1AssembliesForReferencePaths
-					Include="@(ReferencePath)"
+					Include="@(ManagedAssemblyToLink)"
 					Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
 
