@@ -208,7 +208,7 @@ then
 			exit 0
 		fi
 
-		export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_RUNTIMETESTS_FAILED_LIST | base64 -w 0`
+		export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_RUNTIMETESTS_FAILED_LIST | base64 -b 0`
 
 		# echo the failed filter list, if not empty
 		if [ -n "$SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER" ]; then
