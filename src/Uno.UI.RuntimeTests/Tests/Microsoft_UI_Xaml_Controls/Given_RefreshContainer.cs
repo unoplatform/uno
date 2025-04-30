@@ -123,6 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
 		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
@@ -322,6 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			Assert.AreNotEqual(-1, lv.SelectedIndex);
 		}
+#endif
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 			=> UITestHelper.ScreenShot(SUT);
