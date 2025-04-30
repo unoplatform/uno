@@ -1429,8 +1429,6 @@ public partial class TextBox
 
 	private class CaretWithStemAndThumb : Grid
 	{
-		private const int DefaultZIndex = 10000; // Very high ZIndex to keep carets on top of other popups.
-
 		// This is equal to the default system accent color on Windows.
 		// This is, however, a constant color that doesn't depend on the
 		// current system accent color. Changing the accent color does NOT
@@ -1499,8 +1497,6 @@ public partial class TextBox
 				IsLightDismissEnabled = false,
 				XamlRoot = xamlRoot
 			};
-
-			Canvas.SetZIndex(_popup, DefaultZIndex);
 
 			_popup.HorizontalOffset = p.X;
 			_popup.VerticalOffset = p.Y;
