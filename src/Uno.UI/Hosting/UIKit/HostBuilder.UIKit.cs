@@ -9,7 +9,7 @@ public static class HostBuilder
 {
 	public static IUnoPlatformHostBuilder UseAppleUIKit(this IUnoPlatformHostBuilder builder)
 	{
-		builder.AddHostBuilder(() => new AppleUIKitHost());
+		builder.AddHostBuilder(() => new AppleUIKitHostBuilder());
 
 		return builder;
 	}
