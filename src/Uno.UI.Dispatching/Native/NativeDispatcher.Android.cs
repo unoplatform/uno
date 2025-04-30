@@ -66,7 +66,7 @@ namespace Uno.UI.Dispatching
 		/// Synchronous dispatching to the dispatcher when coming from the choreographer only.
 		/// Aligned with UseSynchronousDispatchRendering.
 		/// </summary>
-		internal void SynchronousDispatchRendering()
+		partial void SynchronousDispatchRenderingPartial()
 		{
 			if (IsRendering)
 			{
