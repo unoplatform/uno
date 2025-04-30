@@ -157,6 +157,10 @@ namespace Uno.UI.Dispatching
 			}
 		}
 #endif
+		internal void SynchronousDispatchRendering()
+			=> SynchronousDispatchRenderingPartial();
+
+		partial void SynchronousDispatchRenderingPartial();
 
 		internal void DispatchRendering()
 		{
