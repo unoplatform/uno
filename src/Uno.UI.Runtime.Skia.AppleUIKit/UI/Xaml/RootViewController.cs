@@ -70,9 +70,11 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer = new UIView();
 		view.AddSubview(_textInputLayer);
 
-		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
 #if !__TVOS__
+		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
 		_skCanvasView.SetOwner(this);
+#else
+		_skCanvasView = new SkiaCanvas();
 #endif
 		_skCanvasView.Frame = view.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
