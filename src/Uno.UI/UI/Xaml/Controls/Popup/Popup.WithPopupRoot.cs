@@ -91,14 +91,6 @@ public partial class Popup
 					XamlRoot = WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 				}
 #endif
-				if (this.IsDependencyPropertySet(Canvas.ZIndexProperty))
-				{
-					Canvas.SetZIndex(PopupPanel, Canvas.GetZIndex(this));
-				}
-				else
-				{
-					PopupPanel.ClearValue(Canvas.ZIndexProperty);
-				}
 
 				// It's important for PopupPanel to be visible before the popup is opened so that
 				// child controls can be IsFocusable, which depends on all ancestors (including PopupPanel)
