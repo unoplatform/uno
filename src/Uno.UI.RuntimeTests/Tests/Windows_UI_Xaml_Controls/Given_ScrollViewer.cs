@@ -20,8 +20,11 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
 using Uno.UI.Toolkit.Extensions;
+using Uno.UI.Xaml.Controls;
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
+using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
+using ScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1472,6 +1475,174 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 
 			Assert.AreNotEqual(0, sut.VerticalOffset);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollDown_Then_Chain()
+		{
+			ScrollViewer parent, child;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = false,
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = false,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5)
+					}
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 1000));
+
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollDownWithInertia_Then_DoNotChainInertia()
+		{
+			ScrollViewer parent, child;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = true,
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = true,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5)
+					}
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 300),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.IsTrue(Math.Abs(childEndOffset - child.VerticalOffset) < 1);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollDownWithInertiaOnNonScrollable_Then_ParentReceiveInertia()
+		{
+			ScrollViewer parent, child;
+			StackPanel content;
+			var sut = parent = new ScrollViewer
+			{
+				Width = 100,
+				Height = 250,
+				IsScrollInertiaEnabled = true,
+				UpdatesMode = ScrollViewerUpdatesMode.Synchronous, // Make sure to get the VerticalOffset updated immediately while dragging
+				Content = child = new ScrollViewer
+				{
+					Height = 500,
+					Width = 100,
+					IsScrollInertiaEnabled = true,
+					BorderBrush = new SolidColorBrush(Colors.Chartreuse),
+					BorderThickness = new Thickness(5),
+					Content = new Border
+					{
+						Height = 1000,
+						Width = 90,
+						Background = new SolidColorBrush(Colors.DeepPink),
+						BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+						BorderThickness = new Thickness(5),
+						Child = content = new StackPanel()
+					}
+				}
+			};
+			content.Children.AddRange(Enumerable.Range(0, 100).Select(i => new TextBlock { Text = $"#{i:D3}" }));
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0, parent.VerticalOffset);
+			Assert.AreEqual(0, child.VerticalOffset);
+			var parentEndOffset = parent.ScrollableHeight;
+			var childEndOffset = child.ScrollableHeight;
+
+			// Prevent child SV to accept scrolling
+			child.ChangeView(null, child.ScrollableHeight, null, disableAnimation: true);
+			await UITestHelper.WaitForIdle();
+
+			// Scroll down with inertia, but less than the prent scrollable height
+			finger.Press(center);
+			finger.MoveBy(0, -100, steps: 1, stepOffsetInMilliseconds: 1);
+
+			// At this point inertia not kicked-in yet
+			Assert.IsTrue(Math.Abs(100 - parent.VerticalOffset) < 1);
+
+			finger.Release();
+
+			// Wait for the inertia to run
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
 		}
 #endif
 	}
