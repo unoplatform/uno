@@ -20,9 +20,13 @@ public class MyApplicationDelegate : Uno.UI.Runtime.Skia.AppleUIKit.UnoUIApplica
 You then need to inform Uno Platform to use this custom class instead of the built-in delegate by adjusting the host creation in `Main.iOS.cs`:
 
 ```csharp
-var host = new Uno.UI.Runtime.Skia.AppleUIKit.AppleUIKitHost(() => new App());
-// Set the custom application delegate type
-host.SetUIApplicationDelegate<MyApplicationDelegate>();
+using Uno.UI.Hosting;
+
+var host = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseAppleUIKit(builder => builder.UseUIApplicationDelegate<MyApplicationDelegate>())
+	.Build();
+
 host.Run();
 ```
 
