@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Uno.WinUI.Runtime.Skia.X11;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Hosting;
 
 internal partial class X11HostBuilder : IPlatformHostBuilder
 {
@@ -30,6 +30,6 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
 		=> new X11ApplicationHost(appBuilder, _renderFrameRate);
 }
