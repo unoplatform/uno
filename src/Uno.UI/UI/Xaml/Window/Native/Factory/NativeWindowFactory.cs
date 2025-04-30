@@ -28,6 +28,11 @@ internal partial class NativeWindowFactory
 			return null;
 		}
 
+		if (windowWrapper is NativeWindowWrapperBase wrapperBase && !wrapperBase.AssociatedWithManagedWindow)
+		{
+			throw new InvalidOperationException("Window wrapper must be associated with a managed window and its XamlRoot.");
+		}
+
 		if (windowWrapper.ContentSiteView is null)
 		{
 			throw new InvalidOperationException(

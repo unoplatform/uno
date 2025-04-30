@@ -36,7 +36,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private NSObject? _orientationRegistration;
 #endif
 
-	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
+	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		Instance ??= this;
 		_nativeWindow = new();
