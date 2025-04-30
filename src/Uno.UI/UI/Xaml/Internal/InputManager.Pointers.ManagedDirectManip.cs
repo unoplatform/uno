@@ -38,7 +38,7 @@ partial class InputManager
 
 			void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta) { }
 
-			void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args) { }
+			void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled) { }
 
 			void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args) { }
 		}
@@ -288,9 +288,10 @@ partial class InputManager
 					Trace($"[DirectManipulation] [{args.Pointers[0]}] Inertia starting @={args.Position.ToDebugString()} | Δ=({args.Delta}) | v=({args.Velocities})");
 				}
 
+				var isHandled = false;
 				foreach (var handler in that.Handlers)
 				{
-					handler.OnInertiaStarting(sender, args);
+					handler.OnInertiaStarting(sender, args, ref isHandled);
 				}
 			};
 
@@ -328,7 +329,7 @@ partial class InputManager
 			}
 
 			/// <inheritdoc />
-			public void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args)
+			public void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled)
 				=> Tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
 
 			/// <inheritdoc />
