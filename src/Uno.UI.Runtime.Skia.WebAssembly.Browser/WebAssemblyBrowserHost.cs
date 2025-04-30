@@ -18,7 +18,7 @@ using Windows.Media.Playback;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-public partial class WebAssemblyBrowserHost : UnoPlatformHost, ISkiaApplicationHost, IXamlRootHost
+internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
@@ -89,6 +89,8 @@ public partial class WebAssemblyBrowserHost : UnoPlatformHost, ISkiaApplicationH
 		catch (Exception e)
 		{
 			Console.WriteLine($"App failed to initialize: {e}");
+
+			throw;
 		}
 	}
 
