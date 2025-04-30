@@ -314,14 +314,6 @@ namespace SamplesApp
 
 		private async Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
 		{
-			var dlg = new MessageDialog(
-					$"PreviousState - {args.PreviousExecutionState}, " +
-					$"Uri - {args.Uri}",
-					"Application activated via protocol");
-			if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
-			{
-				await dlg.ShowAsync();
-			}
 		}
 
 		private void ActivateMainWindow()
@@ -410,11 +402,11 @@ namespace SamplesApp
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(args))
-			{
-				var dlg = new MessageDialog(args, "Launch arguments");
-				await dlg.ShowAsync();
-			}
+			//if (!string.IsNullOrEmpty(args))
+			//{
+			//	var dlg = new MessageDialog(args, "Launch arguments");
+			//	await dlg.ShowAsync();
+			//}
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{

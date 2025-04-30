@@ -108,8 +108,8 @@ namespace Microsoft.UI.Xaml
 			var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
 			if (appInstance.GetActivatedEventArgs() is null)
 			{
-				// Default to launch activation args
-				appInstance.SetOrRaiseActivation(
+				// Set default launch activation args
+				appInstance.SetDefaultLaunchActivatedArgs(
 					AppActivationArguments.CreateLaunch(
 						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 			}
@@ -331,8 +331,13 @@ namespace Microsoft.UI.Xaml
 			WasLaunched = true;
 		}
 
-		internal void InvokeOnLaunched(LaunchActivatedEventArgs args)
+		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
 		{
+			if (args is not null)
+			{
+				Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
+			}
+			var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(activatedArgs as LaunchActivatedEventArgs);
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp)
 			{

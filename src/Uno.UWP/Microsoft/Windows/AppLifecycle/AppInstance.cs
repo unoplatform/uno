@@ -11,7 +11,8 @@ namespace Microsoft.Windows.AppLifecycle;
 public partial class AppInstance
 {
 	private static Lazy<AppInstance> _current = new(() => new AppInstance());
-
+	
+	private AppActivationArguments _defaultActivationArguments;
 	private AppActivationArguments _appActivationArguments;
 
 	internal AppInstance()
@@ -37,7 +38,7 @@ public partial class AppInstance
 	/// Retrieves the event arguments for an app activation that was registered by using one of the static methods of the ActivationRegistrationManager class.
 	/// </summary>
 	/// <returns>An object that contains the activation type and the data payload, or null.</returns>
-	public AppActivationArguments GetActivatedEventArgs() => _appActivationArguments;
+	public AppActivationArguments GetActivatedEventArgs() => _appActivationArguments ?? _defaultActivationArguments ?? throw new InvalidOperationException("No activation arguments were set.");
 
 	/// <summary>
 	/// Retrieves the current running instance of the app.
@@ -67,5 +68,10 @@ public partial class AppInstance
 		{
 			Activated?.Invoke(this, args ?? throw new ArgumentNullException(nameof(args)));
 		}
+	}
+
+	internal void SetDefaultActivationArguments(AppActivationArguments args)
+	{
+		_defaultActivationArguments = args ?? throw new ArgumentNullException(nameof(args));
 	}
 }

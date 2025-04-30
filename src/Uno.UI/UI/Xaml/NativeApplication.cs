@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml
 				// default to normal launch
 				if (!handled && !_isRunning)
 				{
-					_app.OnLaunched(new LaunchActivatedEventArgs());
+					_app.InvokeOnLaunched(new LaunchActivatedEventArgs());
 				}
 #endif
 
@@ -119,9 +119,7 @@ namespace Microsoft.UI.Xaml
 
 					var jumplistKey = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
 					var launchArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, jumplistKey);
-					var appActivationArguments = AppActivationArguments.CreateLaunch(new(ActivationKind.Launch, jumplistKey));
-					_app.OnLaunched(launchArgs);
-					AppInstance.GetCurrent().RaiseActivatedEvent(appActivationArguments);
+					_app.InvokeOnLaunched(launchArgs);
 
 					handled = true;
 				}
@@ -135,17 +133,7 @@ namespace Microsoft.UI.Xaml
 						}
 
 						var protocolArgs = new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning);
-						_app.OnActivated(protocolArgs);
-
-						var args = AppActivationArguments.CreateProtocol(protocolArgs);
-						if (_isRunning)
-						{
-							AppInstance.GetCurrent().RaiseActivatedEvent(args);
-						}
-						else
-						{
-							AppInstance.GetCurrent().SetActivatedEventArgs(args);
-						}
+						_app.InvokeOnActivated(protocolArgs);
 
 						handled = true;
 					}
