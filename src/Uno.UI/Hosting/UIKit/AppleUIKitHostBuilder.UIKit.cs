@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting.UIKit;
 
 namespace Uno.UI.Hosting;
 
