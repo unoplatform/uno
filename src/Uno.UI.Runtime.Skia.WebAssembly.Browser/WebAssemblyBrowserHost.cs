@@ -2,19 +2,19 @@ using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using Uno.UI.Hosting;
-using Windows.Graphics.Display;
-using Windows.Media.Playback;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Uno.Media.Playback;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
-using Microsoft.Web.WebView2.Core;
-using Uno.UI.NativeElementHosting;
+using Windows.Graphics.Display;
+using Windows.Media.Playback;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -52,6 +52,13 @@ public partial class WebAssemblyBrowserHost : UnoPlatformHost, ISkiaApplicationH
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 
+		NativeMethods.PersistBootstrapperLoader();
+
+		_renderer = new BrowserRenderer(this);
+	}
+
+	protected async override Task RunLoop()
+	{
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			BrowserHtmlElement.Initialize();
@@ -73,11 +80,16 @@ public partial class WebAssemblyBrowserHost : UnoPlatformHost, ISkiaApplicationH
 			DisplayInformation.GetForCurrentView();
 		}
 
-		NativeMethods.PersistBootstrapperLoader();
+		try
+		{
+			Application.Start(CreateApp);
 
-		_renderer = new BrowserRenderer(this);
-
-		Application.Start(CreateApp);
+			await Task.Delay(-1);
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"App failed to initialize: {e}");
+		}
 	}
 
 	void IXamlRootHost.InvalidateRender()
