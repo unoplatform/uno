@@ -88,6 +88,9 @@ internal static class SecondaryApplicationLauncher
 			throw new ArgumentNullException(nameof(app));
 		}
 
-		app.InvokeOnLaunched(CreateDefaultLaunchActivatedEventArgs());
+		// A null activation means "plain launch": InvokeOnLaunched then builds the same default
+		// LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs() describes, without
+		// pushing a bogus activation onto the process-wide AppInstance.
+		app.InvokeOnLaunched(null);
 	}
 }
