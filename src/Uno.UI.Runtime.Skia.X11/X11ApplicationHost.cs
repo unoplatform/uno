@@ -96,7 +96,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
-		CompositionTargetTimer.Start();
+		// Not set because we're always rendering
+		// CompositionTargetTimer.Start();
 	}
 
 	internal static int RenderFrameRate { get; private set; }
