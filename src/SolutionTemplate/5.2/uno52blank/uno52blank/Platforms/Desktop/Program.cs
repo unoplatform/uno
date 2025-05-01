@@ -1,4 +1,4 @@
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Hosting;
 
 namespace uno52blank;
 
@@ -9,7 +9,7 @@ public class Program
     {
         App.InitializeLogging();
 
-        var host = SkiaHostBuilder.Create()
+        var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseX11()
             .UseLinuxFrameBuffer()
