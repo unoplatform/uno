@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Private.Controls;
+﻿using System.Linq;
+using Microsoft.UI.Private.Controls;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -250,7 +251,7 @@ public partial class RefreshContainer : ContentControl, IRefreshContainerPrivate
 	{
 		if (m_root != null)
 		{
-			IRefreshInfoProvider firstChildAsInfoProvider = m_root.Children[0] as IRefreshInfoProvider;
+			IRefreshInfoProvider firstChildAsInfoProvider = m_root.Children.FirstOrDefault() as IRefreshInfoProvider;
 			if (firstChildAsInfoProvider != null)
 			{
 				((IRefreshVisualizerPrivate)m_refreshVisualizer).InfoProvider = firstChildAsInfoProvider;
