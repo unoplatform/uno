@@ -35,7 +35,7 @@ host.Run();
 
 ## Native rendering
 
-You `App` class already derives from `UIApplicationDelegate`. This means you can directly override the UIKit methods this class provides:
+Your `App` class already derives from `UIApplicationDelegate`. This means you can directly override the UIKit methods this class provides:
 
 ```csharp
 public App : Application

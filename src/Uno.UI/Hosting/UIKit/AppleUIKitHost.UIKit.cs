@@ -14,7 +14,7 @@ internal class AppleUIKitHost : UnoPlatformHost
 	private readonly Type _appType;
 
 	/// <summary>
-	/// Creates a host for an Uno Skia Android application.
+	/// Creates a host for an Uno Skia Apple UIKit application.
 	/// </summary>
 	/// <param name="appBuilder">App builder.</param>
 	/// <remarks>
