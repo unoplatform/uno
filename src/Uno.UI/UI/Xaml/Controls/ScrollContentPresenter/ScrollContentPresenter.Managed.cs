@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				sv.PointerWheelChanged -= PointerWheelScroll;
-				sv.RemoveHandler(PointerPressedEvent, handler);
+				RemoveHandler(PointerPressedEvent, handler);
 			});
 		}
 
