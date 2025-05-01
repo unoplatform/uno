@@ -21,4 +21,6 @@ internal partial class CompositionTargetTimer
 		throw new PlatformNotSupportedException();
 #endif
 	}
+
+	internal static bool IsRunning { get; set; }
 }

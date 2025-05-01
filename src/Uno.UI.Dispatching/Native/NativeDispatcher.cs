@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// #define REPORT_FPS
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -43,13 +45,6 @@ namespace Uno.UI.Dispatching
 		private static bool? _hasThreadAccess;
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
-		/// <summary>
-		/// This is used by dependents of the Rendering event to determine if
-		/// `SynchronousDispatchRendering` will be used. This is essentially a
-		/// special case for WebAssembly which is single-threaded.
-		/// </summary>
-		internal bool UseSynchronousDispatchRendering { get; private set; }
 
 		private NativeDispatcher()
 		{
@@ -158,11 +153,30 @@ namespace Uno.UI.Dispatching
 		}
 #endif
 
+#if REPORT_FPS
+		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
+#endif
+
 		internal void DispatchRendering()
 		{
 			if (IsRendering)
 			{
-				WakeUp();
+#if REPORT_FPS
+				_dispatchRenderingLogger.ReportFrame();
+#endif
+				Enqueue(() =>
+				{
+					RaiseRendered();
+				});
+			}
+		}
+
+		private void RaiseRendered()
+		{
+			if (Rendering != null)
+			{
+				// If we raised the Rendering event we can render composition tree.
+				Rendered?.Invoke();
 			}
 		}
 
@@ -467,7 +481,14 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal static NativeDispatcher Main { get; } = new NativeDispatcher();
 
+		// Dispatching for the CompositionTarget.Rendering event
 		internal event EventHandler<object>? Rendering;
+
+#pragma warning disable CS0067
+		// Dispatching for the compositor to actually render the frame only called
+		// when there are subscribers to Rendering
+		internal event Action? Rendered;
+#pragma warning restore CS0067
 
 		internal Func<TimeSpan, object>? RenderingEventArgsGenerator { get; set; }
 

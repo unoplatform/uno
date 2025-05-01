@@ -25,7 +25,9 @@ public partial class CompositionTarget
 
 			if (!currentlyRaisingEvents)
 			{
-				NativeDispatcher.Main.WakeUp();
+				// Queue the first render, so that the native surfaces
+				// timers can pick up the subsquent renders.
+				NativeDispatcher.Main.DispatchRendering();
 			}
 		}
 		remove
