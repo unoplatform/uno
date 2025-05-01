@@ -18,6 +18,7 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Dispatching;
+using Uno.UI.Dispatching;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -547,7 +548,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			QueueAction(this, () => _renderer?.Render());
+			// We need to be on the dispatcher to render the UI
+			// Requeue to request a full update (including possible
+			// window size changes)
+			NativeDispatcher.Main.DispatchRendering();
 		}
 	}
 
