@@ -56,6 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
 		private Range _selection;
+		private Range _selectionOnPointerPressed;
 
 		// end can be less than or equal to start when the selection starts ahead and then goes back
 		// see the selection in TextBox.skia.cs for more info
@@ -905,6 +906,14 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
+		// For pen and touch selection, we need to:
+		// * Start selection using a long-press and/or double-tap (platform specific)
+		// * Add visual anchor (platform specific) to edit selection (pointer pressed out of those anchors only scroll, tap would unselect)
+		// * Prevent scrolling to kick-in when editing selection (i.e. disable the DirectManipulation)
+		// * Automatic scroll (platform specific) when pointer is close to the edge of the parent ScrollViewer
+		// * Show a magnifier when finger can hide the text being (un)selected (platform specific)
+		private static bool SupportsSelection(PointerRoutedEventArgs args)
+			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
 
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
@@ -934,7 +943,7 @@ namespace Microsoft.UI.Xaml.Controls
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
 #if !__WASM__
-			else if (that.IsTextSelectionEnabled)
+			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
 
@@ -943,6 +952,7 @@ namespace Microsoft.UI.Xaml.Controls
 #else // TODO: add an option to get the closest char to point
 				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
+				that._selectionOnPointerPressed = that.Selection;
 				if (index >= 0) // should always be true if above TODO is addressed
 				{
 					that.Selection = new Range(index, index);
@@ -1005,6 +1015,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is TextBlock that)
 			{
+#if !__WASM__
+				that._isPressed = false;
+				if (SupportsSelection(e))
+				{
+					that.Selection = that._selectionOnPointerPressed;
+				}
+#endif
+
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
 		};
@@ -1025,7 +1043,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if !__WASM__
-			if (that._isPressed && that.IsTextSelectionEnabled)
+			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
 #if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char

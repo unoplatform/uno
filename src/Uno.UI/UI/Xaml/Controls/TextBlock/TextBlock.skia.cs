@@ -39,6 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
+			Tapped += (s, e) => ((TextBlock)s).OnTapped(e);
 			DoubleTapped += (s, e) => ((TextBlock)s).OnDoubleTapped(e);
 			RightTapped += (s, e) => ((TextBlock)s).OnRightTapped(e);
 			KeyDown += (s, e) => ((TextBlock)s).OnKeyDown(e);
@@ -222,6 +223,14 @@ namespace Microsoft.UI.Xaml.Controls
 					SelectAll();
 					args.Handled = true;
 					break;
+			}
+		}
+
+		private void OnTapped(TappedRoutedEventArgs _)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				Selection = default;
 			}
 		}
 
