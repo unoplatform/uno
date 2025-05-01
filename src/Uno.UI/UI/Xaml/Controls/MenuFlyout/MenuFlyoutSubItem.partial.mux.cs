@@ -577,7 +577,7 @@ public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new MenuFlyoutSubItemAutomationPeer(this);
 
-	private protected override string GetPlainText() => Text;
+	internal override string GetPlainText() => Text;
 
 	bool ISubMenuOwner.IsSubMenuOpen => IsOpen;
 
