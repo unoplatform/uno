@@ -1,4 +1,8 @@
-﻿using Uno.UI.Runtime.Skia.AppleUIKit;
+﻿using Uno.UI.Hosting;
 
-var host = new AppleUIKitHost(() => new SamplesApp.App());
+var host = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseAppleUIKit()
+	.Build();
+
 host.Run();

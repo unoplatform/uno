@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
 
 namespace Uno.UI.Runtime.Skia;
@@ -12,6 +13,6 @@ internal class FramebufferHostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsLinux();
 
-	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
+	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
 		=> new FrameBufferHost(appBuilder);
 }

@@ -1,21 +1,17 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using UIKit;
-using Uno.Foundation.Extensibility;
-using Uno.UI.Hosting;
-using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.WinUI.Runtime.Skia.AppleUIKit;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
-using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
-using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
-public class AppleUIKitHost : ISkiaApplicationHost
+internal class AppleUIKitHost : SkiaHost, ISkiaApplicationHost
 {
+	private readonly Func<Application> _appBuilder;
+	private readonly Type? _uiApplicationDelegateOverride;
+
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
 	/// </summary>
@@ -23,28 +19,37 @@ public class AppleUIKitHost : ISkiaApplicationHost
 	/// <remarks>
 	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 	/// </remarks>
-	public AppleUIKitHost(Func<Application> appBuilder)
+	public AppleUIKitHost(Func<Application> appBuilder, Type? uiApplicationDelegateOverride)
 	{
-		CreateAppAction = (ApplicationInitializationCallbackParams _) =>
-		{
-			var app = appBuilder.Invoke();
-			app.Host = this;
-		};
+		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
+		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
 
-	public void Run()
+	protected override void Initialize() => ExtensionsRegistrar.Register();
+
+	protected override Task RunLoop()
 	{
 		try
 		{
-			ExtensionsRegistrar.Register();
+			CreateAppAction = (ApplicationInitializationCallbackParams _) =>
+			{
+				var app = _appBuilder.Invoke();
+				app.Host = this;
+			};
 
-			UIApplication.Main(Environment.GetCommandLineArgs(), null, typeof(UnoSkiaAppDelegate));
+			var delegateType = _uiApplicationDelegateOverride ?? typeof(UnoUIApplicationDelegate);
+
+			UIApplication.Main(Environment.GetCommandLineArgs(), null, delegateType);
+
+			return Task.CompletedTask;
 		}
 		catch (Exception e)
 		{
 			Console.WriteLine($"App failed to initialize: {e}");
+
+			throw;
 		}
 	}
 }

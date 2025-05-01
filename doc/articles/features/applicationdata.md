@@ -92,6 +92,6 @@ The default paths above can be overridden using the following feature flags:
 - `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
 - `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCaheFolder`, `LocalSettings` and `RoamingSettings`
 
-These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `SkiaHostBuilder` instance is created.
+These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `UnoPlatformHostBuilder` instance is created.
 
 If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.

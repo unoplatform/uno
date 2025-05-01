@@ -1,8 +1,8 @@
-﻿namespace Uno.UI.Runtime.Skia;
+﻿namespace Uno.UI.Hosting;
 
 public static class HostBuilderExtensions
 {
-	public static ISkiaHostBuilder UseWin32(this ISkiaHostBuilder builder)
+	public static IUnoPlatformHostBuilder UseWin32(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new Win32HostBuilder());
 		return builder;

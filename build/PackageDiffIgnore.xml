@@ -2017,6 +2017,13 @@
 			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 			<Member fullName="Uno.UI.GooglePlay.GlobalStaticResources" reason="Should not be generated" />
 			<Member fullName="Uno.UI.Foldable.netcoremobile.GlobalStaticResources" reason="Should not be generated" />
+			
+			<Member fullName="Uno.UI.Runtime.Skia.HostBuilder" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.ISkiaHostBuilder" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.SkiaHostBuilder" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.SkiaHostBuilderExtensions" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.X11NativeWindow" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.IWindowsSkiaHostBuilder" reason="moved to uno.ui" />
 		</Types>
 
 		<Events>
@@ -2055,6 +2062,11 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
 			
 			<Member fullName="System.Void Windows.UI.ViewManagement.InputPane..ctor()" reason="Not in WinUI" />
+
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunAsync()" reason="Removed" />
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Initialize()" reason="Removed" />
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Run()" reason="Namespace changed" />
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunLoop()" reason="Namespace changed" />
 		</Methods>
 	</IgnoreSet>
 
