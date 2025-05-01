@@ -77,7 +77,17 @@ public static class UITestHelper
 		[CallerLineNumber] int lineNumber = 0
 	) => TestServices.WindowHelper.WaitFor(condition, timeoutMS, message, callerMemberName, lineNumber);
 
-	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();
+	public static async Task WaitForIdle(bool waitForCompositionAnimations = false)
+	{
+#if __SKIA__
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+		} while (waitForCompositionAnimations && (TestServices.WindowHelper.WindowContent?.Visual?.Compositor?.IsAnimating ?? false));
+#else
+		await TestServices.WindowHelper.WaitForIdle();
+#endif
+	}
 
 	/// <summary>
 	/// Takes a screen-shot of the given element.
@@ -444,11 +454,11 @@ public partial class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps)
+	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		if (_currentPosition is { } current)
 		{
-			MoveTo(current.Offset(deltaX, deltaY), steps);
+			MoveTo(current.Offset(deltaX, deltaY), steps, stepOffsetInMilliseconds);
 		}
 	}
 
