@@ -979,15 +979,18 @@ public partial class TextBox
 
 	private void TimerOnTick(object sender, object e)
 	{
-		if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+		if (IsLoaded && IsFocused)
 		{
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			}
+			UpdateDisplaySelection();
 		}
-		else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
-		{
-			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-		}
-		UpdateDisplaySelection();
 	}
 
 	/// <summary>
