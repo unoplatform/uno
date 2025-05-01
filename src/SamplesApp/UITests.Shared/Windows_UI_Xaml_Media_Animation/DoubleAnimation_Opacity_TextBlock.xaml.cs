@@ -12,6 +12,8 @@ namespace GenericApp.Views.Content.UITests.Animations
 	[SampleControlInfo("Animations", "DoubleAnimation_Opacity_TextBlock")]
 	public sealed partial class DoubleAnimation_Opacity_TextBlock : UserControl
 	{
+		private Storyboard _storyboard;
+
 		public DoubleAnimation_Opacity_TextBlock()
 		{
 			this.InitializeComponent();
@@ -24,8 +26,13 @@ namespace GenericApp.Views.Content.UITests.Animations
 				&& res is Storyboard storyboard)
 			{
 				Storyboard.SetTarget(storyboard, elt);
-				storyboard.Begin();
+				_storyboard = storyboard;
+				_storyboard.Begin();
 			}
+		}
+		private void EndAnimation(object sender, RoutedEventArgs e)
+		{
+			_storyboard?.Stop();
 		}
 	}
 }
