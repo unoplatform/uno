@@ -595,7 +595,7 @@ partial class MenuFlyoutPresenter
 		}
 	}
 
-	private protected override string GetPlainText()
+	internal override string GetPlainText()
 	{
 		string automationName = null;
 
