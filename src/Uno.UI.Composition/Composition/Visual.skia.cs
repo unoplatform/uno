@@ -370,7 +370,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._picture = _recorder.EndRecording();
 				}
 
-				session.Canvas.DrawPicture(visual._picture);
+				if (visual._picture is not null)
+				{
+					session.Canvas.DrawPicture(visual._picture);
+				}
 			}
 #if DEBUG
 			Debug.Assert(saveCount == session.Canvas.SaveCount);
