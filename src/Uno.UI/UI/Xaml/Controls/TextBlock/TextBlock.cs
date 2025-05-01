@@ -906,6 +906,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
+		// https://github.com/unoplatform/uno-private/issues/1238
 		// For pen and touch selection, we need to:
 		// * Start selection using a long-press and/or double-tap (platform specific)
 		// * Add visual anchor (platform specific) to edit selection (pointer pressed out of those anchors only scroll, tap would unselect)
