@@ -7,4 +7,5 @@ namespace Uno.UI.Runtime.Skia;
 /// </summary>
 public class SkiaHostBuilder : UnoPlatformHostBuilder
 {
+	internal SkiaHostBuilder() { }
 }
