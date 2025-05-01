@@ -70,8 +70,6 @@ public partial class AppInstance
 		}
 	}
 
-	internal void SetDefaultActivationArguments(AppActivationArguments args)
-	{
-		_defaultActivationArguments = args ?? throw new ArgumentNullException(nameof(args));
-	}
+	internal void SetDefaultLaunchActivatedArgs(AppActivationArguments appActivationArguments) =>
+		_defaultActivationArguments = appActivationArguments ?? throw new ArgumentNullException(nameof(appActivationArguments));
 }
