@@ -9,7 +9,7 @@ public class EntryPoint
     public static void Main(string[] args)
     {
         var host = UnoPlatformHostBuilder.Create()
-            .App(() => new SamplesApp.App())
+            .App(() => new App())
             .UseAppleUIKit()
             .Build(); 
         
