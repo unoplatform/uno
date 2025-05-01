@@ -21,21 +21,7 @@ namespace Uno.UI.Dispatching
 		private void NativeDispatchItems()
 		{
 			_queued = false;
-
 			DispatchItems();
-
-			if (IsRendering)
-			{
-				// As we're in continuous rendering mode, we need to re-enqueue
-				// the rendering as long as we render on the ui thread.
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Dispatch next rendering");
-				}
-
-				EnqueueNative(NativeDispatcherPriority.Normal);
-			}
 		}
 
 		private bool GetHasThreadAccess() => NSThread.IsMain;

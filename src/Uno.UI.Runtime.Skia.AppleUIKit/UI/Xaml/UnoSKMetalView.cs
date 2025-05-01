@@ -1,5 +1,6 @@
 ﻿#if !__TVOS__
 using System;
+using System.Diagnostics;
 using System.Threading;
 using CoreAnimation;
 using CoreGraphics;
@@ -21,15 +22,21 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 	{
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
+		private readonly Action _onFrameDrawn;
 
 		private RootViewController? _owner;
 		private SKPicture? _picture;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
 
-		public UnoSKMetalView()
+		/// <summary>
+		/// Creates a new instance of <see cref="UnoSKMetalView"/>.
+		/// </summary>
+		/// <param name="onFrameDrawn">A delegate that will be called on a separate thread once per frame draw.</param>
+		public UnoSKMetalView(Action onFrameDrawn)
 			: base(CGRect.Empty, null)
 		{
+			_onFrameDrawn = onFrameDrawn;
 			_link = CADisplayLink.Create(() => this.Draw());
 			var device = MTLDevice.SystemDefault;
 
@@ -134,8 +141,18 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			}
 		}
 
+#if REPORT_FPS
+		static FrameRateLogger _drawFpsLogger = new FrameRateLogger(typeof(UnoSKMetalView), "Draw");
+#endif
+
 		void IMTKViewDelegate.Draw(MTKView view)
 		{
+			_onFrameDrawn();
+
+#if REPORT_FPS
+			_drawFpsLogger.ReportFrame();
+#endif
+
 			var currentPicture = Volatile.Read(ref _picture);
 
 			var size = DrawableSize;

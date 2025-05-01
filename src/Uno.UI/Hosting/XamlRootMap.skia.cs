@@ -37,7 +37,7 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		_reverseMap[host] = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
-		xamlRoot.InvalidateRender += host.InvalidateRender;
+		xamlRoot.RenderInvalidated += host.InvalidateRender;
 		Registered?.Invoke(this, xamlRoot);
 	}
 
@@ -51,7 +51,7 @@ internal class XamlRootMap<THost> where THost : IXamlRootHost
 		var host = GetHostForRoot(xamlRoot);
 		if (host is not null)
 		{
-			xamlRoot.InvalidateRender -= host.InvalidateRender;
+			xamlRoot.RenderInvalidated -= host.InvalidateRender;
 			_map.Remove(xamlRoot);
 			_reverseMap.Remove(host);
 			Unregistered?.Invoke(this, xamlRoot);

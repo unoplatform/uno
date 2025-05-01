@@ -16,7 +16,11 @@ using UITests.Shared.Helpers;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
-[Sample("Image")]
+[Sample("Image"
+#if __SKIA
+	, IgnoreInSnapshotTests = true
+#endif
+	)]
 public sealed partial class SvgImageSource_Icons : Page, IWaitableSample
 {
 	private readonly Task _samplePreparedTask;

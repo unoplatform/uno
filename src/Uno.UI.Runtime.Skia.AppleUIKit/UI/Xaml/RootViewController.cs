@@ -14,6 +14,7 @@ using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
+using Uno.UI.Dispatching;
 
 #if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
@@ -69,9 +70,11 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer = new UIView();
 		view.AddSubview(_textInputLayer);
 
-		_skCanvasView = new SkiaCanvas();
 #if !__TVOS__
+		_skCanvasView = new SkiaCanvas(OnFrameDrawn);
 		_skCanvasView.SetOwner(this);
+#else
+		_skCanvasView = new SkiaCanvas();
 #endif
 		_skCanvasView.Frame = view.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
@@ -138,6 +141,23 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			}
 		}
 	}
+
+#if !__TVOS__
+	private void OnFrameDrawn()
+	{
+		// On each frame, while we're using continuous rendering,
+		// we need to dispatch a processing of events on the DispatcherQueue
+		// Then force a render of the composition tree, assuming that the tree
+		// has changed. We explicitly hooking into the rendering loop to keep
+		// the pace with the screen refresh rate.
+		if (NativeDispatcher.Main.IsRendering)
+		{
+			// Enqueue on the dispatcher to process current events, then render
+			// the current composition tree.
+			NativeDispatcher.Main.DispatchRendering();
+		}
+	}
+#endif
 
 	private void UpdateNativeClipping(SKPath path)
 	{
