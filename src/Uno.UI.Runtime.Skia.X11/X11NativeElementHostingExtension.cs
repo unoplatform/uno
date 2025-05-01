@@ -51,7 +51,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			HideWindowFromTaskBar(nativeWindow);
 
-			xamlRoot.InvalidateRender += UpdateLayout;
+			xamlRoot.RenderInvalidated += UpdateLayout;
 			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
 		}
 		else
@@ -132,7 +132,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_lastClipRect = null;
 			_lastArrangeRect = null;
 
-			xamlRoot.InvalidateRender -= UpdateLayout;
+			xamlRoot.RenderInvalidated -= UpdateLayout;
 		}
 		else
 		{

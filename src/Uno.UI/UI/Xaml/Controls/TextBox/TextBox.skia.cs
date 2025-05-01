@@ -979,15 +979,18 @@ public partial class TextBox
 
 	private void TimerOnTick(object sender, object e)
 	{
-		if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+		if (IsLoaded && IsFocused)
 		{
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			}
+			UpdateDisplaySelection();
 		}
-		else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
-		{
-			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-		}
-		UpdateDisplaySelection();
 	}
 
 	/// <summary>
@@ -1514,7 +1517,7 @@ public partial class TextBox
 				// We don't have an event that fires when we actually render,
 				// so we have to settle for this somewhat-inaccurate approximation
 				// of dispatching an update call whenever InvalidateRender fires.
-				xamlRoot.InvalidateRender += OnInvalidateRender;
+				xamlRoot.RenderInvalidated += OnInvalidateRender;
 			}
 		}
 
@@ -1533,7 +1536,7 @@ public partial class TextBox
 		{
 			if (XamlRoot is { })
 			{
-				XamlRoot.InvalidateRender -= OnInvalidateRender;
+				XamlRoot.RenderInvalidated -= OnInvalidateRender;
 			}
 			if (_popup is not null)
 			{
