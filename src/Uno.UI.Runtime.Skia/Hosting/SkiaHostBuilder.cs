@@ -1,3 +1,5 @@
+using Uno.UI.Hosting;
+
 namespace Uno.UI.Runtime.Skia;
 
 /// <summary>
