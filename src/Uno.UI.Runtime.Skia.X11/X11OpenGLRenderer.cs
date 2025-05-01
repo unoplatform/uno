@@ -61,6 +61,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				return;
 			}
 
+			if (glXInfo.context == IntPtr.Zero)
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"No context available, skipping render");
+				}
+
+				return;
+			}
+
 			if (!GlxInterface.glXMakeCurrent(display, window, glXInfo.context))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))

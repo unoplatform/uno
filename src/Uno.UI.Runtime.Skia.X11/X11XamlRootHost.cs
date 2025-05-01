@@ -17,6 +17,7 @@ using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Dispatching;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -84,10 +85,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-	private readonly DispatcherTimer _renderTimer = new DispatcherTimer();
-	private long _lastRenderTime;
-	private int _renderScheduled;
-
 	private readonly DispatcherTimer _configureTimer = new DispatcherTimer();
 	private long _lastConfigureTime;
 	private int _configureScheduled;
@@ -107,13 +104,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
-
-		_renderTimer.Tick += (_, _) =>
-		{
-			_renderTimer.Stop();
-			_renderScheduled = 0;
-			_renderer?.Render();
-		};
 
 		_configureTimer.Tick += (_, _) =>
 		{
@@ -551,24 +541,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	// with XConfigureEvents.
 	void IXamlRootHost.InvalidateRender()
 	{
-		if (Interlocked.Exchange(ref _renderScheduled, 1) == 0)
+		if (DispatcherQueue.Main.HasThreadAccess)
 		{
-			// Don't use ticks, which seem to mess things up for some reason
-			var now = _stopwatch.ElapsedMilliseconds;
-			var delta = now - Interlocked.Exchange(ref _lastRenderTime, now);
-			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
-			{
-				QueueAction(this, () =>
-				{
-					_renderScheduled = 0;
-					_renderer?.Render();
-				});
-			}
-			else
-			{
-				_renderTimer.Interval = TimeSpan.FromTicks(delta);
-				_renderTimer.Start();
-			}
+			_renderer?.Render();
+		}
+		else
+		{
+			QueueAction(this, () => _renderer?.Render());
 		}
 	}
 
