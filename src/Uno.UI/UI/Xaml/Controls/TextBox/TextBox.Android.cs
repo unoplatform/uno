@@ -27,6 +27,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Android.Widget.TextView;
 using Math = System.Math;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -118,7 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ImeOptionsProperty { get; } =
-			DependencyProperty.Register("ImeOptions",
+			DependencyProperty.Register(
+				nameof(ImeOptions),
 				typeof(ImeAction),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
@@ -142,6 +144,9 @@ namespace Microsoft.UI.Xaml.Controls
 				_textBoxView.ImeOptions = imeAction;
 			}
 		}
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			OnImeOptionsChanged(inputReturnType.ToImeAction());
 
 		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{

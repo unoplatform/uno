@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -192,39 +193,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetInputScope(InputScope scope)
-		{
-			// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode
-			// Allowed html values: none, text (default value), decimal, numeric, tel, search, email, url.
-			var scopeNameValue = scope.GetFirstInputScopeNameValue();
-			var inputmodeValue = scopeNameValue switch
-			{
-				InputScopeNameValue.CurrencyAmount => "decimal",
-				InputScopeNameValue.CurrencyAmountAndSymbol => "decimal",
+		internal void SetInputScope(InputScope scope) =>
+			SetAttribute("inputmode", scope.ToInputModeValue());
 
-				InputScopeNameValue.NumericPin => "numeric",
-				InputScopeNameValue.Digits => "numeric",
-				InputScopeNameValue.Number => "numeric",
-				InputScopeNameValue.NumberFullWidth => "numeric",
-				InputScopeNameValue.DateDayNumber => "numeric",
-				InputScopeNameValue.DateMonthNumber => "numeric",
-
-				InputScopeNameValue.TelephoneNumber => "tel",
-				InputScopeNameValue.TelephoneLocalNumber => "tel",
-
-				InputScopeNameValue.Search => "search",
-				InputScopeNameValue.SearchIncremental => "search",
-
-				InputScopeNameValue.EmailNameOrAddress => "email",
-				InputScopeNameValue.EmailSmtpAddress => "email",
-
-				InputScopeNameValue.Url => "url",
-
-				_ => "text"
-			};
-
-			SetAttribute("inputmode", inputmodeValue);
-		}
+		internal void SetInputReturnType(InputReturnType inputReturnType) =>
+			SetAttribute("enterkeyhint", inputReturnType.ToEnterKeyHintValue());
 
 		public int SelectionStart
 		{
