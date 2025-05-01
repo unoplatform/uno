@@ -13,7 +13,7 @@ The currently supported targets and platforms are:
 - Windows (Using a WPF shell)
 - [macOS (Using an AppKit shell)](xref:Uno.Skia.macOS)
 
-The set of supported platforms can be defined by using the `SkiaHostBuilder`, introduced in Uno Platform 5.2 and the [Single Project support](xref:Uno.Development.MigratingToSingleProject).
+The set of supported platforms can be defined by using the `UnoPlatformHostBuilder`, introduced in Uno Platform 5.2 and the [Single Project support](xref:Uno.Development.MigratingToSingleProject).
 
 ## Get started with the Skia Desktop head
 
@@ -22,7 +22,7 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [V
 Once created, in the `Platforms/Desktop/Program.cs` file, you'll find the following builder:
 
 ```csharp
-var host = SkiaHostBuilder.Create()
+var host = UnoPlatformHostBuilder.Create()
    .App(() => new App())
    .UseX11()
    .UseLinuxFrameBuffer()
