@@ -378,6 +378,7 @@
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Other="$(PackageNamePrefix).Skia.Linux.FrameBuffer.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Wpf" Other="$(PackageNamePrefix).Skia.Wpf.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Wpf" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost" Other="$(PackageNamePrefix).XamlHost.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost.Skia.Wpf" Other="$(PackageNamePrefix).XamlHost.Skia.Wpf.$(NBGV_SemVer2).nupkg" />
@@ -393,6 +394,8 @@
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Win32" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Win32.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.X11" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.X11.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Android" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.X11.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.AppleUIKit" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.X11.$(NBGV_SemVer2).nupkg" />
 			-->
 		</ItemGroup>
 

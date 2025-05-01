@@ -1,4 +1,4 @@
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Hosting;
 
 namespace uno56net9win32;
 
@@ -9,7 +9,7 @@ public class Program
     {
         App.InitializeLogging();
 
-        var host = SkiaHostBuilder.Create()
+        var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
             .UseWin32()
             .UseX11()
