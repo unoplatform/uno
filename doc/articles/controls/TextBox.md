@@ -85,3 +85,22 @@ Or in XAML:
 > Follow [Platform-specific XAML guide](xref:Uno.Development.PlatformSpecificXaml) to add the `wasm` namespace.
 
 The value only affects WebAssembly, all other targets capture by default.
+
+## Customizing the Enter key appearance
+
+On mobile targets you can customize the visual appearance of the Enter key on the virtual keyboard. This can be done using the `TextBoxExtensions.InputReturnType` attached property:
+
+```csharp
+Uno.UI.Xaml.Controls.TextBoxExtensions.SetInputReturnType(myTextBox, Uno.UI.Xaml.Controls.InputReturnType.Search);
+```
+
+These are the supported input return type values:
+
+- **Enter**: Typically indicating inserting a new line.
+- **Done**: There is nothing more to input, and the input method editor (IME) will be closed.
+- **Go**: Typically meaning to take the user to the target of the text they typed.
+- **Next**: Typically taking the user to the next field that will accept text.
+- **Previous**: Typically taking the user to the previous field that will accept text.
+- **Search**: Typically taking the user to the results of searching for the text they have typed.
+- **Send**: Typically delivering the text to its target.
+- **Default**: System default.

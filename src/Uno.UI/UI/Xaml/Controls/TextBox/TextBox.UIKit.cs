@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
 using Foundation;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -302,7 +303,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ReturnKeyTypeProperty { get; } =
 			DependencyProperty.Register(
-				"ReturnKeyType",
+				nameof(ReturnKeyType),
 				typeof(UIReturnKeyType),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
@@ -320,13 +321,18 @@ namespace Microsoft.UI.Xaml.Controls
 				: baseValue;
 		}
 
-		private void OnReturnKeyTypeChanged(UIReturnKeyType newValue)
+		private void OnReturnKeyTypeChanged(UIReturnKeyType newValue) => SetUIReturnKeyType(newValue);
+
+		internal void SetUIReturnKeyType(UIReturnKeyType returnKeyType)
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.ReturnKeyType = newValue;
+				_textBoxView.ReturnKeyType = returnKeyType;
 			}
 		}
+
+		partial void SetInputReturnTypePlatform(InputReturnType inputReturnType) =>
+			SetUIReturnKeyType(inputReturnType.ToUIReturnKeyType());
 
 		#endregion
 

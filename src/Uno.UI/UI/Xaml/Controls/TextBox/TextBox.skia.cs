@@ -21,6 +21,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 using System.Diagnostics;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
@@ -203,6 +204,11 @@ public partial class TextBox
 			// locally-set values and/or changes in the template.
 			sv.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
 		}
+	}
+
+	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
+	{
+		TextBoxView?.UpdateProperties();
 	}
 
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
