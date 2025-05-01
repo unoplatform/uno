@@ -127,7 +127,7 @@ internal static class Win32Helper
 			_oldDc = PInvoke.wglGetCurrentDC();
 			if (!PInvoke.wglMakeCurrent(dc, context))
 			{
-				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
 			}
 		}
 
@@ -135,7 +135,7 @@ internal static class Win32Helper
 		{
 			if (_oldDc != IntPtr.Zero && _oldContext != IntPtr.Zero && !PInvoke.wglMakeCurrent(_oldDc, _oldContext))
 			{
-				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
+				this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
 			}
 		}
 	}
