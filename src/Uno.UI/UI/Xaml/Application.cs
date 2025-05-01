@@ -106,13 +106,10 @@ namespace Microsoft.UI.Xaml
 			InitializePartial();
 
 			var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
-			if (appInstance.GetActivatedEventArgs() is null)
-			{
-				// Set default launch activation args
-				appInstance.SetDefaultLaunchActivatedArgs(
-					AppActivationArguments.CreateLaunch(
-						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
-			}
+			// Set default launch activation args
+			appInstance.SetDefaultLaunchActivatedArgs(
+				AppActivationArguments.CreateLaunch(
+					new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 		}
 
 		internal bool InitializationComplete => _initializationComplete;
@@ -326,21 +323,26 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvokeOnActivated(IActivatedEventArgs args)
 		{
+#if __SKIA__
+			// For Skia targets, we always go through the proper OnLaunched activation path
+			InvokeOnLaunched(args);
+#else
 			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(args));
 			OnActivated(args);
 			WasLaunched = true;
+#endif
 		}
 
 		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
 		{
-			if (args is not null)
+			if (activatedArgs is not null)
 			{
 				Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
 			}
-			var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(activatedArgs as LaunchActivatedEventArgs);
 			// OnLaunched should execute only for full apps, not for individual islands.
-			if (CoreApplication.IsFullFledgedApp)
+			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
 			{
+				var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
 				OnLaunched(args);
 			}
 

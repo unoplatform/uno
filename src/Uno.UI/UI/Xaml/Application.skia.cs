@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics;
-using Windows.ApplicationModel.Activation;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
