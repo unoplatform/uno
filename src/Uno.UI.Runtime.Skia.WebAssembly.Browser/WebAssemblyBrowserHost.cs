@@ -2,23 +2,23 @@ using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using Uno.UI.Hosting;
-using Windows.Graphics.Display;
-using Windows.Media.Playback;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Uno.Media.Playback;
+using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
-using Microsoft.Web.WebView2.Core;
-using Uno.UI.NativeElementHosting;
+using Windows.Graphics.Display;
+using Windows.Media.Playback;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHost
+internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost
 {
 	private readonly CoreApplicationExtension? _coreApplicationExtension;
 
@@ -40,21 +40,7 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
-	public async Task Run()
-	{
-		try
-		{
-			Initialize();
-
-			await Task.Delay(-1);
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"App failed to initialize: {e}");
-		}
-	}
-
-	private void Initialize()
+	protected override void Initialize()
 	{
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
@@ -66,6 +52,13 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
 
+		NativeMethods.PersistBootstrapperLoader();
+
+		_renderer = new BrowserRenderer(this);
+	}
+
+	protected async override Task RunLoop()
+	{
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			BrowserHtmlElement.Initialize();
@@ -87,11 +80,18 @@ public partial class WebAssemblyBrowserHost : ISkiaApplicationHost, IXamlRootHos
 			DisplayInformation.GetForCurrentView();
 		}
 
-		NativeMethods.PersistBootstrapperLoader();
+		try
+		{
+			Application.Start(CreateApp);
 
-		_renderer = new BrowserRenderer(this);
+			await Task.Delay(-1);
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"App failed to initialize: {e}");
 
-		Application.Start(CreateApp);
+			throw;
+		}
 	}
 
 	void IXamlRootHost.InvalidateRender()

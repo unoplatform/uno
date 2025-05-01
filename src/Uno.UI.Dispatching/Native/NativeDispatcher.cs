@@ -152,6 +152,10 @@ namespace Uno.UI.Dispatching
 			}
 		}
 #endif
+		internal void SynchronousDispatchRendering()
+			=> SynchronousDispatchRenderingPartial();
+
+		partial void SynchronousDispatchRenderingPartial();
 
 #if REPORT_FPS
 		static FrameRateLogger _dispatchRenderingLogger = new FrameRateLogger(typeof(NativeDispatcher), "DispatchRendering");
