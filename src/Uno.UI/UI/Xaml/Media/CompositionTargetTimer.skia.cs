@@ -17,6 +17,7 @@ internal partial class CompositionTargetTimer
 
 	private static void StartInternal()
 	{
+		IsRunning = true;
 		CompositionTarget.RenderingActiveChanged += UpdateTimer;
 	}
 

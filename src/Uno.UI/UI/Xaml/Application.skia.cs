@@ -61,8 +61,19 @@ namespace Microsoft.UI.Xaml
 #if REPORT_FPS
 		static FrameRateLogger _renderFpsLogger = new FrameRateLogger(typeof(Application), "Render");
 #endif
+		private long _lastRender = Stopwatch.GetTimestamp();
+
 		private void OnRendered()
 		{
+			if (CompositionTargetTimer.IsRunning
+				&& Stopwatch.GetElapsedTime(_lastRender) < TimeSpan.FromSeconds(1 / FeatureConfiguration.CompositionTarget.FrameRate))
+			{
+				// Throttle rendering to the expected frame rate
+				return;
+			}
+
+			_lastRender = Stopwatch.GetTimestamp();
+
 #if REPORT_FPS
 			_renderFpsLogger.ReportFrame();
 #endif
