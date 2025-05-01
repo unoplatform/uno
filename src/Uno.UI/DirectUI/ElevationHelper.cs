@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Media;
 
 namespace DirectUI;
 
+// TODO Uno: This is not ported, many differences vs. the original code.
+
 internal static class ElevationHelper
 {
 	// The initial Z offset applied to all elevated controls
@@ -26,7 +28,7 @@ internal static class ElevationHelper
 		target.Shadow = themeShadow;
 	}
 
-	internal static void ApplyElevationEffect(UIElement target, int depth)
+	internal static void ApplyElevationEffect(UIElement target, int depth = 0)
 	{
 		// Calculate the Z offset based on the depth of the shadow
 		var calculatedZDepth = s_elevationBaseDepth + (depth * s_elevationIterativeDepth);
@@ -39,4 +41,10 @@ internal static class ElevationHelper
 		// Apply a shadow to the element
 		ApplyThemeShadow(target);
 	}
+
+	internal static void ClearElevationEffect(UIElement target)
+	{
+	}
+
+	internal static bool IsDefaultShadowEnabled(FrameworkElement resourceTarget) => false;
 }
