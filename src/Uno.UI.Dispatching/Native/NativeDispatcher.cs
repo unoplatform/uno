@@ -120,12 +120,6 @@ namespace Uno.UI.Dispatching
 
 			RunAction(@this, action);
 
-			if (@this.Rendering != null)
-			{
-				// If we raised the Rendering event we can render composition tree.
-				@this.Rendered?.Invoke();
-			}
-
 			// Restore the priority to the default for native events
 			// (i.e. not dispatched by this running loop)
 			@this._currentPriority = NativeDispatcherPriority.Normal;
@@ -170,7 +164,19 @@ namespace Uno.UI.Dispatching
 #if REPORT_FPS
 				_dispatchRenderingLogger.ReportFrame();
 #endif
-				WakeUp();
+				Enqueue(() =>
+				{
+					RaiseRendered();
+				});
+			}
+		}
+
+		private void RaiseRendered()
+		{
+			if (Rendering != null)
+			{
+				// If we raised the Rendering event we can render composition tree.
+				Rendered?.Invoke();
 			}
 		}
 
