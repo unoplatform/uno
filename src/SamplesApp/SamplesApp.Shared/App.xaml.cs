@@ -344,8 +344,9 @@ namespace SamplesApp
 			}
 		}
 
-		private async Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
+		private Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
 		{
+			return Task.CompletedTask;
 		}
 
 		private void ActivateMainWindow()
