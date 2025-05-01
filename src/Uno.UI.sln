@@ -301,6 +301,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.MacOS", "Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj", "{7F6D5A92-ADE8-4DC6-BFEE-11A6575373B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia", "Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj", "{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{01AF1FBC-D11D-441D-AD07-5FF2FE295C0D} = {01AF1FBC-D11D-441D-AD07-5FF2FE295C0D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Generic", "SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj", "{93E6D033-52E2-4C2B-A715-A9FC1F609E3D}"
 EndProject
