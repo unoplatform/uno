@@ -2064,7 +2064,8 @@
 
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunAsync()" reason="Removed" />
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Initialize()" reason="Removed" />
-			<Member fullName="Removed method System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunLoop()" reason="Removed" />
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Run()" reason="Namespace changed" />
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunLoop()" reason="Namespace changed" />
 		</Methods>
 	</IgnoreSet>
 
