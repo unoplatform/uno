@@ -2017,6 +2017,8 @@
 			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 			<Member fullName="Uno.UI.GooglePlay.GlobalStaticResources" reason="Should not be generated" />
 			<Member fullName="Uno.UI.Foldable.netcoremobile.GlobalStaticResources" reason="Should not be generated" />
+			
+			<Member fullName="Uno.UI.Runtime.Skia.HostBuilder" reason="Namespace changed" />
 		</Types>
 
 		<Events>
