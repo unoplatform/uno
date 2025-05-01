@@ -2023,6 +2023,7 @@
 			<Member fullName="Uno.UI.Runtime.Skia.SkiaHostBuilder" reason="Namespace changed" />
 			<Member fullName="Uno.UI.Runtime.Skia.SkiaHostBuilderExtensions" reason="Namespace changed" />
 			<Member fullName="Uno.UI.Runtime.Skia.X11NativeWindow" reason="Namespace changed" />
+			<Member fullName="Uno.UI.Runtime.Skia.IWindowsSkiaHostBuilder" reason="moved to uno.ui" />
 		</Types>
 
 		<Events>
