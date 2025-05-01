@@ -103,6 +103,7 @@ namespace Uno.UI.Dispatching
 			if (IsRendering)
 			{
 				DispatchItems();
+				RaiseRendered();
 			}
 		}
 
