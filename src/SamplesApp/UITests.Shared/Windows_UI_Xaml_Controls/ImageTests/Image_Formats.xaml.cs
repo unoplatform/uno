@@ -6,7 +6,14 @@ using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[Sample("Image")]
+	[Sample("Image",
+#if __SKIA__
+		// The rendering of the SVG is causing delay issues
+		// as the SVG is rendered using vectors instead of rasterized
+		// bitmap.
+		IgnoreInSnapshotTests = true
+#endif
+	)]
 	public sealed partial class Image_Formats : Page
 	{
 		internal static Dictionary<string, string> Formats = new Dictionary<string, string>()
