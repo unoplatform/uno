@@ -17,7 +17,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private Action? _afterInitAction;
 	private Type? _appType;
 
-	private UnoPlatformHostBuilder() { }
+	internal UnoPlatformHostBuilder() { }
 
 	Func<Application>? IUnoPlatformHostBuilder.AppBuilder
 	{
