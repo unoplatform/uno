@@ -88,7 +88,6 @@ namespace Microsoft.UI.Xaml
 				if (cRoot?.XamlRoot is { } xRoot)
 				{
 					xRoot.InvalidateRender();
-					return;
 				}
 			}
 		}
