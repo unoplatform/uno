@@ -607,7 +607,7 @@ partial class MenuFlyoutItem
 	// Create MenuFlyoutItemAutomationPeer to represent the
 	protected override AutomationPeer OnCreateAutomationPeer() => new MenuFlyoutItemAutomationPeer(this);
 
-	private protected override string GetPlainText() => Text;
+	internal override string GetPlainText() => Text;
 
 	internal Size GetKeyboardAcceleratorTextDesiredSize()
 	{
