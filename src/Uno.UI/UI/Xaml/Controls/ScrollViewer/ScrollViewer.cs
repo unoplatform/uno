@@ -1244,7 +1244,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				RequestUpdate();
 				_snapPointsTimer?.Stop();
+#if __SKIA__
 				_textBoxSnapTimer?.Stop();
+#endif
 			}
 			else
 			{
@@ -1373,7 +1375,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region SnapPoints enforcement
 		private DispatcherQueueTimer? _snapPointsTimer;
+#if __SKIA__
 		private DispatcherQueueTimer? _textBoxSnapTimer;
+#endif
 		private double? _horizontalOffsetForSnapPoints;
 		private double? _verticalOffsetForSnapPoints;
 
