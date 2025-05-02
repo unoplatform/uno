@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_preventSecondaryActivationHandling = true;
 					var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
-					InvokeOnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+					InvokeOnLaunched(new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
 #endif
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml
 			// default to normal launch
 			if (!handled)
 			{
-				InvokeOnLaunched(new LaunchActivatedEventArgs());
+				InvokeOnLaunched(null);
 			}
 			return true;
 		}
