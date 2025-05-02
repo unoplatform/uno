@@ -128,6 +128,11 @@ namespace Microsoft.UI.Xaml
 
 		public override bool DispatchGenericMotionEvent(MotionEvent? ev)
 		{
+			if (Gamepad.OnGenericMotionEvent(ev))
+			{
+				return true;
+			}
+
 			if (ev is null)
 			{
 				// Can this happen? Is Xamarin nullability annotation wrong?
