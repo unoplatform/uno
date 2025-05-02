@@ -275,11 +275,8 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvalidateRender()
 		{
-			if (NativeWindowWrapper.Instance.IsVisible)
-			{
-				_skCanvasView?.InvalidateRender();
-				RelativeLayout.Invalidate();
-			}
+			_skCanvasView?.InvalidateRender();
+			RelativeLayout.Invalidate();
 		}
 
 		private void OnInsetsChanged(Thickness insets)
@@ -301,6 +298,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
+						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -309,6 +307,8 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		internal event EventHandler? ContentViewAttachedToWindow;
 
 		protected override void OnResume()
 		{
