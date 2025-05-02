@@ -227,6 +227,13 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+			RelativeLayout = new RelativeLayout(this);
+			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
+				ViewGroup.LayoutParams.MatchParent,
+				ViewGroup.LayoutParams.MatchParent);
+
+			SetContentView(RelativeLayout);
+
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
@@ -234,13 +241,6 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
 			RaiseConfigurationChanges();
-
-			RelativeLayout = new RelativeLayout(this);
-			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-
-			SetContentView(RelativeLayout);
 		}
 
 		protected override void OnStart()
