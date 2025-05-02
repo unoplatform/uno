@@ -103,6 +103,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 		};
 
+		ApplicationActivity.Instance.EnsureContentView();
 		ApplySystemOverlaysTheming();
 		RemovePreDrawListener();
 	}
