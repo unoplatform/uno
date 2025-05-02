@@ -16,13 +16,13 @@ You can zoom in and out of the Canvas view to get a better look at your design.
 - **Mouse**: Hold `Ctrl` and scroll with your mouse wheel.
 - **Keyboard**: Use `Ctrl +` to zoom in, and `Ctrl -` to zoom out.
 
-<img src="Assets/core-tools/gifs/canvas-zoom.gif" height="600" alt="GIF showing how to zoom in and out on canvas" />
+<img src="Assets/core-tools/media/canvas-zoom.gif" height="600" alt="GIF showing how to zoom in and out on canvas" />
 
 ### Scroll
 
 You can also scroll vertically using the mouse wheel, and horizontally by holding `Shift` and using the mouse wheel.
 
-<img src="Assets/core-tools/gifs/canvas-scroll.gif" height="600" alt="GIF showing how to scroll on canvas" />
+<img src="Assets/core-tools/media/canvas-scroll.gif" height="600" alt="GIF showing how to scroll on canvas" />
 
 ## Selection
 
@@ -51,7 +51,7 @@ You can rearrange elements on the Canvas by dragging and dropping them to a new 
 
 If there are no layout restrictions or invalid placements, the element will be moved to the new position and the structure will update accordingly. This makes it easy to reorganize your layout visually and quickly.
 
-<img src="Assets/core-tools/gifs/canvas-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on canvas" />
+<img src="Assets/core-tools/media/canvas-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on canvas" />
 
 ## Add Parent
 
@@ -74,7 +74,7 @@ Sometimes it's hard to click directly on a parent element. To help with this:
 
 The parent of the selected element will then become selected.
 
-<img src="Assets/core-tools/gifs/canvas-select-parent.gif" height="450" alt="GIF showing how to select a parent element on canvas" />
+<img src="Assets/core-tools/media/canvas-select-parent.gif" height="450" alt="GIF showing how to select a parent element on canvas" />
 
 ## Delete Element
 
@@ -86,7 +86,7 @@ For example: "Delete TextBlock"
 
 The element will be removed from both the Canvas and the Element window.
 
-<img src="Assets/core-tools/gifs/canvas-delete-element.gif" height="450" alt="GIF showing how to delete an element from the canvas" />
+<img src="Assets/core-tools/media/canvas-delete-element.gif" height="450" alt="GIF showing how to delete an element from the canvas" />
 
 ## Edit
 
@@ -99,7 +99,7 @@ You’ll be taken to a separate area where you can make changes to that control.
 
 To return to your main page, click the back icon in the top-left corner or the back icon in the **Elements** window.
 
-<img src="Assets/core-tools/gifs/canvas-edit-user-control.gif" height="600" alt="GIF showing how to edit a UserControl on the canvas" />
+<img src="Assets/core-tools/media/canvas-edit-user-control.gif" height="600" alt="GIF showing how to edit a UserControl on the canvas" />
 
 ## Notifications
 
