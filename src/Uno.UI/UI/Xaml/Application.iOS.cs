@@ -25,7 +25,7 @@ public partial class Application
 	{
 		if (!_preventSecondaryActivationHandling)
 		{
-			InvokeOnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+			InvokeOnLaunched(new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 		}
 		_preventSecondaryActivationHandling = false;
 	}

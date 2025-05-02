@@ -44,6 +44,7 @@ using Microsoft.Windows.AppLifecycle;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
+using Microsoft.Windows.AppLifecycle;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
