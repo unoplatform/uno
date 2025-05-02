@@ -309,12 +309,12 @@ namespace SamplesApp
 		}
 #endif
 
-		private void ActivateMainWindow()
+		private async void ActivateMainWindow()
 		{
-#if DEBUG && (__SKIA__ || __WASM__)
-			_mainWindow!.EnableHotReload();
-#endif
-			//await Task.Delay(3000); // Artificial delay to simulate asynchronous activation
+//#if DEBUG && (__SKIA__ || __WASM__)
+//			_mainWindow!.EnableHotReload();
+//#endif
+			await Task.Delay(10000); // Artificial delay to simulate asynchronous activation
 			_mainWindow!.Activate();
 			_wasActivated = true;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);

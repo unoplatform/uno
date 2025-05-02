@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using AndroidX.Core.View;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -14,8 +15,8 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
+using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -103,6 +104,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 		};
 
+		ApplicationActivity.Instance.EnsureContentView();
 		ApplySystemOverlaysTheming();
 		RemovePreDrawListener();
 	}
@@ -288,7 +290,50 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
 			activity.Window.DecorView is { } decorView)
 		{
+			global::System.Diagnostics.Debug.WriteLine(decorView.GetHashCode());
+			global::System.Diagnostics.Debug.WriteLine(decorView.ViewTreeObserver.GetHashCode());
+			decorView.ViewAttachedToWindow += DecorView_ViewAttachedToWindow;
+			decorView.ViewDetachedFromWindow += DecorView_ViewDetachedFromWindow;
 			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
+			decorView.ViewTreeObserver.WindowAttached += ViewTreeObserver_WindowAttached;
+			decorView.ViewTreeObserver.GlobalLayout += ViewTreeObserver_GlobalLayout;
+			decorView.ViewTreeObserver.ScrollChanged += ViewTreeObserver_ScrollChanged;
+			decorView.ViewTreeObserver.WindowDetached += ViewTreeObserver_WindowDetached;
+		}
+	}
+
+	private void ViewTreeObserver_ScrollChanged(object sender, EventArgs e)
+	{
+	}
+	private void ViewTreeObserver_GlobalLayout(object sender, EventArgs e)
+	{
+
+	}
+	private void ViewTreeObserver_WindowDetached(object sender, EventArgs e)
+	{
+
+	}
+	private void ViewTreeObserver_WindowAttached(object sender, EventArgs e)
+	{
+
+	}
+
+	private void DecorView_ViewDetachedFromWindow(object sender, View.ViewDetachedFromWindowEventArgs e)
+	{
+		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+			activity.Window.DecorView is { } decorView)
+		{
+			global::System.Diagnostics.Debug.WriteLine(decorView.GetHashCode());
+			global::System.Diagnostics.Debug.WriteLine(decorView.ViewTreeObserver.GetHashCode());
+		}
+	}
+	private void DecorView_ViewAttachedToWindow(object sender, View.ViewAttachedToWindowEventArgs e)
+	{
+		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+			activity.Window.DecorView is { } decorView)
+		{
+			global::System.Diagnostics.Debug.WriteLine(decorView.GetHashCode());
+			global::System.Diagnostics.Debug.WriteLine(decorView.ViewTreeObserver.GetHashCode());
 		}
 	}
 
@@ -297,6 +342,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
 			activity.Window.DecorView is { } decorView)
 		{
+			global::System.Diagnostics.Debug.WriteLine(decorView.GetHashCode());
+			global::System.Diagnostics.Debug.WriteLine(decorView.ViewTreeObserver.GetHashCode());
 			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
 		}
 	}

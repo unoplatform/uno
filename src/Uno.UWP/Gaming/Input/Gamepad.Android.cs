@@ -59,8 +59,13 @@ public partial class Gamepad
 		return false;
 	}
 
-	internal static bool OnGenericMotionEvent(MotionEvent motionEvent)
+	internal static bool OnGenericMotionEvent(MotionEvent? motionEvent)
 	{
+		if (motionEvent is null)
+		{
+			return false;
+		}
+
 		if (IsGamepad(motionEvent.Device))
 		{
 			if (TryGetOrCreateGamepad(motionEvent.DeviceId, out var gamepad))

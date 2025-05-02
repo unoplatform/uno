@@ -28,6 +28,7 @@ using Windows.Storage.Pickers;
 using AndroidX.Activity;
 using Windows.Extensions;
 using Uno.WinUI.Runtime.Skia.Android;
+using Windows.Gaming.Input;
 
 
 namespace Microsoft.UI.Xaml
@@ -111,7 +112,7 @@ namespace Microsoft.UI.Xaml
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
 			//var initialWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-			//if (initialWindow?.RootElement is View content)
+			//if (initialWindow?.RootElement is Android.Views.View content)
 			//{
 			//	(content.GetParent() as ViewGroup)?.RemoveView(content);
 			//	SetContentView(content);
@@ -233,6 +234,11 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnCreate(Bundle? bundle)
 		{
+			//if (Uno.CompositionConfiguration.UseCompositorThread)
+			//{
+			//	Uno.UI.Composition.CompositorThread.Start(this);
+			//}
+
 			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
 			{
 				EdgeToEdge.Enable(this);
