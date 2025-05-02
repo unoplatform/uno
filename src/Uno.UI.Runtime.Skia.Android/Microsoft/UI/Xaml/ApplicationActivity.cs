@@ -276,6 +276,7 @@ namespace Microsoft.UI.Xaml
 		internal void InvalidateRender()
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			_skCanvasView?.Invalidate();
 			RelativeLayout.Invalidate();
 =======
@@ -285,6 +286,10 @@ namespace Microsoft.UI.Xaml
 				RelativeLayout.Invalidate();
 			}
 >>>>>>> 67cbf65f8f (fix: Delay rendering)
+=======
+			_skCanvasView?.InvalidateRender();
+			RelativeLayout.Invalidate();
+>>>>>>> 1b6e673f91 (fix: Remove predraw listener only after content view is attached)
 		}
 
 		private void OnInsetsChanged(Thickness insets)
@@ -306,6 +311,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
+						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -314,6 +320,8 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		internal event EventHandler? ContentViewAttachedToWindow;
 
 		protected override void OnResume()
 		{
