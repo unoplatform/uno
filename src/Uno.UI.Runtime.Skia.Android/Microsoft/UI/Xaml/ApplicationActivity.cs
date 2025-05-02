@@ -41,6 +41,7 @@ namespace Microsoft.UI.Xaml
 		private InputPane _inputPane;
 
 		private bool _started;
+		private bool _isContentViewSet;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -73,6 +74,17 @@ namespace Microsoft.UI.Xaml
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
+		}
+
+		internal void EnsureContentView()
+		{
+			if (_isContentViewSet)
+			{
+				return;
+			}
+
+			SetContentView(RelativeLayout);
+			_isContentViewSet = true;
 		}
 
 		public override void OnAttachedToWindow()
@@ -222,6 +234,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
@@ -229,13 +242,6 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
 			RaiseConfigurationChanges();
-
-			RelativeLayout = new RelativeLayout(this);
-			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-
-			SetContentView(RelativeLayout);
 		}
 
 		protected override void OnStart()
@@ -248,6 +254,10 @@ namespace Microsoft.UI.Xaml
 			if (!_started)
 			{
 				_started = true;
+				RelativeLayout = new RelativeLayout(this);
+				RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
 
 				_skCanvasView = new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
@@ -288,6 +298,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
+						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -296,6 +307,8 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		internal event EventHandler? ContentViewAttachedToWindow;
 
 		protected override void OnResume()
 		{
