@@ -333,7 +333,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				using (childSession)
 				{
 					PaintStep(this, childSession);
-					PostPaintingClipStep(this, canvas);
+					PostPaintingClipStep(this, recordingCanvas);
 					foreach (var child in GetChildrenInRenderOrder())
 					{
 						child.Render(in childSession);
