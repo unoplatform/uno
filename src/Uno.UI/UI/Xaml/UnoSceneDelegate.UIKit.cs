@@ -23,6 +23,7 @@ namespace Microsoft.UI.Xaml;
 [System.Runtime.Versioning.SupportedOSPlatform("tvos13.0")]
 public class UnoSceneDelegate : UISceneDelegate
 {
+	internal const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 	internal const string UnoSceneConfigurationKey = "__UNO_DEFAULT_SCENE_CONFIGURATION__";
 	internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
 
