@@ -385,7 +385,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
-		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush); 
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
 		#endregion
 
 		#region SelectedText (DP - readonly)
