@@ -265,7 +265,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvalidateRender()
 		{
-			_skCanvasView?.Invalidate();
+			_skCanvasView?.InvalidateRender();
 			RelativeLayout.Invalidate();
 		}
 

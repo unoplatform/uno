@@ -76,10 +76,8 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			: Rendermode.WhenDirty;
 	}
 
-	protected override void OnDraw(Canvas c)
+	internal void InvalidateRender()
 	{
-		base.OnDraw(c);
-
 		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
 		{
 			return;
@@ -124,11 +122,8 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 			Interlocked.Exchange(ref _picture, picture);
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace("Resume drawing");
-			}
-			RenderMode = Rendermode.Continuously;
+			// Request the call of IRenderer.OnDrawFrame for one frame
+			RequestRender();
 		}
 	}
 
