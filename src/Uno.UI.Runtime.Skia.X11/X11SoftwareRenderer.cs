@@ -20,23 +20,24 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void SetBackgroundColor(SKColor color) => _background = color;
 
-		void IX11Renderer.Render()
+		void IX11Renderer.Render(SKPicture picture, SKPath nativeClippingPath, float scaleX, float scaleY)
 		{
-			using var lockDiposable = X11Helper.XLock(x11window.Display);
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Render {_renderCount++}");
+			}
+
+			var display = x11window.Display;
+			var window = x11window.Window;
+			using var lockDisposable = X11Helper.XLock(display);
 
 			if (host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
 				return;
 			}
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render {_renderCount++}");
-			}
-
 			XWindowAttributes attributes = default;
-			_ = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
-
+			_ = XLib.XGetWindowAttributes(display, window, ref attributes);
 			var width = attributes.width;
 			var height = attributes.height;
 
@@ -44,7 +45,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
-			if (_bitmap == null || _airspaceHelper == null || _surface == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
+			if (_bitmap == null || _airspaceHelper == null || _surface == null || width != _bitmap.Width || height != _bitmap.Height)
 			{
 				_bitmap?.Dispose();
 				_surface?.Dispose();
@@ -64,29 +65,19 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				_bitmap = new SKBitmap(width, height);
 				_surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
-				_airspaceHelper = new X11AirspaceRenderHelper(x11window.Display, x11window.Window, width, height);
+				_airspaceHelper = new X11AirspaceRenderHelper(display, window, width, height);
 			}
 
 			var canvas = _surface.Canvas;
-			using (new SKAutoCanvasRestore(canvas, true))
-			{
-				canvas.Clear(_background);
-				var scale = host.RootElement?.XamlRoot is { } root
-					? root.RasterizationScale
-					: 1;
-				canvas.Scale((float)scale);
-
-				if (host.RootElement?.Visual is { } rootVisual)
-				{
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
-					_airspaceHelper.XShapeClip(path);
-				}
-
-				canvas.Flush();
-			}
+			var saveCount = canvas.Save();
+			canvas.Clear(_background);
+			canvas.Scale(scaleX, scaleY);
+			canvas.DrawPicture(picture);
+			canvas.RestoreToCount(saveCount);
+			canvas.Flush();
 
 			_xImage ??= X11Helper.XCreateImage(
-				display: x11window.Display,
+				display: display,
 				visual: /* CopyFromParent */ 0,
 				depth: (uint)attributes.depth,
 				format: /* ZPixmap */ 2,
@@ -98,9 +89,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
 			_ = X11Helper.XPutImage(
-				display: x11window.Display,
-				drawable: x11window.Window,
-				gc: _gc ??= X11Helper.XCreateGC(x11window.Display, x11window.Window, 0, 0),
+				display: display,
+				drawable: window,
+				gc: _gc ??= X11Helper.XCreateGC(display, window, 0, 0),
 				image: _xImage.Value,
 				srcx: 0,
 				srcy: 0,
@@ -109,7 +100,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				width: (uint)width,
 				height: (uint)height);
 
-			_ = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
+			_airspaceHelper.XShapeClip(nativeClippingPath);
+			_ = XLib.XFlush(display); // unnecessary on most X11 implementations
 		}
 	}
 }

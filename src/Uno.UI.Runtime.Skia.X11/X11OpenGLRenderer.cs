@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -36,41 +37,28 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void Dispose() => _grContext.Dispose();
 
-		void IX11Renderer.Render()
+		void IX11Renderer.Render(SKPicture picture, SKPath nativeClippingPath, float scaleX, float scaleY)
 		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Render {_renderCount++}");
+			}
+
 			var display = _x11Window.Display;
 			var window = _x11Window.Window;
-			using var lockDiposable = X11Helper.XLock(display);
+			using var lockDisposable = X11Helper.XLock(display);
 
 			if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
 				return;
 			}
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render {_renderCount++}");
-			}
+			XWindowAttributes attributes = default;
+			_ = XLib.XGetWindowAttributes(display, window, ref attributes);
+			var width = attributes.width;
+			var height = attributes.height;
 
-			if (_x11Window.glXInfo is not { } glXInfo)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"No glX information associated with this OpenGL renderer, so it cannot be used.");
-				}
-				return;
-			}
-
-			if (glXInfo.context == IntPtr.Zero)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"No context available, skipping render");
-				}
-
-				return;
-			}
-
+			var glXInfo = _x11Window.glXInfo!.Value;
 			if (!GlxInterface.glXMakeCurrent(display, window, glXInfo.context))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
@@ -79,12 +67,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 				return;
 			}
-
-			XWindowAttributes attributes = default;
-			_ = XLib.XGetWindowAttributes(display, window, ref attributes);
-
-			var width = attributes.width;
-			var height = attributes.height;
+			using var makeCurrentDisposable = new DisposableStruct<X11Window>(static x11Window =>
+			{
+				if (!GlxInterface.glXMakeCurrent(x11Window.Display, X11Helper.None, IntPtr.Zero))
+				{
+					throw new NotSupportedException($"glXMakeCurrent failed for Window {x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				}
+			}, _x11Window);
 
 			if (_surface == null || _airspaceHelper == null || _renderTarget == null || _lastSize != new Size(width, height))
 			{
@@ -104,25 +93,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			var canvas = _surface.Canvas;
-			using (new SKAutoCanvasRestore(canvas, true))
-			{
-				canvas.Clear(_background);
 
-				var scale = _host.RootElement?.XamlRoot is { } root
-					? root.RasterizationScale
-					: 1;
-				_surface.Canvas.Scale((float)scale);
-
-				if (_host.RootElement?.Visual is { } rootVisual)
-				{
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
-					_airspaceHelper.XShapeClip(path);
-				}
-			}
-
-			_surface.Canvas.Flush();
+			var saveCount = canvas.Save();
+			canvas.Clear(_background);
+			canvas.Scale(scaleX, scaleY);
+			canvas.DrawPicture(picture);
+			canvas.RestoreToCount(saveCount);
+			canvas.Flush();
 
 			GlxInterface.glXSwapBuffers(display, window);
+			_airspaceHelper.XShapeClip(nativeClippingPath);
 
 			_ = XLib.XFlush(display); // unnecessary on most X11 implementations
 		}
@@ -138,6 +118,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				throw new NotSupportedException($"glXMakeCurrent failed for Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
 			}
+			using var makeCurrentDisposable = new DisposableStruct<X11Window>(static x11Window =>
+			{
+				if (!GlxInterface.glXMakeCurrent(x11Window.Display, X11Helper.None, IntPtr.Zero))
+				{
+					throw new NotSupportedException($"glXMakeCurrent failed for Window {x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				}
+			}, _x11Window);
 
 			var glInterface = GRGlInterface.Create();
 
