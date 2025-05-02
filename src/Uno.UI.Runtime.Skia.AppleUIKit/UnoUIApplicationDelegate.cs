@@ -13,8 +13,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 [Register("UnoUIApplicationDelegate")]
 public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 {
-	private const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
-
 	public UnoUIApplicationDelegate()
 	{
 		SubscribeBackgroundNotifications();
@@ -31,7 +29,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	public override bool RespondsToSelector(Selector? sel)
 	{
 		// if the app is not a multi-window app, then we cannot override the GetConfiguration method
-		if (sel?.Name == GetConfigurationSelectorName && !UnoSceneDelegate.HasSceneManifest())
+		if (sel?.Name == UnoSceneDelegate.GetConfigurationSelectorName && !UnoSceneDelegate.HasSceneManifest())
 		{
 			return false;
 		}
