@@ -7,11 +7,18 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
+using Android.Widget;
+using AndroidX.Activity;
+using DirectUI;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
@@ -20,13 +27,7 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using Uno.UI.Xaml.Core;
-using DirectUI;
-using Uno.UI.Xaml.Input;
-using AndroidX.Activity;
 
 
 namespace Microsoft.UI.Xaml
@@ -34,10 +35,14 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
+		private bool _isContentViewSet;
+
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; }
+
+		internal ViewGroup RootView { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; }
 
@@ -66,6 +71,17 @@ namespace Microsoft.UI.Xaml
 
 		View Uno.UI.Composition.ICompositionRoot.Content => _content;
 		Android.Views.Window Uno.UI.Composition.ICompositionRoot.Window => _window ??= base.Window;
+
+		internal void EnsureContentView()
+		{
+			if (_isContentViewSet)
+			{
+				return;
+			}
+
+			SetContentView(RootView);
+			_isContentViewSet = true;
+		}
 
 		public override void OnAttachedToWindow()
 		{
@@ -252,6 +268,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
@@ -282,6 +299,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
+						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -290,6 +308,8 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		internal event EventHandler ContentViewAttachedToWindow;
 
 		protected override void OnResume()
 		{
@@ -410,5 +430,7 @@ namespace Microsoft.UI.Xaml
 		[Java.Interop.Export(nameof(GetTypeAssemblyFullName))]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
+
+		internal void SetRootElement(ViewGroup rootElement) => RootView = rootElement;
 	}
 }
