@@ -33,8 +33,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		Instance ??= this;
-		if (!UnoSceneDelegate.HasSceneManifest())
+		if (!UnoUISceneDelegate.HasSceneManifest())
 		{
 			SetNativeWindow(new AppleUIKitWindow());
 		}
@@ -90,8 +89,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
-
-	public static NativeWindowWrapper? Instance { get; private set; }
 
 	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
