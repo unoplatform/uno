@@ -437,6 +437,10 @@
           href: xref:Uno.HotDesign.Toolbox
       - name: Counter Tutorial
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+      - name: Advanced
+        items:
+          - name: Canvas
+            href: xref:Uno.HotDesign.Canvas
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback
