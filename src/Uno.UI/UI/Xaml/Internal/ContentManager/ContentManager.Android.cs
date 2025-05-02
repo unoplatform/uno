@@ -15,6 +15,7 @@ partial class ContentManager
 {
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
 	{
-		ApplicationActivity.Instance?.SetContentView(rootElement);
+		ApplicationActivity.Instance.SetRootElement(rootElement);
+		rootElement.DispatcherQueue.TryEnqueue(window.NotifyContentLoaded);
 	}
 }

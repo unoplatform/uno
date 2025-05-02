@@ -16,6 +16,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -25,6 +26,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
+	private bool _contentViewAttachedToWindow;
 
 	private Rect _previousTrueVisibleBounds;
 
@@ -103,9 +105,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 		};
 
+		ApplicationActivity.Instance.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+		ApplicationActivity.Instance.EnsureContentView();
 		ApplySystemOverlaysTheming();
-		RemovePreDrawListener();
 	}
+
+	private void Instance_ContentViewAttachedToWindow(object sender, EventArgs e) =>
+		_contentViewAttachedToWindow = true;
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
@@ -315,6 +321,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 		}
 
-		public bool OnPreDraw() => _windowWrapper.IsVisible;
+		public bool OnPreDraw()
+		{
+			if (_windowWrapper._contentViewAttachedToWindow)
+			{
+				_windowWrapper.RemovePreDrawListener();
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
