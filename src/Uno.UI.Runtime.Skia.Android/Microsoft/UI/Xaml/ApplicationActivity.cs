@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml
 		private InputPane _inputPane;
 
 		private bool _started;
-		private bool _isContentViewAttached;
+		private bool _isContentViewSet;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -78,13 +78,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void EnsureContentView()
 		{
-			if (_isContentViewAttached)
+			if (_isContentViewSet)
 			{
 				return;
 			}
 
 			SetContentView(RelativeLayout);
-			_isContentViewAttached = true;
+			_isContentViewSet = true;
 		}
 
 		public override void OnAttachedToWindow()

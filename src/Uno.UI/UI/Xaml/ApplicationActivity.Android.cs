@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
-		private bool _isContentViewAttached;
+		private bool _isContentViewSet;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -74,13 +74,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void EnsureContentView()
 		{
-			if (_isContentViewAttached)
+			if (_isContentViewSet)
 			{
 				return;
 			}
 
 			SetContentView(RootView);
-			_isContentViewAttached = true;
+			_isContentViewSet = true;
 		}
 
 		public override void OnAttachedToWindow()
