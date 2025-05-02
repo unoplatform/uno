@@ -11,7 +11,7 @@ namespace Microsoft.Windows.AppLifecycle;
 public partial class AppInstance
 {
 	private static Lazy<AppInstance> _current = new(() => new AppInstance());
-	
+
 	private AppActivationArguments _defaultActivationArguments;
 	private AppActivationArguments _appActivationArguments;
 
