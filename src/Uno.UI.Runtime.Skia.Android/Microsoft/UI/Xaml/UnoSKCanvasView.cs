@@ -1,7 +1,7 @@
 ﻿// #define FPS_DISPLAY
 
 using System;
-using Windows.Graphics.Display;
+using System.Threading;
 using Android.Content;
 using Android.Graphics;
 using Android.Opengl;
@@ -11,12 +11,15 @@ using Android.Util;
 using Android.Views;
 using Android.Views.Autofill;
 using Android.Views.InputMethods;
+using AndroidX.Core.Graphics;
 using AndroidX.Core.View;
 using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -47,18 +50,34 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
 		Focusable = true;
 		FocusableInTouchMode = true;
+		PreserveEGLContextOnPause = true;
 		if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
 		{
 			ImportantForAutofill = ImportantForAutofill.Yes;
 		}
 
 		SetWillNotDraw(false);
+
+		// Start the render thread paused
+		RenderMode = Rendermode.WhenDirty;
+
+		CompositionTarget.RenderingActiveChanged += OnCompositionRenderingActiveChanged;
 	}
 
-	protected override void OnDraw(Canvas c)
+	private void OnCompositionRenderingActiveChanged()
 	{
-		base.OnDraw(c);
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"OnCompositionRenderingActiveChanged: {CompositionTarget.IsRenderingActive}");
+		}
 
+		RenderMode = CompositionTarget.IsRenderingActive
+			? Rendermode.Continuously
+			: Rendermode.WhenDirty;
+	}
+
+	internal void InvalidateRender()
+	{
 		if (Microsoft.UI.Xaml.Window.CurrentSafe is not { RootElement: { } root } window)
 		{
 			return;
@@ -99,7 +118,12 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 				new SKPaint { Color = SKColors.Red});
 #endif
 
-			_picture = recorder.EndRecording();
+			var picture = recorder.EndRecording();
+
+			Interlocked.Exchange(ref _picture, picture);
+
+			// Request the call of IRenderer.OnDrawFrame for one frame
+			RequestRender();
 		}
 	}
 
@@ -196,7 +220,14 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
+			var currentPicture = Volatile.Read(ref surfaceView._picture);
+
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
+
+			if (currentPicture is null)
+			{
+				return;
+			}
 
 			// create the contexts if not done already
 			if (_context == null)
@@ -253,10 +284,7 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				// start drawing
-				if (surfaceView._picture is { } picture)
-				{
-					canvas.DrawPicture(picture);
-				}
+				canvas.DrawPicture(currentPicture);
 			}
 
 			// flush the SkiaSharp contents to GL
@@ -272,6 +300,16 @@ internal sealed class UnoSKCanvasView : GLSurfaceView
 			// else : we already drew directly on the OpenGL-backed canvas
 
 			_context!.Flush();
+
+			if (!CompositionTarget.IsRenderingActive && ReferenceEquals(currentPicture, Volatile.Read(ref surfaceView._picture)))
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace("Suspend drawing");
+				}
+
+				surfaceView.RenderMode = Rendermode.WhenDirty;
+			}
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
