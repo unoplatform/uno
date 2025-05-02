@@ -861,7 +861,7 @@ namespace Uno.UI
 			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
 			/// OpenGL if available. Otherwise, software rendering will be used.
 			/// </summary>
-			public static bool? UseOpenGLOnX11 { get; set; }
+			public static bool? UseOpenGLOnX11 { get; set; } = false;
 
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
