@@ -38,7 +38,7 @@ internal partial class X11XamlRootHost
 					{
 						_renderingEventLoop.Schedule(() =>
 						{
-							_renderingScheduled = false;
+							Volatile.Write(ref _renderingScheduled, false);
 							_renderer.Render(picture, nativeClippingPath, (float)scale, (float)scale);
 						});
 					}
