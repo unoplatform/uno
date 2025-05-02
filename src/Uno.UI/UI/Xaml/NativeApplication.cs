@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml
 				// default to normal launch
 				if (!handled && !_isRunning)
 				{
-					_app.InvokeOnLaunched(new LaunchActivatedEventArgs());
+					_app.InvokeOnLaunched(null);
 				}
 #endif
 
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml
 					}
 
 					var jumplistKey = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
-					var launchArgs = new LaunchActivatedEventArgs(ActivationKind.Launch, jumplistKey);
+					var launchArgs = new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, jumplistKey);
 					_app.InvokeOnLaunched(launchArgs);
 
 					handled = true;
