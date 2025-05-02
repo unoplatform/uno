@@ -41,6 +41,7 @@ namespace Microsoft.UI.Xaml
 		private InputPane _inputPane;
 
 		private bool _started;
+		private bool _isContentViewAttached;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -73,6 +74,17 @@ namespace Microsoft.UI.Xaml
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
+		}
+
+		internal void EnsureContentView()
+		{
+			if (_isContentViewAttached)
+			{
+				return;
+			}
+
+			SetContentView(RelativeLayout);
+			_isContentViewAttached = true;
 		}
 
 		public override void OnAttachedToWindow()
@@ -265,8 +277,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvalidateRender()
 		{
-			_skCanvasView?.InvalidateRender();
-			RelativeLayout.Invalidate();
+			if (NativeWindowWrapper.Instance.IsVisible)
+			{
+				_skCanvasView?.InvalidateRender();
+				RelativeLayout.Invalidate();
+			}
 		}
 
 		private void OnInsetsChanged(Thickness insets)
