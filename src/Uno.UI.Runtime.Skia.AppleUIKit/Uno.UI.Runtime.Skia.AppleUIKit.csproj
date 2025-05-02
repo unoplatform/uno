@@ -26,7 +26,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Xaml\UnoSceneDelegate.UIKit.cs" Link="UnoSceneDelegate.UIKit.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\UnoUISceneDelegate.UIKit.cs" Link="UnoUISceneDelegate.UIKit.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(IsTvOS)">
