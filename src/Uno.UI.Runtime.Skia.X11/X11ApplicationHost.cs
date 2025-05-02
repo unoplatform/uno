@@ -97,13 +97,13 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		RenderFrameRate = renderFrameRate;
 
 		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; }, UI.Dispatching.NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
 
 		_eventLoop.Schedule(() =>
 		{
 			_isDispatcherThread = true;
-		}, UI.Dispatching.NativeDispatcherPriority.Normal);
-		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
+		});
+		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 		// We do not have a display timer on this target, we can use
@@ -119,7 +119,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp, UI.Dispatching.NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(StartApp);
 
 		while (!X11XamlRootHost.AllWindowsDone())
 		{
