@@ -134,8 +134,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (!string.IsNullOrEmpty(launchName))
 		{
-			// 
-
 			if (this.Log().IsDebugEnabled())
 			{
 				this.Log().Debug($"Using storyboard {launchName} as an extended Splash Screen");
