@@ -222,12 +222,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			RelativeLayout = new RelativeLayout(this);
-			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-
-			SetContentView(RelativeLayout);
 
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
@@ -248,6 +242,10 @@ namespace Microsoft.UI.Xaml
 			if (!_started)
 			{
 				_started = true;
+				RelativeLayout = new RelativeLayout(this);
+				RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
 
 				_skCanvasView = new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
@@ -260,6 +258,8 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
+
+				SetContentView(RelativeLayout);
 			}
 		}
 
