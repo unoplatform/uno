@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System;
-
 namespace Uno.UI.Hosting;
 
 public static class HostBuilder
