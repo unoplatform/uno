@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CoreAnimation;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.Helpers;
-using Uno.UI.Controls;
-using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
-using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
-using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -32,6 +25,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private readonly DisplayInformation _displayInformation;
 	private InputPane _inputPane;
 	private XamlRoot _xamlRoot;
+	private bool _isPendingShow;
 
 #if !__TVOS__
 	private NSObject? _orientationRegistration;
@@ -43,6 +37,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		if (!UnoSceneDelegate.HasSceneManifest())
 		{
 			SetNativeWindow(new AppleUIKitWindow());
+		}
+		else
+		{
+			Bounds = new Rect(default, new Windows.Foundation.Size(1025, 768));
 		}
 
 		_mainController = new RootViewController();
@@ -78,8 +76,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
-		_nativeWindow.RootViewController = _mainController;
+
+		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
+		// otherwise, a black screen may appear. 
+		TryCreateExtendedSplashscreen();
+
 		ObserveOrientationAndSize();
+
+		if (_isPendingShow)
+		{
+			ShowCore();
+		}
 	}
 
 	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
@@ -93,6 +100,16 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
+		if (_nativeWindow is null)
+		{
+			// In case of scene delegate apps, the native window
+			// may be created after Show is called.
+			_isPendingShow = true;
+			return;
+		}
+
+		_isPendingShow = false;
+
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
 			void OnLoaded(object sender, object args)
