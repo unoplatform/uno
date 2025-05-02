@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Text.RegularExpressions;
 using Uno.UI.Hosting.WebAssembly;
 
 namespace Uno.UI.Hosting;
