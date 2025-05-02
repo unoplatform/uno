@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; }
 
-		internal RelativeLayout RelativeLayout { get; private set; } = null!;
+		internal ViewGroup RootView { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; }
 
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			SetContentView(RelativeLayout);
+			SetContentView(RootView);
 			_isContentViewAttached = true;
 		}
 
@@ -269,11 +269,6 @@ namespace Microsoft.UI.Xaml
 
 			base.OnCreate(bundle);
 
-			RelativeLayout = new RelativeLayout(this);
-			RelativeLayout.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
@@ -436,7 +431,6 @@ namespace Microsoft.UI.Xaml
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;
 
-		internal void SetRootElement(UIElement rootElement) =>
-			RelativeLayout.AddChild(rootElement);
+		internal void SetRootElement(ViewGroup rootElement) => RootView = rootElement;
 	}
 }
