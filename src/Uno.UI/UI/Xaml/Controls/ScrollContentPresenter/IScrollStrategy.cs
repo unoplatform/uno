@@ -2,6 +2,7 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -19,6 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Requests to use a linear animation with a specific duration instead of the default animation strategy.
 	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
 	/// </param>
-	internal record struct ScrollOptions(bool DisableAnimation, TimeSpan? LinearAnimationDuration = null);
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsDependentOnly = false, GestureRecognizer.Manipulation.InertiaProcessor? Inertia = null);
 }
 #endif

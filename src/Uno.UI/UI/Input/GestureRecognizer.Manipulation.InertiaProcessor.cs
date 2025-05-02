@@ -7,10 +7,11 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.System;
 using Uno.Extensions;
-using static System.Math;
 using static System.Double;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+using Microsoft.UI.Composition;
+
 namespace Microsoft.UI.Input
 #else
 namespace Windows.UI.Input
@@ -166,6 +167,71 @@ namespace Windows.UI.Input
 					=> _cumulative0.Add(_inertiaCumulative);
 
 				/// <summary>
+				/// Gets the cumulative delta, including the manipulation cumulative when this processor was started
+				/// </summary>
+				public (ManipulationDelta cumulative, ManipulationDelta delta, TimeSpan time) GetFinal()
+				{
+					CompleteConfiguration();
+
+					var delta = ManipulationDelta.Empty;
+					var totalDuration = 0.0;
+
+					if (_isTranslateInertiaXEnabled)
+					{
+						var duration = GetCompletionTime(_velocities0.Linear.X, DesiredDisplacementDeceleration);
+						var value = GetValue(_velocities0.Linear.X, DesiredDisplacementDeceleration, duration);
+
+						totalDuration = Max(totalDuration, duration);
+						delta.Translation.X += value;
+					}
+
+					if (_isTranslateInertiaYEnabled)
+					{
+						var duration = GetCompletionTime(_velocities0.Linear.Y, DesiredDisplacementDeceleration);
+						var value = GetValue(_velocities0.Linear.Y, DesiredDisplacementDeceleration, duration);
+
+						totalDuration = Max(totalDuration, duration);
+						delta.Translation.Y += value;
+					}
+
+					if (_isRotateInertiaEnabled)
+					{
+						var duration = GetCompletionTime(_velocities0.Angular, DesiredRotationDeceleration);
+						var value = GetValue(_velocities0.Angular, DesiredRotationDeceleration, duration);
+
+						totalDuration = Max(totalDuration, duration);
+						delta.Rotation += value;
+					}
+
+					if (_isScaleInertiaEnabled)
+					{
+						var duration = GetCompletionTime(_velocities0.Expansion, DesiredExpansionDeceleration);
+						var value = GetValue(_velocities0.Expansion, DesiredExpansionDeceleration, duration);
+
+						totalDuration = Max(totalDuration, duration);
+						delta.Expansion += value;
+						delta.Scale *= (_owner._origins.State.Distance + value) / _owner._origins.State.Distance;
+					}
+
+					return (_cumulative0.Add(delta), delta, TimeSpan.FromMilliseconds(totalDuration));
+				}
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+				public (CompositionEasingFunction function, TimeSpan duration) GetDisplacementEasing(Compositor compositor)
+				{
+					//var v0 = Max(Abs(_velocities0.Linear.X), Abs(_velocities0.Linear.Y));
+					var v0 = _velocities0.Linear.Y;
+					var tEnd = GetCompletionTime(v0, DesiredDisplacementDeceleration);
+					var xEnd = GetValue(_velocities0.Linear.Y, DesiredDisplacementDeceleration, tEnd);
+
+					return (
+						new InertialEasingFunction((float)v0, (float)DesiredDisplacementDeceleration, (float)tEnd, xEnd, compositor),
+						TimeSpan.FromMilliseconds(tEnd)
+					);
+				}
+#endif
+
+				/// <summary>
 				/// Gets the **expected** cumulative delta at the tick expected close to the given time, including the manipulation cumulative when this processor was started.
 				/// </summary>
 				/// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
@@ -247,6 +313,8 @@ namespace Windows.UI.Input
 				private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
+
+
 				/// <inheritdoc />
 				public void Dispose()
 					=> _timer.Stop();
@@ -267,6 +335,23 @@ namespace Windows.UI.Input
 				}
 #endif
 			}
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+			internal class InertialEasingFunction(double v0, double deceleration, double tEnd, double xEnd, Compositor compositor) : CompositionEasingFunction(compositor)
+			{
+				/// <inheritdoc />
+				internal override float Ease(float t)
+				{
+					var tCurrent = t * tEnd; // T is normalized while inertia processor uses absolute time
+					var xCurrent = InertiaProcessor.GetValue(v0, deceleration, tCurrent);
+					var x = xCurrent / xEnd; // Normalize back the value to [0,1]
+
+					Console.WriteLine($"InertialEasingFunction: t={t}, tCurrent={tCurrent}, xCurrent={xCurrent}, xEnd={xEnd}, x={x}");
+
+					return (float)x;
+				}
+			}
+#endif
 		}
 	}
 }

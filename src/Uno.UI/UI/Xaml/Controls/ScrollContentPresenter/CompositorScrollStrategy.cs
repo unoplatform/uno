@@ -4,6 +4,7 @@
 using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -39,13 +40,14 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
 				visual.AnchorPoint = target;
 			}
-			else if (options is { LinearAnimationDuration: { Ticks: > 0 } duration })
+			else if (options is { Inertia: { } inertia })
 			{
 				var compositor = visual.Compositor;
-				var easing = CompositionEasingFunction.CreateLinearEasingFunction(compositor);
+				//var easingFunc = CompositionEasingFunction.CreateLinearEasingFunction(compositor);
+				var easing = inertia.GetDisplacementEasing(compositor);
 				var animation = compositor.CreateVector2KeyFrameAnimation();
-				animation.InsertKeyFrame(1.0f, target, easing);
-				animation.Duration = duration;
+				animation.InsertKeyFrame(1.0f, target, easing.function);
+				animation.Duration = easing.duration;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
 			}
