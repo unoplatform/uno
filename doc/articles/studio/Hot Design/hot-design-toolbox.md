@@ -29,26 +29,26 @@ Here’s a quick overview of the main categories:
 
 You can expand or collapse each section by clicking the arrow icon on the right side of the header.
 
-<img src="Assets/core-tools/gifs/toolbox-expand-section.gif" height="400" alt="GIF showing how to expand and collapse sections in the Toolbox." />
+<img src="Assets/core-tools/media/toolbox-expand-section.gif" height="400" alt="GIF showing how to expand and collapse sections in the Toolbox." />
 
 ## Adding elements to Canvas
 
 To add a control or element to the **Canvas**, you can drag and drop the desired item from the Toolbox onto the Canvas. Drop it inside the element you want it to be a child of.
 
-  <img src="Assets/core-tools/gifs/toolbox-add-to-canvas.gif" height="600" alt="Demonstration of dragging and dropping an element from the Toolbox to the Canvas" />
+  <img src="Assets/core-tools/media/toolbox-add-to-canvas.gif" height="600" alt="Demonstration of dragging and dropping an element from the Toolbox to the Canvas" />
 
 
 ## Adding elements to Elements window
 
 To add a control or element to the **Elements** window, you can drag and drop the desired item from the Toolbox into the **Elements** window. Drop it inside the element where you want it to be a child.
 
-  <img src="Assets/core-tools/gifs/toolbox-add-to-tree.gif" height="600" alt="Drag and drop an item from the Toolbox into the Elements window to add it as a child element." />
+  <img src="Assets/core-tools/media/toolbox-add-to-tree.gif" height="600" alt="Drag and drop an item from the Toolbox into the Elements window to add it as a child element." />
 
 ## Adding Element via double click
 
 Alternatively, select the parent element directly on the **Canvas** or on the **Element** window, then double-click the control in the Toolbox. It will be added as a child of the selected element.
 
-<img src="Assets/core-tools/gifs/toolbox-add-to-tree-double-click.gif" height="600" alt="Double-click a control in the Toolbox to add it as a child of the selected element." />
+<img src="Assets/core-tools/media/toolbox-add-to-tree-double-click.gif" height="600" alt="Double-click a control in the Toolbox to add it as a child of the selected element." />
 
 ## Next
 
