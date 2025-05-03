@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,7 +37,8 @@ partial class ScrollContentPresenter
 #else
 			_oldPadding = Scroller.Padding;
 #endif
-			SetOccludedRectPadding(new Thickness(_oldPadding.Left, _oldPadding.Top, _oldPadding.Right, intersection.Height));
+			var bottom = Math.Max(intersection.Height - viewPortPoint.Y, 0);
+			SetOccludedRectPadding(new Thickness(_oldPadding.Left, _oldPadding.Top, _oldPadding.Right, bottom));
 		}
 
 		return Disposable.Create(() => SetOccludedRectPadding(new Thickness()));
