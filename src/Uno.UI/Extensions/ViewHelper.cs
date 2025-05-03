@@ -9,9 +9,9 @@ namespace Uno.UI
 {
 	public static class ViewHelper
 	{
-		private static double _cachedDensity;
-		private static double _maxLogicalValue;
-		private static double _minLogicalValue;
+		private static readonly double _cachedDensity;
+		private static readonly double _maxLogicalValue;
+		private static readonly double _minLogicalValue;
 
 		static ViewHelper()
 		{
