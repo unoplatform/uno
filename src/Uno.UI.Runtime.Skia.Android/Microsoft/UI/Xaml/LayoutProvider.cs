@@ -83,17 +83,15 @@ namespace Uno.UI
 				var windowBounds = windowMetrics.Bounds;
 
 				var imeInsets = windowInsets.GetInsets(WindowInsets.Type.Ime());
-				var navInsets = windowInsets.GetInsets(WindowInsets.Type.NavigationBars());
+				var windowBottom = windowBounds.Bottom;
+				var keyboardHeight = windowBottom - imeInsets.Bottom;
 
-				var isKeyboardVisible = windowMetrics.WindowInsets.IsVisible(WindowInsets.Type.Ime());
-				var keyboardHeight = Math.Max(imeInsets.Bottom - navInsets.Bottom, 0);
-
-				var keyboardRect = isKeyboardVisible && keyboardHeight > 0
+				var keyboardRect = keyboardHeight > 0
 					? new Rect(
 						0,
-						windowBounds.Bottom - keyboardHeight,
+						keyboardHeight,
 						windowBounds.Right,
-						windowBounds.Bottom)
+						windowBottom)
 					: new Rect();
 
 				KeyboardChanged?.Invoke(keyboardRect);

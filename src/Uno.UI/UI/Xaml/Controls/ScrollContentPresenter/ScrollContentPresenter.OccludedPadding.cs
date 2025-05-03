@@ -14,7 +14,7 @@ partial class ScrollContentPresenter
 	private Thickness _oldPadding;
 	private Thickness _occludedRectPadding;
 
-	internal IDisposable Pad(Rect occludedRect)
+	internal IDisposable Pad(Rect occludedRect, Rect focusedElementRect)
 	{
 #if __ANDROID__
 		var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());
@@ -37,7 +37,9 @@ partial class ScrollContentPresenter
 #else
 			_oldPadding = Scroller.Padding;
 #endif
-			var bottom = Math.Max(intersection.Height - viewPortPoint.Y, 0);
+
+			var bottom = Math.Max(intersection.Height - (viewPortRect.Height - focusedElementRect.Bottom), 0);
+
 			SetOccludedRectPadding(new Thickness(_oldPadding.Left, _oldPadding.Top, _oldPadding.Right, bottom));
 		}
 
