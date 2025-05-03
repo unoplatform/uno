@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
@@ -79,10 +79,22 @@ namespace Uno.UI
 			{
 				// Use newer API on 30 and above
 				var windowMetrics = _activity.WindowManager!.CurrentWindowMetrics;
-				var imeInsets = windowMetrics.WindowInsets.GetInsets(WindowInsets.Type.Ime());
-				var windowBottom = windowMetrics.Bounds.Bottom;
-				var keyboardHeight = windowBottom - imeInsets.Bottom;
-				var keyboardRect = keyboardHeight > 0 ? new Rect(0, keyboardHeight, windowMetrics.Bounds.Right, windowBottom) : new Rect();
+				var windowInsets = windowMetrics.WindowInsets;
+				var windowBounds = windowMetrics.Bounds;
+
+				var imeInsets = windowInsets.GetInsets(WindowInsets.Type.Ime());
+				var navInsets = windowInsets.GetInsets(WindowInsets.Type.NavigationBars());
+
+				var isKeyboardVisible = windowMetrics.WindowInsets.IsVisible(WindowInsets.Type.Ime());
+				var keyboardHeight = Math.Max(imeInsets.Bottom - navInsets.Bottom, 0);
+
+				var keyboardRect = isKeyboardVisible && keyboardHeight > 0
+					? new Rect(
+						0,
+						windowBounds.Bottom - keyboardHeight,
+						windowBounds.Right,
+						windowBounds.Bottom)
+					: new Rect();
 
 				KeyboardChanged?.Invoke(keyboardRect);
 			}
