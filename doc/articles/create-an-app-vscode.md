@@ -21,6 +21,8 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+    > [!NOTE]
+    > Starting with Uno.Sdk 6.0, Skia rendering is now the default rendering engine in Uno Platform templates. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
 
 1. Click the **Create** button on the top right corner, then click the **Copy** button
 
