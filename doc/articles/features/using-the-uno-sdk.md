@@ -36,6 +36,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
+    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -74,10 +75,11 @@ Here are the supported features:
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:Uno.Skia.Rendering).                                                                                               |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
-| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |                                                                                                                                                                    |
+| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
 
 ## Implicit Packages
 
@@ -153,6 +155,7 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
+        SkiaRenderer;
     </UnoFeatures>
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
       <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
