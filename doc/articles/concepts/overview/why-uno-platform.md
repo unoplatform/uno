@@ -18,6 +18,10 @@ However, built on top of this foundation is also a rich platform which includes 
 
 Uno Platform offers Hot Design, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains. Learn more about [Hot Design](https://platform.uno/hot-design/)
 
+## Comprehensive App Packaging for All Platforms
+
+Uno Platform offers comprehensive app packaging solutions, allowing you to build, package, and deploy your applications with ease across all supported platforms. Whether you're targeting mobile app stores, desktop environments, or web hosting, our built-in packaging support streamlines your release process. The platform handles all the platform-specific packaging requirements, enabling you to focus on your application logic instead of deployment complexities.
+
 ## True Single Project for 9 Platform Targets across Mobile, Web, Desktop, and Embedded
 
 Our Single Project approach is .NET ecosystem’s first and only true Single Project solution, empowering developers with a unified approach across all 9 platform targets, spanning mobile, web, desktop, and embedded apps. This genuine Single Project approach simplifies development, accelerates build times, and facilitates platform-specific development, enhancing your productivity and efficiency.
@@ -202,13 +206,13 @@ Today's apps run on such a wide range of displays, it is sometimes hard to make 
 
 Your Uno Platform WebAssembly app can run as a Progressive Web App. This means users can install it and run as a normal application on their device. In addition, this gives you even more customization options and additional PWA-specific APIs like badge notifications. You can install the [NuGet Package Explorer](https://nuget.info/) PWA like a local app!
 
-## WebView across platforms
+## WebView across platforms - included at no extra cost
 
-When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. Note that `WebView2` is currently available on mobile, WPF, and WinAppSDK targets. We are working on an implementation for the remaining Skia targets.
+When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. It is included in Uno Platform at no additional cost. The WebView2 control is available on all platforms.
 
-## Media Player across platforms
+## Media Player across platforms - included at no extra cost
 
-Uno Platform provides the `MediaPlayerElement` control which allows your app to play media files back in your app. It is supported on Linux through libVLC.
+Uno Platform provides the `MediaPlayerElement` control which allows your app to play media files in your app across all platforms. The Media Player control is fully supported on all platforms, including Linux through libVLC integration and it is included with Uno Platform for free.
 
 ## Monaco Editor on Wasm
 
