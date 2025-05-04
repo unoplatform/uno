@@ -1,61 +1,89 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.Graphics;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using Microsoft.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private NativeWindow _nativeWindow;
+	private NativeWindow? _nativeWindow;
 
 	private RootViewController _mainController;
 #if !__TVOS__
-	private NSObject _orientationRegistration;
+	private NSObject? _orientationRegistration;
 #endif
 	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_nativeWindow = new NativeWindow();
+		if (!Application.HasSceneManifest())
+		{
+			SetNativeWindow(new NativeWindow());
+		}
 
 		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
+		_mainController.View ??= new UIView(CGRect.Empty);
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
-		ObserveOrientationAndSize();
-
 		SubscribeBackgroundNotifications();
+
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
+
+		AwaitingScene.Enqueue(this);
+	}
+
+	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
+
+	[MemberNotNull(nameof(_nativeWindow))]
+	internal void SetNativeWindow(NativeWindow nativeWindow)
+	{
+		_nativeWindow = nativeWindow;
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 		_nativeWindow.RootViewController = _mainController;
+		ObserveOrientationAndSize();
 
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
-		DispatchDpiChanged();
+		if (Window is null)
+		{
+			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
+		}
+		Window.NotifyContentLoaded();
 	}
 
-	public override NativeWindow NativeWindow => _nativeWindow;
+	public override NativeWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore() => _nativeWindow.MakeKeyAndVisible();
+	protected override void ShowCore()
+	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
+		_nativeWindow.MakeKeyAndVisible();
+	}
 
 	internal RootViewController MainController => _mainController;
 
@@ -65,6 +93,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void RaiseNativeSizeChanged()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);
@@ -75,6 +108,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void ObserveOrientationAndSize()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 #if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications

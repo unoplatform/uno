@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CoreAnimation;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Controls;
-using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
-using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
-using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -25,12 +19,13 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private AppleUIKitWindow _nativeWindow;
+	private AppleUIKitWindow? _nativeWindow;
 
 	private RootViewController _mainController;
 	private readonly DisplayInformation _displayInformation;
 	private InputPane _inputPane;
 	private XamlRoot _xamlRoot;
+	private bool _isPendingShow;
 
 #if !__TVOS__
 	private NSObject? _orientationRegistration;
@@ -38,8 +33,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		Instance ??= this;
-		_nativeWindow = new();
+		if (!UnoUISceneDelegate.HasSceneManifest())
+		{
+			SetNativeWindow(new AppleUIKitWindow());
+		}
+		else
+		{
+			Bounds = new Rect(default, new Windows.Foundation.Size(1025, 768));
+		}
 
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
@@ -47,11 +48,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		AppManager.XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
-		ObserveOrientationAndSize();
-
-		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear. 
-		TryCreateExtendedSplashscreen();
 
 		_inputPane = InputPane.GetForCurrentView();
 
@@ -60,24 +56,53 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
 #endif
 
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
+
+		AwaitingScene.Enqueue(this);
+	}
+
+	[MemberNotNull(nameof(_nativeWindow))]
+	internal void SetNativeWindow(AppleUIKitWindow nativeWindow)
+	{
+		_nativeWindow = nativeWindow;
+
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
-		DispatchDpiChanged();
+		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
+		// otherwise, a black screen may appear. 
+		TryCreateExtendedSplashscreen();
+
+		ObserveOrientationAndSize();
+
+		if (_isPendingShow)
+		{
+			ShowCore();
+		}
 	}
 
-	public static NativeWindowWrapper? Instance { get; private set; }
+	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
-	public override AppleUIKitWindow NativeWindow => _nativeWindow;
+	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	protected override void ShowCore()
 	{
+		if (_nativeWindow is null)
+		{
+			// In case of scene delegate apps, the native window
+			// may be created after Show is called.
+			_isPendingShow = true;
+			return;
+		}
+
+		_isPendingShow = false;
+
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
 			void OnLoaded(object sender, object args)
@@ -87,35 +112,49 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 					this.Log().Debug($"ShowCore: Root loaded");
 				}
 
-				// Requeue after the current loaded event so we let all
-				// controls render properly.
-				Microsoft.UI.Dispatching.DispatcherQueue.Main.TryEnqueue(
-					priority: DispatcherQueuePriority.High, () =>
-					{
-						if (this.Log().IsDebugEnabled())
-						{
-							this.Log().Debug($"ShowCore: Showing main content");
-						}
+				TransitionFromSplashScreen();
 
-						_nativeWindow.MakeKeyAndVisible();
-
-						// Fade the app's content over the extended splash screen
-						UIView.Transition(
-							_nativeWindow,
-							0.25f,
-							UIViewAnimationOptions.TransitionCrossDissolve,
-							() => _nativeWindow.RootViewController = _mainController,
-							null
-						);
-
-						IsVisible = true;
-
-						fe.Loaded -= OnLoaded;
-					});
+				fe.Loaded -= OnLoaded;
 			}
 
 			fe.Loaded += OnLoaded;
 		}
+		else
+		{
+			TransitionFromSplashScreen();
+		}
+	}
+
+	private void TransitionFromSplashScreen()
+	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window needs to exist to transition from splash screen");
+		}
+
+		// Requeue after the current loaded event so we let all
+		// controls render properly.
+		Microsoft.UI.Dispatching.DispatcherQueue.Main.TryEnqueue(
+			priority: DispatcherQueuePriority.High, () =>
+			{
+				if (this.Log().IsDebugEnabled())
+				{
+					this.Log().Debug($"ShowCore: Showing main content");
+				}
+
+				_nativeWindow.MakeKeyAndVisible();
+
+				// Fade the app's content over the extended splash screen
+				UIView.Transition(
+					_nativeWindow,
+					0.25f,
+					UIViewAnimationOptions.TransitionCrossDissolve,
+					() => _nativeWindow.RootViewController = _mainController,
+					null
+				);
+
+				IsVisible = true;
+			});
 	}
 
 	/// <summary>
@@ -129,13 +168,16 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	/// </summary>
 	private void TryCreateExtendedSplashscreen()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		this.LogDebug()?.LogDebug("Native window ShowCore");
 		var launchName = NSBundle.MainBundle.ObjectForInfoDictionary("UILaunchStoryboardName") as NSString;
 
 		if (!string.IsNullOrEmpty(launchName))
 		{
-			// 
-
 			if (this.Log().IsDebugEnabled())
 			{
 				this.Log().Debug($"Using storyboard {launchName} as an extended Splash Screen");
@@ -163,6 +205,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);
@@ -172,6 +219,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void ObserveOrientationAndSize()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 #if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications
