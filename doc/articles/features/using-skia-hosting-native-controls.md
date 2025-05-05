@@ -5,7 +5,7 @@ uid: Uno.Skia.Embedding.Native
 # Embedding Native Elements in Skia Apps
 
 > [!NOTE]
-> As of Uno Platform 6.0, running on macOS does not yet support native controls embedding.
+> As of Uno Platform 6.0, running on macOS desktop does not yet support native controls embedding.
 
 In an Uno app with a Skia renderer, i.e. using `net9.0-desktop` or adding `SkiaRenderer` to the `UnoFeatures` MSBuild property, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
 
