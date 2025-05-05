@@ -26,7 +26,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
+public partial class AppBarToggleButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement
 {
 	/// <summary>
 	/// Initializes a new instance of the AppBarToggleButton class.
@@ -88,6 +88,10 @@ public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICom
 		AppBarButtonHelpers<AppBarToggleButton>.OnBeforeApplyTemplate(this);
 		base.OnApplyTemplate();
 		AppBarButtonHelpers<AppBarToggleButton>.OnApplyTemplate(this);
+
+#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback.
+		SetupContentUpdate();
+#endif
 	}
 
 	protected override void OnPointerEntered(PointerRoutedEventArgs args)
