@@ -54,7 +54,7 @@ jobs:
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
-    displayName: Build Android samples app
+    displayName: Build Android Samples app
 
   - task: CopyFiles@2
     inputs:

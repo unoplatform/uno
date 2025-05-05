@@ -47,7 +47,7 @@ jobs:
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
       $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
-    displayName: Build Skia iOS Head
+    displayName: Build iOS Skia Head
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
