@@ -22,7 +22,7 @@ parameters:
 jobs:
 
 - job: Android_Build_NetCoreMobile_For_Tests
-  displayName: 'Build .NET Mobile Android UI Tests'
+  displayName: 'Build Samples App'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -54,7 +54,7 @@ jobs:
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
-    displayName: Build Android Samples app
+    displayName: Build Samples app
 
   - task: CopyFiles@2
     inputs:

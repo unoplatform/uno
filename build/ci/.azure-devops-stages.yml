@@ -51,7 +51,7 @@ stages:
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
-  displayName: Tests - Packages
+  displayName: Tests - Templates
   dependsOn:
     - binaries_build_winui
 

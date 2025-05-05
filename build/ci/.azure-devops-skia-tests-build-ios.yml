@@ -13,7 +13,7 @@ parameters:
 jobs:
 
 - job: Skia_Tests_Build_iOS
-  displayName: 'Build iOS Skia Samples App'
+  displayName: 'Build Samples App'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 

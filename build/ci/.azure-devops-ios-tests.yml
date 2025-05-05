@@ -51,7 +51,7 @@ parameters:
 
 jobs:
 - job: iOS_Build
-  displayName: 'Build iOS Samples App UI Tests'
+  displayName: 'Build Samples App'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -82,7 +82,7 @@ jobs:
   - bash: |
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
 
-    displayName: Build iOS App for UI Tests
+    displayName: Build Samples App
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"

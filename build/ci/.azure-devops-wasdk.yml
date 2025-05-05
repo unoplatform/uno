@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: WASDK_Build
-  displayName: 'Build WinAppSDK Samples App'
+  displayName: 'Build Samples App'
 
   pool:
     vmImage: ${{ parameters.poolName }}
