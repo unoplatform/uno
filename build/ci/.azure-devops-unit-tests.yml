@@ -3,17 +3,11 @@ parameters:
 
 jobs:
 - job: Unit_Tests
-  displayName: '' ## Name is concatenated with the matrix group name
+  displayName: 'Run'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
-
+  
   pool: ${{ parameters.poolName }}
-
-  strategy:
-    matrix:
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -21,6 +15,8 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
