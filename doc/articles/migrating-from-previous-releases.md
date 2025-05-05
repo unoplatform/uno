@@ -4,6 +4,16 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+## Uno Platform 6.0
+
+Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
+
+- The existing `Http` feature still exists, but no longer includes the `Uno.Extensions.Http.Refit` package.
+- Two new features have been added:
+  - **HttpRefit** – Configures `Uno.Extensions.Http.Refit` so you can register and consume REST APIs using Refit’s type-safe client generation.
+  - **HttpKiota** – Configures `Uno.Extensions.Http.Kiota` so you can register and consume OpenAPI-defined endpoints using Kiota’s HTTP client generator.
+- **Note:** If you’re upgrading and previously relied on Refit from the `Http` feature, remove `Http` from your `<UnoFeatures>` and add `HttpRefit` instead. See the [HTTP overview](xref:Uno.Extensions.Http.Overview) for more information.
+
 ## Uno Platform 5.6
 
 Uno Platform 5.6 contains one breaking change around using `x:Load` to align the behavior to WinUI.
