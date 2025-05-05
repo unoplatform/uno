@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.X11;

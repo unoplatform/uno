@@ -2,38 +2,49 @@
 uid: Uno.Skia.Embedding.Native
 ---
 
-# Embedding Native Controls in Skia Apps
-
-In a Skia Desktop (Windows) app, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
-
-In principle, the native control hosting places the native control in an overlay on top of the Skia control which renders the whole app's UI. The native control is then rendered by the native windowing system and is not part of the Uno Platform visual tree. That control cannot be styled by Uno Platform styles, and Uno Platform controls cannot be placed on top of native controls.
+# Embedding Native Elements in Skia Apps
 
 > [!NOTE]
-> As of Uno Platform 5.2, X11 and macOS targets does not yet support native controls embedding.
+> As of Uno Platform 6.0, running on macOS desktop does not yet support native controls embedding.
 
-## Using embedded native controls (Skia.Gtk legacy)
+In an Uno Platform app with a Skia renderer, i.e. using `net9.0-desktop` or adding `SkiaRenderer` to the `UnoFeatures` MSBuild property, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
 
-To embedded native controls in your Skia heads, you will need to set the native control as `Content` of a `ContentControl`, either via code or XAML.
+Each target platform has its own idea of a native element.
 
-For instance, in a Skia.GTK app, you can add a control as follows:
+| Platform                        | Native element                                 | Description                                  |
+|---------------------------------|------------------------------------------------|----------------------------------------------|
+| Skia Desktop (Win32)            | Uno.UI.NativeElementHosting.Win32NativeWindow  | A native Windows window with a unique `Hwnd` |
+| Skia Desktop (WPF)              | System.Windows.UIElement                       | A WPF control                                |
+| Skia Desktop (X11)              | Uno.UI.NativeElementHosting.X11NativeWindow    | A native X11 window with a unique `XID`      |
+| WebAssembly with `SkiaRenderer` | Uno.UI.NativeElementHosting.BrowserHtmlElement | An HTML element with a unique `id`.          |
+| Android with `SkiaRenderer`     | Android.Views.View                             | An Android view.                             |
+| Apple UIKit with `SkiaRenderer` | UIKit.UIView                                   | An UIKit view.                               |
 
-```xml
-<ContentControl x:Name="MyControl">
-    <ContentControl.Content>
-        <Button xmlns="using:Gtk" />
-    </ContentControl.Content>
-</ContentControl>
-```
+The app developer is responsible for creating the native element and internal checks make sure that only a supported native element on the running platform is used.
 
-## Cross-platform considerations
+## Using embedded native controls
 
-It is important to take into account platform specific limitations to the inclusion of such controls, particularly in libraries.
+To embed a native element, you will need to set the native control as `Content` of a `ContentControl`, either via code or XAML. On desktop platforms, it's often more straightforward to create the native element via code since the parameters for creating the native element are not known ahead of time. For example, on Win32, you need to create a native Windows window first, get its `Hwnd` and then create a `Win32NativeWindow` instance with that `Hwnd` value.
 
-Libraries in Uno Platform are compiled for all platforms, and therefore cannot include native controls that are not available on all platforms. For instance, a library cannot include a native GTK control built for `net7.0` only and you may need to use head-specific XAML to include such controls.
+Do not set a `ContentTemplate` or a `ContentTemplateSelector` on the `ControlControl`.
+
+## Features
+
+The layouting of native elements behaves mostly like regular `UIElement`s, using the native platform's measuring and arranging functions, e.g. `UIKit.UIView.SizeThatFits` on Apple UIKit, if they are present and defaulting to taking the entire available space on targets that don't have corresponding native measuring and arranging methods.
+
+Furthermore, native elements blend and overlap naturally with Uno controls and respect Z-axis ordering. For example, if you open a popup on top of a native element, the popup will show on top of the element. Native-managed blending is not limited to rectangular boundaries and elements clipped with arbitrary paths work as expected. For example, elements with rounded corners that are placed on a native element will not show up as rectangles but behave as usual with rounded corners.
+
+Setting the `Opacity` of the wrapping `ContentControl` will also set the opacity of the hosted native element. Likewise, setting the `Visibility` of the wrapping `ContentControl` will flow to the native element and hide/show it.
+
+> [!NOTE]
+> As of Uno Platform 6.0, setting the opacity of native elements is not supported on X11.
 
 ## Limitations
 
-The current implementation does not support the following features:
+The native control is rendered by the native windowing system and cannot be styled by Uno Platform styles.
 
-- Opacity changes to the `ContentControl` are not reflected to the native control
-- Visibility changes are reflected to the native control. For the native control to disappear, you will need to set the `Content` to `null`, or remove any of the parents from the visual tree. `x:Load` can also be used to achieve this behavior.
+While setting the transparency of native elements is supported, native elements don't alpha-blend. In other words, if a partially-transparent Uno control is placed on top of a native element, the native element will not be visible underneath the Uno control. Instead, the transparent area will behave as if the native element is not there and will only show managed Uno controls underneath.
+
+Focus and pointer/keyboard input work as expected most of the time, but, depending on the platform, you might find some quirks with the way inputs are handled.
+
+Placing Uno Controls outside of their layout bounds to be on top of native elements using `RenderTransform` or similar techniques will not clip correctly. The clipping of Uno controls is used to calculate which areas are painted by managed controls and how they overlap with native elements. If the clip bounds of a control are unbounded (i.e. the control isn't clipped at all), the clip bounds for managed-native overlapping purposes will be the layout rectangle of the control.

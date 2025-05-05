@@ -18,6 +18,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
 
 namespace Uno.UI.Runtime.Skia.Win32;
