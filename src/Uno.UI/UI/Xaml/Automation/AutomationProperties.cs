@@ -183,7 +183,7 @@ namespace Microsoft.UI.Xaml.Automation
 			DependencyProperty.RegisterAttached(
 				"PositionInSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(-1)); //TODO:MZ: Validate this default value
 
 		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
 
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Automation
 			DependencyProperty.RegisterAttached(
 				"SizeOfSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(-1)); //TODO:MZ: Validate this default value
 
 		public static AutomationLandmarkType GetLandmarkType(DependencyObject element) => (AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
 
