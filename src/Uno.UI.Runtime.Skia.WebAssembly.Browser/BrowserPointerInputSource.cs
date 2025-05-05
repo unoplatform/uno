@@ -18,7 +18,7 @@ namespace Uno.UI.Runtime.Skia;
 internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 {
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
-	private static readonly Logger? _logTrace = _log.IsTraceEnabled() ? _log : null;
+	private static readonly Action<string>? _trace = _log.IsTraceEnabled() ? _log.Trace : null;
 
 	private ulong _bootTime;
 	private PointerPoint? _lastPoint;
@@ -36,7 +36,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 	public BrowserPointerInputSource()
 	{
-		_logTrace?.Trace("Initializing BrowserPointerInputSource");
+		_trace?.Invoke("Initializing BrowserPointerInputSource");
 
 		Initialize(this);
 	}
@@ -49,7 +49,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	{
 		((BrowserPointerInputSource)inputSource)._bootTime = (ulong)bootTime;
 
-		_logTrace?.Trace("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+		_trace?.Invoke("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
 	}
 
 	[JSExport]
@@ -74,7 +74,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 		try
 		{
-			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+			_trace?.Invoke($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
