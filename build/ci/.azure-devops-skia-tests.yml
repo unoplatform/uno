@@ -24,7 +24,7 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_browser
-  displayName: Tests - Browser Skia
+  displayName: Tests - WebAssembly Skia
   dependsOn:
     - Setup
 
