@@ -2,7 +2,7 @@
 uid: Uno.Features.Lottie
 ---
 
-# Lottie for Uno
+# Lottie for Uno Platform
 
 > [!TIP]
 > This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, see [Lottie](https://learn.microsoft.com/windows/communitytoolkit/animations/lottie).
