@@ -1,19 +1,21 @@
 ﻿using System;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.Graphics;
+using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using Microsoft.UI.Xaml;
-using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -38,12 +40,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		ObserveOrientationAndSize();
 
+		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+
 		SubscribeBackgroundNotifications();
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
-		_nativeWindow.RootViewController = _mainController;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
@@ -55,7 +58,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore() => _nativeWindow.MakeKeyAndVisible();
+	protected override void ShowCore() => NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
 
 	internal RootViewController MainController => _mainController;
 
