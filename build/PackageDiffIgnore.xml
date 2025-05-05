@@ -2042,6 +2042,11 @@
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+
+			<!-- BEGIN AppBarButton -->
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarButton::TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarToggleButton::TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<!-- END AppBarButton-->
 		</Properties>
 
 		<Methods>
@@ -2067,9 +2072,46 @@
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Initialize()" reason="Removed" />
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.SkiaHost.Run()" reason="Namespace changed" />
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Runtime.Skia.SkiaHost.RunLoop()" reason="Namespace changed" />
+
+			<!-- BEGIN AppBarButton -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.RaiseExpandCollapseAutomationEvent(System.Boolean isOpen)" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBarButton.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings value)" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarButton.get_TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBarToggleButton.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings value)" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarToggleButton.get_TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.CommandBar.FindParentCommandBarForElement(Microsoft.UI.Xaml.Controls.ICommandBarElement element, Microsoft.UI.Xaml.Controls.CommandBar&amp; parentCmdBar)" reason="Not public in WinUI" />
+			<!-- END AppBarButton-->
 		</Methods>
 	</IgnoreSet>
 
+	<IgnoreSet baseVersion="6.0">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<!-- BEGIN AppBarButton -->
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarButton::TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarToggleButton::TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<!-- END AppBarButton-->
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN AppBarButton -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AppBarButtonAutomationPeer.RaiseExpandCollapseAutomationEvent(System.Boolean isOpen)" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBarButton.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings value)" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarButton.get_TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBarToggleButton.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings value)" reason="Not public in WinUI" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBarToggleButton.get_TemplateSettingsProperty()" reason="Not public in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.CommandBar.FindParentCommandBarForElement(Microsoft.UI.Xaml.Controls.ICommandBarElement element, Microsoft.UI.Xaml.Controls.CommandBar&amp; parentCmdBar)" reason="Not public in WinUI" />
+			<!-- END AppBarButton-->
+		</Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
