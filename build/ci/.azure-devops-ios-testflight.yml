@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: iOS_TestFlight
-  displayName: 'Build iOS Samples App - TestFlight'
+  displayName: 'Build Samples App - TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
 
   strategy:
@@ -78,7 +78,7 @@ jobs:
         -p:UnoTargetFrameworkOverride=net9.0-ios \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
-    displayName: Build iOS App for TestFlight
+    displayName: Build for TestFlight
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"

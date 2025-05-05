@@ -90,7 +90,7 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_linux
-  displayName: Tests - Desktop Skia (Unix)
+  displayName: Tests - Desktop Skia Unix
   dependsOn:
     - runtime_tests_skia_build
 
@@ -109,7 +109,7 @@ stages:
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
 - stage: runtime_tests_skia_windows
-  displayName: Tests - Desktop Skia (Windows)
+  displayName: Tests - Desktop Skia Windows
   dependsOn:
     - runtime_tests_skia_build
 

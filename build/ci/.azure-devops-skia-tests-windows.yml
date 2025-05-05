@@ -16,7 +16,7 @@ jobs:
 ##
 
 - job: Skia_Windows_Screenshot_Tests
-  displayName: 'Windows Snapshot Tests'
+  displayName: 'Snapshot Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -56,7 +56,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Windows_Runtime_Tests_Build
-  displayName: 'Windows Runtime Tests'
+  displayName: 'Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
