@@ -16,7 +16,7 @@ jobs:
 ##
 
 - job: Skia_Linux_Screenshot_Tests
-  displayName: 'Run Skia Linux Snapshot Tests'
+  displayName: 'Linux Snapshot Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -46,7 +46,7 @@ jobs:
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
         xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
 
-    displayName: Run Skia Linux Snapshot Tests
+    displayName: Run Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -57,7 +57,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Linux_Runtime_Tests_Build
-  displayName: 'Run Skia Linux Runtime Tests'
+  displayName: 'Linux Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -93,7 +93,7 @@ jobs:
   - script: |
       chmod +x build/test-scripts/linux-skia-runtime-tests.sh
       build/test-scripts/linux-skia-runtime-tests.sh
-    displayName: Run Skia $(XAML_FLAVOR_BUILD) Runtime Tests
+    displayName: Run Runtime Tests
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
@@ -101,7 +101,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia Linux $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'Linux Skia Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
       failTaskOnFailedTests: true
@@ -117,7 +117,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_macos_Runtime_Tests_Build
-  displayName: 'Run Skia macOS Runtime Tests'
+  displayName: 'macOS Runtime Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -151,7 +151,7 @@ jobs:
   - script: |
       chmod +x build/test-scripts/macos-skia-runtime-tests.sh
       build/test-scripts/macos-skia-runtime-tests.sh
-    displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
+    displayName: Run macOS Runtime Tests
     env:
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
@@ -159,7 +159,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia macOS $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'macOS Skia Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml'
       failTaskOnFailedTests: true
