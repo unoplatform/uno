@@ -105,7 +105,7 @@ jobs:
     displayName: Copy Artifacts to PackageCache
 
   - bash: brew install ninja
-    displayName: Install ninja build for Skia WebAssembly build
+    displayName: Install ninja build for WebAssembly Skia build
 
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1 -TestGroup "$(TestGroup)"
     displayName: Run Project Templates Tests

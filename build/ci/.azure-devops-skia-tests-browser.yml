@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 ##
-## Skia WebAssembly Browser
+## WebAssembly Skia Browser
 ##
 - job: Skia_Browser_Runtime_Tests_Build
   displayName: 'Run Skia Browser Runtime Tests'
