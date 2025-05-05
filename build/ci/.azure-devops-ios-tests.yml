@@ -121,7 +121,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
-      JobDisplayName: 'Run iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
+      JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
       TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
       JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
@@ -143,7 +143,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
-      JobDisplayName: 'Run iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
+      JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
       TestRunName: 'iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
@@ -177,7 +177,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
-      JobDisplayName: 'Run iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
+      JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
       TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
       JobTimeoutInMinutes: 60
       SamplesAppArtifactName: 'ios-uitest-build'

@@ -62,7 +62,7 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Snap
-  displayName: 'Run WebAssembly Snapshots Tests'
+  displayName: 'WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
 
