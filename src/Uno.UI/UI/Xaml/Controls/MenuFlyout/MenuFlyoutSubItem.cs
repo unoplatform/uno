@@ -884,5 +884,10 @@ namespace Microsoft.UI.Xaml.Controls
 			//	}
 			//}
 		}
+
+		public void SetSubMenuDirection(bool isSubMenuDirectionUp)
+		{
+			// TODO Uno
+		}
 	}
 }
