@@ -11,6 +11,8 @@ internal partial class X11XamlRootHost
 {
 	private readonly EventLoop _renderingEventLoop;
 	private bool _renderingScheduled;
+	private readonly object _nextRenderParamsLock = new();
+	private RenderParams? _nextRenderParams;
 
 	void IXamlRootHost.InvalidateRender()
 	{
@@ -30,16 +32,24 @@ internal partial class X11XamlRootHost
 					var nativeClippingPath = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, canvas);
 					var picture = _recorder.EndRecording();
 
-					var scale = rootElement?.XamlRoot is { } root
+					var scale = rootElement.XamlRoot is { } root
 						? root.RasterizationScale
 						: 1;
+
+					lock (_nextRenderParamsLock)
+					{
+						_nextRenderParams = new RenderParams(picture, nativeClippingPath, (float)scale, (float)scale);
+					}
 
 					if (!Interlocked.Exchange(ref _renderingScheduled, true))
 					{
 						_renderingEventLoop.Schedule(() =>
 						{
 							Volatile.Write(ref _renderingScheduled, false);
-							_renderer.Render(picture, nativeClippingPath, (float)scale, (float)scale);
+							if (_nextRenderParams is { } renderParams)
+							{
+								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.ScaleX, renderParams.ScaleY);
+							}
 						});
 					}
 				}
@@ -53,4 +63,10 @@ internal partial class X11XamlRootHost
 			NativeDispatcher.Main.DispatchRendering();
 		}
 	}
+
+	private readonly record struct RenderParams(
+		SKPicture Picture,
+		SKPath NativeClippingPath,
+		float ScaleX,
+		float ScaleY);
 }
