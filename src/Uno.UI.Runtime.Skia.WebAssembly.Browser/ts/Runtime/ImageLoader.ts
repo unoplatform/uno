@@ -29,12 +29,13 @@ namespace Uno.UI.Runtime.Skia {
 						bytes: Array.from<number>(imageData.data),
 						width: img.width,
 						height: img.height
-					}); // Return the RGBA buffer
+					});
 				};
 
-				img.onerror = e => resolve({
-					error: e.toString()
-				});
+				img.onerror = e => {
+					URL.revokeObjectURL(imageUrl);
+					resolve({error: e.toString()});
+				};
 
 				img.src = imageUrl;
 			});

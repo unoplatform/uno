@@ -68,7 +68,7 @@ internal static partial class ImageSourceHelpers
 				SKImage image;
 				unsafe
 				{
-					var gcHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+					var gcHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
 					fixed (void* ptr = bytes)
 					{
 						try
