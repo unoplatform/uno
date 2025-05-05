@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,8 +37,9 @@ partial class ScrollContentPresenter
 #else
 			_oldPadding = Scroller.Padding;
 #endif
-
-			var bottom = Math.Max(intersection.Height - (viewPortRect.Height - focusedElementRect.Bottom), 0);
+			var bottom = focusedElementRect.IsEmpty ?
+				intersection.Height :
+				Math.Max(intersection.Height - (viewPortRect.Height - focusedElementRect.Bottom), 0);
 
 			SetOccludedRectPadding(new Thickness(_oldPadding.Left, _oldPadding.Top, _oldPadding.Right, bottom));
 		}
