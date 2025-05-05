@@ -155,6 +155,7 @@ namespace Microsoft.UI.Composition
 
 				_parent = value;
 #if __SKIA__
+				SetMatrixDirty();
 				SetAsNativeHostVisual(value?.IsNativeHostVisual ?? false, inherited: true);
 #endif
 			}
