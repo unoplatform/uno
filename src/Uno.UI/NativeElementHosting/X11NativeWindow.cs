@@ -1,6 +1,6 @@
 #if UNO_REFERENCE_API
 using System;
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.NativeElementHosting;
 
 public sealed class X11NativeWindow
 {

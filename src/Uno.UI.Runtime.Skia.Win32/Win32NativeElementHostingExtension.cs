@@ -15,6 +15,7 @@ using Windows.Win32.Graphics.GdiPlus;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Composition;
 using SkiaSharp;
+using Uno.UI.NativeElementHosting;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 

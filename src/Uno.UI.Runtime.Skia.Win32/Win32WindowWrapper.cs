@@ -23,6 +23,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
