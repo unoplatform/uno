@@ -74,7 +74,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: '' ## Name is concatenated with the matrix group name
+  displayName: ' ' ## Name is concatenated with the matrix group name
   dependsOn:
   - Android_Build_NetCoreMobile_For_Tests
 
