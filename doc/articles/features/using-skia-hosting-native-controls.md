@@ -39,7 +39,6 @@ Setting the `Opacity` of the wrapping `ContentControl` will also set the opacity
 > [!NOTE]
 > As of Uno Platform 6.0, setting the opacity of native elements is not supported on X11.
 
-
 ## Limitations
 
 The native control is rendered by the native windowing system and cannot be styled by Uno Platform styles.
