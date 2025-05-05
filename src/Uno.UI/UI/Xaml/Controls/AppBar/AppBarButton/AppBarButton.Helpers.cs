@@ -1,10 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
