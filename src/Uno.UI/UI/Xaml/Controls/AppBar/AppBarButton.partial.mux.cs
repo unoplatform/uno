@@ -27,7 +27,7 @@ using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
+partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandBarOverflowElement, ICommandBarLabeledElement, ISubMenuOwner
 {
 	/// <summary>
 	/// Initializes a new instance of the AppBarButton class.
@@ -203,6 +203,10 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		AppBarButtonHelpers<AppBarButton>.OnBeforeApplyTemplate(this);
 		base.OnApplyTemplate();
 		AppBarButtonHelpers<AppBarButton>.OnApplyTemplate(this);
+
+#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback.
+		SetupContentUpdate();
+#endif
 	}
 
 	// Sets the visual state to "Compact" or "FullSize" based on the value
@@ -620,28 +624,4 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	void IAppBarButtonHelpersProvider.StopAnimationForWidthAdjustments() => StopAnimationForWidthAdjustments();
 
 	CommandBarDefaultLabelPosition IAppBarButtonHelpersProvider.GetEffectiveLabelPosition() => GetEffectiveLabelPosition();
-
-#if HAS_UNO // Avoid memory leaks by unsubscribing and re-subscribing to flyout events
-	// TODO Uno: This might not be needed - the flyout is owned by the AppBarButton, so it should be removed along with the button itself - needs leak test validation.
-	private protected override void OnLoaded()
-	{
-		base.OnLoaded();
-
-		if (Flyout is not null)
-		{
-			AttachFlyout(Flyout);
-		}
-	}
-
-	private protected override void OnUnloaded()
-	{
-		base.OnUnloaded();
-
-		// Detach event handlers
-		m_flyoutOpenedHandler.Disposable = null;
-		m_flyoutClosedHandler.Disposable = null;
-
-		m_menuHelper = null;
-	}
-#endif
 }
