@@ -6,7 +6,7 @@ uid: Uno.HotDesign.Properties.AdvancedFlyout
 
 The **Advanced Flyout** opens when you click the **Advanced** button (three dots) on the right side of a property.
 
-This flyout allows you to define how a property value is set. You can assign a direct **Value**, use a **Binding**, apply a **Resource**, or define responsive behavior using **Responsive Extensions**. In this section, we’ll cover **Value**, **Binding**, and **Resource**. For more on responsive behavior, [click here](#). <!-- TODO: Add link when available -->
+This flyout allows you to define how a property value is set. You can assign a direct **Value**, use a **Binding**, apply a **Resource**, or define responsive behavior using **Responsive Extensions**. In this section, we’ll cover **Value**, **Binding**, and **Resource**. For more on responsive behavior, [click here](xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtension).
 
 ## Value
 
