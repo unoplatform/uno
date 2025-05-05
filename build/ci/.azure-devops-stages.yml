@@ -26,7 +26,7 @@ stages:
     - template: .azure-devops-markdown-lint.yml
 
 - stage: binaries_build_native_macos
-  displayName: Build - Native binaries
+  displayName: Build - Native Binaries
   dependsOn:
     - Setup
 
@@ -39,7 +39,7 @@ stages:
  
 
 - stage: binaries_build_winui
-  displayName: Build - WinUI binaries
+  displayName: Build - Managed Binaries
   dependsOn:
     - binaries_build_native_macos
 
