@@ -6,6 +6,8 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 ## Uno Platform 6.0
 
+
+### Uno Extensions
 Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
 
 - The existing `Http` feature still exists, but no longer includes the `Uno.Extensions.Http.Refit` package.
