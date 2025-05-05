@@ -10,12 +10,8 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-
-  strategy:
-    matrix:
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
