@@ -206,11 +206,11 @@ Today's apps run on such a wide range of displays, it is sometimes hard to make 
 
 Your Uno Platform WebAssembly app can run as a Progressive Web App. This means users can install it and run as a normal application on their device. In addition, this gives you even more customization options and additional PWA-specific APIs like badge notifications. You can install the [NuGet Package Explorer](https://nuget.info/) PWA like a local app!
 
-## WebView across platforms - included at no extra cost
+## WebView across platforms - included at no cost
 
-When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. It is included in Uno Platform at no additional cost. The WebView2 control is available on all platforms.
+When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. It is included in Uno Platform at no cost. The WebView2 control is available on all platforms.
 
-## Media Player across platforms - included at no extra cost
+## Media Player across platforms - included at no cost
 
 Uno Platform provides the `MediaPlayerElement` control which allows your app to play media files in your app across all platforms. The Media Player control is fully supported on all platforms, including Linux through libVLC integration and it is included with Uno Platform for free.
 
