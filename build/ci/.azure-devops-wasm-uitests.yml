@@ -121,7 +121,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: '' ## Name is concatenated with the matrix group name
+  displayName: ' ' ## Name is concatenated with the matrix group name
   dependsOn:
   - Wasm_UITests_Build
 
