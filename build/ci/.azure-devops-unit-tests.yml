@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Unit_Tests
-  displayName: 'Unit Tests'
+  displayName: '' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
 
@@ -78,7 +78,7 @@ jobs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '*.trx'
       searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
-      testRunTitle: 'Unit Tests $(XAML_FLAVOR_BUILD)'
+      testRunTitle: 'Unit Tests'
       mergeTestResults: true
     continueOnError: true
     condition: always()
