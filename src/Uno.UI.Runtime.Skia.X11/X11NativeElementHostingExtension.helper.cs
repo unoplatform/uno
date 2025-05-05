@@ -6,6 +6,7 @@ using System.Threading;
 using Windows.ApplicationModel;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 

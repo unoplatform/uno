@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 using Uno.WinUI.Runtime.Skia.X11;
 
