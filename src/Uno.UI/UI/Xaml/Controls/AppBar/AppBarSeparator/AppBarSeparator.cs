@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+﻿#nullable enable
+
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a line that separates items in an AppBar or CommandBar.
