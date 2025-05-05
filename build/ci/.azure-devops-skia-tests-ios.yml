@@ -31,7 +31,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
-      JobDisplayName: 'iOS Skia Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Run iOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
+      TestRunName: 'iOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       vmImage: ${{ parameters.vmMacImageTest }}
       SamplesAppArtifactName: 'uitests-ios-skia-build'
