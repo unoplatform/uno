@@ -39,3 +39,14 @@ You can apply predefined styles to your elements. To do this, go to the Style se
 
 <img src="Assets/core-tools/media/properties-apply-styles.gif" height="600" alt="GIF showing how to apply styles on the Properties window" />
 
+## Property Value Indicators
+
+Each property in the Properties window includes an **Advanced** button to the right of its value. This button uses an icon to indicate how the property's value is currently defined. It helps you quickly understand whether the value is set directly, comes from a binding, a resource, or is responsive. Here’s what each icon means:
+
+- ![None](Assets/properties-view-advcd-button-none.png) — No value is set; the property is using its default value.
+- ![XAML](Assets/properties-view-advcd-button-xaml.png) — A **Literal** or **XAML-defined** value has been set directly.
+- ![Binding](Assets/properties-view-advcd-button-binding.png) — A **Binding** is being used for this property.
+- ![Resource](Assets/properties-view-advcd-button-resource.png) — The value comes from a **Resource**.
+- ![Mixed Responsive](Assets/properties-view-advcd-button-mixed-responsive.png) — The **Responsive Extension** is used, with different values for different screen sizes (Mixed Responsive).
+
+Clicking the **Advanced** button opens a flyout with three settings for each property: Value, Binding, or Resource. For more information on how the **Advanced Flyout** works please refer to our [Advanced Flyout docs](). <!-- TODO: Add link here -->
