@@ -26,6 +26,8 @@ The app developer is responsible for creating the native element and internal ch
 
 To embed a native element, you will need to set the native control as `Content` of a `ContentControl`, either via code or XAML. On desktop platforms, it's often more straightforward to do this via code since the parameters for creating the native element are not known ahead of time. For example, on Win32, you need to create a native Windows window first, get its `Hwnd` and then create a `Win32NativeWindow` instance with that `Hwnd` value.
 
+Do not set a `ContentTemplate` or a `ContentTemplateSelector` on the `ControlControl`.
+
 ## Features
 
 The layouting of native elements behaves mostly like regular `UIElement`s, using the native platform's measuring and arranging functions, e.g. `UIKit.UIView.SizeThatFits` on Apple UIKit, if they are present and defaulting to taking the entire available space on targets that don't have corresponding native measuring and arranging methods.
