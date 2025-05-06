@@ -6,7 +6,6 @@ namespace Uno
 {
 	partial class WinRTFeatureConfiguration
 	{
-
 		public static class GestureRecognizer
 		{
 			internal static void RestoreDefaults()
@@ -62,6 +61,20 @@ namespace Uno
 			/// </summary>
 			[DefaultValue(_defaultPatchSuspiciousCases)]
 			public static GestureRecognizerSuspiciousCases PatchCasesForUiElement { get; set; } = _defaultPatchSuspiciousCases;
+
+
+			internal const bool _defaultUseCompositionTimer = true;
+			/// <summary>
+			/// Sets whether the composition timer (if available on current platform) is used for inertia in direct manipulation.
+			/// </summary>
+			[DefaultValue(_defaultUseCompositionTimer)]
+			public static bool UseCompositionTimerForDirectManipulation { get; set; }
+
+			/// <summary>
+			/// Sets whether the composition timer (if available on current platform) is used for inertia in UI element manipulation.
+			/// </summary>
+			[DefaultValue(_defaultUseCompositionTimer)]
+			public static bool UseCompositionTimerForUiElement { get; set; }
 		}
 	}
 }

@@ -8,10 +8,12 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.System;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using static System.Double;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Input;
 #else
@@ -22,58 +24,6 @@ public partial class GestureRecognizer
 {
 	internal partial class Manipulation
 	{
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-		private sealed class InertiaProcessorTimer(Action<TimeSpan> onTick)
-		{
-			private EventHandler<object>? _handler;
-			private Stopwatch? _time;
-
-			public bool IsRunning => _handler is not null;
-
-			public void Start()
-			{
-				Stop();
-
-				_time = System.Diagnostics.Stopwatch.StartNew();
-				_handler = (_, args) =>
-				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
-				};
-
-				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += _handler;
-			}
-			public void Stop()
-			{
-				if (_handler is not null)
-				{
-					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= _handler;
-					_handler = null;
-				}
-			}
-
-			~InertiaProcessorTimer() => Stop();
-		}
-#else
-		private struct InertiaProcessorTimer
-		{
-			private readonly DispatcherQueueTimer _timer;
-
-			public InertiaProcessorTimer(Action<TimeSpan> OnTick, double framePerSeconds = 25)
-			{
-				_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-				_timer.Interval = TimeSpan.FromMilliseconds(1000d / framePerSeconds);
-				_timer.IsRepeating = true;
-				_timer.Tick += (snd, e) => OnTick(snd.LastTickElapsed);
-			}
-
-			public bool IsRunning => _timer.IsRunning;
-
-			public readonly void Start() => _timer.Start();
-			public readonly void Stop() => _timer.Stop();
-		}
-#endif
-
 		internal class InertiaProcessor : IDisposable
 		{
 			private const double _defaultDurationMs = 1000;
@@ -98,14 +48,14 @@ public partial class GestureRecognizer
 				Get: static (in ManipulationDelta m) => m.Expansion,
 				Set: static (ref ManipulationDelta m, double value) => m.Expansion = (float)value);
 
-			private readonly InertiaProcessorTimer _timer;
 			private readonly Manipulation _owner;
 			private readonly ulong _t0;
 			private readonly Point _position0;
 			private readonly ManipulationDelta _cumulative0; // Cumulative of the whole manipulation at t=0
 			private readonly ManipulationVelocities _velocities0;
 
-			private ManipulationState _state; // Cumulative of the inertia only at last tick
+			private IInertiaProcessorTimer? _timer;
+			private ManipulationState _stateOnLastTick;
 
 			private readonly bool _isTranslateInertiaXEnabled;
 			private readonly bool _isTranslateInertiaYEnabled;
@@ -132,7 +82,7 @@ public partial class GestureRecognizer
 				_cumulative0 = cumulative;
 				_velocities0 = velocities;
 
-				_state = new ManipulationState(timestamp, position, cumulative);
+				_stateOnLastTick = new ManipulationState(timestamp, position, cumulative);
 
 				_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled
 					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
@@ -152,20 +102,9 @@ public partial class GestureRecognizer
 				// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
 				_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;
 				_isTranslateInertiaYEnabled |= _isTranslateInertiaXEnabled && _owner._isTranslateYEnabled;
-
-				_timer = new(Process);
 			}
 
-			public bool IsRunning => _timer.IsRunning;
-
-			///// <summary>
-			///// Gets the elapsed time of the inertia (cf. Remarks)
-			///// </summary>
-			///// <remarks>
-			///// Depending of the platform, the timestamp provided by pointer events might not be absolute,
-			///// so it's preferable to not compare timestamp between pointers and inertia processor.
-			///// </remarks>
-			//public TimeSpan Elapsed => _timer.LastTickElapsed;
+			public bool IsRunning => _timer?.IsRunning ?? false;
 
 			private void CompleteConfiguration()
 			{
@@ -201,20 +140,44 @@ public partial class GestureRecognizer
 				}
 			}
 
-			public void Start()
+			public void Start(bool useCompositionTimer)
 			{
+				if (_timer is not null)
+				{
+					return;
+				}
+
 				CompleteConfiguration();
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+				_timer = useCompositionTimer
+					? new CompositionInertiaProcessorTimer(Process)
+					: new DispatcherInertiaProcessorTimer(Process);
+#else
+				_timer = new DispatcherInertiaProcessorTimer(Process);
+#endif
+
+				if (this.Log().IsDebugEnabled())
+				{
+					this.Log().Debug($"InertiaProcessor started with using timer {_timer.GetType().Name} ("
+						+ $"tr: (x={_isTranslateInertiaXEnabled}|x={_isTranslateInertiaYEnabled})/{DesiredDisplacementDeceleration}/{DesiredDisplacement} "
+						+ $"| rot: {_isRotateInertiaEnabled}/{DesiredRotationDeceleration}/{DesiredDisplacement} "
+						+ $"| scale: {_isScaleInertiaEnabled}/{DesiredExpansionDeceleration}/{DesiredExpansion})");
+				}
+
 				_timer.Start();
 			}
+
+			internal ManipulationState GetStateOnLastTick() => _stateOnLastTick;
 
 			private void Process(TimeSpan elapsed)
 			{
 				// First we update the internal state (i.e. the current cumulative manip delta for the current time)
-				var previous = _state.Cumulative;
+				var previous = _stateOnLastTick.Cumulative;
 				var current = previous;
 				var updated = UpdateCumulative(elapsed.TotalMilliseconds, ref current);
 
-				_state = new(_t0 + (ulong)elapsed.TotalMicroseconds, _position0 + current.Translation, current);
+				_stateOnLastTick = new(_t0 + (ulong)elapsed.TotalMicroseconds, _position0 + current.Translation, current);
 
 				// Then we request to the owner to raise its events (will cause the GetCumulative())
 				// We notify in any cases in order to make sure to raise at least one ManipDelta (even if Delta.IsEmpty ^^) before stop the processor
@@ -222,140 +185,10 @@ public partial class GestureRecognizer
 
 				if (!updated)
 				{
-					_timer.Stop();
+					_timer?.Stop();
 					_owner.NotifyUpdate();
 				}
 			}
-
-			internal ManipulationState GetStateOnLastTick() => _state;
-
-			//public Point GetPosition()
-			//	=> _position0 + _inertiaCumulative.Translation;
-
-			///// <summary>
-			///// Gets the cumulative delta, including the manipulation cumulative when this processor was started
-			///// </summary>
-			//public ManipulationDelta GetCumulative()
-			//	=> _cumulative0.Add(_inertiaCumulative);
-
-			///// <summary>
-			///// Gets the cumulative delta, including the manipulation cumulative when this processor was started
-			///// </summary>
-			//public (ManipulationDelta cumulative, ManipulationDelta delta, TimeSpan time) GetFinal()
-			//{
-			//	CompleteConfiguration();
-
-			//	var delta = ManipulationDelta.Empty;
-			//	var totalDuration = 0.0;
-
-			//	if (_isTranslateInertiaXEnabled)
-			//	{
-			//		var duration = GetCompletionTime(_velocities0.Linear.X, DesiredDisplacementDeceleration);
-			//		var value = GetValue(_velocities0.Linear.X, DesiredDisplacementDeceleration, duration);
-
-			//		totalDuration = Max(totalDuration, duration);
-			//		delta.Translation.X += value;
-			//	}
-
-			//	if (_isTranslateInertiaYEnabled)
-			//	{
-			//		var duration = GetCompletionTime(_velocities0.Linear.Y, DesiredDisplacementDeceleration);
-			//		var value = GetValue(_velocities0.Linear.Y, DesiredDisplacementDeceleration, duration);
-
-			//		totalDuration = Max(totalDuration, duration);
-			//		delta.Translation.Y += value;
-			//	}
-
-			//	if (_isRotateInertiaEnabled)
-			//	{
-			//		var duration = GetCompletionTime(_velocities0.Angular, DesiredRotationDeceleration);
-			//		var value = (float)GetValue(_velocities0.Angular, DesiredRotationDeceleration, duration);
-
-			//		totalDuration = Max(totalDuration, duration);
-			//		delta.Rotation += value;
-			//	}
-
-			//	if (_isScaleInertiaEnabled)
-			//	{
-			//		var duration = GetCompletionTime(_velocities0.Expansion, DesiredExpansionDeceleration);
-			//		var value = (float)GetValue(_velocities0.Expansion, DesiredExpansionDeceleration, duration);
-
-			//		totalDuration = Max(totalDuration, duration);
-			//		delta.Expansion += value;
-			//		delta.Scale *= (_owner._origins.State.Distance + value) / _owner._origins.State.Distance;
-			//	}
-
-			//	return (_cumulative0.Add(delta), delta, TimeSpan.FromMilliseconds(totalDuration));
-			//}
-
-//#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-//			public (CompositionEasingFunction function, TimeSpan duration) GetDisplacementEasing(Compositor compositor)
-//			{
-//				//var v0 = Max(Abs(_velocities0.Linear.X), Abs(_velocities0.Linear.Y));
-//				var v0 = _velocities0.Linear.Y;
-//				var tEnd = GetCompletionTime(v0, DesiredDisplacementDeceleration);
-//				var xEnd = GetValue(_velocities0.Linear.Y, DesiredDisplacementDeceleration, tEnd);
-
-//				return (
-//					new InertialEasingFunction((float)v0, (float)DesiredDisplacementDeceleration, (float)tEnd, xEnd, compositor),
-//					TimeSpan.FromMilliseconds(tEnd)
-//				);
-//			}
-//#endif
-
-			///// <summary>
-			///// Gets the **expected** cumulative delta at the tick expected close to the given time, including the manipulation cumulative when this processor was started.
-			///// </summary>
-			///// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
-			//public ManipulationDelta GetCumulativeTickAligned(ref TimeSpan dueIn, out int ticks)
-			//{
-			//	CompleteConfiguration(); // Make sure to compute desired values in case this method is being invoked during the OnManipulationInertiaStarting event
-
-			//	var interval = _timer.Interval;
-			//	if (dueIn <= TimeSpan.Zero)
-			//	{
-			//		ticks = 1;
-			//		dueIn = interval;
-			//	}
-			//	else
-			//	{
-			//		var linearX = GetCompletionTime(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration);
-			//		var linearY = GetCompletionTime(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration);
-			//		var angular = GetCompletionTime(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration);
-			//		var expansion = GetCompletionTime(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration);
-
-			//		var maxTicks = Math.Max(linearX, Math.Max(linearY, Math.Max(angular, expansion))) * TimeSpan.TicksPerMillisecond;
-			//		var dueInTicks = Math.Min(dueIn.Ticks, maxTicks);
-
-			//		ticks = Math.Max(1, (int)Math.Round(dueInTicks / interval.Ticks));
-			//		dueIn = ticks * interval;
-			//	}
-
-			//	var inertiaCumulative = GetInertiaCumulative((_timer.LastTickElapsed + dueIn).TotalMilliseconds, _inertiaCumulative);
-
-			//	return _cumulative0.Add(inertiaCumulative);
-			//}
-
-			//private ManipulationDelta GetInertiaCumulative(double t, ManipulationDelta previousCumulative)
-			//{
-			//	var linearX = GetValue(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration, t, (float)previousCumulative.Translation.X);
-			//	var linearY = GetValue(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration, t, (float)previousCumulative.Translation.Y);
-			//	var angular = GetValue(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration, t, previousCumulative.Rotation);
-			//	var expansion = GetValue(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration, t, previousCumulative.Expansion);
-
-			//	var scale = _isScaleInertiaEnabled ? (_owner._origins.State.Distance + expansion) / _owner._origins.State.Distance : 1;
-
-			//	var delta = new ManipulationDelta
-			//	{
-			//		Translation = new Point(linearX, linearY),
-			//		Rotation = angular,
-			//		Expansion = expansion,
-			//		Scale = scale
-			//	};
-
-			//	return delta;
-			//}
-
 
 			private bool UpdateCumulative(double t, ref ManipulationDelta cumulative)
 			{
@@ -390,71 +223,14 @@ public partial class GestureRecognizer
 				return true;
 			}
 
-
-			//private double UpdateValue(double v0, double d, double t, double origin, double current, ref bool isUpdated)
-			//{
-			//	if (IsCompleted(v0, d, t))
-			//	{
-			//		return current;
-			//	}
-
-			//	var updated = origin + GetValue(v0, d, t);
-			//	if (current == updated)
-			//	{
-			//		return current;
-			//	}
-
-			//	isUpdated = true;
-			//	return updated;
-			//}
-
-			//private float UpdateValue(double v0, double d, double t, float origin, float current, ref bool isUpdated)
-			//{
-			//	if (IsCompleted(v0, d, t))
-			//	{
-			//		return current;
-			//	}
-
-			//	var updated = origin + (float)GetValue(v0, d, t);
-			//	if (current == updated)
-			//	{
-			//		return current;
-			//	}
-
-			//	isUpdated = true;
-			//	return updated;
-			//}
-
-			//private bool UpdateValue(double v0, double d, double t, ref float value)
-			//{
-			//	if (IsCompleted(v0, d, t))
-			//	{
-			//		return false;
-			//	}
-
-			//	var updated = GetValue(v0, d, t);
-			//	return true;
-			//}
-
-			//private float GetValue(bool enabled, double v0, double d, double t, float lastValue)
-			//	=> (enabled, IsCompleted(v0, d, t)) switch
-			//	{
-			//		(false, _) => 0,
-			//		(_, true) => lastValue, // Avoid bounce effect by replaying the last value
-			//		(true, false) => GetValue(v0, d, t)
-			//	};
-
 			// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
 			internal static double GetValue(double v0, double d, double t)
 				=> v0 >= 0
 					? v0 * t - d * Math.Pow(t, 2)
 					: -(-v0 * t - d * Math.Pow(t, 2));
 
-			private bool IsCompleted(double v0, double d, double t)
+			private static bool IsCompleted(double v0, double d, double t)
 				=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
-
-			//private double GetCompletionTime(bool enabled, double v0, double d)
-			//	=> enabled ? GetCompletionTime(v0, d) : 0;
 
 			internal static double GetCompletionTime(double v0, double d)
 				=> Math.Abs(v0) / (2 * d);
@@ -465,11 +241,9 @@ public partial class GestureRecognizer
 			private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
 				=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
-
-
 			/// <inheritdoc />
 			public void Dispose()
-				=> _timer.Stop();
+				=> _timer?.Stop();
 
 #if IS_UNIT_TESTS
 			/// <summary>
@@ -477,7 +251,7 @@ public partial class GestureRecognizer
 			/// </summary>
 			public void RunSync()
 			{
-				var frameDuration = 1000 / _framesPerSecond;
+				var frameDuration = 1000 / DispatcherInertiaProcessorTimer.DefaultFramePerSeconds;
 				var time = frameDuration;
 				while (IsRunning)
 				{
@@ -488,22 +262,68 @@ public partial class GestureRecognizer
 #endif
 		}
 
-//#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-//		internal class InertialEasingFunction(double v0, double deceleration, double tEnd, double xEnd, Compositor compositor) : CompositionEasingFunction(compositor)
-//		{
-//			/// <inheritdoc />
-//			internal override float Ease(float t)
-//			{
-//				var tCurrent = t * tEnd; // T is normalized while inertia processor uses absolute time
-//				var xCurrent = InertiaProcessor.GetValue(v0, deceleration, tCurrent);
-//				var x = xCurrent / xEnd; // Normalize back the value to [0,1]
+		private interface IInertiaProcessorTimer
+		{
+			public bool IsRunning { get; }
+			public void Start();
 
-//				Console.WriteLine($"InertialEasingFunction: t={t}, tCurrent={tCurrent}, xCurrent={xCurrent}, xEnd={xEnd}, x={x}");
+			public void Stop();
+		}
 
-//				return (float)x;
-//			}
-//		}
-//#endif
+		private sealed class DispatcherInertiaProcessorTimer : IInertiaProcessorTimer
+		{
+			private readonly DispatcherQueueTimer _timer;
+
+			public const double DefaultFramePerSeconds = 30d;
+
+			public DispatcherInertiaProcessorTimer(Action<TimeSpan> OnTick, double framePerSeconds = DefaultFramePerSeconds)
+			{
+				_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+				_timer.Interval = TimeSpan.FromMilliseconds(1000d / framePerSeconds);
+				_timer.IsRepeating = true;
+				_timer.Tick += (snd, e) => OnTick(snd.LastTickElapsed);
+			}
+
+			public bool IsRunning => _timer.IsRunning;
+
+			public void Start() => _timer.Start();
+			public void Stop() => _timer.Stop();
+		}
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
+		{
+			private EventHandler<object>? _handler;
+			private Stopwatch? _time;
+
+			public bool IsRunning => _handler is not null;
+
+			public void Start()
+			{
+				Stop();
+
+				_time = Stopwatch.StartNew();
+				_handler = (_, args) =>
+				{
+					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
+					onTick(_time.Elapsed);
+				};
+
+				CompositionTarget.Rendering += _handler;
+			}
+
+			public void Stop()
+			{
+				if (_handler is not null)
+				{
+					CompositionTarget.Rendering -= _handler;
+					_handler = null;
+				}
+			}
+
+			~CompositionInertiaProcessorTimer() => Stop();
+		}
+#endif
 	}
 }
 #endif

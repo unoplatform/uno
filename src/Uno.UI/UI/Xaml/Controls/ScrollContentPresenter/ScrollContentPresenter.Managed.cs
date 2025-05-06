@@ -34,9 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 			: null;
 
 		private /*readonly - partial*/ IScrollStrategy _strategy;
-		//private ScrollOptions? _touchInertiaOptions;
 		private GestureRecognizer.Manipulation? _touchInertia;
-		//private int _touchInertiaSkipTicks;
 		private static readonly TimeSpan _defaultTouchIndependentAnimationDuration = TimeSpan.FromMilliseconds(80); // Inertia processors is configured to be at 25 fps, with 80 we skip half of the ticks.
 		private static readonly TimeSpan _defaultTouchIndependentAnimationOverlap = TimeSpan.FromMilliseconds(5); // Duration of the animation to run after the expected next tick, to make sure we don't have a gap between animations.
 #nullable restore
@@ -240,32 +238,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
 
-			//if (options.IsDependentOnly != _touchInertiaOptions)
-			//{
-			//	_touchInertiaOptions = null; // abort inertia if ScrollTo is being requested
-			//}
-
-			ApplyOffsets(HorizontalOffset, VerticalOffset, 1, options);
-
-			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
-
-			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
-			//		 we will apply only the final ScrollOffsets and only once.
-			ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
-			InvalidateViewport();
-
-			return success;
-		}
-
-		/// <summary>
-		/// Applies scroll offset to the content.
-		/// 
-		/// WARNING:
-		/// This does not raise any events and is intended to be used only by few rare case.
-		/// Usually the right way to do this is to use the `Set` method.
-		/// </summary>
-		private void ApplyOffsets(double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
-		{
 			if (!options.IsInertial)
 			{
 				// If we get a request to scroll to a specific offset **that is not flagged as IsDependentOnly** (i.e. not coming from the inertia processing),
@@ -275,8 +247,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Content is UIElement contentElt)
 			{
-				_strategy.Update(contentElt, horizontalOffset, verticalOffset, zoom, options);
+				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, options);
 			}
+
+			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
+
+			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
+			//		 we will apply only the final ScrollOffsets and only once.
+			ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
+			InvalidateViewport();
+
+			return success;
 		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
@@ -355,25 +336,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// We handle inertia locally, in that case we do not want to chain the scroll to the parent SV
 				unhandledDelta = UI.Input.ManipulationDelta.Empty;
 
-				//if (--_touchInertiaSkipTicks > 0)
-				//{
-				//	// Skipping this dependent update frame (composition animation is still running)
-				//	return;
-				//}
-
-				//var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
-				//if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is not { } next)
-				//{
-				//	// Weird case, we do not have a next tick (we should always have at least the inertia processor interval), ignore it (expecting a complete soon)
-				//	return;
-				//}
-
-				// If inertial, we try to animate up to the next tick instead of applying current value synchronously
-				//_touchInertiaOptions = new(DisableAnimation: false, LinearAnimationDuration: independentAnimationDuration + _defaultTouchIndependentAnimationOverlap);
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(IsInertial: true),
+					options: new(DisableAnimation: true, IsInertial: true),
 					isIntermediate: true);
 			}
 			else
@@ -384,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					disableAnimation: true,
+					options: new(DisableAnimation: true, IsInertial: true),
 					isIntermediate: true);
 
 				if (!sv.IsHorizontalScrollChainingEnabled)
@@ -485,48 +451,18 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// We let the inertia start ...
-			// ... but we run animation scroll animations by our own, so we request to the inertia processor to give us info for the next few ms, and we start a composition scroll animation.
-			//var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
-			//if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is { } next)
-			{
-				//// First we configure custom scrolling options to match what we just configured on the processor
-				//// Note: We configure animation to run a bit longer than tick to make sure to not have delay between animations
-				////var v0 = args.Velocities.Linear.Y;
-				////var duration = inertia.GetDuration();
-				////var final = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0, inertia.DesiredDisplacementDeceleration, duration);
-				//var final = inertia.GetFinal();
+			// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
+			_touchInertia = args.Manipulation;
 
-				////var scrollable = GetScrollableOffsets();
-				//var finalDeltaX = Math.Clamp(-final.delta.Translation.X, scrollable.Left, scrollable.Right);
-				//var finalDeltaY = Math.Clamp(-final.delta.Translation.Y, scrollable.Up, scrollable.Down);
+			// Even if usually empty, make sure to apply the delta
+			var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
+			var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
 
-				//var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
-				//var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-				////_touchInertiaOptions = ;
-
-				//// Visually we scroll directly to the final value.
-				//ApplyOffsets(
-				//	horizontalOffset: HorizontalOffset + finalDeltaX,
-				//	verticalOffset: VerticalOffset + finalDeltaY,
-				//	zoom: 1,
-				//	new(DisableAnimation: false, Inertia: inertia));
-
-				//var scrollable = GetScrollableOffsets();
-				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
-				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-				// _touchInertia is validated in the ApplyOffset, so make sure to set it only after.
-				_touchInertia = args.Manipulation;
-
-				// And in the meantime we update the DP of the SV / raise the ChangeView event (a.k.a. Dependent updates)
-				Set(
-					horizontalOffset: HorizontalOffset + deltaX,
-					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: false, IsInertial: true),
-					isIntermediate: true);
-			}
+			Set(
+				horizontalOffset: HorizontalOffset + deltaX,
+				verticalOffset: VerticalOffset + deltaY,
+				options: new(DisableAnimation: false, IsInertial: true),
+				isIntermediate: true);
 		}
 
 		/// <inheritdoc />
