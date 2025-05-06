@@ -27,13 +27,10 @@ Below is a breakdown of every button and what it does:
 
 ---
 
-## 1. Diagnostics Overlay
+## 1. Diagnostics Overlay  <img src="Assets/Diagnostics-Overlay.png" alt="Diagnostics Overlay - Hot Design" />
 
 Hot Design® surfaces a small **Diagnostics Overlay** on top of your running app window. 
 
-<p align="center">
-  <img src="Assets/Diagnostics-Overlay.png" alt="Diagnostics Overlay - Hot Design" />
-</p>
 
 This overlay:
 
@@ -55,33 +52,24 @@ You can **drag** the entire overlay (click and hold its header area) to any edge
 
 ---
 
-
 ## 2. Enter & Exit Hot Design
 
 Within the **Diagnostics Overlay**, you’ll see the familiar **flame icon**:
 
-1. **Enter Hot Design**  
+1. **Enter Hot Design** <img src="Assets/toolbar-hot-design-enter-icon.png" alt="Enter Hot Design icon" height="30" />
    - Click the flame icon to launch **Hot Design mode**.  
    - Your running app’s UI becomes live–editable: move, style, and tweak XAML directly in the canvas.  
 
-<p align="center">
- <img src="Assets/toolbar-hot-design-enter-icon.png" alt="Enter Hot Design icon" height="30" />
-</p>
 
-2. **Exit Hot Design**  
+2. **Exit Hot Design** <img src="Assets/toolbar-hot-design-icon.png" alt="Exit Hot Design icon" height="30" />
    - When you’re done editing, click the same flame icon (now highlighted) to leave Hot Design mode.  
    - You’ll return to the usual code editor, with your app still running in the background.  
 
-<p align="center">
-	<img src="Assets/toolbar-hot-design-icon.png" alt="Exit Hot Design icon" height="30" />
-</p>
-
-### 1.1 Why Toggle?
+### Why Toggle?
   
-> - Keep your focus: switch instantly between design without rebuilding and your live app.  
-> - Stay in context: your last UI state remains visible when you exit.  
+ - Keep your focus: switch instantly between design without rebuilding and your live app.  
+ - Stay in context: your last UI state remains visible when you exit.  
 
----
 
 #### Quick Visual Guide
 
@@ -89,28 +77,70 @@ Within the **Diagnostics Overlay**, you’ll see the familiar **flame icon**:
   <img src="Assets/gifs/ToolBar-Enable-Disable.gif" alt="Demo: clicking the flame icon to enter and exit Hot Design mode" />
 </p>
 
+---
 
 ## 3. Play & Pause
 
-Play/Pause icon
+The **Play/Pause** toggle lets you switch between editing your app live in Hot Design and previewing the final, running experience.
 
 
-| Icon | Action                                                            |
-|:----:|:------------------------------------------------------------------|
-| <img src="Assets/toolbar-play.png" alt="Play icon" height="30" />   | **Play**: Resume the app’s runtime inside the Hot Design canvas. Use this to test animations, navigation, and logic. |
-| <img src="Assets/toolbar-pause.png" alt="Pause icon" height="30" /> | **Pause**: Freeze the app at its current state so you can tweak layouts, styles, and properties without losing context. |
+1. **Play**: Activate Hot Design mode.  <img src="Assets/toolbar-play.png" alt="Play icon" height="30" />  
+  While playing, you can use Hot Design to:  
+   - Adjust properties in the **Property Grid**. [LINK TO PROPERTYGRID DOCS]
+   - Drag new controls from the **Toolbox** onto the canvas.  [LINK TO TOOLBOX]
+   - Navigate and select elements in the **Elements**.  [link to hierarchy]
+   - Interact directly with UI elements on the **canvas** (resize, move, style). [LINK TO CANVAS]
+
+
+2. **Pause**: Deactivate Hot Design editing and return to the live app view.   <img src="Assets/toolbar-pause.png" alt="Pause icon" height="30" />
+   - See all your XAML changes applied in the running application.  
+   - Test animations, data bindings, and navigation exactly as end users will.
+   - You can click on any Panels to return to Play mode.
+
+### When to Use Each Mode
+
+- **Play** 
+ 
+  Use this mode to iteratively **build and refine** your UI. 
+  Every tweak you make—whether adjusting a margin in the Property Grid or dragging a new button onto the canvas—applies instantly.  
+
+- **Pause**  
+
+  Switch here when you want a **true preview** of the running app. 
+  It’s the best way to validate behavior, animations, and overall look & feel after you’ve made a series of edits.
+
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Play-Pause.gif" alt="Demo: toggling Play and Pause in Hot Design" />
+</p>
 
 ---
 
 ## 4. Undo & Redo
 
-Undo/Redo changes
+Easily roll back or reapply changes you’ve made in Hot Design:
 
+- **Undo**  <img src="Assets/toolbar-undo.png" alt="Undo icon" height="30" />
+  Reverts your last action—whether you moved a control, tweaked a margin, or updated a style. 
+  Perfect for moments when a tweak didn’t turn out as expected.
 
-| Icon | Action                                            |
-|:----:|:--------------------------------------------------|
-| <img src="Assets/toolbar-undo.png" alt="Undo icon" height="30" /> | **Undo**: Step backwards through recent design changes. |
-| <img src="Assets/toolbar-redo.png" alt="Redo icon" height="30" /> | **Redo**: Step forwards again through undone changes. |
+- **Redo**  <img src="Assets/toolbar-redo.png" alt="Redo icon" height="30" />
+  Restores an action you just undid. 
+  Handy if you hit Undo too many times or want to compare before/after states without redoing your work manually.
+  Or when the next change is better than the previous one.
+
+### Examples of use**  
+
+  - You adjust a button’s Backgroun and it breaks your layout: hit **Undo** to quickly get back.  
+  - You realize the previous Background was better: hit **Redo** to reapply it.
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Undo-Redo.gif" alt="Demo: using Undo and Redo in Hot Design" />
+</p>
 
 ---
 
