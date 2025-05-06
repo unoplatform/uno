@@ -141,7 +141,7 @@ Is referencing a `site.js` file inside the `js` subfolder.
 
 ## iOS specifics
 
-From MacOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+From macOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
 
 ```csharp
 public App()

@@ -6,7 +6,7 @@ uid: Uno.GettingStarted.Requirements
 
 Uno Platform applications run on [Android](#android), [iOS](#ios), [Web](#webassembly), [macOS (Desktop)](#macos---desktop), [Linux](#linux), and [Windows](#windows).
 
-See below for minimum supported versions for each platform.
+See below for the minimum supported versions for each platform.
 
 ## WebAssembly
 
@@ -36,7 +36,7 @@ Uno Platform apps run on iOS 11 and above, using the `net9.0-ios` target framewo
 
 ## macOS - Desktop
 
-Uno Platform applications run on all macOS versions supported by .NET currently macOS 10.15 and above, using the `net9.0-desktop` target framework.
+Uno Platform applications run on all macOS versions supported by .NET, currently macOS 10.15 and above, using the `net9.0-desktop` target framework.
 
 ## Linux
 

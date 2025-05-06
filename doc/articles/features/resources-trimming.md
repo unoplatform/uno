@@ -8,7 +8,7 @@ XAML Resource and Binding trimming is an optional feature used to reduce the siz
 
 The trimming phase happens after the compilation phase and tries to determine which UI controls are not used explicitly, and removes the associated XAML styles. The XAML styles are found through the value specified in the `TargetType` attribute.
 
-As of Uno Platform 6.0, XAML Resources Trimming is available for apps targeting WebAssembly, iOS and Desktop.
+As of Uno Platform 6.0, XAML Resources Trimming is available for apps targeting WebAssembly, iOS, and Desktop.
 
 ## Using XAML Resources trimming for applications
 

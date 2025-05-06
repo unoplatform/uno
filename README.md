@@ -42,8 +42,8 @@ For a larger example and features demo:
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
     * Linux (via Skia Desktop with X11 and FrameBuffer)
 * Dev loop:
-    * Develop on your favorite IDE (Visual Studio, Rider or VS Code) on your favorite OS (Windows, macOS or Linux)
-    * XAML and/or C# Hot Reload for WebAssembly, macOS, Linux, Windows, iOS and Android
+    * Develop on your favorite IDE (Visual Studio, Rider, or VS Code) on your favorite OS (Windows, macOS, or Linux)
+    * XAML and/or C# Hot Reload for WebAssembly, macOS, Linux, Windows, iOS, and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
 * Cross Platform Controls:
     * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)

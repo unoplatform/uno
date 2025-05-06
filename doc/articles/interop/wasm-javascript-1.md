@@ -10,9 +10,9 @@ Uno Platform fully embraces HTML5 as its display backend when targeting WebAssem
 
 ## Embedding assets
 
-In the HTML world, everything running in the browser is assets that must be downloaded from a server. To integrate existing JavaScript frameworks, they can be either download those from another location on the Internet (usually from a CDN service) or embed and deployed with the app.
+In the HTML world, everything running in the browser is assets that must be downloaded from a server. To integrate existing JavaScript frameworks, they can be either downloaded from another location on the Internet (usually from a CDN service) or embedded and deployed with the app.
 
-The Uno Bootstrapper can automatically embed any asset and deploy them with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
+The Uno Bootstrapper can automatically embed any asset and deploy it with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
 
 1. **JavaScript files** should be in the `Platforms/WebAssembly/WasmScripts` folder. They will be copied to the output folder and loaded automatically by the bootstrapper when the page loads.
 
