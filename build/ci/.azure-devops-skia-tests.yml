@@ -108,7 +108,7 @@ stages:
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-- stage: runtime_tests_skia_linux
+- stage: runtime_tests_skia_macos
   displayName: Tests - Desktop Skia macOS
   dependsOn:
     - runtime_tests_skia_build
