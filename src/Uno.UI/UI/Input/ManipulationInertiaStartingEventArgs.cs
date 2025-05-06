@@ -3,6 +3,7 @@
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
@@ -35,6 +36,15 @@ namespace Windows.UI.Input
 		}
 
 		internal GestureRecognizer.Manipulation Manipulation { get; }
+
+		/// <summary>
+		/// **Uno specific**
+		/// Determines if the inertia should be run in sync with the CompositionTarget.Rending event or not.
+		/// This impacts only platform that have a correct implementation of the CompositionTarget.Rending event, i.e. those using skia backend.
+		/// Default is `true`.
+		/// </summary>
+		[UnoOnly]
+		public bool UseCompositionTimer { get; set; } = true;
 
 		/// <summary>
 		/// Gets identifiers of all pointer that has been involved in that manipulation (cf. Remarks).
