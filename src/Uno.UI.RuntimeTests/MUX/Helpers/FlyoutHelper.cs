@@ -136,7 +136,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		{
 			Border target = null;
 
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread(() =>
 			{
 				target = new Border();
 				target.Background = new SolidColorBrush(Colors.RoyalBlue);
