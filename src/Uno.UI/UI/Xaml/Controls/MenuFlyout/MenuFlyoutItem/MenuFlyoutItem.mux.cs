@@ -397,7 +397,7 @@ partial class MenuFlyoutItem
 				void OnCanExecuteChanged(object sender, EventArgs args)
 				{
 					UpdateCanExecute();
-				};
+				}
 
 				command.CanExecuteChanged += OnCanExecuteChanged;
 				m_epCanExecuteChangedHandler.Disposable = Disposable.Create(() => command.CanExecuteChanged -= OnCanExecuteChanged);
