@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using Windows.UI.Core;
 
 namespace Private.Infrastructure
 {
@@ -23,8 +24,13 @@ namespace Private.Infrastructure
 			{
 			}
 
-			internal static void InjectBackButtonPress(ref bool backButtonPressHandled)
+			internal static async Task<bool> InjectBackButtonPress()
 			{
+				var backButtonPressHandled = false;
+				// Uno specific: Implementation is a bit different from WinUI for now.
+				await RunOnUIThread(() => backButtonPressHandled = SystemNavigationManager.GetForCurrentView().RequestBack());
+
+				return backButtonPressHandled;
 			}
 
 			public static void SetTimeZone(string tzid)
