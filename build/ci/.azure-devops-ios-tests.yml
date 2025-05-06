@@ -5,15 +5,15 @@ parameters:
 
   # Align with SnapShotTestGenerator.GroupCount
   SNAPSHOT_GROUPS:
-  - key: '00'
+  - key: '0'
     value: '01'
-  - key: '01'
+  - key: '1'
     value: '02'
-  - key: '02'
+  - key: '2'
     value: '03'
-  - key: '03'
+  - key: '3'
     value: '04'
-  - key: '04'
+  - key: '4'
     value: '05'
 
   # Runtime Test Groups
@@ -51,7 +51,7 @@ parameters:
 
 jobs:
 - job: iOS_Build
-  displayName: 'Build iOS Samples App UI Tests'
+  displayName: 'Build Samples App'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -82,7 +82,7 @@ jobs:
   - bash: |
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
 
-    displayName: Build iOS App for UI Tests
+    displayName: Build Samples App
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -121,7 +121,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
-      JobDisplayName: 'iOS Automated Tests ${{ AutomatedTestGroup.value }}'
+      JobDisplayName: 'Automated Tests ${{ AutomatedTestGroup.key }}'
+      TestRunName: 'iOS Native Automated Tests ${{ AutomatedTestGroup.key }}'
       JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
@@ -142,7 +143,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
-      JobDisplayName: 'iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
+      TestRunName: 'iOS Native Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
@@ -175,12 +177,13 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
-      JobDisplayName: 'iOS Snapshot Tests ${{ snapshotGroup.value }}'
+      JobDisplayName: 'Snapshot Tests ${{ snapshotGroup.key }}'
+      TestRunName: 'iOS Native Snapshot Tests ${{ snapshotGroup.key }}'
       JobTimeoutInMinutes: 60
       SamplesAppArtifactName: 'ios-uitest-build'
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
-      UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
+      UITEST_SNAPSHOTS_GROUP: '0${{ snapshotGroup.key }}' # Example: 01, 02, 03, 04, 05
       UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'false'
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'

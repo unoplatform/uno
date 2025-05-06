@@ -2,6 +2,7 @@ parameters:
   vmImage: ''
   xCodeRoot: ''
   JobName: ''
+  TestRunName: ''
   JobTimeoutInMinutes: ''
   JobDisplayName: ''
   UITEST_SNAPSHOTS_ONLY: ''
@@ -99,7 +100,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
+      testRunTitle: '$(parameters.TestRunName)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
 
@@ -130,7 +131,7 @@ jobs:
   - task: PublishTestResults@2
     condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
     inputs:
-      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
+      testRunTitle: '$(parameters.TestRunName)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # Second run needs to fail tests
@@ -141,7 +142,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'iOS Runtime Tests Run ($(Agent.JobName))'
+      testRunTitle: '$(parameters.TestRunName)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
 

@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: Skia_Android_Tests_Build
-  displayName: 'Build Android Skia Samples App'
+  displayName: 'Build Samples App'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -28,7 +28,7 @@ jobs:
       UnoCheckParameters: '--tfm net9.0-android'
 
   - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj -c Release -f net9.0-android -p:RunAOTCompilation=false -p:UnoTargetFrameworkOverride=net9.0-android /bl:$(build.artifactstagingdirectory)/logs/build-skia-android.binlog
-    displayName: Build Skia Android Head
+    displayName: Build Android Skia Head
 
   - task: CopyFiles@2
     displayName: 'Copy Generated Android APK'
