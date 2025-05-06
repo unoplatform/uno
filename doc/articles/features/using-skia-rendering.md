@@ -55,7 +55,8 @@ On **macOS**, **Linux**, and **Windows**, using the `netX.0-desktop` target fram
 
 However, when using **WinAppSDK**, the **native rendering engine** is always used, regardless of whether Skia or Native is enabled in `UnoFeatures`.
 
-> [!NOTE] Starting with Uno Platform 6.0, **Mac Catalyst** is no longer present in templates, and we encourage users to move to `netX.0-desktop`, which runs on macOS using Skia for rendering.
+> [!NOTE]
+> Starting with Uno Platform 6.0, **Mac Catalyst** is no longer present in templates, and we encourage users to move to `netX.0-desktop`, which runs on macOS using Skia for rendering.
 
 You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 
