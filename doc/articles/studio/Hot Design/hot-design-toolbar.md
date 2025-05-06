@@ -5,6 +5,8 @@ uid: Uno.HotDesign.Toolbar
 # Hot Design® Toolbar
 
 The **Hot Design® Toolbar** is your main control panel when working in the Uno Platform’s live design environment. 
+
+
 Positioned at the top of the interactive canvas, it provides fast, intuitive access to tools that help you:
 
 - Instantly **enter or exit** Hot Design mode to work directly with a live app.
@@ -20,7 +22,6 @@ Whether you're fine-tuning the layout, testing behavior, or previewing responsiv
 <p align="center">
   <img src="Assets/studio-toolbar.png" alt="Hot Design Toolbar" />
 </p>
-
 
 Below is a breakdown of every button and what it does:
 
@@ -46,26 +47,53 @@ By default, the overlay appears in the **top-left** corner, but it won’t block
 
 You can **drag** the entire overlay (click and hold its header area) to any edge of the window—move it left, right, or top—to free up space while you edit.
 
+#### Quick Visual Guide
+
+<p align="center">
+	<img src="Assets/gifs/ToolBar-Diagnostics-Overlay.gif" height="600" alt="GIF showing how to use Diagnostic Overlay to Enter Hot Design" />
+</p>
 
 ---
 
 
-## 2. Enter/Exit Hot Design
+## 2. Enter & Exit Hot Design
 
-Inside the Diagnostics Overlay is the **flame icon**:
+Within the **Diagnostics Overlay**, you’ll see the familiar **flame icon**:
 
-Entering/Leaving Hot Design mode.
+1. **Enter Hot Design**  
+   - Click the flame icon to launch **Hot Design mode**.  
+   - Your running app’s UI becomes live–editable: move, style, and tweak XAML directly in the canvas.  
 
-| Icon | Action                                    |
-|:----:|:------------------------------------------|
-| <img src="Assets/toolbar-hot-design-enter-icon.png" alt="Enter Hot Design icon" height="30" /> | **Enter Hot Design** mode: Launch the interactive designer for your running app. |
-| <img src="Assets/toolbar-hot-design-icon.png" alt="Exit Hot Design icon" height="30" />       | **Exit Hot Design** mode: Close the live designer and return to code editing. |
+<p align="center">
+ <img src="Assets/toolbar-hot-design-enter-icon.png" alt="Enter Hot Design icon" height="30" />
+</p>
+
+2. **Exit Hot Design**  
+   - When you’re done editing, click the same flame icon (now highlighted) to leave Hot Design mode.  
+   - You’ll return to the usual code editor, with your app still running in the background.  
+
+<p align="center">
+	<img src="Assets/toolbar-hot-design-icon.png" alt="Exit Hot Design icon" height="30" />
+</p>
+
+### 1.1 Why Toggle?
+  
+> - Keep your focus: switch instantly between design without rebuilding and your live app.  
+> - Stay in context: your last UI state remains visible when you exit.  
 
 ---
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Enable-Disable.gif" alt="Demo: clicking the flame icon to enter and exit Hot Design mode" />
+</p>
+
 
 ## 3. Play & Pause
 
 Play/Pause icon
+
 
 | Icon | Action                                                            |
 |:----:|:------------------------------------------------------------------|
@@ -77,6 +105,8 @@ Play/Pause icon
 ## 4. Undo & Redo
 
 Undo/Redo changes
+
+
 | Icon | Action                                            |
 |:----:|:--------------------------------------------------|
 | <img src="Assets/toolbar-undo.png" alt="Undo icon" height="30" /> | **Undo**: Step backwards through recent design changes. |
@@ -123,7 +153,6 @@ Dev Server status/notifications
 - **Hot Reload indicator**: Flashes when XAML or code changes are pushed live; hover for details on the last update.
 
 ---
-
 
 ## 8. More Options
 
