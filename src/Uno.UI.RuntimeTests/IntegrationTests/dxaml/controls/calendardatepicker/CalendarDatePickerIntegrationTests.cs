@@ -1020,7 +1020,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			FlyoutHelper.ValidateOpenFlyoutOverlayBrush("CalendarDatePickerLightDismissOverlayBackground");
 
-			FlyoutHelper.HideFlyout(flyout);
+			await FlyoutHelper.HideFlyout(flyout);
 		}
 
 	}
