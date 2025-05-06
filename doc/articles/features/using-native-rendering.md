@@ -8,7 +8,7 @@ The native rendering is our oldest rendering backend, which uses the native comp
 
 Each supported platform (iOS, Android and WebAssembly) has its own set of platform interactions, listed below, allowing for deep integration of native components into the visual tree. Each `UIElement` has a corresponding native element (`div` on WebAssembly, `UIView` on iOS, `ViewGroup` on Android).
 
-This renderer uses the native input controls of the platforms, providing the best access to accessibilty and IME features.
+This renderer uses the native input controls of the platforms, providing the best access to accessibility and IME features.
 
 This renderer supports [integrating native views](xref:Uno.Development.NativeViews).
 
