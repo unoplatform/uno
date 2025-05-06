@@ -16,7 +16,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 🎯 This section is very similar to the [Create a Counter App with Uno Platform](xref:Uno.Workshop.Counter) tutorial in the official documentation.
 
-Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the getting started, using a blank or recommended template.
+Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the getting started **blank** or **recommended** presets.
 
 ### 2. Create a control in managed code
 
@@ -255,7 +255,7 @@ Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the ge
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).
 Some additional improvements can be done to make the code more production ready:
 
-* **Make the control multi-platform**. An other would be to use a [WebView](xref:Uno.Controls.WebView2) on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't run on non-WebAssembly targets.
-* **Use script files instead of using `ExecuteJavascript`**. That would have the advantage of improving performance and make it easier to debug the code.
+* **Make the control multi-platform**. Another would be to use a [WebView](xref:Uno.Controls.WebView2) on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't run on non-WebAssembly targets.
+* **Use script files instead of using `ExecuteJavascript`**. That would have the advantage of improving performance and making it easier to debug the code.
 * **Support more PrismJS features**. There are many [_plugins_ for PrismJS](https://prismjs.com/#plugins) that can be used. Most of them are very easy to implement.
 * [Continue with Part 3](xref:Uno.Interop.WasmJavaScript3) - an integration of a more complex library with callbacks to application.

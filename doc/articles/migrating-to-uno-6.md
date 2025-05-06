@@ -1,6 +1,7 @@
 ---
 uid: Uno.Development.MigratingToUno6
 ---
+
 # Migrating to Uno Platform 6.0
 
 Uno Platform 6.0 contains some breaking changes required to provide a consistent experience when using the Skia rendering feature, as well as **the removal of the UWP API set support** and the **removal of the GTK desktop runtime support**.
@@ -9,7 +10,7 @@ You can find a list of these changes below.
 
 ## Removal of the UWP API Set
 
-Uno Platform started off with UWP as the common API set, then added WinUI/WinAppSDK. Both API sets were kept as a convenience for upgrading to WinUI and now that WinUI is sufficiently advanced, Uno Platform 6.0 removes the UWP API set entirely.
+Uno Platform started off with UWP as the common API set, then added WinUI/WinAppSDK. Both API sets were kept as a convenience for upgrading to WinUI, and now that WinUI is sufficiently advanced, Uno Platform 6.0 removes the UWP API set entirely.
 
 This makes Uno Platform easier to maintain in the long run and easier to contribute to.
 
@@ -17,9 +18,9 @@ If you're still using the UWP API set, you can see our [migration guides on how 
 
 ## Removal of Skia GTK Desktop support
 
-Over the years, we're provided desktop platform abstractions through different technologies. While desktop support started with a GTK3 shell as a common ground, Uno Platform 5.6 introduced [specialized shell support for X11, WPF and AppKit](xref:Uno.Skia.Desktop).
+Over the years, we've provided desktop platform abstractions through different technologies. While desktop support started with a GTK3 shell as a common ground, Uno Platform 5.6 introduced [specialized shell support for X11, WPF, and AppKit](xref:Uno.Skia.Desktop).
 
-Now that the support for these targets is stable, we're removing the support for the GTK shell for project that did not yet use the Uno.SDK.
+Now that the support for these targets is stable, we're removing the support for the GTK shell for projects that have not yet used the Uno.SDK.
 
 If your project is still using the GTK support, you can keep using Uno Platform 5.6, or [migrate to the Uno.SDK style project](https://platform.uno/docs/articles/migrating-from-previous-releases.html), which uses the latest platform support, including the new Win32 shell feature.
 
@@ -36,7 +37,7 @@ To upgrade, in your `Platforms/Desktop/Program.cs`:
 
 ### Use the new Win32 desktop support
 
-Uno Platform 6.0 provides the support for a new, faster and leaner Windows support which does not depend on additional libraries (like WPF in previous Uno Platform versions). This new support also enables IL, XAML and Resource Trimming for smaller published app packages.
+Uno Platform 6.0 provides support for a new, faster, and leaner Windows support, which does not depend on additional libraries (like WPF in previous Uno Platform versions). This new support also enables IL, XAML, and Resource Trimming for smaller published app packages.
 
 To upgrade to the Win32 support, in your `Platforms/Desktop/Program.cs`, replace `.UseWindows()` with `.UseWin32()`.
 
@@ -51,13 +52,13 @@ Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
 
 > [!NOTE] If you’re upgrading and previously relied on Refit from the `Http` feature, remove `Http` from your `<UnoFeatures>` and add `HttpRefit` instead. See the [HTTP overview](xref:Uno.Extensions.Http.Overview) for more information.
 
-### Optional use of Skia Rendering for iOS, Android and WebAssembly
+### Optional use of Skia Rendering for iOS, Android, and WebAssembly
 
 In order to use Skia Rendering for these targets, we're adding new APIs that make the bootstrapping of iOS and WebAssembly platforms using common builders.
 
 To upgrade:
 
-- Make suer that your project is using the Uno.SDK.
+- Make sure that your project is using the Uno.SDK.
 - In your `.csproj`, add the following to enable Skia rendering:
 
     ```diff
@@ -139,7 +140,7 @@ To upgrade:
     }
     ```
 
-    You can also use the top-level program code, as found in the default uno platform templates.
+    You can also use the top-level program code, as found in the default Uno Platform templates.
 
 - In your `Platforms/Android/Main.Android.cs`, change the following:
 

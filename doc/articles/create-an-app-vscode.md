@@ -183,7 +183,7 @@ In the status bar :
 Finally, press `F5` to start the debugging session.
 
 > [!TIP]
-> When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
+> When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such a case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
 
 ### [**Windows**](#tab/windowsdebug)
 

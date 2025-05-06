@@ -6,7 +6,7 @@ uid: Uno.Features.Uno.Sdk
 
 Uno Platform projects use the Uno.Sdk package that is designed to keep projects simple, yet configurable. It imports the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
-This document explains the many features of this SDK, and how to configure its behavior.
+This document explains the many features of this SDK and how to configure its behavior.
 
 > [!TIP]
 > Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.

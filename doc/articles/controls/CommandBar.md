@@ -63,7 +63,7 @@ In this mode, the `CommandBar` can't be fully customized like other templatable 
 
 You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS/Native and Android/Native.
 
-On Skia based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
+On Skia-based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
 
 #### Back button
 
@@ -517,7 +517,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   The `CommandBar` is not actually part of the `Page` on **iOS**, and you can't overlap content over it like you would on **UWP** or **Android**. Please refer to the **Placement** section for details.
 
-- > Why is my CommandBar going into the status bar on iOS/Android ?
+- > Why is my CommandBar going into the status bar on iOS/Android?
 
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 

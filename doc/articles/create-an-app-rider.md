@@ -150,7 +150,7 @@ Select the **MyUnoApp** debug profile with the mobile Apple logo then click the 
 
 ### [**WinUI/WinAppSDK**](#tab/winui)
 
-Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile then click the green arrow or the debug button.
+Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile, then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for WinAppSDK](Assets/quick-start/run-winappsdk-rider.png)
 

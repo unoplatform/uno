@@ -73,11 +73,11 @@ Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platfor
 
 Uno Platform allows you to control each pixel of your UI elements to match the experience you envision. This concept of lookless-controls is very similar to what is named "[headless controls](https://martinfowler.com/articles/headless-component.html)" in the React world. Each built-in and third-party control defines its fundamental logic (e.g. how it responds to interactions, handles data, or behaves once a property value is set) independently of a visual style and template. This approach means you can tailor the appearance of any control to fit a special use case, or to match your brand identity. Changes to control styling can even be performed at runtime. Uno Platform leverages this to offer multiple built-in design systems influenced by guidance from popular platforms.
 
-Under the hood, your app can use either a Native or Skia based approach for rendering.
+Under the hood, your app can use either a Native or Skia-based approach for rendering.
 
-The Native rendering approach using using the built-in native UI primitives on each target, for iOS, Android and WebAssembly. These build up a native view hierarchy and draws the visuals using native OS capabilities. That way, you still get all the benefits of the native world such as localization and accessibility, but without giving up the rich control of pixel-level details in your app experience.
+The Native rendering approach uses the built-in native UI primitives on each target, for iOS, Android, and WebAssembly. These build up a native view hierarchy and draw the visuals using native OS capabilities. That way, you still get all the benefits of the native world, such as localization and accessibility, but without giving up the rich control of pixel-level details in your app experience.
 
-The [Skia based](xref:Uno.Skia.Rendering) rendering approach uses a Skia based canvas for fast and rich rendering across platforms and get the exact same behavior across all platforms. You can use the Composition API to also get advanced rendering and animations across platforms.
+The [Skia-based](xref:Uno.Skia.Rendering) rendering approach uses a Skia-based canvas for fast and rich rendering across platforms and gets the exact same behavior across all platforms. You can also use the Composition API to get advanced rendering and animations across platforms.
 
 All of the above remains possible without needing to replicate the same design for each target platform.
 
@@ -166,7 +166,7 @@ Uno.Extensions Authentication is a provider-based authentication service that ca
 
 ## Skia drawing
 
-The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support for fine-grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for X11, FrameBuffer, macOS, and Windows 7+ apps. Starting from Uno Platform 6.0, Skia rendering is also available for iOS, Android and WebAssembly.
+The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support for fine-grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for X11, FrameBuffer, macOS, and Windows 7+ apps. Starting from Uno Platform 6.0, Skia rendering is also available for iOS, Android, and WebAssembly.
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
@@ -182,7 +182,7 @@ Uno Platform offers comprehensive [app packaging solutions](xref:uno.publishing.
 
 ## Accessibility included
 
-Uno Platform comes with built-in support for accessible apps such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, Apple VoiceOver, and browser-specific narrators when targeting the web. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
+Uno Platform comes with built-in support for accessible apps, such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, Apple VoiceOver, and browser-specific narrators when targeting the web. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
 
 ## Localization included
 
@@ -216,12 +216,11 @@ When you need to display web content within your cross-platform apps, you can us
 
 ## Media Player across platforms
 
-Uno Platform provides - at no additional cost - `MediaPlayerElement` control which allows your app to play media files back in your app. It is supported on Linux through libVLC.
+Uno Platform provides - at no additional cost - the `MediaPlayerElement` control, which allows your app to play media files back in your app. It is supported on Linux through libVLC.
 
 ## Monaco Editor on WebAssembly
 
-For all your in-app text and code editing needs, you can use our port of the Monaco Editor – the same that is used by Visual Studio Code. With full support for syntax highlighting, you could even build your
-own WebAssembly IDE!
+For all your in-app text and code editing needs, you can use our port of the Monaco Editor – the same one that is used by Visual Studio Code. With full support for syntax highlighting, you could even build your own WebAssembly IDE!
 
 ## Mix and match XAML controls with native components
 
