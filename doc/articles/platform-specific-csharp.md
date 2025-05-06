@@ -31,10 +31,10 @@ if (OperatingSystem.IsBrowser())
 }
 ```
 
-When building an application which uses the Skia renderer, it is generally best to use such conditionals in order to build for only one target framework in class libraries (e.g. when only targeting `net9.0`, without a platform specifier like `net9.0-ios`).
+When building an application that uses the Skia renderer, it is generally best to use such conditionals in order to build for only one target framework in class libraries (e.g., when only targeting `net9.0`, without a platform specifier like `net9.0-ios`).
 
 > [!NOTE]
-> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code usingthose APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
+> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code using those APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
 
 ## `#if` conditionals
 
