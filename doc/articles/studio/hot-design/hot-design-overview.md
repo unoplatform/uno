@@ -2,10 +2,10 @@
 uid: Uno.HotDesign.Overview
 ---
 
-# Hot Design® Overview
+# Hot Design<sup>®</sup> Overview
 
 > [!IMPORTANT]
-> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
+> **Hot Design<sup>®</sup>** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
@@ -44,9 +44,9 @@ In addition, [Hot Reload](xref:Uno.Features.HotReload) works seamlessly with **H
 - **Design on Remote Devices**: Fine-tune your UI directly on remote devices or emulators, instantly seeing changes without the need for constant redeployment.
 - **Simplify Property Management**: Use Smart Properties to quickly find, modify, and bind key UI properties without leaving the live design environment, saving time and effort.
 
-## Why Hot Design®?
+## Why Hot Design<sup>®</sup>?
 
-**Hot Design®** brings together runtime UI design, live data integration, and cross-platform development to streamline your app-building process. It empowers you to work more efficiently, stay in the flow, and deliver polished, cross-platform apps with ease.
+**Hot Design<sup>®</sup>** brings together runtime UI design, live data integration, and cross-platform development to streamline your app-building process. It empowers you to work more efficiently, stay in the flow, and deliver polished, cross-platform apps with ease.
 
 By simplifying UI development and accelerating your workflow, **Hot Design** helps you stay productive and focus on creating great applications.
 

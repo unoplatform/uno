@@ -2,9 +2,9 @@
 uid: Uno.HotDesign.GetStarted.Guide
 ---
 
-# Getting Started with Hot Design®
+# Getting Started with Hot Design<sup>®</sup>
 
-Hot Design® is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
+Hot Design<sup>®</sup> is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
 
 This guide provides the steps to set up Hot Design and introduces its key features and visual design capabilities.
 
@@ -13,7 +13,7 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 ## Set Up Your Environment for Hot Design
 
 > [!IMPORTANT]
-> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
+> **Hot Design<sup>®</sup>** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 >
 > - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 > - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
@@ -189,4 +189,4 @@ You can interact with the canvas using the following mouse and keyboard shortcut
 
 ### Tutorial
 
-For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design®](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
+For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design<sup>®</sup>](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
