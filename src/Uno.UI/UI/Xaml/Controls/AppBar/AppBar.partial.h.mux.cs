@@ -103,7 +103,7 @@ partial class AppBar
 
 	private UIElement? m_parentElementForLTEs;
 	private UIElement? m_overlayElement;
-	private UIElement? m_overlayElementPointerPressedEventHandler;
+	private SerialDisposable m_overlayElementPointerPressedEventHandler = new();
 
 
 	private ManagedWeakReference? m_savedFocusedElementWeakRef;
