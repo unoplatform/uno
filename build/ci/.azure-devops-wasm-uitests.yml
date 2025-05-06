@@ -132,6 +132,7 @@ jobs:
       'UI Tests':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Default'
+        TEST_RUN_NAME: 'UI Tests'
         UITEST_TEST_TIMEOUT: '5m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
@@ -139,6 +140,7 @@ jobs:
       'Benchmarks':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
+        TEST_RUN_NAME: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
@@ -146,6 +148,7 @@ jobs:
       'Runtime Tests 0':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        TEST_RUN_NAME: 'Runtime Tests 0'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -155,6 +158,7 @@ jobs:
       'Runtime Tests 1':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        TEST_RUN_NAME: 'Runtime Tests 1'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -164,6 +168,7 @@ jobs:
       'Runtime Tests 2':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        TEST_RUN_NAME: 'Runtime Tests 2'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
@@ -220,7 +225,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
-      testRunTitle: 'WebAssembly Test Run 1 $(SITE_SUFFIX) - $(UITEST_AUTOMATED_GROUP)'
+      testRunTitle: 'WebAssembly Native $(TEST_RUN_NAME)'
       testResultsFormat: 'NUnit'
       # This is the first run, we don't fail if there are failed tests, or if results file is missing. We'll wait for the second run.
       # Note: failTaskOnMissingResultsFile default is false.
@@ -231,7 +236,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'WebAssembly Runtime Tests Run $(SITE_SUFFIX)'
+      testRunTitle: 'WebAssembly Native $(TEST_RUN_NAME)'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
       # This is the second run, if RuntimeTestResults*.xml is missing *and* this is a runtime tests run, we fail.
