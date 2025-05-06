@@ -387,14 +387,13 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Inertia;
 						_inertia = new InertiaProcessor(this, changeSet.Timestamp, changeSet.Position, changeSet.Cumulative, changeSet.Velocities);
 
+						var startingArgs = new ManipulationInertiaStartingEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, changeSet.Velocities, _contacts.onStart);
 						CommitChanges(changeSet);
-						_recognizer.ManipulationInertiaStarting?.Invoke(
-							_recognizer,
-							new ManipulationInertiaStartingEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, changeSet.Velocities, _contacts.onStart));
+						_recognizer.ManipulationInertiaStarting?.Invoke(_recognizer, startingArgs);
 
 						if (_status is ManipulationStatus.Inertia) // The manipulation might have been completed in the event handler
 						{
-							_inertia.Start();
+							_inertia.Start(startingArgs.UseCompositionTimer);
 						}
 						break;
 
@@ -637,21 +636,6 @@ namespace Windows.UI.Input
 				};
 			}
 			#endregion
-
-			//internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaTickAligned(ref TimeSpan dueIn, out int ticks)
-			//{
-			//	if (_inertia is null)
-			//	{
-			//		ticks = -1;
-			//		return null;
-			//	}
-
-			//	var current = _head.SumOfDelta;
-			//	var cumulative = _inertia.GetCumulativeTickAligned(ref dueIn, out ticks);
-			//	var delta = ComputeDelta(current, cumulative);
-
-			//	return (delta, cumulative);
-			//}
 
 			private void StartDragTimer()
 			{

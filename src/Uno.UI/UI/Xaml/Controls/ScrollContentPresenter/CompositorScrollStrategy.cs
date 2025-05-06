@@ -40,17 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StopAnimation(nameof(Visual.AnchorPoint));
 				visual.AnchorPoint = target;
 			}
-			//else if (options is { Inertia: { } inertia })
-			//{
-			//	var compositor = visual.Compositor;
-			//	//var easingFunc = CompositionEasingFunction.CreateLinearEasingFunction(compositor);
-			//	var easing = inertia.GetDisplacementEasing(compositor);
-			//	var animation = compositor.CreateVector2KeyFrameAnimation();
-			//	animation.InsertKeyFrame(1.0f, target, easing.function);
-			//	animation.Duration = easing.duration;
-
-			//	visual.StartAnimation(nameof(Visual.AnchorPoint), animation);
-			//}
 			else
 			{
 				var compositor = visual.Compositor;
