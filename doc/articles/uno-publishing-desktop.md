@@ -108,7 +108,7 @@ Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your
 
 > [!NOTE]
 > An existing Visual Studio issue prevents the **Publish** context menu from being active
-> if iOS/Android/maccatalyst are present in the TargetFrameworks list. In order to create
+> if iOS/Android are present in the TargetFrameworks list. In order to create
 > the file, you can temporarily remove those target frameworks from `TargetFrameworks` in
 > order to create the `.pubxml` file generated.
 

@@ -56,8 +56,8 @@
           href: xref:Uno.UI.CommonIssues.Wasm
         - name: Skia (Gtk/Wpf/Framebuffer)
           href: xref:Uno.UI.CommonIssues.Skia
-        - name: iOS/mac Catalyst
-          href: xref:Uno.UI.CommonIssues.IosCatalyst
+        - name: iOS
+          href: xref:Uno.UI.CommonIssues.Ios
         - name: Android
           href: xref:Uno.UI.CommonIssues.Android
       - name: Build Errors
@@ -139,8 +139,6 @@
             href: xref:Uno.Interop.WasmJavaScript3
       - name: Deploy to Raspberry Pi
         href: xref:Uno.RaspberryPi.Intro
-      - name: (Wasm) Handling custom HTML events
-        href: xref:Uno.Development.WasmCustomEvents
       - name: Community Tutorials
         topicHref: xref:Uno.Tutorials.CommunityTutorials
     - name: Samples
@@ -295,8 +293,6 @@
           href: xref:uno.publishing.ios
         - name: Publishing for Android
           href: xref:uno.publishing.android
-        - name: Publishing for Mac Catalyst
-          href: xref:uno.publishing.maccatalyst
 
     - name: Performance
       items:
