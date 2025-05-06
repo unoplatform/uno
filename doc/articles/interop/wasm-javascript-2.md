@@ -2,7 +2,7 @@
 uid: Uno.Interop.WasmJavaScript2
 ---
 
-# Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+# Embedding Existing JavaScript Components in Uno Platform - Part 2
 
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
 
@@ -14,39 +14,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 ### 1. Create the projects
 
-🎯 This section is very similar to the [Create a Counter App with Uno Platform](../getting-started/counterapp/get-started-counter.md) tutorial in the official documentation.
+🎯 This section is very similar to the [Create a Counter App with Uno Platform](xref:Uno.Workshop.Counter) tutorial in the official documentation.
 
-1. Start **Visual Studio 2019**
-2. Click `Create a new project`
-
-   ![Create new project](assets/image-20200325113112235.png)
-
-3. **Search for "Uno"** and pick `Uno Platform App`.
-
-   ![Search for Uno](assets/image-20200325113532758.png)
-
-   Select it and click `Next`.
-
-4. Give a project name and folder as you wish. It will be named `PrismJsDemo` here.
-5. Click `Create` button.
-6. Right-click on the solution and pick `Manage NuGet Packages for Solution...`
-
-   ![Manage Nuget for Solution item](assets/image-20200325114155796.png)
-
-7. Update to latest version of `Uno` dependencies. **DO NOT UPDATE THE `Microsoft.Extensions.Logging` dependencies** to latest versions.
-
-   > This step of upgrading is not absolutely required, but it's a good practice to start a project with the latest version of the library.
-
-8. Right-click on the `.Wasm` project in the _Solution Explorer_ and pick `Set as Startup Project`.
-
-   ![Set as Startup Project item](assets/image-20200420123443823.png)
-
-   > Note: this article will concentrate on build Wasm-only code, so it won't compile on other platforms' projects.
-9. Press `CTRL-F5`. App should compile and start a browser session showing this:
-
-   ![Run Result](assets/image-20200325114609689.png)
-
-   > Note: when compiling using Uno platform the first time, it could take some time to download the latest .NET for WebAssembly SDK into a temporary folder.
+Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the getting started **blank** or **recommended** presets.
 
 ### 2. Create a control in managed code
 
@@ -54,74 +24,74 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 1. From the `[MyApp]` project, create a new class file named `PrismJsView.cs`. and copy the following code:
 
-   ```csharp
-   using System;
-   using System.Collections.Generic;
-   using System.Text;
-   using Windows.UI.Xaml;
-   using Windows.UI.Xaml.Controls;
-   using Windows.UI.Xaml.Markup;
-   using Uno.Foundation;
-   using Uno.UI.Runtime.WebAssembly;
+    ```csharp
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Uno.Foundation;
+    using Uno.UI.Runtime.WebAssembly;
    
-   namespace PrismJsDemo.Shared
-   {
-       [ContentProperty(Name = "Code")]
-       [HtmlElement("code")] // PrismJS requires a <code> element
-       public class PrismJsView : Control
-       {
-           // *************************
-           // * Dependency Properties *
-           // *************************
-           public static readonly DependencyProperty CodeProperty = DependencyProperty.Register(
-               "Code",
-               typeof(string),
-               typeof(PrismJsView),
-               new PropertyMetadata(default(string), CodeChanged));
+    namespace PrismJsDemo;
    
-           public string Code
-           {
-               get => (string)GetValue(CodeProperty);
-               set => SetValue(CodeProperty, value);
-           }
-   
-           public static readonly DependencyProperty LanguageProperty = DependencyProperty.Register(
-               "Language",
-               typeof(string),
-               typeof(PrismJsView),
-               new PropertyMetadata(default(string), LanguageChanged));
-   
-           public string Language
-           {
-               get => (string)GetValue(LanguageProperty);
-               set => SetValue(LanguageProperty, value);
-           }
-   
-           // ***************
-           // * Constructor *
-           // ***************
-           public PrismJsView()
-           {
-               // Any HTML initialization here
-           }
-   
-           // ******************************
-           // * Property Changed Callbacks *
-           // ******************************
-           private static void CodeChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-           {
-               // TODO: generate HTML using PrismJS here
-           }
-   
-           private static void LanguageChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-           {
-               // TODO: generate HTML using PrismJS here
-           }
-       }
-   }
-   ```
+    using Uno.UI.NativeElementHosting;
 
-   This will define a control having 2 properties, one code `Code` and another one for `Language`.
+    namespace PrismJsDemo;
+
+    class PrismJsView : ContentControl
+    {
+        private BrowserHtmlElement? _element;
+
+        // *************************
+        // * Dependency Properties *
+        // *************************
+        public static readonly DependencyProperty CodeProperty = DependencyProperty.Register(
+            nameof(Code),
+            typeof(string),
+            typeof(PrismJsView),
+            new PropertyMetadata(default(string), CodeChanged));
+
+        public string Code
+        {
+            get => (string)GetValue(CodeProperty);
+            set => SetValue(CodeProperty, value);
+        }
+        public static readonly DependencyProperty LangProperty = DependencyProperty.Register(
+            "Lang",
+            typeof(string),
+            typeof(PrismJsView),
+            new PropertyMetadata(default(string), LangChanged));
+
+        public string Lang
+        {
+            get => (string)GetValue(LangProperty);
+            set => SetValue(LangProperty, value);
+        }
+
+        // ***************
+        // * Constructor *
+        // ***************
+        public PrismJsView()
+        {
+            _element = BrowserHtmlElement.CreateHtmlElement("code");
+            Content = _element;
+        }
+
+        // ******************************
+        // * Property Changed Callbacks *
+        // ******************************
+        private static void CodeChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+        {
+            // TODO: generate HTML using PrismJS here
+        }
+        private static void LangChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+        {
+            // TODO: generate HTML using PrismJS here
+        }
+    }
+    ```
+
+   This will define a control having 2 properties, one code `Code` and another one for `Lang`.
+
 2. Change the `MainPage.xaml` file to the following content:
 
    ```xml
@@ -142,7 +112,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
            <TextBox x:Name="lang" Text="csharp" Grid.Row="0" />
            <TextBox x:Name="code" Text="var x = 3;&#xA;var y = 4;" AcceptsReturn="True" VerticalAlignment="Stretch" Grid.Row="1" />
            <Border BorderBrush="Blue" BorderThickness="2" Background="LightBlue" Padding="10" Grid.Row="2">
-               <local:PrismJsView Code="{Binding Text, ElementName=code}" Language="{Binding Text, ElementName=lang}"/>
+               <local:PrismJsView Code="{Binding Text, ElementName=code}" Lang="{Binding Text, ElementName=lang}"/>
            </Border>
        </Grid>
    </Page>
@@ -157,11 +127,11 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
    ![Select Item button - F12](assets/image-20200325132528604.png)
 
-6. It will bring the DOM explorer to a `xamltype=Windows.UI.Xaml.Controls.Border` node. The `PrismJsView` should be right below after opening it.
+6. It will bring the DOM explorer to a `code` node. The `PrismJsView` should be right below after opening it.
 
    ![Html Explorer](assets/image-20200325132859849.png)
 
-   The `xamltype="PrismJsDemo.Shared.PrismJsView"` control is there!
+   The `code` control is there!
 
 👌 The project is now ready to integrate PrismJS.
 
@@ -201,57 +171,63 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
 
-   ```csharp
-   public PrismJsView()
-   {
-       // This is required to set to <code> style for PrismJS to works well
-       // https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817
-       this.SetCssStyle("white-space", "pre-wrap");
-   }
-   ```
+    ```csharp
+    public PrismJsView()
+    {
+        _element = BrowserHtmlElement.CreateHtmlElement("code");
+        Content = _element;
+
+        // This is required to set to <code> style for PrismJS to works well
+        // https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817
+        _element.SetCssStyle("white-space", "pre-wrap");
+    }
+    ```
 
 2. Now, we need to create an `UpdateDisplay()` method, used to generate HTML each time there's a new version to update. Here's the code for the method to add in the `PrismJsView` class:
 
    ```csharp
-   private void UpdateDisplay(string oldLanguage = null, string newLanguage = null)
-   {
-       string javascript = $@"
-           (function(){{
-               // Prepare Prism parameters
-               const code = ""{WebAssemblyRuntime.EscapeJs(Code)}"";
-               const oldLanguageCss = ""language-{WebAssemblyRuntime.EscapeJs(oldLanguage)}"";
-               const newLanguageCss = ""language-{WebAssemblyRuntime.EscapeJs(newLanguage)}"";
-               const language = ""{WebAssemblyRuntime.EscapeJs(newLanguage ?? Language)}"";
-               // Process code to get highlighted HTML
-               const prism = window.Prism;
-               let html = code;
-               if(prism.languages[language]) {{
-                   // When the specified language is supported by PrismJS...
-                   html = prism.highlight(code, prism.languages[language], language);
-               }}
-   
-      // Display result
-               element.innerHTML = html;
-               // Set CSS classes, when required
-               if(oldLanguageCss) {{
-                   element.classList.remove(oldLanguageCss);
-               }}
-               if(newLanguageCss) {{
-                   element.classList.add(newLanguageCss);
-               }}
-           }})();";
-       this.ExecuteJavascript(javascript);
-   }
-   ```
+    private void UpdateDisplay(string oldLanguage = null, string newLanguage = null)
+    {
+        string javascript = 
+            $$"""
+            (function(){
+                // Prepare Prism parameters
+                const code = "{{BrowserHtmlElement.EscapeJs(Code)}}";
+                const oldLanguageCss = "language-{{BrowserHtmlElement.EscapeJs(oldLanguage)}}";
+                const newLanguageCss = "language-{{BrowserHtmlElement.EscapeJs(newLanguage)}}";
+                const language = "{{BrowserHtmlElement.EscapeJs(newLanguage ?? Lang)}}";
+                // Process code to get highlighted HTML
+                const prism = window.Prism;
+                let html = code;
+                if(prism.languages[language]) {
+                    // When the specified language is supported by PrismJS...
+                    html = prism.highlight(code, prism.languages[language], language);
+                }
 
-3. Change `CodeChanged()` and `LanguageChanged()` to call the new `UpdateDisplay()` method:
+                // Display result
+                element.innerHTML = html;
+                // Set CSS classes, when required
+                if(oldLanguageCss) {
+                    element.classList.remove(oldLanguageCss);
+                }
+                if(newLanguageCss) {
+                    element.classList.add(newLanguageCss);
+                }
+            })();
+            """;
+
+        _element.ExecuteJavascript(javascript);
+    }
+    ```
+
+3. Change `CodeChanged()` and `LangChanged()` to call the new `UpdateDisplay()` method:
 
    ```csharp
    private static void CodeChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
    {
        (dependencyobject as PrismJsView)?.UpdateDisplay();
    }
-   private static void LanguageChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+   private static void LangChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
    {
        (dependencyobject as PrismJsView)?.UpdateDisplay(args.OldValue as string, args.NewValue as string);
    }
@@ -264,9 +240,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    {
        // This is required to set to <code> style for PrismJS to works well
        // https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817
-       this.SetCssStyle("white-space", "pre-wrap");
+       _element.SetCssStyle("white-space", "pre-wrap");
        // Update the display when the element is loaded in the DOM
-       Loaded += (snd, evt) => UpdateDisplay(newLanguage: Language);
+       Loaded += (snd, evt) => UpdateDisplay(newLanguage: Lang);
    }
    ```
 
@@ -279,7 +255,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).
 Some additional improvements can be done to make the code more production ready:
 
-* **Make the control multi-platform**. A simple way would be to use a WebView on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't compile on other targets.
-* **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the [`Uno.UI.Wasm`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Uno.UI.Wasm.csproj) project.
+* **Make the control multi-platform**. Another would be to use a [WebView](xref:Uno.Controls.WebView2) on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't run on non-WebAssembly targets.
+* **Use script files instead of using `ExecuteJavascript`**. That would have the advantage of improving performance and making it easier to debug the code.
 * **Support more PrismJS features**. There are many [_plugins_ for PrismJS](https://prismjs.com/#plugins) that can be used. Most of them are very easy to implement.
-* [Continue with Part 3](wasm-javascript-3.md) - an integration of a more complex library with callbacks to application.
+* [Continue with Part 3](xref:Uno.Interop.WasmJavaScript3) - an integration of a more complex library with callbacks to application.

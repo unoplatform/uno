@@ -56,8 +56,8 @@
           href: xref:Uno.UI.CommonIssues.Wasm
         - name: Skia (Gtk/Wpf/Framebuffer)
           href: xref:Uno.UI.CommonIssues.Skia
-        - name: iOS/mac Catalyst
-          href: xref:Uno.UI.CommonIssues.IosCatalyst
+        - name: iOS
+          href: xref:Uno.UI.CommonIssues.Ios
         - name: Android
           href: xref:Uno.UI.CommonIssues.Android
       - name: Build Errors
@@ -139,8 +139,6 @@
             href: xref:Uno.Interop.WasmJavaScript3
       - name: Deploy to Raspberry Pi
         href: xref:Uno.RaspberryPi.Intro
-      - name: (Wasm) Handling custom HTML events
-        href: xref:Uno.Development.WasmCustomEvents
       - name: Community Tutorials
         topicHref: xref:Uno.Tutorials.CommunityTutorials
     - name: Samples
@@ -150,30 +148,33 @@
 
 - name: Overview
   items:
-    - name: Intro
+    - name: Introduction
       href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
         - name: Supported Platforms
           href: getting-started/requirements.md
-          items:
-          - name: .NET Versions
-            href: net-version-support.md
-          - name: Working with Skia Desktop
-            href: xref:Uno.Skia.Desktop
-          - name: Working with the Linux Framebuffer
-            href: features/using-linux-framebuffer.md
+        - name: .NET Version Support
+          href: net-version-support.md
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: Best practices
+        - name: UI Renderers
+          items: 
+          - name: Skia Renderer
+            href: xref:uno.features.renderer.skia
+          - name: Native Renderer
+            href: xref:uno.features.renderer.native
+        - name: Best Practices
           href: best-practices-uno.md
 
     - name: Authoring
       items:
       - name: Using the Uno.SDK
         href: xref:Uno.Features.Uno.Sdk
+      - name: UI Markup
+        href: xref:uno.development.using.markup
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
@@ -184,6 +185,12 @@
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
         href: guides/how-to-add-platforms-existing-project.md
+      - name: Using the Skia Desktop
+        href: xref:Uno.Skia.Desktop
+      - name: Linux Framebuffer
+        href: features/using-linux-framebuffer.md
+      - name: Using Skia Desktop (macOS)
+        href: xref:Uno.Skia.macOS
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
@@ -192,8 +199,6 @@
         href: wasm-appmanifest.md
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
-      - name: Using Skia Desktop (macOS)
-        href: xref:Uno.Skia.macOS
 
     - name: Debugging
       items:
@@ -212,9 +217,9 @@
       items:
       - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Native Views with Mobile
+      - name: Native Views
         href: native-views.md
-      - name: Native Views with Skia 
+      - name: Native Views with Skia
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
@@ -225,6 +230,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
+      - name: Upgrading to Uno 6.0
+        href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
       - name: Upgrading from .NET 8 to .NET 9
@@ -291,8 +298,6 @@
           href: xref:uno.publishing.ios
         - name: Publishing for Android
           href: xref:uno.publishing.android
-        - name: Publishing for Mac Catalyst
-          href: xref:uno.publishing.maccatalyst
 
     - name: Performance
       items:

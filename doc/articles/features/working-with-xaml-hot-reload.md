@@ -48,7 +48,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ### [**Visual Studio Code**](#tab/vscode)
 
 - Setup your environment by following our [getting started guide](xref:Uno.GetStarted.vscode).
-- Start the application without the debugger.
+- Start the application (with or without the debugger, depending on the supported features below).
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below).
 - Make changes to your XAML or C# code, then save your file.
 
@@ -128,13 +128,13 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
             <td>✅</a></sup></td><td>🔳</td>
-            <td>🟥</a></td><td>✅🛜</td>
+            <td>✅🛜</a></td><td>✅🛜</td>
             <td>🔳</a></td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
             <td>✅</td><td>🔳</td>
-            <td>🟥</a></td><td>✅</td>
+            <td>✅</a></td><td>✅</td>
             <td>🔳</a></td><td>✅</td>
         </tr>
         </tr>
@@ -189,12 +189,12 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         </tr>
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
-            <td>🟥</td><td>✅</td>
+            <td>✅</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
-            <td>🟥</td><td>✅</td>
+            <td>✅</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
         <tr>
@@ -245,12 +245,12 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         </tr>
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
-            <td>🟥</td><td>✅🛜</td>
+            <td>✅🛜</td><td>✅🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
-            <td>🟥</td><td>✅</td>
+            <td>✅</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
         <tr>
@@ -278,7 +278,6 @@ Legend:
 - ✅ Supported
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - ⌛ Upcoming support
-- 🟥 Not supported yet
 - 🔳 Not supported by the environment/IDE
 
 ### Notes

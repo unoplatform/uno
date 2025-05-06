@@ -5,20 +5,21 @@ uid: Uno.Skia.Embedding.Native
 # Embedding Native Elements in Skia Apps
 
 > [!NOTE]
-> As of Uno Platform 6.0, running on macOS desktop does not yet support native controls embedding.
+> This document describes Skia renderer native embedding, for other platforms/renderers see the [native views](xref:Uno.Development.NativeViews) documentation.
 
 In an Uno Platform app with a Skia renderer, i.e. using `net9.0-desktop` or adding `SkiaRenderer` to the `UnoFeatures` MSBuild property, you can embed native controls in your Skia app. This is useful if you want to use a native control for a specific task, for instance, to integrate an existing WPF control.
 
 Each target platform has its own idea of a native element.
 
-| Platform                        | Native element                                 | Description                                  |
-|---------------------------------|------------------------------------------------|----------------------------------------------|
-| Skia Desktop (Win32)            | Uno.UI.NativeElementHosting.Win32NativeWindow  | A native Windows window with a unique `Hwnd` |
-| Skia Desktop (WPF)              | System.Windows.UIElement                       | A WPF control                                |
-| Skia Desktop (X11)              | Uno.UI.NativeElementHosting.X11NativeWindow    | A native X11 window with a unique `XID`      |
-| WebAssembly with `SkiaRenderer` | Uno.UI.NativeElementHosting.BrowserHtmlElement | An HTML element with a unique `id`.          |
-| Android with `SkiaRenderer`     | Android.Views.View                             | An Android view.                             |
-| Apple UIKit with `SkiaRenderer` | UIKit.UIView                                   | An UIKit view.                               |
+| Platform                        | Native element                                                                     | Description                                  |
+|---------------------------------|------------------------------------------------------------------------------------|----------------------------------------------|
+| Skia Desktop (Win32)            | Uno.UI.NativeElementHosting.Win32NativeWindow                                      | A native Windows window with a unique `Hwnd` |
+| Skia Desktop (WPF)              | System.Windows.UIElement                                                           | A WPF control                                |
+| Skia Desktop (X11)              | Uno.UI.NativeElementHosting.X11NativeWindow                                        | A native X11 window with a unique `XID`      |
+| Skia Desktop (macOS)            | Not yet supported.                                                                 | Not yet supported as of Uno Platform 6.0     |
+| WebAssembly with `SkiaRenderer` | [Uno.UI.NativeElementHosting.BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) | An HTML element with a unique `id`.          |
+| Android with `SkiaRenderer`     | Android.Views.View                                                                 | An Android view.                             |
+| Apple UIKit with `SkiaRenderer` | UIKit.UIView                                                                       | An UIKit view.                               |
 
 The app developer is responsible for creating the native element and internal checks make sure that only a supported native element on the running platform is used.
 
