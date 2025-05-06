@@ -18,9 +18,10 @@
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
-It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance.
 
-Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
+Leverage the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) and [Hot Design](xref:Uno.HotDesign.Overview
+), then run your application runs on iOS, Android, macOS, Linux, and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
@@ -36,24 +37,21 @@ For a larger example and features demo:
 * Supported platforms:
     * Windows 10 and Windows 11
     * Windows 7 (via Skia Desktop)
-    * iOS, MacOS (Catalyst) and Android (via [.NET](https://dotnet.microsoft.com/))
+    * macOS (via Skia Desktop)
+    * iOS and Android (via [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
     * Linux (via Skia Desktop with X11 and FrameBuffer)
-    * macOS (via Skia Desktop)
 * Dev loop:
-    * Develop on Windows first using Visual Studio
-    * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
-    * [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) on Windows (VS2022/Rider/VS Code), Linux and macOS (VS Code / Rider)
-    * Validate on other platforms as late as possible
-    * Develop in VS Code, Rider, Codespaces, or GitPod
-    * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
+    * Develop on your favorite IDE (Visual Studio, Rider or VS Code) on your favorite OS (Windows, macOS or Linux)
+    * XAML and/or C# Hot Reload for WebAssembly, macOS, Linux, Windows, iOS and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
 * Cross Platform Controls:
     * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
     * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
-* WinUI/UWP Code Support:
+    * [Composition API](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition)
+* WinUI Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
     * [Community Toolkit MVVM](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
@@ -68,7 +66,7 @@ For a larger example and features demo:
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
     * [MapsUI](https://github.com/Mapsui/Mapsui)
     * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
-    * Any UWP project
+    * Any WinUI project
 * Responsive Design:
     * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
@@ -76,8 +74,6 @@ For a larger example and features demo:
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available
-* Xamarin.Forms Renderers:
-    * [Uno Platform WebAssembly Renderers for Xamarin.Forms](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform)
 
 # Live WebAssembly Apps
 

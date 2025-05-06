@@ -69,6 +69,15 @@ body:
     attributes:
       label: NuGet package version(s)
 
+  - type: checkboxes
+    id: renderer
+    attributes:
+      label: Renderer
+      multiple: true
+      options:
+        - Skia
+        - Native
+
   - type: dropdown
     id: platforms
     attributes:
@@ -78,13 +87,11 @@ body:
         - WebAssembly
         - Android
         - iOS
-        - Mac Catalyst
-        - Skia (WPF)
-        - Skia (Linux X11)
-        - Skia (macOS)
-        - Skia (Linux Framebuffer)
-        - Skia (GTK)
-        - Windows (WinAppSDK)
+        - Desktop (Windows)
+        - Desktop (macOS)
+        - Desktop (X11)
+        - Desktop (Linux Framebuffer)
+        - Windows App SDK
         - Build tasks
 
   - type: dropdown

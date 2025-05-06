@@ -150,24 +150,26 @@
 
 - name: Overview
   items:
-    - name: Intro
+    - name: Introduction
       href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
         - name: Supported Platforms
           href: getting-started/requirements.md
-          items:
-          - name: .NET Versions
-            href: net-version-support.md
-          - name: Working with Skia Desktop
-            href: xref:Uno.Skia.Desktop
-          - name: Working with the Linux Framebuffer
-            href: features/using-linux-framebuffer.md
+        - name: .NET Version Support
+          href: net-version-support.md
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
+        - name: Skia Rendering
+          href: xref:Uno.Skia.Rendering
+          items:
+            - name: Skia Desktop
+              href: xref:Uno.Skia.Desktop
+            - name: Linux Framebuffer
+              href: features/using-linux-framebuffer.md
         - name: How Uno Works
           href: how-uno-works.md
-        - name: Best practices
+        - name: Best Practices
           href: best-practices-uno.md
 
     - name: Authoring
@@ -225,6 +227,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
+      - name: Upgrading to Uno 6.0
+        href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
       - name: Upgrading from .NET 8 to .NET 9

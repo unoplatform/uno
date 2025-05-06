@@ -148,19 +148,19 @@ Browse the set of available controls and their properties.
 
 ## High level architecture
 
-Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/) and the older [UWP application API](https://learn.microsoft.com/windows/uwp/get-started/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3 (or UWP) application.
+Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://learn.microsoft.com/windows/apps/winui/winui3/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3/WinAppSDK application.
 
-This means that existing WinUI or UWP code is compatible with Uno Platform. Existing WinUI or UWP libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
+This means that existing WinUI code is compatible with Uno Platform. Existing WinUI libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
 
 ![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-copy.png)
 
-Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it rests upon the native UI framework on most target platforms, making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
+Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it can either use the native UI framework on most target platforms, or use as Skia-based rendering approach, while making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
 
 Learn more about [how Uno Platform works](xref:Uno.Development.HowItWorks).
 
 ## Next Steps
 
-Once you’ve gone through our [Get Started](get-started.md) guides please visit our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our team and community will be able to help you.
+Once you've gone through our [Get Started](get-started.md) guides please visit our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our team and community will be able to help you.
 <br/>
 <br/>
 
