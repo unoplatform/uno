@@ -66,7 +66,7 @@ When editing properties that accept orientation, you'll see two icon buttons: th
 
 ## Templates
 
-For properties that use templates, a button labeled "Create" will appear if no template has been set yet, or "Edit" if a template already exists. Clicking this button will open the Template Editor. For more advanced details on how the Template Editor works, refer to our [Template Editor docs](). <!-- TODO add link-->
+For properties that use templates, a button labeled "Create" will appear if no template has been set yet, or "Edit" if a template already exists. Clicking this button will open the Template Editor. For more advanced details on how the Template Editor works, refer to our [Template Editor docs](xref:Uno.HotDesign.Properties.TemplateEditor).
 
 ![Properties Template Editor](Assets/core-tools/properties-editor-template-editor.png)
 
