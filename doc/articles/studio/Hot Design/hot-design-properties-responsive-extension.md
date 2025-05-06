@@ -8,7 +8,7 @@ Responsive Extensions let you define different values for a property depending o
 
 In the Advanced Flyout, the **Responsive Extension** toggle will only be enabled if the selected property supports responsive values. When toggled on, it allows you to configure different values for various screen sizes using collapsible sections.
 
-For more advanced usage and technical details, see the [Responsive Extensions documentation](xref:Uno.Recipes.ResponsiveExtension).
+For more advanced usage and technical details, see the [Responsive Extensions documentation](xref:Toolkit.Helpers.ResponsiveExtension).
 
 ## Setting Values According to the Screen Size
 
