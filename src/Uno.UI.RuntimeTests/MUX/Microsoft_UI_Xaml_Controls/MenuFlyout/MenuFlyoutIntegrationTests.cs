@@ -127,13 +127,12 @@ public class MenuFlyoutIntegrationTests
 		await TapSubMenuItem(subItem);
 
 		LOG_OUTPUT("Close the MenuFlyout using the Back button.");
-		bool backButtonPressHandled = false;
-		TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
+		var backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
 		VERIFY_IS_TRUE(backButtonPressHandled);
 		await menuFlyoutClosedEvent.WaitForDefault();
 
 		LOG_OUTPUT("After closing a MenuFlyout, further back button presses should not get handled");
-		TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
+		backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
 		VERIFY_IS_FALSE(backButtonPressHandled);
 	}
 
