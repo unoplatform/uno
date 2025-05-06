@@ -2,7 +2,7 @@
 uid: uno.publishing.overview
 ---
 
-# Publishing Your App
+# Publishing Your App (App Packaging)
 
 ## Preparing
 
