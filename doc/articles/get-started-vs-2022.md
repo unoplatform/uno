@@ -16,7 +16,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
     ![Visual Studio Installer - ASP.NET and web development workload](Assets/quick-start/vs-install-web.png)
 
-1. **.NET Multi-platform App UI development** workload installed (for iOS, Android, Mac Catalyst development).
+1. **.NET Multi-platform App UI development** workload installed (for iOS, Android development).
 
     ![Visual Studio Installer - .NET Multi-platform App UI development workload](Assets/quick-start/vs-install-dotnet-mobile.png)
 

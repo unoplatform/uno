@@ -8,11 +8,11 @@ This guide briefly explains the structure of an app created with either the [`do
 
 ## The project files in an Uno Platform app
 
-After creating a new solution called `MyApp`, it will contain the following project:
+After creating a new blank solution called `MyApp`, it will contain the following project:
 
 ![Uno Platform solution structure](Assets/solution-structure.png)
 
-The `MyApp.csproj` project supports Mobile (iOS/Android/Mac Catalyst), WebAssembly, Desktop (native macOS, Linux X11/Framebuffer, Windows 7+), and Windows App SDK targets.
+The `MyApp.csproj` project supports Mobile (iOS/Android), WebAssembly, Desktop (macOS, Linux X11/Framebuffer, Windows 7+), and Windows App SDK targets.
 
 You'll find below details about the contents of the solution.
 
@@ -23,7 +23,6 @@ The Platforms folder contains platform specific files for targets supported by U
 - `Desktop` uses the [Uno Platform Skia Desktop](xref:Uno.Features.Uno.Sdk) support for Windows 7+, Linux, and macOS
 - `Android` contains files and assets specific to Android Phones, Tablets, TVs, and watches
 - `iOS` targets Apple's iOS devices, Phones and Tablets
-- `MacCatalyst` targets the macOS Catalyst platform
 - `WebAssembly` targets the browser using WebAssembly
 - `Windows` targets the [Windows App SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) to run on Windows
 

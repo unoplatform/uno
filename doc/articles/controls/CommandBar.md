@@ -61,7 +61,9 @@ In this mode, the `CommandBar` can't be fully customized like other templatable 
 
 ### Padding
 
-You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
+You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS/Native and Android/Native.
+
+On Skia based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
 
 #### Back button
 
@@ -85,7 +87,7 @@ On **iOS**, tapping the back button automatically triggers a back navigation on 
 | Height                                | x       | -   | -       | **iOS** and **Android**: Fixed and can't be changed.                                                                   |
 | HorizontalAlignment                   | x       | -   | x       | **iOS**: Always use `HorizontalAlignment.Stretch`.                                                                     |
 | Opacity                               | x       | x   | x       |                                                                                                                        |
-| Padding                               | x       | x   | x       | **iOS** and **Android**: Please refer to the `Padding` section.                                                        |
+| Padding                               | x       | x   | x       | **iOS**, **Android** and **Skia**: Please refer to the `Padding` section.                                                        |
 | PrimaryCommands                       | x       | x   | x       |                                                                                                                        |
 | SecondaryCommands                     | x       | -   | x       | **iOS**: Not supported.                                                                                                |
 | VerticalAlignment                     | x       | -   | x       | **iOS**: Always use `VerticalAlignment.Top`.                                                                           |
@@ -514,6 +516,20 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > Why can't I overlap content over the CommandBar on iOS?
 
   The `CommandBar` is not actually part of the `Page` on **iOS**, and you can't overlap content over it like you would on **UWP** or **Android**. Please refer to the **Placement** section for details.
+
+- > Why is my CommandBar going into the status bar on iOS/Android ?
+
+  You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
+
+  ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
+  <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+      <CommandBar>
+        ...
+      </CommandBar>
+  </Style>
+  ```
 
 - > Why doesn't my CommandBar show a back button?
 

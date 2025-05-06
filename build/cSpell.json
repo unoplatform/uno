@@ -117,7 +117,8 @@
 	"autoplay",
 	"Xcodes",
 	"Raygun",
-	"waitlist"
+	"waitlist",
+	"subviews"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -147,6 +148,7 @@
 	"Jiterpreter",
 	"jonathanpeppers's",
 	"Krueger",
+	"kiota",
 	"libgtk",
 	"lightsensor",
 	"Liu's",
