@@ -266,11 +266,15 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void ApplyOffsets(double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
 		{
-			if (!options.IsDependentOnly && Content is UIElement contentElt)
+			if (!options.IsInertial)
 			{
 				// If we get a request to scroll to a specific offset **that is not flagged as IsDependentOnly** (i.e. not coming from the inertia processing),
 				// we stop the pending inertia processor.
 				_touchInertia?.Complete();
+			}
+
+			if (Content is UIElement contentElt)
+			{
 				_strategy.Update(contentElt, horizontalOffset, verticalOffset, zoom, options);
 			}
 		}
@@ -369,7 +373,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(IsDependentOnly: true),
+					options: new(IsInertial: true),
 					isIntermediate: true);
 			}
 			else
@@ -486,28 +490,32 @@ namespace Microsoft.UI.Xaml.Controls
 			//var independentAnimationDuration = _defaultTouchIndependentAnimationDuration;
 			//if (args.Manipulation.GetInertiaTickAligned(ref independentAnimationDuration, out _touchInertiaSkipTicks) is { } next)
 			{
-				// First we configure custom scrolling options to match what we just configured on the processor
-				// Note: We configure animation to run a bit longer than tick to make sure to not have delay between animations
-				//var v0 = args.Velocities.Linear.Y;
-				//var duration = inertia.GetDuration();
-				//var final = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0, inertia.DesiredDisplacementDeceleration, duration);
-				var final = inertia.GetFinal();
+				//// First we configure custom scrolling options to match what we just configured on the processor
+				//// Note: We configure animation to run a bit longer than tick to make sure to not have delay between animations
+				////var v0 = args.Velocities.Linear.Y;
+				////var duration = inertia.GetDuration();
+				////var final = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0, inertia.DesiredDisplacementDeceleration, duration);
+				//var final = inertia.GetFinal();
+
+				////var scrollable = GetScrollableOffsets();
+				//var finalDeltaX = Math.Clamp(-final.delta.Translation.X, scrollable.Left, scrollable.Right);
+				//var finalDeltaY = Math.Clamp(-final.delta.Translation.Y, scrollable.Up, scrollable.Down);
+
+				//var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
+				//var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
+
+				////_touchInertiaOptions = ;
+
+				//// Visually we scroll directly to the final value.
+				//ApplyOffsets(
+				//	horizontalOffset: HorizontalOffset + finalDeltaX,
+				//	verticalOffset: VerticalOffset + finalDeltaY,
+				//	zoom: 1,
+				//	new(DisableAnimation: false, Inertia: inertia));
 
 				//var scrollable = GetScrollableOffsets();
-				var finalDeltaX = Math.Clamp(-final.delta.Translation.X, scrollable.Left, scrollable.Right);
-				var finalDeltaY = Math.Clamp(-final.delta.Translation.Y, scrollable.Up, scrollable.Down);
-
 				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
 				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-				//_touchInertiaOptions = ;
-
-				// Visually we scroll directly to the final value.
-				ApplyOffsets(
-					horizontalOffset: HorizontalOffset + finalDeltaX,
-					verticalOffset: VerticalOffset + finalDeltaY,
-					zoom: 1,
-					new(DisableAnimation: false, Inertia: inertia));
 
 				// _touchInertia is validated in the ApplyOffset, so make sure to set it only after.
 				_touchInertia = args.Manipulation;
@@ -516,7 +524,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Set(
 					horizontalOffset: HorizontalOffset + deltaX,
 					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: false, IsDependentOnly: true),
+					options: new(DisableAnimation: false, IsInertial: true),
 					isIntermediate: true);
 			}
 		}

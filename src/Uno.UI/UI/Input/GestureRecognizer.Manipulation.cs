@@ -385,7 +385,7 @@ namespace Windows.UI.Input
 
 					case ManipulationStatus.Started when pointerRemoved && ShouldStartInertia(changeSet.Velocities):
 						_status = ManipulationStatus.Inertia;
-						_inertia = new InertiaProcessor(this, changeSet.Position, changeSet.Cumulative, changeSet.Velocities);
+						_inertia = new InertiaProcessor(this, changeSet.Timestamp, changeSet.Position, changeSet.Cumulative, changeSet.Velocities);
 
 						CommitChanges(changeSet);
 						_recognizer.ManipulationInertiaStarting?.Invoke(
@@ -425,15 +425,6 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private record struct ManipulationChangeSet(
-				ManipulationCommit ParentCommit, // Note: ParentCommit.Points are no longer updated during inertia!
-				PointsState CurrentPoints, // Note: Pointers are no longer updated during inertia!
-				uint ActivePointerCount, // Number of ACTIVE pointers (unlike the PointsState.PointerCount, this only being updated during inertia)
-				Point Position,
-				ManipulationDelta Cumulative,
-				ManipulationDelta Delta,
-				ManipulationVelocities Velocities);
-
 			[Pure]
 			private ManipulationChangeSet StageChanges(bool useHistory = true)
 			{
@@ -441,25 +432,26 @@ namespace Windows.UI.Input
 				var pointerCount = _contacts.current;
 
 				var originPoints = _origins.State;
-				var previousPoints = parentCommit.Points;
 				var currentPoints = _currents.State;
 
+				ulong timestamp;
 				Point position;
 				ManipulationDelta cumulative;
-				double elapsedMicroseconds;
 				if (_inertia is null)
 				{
+					timestamp = currentPoints.Timestamp;
 					position = currentPoints.Center;
-					elapsedMicroseconds = currentPoints.Timestamp - previousPoints.Timestamp;
 					cumulative = ComputeDelta(originPoints, currentPoints, parentCommit.SumOfDelta);
 				}
 				else
 				{
-					position = _inertia.GetPosition();
-					elapsedMicroseconds = _inertia.Elapsed.TotalMicroseconds;
-					cumulative = _inertia.GetCumulative();
+					(timestamp, position, cumulative) = _inertia.GetStateOnLastTick();
+					//position = _inertia.GetPosition();
+					//elapsedMicroseconds = _inertia.Elapsed.TotalMicroseconds;
+					//cumulative = _inertia.GetCumulative();
 				}
 
+				var elapsedMicroseconds = timestamp - parentCommit.Timestamp;
 				var delta = ComputeDelta(parentCommit.SumOfDelta, cumulative); // Delta from last commit
 
 				ManipulationVelocities? velocities;
@@ -486,13 +478,13 @@ namespace Windows.UI.Input
 					_lastRelevantVelocities = effectiveVelocities;
 				}
 
-				return new(parentCommit, currentPoints, pointerCount, position, cumulative, delta, effectiveVelocities);
+				return new(parentCommit, timestamp, pointerCount, position, cumulative, delta, effectiveVelocities);
 			}
 
 			// This has to be invoked before any event being raised, it will update the internal state that is used to compute delta and velocities.
 			private void CommitChanges(ManipulationChangeSet changeSet)
 			{
-				_head = new(_head.SumOfDelta.Add(changeSet.Delta), changeSet.CurrentPoints, changeSet.ActivePointerCount);
+				_head = new(_head.SumOfDelta.Add(changeSet.Delta), changeSet.Timestamp, changeSet.ActivePointerCount);
 			}
 
 			private void ApplyRailing(ref ManipulationChangeSet changeSet)
@@ -500,7 +492,7 @@ namespace Windows.UI.Input
 				Debug.Assert(_status == ManipulationStatus.Started);
 
 				var oldPosition = _origins.State.Center;
-				var newPosition = changeSet.CurrentPoints.Center;
+				var newPosition = changeSet.Position;
 
 				var slope = newPosition.X == oldPosition.X
 					? double.PositiveInfinity
@@ -646,20 +638,20 @@ namespace Windows.UI.Input
 			}
 			#endregion
 
-			internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaTickAligned(ref TimeSpan dueIn, out int ticks)
-			{
-				if (_inertia is null)
-				{
-					ticks = -1;
-					return null;
-				}
+			//internal (ManipulationDelta Delta, ManipulationDelta Cumulative)? GetInertiaTickAligned(ref TimeSpan dueIn, out int ticks)
+			//{
+			//	if (_inertia is null)
+			//	{
+			//		ticks = -1;
+			//		return null;
+			//	}
 
-				var current = _head.SumOfDelta;
-				var cumulative = _inertia.GetCumulativeTickAligned(ref dueIn, out ticks);
-				var delta = ComputeDelta(current, cumulative);
+			//	var current = _head.SumOfDelta;
+			//	var cumulative = _inertia.GetCumulativeTickAligned(ref dueIn, out ticks);
+			//	var delta = ComputeDelta(current, cumulative);
 
-				return (delta, cumulative);
-			}
+			//	return (delta, cumulative);
+			//}
 
 			private void StartDragTimer()
 			{
@@ -753,7 +745,6 @@ namespace Windows.UI.Input
 					&& (_settings & GestureSettingsHelper.Manipulations) != 0 // On pointer removed, we should not start inertia if all manip are disabled (could happen if configured for drag but IsDragManipulation not yet true)
 					&& velocities.IsAnyAbove(_inertiaThresholds);
 
-
 			#region Patch pointer events
 			private void PatchSuspiciousRemovedPointer(ref PointerPoint removed)
 			{
@@ -830,14 +821,25 @@ namespace Windows.UI.Input
 				double Expansion
 			);
 
+			internal record struct ManipulationState(ulong Timestamp, Point Position, ManipulationDelta Cumulative);
+
+			private record struct ManipulationChangeSet(
+				ManipulationCommit ParentCommit,
+				ulong Timestamp,
+				uint ActivePointerCount, // Number of ACTIVE pointers (unlike the PointsState.PointerCount, this only being updated during inertia)
+				Point Position,
+				ManipulationDelta Cumulative,
+				ManipulationDelta Delta,
+				ManipulationVelocities Velocities);
+
 			/// <summary>
 			/// Set of values that has been published to the end-user through one of the Manipulation events.
 			/// </summary>
 			/// <param name="SumOfDelta">The sum of all Delta since the manipulation has started (used to build next Delta to avoid precision issue that would make the Σ(Delta) to diverge from Cumulative).</param>
-			/// <param name="Points">The current points state at time of this commit.</param>
+			/// <param name="Timestamp">The timestamp of points used to create the commit (in microseconds).</param>
 			private readonly record struct ManipulationCommit(
 				ManipulationDelta SumOfDelta,
-				PointsState Points,
+				ulong Timestamp,
 				uint PointerCount);
 
 			// WARNING: This struct is ** MUTABLE **
