@@ -15,23 +15,31 @@ body:
     validations:
       required: true
 
+  - type: checkboxes
+    id: samples-request-renderer
+    attributes:
+      label: Renderer
+      multiple: true
+      options:
+        - Skia
+        - Native
+
   - type: dropdown
     id: samples-request-platforms
     attributes:
       label: Affected platforms
       multiple: true
       description: Select the platforms for which your request is relevant
-      options:        
+      options:
         - WebAssembly
         - Android
         - iOS
-        - Mac Catalyst
-        - Skia (WPF)
-        - Skia (Linux X11)
-        - Skia (macOS)
-        - Skia (Linux Framebuffer)
-        - Skia (GTK)
-        - Windows (WinAppSDK)
+        - Desktop (Windows)
+        - Desktop (macOS)
+        - Desktop (X11)
+        - Desktop (Linux Framebuffer)
+        - Windows App SDK
+        - Build tasks
 
   - type: textarea
     id: samples-request-additional-info

@@ -4,6 +4,12 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
+## Uno Platform 6.0
+
+Uno Platform 6.0 contains breaking changes required to provide a consistent experience when using the Skia rendering feature, as well as the removal of the UWP API set support and the GTK desktop runtime support.
+
+Read additional information about the [migration to Uno Platform 6.0](xref:Uno.Development.MigratingToUno6).
+
 ## Uno Platform 5.6
 
 Uno Platform 5.6 contains one breaking change around using `x:Load` to align the behavior to WinUI.

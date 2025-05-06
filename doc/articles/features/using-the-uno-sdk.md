@@ -6,10 +6,8 @@ uid: Uno.Features.Uno.Sdk
 
 Uno Platform projects use the Uno.Sdk package that is designed to keep projects simple, yet configurable. It imports the `Microsoft.Net.Sdk` (and the `Microsoft.Net.Sdk.Web` for WebAssembly).
 
-This document explains the many features of this SDK, and how to configure its behavior.
+This document explains the many features of this SDK and how to configure its behavior.
 
-> [!NOTE]
-> The Uno.Sdk only supports the WinUI API set.
 > [!TIP]
 > Beginning with 5.2, Uno.Sdk enabled projects are best experienced using the [MSBuild Editor Visual Studio 2022 Extension](https://marketplace.visualstudio.com/items?itemName=mhutch.msbuildeditor) to provide intellisense.
 
@@ -38,6 +36,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
+    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -78,10 +77,11 @@ Here are the supported features:
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
-| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |                                                                                                                                                                    |
+| `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
 
 ## Implicit Packages
 
@@ -141,10 +141,10 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
 <!-- .csproj file -->
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
-   
-   ...
 
-    <UnoFeatures>
+      ...
+
+      <UnoFeatures>
         Material;
         Dsp;
         Hosting;
@@ -158,7 +158,9 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
-    </UnoFeatures>
+        SkiaRenderer;
+      </UnoFeatures>
+      
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
       <MicrosoftLoggingVersion>9.0.1</MicrosoftLoggingVersion>
       <CommunityToolkitMvvmVersion>8.4.0</CommunityToolkitMvvmVersion>

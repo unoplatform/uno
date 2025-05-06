@@ -14,22 +14,30 @@ body:
       label: Why is this needed
       description: Describe the use case of this enhancement
 
+  - type: checkboxes
+    id: enhancement-renderer
+    attributes:
+      label: Renderer
+      multiple: true
+      options:
+        - Skia
+        - Native
+
   - type: dropdown
     id: enhancement-platforms
     attributes:
-      label: For which platform
+      label: For which platforms
       multiple: true
+      description: Select the platforms for which your request is relevant
       options:
         - WebAssembly
         - Android
         - iOS
-        - Mac Catalyst
-        - Skia (WPF)
-        - Skia (Linux X11)
-        - Skia (macOS)
-        - Skia (Linux Framebuffer)
-        - Skia (GTK)
-        - Windows (WinAppSDK)
+        - Desktop (Windows)
+        - Desktop (macOS)
+        - Desktop (X11)
+        - Desktop (Linux Framebuffer)
+        - Windows App SDK
         - Build tasks
 
   - type: textarea
