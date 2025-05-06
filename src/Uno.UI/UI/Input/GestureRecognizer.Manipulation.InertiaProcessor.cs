@@ -249,13 +249,13 @@ public partial class GestureRecognizer
 			/// <summary>
 			/// For test purposes only!
 			/// </summary>
-			public void RunSync()
+			public void RunSync(double framePerSeconds = 25)
 			{
-				var frameDuration = 1000 / DispatcherInertiaProcessorTimer.DefaultFramePerSeconds;
+				var frameDuration = 1000 / framePerSeconds;
 				var time = frameDuration;
 				while (IsRunning)
 				{
-					Process(time);
+					Process(TimeSpan.FromMilliseconds(time));
 					time += frameDuration;
 				}
 			}
