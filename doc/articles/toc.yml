@@ -428,7 +428,7 @@
       - name: Getting Started with Hot Design
         href: xref:Uno.HotDesign.GetStarted.Guide
         items:
-        - name: OverView
+        - name: Overview
           href: xref:Uno.HotDesign.GetStarted.Guide
         - name: Properties
           href: xref:Uno.HotDesign.Properties
