@@ -1,8 +1,12 @@
-# `WebView` (`WebView2`)
+---
+uid: Uno.Controls.WebView2
+---
 
-> Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
+# `WebView2` (`WebView`)
 
-`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), Desktop (Windows), and WebAssembly.
+> Uno Platform supports two `WebView` controls - the `WebView2` control and the legacy `WebView`. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
+
+`WebView2` is supported on all Uno Platform tarets.
 
 ## Basic usage
 
@@ -135,7 +139,7 @@ The web files can reference each other in a relative path fashion, for example, 
 
 Is referencing a `site.js` file inside the `js` subfolder.
 
-## iOS and macOS (Catalyst) specifics
+## iOS specifics
 
 From MacOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
 

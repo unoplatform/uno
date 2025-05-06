@@ -23,7 +23,7 @@ To determine all parameters available for a template use `dotnet new [templatena
 
 ## Uno Platform Application
 
-This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
+This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
 > [!TIP]
 > To create a new Uno Platform app and browse all the capabilities of the template, head to our <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a> to create a `dotnet new` command line. For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
@@ -42,26 +42,13 @@ To create from a recommended template using [Uno.Extensions](xref:Uno.Extensions
 dotnet new unoapp -preset=recommended -o test
 ```
 
+> [!NOTE]
+> Starting with Uno.Sdk 6.0, [Skia rendering](xref:Uno.Development.HowItWorks) is now the default rendering engine in Uno Platform templates for iOS/Android/WebAssembly. If you prefer native rendering instead, you can use the `-renderer native` parameter.
+
 More articles on WinUI 3:
 
 - [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
 - [Updating from UWP to WinUI 3.](updating-to-winui3.md)
-
-## Uno Platform Blank Application (UWP)
-
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Desktop (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP API set.
-
-A basic example:
-
-```dotnetcli
-dotnet new unoapp-uwp -o MyApp
-```
-
-A more advanced example that will not generate the Mobile head:
-
-```dotnetcli
-dotnet new unoapp-uwp -o MyApp -mobile=false
-```
 
 ## Uno Platform Blank library
 

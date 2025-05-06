@@ -21,6 +21,8 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+    > [!NOTE]
+    > Starting with Uno.Sdk 6.0, [Skia rendering](xref:Uno.Development.HowItWorks) is now the default rendering engine in Uno Platform templates for iOS/Android/WebAssembly. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
 
 1. Click the **Create** button on the top right corner, then click the **Copy** button
 
@@ -182,28 +184,6 @@ Finally, press `F5` to start the debugging session.
 
 > [!TIP]
 > When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
-
-### [**Mac Catalyst**](#tab/catalystdebug)
-
-> [!NOTE]
-> Debugging for Mac Catalyst is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
-
-In VS Code :
-
-1. In the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select the debugger
-1. Set the debugger launch to `Uno Platform Mobile`
-
-![VS Code UI](Assets/quick-start/vs-code-mobile-debug.png)
-
-In the status bar :
-
-1. Just after the Uno logo ensure the `MyApp` project is selected - by default `MyApp.sln` is selected
-1. Next click on the target framework to select `net9.0-maccatalyst | Debug`
-1. The `This Mac` device will be pre-selected. On Apple Silicon (arm64) Macs you will have the option to use `This Mac using Rosetta` to debug `x64` applications
-
-![status bar](Assets/quick-start/vs-code-maccatalyst-project.png)
-
-Finally, press `F5` to start the debugging session.
 
 ### [**Windows**](#tab/windowsdebug)
 
