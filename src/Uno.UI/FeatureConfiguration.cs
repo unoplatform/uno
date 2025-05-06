@@ -13,6 +13,10 @@ namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		public static class Asd
+		{
+			public static Func<object, string, string> TryGetStringValueOverride { get; set; }
+		}
 		public static class ApiInformation
 		{
 			/// <summary>
