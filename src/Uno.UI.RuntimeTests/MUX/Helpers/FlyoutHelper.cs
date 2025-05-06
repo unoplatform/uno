@@ -14,9 +14,9 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
-		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
+		public static FrameworkElement GetOpenFlyoutPresenter()
 		{
-			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 			if (popups.Count != 1)
 			{
 				throw new InvalidOperationException("Expected exactly one open Popup.");

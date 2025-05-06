@@ -48,7 +48,7 @@ internal static class DateTimePickerHelper
 		await RunOnUIThread(async () =>
 		{
 			// The flyout should be the same width as the datepicker.
-			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter(WindowHelper.XamlRoot);
+			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
 			VERIFY_ARE_EQUAL(flyoutPresenter.ActualWidth, dateTimePicker.ActualWidth);
 
 			// We expect the HighlightRect to be centered vertically and horizontally over the button.
