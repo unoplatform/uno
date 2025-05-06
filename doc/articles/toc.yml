@@ -158,15 +158,19 @@
           href: net-version-support.md
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
-        - name: Skia Rendering
-          href: xref:Uno.Skia.Rendering
-          items:
-            - name: Skia Desktop
-              href: xref:Uno.Skia.Desktop
-            - name: Linux Framebuffer
-              href: features/using-linux-framebuffer.md
         - name: How Uno Works
           href: how-uno-works.md
+        - name: UI Renderers
+          items: 
+          - name: Skia Renderer
+            href: xref:uno.features.renderer.skia
+            items:
+              - name: Skia Desktop
+                href: xref:Uno.Skia.Desktop
+              - name: Linux Framebuffer
+                href: features/using-linux-framebuffer.md
+          - name: Native Renderer
+            href: xref:uno.features.renderer.native
         - name: Best Practices
           href: best-practices-uno.md
 
@@ -174,6 +178,8 @@
       items:
       - name: Using the Uno.SDK
         href: xref:Uno.Features.Uno.Sdk
+      - name: UI Markup
+        href: xref:uno.development.using.markup
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup

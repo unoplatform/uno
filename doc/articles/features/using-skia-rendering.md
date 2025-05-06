@@ -1,12 +1,42 @@
 ---
-uid: Uno.Skia.Rendering
+uid: uno.features.renderer.skia
 ---
 
-# Using the Skia Rendering
+# The Skia Renderer
 
-The Skia rendering engine is available for all Uno Platform targets. **Starting with Uno.Sdk 6.0, it is the default rendering engine when creating a project from the templates.** On **WebAssembly (Wasm)**, **Android**, and **iOS**, you can opt in to use the native rendering engine instead. The **WinAppSDK** target is not provided by Uno Platform directly, so it only offers the **native rendering mode**.
+Available on iOS, Android, macOS, Windows, Linux and WebAssembly, based on the [Skia](https://skia.org) drawing library, the Skia Renderer is a cross-platform unified rendering component of Uno Platform which provides a single UI experience across all supported platforms.
 
-Skia provides a consistent rendering pipeline across platforms and is often used to achieve improved performance or visual fidelity, particularly in scenarios where the default platform rendering may be lacking. Under the hood, the Uno Platform's Skia rendering engine is powered by SkiaSharp, a .NET binding to the Skia graphics library.
+The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
+
+The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
+
+Starting with Uno.Sdk 6.0, **it is the default rendering engine** when creating a project from the templates. On **WebAssembly (Wasm)**, **Android**, and **iOS**, you can opt in to use the native rendering engine instead.
+
+This renderer supports [integrating native views](xref:Uno.Skia.Embedding.Native).
+
+> [!NOTE]
+> The **WinAppSDK** target is not provided by Uno Platform directly, so it only offers the **native rendering mode**.
+
+## How Skia Rendering Works
+
+- The entire UI is drawn on a Skia canvas
+- There are **no native views**; all visuals are composed in Skia using vector graphics
+- A minimal native shell (like a window or web canvas) hosts the Skia surface
+
+As the Skia Renderer bypasses native UI components, Skia can offer pixel-perfect rendering and visual consistency. The same UI is offered by default, but platform-specific theming is possible using [Uno.Themes](xref:Uno.Themes.Overview).
+
+## Benefits
+
+> [!TIP]
+> If you are building a custom drawing application, charts, or games in Uno Platform, Skia can offer more flexibility and uniform visuals across platforms.
+
+- **Consistent visuals**: Skia ensures pixel-perfect rendering across all supported platforms, making it ideal for applications where precise control over appearance is critical.
+- **Custom drawing**: Ideal for apps requiring advanced graphics, custom controls, or canvas-based rendering—Skia gives you low-level drawing access, such as with the [SKCanvasElement](xref:Uno.Controls.SKCanvasElement).
+- **Unified rendering pipeline**: Unlike native rendering, which varies by platform, Skia uses a single rendering backend, reducing platform-specific variations.
+- **Improved rendering performance on desktop**: On platforms like Linux/macOS, Skia is often faster and more efficient than native alternatives.
+- **Access to the full Composition API**: The Skia renderer provides access to the full [Composition API access for richer custom rendering](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition).
+- **Better control over visual updates**: You can fine-tune repainting behavior for animations, games, or dynamic content using Skia’s immediate mode rendering.
+- **Smaller dependency surface**: By avoiding native UI components, Skia can simplify deployment—especially in environments like Wasm or containerized desktop apps.
 
 ## Using Skia rendering for new apps
 
@@ -33,19 +63,6 @@ You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 
 > [!TIP]
 > If your project was created before Uno Platform 6.0 and you want to enable Skia rendering, [follow the upgrade guide](xref:Uno.Development.MigratingToUno6).
-
-## Benefits
-
-> [!TIP]
-> If you are building a custom drawing application, charts, or games in Uno Platform, Skia can offer more flexibility and uniform visuals across platforms.
-
-- **Consistent visuals**: Skia ensures pixel-perfect rendering across all supported platforms, making it ideal for applications where precise control over appearance is critical.
-- **Custom drawing**: Ideal for apps requiring advanced graphics, custom controls, or canvas-based rendering—Skia gives you low-level drawing access, such as with the [SKCanvasElement](xref:Uno.Controls.SKCanvasElement).
-- **Unified rendering pipeline**: Unlike native rendering, which varies by platform, Skia uses a single rendering backend, reducing platform-specific variations.
-- **Improved rendering performance on desktop**: On platforms like Linux/macOS, Skia is often faster and more efficient than native alternatives.
-- **Access to the full Composition API**: The Skia renderer provides access to the full [Composition API access for richer custom rendering](ttps://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/composition).
-- **Better control over visual updates**: You can fine-tune repainting behavior for animations, games, or dynamic content using Skia’s immediate mode rendering.
-- **Smaller dependency surface**: By avoiding native UI components, Skia can simplify deployment—especially in environments like Wasm or containerized desktop apps.
 
 ## Limitations
 
