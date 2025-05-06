@@ -2,9 +2,9 @@
 uid: Uno.HotDesign.GetStarted.Guide
 ---
 
-# Getting Started with Hot Design®
+# Getting Started with Hot Design<sup>®</sup>
 
-Hot Design® is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
+**Hot Design<sup>®</sup>** is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
 
 This guide provides the steps to set up Hot Design and introduces its key features and visual design capabilities.
 
@@ -12,14 +12,8 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 
 ## Set Up Your Environment for Hot Design
 
-> [!IMPORTANT]
-> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
->
-> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
-> - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
->
+[!include[hd-important-info](includes/hd-important-info.md)]
+
 > [!IMPORTANT]
 > If you're new to developing with Uno Platform, make sure to set up your environment by [following our getting started guide](xref:Uno.GetStarted).
 
@@ -30,7 +24,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 > [!IMPORTANT]
 > When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, and provided you have been granted Beta access, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher** and **[signed in with your Uno Platform account](xref:Uno.GetStarted.Licensing)**, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
 
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
@@ -189,4 +183,4 @@ You can interact with the canvas using the following mouse and keyboard shortcut
 
 ### Tutorial
 
-For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design®](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
+For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design<sup>®</sup>](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
