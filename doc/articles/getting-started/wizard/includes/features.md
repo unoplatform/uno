@@ -73,6 +73,7 @@ Learn more about Uno's Skia rendering [here](xref:Uno.Skia.Rendering).
 
 ```dotnetcli
 dotnet new unoapp -renderer skia
+```
 
 ##### Native
 
