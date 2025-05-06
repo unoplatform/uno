@@ -49,4 +49,4 @@ Each property in the Properties window includes an **Advanced** button to the ri
 - ![Resource](Assets/properties-view-advcd-button-resource.png) — The value comes from a **Resource**.
 - ![Mixed Responsive](Assets/properties-view-advcd-button-mixed-responsive.png) — The **Responsive Extension** is used, with different values for different screen sizes (Mixed Responsive).
 
-Clicking the **Advanced** button opens a flyout with three settings for each property: Value, Binding, or Resource. For more information on how the **Advanced Flyout** works please refer to our [Advanced Flyout docs](). <!-- TODO: Add link here -->
+Clicking the **Advanced** button opens a flyout with three settings for each property: Value, Binding, or Resource. For more information on how the **Advanced Flyout** works please refer to our [Advanced Flyout docs](xref:Uno.HotDesign.Properties.AdvancedFlyout).
