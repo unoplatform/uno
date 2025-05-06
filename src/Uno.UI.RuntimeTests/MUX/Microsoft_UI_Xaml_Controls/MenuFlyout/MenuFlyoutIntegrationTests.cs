@@ -2981,102 +2981,88 @@ public class MenuFlyoutIntegrationTests
 	//	VERIFY_ARE_EQUAL(TestServices.Utilities.IsDesktop ? 0 : 4, startedStoryboardCount);
 	//}
 
-	//[TestMethod] public async Task ValidateRightClickChaining()
-	//{
+	[TestMethod]
+	public async Task ValidateRightClickChaining()
+	{
+		Button button1 = null;
+		Button button2 = null;
+		MenuFlyout menuFlyout = null;
 
+		var menuFlyoutOpenedEvent = new Event();
+		var menuFlyoutClosedEvent = new Event();
+		var rightTappedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
+		var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
+		var rightTappedRegistration = CreateSafeEventRegistration<Button, RightTappedEventHandler>("RightTapped");
 
-	//	Button button1 = null;
-	//	Button button2 = null;
-	//	MenuFlyout menuFlyout = null;
+		await RunOnUIThread(() =>
 
-	//	var menuFlyoutOpenedEvent = new Event();
-	//	var menuFlyoutClosedEvent = new Event();
-	//	var rightTappedEvent = new Event();
-	//	var openedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Opened));
-	//	var closedRegistration = CreateSafeEventRegistration<MenuFlyout, EventHandler<object>>(nameof(MenuFlyout.Closed));
-	//	var rightTappedRegistration = CreateSafeEventRegistration(Button, RightTapped);
+		   {
+			   var rootPanel = (StackPanel)(XamlReader.Load(
+				"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
+				"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> " +
+				"  <Button x:Name='button1' Content='button.righttapped' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50'> " +
+				"  </Button> " +
+				"  <Button x:Name='button2' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50'> " +
+				"    <Button.Flyout> " +
+				"      <MenuFlyout Placement='Bottom'> " +
+				"        <MenuFlyoutItem FontSize='30' Text='SUPERMAN' Foreground='RoyalBlue' Width='300' /> " +
+				"        <MenuFlyoutSeparator Width='300' /> " +
+				"        <ToggleMenuFlyoutItem FontSize='30' Text='THE FLASH' Foreground='RoyalBlue' Width='300' IsChecked='False' /> " +
+				"      </MenuFlyout> " +
+				"    </Button.Flyout> " +
+				"  </Button> " +
+				"</StackPanel>"));
 
-	// await RunOnUIThread(() =>
+			   VERIFY_IS_NOT_NULL(rootPanel);
+			   TestServices.WindowHelper.WindowContent = rootPanel;
 
-	//	{
-	//		var rootPanel = (StackPanel)(XamlReader.Load(
-	//			"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' "
+			   button1 = (Button)(rootPanel.FindName("button1"));
+			   VERIFY_IS_NOT_NULL(button1);
+			   button2 = (Button)(rootPanel.FindName("button2"));
+			   VERIFY_IS_NOT_NULL(button2);
 
-	//			"      x:Name='root' Background='SlateBlue' Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'> "
+			   rightTappedRegistration.Attach(button1, (object sender, RoutedEventArgs e) =>
+			   {
+				   rightTappedEvent.Set();
+			   });
 
-	//			"  <Button x:Name='button1' Content='button.righttapped' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50'> "
+			   menuFlyout = (MenuFlyout)(button2.Flyout);
+			   VERIFY_IS_NOT_NULL(menuFlyout);
 
-	//			"  </Button> "
+			   openedRegistration.Attach(menuFlyout, (s, e) =>
+			   {
+				   LOG_OUTPUT("CanMenuFlyoutOpenClose: MenuFlyout Opened event is fired!");
+				   menuFlyoutOpenedEvent.Set();
+			   });
 
-	//			"  <Button x:Name='button2' Content='button.flyout' VerticalAlignment='Center' HorizontalAlignment='Left' FontSize='25' Padding='25,10' Margin='50'> "
+			   closedRegistration.Attach(menuFlyout, (s, e) =>
 
-	//			"    <Button.Flyout> "
+			   {
+				   LOG_OUTPUT("CanMenuFlyoutOpenClose: MenuFlyout Closed event is fired!");
+				   menuFlyoutClosedEvent.Set();
+			   });
+		   });
 
-	//			"      <MenuFlyout Placement='Bottom'> "
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			"        <MenuFlyoutItem FontSize='30' Text='SUPERMAN' Foreground='RoyalBlue' Width='300' /> "
+		LOG_OUTPUT("Button Tap operation to show the MenuFlyout.");
+		TestServices.InputHelper.Tap(button2);
+		await menuFlyoutOpenedEvent.WaitForDefault();
 
-	//			"        <MenuFlyoutSeparator Width='300' /> "
+		// Inject right-click.
+		TestServices.InputHelper.MoveMouse(button1);
+		TestServices.InputHelper.MouseButtonDown(button1, 0, 0, MouseButton.Right);
+		TestServices.InputHelper.MouseButtonUp(button1, 0, 0, MouseButton.Right);
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//			"        <ToggleMenuFlyoutItem FontSize='30' Text='THE FLASH' Foreground='RoyalBlue' Width='300' IsChecked='False' /> "
+		// Make sure that the right tap tiggered the flyout's light dismiss
+		await menuFlyoutClosedEvent.WaitForDefault();
 
-	//			"      </MenuFlyout> "
-
-	//			"    </Button.Flyout> "
-
-	//			"  </Button> "
-
-	//			"</StackPanel>"));
-
-	//		VERIFY_IS_NOT_NULL(rootPanel);
-	//		TestServices.WindowHelper.WindowContent = rootPanel;
-
-	//		button1 = (Button)(rootPanel.FindName("button1"));
-	//		VERIFY_IS_NOT_NULL(button1);
-	//		button2 = (Button)(rootPanel.FindName("button2"));
-	//		VERIFY_IS_NOT_NULL(button2);
-
-	//		rightTappedRegistration.Attach(button1, new Input.RightTappedEventHandler([rightTappedEvent](object sender, RoutedEventArgs ^ e) {
-	//			rightTappedEvent.Set();
-	//		}));
-
-	//		menuFlyout = (MenuFlyout)(button2.Flyout);
-	//		VERIFY_IS_NOT_NULL(menuFlyout);
-
-	//		openedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("CanMenuFlyoutOpenClose: MenuFlyout Opened event is fired!");
-	//			menuFlyoutOpenedEvent.Set();
-	//		}));
-
-	//		closedRegistration.Attach(menuFlyout, (s, e) =>
-
-	//		{
-	//			LOG_OUTPUT("CanMenuFlyoutOpenClose: MenuFlyout Closed event is fired!");
-	//			menuFlyoutClosedEvent.Set();
-	//		}));
-	//	});
-
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	LOG_OUTPUT("Button Tap operation to show the MenuFlyout.");
-	//	TestServices.InputHelper.Tap(button2);
-	//	await menuFlyoutOpenedEvent.WaitForDefault();
-
-	//	// Inject right-click.
-	//	TestServices.InputHelper.MoveMouse(button1);
-	//	TestServices.InputHelper.MouseButtonDown(button1, 0, 0, MouseButton.Right);
-	//	TestServices.InputHelper.MouseButtonUp(button1, 0, 0, MouseButton.Right);
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	// Make sure that the right tap tiggered the flyout's light dismiss
-	//	await menuFlyoutClosedEvent.WaitForDefault();
-
-	//	// Make sure that the right tap gesture was chained through the MenuFlyout's light dismiss layer
-	//	// and received by the next hit target - button1
-	//	rightTappedEvent.WaitForDefault();
-	//}
+		// Make sure that the right tap gesture was chained through the MenuFlyout's light dismiss layer
+		// and received by the next hit target - button1
+		await rightTappedEvent.WaitForDefault();
+	}
 
 
 	private async Task<MenuFlyout> CreateMenuFlyoutLongItemsFromXaml()
@@ -5104,92 +5090,69 @@ public class MenuFlyoutIntegrationTests
 	//	await FlyoutHelper.HideFlyout(menuFlyout);
 	//}
 
-	//[TestMethod] public async Task VerifyIsEnabledPropagatesTreeFromCommand()
-	//{
+	[TestMethod]
+	public async Task VerifyIsEnabledPropagatesTreeFromCommand()
+	{
+		// Regression coverage for:
+		// MSFT:11947475 - High Contrast Desktop : Photos : Selected item in aspect ratio doesn't following High contrast standards after modifying the value
+		// The issue is that MenuFlyoutItem.Command.CanExecute returns false, but this was not propagating down the visual tree to the TextBlock template part.
+		// Note: IsEnabled is only publically visible on Control via the public api even though internally it is on all UIElements.
+		// So, to test this scenario, we insert a dummy ContentControl into the MenuFlyoutItem's template so we have a way of reading the IsEnabled property
+		// on the descendant elements of the MenuFlyoutItem.
 
+		MenuFlyout menuFlyout = null;
+		MenuFlyoutItem menuFlyoutItem = null;
 
-	//	// Regression coverage for:
-	//	// MSFT:11947475 - High Contrast Desktop : Photos : Selected item in aspect ratio doesn't following High contrast standards after modifying the value
-	//	// The issue is that MenuFlyoutItem.Command.CanExecute returns false, but this was not propagating down the visual tree to the TextBlock template part.
-	//	// Note: IsEnabled is only publically visible on Control via the public api even though internally it is on all UIElements.
-	//	// So, to test this scenario, we insert a dummy ContentControl into the MenuFlyoutItem's template so we have a way of reading the IsEnabled property
-	//	// on the descendant elements of the MenuFlyoutItem.
+		MenuCommand command = new MenuCommand((p) => { }, false /*canExecute*/, null);
 
-	//	MenuFlyout menuFlyout;
-	//	MenuFlyoutItem menuFlyoutItem;
+		await RunOnUIThread(() =>
+		{
+			var rootGrid = (Grid)(XamlReader.Load(
+				"""
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						Background = "SlateBlue" >
+					< Grid.Resources >
+						< Style x: Key = "MenuFlyoutItemStyle" TargetType = "MenuFlyoutItem" >
+							< Setter Property = "Template" >
+								< Setter.Value >
+									< ControlTemplate TargetType = "MenuFlyoutItem" >
+										< Grid x: Name = "LayoutRoot" >
+											< ContentControl x: Name = "testContentControl" >
+												< TextBlock x: Name = "TextBlock" />
+											</ ContentControl >
+										</ Grid >
+									</ ControlTemplate >
+								</ Setter.Value >
+							</ Setter >
+						</ Style >
+					</ Grid.Resources >
+					< FlyoutBase.AttachedFlyout >
+						< MenuFlyout x: Name = "menuFlyout" >
+							< MenuFlyoutItem x: Name = "menuFlyoutItem" Style = "{StaticResource MenuFlyoutItemStyle}" > Some Text </ MenuFlyoutItem >
+						</ MenuFlyout >
+					</ FlyoutBase.AttachedFlyout >
+				</ Grid >
+				"""
+				));
+			menuFlyout = (MenuFlyout)(rootGrid.FindName("menuFlyout"));
+			menuFlyoutItem = (MenuFlyoutItem)(rootGrid.FindName("menuFlyoutItem"));
 
-	//	MenuCommand ^ command = new MenuCommand(new ExecuteDelegate([](object) { }), false /*canExecute*/, null);
+			menuFlyoutItem.Command = command;
 
-	// await RunOnUIThread(() =>
+			TestServices.WindowHelper.WindowContent = rootGrid;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
-	//	{
-	//		var rootGrid = (Grid)(XamlReader.Load(
-	//			LR"(<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	//					  Background = "SlateBlue" >
+		await ShowMenuFlyout(menuFlyout, null, 0, 0);
 
-	//					< Grid.Resources >
+		await RunOnUIThread(() =>
+		{
+			var testContentControl = (ContentControl)(TreeHelper.GetVisualChildByName(menuFlyoutItem, "testContentControl"));
+			VERIFY_IS_FALSE(testContentControl.IsEnabled);
+		});
 
-	//						< Style x: Key = "MenuFlyoutItemStyle" TargetType = "MenuFlyoutItem" >
-
-	//							< Setter Property = "Template" >
-
-	//								< Setter.Value >
-
-	//									< ControlTemplate TargetType = "MenuFlyoutItem" >
-
-	//										< Grid x: Name = "LayoutRoot" >
-
-	//											< ContentControl x: Name = "testContentControl" >
-
-	//												< TextBlock x: Name = "TextBlock" />
-
-	//											</ ContentControl >
-
-	//										</ Grid >
-
-	//									</ ControlTemplate >
-
-	//								</ Setter.Value >
-
-	//							</ Setter >
-
-	//						</ Style >
-
-	//					</ Grid.Resources >
-
-	//					< FlyoutBase.AttachedFlyout >
-
-	//						< MenuFlyout x: Name = "menuFlyout" >
-
-	//							< MenuFlyoutItem x: Name = "menuFlyoutItem" Style = "{StaticResource MenuFlyoutItemStyle}" > Some Text </ MenuFlyoutItem >
-
-	//						</ MenuFlyout >
-
-	//					</ FlyoutBase.AttachedFlyout >
-
-	//				</ Grid >)"));
-
-
-	//		menuFlyout = (MenuFlyout)(rootGrid.FindName("menuFlyout"));
-	//		menuFlyoutItem = (MenuFlyoutItem)(rootGrid.FindName("menuFlyoutItem"));
-
-	//		menuFlyoutItem.Command = command;
-
-	//		TestServices.WindowHelper.WindowContent = rootGrid;
-	//	});
-	//	await TestServices.WindowHelper.WaitForIdle();
-
-	//	await ShowMenuFlyout(menuFlyout, null, 0, 0);
-
-	// await RunOnUIThread(() =>
-
-	//	{
-	//		var testContentControl = (ContentControl)(TreeHelper.GetVisualChildByName(menuFlyoutItem, "testContentControl"));
-	//		VERIFY_IS_FALSE(testContentControl.IsEnabled);
-	//	});
-
-	//	await FlyoutHelper.HideFlyout(menuFlyout);
-	//}
+		await FlyoutHelper.HideFlyout(menuFlyout);
+	}
 
 	//// Shows the same MenuFlyout twice in a row, without closing it, attempting to position it beyond the screen's boundaries.
 	//// Ensures it is moved within the screen's boundaries.
@@ -5320,72 +5283,68 @@ public class MenuFlyoutIntegrationTests
 	//	await menuFlyoutClosedEvent.WaitForDefault();
 	//}
 
-	//[TestMethod] public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultItemKeyboardAcceleratorText()
-	//{
+	[TestMethod]
+	public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultItemKeyboardAcceleratorText()
+	{
+		await RunOnUIThread(() =>
+		{
+			var item = new MenuFlyoutItem();
 
+			var keyboardAccelerator = new KeyboardAccelerator();
+			keyboardAccelerator.Key = Windows.System.VirtualKey.A;
+			keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
+			item.KeyboardAccelerators.Add(keyboardAccelerator);
 
-	//	await RunOnUIThread(() =>
+			string expectedKeyboardAcceleratorText = "Ctrl+A";
 
-	//	{
-	//		var item = new MenuFlyoutItem();
+			LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", expectedKeyboardAcceleratorText);
+			LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride);
+			VERIFY_IS_TRUE(string.CompareOrdinal(expectedKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
+		});
+	}
 
-	//		var keyboardAccelerator = new KeyboardAccelerator();
-	//		keyboardAccelerator.Key = Windows.System.VirtualKey.A;
-	//		keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
-	//		item.KeyboardAccelerators.Add(keyboardAccelerator);
+	[TestMethod]
+	public async Task ValidateSettingKeyboardAcceleratorDoesNotOverrideItemCustomKeyboardAcceleratorText()
+	{
+		await RunOnUIThread(() =>
 
-	//		string expectedKeyboardAcceleratorText = "Ctrl+A";
+		{
+			var item = new MenuFlyoutItem();
 
-	//		LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", expectedKeyboardAcceleratorText.Data());
-	//		LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride.Data());
-	//		VERIFY_IS_TRUE(string.CompareOrdinal(expectedKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
-	//	});
-	//}
+			string customKeyboardAcceleratorText = "Custom keyboard accelerator text";
+			item.KeyboardAcceleratorTextOverride = customKeyboardAcceleratorText;
 
-	//[TestMethod] public async Task ValidateSettingKeyboardAcceleratorDoesNotOverrideItemCustomKeyboardAcceleratorText()
-	//{
+			var keyboardAccelerator = new KeyboardAccelerator();
+			keyboardAccelerator.Key = Windows.System.VirtualKey.A;
+			keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
+			item.KeyboardAccelerators.Add(keyboardAccelerator);
 
+			LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", customKeyboardAcceleratorText);
+			LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride);
+			VERIFY_IS_TRUE(string.CompareOrdinal(customKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
+		});
+	}
 
-	//	await RunOnUIThread(() =>
+	[TestMethod]
+	public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultToggleItemKeyboardAcceleratorText()
+	{
+		await RunOnUIThread(() =>
 
-	//	{
-	//		var item = new MenuFlyoutItem();
+		{
+			var item = new ToggleMenuFlyoutItem();
 
-	//		string customKeyboardAcceleratorText = "Custom keyboard accelerator text";
-	//		item.KeyboardAcceleratorTextOverride = customKeyboardAcceleratorText;
+			var keyboardAccelerator = new KeyboardAccelerator();
+			keyboardAccelerator.Key = Windows.System.VirtualKey.A;
+			keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
+			item.KeyboardAccelerators.Add(keyboardAccelerator);
 
-	//		var keyboardAccelerator = new KeyboardAccelerator();
-	//		keyboardAccelerator.Key = Windows.System.VirtualKey.A;
-	//		keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
-	//		item.KeyboardAccelerators.Add(keyboardAccelerator);
+			string expectedKeyboardAcceleratorText = "Ctrl+A";
 
-	//		LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", customKeyboardAcceleratorText.Data());
-	//		LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride.Data());
-	//		VERIFY_IS_TRUE(string.CompareOrdinal(customKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
-	//	});
-	//}
-
-	//[TestMethod] public async Task ValidateSettingKeyboardAcceleratorCreatesDefaultToggleItemKeyboardAcceleratorText()
-	//{
-
-
-	//	await RunOnUIThread(() =>
-
-	//	{
-	//		var item = new ToggleMenuFlyoutItem();
-
-	//		var keyboardAccelerator = new KeyboardAccelerator();
-	//		keyboardAccelerator.Key = Windows.System.VirtualKey.A;
-	//		keyboardAccelerator.Modifiers = Windows.System.VirtualKeyModifiers.Control;
-	//		item.KeyboardAccelerators.Add(keyboardAccelerator);
-
-	//		string expectedKeyboardAcceleratorText = "Ctrl+A";
-
-	//		LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", expectedKeyboardAcceleratorText.Data());
-	//		LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride.Data());
-	//		VERIFY_IS_TRUE(string.CompareOrdinal(expectedKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
-	//	});
-	//}
+			LOG_OUTPUT("Expected keyboard accelerator text: \"%s\"", expectedKeyboardAcceleratorText);
+			LOG_OUTPUT("Actual keyboard accelerator text:   \"%s\"", item.KeyboardAcceleratorTextOverride);
+			VERIFY_IS_TRUE(string.CompareOrdinal(expectedKeyboardAcceleratorText, item.KeyboardAcceleratorTextOverride) == 0);
+		});
+	}
 
 	[TestMethod]
 	public async Task ValidateSettingKeyboardAcceleratorDoesNotOverrideToggleItemCustomKeyboardAcceleratorText()

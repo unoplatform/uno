@@ -128,6 +128,9 @@ namespace Private.Infrastructure
 				throw new System.NotImplementedException();
 			}
 
+			internal static void MouseButtonDown(Button button1, int v1, int v2, MouseButton right) => throw new NotImplementedException();
+			internal static void MouseButtonUp(Button button1, int v1, int v2, MouseButton right) => throw new NotImplementedException();
+
 #if HAS_UNO
 			internal static void PenTap(FrameworkElement element)
 			{
