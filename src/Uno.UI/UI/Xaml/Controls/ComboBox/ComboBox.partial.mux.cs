@@ -2840,6 +2840,7 @@ partial class ComboBox
 		object spBoxedValue;
 		object spObject = @object;
 
+#if !HAS_UNO
 		if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
 		{
 			if (pathListener != null)
@@ -2856,6 +2857,21 @@ partial class ComboBox
 				return spObjectPropertyAccessor.GetStringRepresentation();
 			}
 		}
+#else
+		if (pathListener != null)
+		{
+			// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+			// This is our boxedValue, which we effectively ToString below.
+			pathListener.SetSource(spObject);
+			spBoxedValue = pathListener.GetValue();
+		}
+		else if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
+		{
+			// No PathListener specified, but this object implements
+			// ICustomPropertyProvider. Call .ToString on the object:
+			return spObjectPropertyAccessor.GetStringRepresentation();
+		}
+#endif
 		else
 		{
 			// Try to get the string value by unboxing the object itself.
@@ -3133,25 +3149,19 @@ partial class ComboBox
 
 	private void EnsurePropertyPathListener()
 	{
-		// TODO Uno: Property path listener is not implemented yet
-		//if (!m_spPropertyPathListener)
-		//{
-		//	wrl_wrappers::HString strDisplayMemberPath;
-		//	IFC_RETURN(get_DisplayMemberPath(strDisplayMemberPath.GetAddressOf()));
+		if (m_spPropertyPathListener is null)
+		{
+			var strDisplayMemberPath = DisplayMemberPath;
 
-		//	if (!strDisplayMemberPath.IsEmpty())
-		//	{
-		//		// If we don't have one cached, create the property path listener
-		//		// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
-		//		auto pPropertyPathParser = std::make_unique<PropertyPathParser>();
+			if (!string.IsNullOrEmpty(strDisplayMemberPath))
+			{
+				var pPropertyPathParser = new PropertyPathParser();
+				pPropertyPathParser.SetSource(strDisplayMemberPath, null);
 
-		//		IFC_RETURN(pPropertyPathParser->SetSource(WindowsGetStringRawBuffer(strDisplayMemberPath.Get(), nullptr), FALSE));
-
-		//		IFC_RETURN(ctl::make<PropertyPathListener>(nullptr, pPropertyPathParser.get(), false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/, &m_spPropertyPathListener));
-		//	}
-		//}
-
-		//return S_OK;
+				m_spPropertyPathListener = new();
+				m_spPropertyPathListener.Initialize(pOwner: null, pPropertyPathParser, fListenToChanges: false, fUseWeakReferenceForSource: false);
+			}
+		}
 	}
 
 	private void CreateEditableContentPresenterTextBlock()
@@ -3166,8 +3176,6 @@ partial class ComboBox
 
 
 #if HAS_UNO // Not ported yet
-
-
 	private void ArrangePopup(bool value) { }
 
 	private void EnsurePresenterReadyForFullMode() { }
