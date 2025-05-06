@@ -12,12 +12,29 @@ This guide covers multiple approaches to managing per-platform code in C#. See [
 
 ## Project structure
 
-There are two ways to restrict code or XAML markup to be used only on a specific platform:
+There are multiple ways to restrict code or XAML markup to be used only on a specific platform:
 
+* Use conditional code based on the `OperatingSystem.IsXXX` method
 * Use [conditionals](https://learn.microsoft.com/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) in a source file
 * Place the code in a separate file which is only included in the desired platform.
 
-The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
+The structure of an Uno Platform app created with the default Visual Studio template is [explained in more detail here](xref:Uno.Development.AppStructure).
+
+### OperatingSystem.IsXXX
+
+The Uno Platform templates differentiate platforms using the current target framework, yet it's possible to determine the running platform at runtime using:
+
+```csharp
+if (OperatingSystem.IsBrowser())
+{
+   // Do something WebAssembly specific
+}
+```
+
+When building an application which uses the Skia renderer, it is generally best to use such conditionals in order to build for only one target framework in class libraries (e.g. when only targeting `net9.0`, without a platform specifier like `net9.0-ios`).
+
+> [!NOTE]
+> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code usingthose APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
 
 ## `#if` conditionals
 
@@ -59,20 +76,6 @@ Apps generated with the default `unoapp` solution template use **Windows App SDK
 | ----------- | ------------- | ------------- |
 | Windows App SDK | `WINDOWS10_0_18362_0_OR_GREATER`  | Depending on the `TargetFramework` value, the _18362_ part may need adjustment |
 | Universal Windows Platform         | `NETFX_CORE`  | No longer defined in new apps by default |
-
-### WebAssembly considerations
-
-The Uno Platform templates differentiate platforms using the target framework, yet it's possible to determine the WebAssembly platform at runtime using:
-
-```csharp
-if (OperatingSystem.IsBrowser())
-{
-   // Do something WebAssembly specific
-}
-```
-
-> [!NOTE]
-> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
 
 ## Type aliases
 
