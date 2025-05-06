@@ -214,7 +214,7 @@ public class SKCanvasElementImpl : SKCanvasElement
 
 ## WinAppSDK Specifics
 
-When using the SKCanvasElemet and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
+When using the SKCanvasElement and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
 
 - In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
 - Assign it to the Uno Platform project
