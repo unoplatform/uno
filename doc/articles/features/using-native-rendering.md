@@ -2,7 +2,7 @@
 uid: uno.features.renderer.native
 ---
 
-# Using the Native Rendering
+# The Native Rendering
 
 The native rendering is our oldest rendering backend, which uses the native components and APIs to render the UI.
 

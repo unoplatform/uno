@@ -164,11 +164,6 @@
           items: 
           - name: Skia Renderer
             href: xref:uno.features.renderer.skia
-            items:
-              - name: Skia Desktop
-                href: xref:Uno.Skia.Desktop
-              - name: Linux Framebuffer
-                href: features/using-linux-framebuffer.md
           - name: Native Renderer
             href: xref:uno.features.renderer.native
         - name: Best Practices
@@ -190,6 +185,12 @@
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
         href: guides/how-to-add-platforms-existing-project.md
+      - name: Using the Skia Desktop
+        href: xref:Uno.Skia.Desktop
+      - name: Linux Framebuffer
+        href: features/using-linux-framebuffer.md
+      - name: Using Skia Desktop (macOS)
+        href: xref:Uno.Skia.macOS
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
@@ -198,8 +199,6 @@
         href: wasm-appmanifest.md
       - name: Hosting a WebAssembly app
         href: xref:Uno.Development.HostWebAssemblyApp
-      - name: Using Skia Desktop (macOS)
-        href: xref:Uno.Skia.macOS
 
     - name: Debugging
       items:
@@ -218,9 +217,9 @@
       items:
       - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Native Views with Mobile
+      - name: Native Views
         href: native-views.md
-      - name: Native Views with Skia 
+      - name: Native Views with Skia
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading

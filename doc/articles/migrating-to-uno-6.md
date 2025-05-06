@@ -50,7 +50,8 @@ Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
   - **HttpRefit** – Configures `Uno.Extensions.Http.Refit` so you can register and consume REST APIs using Refit’s type-safe client generation.
   - **HttpKiota** – Configures `Uno.Extensions.Http.Kiota` so you can register and consume OpenAPI-defined endpoints using Kiota’s HTTP client generator.
 
-> [!NOTE] If you’re upgrading and previously relied on Refit from the `Http` feature, remove `Http` from your `<UnoFeatures>` and add `HttpRefit` instead. See the [HTTP overview](xref:Uno.Extensions.Http.Overview) for more information.
+> [!NOTE]
+> If you’re upgrading and previously relied on Refit from the `Http` feature, remove `Http` from your `<UnoFeatures>` and add `HttpRefit` instead. See the [HTTP overview](xref:Uno.Extensions.Http.Overview) for more information.
 
 ### Optional use of Skia Rendering for iOS, Android, and WebAssembly
 
