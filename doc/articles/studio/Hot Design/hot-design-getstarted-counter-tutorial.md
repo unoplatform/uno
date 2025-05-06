@@ -2,7 +2,7 @@
 uid: Uno.Studio.HotDesign.GetStarted.CounterTutorial
 ---
 
-# Create a Counter App with Hot Design®
+# Create a Counter App with Hot Design<sup>®</sup>
 
 This tutorial will guide you through using Hot Design to create a simple counter application. The application will include:
 
@@ -19,14 +19,8 @@ This tutorial will guide you through using Hot Design to create a simple counter
 > This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. If you prefer to use MVVM you can still complete this **Hot Design** tutorial by switching the MVUX code, with the MVVM code from the [XAML + MVVM variant](xref:Uno.Workshop.Counter.XAML.MVVM). Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
 >
 > Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
->
-> [!IMPORTANT]
-> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
->
-> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
-> - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Studio.HotReload.Features#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Studio.Feedback).
+
+[!include[hd-important-info](includes/hd-important-info.md)]
 
 ## Set Up Your Environment for Hot Design
 
@@ -40,7 +34,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher** and signed in with your Uno Platform account, you can access **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app.
 
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter in design mode" />
@@ -129,7 +123,7 @@ Before you run the application, switch the target platform to **Desktop** (`net9
 > [!IMPORTANT]
 >
 > - **Hot Design** relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing **with or without the debugger**.
-> - **Hot Design** is now available on all platforms in beta, with the **Desktop** platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
+> - **Hot Design** is now available on all platforms. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
 
 Now, let's run the app.
 
@@ -142,7 +136,7 @@ If is not already previously done, to start using **Hot Design**, ensure you are
 To start editing the UI, enter **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app (default position is in the top-left corner of the application window).
 
 > [!NOTE]
-> If you don't see the **Hot Design** flame button, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing), enrolled in the current beta, and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
+> If you don't see the **Hot Design** flame button, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing) and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
 
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter design mode" />
