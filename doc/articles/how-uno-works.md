@@ -28,71 +28,27 @@ Skia is the default renderer in the **Blank** and **Recommended** Uno Platform p
 
 ### Skia Rendering
 
-[Skia](https://skia.org) is a cross-platform, hardware-accelerated rendering engine used by Uno Platform to draw the entire visual tree. Unlike native rendering, Skia doesn’t rely on platform UI components.
+Available on iOS, Android, macOS, Windows, Linux and WebAssembly, based on the [Skia](https://skia.org) drawing library, the Skia Renderer is a cross-platform unified rendering component of Uno Platform which provides a single UI experience across all supported platforms.
 
-Skia is the default rendering engine for Uno Platform as of Uno Platform 6.0 or later across **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**.
-
-> [!IMPORTANT]
-> **WinAppSDK** continues to use the official native rendering provided by Microsoft, as Uno Platform rendering is not present for this target.
-
-It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp).
+The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
-#### Supported Platforms
-
-Skia rendering is available on:
-
-- macOS
-- Linux
-- Windows
-- WebAssembly
-- Android
-- iOS
-
-#### How Skia Rendering Works
-
-- The entire UI is drawn on a Skia canvas
-- There are **no native views**; all visuals are composed in Skia using vector graphics
-- A minimal native shell (like a window or web canvas) hosts the Skia surface
-
-> [!NOTE]
-> Because it bypasses native UI components, Skia can offer pixel-perfect rendering and visual consistency. The same UI is offered by default, but platform-specific theming is possible using [Uno.Themes](xref:Uno.Themes.Overview).
-
-You can find more details about using Skia rendering in your app [here](xref:Uno.Skia.Rendering).
+For more information, see our documentation on the [Skia renderer](xref:uno.features.renderer.skia).
 
 ### Native Rendering Targets
 
 The native rendering is our oldest rendering backend, which uses the native components and APIs to render the UI.
 
-Each platform has its own set of platform interactions, listed below, allowing for deep integration of native components into the visual tree.
+Each platform has its own set of platform interactions, listed below, allowing for deep integration of native components into the visual tree. Each `UIElement` has a corresponding native element (`div` on WebAssembly, `UIView` on iOS, `ViewGroup` on Android).
 
-#### Web (WebAssembly)
+This renderer uses the native input controls of the platforms, providing the best access to accessibilty and IME features.
 
-On WebAssembly, XAML elements are translated into HTML elements:
+For more information, see our documentation on the [Native renderer](xref:uno.features.renderer.native).
 
-- Panels and layout containers are materialized as `<div>`
-- Leaf controls like `TextBlock`, `Image` are materialized as semantic elements like `<p>`, `<img>`, etc.
-
-This rendering integrates with CSS and DOM APIs, enabling UI behavior consistent with web standards.
-
-#### iOS
-
-- All `FrameworkElement` types are backed by native `UIView` instances.
-- Controls like `Image` implicitly create native `UIImageView` subviews.
-- Native input, layout, and accessibility features are utilized.
-
-#### Android
-
-- All `FrameworkElement` types inherit from native `ViewGroup`.
-- Controls like `Image` wrap native `ImageView` instances.
-- Leverages Android’s native rendering, accessibility, and gesture systems.
-
-## On Windows using WinAppSDK
+## Windows using WinAppSDK
 
 On Windows (the `net9.0-windows10.0.xxxxx` target framework) using [Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/), the application isn't using Uno Platform at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
-
-The rest of this article explains how Uno Platform enables WinUI-compatible XAML and C# apps to run on **non-Windows platforms**.
 
 ## Uno Platform at Build Time
 

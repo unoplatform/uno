@@ -77,7 +77,7 @@ Under the hood, your app can use either a Native or Skia-based approach for rend
 
 The Native rendering approach uses the built-in native UI primitives on each target, for iOS, Android, and WebAssembly. These build up a native view hierarchy and draw the visuals using native OS capabilities. That way, you still get all the benefits of the native world, such as localization and accessibility, but without giving up the rich control of pixel-level details in your app experience.
 
-The [Skia-based](xref:Uno.Skia.Rendering) rendering approach uses a Skia-based canvas for fast and rich rendering across platforms and gets the exact same behavior across all platforms. You can also use the Composition API to get advanced rendering and animations across platforms.
+The [Skia-based](xref:uno.features.renderer.skia) rendering approach uses a Skia-based canvas for fast and rich rendering across platforms and gets the exact same behavior across all platforms. You can also use the Composition API to get advanced rendering and animations across platforms.
 
 All of the above remains possible without needing to replicate the same design for each target platform.
 
