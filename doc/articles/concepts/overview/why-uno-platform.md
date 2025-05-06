@@ -188,9 +188,9 @@ Uno Platform comes with built-in support for accessible apps such as font scalin
 
 Uno Platform supports localization from the `x:Uid` feature in XAML, as well as using resource files from `ResourceManager` in plain C# code. Localization is done once for all your target platforms.
 
-## XAML Trimming
+## XAML and Resources Trimming
 
-XAML Trimming is a feature that allows for trimming the size of WebAssembly apps down by removing XAML styles that are not used in your app, helping to bring down the size of your application.
+[XAML and Resources Trimming](xref:Uno.Features.ResourcesTrimming) is a feature that allows for trimming the size of WebAssembly, Desktop and iOS apps down by removing XAML styles and  that are not used in your app, helping to bring down the size of your application.
 
 ## Lightweight styling
 

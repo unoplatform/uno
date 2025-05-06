@@ -4,15 +4,9 @@ uid: Uno.Interop.WasmJavaScript1
 
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 1
 
-## Leveraging the Uno.WASM Bootstrapper
-
-At the heart of Uno-WASM, there's a package called [`Uno.Wasm.Bootstrap`](https://www.nuget.org/packages/Uno.Wasm.Bootstrap) (Uno Bootstrapper) project. It contains the tooling required to build, package, deploy, run, and debug a *.NET* project in a web browser using WebAssembly. It's automatically included in the WASM head of an Uno app.
-
-It is possible to [add JavaScript files](https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/main/doc/features-additional-files.md#support-for-additional-js-files) or [CSS  files](https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/main/doc/features-additional-files.md#support-for-additional-css-files) into any Uno-WASM applications: they will be loaded automatically by the runtime. It is also possible to add any kind of downloadable assets as content.
-
 ## HTML5 is a Rich and Powerful Platform
 
-Uno fully embraces HTML5 as its display backend when targeting WebAssembly (WASM). As a result, it is possible to integrate with almost any existing JavaScript library to extend the behavior of an app.
+Uno Platform fully embraces HTML5 as its display backend when targeting WebAssembly, for both Native and Skia renderers. As a result, it is possible to integrate with almost any existing JavaScript library to extend the behavior of an app.
 
 ## Embedding assets
 
@@ -20,225 +14,165 @@ In the HTML world, everything running in the browser is assets that must be down
 
 The Uno Bootstrapper can automatically embed any asset and deploy them with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
 
-1. **JavaScript files** should be in the `WasmScripts`  folder: they will be copied to the output folder and loaded automatically by the bootstrapper when the page loads. **They must be marked with the `EmbeddedResources` build action**:
+1. **JavaScript files** should be in the `Platforms/WebAssembly/WasmScripts` folder. They will be copied to the output folder and loaded automatically by the bootstrapper when the page loads.
 
-   ```xml
-   <!-- .csproj file -->
-   <ItemGroup>
-     <EmbeddedResource Include="WasmScripts\javascriptfile.js" />
-     <EmbeddedResource Include="WasmScripts\**\*.js" /> <!-- globing works too -->
-   </ItemGroup>
-   ```
+2. **CSS Style files** should be in the `Platforms/WebAssembly/WasmCSS` folder. They will be copied to the output folder and referenced in the *HTML head* of the application.
 
-2. **CSS Style files** should be in the `WasmCSS` folder: they will be copied to the output folder and referenced in the *HTML head* of the application. **They must be marked with the `EmbeddedResources` build action**.
-
-   ```xml
-   <!-- .csproj file -->
-   <ItemGroup>
-     <EmbeddedResource Include="WasmCSS\stylefile.css" />
-     <EmbeddedResource Include="WasmCSS\**\*.css" /> <!-- globing works too -->
-   </ItemGroup>
-   ```
-
-3. **Asset files** should be marked with the `Content` build action in the app. The file will be copied to the output folder and will preserve the same relative path.
-
-   ```xml
-   <!-- .csproj file -->
-   <ItemGroup>
-     <Content Include="Assets\image.png" />
-   </ItemGroup>
-   ```
+3. **Asset files** can be placed in the `Assets` folder. Thes file will be copied to the output folder and will preserve the same relative path to the `Assets` folder.
 
 4. Alternatively, **any kind of asset file** can be placed directly in the `wwwroot` folder as with any standard ASP.NET Core project. They will be deployed with the app, but the application code is responsible for fetching and using them.
 
    > **Is it an ASP.NET Core "web" project?**
    > No, but it shares a common structure. Some of the deployment features, like the `wwwroot` folder, and the Visual Studio integration for running/debugging are reused in a similar way to an ASP.NET Core project. The C# code put in the project will run in the browser, using the .NET runtime. There is no need for a server side component in Uno-Wasm projects.
 
-## Uno-Wasm Controls Are Actual HTML5 Elements
+## Embedding native elemts
 
-The [philosophy of Uno](../concepts/overview/philosophy-of-uno.md) is to rely on native platforms where it makes sense. In the context of a browser, that's the HTML5 DOM. This means that each time is created, a class deriving from `UIElement` is creating a corresponding HTML element.
+Embedding native JavaScript elements is done through the `Uno.UI.NativeElementHosting.BrowserHtmlElement` class, which serves as an entry point to interact with your native element.
 
-That also means that it is possible to control how this element is created.  By default it is a `<div>`, but it can be changed in the constructor by providing the `htmlTag` parameter to the one required. For example:
+> [!IMPORTANT] The `BrowserHtmlElement` class is available on all target frameworks, avoid the need for condition `#if` code, yet it is only useable on WebAssembly. You'll need to guard its use by validating the platform with the `OperatingSystem` class.
 
 ```csharp
-public sealed partial class MyDivControl : FrameworkElement
-{
-    public MyDivControl() // will create a <div> HTML element (by default)
-    {
-    }
-}
+using Uno.UI.NativeElementHosting.BrowserHtmlElement;
 
-[HtmlElement("input")]
-public sealed partial class MyInputControl : FrameworkElement
+public sealed partial class MyControlHost : ContentControl
 {
-    public MyInputControl() // Will create an <input> HTML element
-    {
-    }
-}
+  private BrowserHtmlElement? _element;
 
-[HtmlElement("span")]
-public sealed partial class MyInputControl : FrameworkElement
-{
-    public MyInputControl() // Will create a <span> HTML element
+  public MyControlHost()
+  {
+    if (OperatingSystem.IsBrowser())
     {
+      _element = BrowserHtmlElement.CreateHtmlElement("div");
+      Content = _element;
     }
+    else
+    {
+      Content = "This control only supported on WebAssembly on the Browser";
+    }
+  }
 }
 ```
 
-> [!NOTE]
-> When using `HtmlElementAttribute` in a WebAssembly-only library, importing the `Uno.WinUI.Runtime.WebAssembly` is required. If multiple targets frameworks are needed, you'll need to create a [control class library](xref:Guide.HowTo.Create-Control-Library), as well as adding the `Uno.WinUI.Runtime.WebAssembly` library.
+This way, your native element is hosted inside a content control of your choosing. You can replace it with any available HTML tag.
 
-Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the *Wasm* platform. It is possible to use [conditional code](../platform-specific-csharp.md) to use these methods in a multi-platform project.
+Once created, it is possible to interact directly with this element by calling `BrowserHtmlElement` methods.
 
 Here is a list of helper methods used to facilitate the integration with the HTML DOM:
 
-* The extension method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
+* The method `element.SetCssStyle()` can be used to set a CSS Style on the HTML element. Example:
 
   ```csharp
   // Setting only one CSS style
-  this.SetCssStyle("text-shadow", "2px 2px red");
+  _element.SetCssStyle("text-shadow", "2px 2px red");
 
   // Setting many CSS styles at once using C# tuples
-  this.SetCssStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
+  _element.SetCssStyle(("text-shadow", "2px 2px blue"), ("color", "var(--app-fg-color1)"));
   ```
 
-* The `element.ClearCssStyle()` extension method can be used to set CSS styles to their default values. Example:
+* The `element.ClearCssStyle()` method can be used to set CSS styles to their default values. Example:
 
   ```csharp
   // Reset text-shadow style to its default value
-  this.ClearCssStyle("text-shadow");
+  _element.ClearCssStyle("text-shadow");
 
   // Reset both text-shadow and color to their default values
-  this.ClearCssStyle("text-shadow", "color");
+  _element.ClearCssStyle("text-shadow", "color");
   ```
 
-* The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` extension methods can be used to set HTML attributes on the element:
+* The `element.SetHtmlAttribute()` and `element.ClearHtmlAttribute()` methods can be used to set HTML attributes on the element:
 
   ```csharp
   // Set the "href" attribute of an <a> element
-  this.SetHtmlAttribute("href", "#section2");
+  _element.SetHtmlAttribute("href", "#section2");
 
   // Set many attributes at once (less interop)
-  this.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
+  _element.SetHtmlAttribute(("target", "_blank"), ("referrerpolicy", "no-referrer"));
 
   // Remove attribute from DOM element
-  this.ClearHtmlAttribute("href");
+  _element.ClearHtmlAttribute("href");
 
   // Get the value of an attribute of a DOM element
-  var href = this.GetHtmlAttribute("href");
+  var href = _element.GetHtmlAttribute("href");
   ```
 
-* The `element.SetCssClass()` and `element.UnsetCssClass()` extension methods can be used to add or remove CSS classes to the HTML Element:
+* The `element.SetCssClass()` and `element.UnsetCssClass()` methods can be used to add or remove CSS classes to the HTML Element:
 
   ```csharp
   // Add the class to element
-  this.SetCssClass("warning");
+  _element.SetCssClass("warning");
 
   // Add many classes at once (less interop)
-  this.SetCssClass("warning", "level2");
+  _element.SetCssClass("warning", "level2");
 
   // Remove class from element
-  this.UnsetCssClass("paused");
+  _element.UnsetCssClass("paused");
 
   // You can also set one class from a list of possible values.
   // Like a radio-button, like non-selected values will be unset
   var allClasses = new [] { "Small", "Medium", "Large"};
-  this.SetCssClass(allClasses, 2); // set to "Large"
+  _element.SetCssClass(allClasses, 2); // set to "Large"
   ```
 
-* The `element.SetHtmlContent()` extension method can be used to set arbitrary HTML content as child of the control.
+* The `element.SetHtmlContent()` method can be used to set arbitrary HTML content as child of the control.
 
   ```csharp
-  this.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
+  _element.SetHtmlContent("<h2>Welcome to Uno Platform!</h2>");
   ```
 
-  > **IMPORTANT**: This method should not be used when children "managed" controls are present: doing so can result in inconsistent runtime errors because of de-synchronized visual tree.
+* Finally, it is possible to make calls from and to JavaScript code by using [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop). The javascript code is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
-* Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
+## Raising custom Javascript events
 
-## Invoke JavaScript code From C\#
+It's also possible to have Javscript components raise events to be handled by C# code.
 
-Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as *extension methods* on the elements.
+From your Javascript or TypeScript code, you can raise events:
 
-```csharp
-// Invoke javascript synchronously
-WebAssemblyRuntime.InvokeJS("alert(\"It works!\");");
+```javascript
+  // Generate a custom generic event from JavaScript/Typescript
+  htmlElement.dispatchEvent(new Event("simpleEvent"));
 
-// Use "string" return value of .InvokeJS()
-var html = WebAssemblyRuntime.InvokeJS("document.getElementById('banner').innerHTML");
+  // Generate a custom event with a string payload
+  const payload = "this is the payload of the event";
+  htmlElement.dispatchEvent(new CustomEvent("stringEvent", { detail: payload }));
 
-// Invoke javascript asynchronously and await completition
-await WebAssemblyRuntime.InvokeAsync(
-    "fetch('https://api.domain.tld/documents/1301', {method: 'DELETE'});");
-
-// Invoke javascript asynchronously and await returned string
-var str = await WebAssemblyRuntime.InvokeAsync(
- "(async () => \"It works asynchronously!\")();");
-
-// Escape javascript data to prevent javascript script injection
-var escapedUserId = WebAssemblyRuntime.EscapeJS(userId);
-WebAssemblyRuntime.InvokeJS($"MyApp.setUserId(\"{escapedUserId}\");");
-
-// Call javascript in the context os a specific UIElement.
-// In this case, it will be available as "element" in the execution scope.
-MyControl.ExecuteJavascript("element.toggleAttribute(\"readonly\");"); // sync
-await MyControl.ExecuteJavascriptAsync("element.requestFullScreen();"); // async
+  // Generate a custom event with a complex payload
+  const payload = { property:"value", property2: 1234 };
+  htmlElement.dispatchEvent(new CustomEvent("complexEvent", { detail: payload }));
 ```
 
-* `InvokeAsync` should return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or, be an `async` method.
-* Any Promise *rejected* result will get translated into an `ApplicationException` exception.
-* Remember to always use `InvariantCulture` when generating JavaScript for numbers. There's also a helper in [`Uno.Core`](https://www.nuget.org/packages/Uno.Core) called `.ToStringInvariant()`: this dependency is already present in any Uno projects in the namespace `Uno.Extensions`.
-* Calling the javascript `document.getElementById()` with the element's `HtmlId` will only work when the element is actually loaded in the DOM. So it's better to call the extensions `<element>.ExecuteJavascript()` or `<element>.ExecuteJavascriptAsync()`: they will work all the time.
+Then from your C# code, add the following:
 
-## Invoke C# code From JavaScript
+```csharp
+  protected override void OnLoaded()
+  {
+      // Note: following extensions are in the namespace "Uno.Extensions"
+      this.RegisterHtmlEventHandler("simpleEvent", OnSimpleEvent);
+      this.RegisterHtmlEventHandler("stringEvent", OnStringEvent);
+      this.RegisterHtmlEventHandler("complexEvent", OnComplexEvent);
+  }
 
-There's 2 ways to *callback* to managed C# code from JavaScript:
+  private void OnSimpleEvent(object sender, JSObject args)
+  {
+      // You can react on "simpleEvent" here
+  }
 
-1. Use Mono to wrap a dotnet static method into a JavaScript function like this:JavaScript_:
+  private void OnStringEvent(object sender, JSObject args)
+  {
+      // You can react on "stringEvent" here
+      var detail = args.GetPropertyAsString("detail");
+  }
 
-   ```javascript
-   // Register the method wrapper (should be cached)
-   const sumMethod = Module.mono_bind_static_method(
-       "[Assembly.Name] Fully.Qualified.ClassType:SumMethod");
-   // Call the method
-   const result = sumMethod(1, 2); // should return 3
-   ```
-
-   *C#*:
-
-   ```csharp
-   // In assembly "Assembly.Name"
-   namespace Fully.Qualified
-   {
-       public static class ClassType
-       {
-           public static int SumMethod(int i1, int i2) => i1 + i2;
-       }
-   }
-   ```
-
-2. Use HTML's `Event` or `CustomEvent` and dispatch them to managed code like this:
-
-   *JavaScript*:
-
-   ```javascript
-   // Generate a custom generic event from JavaScript/Typescript
-   htmlElement.dispatchEvent(new Event("simpleEvent"));
-   ```
-
-   *C#*:
-
-   ```csharp
-   this.RegisterHtmlEventHandler("simpleEvent", (sender, evt)=> { [...] });
-   ```
-
-   For more information, see [Handling custom HTML events](../wasm-custom-events.md).
-
-   > [!NOTE]
-   > Currently, there's no easy way to asynchronously call managed (dotnet) code from JavaScript in the current version of Uno.
+  private void OnComplexEvent(object sender, JSObject args)
+  {
+      // You can react on "complexEvent" here
+      var detail = args.GetPropertyAsJSObject("detail");
+      var property = detail?.GetPropertyAsString("property");
+      var property2 = detail?.GetPropertyAsInt32("property2");
+  }
+```
 
 ## 🔬 Going further
 
-* [Continue with Part 2](wasm-javascript-2.md) - an integration of a syntax highlighter component.
-* [Continue with Part 3](wasm-javascript-3.md) - an integration of a more complex library with callbacks to application.
-* Read the [Uno Wasm Bootstrapper](https://github.com/unoplatform/Uno.Wasm.Bootstrap) documentation.
+* [Continue with Part 2](xref:Uno.Interop.WasmJavaScript2) - an integration of a syntax highlighter component.
+* [Continue with Part 3](xref:Uno.Interop.WasmJavaScript3) - an integration of a more complex library with callbacks to application.
+* Read the [Uno Wasm Bootstrapper](xref:UnoWasmBootstrap.Overview) documentation.

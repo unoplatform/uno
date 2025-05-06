@@ -4,9 +4,9 @@ uid: Uno.Interop.WasmJavaScript3
 
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 3
 
-In the previous article, a simple _syntax highlighter_ was used to enhance the display of text in HTML. But it is not enough for most apps: it's often required for JavaScript components to call back into the C# side of application. The easiest way to do that in Uno for WebAssembly is by using [_DOM Events_](https://developer.mozilla.org/docs/Web/Guide/Events/Creating_and_triggering_events). Applications using Uno can [consume DOM Events and CustomEvents](https://platform.uno/docs/articles/wasm-custom-events.html) very easily.
+In the previous article, we used simple _syntax highlighter_ to enhance the display of text in HTML. It may not be enough for some apps: it's often required for JavaScript components to call back into the C# side of application. The easiest way to do that in Uno for WebAssembly is by using [_DOM Events_](https://developer.mozilla.org/docs/Web/Guide/Events/Creating_and_triggering_events). Uno Platform apps can [consume DOM Events](xref:Uno.Interop.WasmJavaScript1l) very easily.
 
-Let's create an application illustrating how to use this feature.
+Let's create an application using this feature.
 
 ## Integration of Flatpickr - Callback to app from JavaScript
 
@@ -21,9 +21,7 @@ Let's create an application illustrating how to use this feature.
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
 1. Create a `Uno Platform App` project and name it `FlatpickrDemo`.
-2. Right-click on the `.Wasm` project in the _Solution Explorer_ and pick `Set as Startup Project`.
-3. Update to latest _stable_ version of `Uno.*` dependencies.
-4. Compile & Run to make sure everything works.
+1. Compile & Run to make sure everything works.
 
 ### 2. Inject Flatpickr from CDN
 
@@ -31,7 +29,7 @@ Let's create an application illustrating how to use this feature.
 
 An easy way to achieve this is to add JavaScript code to load the CSS file directly from the CDN. The JavaScript portion of Flatpickr will be lazy-loaded with the control later.
 
-1. Create a new _JavaScript_ file `flatpickrloader.js` in the `WasmScripts` folder of the `.Wasm` project:
+Create a new _JavaScript_ file `flatpickrloader.js` in the `Platforms/WebAssembly/WasmScripts` folder of the project:
 
    ```javascript
    (function () {
@@ -47,90 +45,79 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
    This will load the Flatpickr assets directly from CDN.
 
-2. Set the file as `Embedded Resource`:
-
-   ```xml
-   <ItemGroup>
-     <EmbeddedResource Include="WasmCSS\Fonts.css" />
-     <EmbeddedResource Include="WasmScripts\AppManifest.js" />
-     <EmbeddedResource Include="WasmScripts\flatpickrloader.js" /> <!-- add this line -->
-   </ItemGroup>
-   ```
-
 ### 3. Uno controls and XAML
 
 🎯 This section is creating a control used in the XAML. It will activate `Flatpickr` on the control's `<input>` element.
 
 1. Create a `FlatpickrView.cs` class in the `[MyApp]` project like this:
 
-   ```csharp
-   using System;
-   using System.Globalization;
-   using Windows.UI;
-   using Windows.UI.Xaml;
-   using Windows.UI.Xaml.Media;
-   using Uno.Foundation;
-   using Uno.Extensions;
-   using Uno.UI.Runtime.WebAssembly;
-   
-   namespace FlatpickrDemo.Shared
-   {
-       [HtmlElement("input")] // Flatpickr requires an <input> HTML element
-       public class FlatpickrView : FrameworkElement
-       {
-           // *************************
-           // * Dependency Properties *
-           // *************************
-   
-           public static readonly DependencyProperty SelectedDateTimeProperty = DependencyProperty.Register(
-               "SelectedDateTime", typeof(DateTimeOffset?), typeof(FlatpickrView), new PropertyMetadata(default(DateTimeOffset?)));
-   
-           public DateTimeOffset? SelectedDateTime
-           {
-               get => (DateTimeOffset)GetValue(SelectedDateTimeProperty);
-               set => SetValue(SelectedDateTimeProperty, value);
-           }
-   
-           public static readonly DependencyProperty IsPickerOpenedProperty = DependencyProperty.Register(
-               "IsPickerOpened", typeof(bool), typeof(FlatpickrView), new PropertyMetadata(false));
-   
-           public bool IsPickerOpened
-           {
-               get => (bool)GetValue(IsPickerOpenedProperty);
-               set => SetValue(IsPickerOpenedProperty, value);
-           }
-   
-           // ***************
-           // * Constructor *
-           // ***************
-   
-           public FlatpickrView()
-           {
-               // Load Flatpickr using JavaScript
-               LoadJavaScript();
-           }
-   
-           // ******************
-           // * Initialization *
-           // ******************
-   
-           private void LoadJavaScript()
-           {
-               // For demo purposes, Flatpickr is loaded directly from CDN.
-               // Uno uses AMD module loading, so you must give a callback when the resource is loaded.
-               // We can access the corresponding DOM HTML Element by using the "element" variable available in the scope
-               var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => f(element));";
-   
-               this.ExecuteJavascript(javascript);
-           }
-   
-           // ******************
-           // * Event Handlers *
-           // ******************
-   
-       }
-   }
-   ```
+    ```csharp
+    using Uno.UI.NativeElementHosting;
+
+    namespace FlatpickrDemo;
+
+    public class FlatpickrView : ContentControl
+    {
+        private BrowserHtmlElement? _element;
+
+        // *************************
+        // * Dependency Properties *
+        // *************************
+        public static readonly DependencyProperty SelectedDateTimeProperty = DependencyProperty.Register(
+            nameof(SelectedDateTime), typeof(DateTimeOffset?), typeof(FlatpickrView), new PropertyMetadata(default(DateTimeOffset?)));
+
+        public DateTimeOffset? SelectedDateTime
+        {
+            get => (DateTimeOffset)GetValue(SelectedDateTimeProperty);
+            set => SetValue(SelectedDateTimeProperty, value);
+        }
+
+        public static readonly DependencyProperty IsPickerOpenedProperty = DependencyProperty.Register(
+            nameof(IsPickerOpened), typeof(bool), typeof(FlatpickrView), new PropertyMetadata(false));
+
+        public bool IsPickerOpened
+        {
+            get => (bool)GetValue(IsPickerOpenedProperty);
+            set => SetValue(IsPickerOpenedProperty, value);
+        }
+
+        // ***************
+        // * Constructor *
+        // ***************
+        public FlatpickrView()
+        {
+            if (OperatingSystem.IsBrowser())
+            {
+                _element = BrowserHtmlElement.CreateHtmlElement("input");
+                Content = _element;
+            }
+            else
+            {
+                Content = "Only supported on WebAssembly";
+            }
+
+            // Load Flatpickr using JavaScript
+            LoadJavaScript();
+        }
+
+        // ******************
+        // * Initialization *
+        // ******************
+        private void LoadJavaScript()
+        {
+            // For demo purposes, Flatpickr is loaded directly from CDN.
+            // Uno Platform uses AMD module loading, so you must give a callback when the resource is loaded.
+            // We can access the corresponding DOM HTML Element by using the "element" variable available in the scope
+            var javascript = $@"require([""https://cdn.jsdelivr.net/npm/flatpickr""], f => f(element));";
+
+            _element?.ExecuteJavascript(javascript);
+        }
+
+        // ******************
+        // * Event Handlers *
+        // ******************
+    }
+    ```
 
 2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
@@ -169,36 +156,36 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 1. Register event handlers for 2 custom events: `DateChanged` and `OpenedStateChanged`. To achieve this, put this code at the end of the `FlatpickrView` constructor:
 
-   ```csharp
-   // Register event handler for custom events from the DOM
-   this.RegisterHtmlCustomEventHandler("DateChanged", OnDateChanged, isDetailJson: false);
-   this.RegisterHtmlCustomEventHandler("OpenedStateChanged", OnOpenedStateChanged, isDetailJson: false);
-   ```
+    ```csharp
+    // Register event handler for events from the DOM
+    _element.RegisterHtmlEventHandler("DateChanged", OnDateChanged);
+    _element.RegisterHtmlEventHandler("OpenedStateChanged", OnOpenedStateChanged);
+    ```
 
 2. Add the implementation for the two handlers in the class:
 
-   ```csharp
-   private void OnDateChanged(object sender, HtmlCustomEventArgs e)
-   {
-       if(DateTimeOffset.TryParse(e.Detail, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeLocal, out var dto))
-       {
-           SelectedDateTime = dto;
-       }
-   }
+    ```csharp
+    private void OnDateChanged(object sender, JSObject e)
+    {
+        if (DateTimeOffset.TryParse(e.GetPropertyAsString("detail"), DateTimeFormatInfo.InvariantInfo, DateTimeStyles.AssumeLocal, out var dto))
+        {
+            SelectedDateTime = dto;
+        }
+    }
 
-   private void OnOpenedStateChanged(object sender, HtmlCustomEventArgs e)
-   {
-       switch(e.Detail)
-       {
-           case "open":
-               IsPickerOpened = true;
-               break;
-           case "closed":
-               IsPickerOpened = false;
-               break;
-       }
-   }
-   ```
+    private void OnOpenedStateChanged(object sender, JSObject e)
+    {
+        switch (e.GetPropertyAsString("detail"))
+        {
+            case "open":
+                IsPickerOpened = true;
+                break;
+            case "closed":
+                IsPickerOpened = false;
+                break;
+        }
+    }
+    ```
 
 3. Change the initialization of `Flatpickr` in injected JavaScript to raise events. Change the implementation of the `OnLoaded` method to this instead:
 
@@ -235,7 +222,7 @@ If your JavaScript integration is not behaving properly, you can troubleshoot wi
 
 #### My JavaScript control does not accept pointer input
 
-In the constructor of your wrapper control, add the following:
+When using the WebAssembly Native renderer, in the constructor of your wrapper control, add the following:
 
 ```csharp
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
