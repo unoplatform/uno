@@ -22,7 +22,7 @@ As a developer, you write your UI using the standard WinUI-based XAML. Under the
 
 For every platform, the public API - panels, control templates, measurement and arranging, etc - is the same. However, it's sometimes useful to know what's going on at render-time, for example when [embedding native views inside XAML views](xref:Uno.Development.NativeViews) on a platform-specific basis.
 
-Uno Platform provides two rendering modes, Skia and Native. The first one uses Skia to draw all the App pixels on the screen, while the second one uses the native platform APIs to render on screen.
+Uno Platform provides two rendering modes, Skia and Native. The first one uses Skia to draw all the App pixels on the screen, while the second one uses the native platform APIs to render on the screen.
 
 Skia is the default renderer in the **Blank** and **Recommended** Uno Platform project template presets.
 
@@ -57,7 +57,7 @@ Skia rendering is available on:
 - A minimal native shell (like a window or web canvas) hosts the Skia surface
 
 > [!NOTE]
-> Because it bypasses native UI components, Skia can offer pixel-perfect rendering and visual consistency. The same UI offered by default, but platform specific theming is possible using [Uno.Themes](xref:Uno.Themes.Overview).
+> Because it bypasses native UI components, Skia can offer pixel-perfect rendering and visual consistency. The same UI is offered by default, but platform-specific theming is possible using [Uno.Themes](xref:Uno.Themes.Overview).
 
 You can find more details about using Skia rendering in your app [here](xref:Uno.Skia.Rendering).
 

@@ -22,7 +22,7 @@ The Platforms folder contains platform specific files for targets supported by U
 
 - `Desktop` uses the [Uno Platform Skia Desktop](xref:Uno.Features.Uno.Sdk) support for Windows 7+, Linux, and macOS
 - `Android` contains files and assets specific to Android Phones, Tablets, TVs, and watches
-- `iOS` targets Apple's iOS devices, Phones and Tablets
+- `iOS` targets Apple's iOS devices, Phones, and Tablets
 - `WebAssembly` targets the browser using WebAssembly
 - `Windows` targets the [Windows App SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/) to run on Windows
 
