@@ -8,7 +8,7 @@ XAML Resource and Binding trimming is an optional feature used to reduce the siz
 
 The trimming phase happens after the compilation phase and tries to determine which UI controls are not used explicitly, and removes the associated XAML styles. The XAML styles are found through the value specified in the `TargetType` attribute.
 
-As of Uno 3.9, XAML Resources Trimming is only available for WebAssembly projects.
+As of Uno Platform 6.0, XAML Resources Trimming is available for apps targeting WebAssembly, iOS and Desktop.
 
 ## Using XAML Resources trimming for applications
 
@@ -51,13 +51,14 @@ The IL Linker tool is used to implement this feature, and can be [controlled wit
 
 For instance, if the linker configuration file contains `<assembly fullname="uno.ui" />`, none of the UI Controls will be excluded, and the final app size will remain close as without trimming.
 
-Note that for libraries, Uno 3.9 or later must be used to build the library, as additional metadata needs to be added at compile time. 3.8 and earlier libraries can be used in any case, but won't be eligible for trimming and may degrade the trimming phase effect.
-
 ## Size reduction statistics
 
-As of Uno 3.9, for a `dotnet new unoapp` created app:
+As of Uno Platform 6.0, for a `dotnet new unoapp` created app:
 
 |                      | without XAML Trimming | with XAML Trimming |
 | -------------------- | --------------------- | ------------------ |
-| Total IL Payload     |                12.9MB |            9.12 MB |
-| dotnet.wasm          |                  53MB |          28.9MB MB |
+| Total IL Payload     |               12.9 MB |            9.12 MB |
+| dotnet.wasm          |                 53 MB |            28.9 MB |
+| iOS IPA              |                 93 MB |               73MB |
+| Win32 Desktop        |                200 MB |              52 MB |
+| macOS Desktop        |                200 MB |              58 MB |
