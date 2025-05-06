@@ -100,7 +100,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: '$(parameters.TestRunName)'
+      testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
 
@@ -131,7 +131,7 @@ jobs:
   - task: PublishTestResults@2
     condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
     inputs:
-      testRunTitle: '$(parameters.TestRunName)'
+      testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # Second run needs to fail tests
@@ -142,7 +142,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: '$(parameters.TestRunName)'
+      testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
 
