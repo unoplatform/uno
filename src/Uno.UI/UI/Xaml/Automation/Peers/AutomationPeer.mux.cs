@@ -1,6 +1,4 @@
-﻿using Uno;
-
-namespace Microsoft.UI.Xaml.Automation.Peers
+﻿namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer
 	{
@@ -10,6 +8,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #else
 			=> true;
 #endif
+
 		/// <summary>
 		/// Removes the leading and trailing spaces in the provided string and returns the trimmed version
 		/// or an empty string when no characters are left.
