@@ -2,9 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
-#if __APPLE_UIKIT__ || __ANDROID__
-#define HAS_NATIVE_COMMANDBAR
-#endif
+
 
 using System;
 using DirectUI;
@@ -33,243 +31,29 @@ using Microsoft.UI.Input;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
-#if HAS_NATIVE_COMMANDBAR
-		, ICustomClippingElement
-#endif
+
 	{
-		public event EventHandler<object>? Opened;
-		public event EventHandler<object>? Opening;
-		public event EventHandler<object>? Closed;
-		public event EventHandler<object>? Closing;
+
 
 		private const string TEXT_HUB_SEE_MORE = nameof(TEXT_HUB_SEE_MORE);
 		private const string TEXT_HUB_SEE_LESS = nameof(TEXT_HUB_SEE_LESS);
 		private const string UIA_MORE_BUTTON = nameof(UIA_MORE_BUTTON);
 		private const string UIA_LESS_BUTTON = nameof(UIA_LESS_BUTTON);
 
-		protected Grid? m_tpLayoutRoot;
-		protected FrameworkElement? m_tpContentRoot;
-		protected ButtonBase? m_tpExpandButton;
-		protected WeakReference<VisualStateGroup?>? m_tpDisplayModesStateGroupRef;
-
-		protected double m_compactHeight;
-		protected double m_minimalHeight;
-
-		AppBarMode m_Mode;
-
-		// Owner, if this AppBar is owned by a Page using TopAppBar/BottomAppBar.
-		WeakReference<Page>? m_wpOwner;
-
-		SerialDisposable m_contentRootSizeChangedEventHandler = new SerialDisposable();
-		SerialDisposable m_xamlRootChangedEventHandler = new SerialDisposable();
-		SerialDisposable m_expandButtonClickEventHandler = new SerialDisposable();
-		SerialDisposable m_displayModeStateChangedEventHandler = new SerialDisposable();
-
-#pragma warning disable CS0414
-#pragma warning disable CS0649
-#pragma warning disable CS0169
-		// Focus state to be applied on loaded.
-		FocusState m_onLoadFocusState;
-		//UIElement? m_layoutTransitionElement;
-		UIElement? m_overlayLayoutTransitionElement;
-		private bool _isNativeTemplate;
-		//UIElement m_parentElementForLTEs;
-#pragma warning restore CS0414
-#pragma warning restore CS0649
-#pragma warning restore CS0169
-
-
-		FrameworkElement? m_overlayElement;
-		SerialDisposable m_overlayElementPointerPressedEventHandler = new SerialDisposable();
-
-		WeakReference<DependencyObject>? m_savedFocusedElementWeakRef;
-		FocusState m_savedFocusState;
-
-		bool m_isInOverlayState;
-		bool m_isChangingOpenedState;
-		bool m_hasUpdatedTemplateSettings;
-
-		// We refresh this value in the OnSizeChanged() & OnContentSizeChanged() handlers.
-		double m_contentHeight;
-
-		bool m_isOverlayVisible;
-		Storyboard? m_overlayOpeningStoryboard;
-		Storyboard? m_overlayClosingStoryboard;
-
-		protected double ContentHeight => m_contentHeight;
-
-		public AppBar()
-		{
-			m_Mode = AppBarMode.Inline;
-			m_onLoadFocusState = FocusState.Unfocused;
-			m_savedFocusState = FocusState.Unfocused;
-			m_isInOverlayState = false;
-			m_isChangingOpenedState = false;
-			m_hasUpdatedTemplateSettings = false;
-			m_compactHeight = 0d;
-			m_minimalHeight = 0d;
-			m_contentHeight = 0d;
-			m_isOverlayVisible = false;
-
-			PrepareState();
-			DefaultStyleKey = typeof(AppBar);
-		}
-
-		protected virtual void PrepareState()
-		{
-			SizeChanged += OnSizeChanged;
-
-			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
-		}
-
-		// Note that we need to wait for OnLoaded event to set focus.
-		// When we get the on opened event children of AppBar will not be populated
-		// yet which will prevent them from getting focus.
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			var isOpen = IsOpen;
-			if (isOpen)
-			{
-				OnIsOpenChanged(true);
-			}
-
-			// TODO: Uno specific - use XamlRoot instead of Window
-			if (m_xamlRootChangedEventHandler.Disposable is null && XamlRoot is not null)
-			{
-				XamlRoot.Changed += OnXamlRootChanged;
-				m_xamlRootChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
-			}
-#if HAS_UNO
-			ReAttachTemplateEvents();
-#endif
-			//UNO TODO
-
-			//if (m_Mode != AppBarMode_Inline)
-			//{
-			//	ctl::ComPtr<IApplicationBarService> applicationBarService;
-			//	IFC_RETURN(DXamlCore::GetCurrent()->GetApplicationBarService(applicationBarService));
-
-			//	if (m_Mode == AppBarMode_Floating)
-			//	{
-			//		IFC_RETURN(applicationBarService->RegisterApplicationBar(this, m_Mode));
-			//	}
-
-			//	// Focus the AppBar only if this is a Threshold app and if the AppBar that is being loaded is already open.
-			//	isOpen = FALSE;
-			//	IFC_RETURN(get_IsOpen(&isOpen));
-
-			//	if (isOpen)
-			//	{
-			//		auto focusState = (m_onLoadFocusState != xaml::FocusState_Unfocused ? m_onLoadFocusState : xaml::FocusState_Programmatic);
-			//		IFC_RETURN(applicationBarService->FocusApplicationBar(this, focusState));
-			//	}
-
-			//	// Reset the saved focus state
-			//	m_onLoadFocusState = xaml::FocusState_Unfocused;
-			//}
-
-			UpdateVisualState();
-		}
-
-		private void ReAttachTemplateEvents()
-		{
-			GetTemplatePart("ContentRoot", out m_tpContentRoot);
-
-			if (m_tpContentRoot is { })
-			{
-				m_tpContentRoot.SizeChanged += OnContentRootSizeChanged;
-				m_contentRootSizeChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.SizeChanged -= OnContentRootSizeChanged);
-			}
-
-			GetTemplatePart("ExpandButton", out m_tpExpandButton);
-
-			if (m_tpExpandButton == null)
-			{
-				// The previous CommandBar template used "MoreButton" for this template part's name,
-				// so now we're stuck with it, as much as I'd like to converge them..
-				GetTemplatePart("MoreButton", out m_tpExpandButton);
-			}
-
-			if (m_tpExpandButton is { })
-			{
-				m_tpExpandButton.Click += OnExpandButtonClick;
-				m_expandButtonClickEventHandler.Disposable = Disposable.Create(() => m_tpExpandButton.Click -= OnExpandButtonClick);
-			}
-		}
-
-		private void OnLayoutUpdated(object? sender, object e)
-		{
-			//if (m_layoutTransitionElement is { })
-			//{
-			//	PositionLTEs();
-			//}
-		}
-
-		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
-		{
-			RefreshContentHeight();
-			UpdateTemplateSettings();
-
-			if (GetOwner() is { } pageOwner)
-			{
-				// UNO TODO
-				//pageOwner.AppBarClosedSizeChanged();
-			}
-		}
-
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-			if (args.Property == IsOpenProperty)
-			{
-				var isOpen = (bool)args.NewValue;
-				OnIsOpenChanged(isOpen);
-
-				UpdateVisualState();
-			}
-			else if (args.Property == IsStickyProperty)
-			{
-				OnIsStickyChanged();
-			}
-			else if (args.Property == ClosedDisplayModeProperty)
-			{
-				// UNO TODO
-				/*
-				if (m_Mode != AppBarMode.Inline)
-				{
-					ctl::ComPtr<IApplicationBarService> applicationBarService;
-					IFC_RETURN(DXamlCore::GetCurrent()->GetApplicationBarService(applicationBarService));
-
-					IFC_RETURN(applicationBarService->HandleApplicationBarClosedDisplayModeChange(this, m_Mode));
-				}*/
-
-				InvalidateMeasure();
-				UpdateVisualState();
-			}
-			else if (args.Property == LightDismissOverlayModeProperty)
-			{
-				ReevaluateIsOverlayVisible();
-			}
-			else if (args.Property == IsEnabledProperty)
-			{
-				UpdateVisualState();
-			}
-		}
-
-		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
-		{
-			base.OnVisibilityChanged(oldValue, newValue);
-
-			if (GetOwner() is { } pageOwner)
-			{
-				// UNO TODO
-				//pageOwner.AppBarClosedSizeChanged();
-			}
-		}
 		private void UnregisterEvents()
 		{
-			m_xamlRootChangedEventHandler.Disposable = null;
+			m_contentRootSizeChangedEventHandler.Disposable = null;
+			m_expandButtonClickEventHandler.Disposable = null;
+			m_displayModeStateChangedEventHandler.Disposable = null;
+			m_overlayElementPointerPressedEventHandler.Disposable = null;
+
+			m_tpLayoutRoot = null;
+			m_tpContentRoot = null;
+			m_tpExpandButton = null;
+			m_tpDisplayModesStateGroupRef = null;
+
+			m_overlayClosingStoryboard = null;
+			m_overlayOpeningStoryboard = null;
 		}
 
 		private protected override void OnUnloaded()
@@ -287,142 +71,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		}
 
-		protected override void OnApplyTemplate()
-		{
-			if (m_tpContentRoot is not null)
-			{
-				m_contentRootSizeChangedEventHandler.Disposable = null;
-			}
-
-			if (m_tpExpandButton is not null)
-			{
-				m_expandButtonClickEventHandler.Disposable = null;
-			}
-
-			if (m_tpDisplayModesStateGroupRef is not null)
-			{
-				m_displayModeStateChangedEventHandler.Disposable = null;
-			}
-
-			m_tpLayoutRoot = null;
-			m_tpContentRoot = null;
-			m_tpExpandButton = null;
-			m_tpDisplayModesStateGroupRef = null;
-
-			m_overlayClosingStoryboard = null;
-			m_overlayOpeningStoryboard = null;
-
-			// Clear our previous template parts.
-			m_tpLayoutRoot = null;
-			m_tpContentRoot = null;
-			m_tpExpandButton = null;
-			m_tpDisplayModesStateGroupRef = null;
-
-			base.OnApplyTemplate();
-
-			GetTemplatePart("LayoutRoot", out m_tpLayoutRoot);
-
-#if HAS_NATIVE_COMMANDBAR
-			_isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
-				.FindFirstChild<NativeCommandBarPresenter?>(this) != null;
-#endif
-
-#if HAS_UNO
-			ReAttachTemplateEvents();
-#endif
-			if (m_tpExpandButton is { })
-			{
-				var toolTip = new ToolTip();
-				toolTip.Content = DXamlCore.Current.GetLocalizedResourceString(TEXT_HUB_SEE_MORE);
-
-				ToolTipService.SetToolTip(m_tpExpandButton, toolTip);
-
-				var automationName = AutomationProperties.GetName((Button)m_tpExpandButton);
-				if (automationName == null)
-				{
-					automationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_MORE_BUTTON);
-					AutomationProperties.SetName((Button)m_tpExpandButton, automationName);
-				}
-			}
-
-			// Query compact & minimal height from resource dictionary.
-			{
-				m_compactHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeCompactHeight");
-				m_minimalHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeMinimalHeight");
-			}
-
-			// Lookup the animations to use for the window overlay.
-			if (m_tpLayoutRoot is { })
-			{
-				var gridResources = m_tpLayoutRoot.Resources;
-
-				if (gridResources.TryGetValue("OverlayOpeningAnimation", out var oWindowOverlayOpeningStoryboard)
-					&& oWindowOverlayOpeningStoryboard is Storyboard windowOverlayOpeningStoryboard)
-				{
-					m_overlayOpeningStoryboard = windowOverlayOpeningStoryboard;
-				}
-
-				if (gridResources.TryGetValue("OverlayClosingAnimation", out var oWindowOverlayClosingStoryboard)
-					&& oWindowOverlayClosingStoryboard is Storyboard windowOverlayClosingStoryboard)
-				{
-					m_overlayClosingStoryboard = windowOverlayClosingStoryboard;
-				}
-			}
-
-			ReevaluateIsOverlayVisible();
-		}
+		
 
 #if HAS_NATIVE_COMMANDBAR
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => !_isNativeTemplate;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 #endif
 
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var size = base.MeasureOverride(availableSize);
-
-			if (_isNativeTemplate)
-			{
-				return size;
-			}
-
-			if (m_Mode == AppBarMode.Top || m_Mode == AppBarMode.Bottom)
-			{
-				// regardless of what we desire, settings of alignment or fixed size content, we will always take up full width
-				size.Width = availableSize.Width;
-			}
-
-			// Make sure our returned height matches the configured state.
-			var closedDisplayMode = ClosedDisplayMode;
-
-			size.Height = closedDisplayMode switch
-			{
-				AppBarClosedDisplayMode.Compact => m_compactHeight,
-				AppBarClosedDisplayMode.Minimal => m_minimalHeight,
-				_ => 0d,
-			};
-
-			return size;
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var layoutRootDesiredSize = new Size();
-			if (m_tpLayoutRoot is { })
-			{
-				layoutRootDesiredSize = m_tpLayoutRoot.DesiredSize;
-			}
-			else
-			{
-				layoutRootDesiredSize = finalSize;
-			}
-
-			var baseSize = base.ArrangeOverride(new Size(finalSize.Width, layoutRootDesiredSize.Height));
-
-			baseSize.Height = finalSize.Height;
-
-			return baseSize;
-		}
+		
 
 		protected virtual void OnOpening(object e)
 		{
