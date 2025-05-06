@@ -2837,6 +2837,18 @@ partial class ComboBox
 
 	private string TryGetStringValue(object @object, PropertyPathListener pathListener)
 	{
+		var result = TryGetStringValue2(@object, pathListener);
+		if (Uno.UI.FeatureConfiguration.Asd.TryGetStringValueOverride is { } @override)
+		{
+			result = @override(@object, result);
+		}
+
+		return result;
+	}
+
+	private string TryGetStringValue2(object @object, PropertyPathListener pathListener)
+	{
+
 		object spBoxedValue;
 		object spObject = @object;
 
@@ -3133,25 +3145,19 @@ partial class ComboBox
 
 	private void EnsurePropertyPathListener()
 	{
-		// TODO Uno: Property path listener is not implemented yet
-		//if (!m_spPropertyPathListener)
-		//{
-		//	wrl_wrappers::HString strDisplayMemberPath;
-		//	IFC_RETURN(get_DisplayMemberPath(strDisplayMemberPath.GetAddressOf()));
+		if (m_spPropertyPathListener is null)
+		{
+			var strDisplayMemberPath = DisplayMemberPath;
 
-		//	if (!strDisplayMemberPath.IsEmpty())
-		//	{
-		//		// If we don't have one cached, create the property path listener
-		//		// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
-		//		auto pPropertyPathParser = std::make_unique<PropertyPathParser>();
+			if (!string.IsNullOrEmpty(strDisplayMemberPath))
+			{
+				var pPropertyPathParser = new PropertyPathParser();
+				pPropertyPathParser.SetSource(strDisplayMemberPath, null);
 
-		//		IFC_RETURN(pPropertyPathParser->SetSource(WindowsGetStringRawBuffer(strDisplayMemberPath.Get(), nullptr), FALSE));
-
-		//		IFC_RETURN(ctl::make<PropertyPathListener>(nullptr, pPropertyPathParser.get(), false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/, &m_spPropertyPathListener));
-		//	}
-		//}
-
-		//return S_OK;
+				m_spPropertyPathListener = new();
+				m_spPropertyPathListener.Initialize(pOwner: null, pPropertyPathParser, fListenToChanges: false, fUseWeakReferenceForSource: false);
+			}
+		}
 	}
 
 	private void CreateEditableContentPresenterTextBlock()
@@ -3166,8 +3172,6 @@ partial class ComboBox
 
 
 #if HAS_UNO // Not ported yet
-
-
 	private void ArrangePopup(bool value) { }
 
 	private void EnsurePresenterReadyForFullMode() { }
