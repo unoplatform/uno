@@ -1482,10 +1482,9 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			await CanCloseAppBarHelper((expectedHandledValue, appBar) =>
+			await CanCloseAppBarHelper(async (expectedHandledValue, appBar) =>
 			{
-				bool backButtonPressHandled = false;
-				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
+				bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
 				VERIFY_ARE_EQUAL(backButtonPressHandled, expectedHandledValue);
 			},
 			page);
@@ -2192,7 +2191,7 @@ namespace Windows.UI.Tests.Enterprise
 			page);
 		}
 
-		private async Task CanCloseAppBarHelper(Action<bool, AppBar> closeFunction, Page page)
+		private async Task CanCloseAppBarHelper(Func<bool, AppBar, Task> closeFunction, Page page)
 		{
 			AppBar topAppBar = null;
 			AppBar bottomAppBar = null;
@@ -2236,7 +2235,7 @@ namespace Windows.UI.Tests.Enterprise
 			await bottomOpenedEvent.WaitForDefault();
 
 			LOG_OUTPUT("Close both Top and Bottom AppBars using the 'close function'.");
-			closeFunction(true, topAppBar);
+			await closeFunction(true, topAppBar);
 			await topClosedEvent.WaitForDefault();
 			await bottomClosedEvent.WaitForDefault();
 
@@ -2244,11 +2243,11 @@ namespace Windows.UI.Tests.Enterprise
 			await inlineOpenedEvent.WaitForDefault();
 
 			LOG_OUTPUT("Close the inline AppBar using the 'close function'.");
-			closeFunction(true, inlineAppBar);
+			await closeFunction(true, inlineAppBar);
 			await inlineClosedEvent.WaitForDefault();
 
 			LOG_OUTPUT("After closing AppBars, further calls to 'close function', while focus is on inline AppBar, should not get handled.");
-			closeFunction(false, inlineAppBar);
+			await closeFunction(false, inlineAppBar);
 
 			// Move focus to top AppBar.
 			await RunOnUIThread(() =>
@@ -2262,7 +2261,7 @@ namespace Windows.UI.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("After closing AppBars, further calls to 'close function', while focus is on top AppBar, should not get handled.");
-			closeFunction(false, topAppBar);
+			await closeFunction(false, topAppBar);
 		}
 
 		private async Task<Page> SetupFocusShiftTestPage()
