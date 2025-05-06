@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 

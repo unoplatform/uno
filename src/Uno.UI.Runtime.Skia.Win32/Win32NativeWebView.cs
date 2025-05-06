@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.NativeElementHosting;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Win32;
