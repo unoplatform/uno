@@ -18,12 +18,11 @@
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
-It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance.
+It allows C# and WinUI XAML and/or C# code to run on all target platforms, while allowing you to control every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinUI APIs, such as **Microsoft.UI.Xaml** to build your UI, and WinRT to get cross platform access to non-UI APIs (sensors, file system, devices, etc...), to enable WinUI applications to run on all platforms with native performance.
 
-Leverage the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) and [Hot Design](xref:Uno.HotDesign.Overview
-), then run your application runs on iOS, Android, macOS, Linux, and WebAssembly.
+It allows you to leverage your familiar IDE and enhance your productivity with our [XAML/C# Hot Reload](xref:Uno.Features.HotReload) features and [Hot Design](xref:Uno.HotDesign.Overview), to design and run your application on iOS, Android, macOS, Windows, Linux, and WebAssembly.
 
-Visit [our documentation](doc/articles/intro.md) for more details.
+Visit [our documentation](xref:Uno.Documentation.Intro) for more details.
 
 # Getting Started
 
