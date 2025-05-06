@@ -2,7 +2,7 @@
 uid: uno.development.using.markup
 ---
 
-# Using UI Markup
+# UI Markup
 
 Uno Platform provides two ways for defining your UI: WinUI XAML or [C# Markup](xref:Uno.Extensions.Markup.Overview).
 

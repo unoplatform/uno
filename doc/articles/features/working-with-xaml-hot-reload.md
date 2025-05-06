@@ -278,7 +278,6 @@ Legend:
 - ✅ Supported
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - ⌛ Upcoming support
-- 🟥 Not supported yet
 - 🔳 Not supported by the environment/IDE
 
 ### Notes
