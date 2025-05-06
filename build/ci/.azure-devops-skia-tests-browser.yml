@@ -5,10 +5,10 @@ parameters:
 
 jobs:
 ##
-## Skia WebAssembly Browser
+## WebAssembly Skia
 ##
 - job: Skia_Browser_Runtime_Tests_Build
-  displayName: 'Run Skia Browser Runtime Tests'
+  displayName: 'Run' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 60
 
   pool:
@@ -18,19 +18,19 @@ jobs:
 
   strategy:
     matrix:
-      GROUP_0:
+      'Runtime Tests 0':
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 4
 
-      GROUP_1:
+      'Runtime Tests 1':
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 4
 
-      GROUP_2:
+      'Runtime Tests 2':
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 4
 
-      GROUP_3:
+      'Runtime Tests 3':
         UITEST_RUNTIME_TEST_GROUP: 3
         UITEST_RUNTIME_TEST_GROUP_COUNT: 4
 
@@ -72,12 +72,12 @@ jobs:
     displayName: Install chrome
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
-    displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
+    displayName: Run WebAssembly Skia Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'WebAssembly Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
       failTaskOnFailedTests: true

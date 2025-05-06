@@ -26,7 +26,7 @@ stages:
     - template: .azure-devops-markdown-lint.yml
 
 - stage: binaries_build_native_macos
-  displayName: Build native binaries
+  displayName: Build - Native Binaries
   dependsOn:
     - Setup
 
@@ -39,7 +39,7 @@ stages:
  
 
 - stage: binaries_build_winui
-  displayName: Build Binaries WinUI
+  displayName: Build - Managed Binaries
   dependsOn:
     - binaries_build_native_macos
 
@@ -51,7 +51,7 @@ stages:
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
-  displayName: Test Packages
+  displayName: Tests - Templates
   dependsOn:
     - binaries_build_winui
 
@@ -65,7 +65,7 @@ stages:
       xCodeRoot: '$(xCodeRoot)'
 
 - stage: unit_tests
-  displayName: Tests - Unit
+  displayName: Tests - Unit Tests
   dependsOn:
     - Setup
 
@@ -76,7 +76,7 @@ stages:
       poolName: '$(windowsScaledPool)'
 
 - stage: wasm_tests
-  displayName: Tests - WebAssembly
+  displayName: Tests - WebAssembly Native
   dependsOn:
     - Setup
 
@@ -100,7 +100,7 @@ stages:
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests
-  displayName: Tests - Android
+  displayName: Tests - Android Native
   dependsOn:
     - Setup
 
@@ -114,7 +114,7 @@ stages:
       xCodeRoot: '$(xCodeRoot)'
 
 - stage: ios_tests
-  displayName: Tests - iOS
+  displayName: Tests - iOS Native
   dependsOn:
     - Setup
 
@@ -127,7 +127,7 @@ stages:
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
 
 - stage: wasdk_tests
-  displayName: Tests - WinAppSDK  
+  displayName: Tests - WinAppSDK
   dependsOn:
     - Setup
 
@@ -137,7 +137,7 @@ stages:
       poolName: '$(windows2022HostedVMImage)'
 
 - stage: test_finalization
-  displayName: Tests - Results
+  displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   dependsOn:
     - wasm_tests
@@ -155,7 +155,7 @@ stages:
       poolName: '$(windowsScaledPool)'
 
 - stage: ios_testflight
-  displayName: iOS - Testflight
+  displayName: Publish - iOS Testflight
   dependsOn:
     - Setup
 
@@ -178,7 +178,7 @@ stages:
 ## Publishing
 ##
 - stage: Publish_Dev
-  displayName: 'Publish Dev NuGet'
+  displayName: 'Publish - Dev NuGet'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
@@ -187,7 +187,7 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
 
 - stage: Publish_Prod_Dev
-  displayName: 'Publish Prod Dev NuGet'
+  displayName: 'Publish - Prod Dev NuGet'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
@@ -196,7 +196,7 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
   
 - stage: Publish_Prod_Public
-  displayName: 'Publish Prod NuGet.org'
+  displayName: 'Publish - Prod NuGet.org'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:

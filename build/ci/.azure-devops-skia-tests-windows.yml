@@ -16,7 +16,7 @@ jobs:
 ##
 
 - job: Skia_Windows_Screenshot_Tests
-  displayName: 'Run Skia Windows Snapshot Tests'
+  displayName: 'Snapshot Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -45,7 +45,7 @@ jobs:
         cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots
 
-    displayName: Run Skia Windows Snapshot Tests
+    displayName: Run Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -56,7 +56,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Windows_Runtime_Tests_Build
-  displayName: 'Run Skia Windows Runtime Tests'
+  displayName: 'Runtime Tests'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
@@ -101,12 +101,12 @@ jobs:
     displayName: Build HR dependencies
 
   - pwsh: build/test-scripts/run-windows-skia-runtime-tests.ps1
-    displayName: Run Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests
+    displayName: Run Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'Windows Skia Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
       failTaskOnFailedTests: true
@@ -122,7 +122,7 @@ jobs:
       ArtifactType: Container
 
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
-  displayName: 'Run Uno Islands Skia WPF Runtime Tests'
+  displayName: 'WPF Islands Runtime Tests'
   timeoutInMinutes: 45
   cancelTimeoutInMinutes: 1
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
@@ -160,7 +160,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Uno Islands Skia WPF Runtime Tests'
+      testRunTitle: 'WPF Islands Skia Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
       failTaskOnFailedTests: true

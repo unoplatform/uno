@@ -3,19 +3,15 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'Build WebAssembly SamplesApp UI Tests'
+  displayName: 'Build Samples App'
   container: nv-bionic-wasm
 
   pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-
-  strategy:
-    matrix:
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -62,7 +58,7 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Snap
-  displayName: 'Run WebAssembly Snapshots Tests'
+  displayName: 'WebAssembly Snapshot Tests'
   dependsOn:
   - Wasm_UITests_Build
 
@@ -125,7 +121,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: ' WebAssembly Tests'
+  displayName: ' ' ## Name is concatenated with the matrix group name
   dependsOn:
   - Wasm_UITests_Build
 
@@ -133,21 +129,21 @@ jobs:
 
   strategy:
     matrix:
-      net9_default:
+      'UI Tests':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '5m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net9_benchmarks:
+      'Benchmarks':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net9_winui_runtimetests_group_00:
+      'Runtime Tests 0':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -156,7 +152,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_winui_runtimetests_group_01:
+      'Runtime Tests 1':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -165,7 +161,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_winui_runtimetests_group_02:
+      'Runtime Tests 2':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'

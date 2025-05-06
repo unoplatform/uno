@@ -9,7 +9,7 @@ jobs:
 ##
 
 - job: Android_Tests
-  displayName: 'Run Skia Android Tests'
+  displayName: ' ' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 45
   dependsOn: Skia_Android_Tests_Build
   pool: ${{ parameters.vmLinuxPool }}
@@ -102,12 +102,12 @@ jobs:
       chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
       $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh
 
-    displayName: Run Skia Android Tests
+    displayName: Run Android Skia Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia Android Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'Android Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
       failTaskOnFailedTests: true
