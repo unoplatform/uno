@@ -156,3 +156,11 @@ public App()
 > [!IMPORTANT]
 >
 > This feature will only work for security reasons when the application runs in Debug mode.
+
+## WinAppSDK Specifics
+
+When using the WebView2 and running on WinAppSDK, make sure to create an `x64` or `ARM64` configuration:
+
+- In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
+- Assign it to the Uno Platform project
+- Debug your application using the configuration relevant to your current environment

@@ -16,3 +16,7 @@ uid: uno.publishing.overview
 - [Packaging for iOS](xref:uno.publishing.ios) (using `netX.0-ios`)
 - [Packaging for Android](xref:uno.publishing.android) (using `netX.0-android`)
 - [Packaging for Windows App SDK](xref:uno.publishing.windows) (using `netX.0-windows10.yyy`)
+
+## Continous Integration
+
+Uno Platform provides a set of [CI integrations](xref:Uno.GettingStarted.UsingWizard#11-ci-pipeline) for Azure Devops and GitHub actions as part of the Uno Platform template.
