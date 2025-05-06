@@ -1251,7 +1251,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			AttachOpenedAndClosedHandlers(appBar, openedEvent, openedRegistration, closedEvent, closedRegistration);
 
-			FlyoutHelper.OpenFlyout(flyout, target, FlyoutOpenMethod.Programmatic_ShowAt);
+			await FlyoutHelper.OpenFlyout(flyout, target, FlyoutOpenMethod.Programmatic_ShowAt);
 
 			await RunOnUIThread(() => appBar.IsOpen = true);
 			await openedEvent.WaitForDefault();
@@ -1259,7 +1259,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() => appBar.IsOpen = false);
 			await closedEvent.WaitForDefault();
 
-			FlyoutHelper.HideFlyout(flyout);
+			await FlyoutHelper.HideFlyout(flyout);
 		}
 
 		[TestMethod]
