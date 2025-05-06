@@ -195,7 +195,7 @@ public partial class GestureRecognizer
 				var isUpdated = false;
 				isUpdated |= _isTranslateInertiaXEnabled && Update(TranslationX, ref cumulative, _velocities0.Linear.X, DesiredDisplacementDeceleration, t);
 				isUpdated |= _isTranslateInertiaYEnabled && Update(TranslationY, ref cumulative, _velocities0.Linear.Y, DesiredDisplacementDeceleration, t);
-				isUpdated |= _isRotateInertiaEnabled && Update(Rotation, ref cumulative, _velocities0.Angular, DesiredDisplacementDeceleration, t);
+				isUpdated |= _isRotateInertiaEnabled && Update(Rotation, ref cumulative, _velocities0.Angular, DesiredRotationDeceleration, t);
 				if (_isScaleInertiaEnabled && Update(Expansion, ref cumulative, _velocities0.Expansion, DesiredExpansionDeceleration, t))
 				{
 					cumulative.Scale = (_owner._origins.State.Distance + cumulative.Expansion) / _owner._origins.State.Distance;
