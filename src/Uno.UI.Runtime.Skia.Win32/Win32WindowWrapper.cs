@@ -170,6 +170,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
+		// Update DPI to rescale the window if scaling != 1
+		UpdateDisplayInfo();
+
 		var success = PInvoke.RegisterTouchWindow(hwnd, 0);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 		var success2 = PInvoke.EnableMouseInPointer(true);
