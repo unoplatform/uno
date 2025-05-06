@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\CascadingMenuHelper.cpp, tag winui3/release/1.5.4, commit 98a60c8
+// MUX Reference dxaml\xcp\dxaml\lib\CascadingMenuHelper.cpp, tag winui3/release/1.7.1, commit 5f27a786ac96c
 
 using System;
 using Uno.Disposables;
@@ -233,10 +233,10 @@ internal partial class CascadingMenuHelper
 		pointer = args.Pointer;
 		pointerDeviceType = pointer.PointerDeviceType;
 
-		// Show the sub menu in the case of touch input.
-		// In case of the mouse device or pen, the sub menu will be shown whenever the pointer is over
-		// the sub menu owner.
-		if (PointerDeviceType.Touch == pointerDeviceType)
+		// Show the sub menu in the case of touch and pen input.
+		// In case of the mouse device, the sub menu will be shown whenever the pointer is over the sub menu owner.
+		// Note that sub menu is also shown OnPointerOver with pen device.
+		if (PointerDeviceType.Touch == pointerDeviceType || PointerDeviceType.Pen == pointerDeviceType || PointerDeviceType.Mouse == pointerDeviceType)
 		{
 			OpenSubMenu();
 		}
@@ -501,7 +501,7 @@ internal partial class CascadingMenuHelper
 		// weak reference contents to a known type that it's guaranteed
 		// to be (if it isn't null), and we then AsOrNull() the ComPtr,
 		// once it's safe to ask about a type that we're not sure of.
-		FrameworkElement subMenuPresenterAsFE = m_wpSubMenuPresenter?.IsAlive == true ? m_wpSubMenuPresenter?.Target as Frame : null;
+		var subMenuPresenterAsFE = m_wpSubMenuPresenter?.IsAlive == true ? m_wpSubMenuPresenter?.Target as FrameworkElement : null;
 
 		IMenuPresenter subMenuPresenter = null;
 
