@@ -439,6 +439,22 @@
           href: xref:Uno.HotDesign.Elements
         - name: Canvas
           href: xref:Uno.HotDesign.Canvas
+        items:
+        - name: OverView
+          href: xref:Uno.HotDesign.GetStarted.Guide
+        - name: Properties
+          href: xref:Uno.HotDesign.Properties
+          items:
+          - name: General
+            href: xref:Uno.HotDesign.Properties
+          - name: Editors
+            href: xref:Uno.HotDesign.Properties.Editors
+          - name: Advanced Flyout
+            href: xref:Uno.HotDesign.Properties.AdvancedFlyout
+          - name: Responsive Extension
+            href: xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtension
+          - name: Template Editor
+            href: xref:Uno.HotDesign.Properties.TemplateEditor
       - name: Counter Tutorial
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Design-to-Code
