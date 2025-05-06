@@ -4,7 +4,7 @@ uid: Uno.Development.PlatformSpecificXaml
 
 # Platform-specific XAML markup in Uno
 
-Uno Platform allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform, either because you need to access platform-specific native APIs and 3rd-party libraries, or because you want your app to look and behave differently depending on the platform.
+Uno Platform allows you to reuse views and business logic across platforms. Sometimes, though, you may want to write different code per platform, either because you need to access platform-specific native APIs and 3rd-party libraries, or because you want your app to look and behave differently depending on the platform.
 
 > [!Video https://www.youtube-nocookie.com/embed/IZt-ymNZpZw]
 
@@ -23,7 +23,7 @@ The structure of an Uno Platform app created with the default [Visual Studio tem
 
 The Uno platform uses pre-defined prefixes to include or exclude parts of XAML markup depending on the target framework being used. These prefixes can be applied to XAML objects or to individual object properties.
 
-Conditional prefixes you wish to use in XAML file must be defined at the top of the file, like other XAML prefixes. They can be then applied to any object or property within the body of the file.
+Conditional prefixes you wish to use in XAML files must be defined at the top of the file, like other XAML prefixes. They can then be applied to any object or property within the body of the file.
 
 For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actual namespace is arbitrary, since the Uno parser ignores it. The prefix should be put in the `mc:Ignorable` list. For prefixes which will be included on Windows (e.g. `win`, `not_android`) the namespace should be `http://schemas.microsoft.com/winfx/2006/xaml/presentation` and the prefix should not be put in the `mc:Ignorable` list.
 
@@ -149,11 +149,11 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 
 ### XAML prefixes in cross-targeted libraries
 
-For Uno Platform 6.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm/Native in a library, since both platforms use the `net8.0`/`net9.0` target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library, unless .
+For Uno Platform 6.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm/Native in a library, since both platforms use the `net8.0`/`net9.0` target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
-The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm/Native are similar, it is often not necessary to make the distinction.
+The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm builds. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm/Native are similar, it is often not necessary to make the distinction.
 
-In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the app project.
+In cases where it is needed (fonts are one example), the XAML files must be placed directly in the app project.
 
 | Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
 |-----------------|-------------------------------------------------------------|------------------------|
