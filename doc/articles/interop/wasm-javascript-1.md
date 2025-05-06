@@ -18,14 +18,14 @@ The Uno Bootstrapper can automatically embed any asset and deploy them with the 
 
 2. **CSS Style files** should be in the `Platforms/WebAssembly/WasmCSS` folder. They will be copied to the output folder and referenced in the *HTML head* of the application.
 
-3. **Asset files** can be placed in the `Assets` folder. Thes file will be copied to the output folder and will preserve the same relative path to the `Assets` folder.
+3. **Asset files** can be placed in the `Assets` folder. These files will be copied to the output folder and will preserve the same relative path to the `Assets` folder.
 
 4. Alternatively, **any kind of asset file** can be placed directly in the `wwwroot` folder as with any standard ASP.NET Core project. They will be deployed with the app, but the application code is responsible for fetching and using them.
 
    > **Is it an ASP.NET Core "web" project?**
    > No, but it shares a common structure. Some of the deployment features, like the `wwwroot` folder, and the Visual Studio integration for running/debugging are reused in a similar way to an ASP.NET Core project. The C# code put in the project will run in the browser, using the .NET runtime. There is no need for a server side component in Uno-Wasm projects.
 
-## Embedding native elemts
+## Embedding Native Elements
 
 Embedding native JavaScript elements is done through the `Uno.UI.NativeElementHosting.BrowserHtmlElement` class, which serves as an entry point to interact with your native element.
 
