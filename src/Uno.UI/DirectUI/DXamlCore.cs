@@ -11,9 +11,9 @@ using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
-using Windows.Foundation;
 using Windows.Devices.Input;
 using Uno;
+using Windows.Foundation;
 
 namespace DirectUI
 {
