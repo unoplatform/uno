@@ -8,17 +8,17 @@ The Android, iOS, and macOS targets for Uno support the notion of a purely nativ
 
 ## Adding JavaScript views in WebAssembly
 
-On WebAssembly, [Read this guide](xref:Uno.Interop.WasmJavaScript1) to learn how to use native views.
+On WebAssembly, for both Native and Skia renderers, [Read this guide](xref:Uno.Interop.WasmJavaScript1) to learn how to use native views.
 
 ## Adding native views in Skia
 
 On Skia targets, integrating native views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
 
-## Native Views for iOS/Android/Catalyst
+## Native Views for Native iOS/Android
 
 ### Adding native views in XAML
 
-There's no special syntax required when adding native views in XAML, apart from [platform conditionals](xref:Uno.Development.PlatformSpecificXaml) to ensure that the XAML compiles for all platforms. Uno's XAML parser supplies the needed 'glue', including supplying common constructor parameters (such as the `Context` parameter on Android).
+There's no special syntax required when adding native views in XAML when using the Native renderer, apart from [platform conditionals](xref:Uno.Development.PlatformSpecificXaml) to ensure that the XAML compiles for all platforms. Uno's XAML parser supplies the needed 'glue', including supplying common constructor parameters (such as the `Context` parameter on Android).
 
 An example:
 

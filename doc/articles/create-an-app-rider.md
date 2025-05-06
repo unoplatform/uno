@@ -33,6 +33,8 @@ Creating an Uno Platform project is done by following these steps:
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+    > [!NOTE]
+    > Starting with Uno.Sdk 6.0, [Skia rendering](xref:Uno.Development.HowItWorks) is now the default rendering engine in Uno Platform templates for iOS/Android/WebAssembly. If you prefer native rendering instead, you can switch this setting in the `Features` tab under `Renderer`.
 
 1. Click the create button and wait for the solution to load.
 
@@ -93,7 +95,7 @@ To correct this, you'll need to modify your `csproj` file in order to make the p
 You can change this line:
 
 ```xml
-<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
 ```
 
 To be:
@@ -101,7 +103,7 @@ To be:
 ```xml
 <TargetFrameworks>net9.0-android;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
 <TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net9.0-windows10.0.26100</TargetFrameworks>
-<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
+<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net9.0-ios</TargetFrameworks>
 ```
 
 Make sure to adjust the list of target frameworks based on the platforms you have in your original list.
@@ -146,18 +148,9 @@ Select the **MyUnoApp** debug profile with the mobile Apple logo then click the 
 > [!NOTE]
 > Debugging iOS apps is only supported on macOS
 
-### [**Catalyst**](#tab/catalyst)
-
-Select the **MyUnoApp** debug profile with the desktop Apple logo then click the green arrow or the debug button.
-
-![A view of the Rider taskbar for Catalyst](Assets/quick-start/run-catalyst-rider.png)
-
-> [!NOTE]
-> Debugging Mac Catalyst apps is only supported on macOS
-
 ### [**WinUI/WinAppSDK**](#tab/winui)
 
-Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile then click the green arrow or the debug button.
+Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile, then click the green arrow or the debug button.
 
 ![A view of the Rider taskbar for WinAppSDK](Assets/quick-start/run-winappsdk-rider.png)
 
