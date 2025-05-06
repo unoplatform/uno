@@ -13,6 +13,61 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers;
 
 internal static class TreeHelper
 {
+	// Find the ancestor of the specified template control.
+	internal static T FindAncestor<T>(DependencyObject element)
+		where T : class
+	{
+		if (element == null)
+		{
+			return null;
+		}
+
+		if (element is T result)
+		{
+			return result;
+		}
+
+		return FindAncestor<T>(VisualTreeHelper.GetParent(element));
+	}
+
+	internal static bool IsAncestorOf(DependencyObject ancestor, DependencyObject descendant)
+	{
+		var current = VisualTreeHelper.GetParent(descendant);
+		while (current != null && ancestor != current)
+		{
+			current = VisualTreeHelper.GetParent(current);
+		}
+
+		return (ancestor == current);
+	}
+
+	// Used to find the first visual child of a given type.
+	// Useful when there's a single unnamed visual child that a test needs access to.
+	// Can't be used to reliably retrieve a specific child when multiple of that type exist in the visual tree.
+	internal static T GetVisualChildByType<T>(FrameworkElement parent)
+		where T : class
+	{
+		T child = null;
+
+		int count = VisualTreeHelper.GetChildrenCount(parent);
+
+		for (int i = 0; i < count && child == null; i++)
+		{
+			var current = (FrameworkElement)(VisualTreeHelper.GetChild(parent, i));
+			var currentAsType = current as T;
+			if (currentAsType is not null)
+			{
+				child = currentAsType;
+			}
+			else
+			{
+				child = GetVisualChildByType<T>(current);
+			}
+		}
+
+		return child;
+	}
+
 	public static FrameworkElement GetVisualChildByName(DependencyObject parent, string name)
 	{
 		FrameworkElement child = default;
@@ -145,7 +200,7 @@ internal static class TreeHelper
 		}
 		else
 		{
-			throw new InvalidOperationException("TreeHelper::GetXamlRoot: Can't find XamlRoot for element");
+			throw new InvalidOperationException("TreeHelper.GetXamlRoot: Can't find XamlRoot for element");
 		}
 		return xamlRoot;
 	}
