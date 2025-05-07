@@ -8,7 +8,7 @@ uid: Uno.Features.UserInputs
 
 User inputs are usually propagated using `RoutedEvents`. See Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
 
-| Routed Event                  | Android | iOS/Catalyst     | Wasm    | Skia Desktop |     |
+| Routed Event                  | Android | iOS     | Wasm    | Skia Desktop |     |
 | ----------------------------- | ------- | ---------------- | ------- | ------------ | --- |
 | **_focus events_**
 | `GotFocus`                    | Yes     | Yes (1)          | Yes (1) | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.gotfocus) |

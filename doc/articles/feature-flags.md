@@ -101,7 +101,7 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 
 ## WebView2
 
-### Inspectable (iOS and Mac Catalyst)
+### Inspectable (iOS)
 
 To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
 

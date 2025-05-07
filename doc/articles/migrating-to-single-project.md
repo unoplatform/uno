@@ -66,8 +66,6 @@ We'll take the example of an Uno Platform 5.0 blank app, called `MyApp`, to migr
      </When>
      <When Condition="'$(TargetFramework)'=='net8.0-android'">
      </When>
-     <When Condition="'$(TargetFramework)'=='net8.0-maccatalyst'">
-     </When>
      <When Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041'">
      </When>
      <When Condition="'$(TargetFramework)'=='net8.0-desktop'">
@@ -85,7 +83,7 @@ We'll take the example of an Uno Platform 5.0 blank app, called `MyApp`, to migr
     1. Copy the individual configurations, `ProjectReference` and `PackageReference` entries from your `MyApp.Wasm.csproj` to your `MyApp.csproj`, into the appropriate `When` condition block we created above. This can include properties like `WasmShellGenerateAOTProfile` or `WasmShellMonoRuntimeExecutionMode` depending on your choices.
     1. Delete the `MyApp.Wasm` folder
 1. For the Mobile project, you can:
-    1. In your app, move the folders `MyApp.Mobile/Android`, `MyApp.Mobile/iOS`, `MyApp.Mobile/MacCatalyst` to the `MyApp/Platforms`.
+    1. In your app, move the folders `MyApp.Mobile/Android`, `MyApp.Mobile/iOS` to the `MyApp/Platforms`.
     1. Copy the individual configurations, `ProjectReference` and `PackageReference` entries from your `MyApp.Mobile.csproj` to your `MyApp.csproj`, into the appropriate `When` condition block we created above. This can include properties like `ApplicationTitle` or `ApplicationId` depending on your choices.
     1. Delete the `MyApp.Mobile` folder
 1. For the Skia.Gtk, Skia.Wpf and Skia.Framebuffer projects, you can:

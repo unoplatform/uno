@@ -101,9 +101,9 @@ var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(MainWindow);
 
 The `nativeWindow` is an `object`, so you need to cast it to the specific type on the given platform. See the table below:
 
-|                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       |     Catalyst     | WebAssembly |
-| ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :--------------: | :---------: |
-| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.Skia.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` | `UIKit.UIWindow` |   `null`    |
+|                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       | WebAssembly |
+| ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :---------: |
+| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.Skia.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` |   `null`    |
 
 ## Avoiding `Window.Current`
 
@@ -123,6 +123,6 @@ This feature can help blend the background of the window with the background of 
 
 ### Supported platforms
 
-|                              | Skia Desktop | iOS | Android | macOS | Catalyst | WebAssembly |
-| ---------------------------- | :----------: | :-: | :-----: | :---: | :------: | :---------: |
-| `WindowHelper.SetBackground` |      ✔️     | ❌  |   ❌    |  ❌  |    ❌    |     ❌     |
+|                              | Skia Desktop | iOS | Android | macOS | WebAssembly |
+| ---------------------------- | :----------: | :-: | :-----: | :---: | :---------: |
+| `WindowHelper.SetBackground` |      ✔️     | ❌  |   ❌    |  ❌  |     ❌     |
