@@ -10,7 +10,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11XamlRootHost
 {
 	private readonly EventLoop _renderingEventLoop;
-	private bool _renderingScheduled;
+	private int _renderingScheduled;
 	private readonly object _nextRenderParamsLock = new();
 	private RenderParams? _nextRenderParams;
 
@@ -41,11 +41,11 @@ internal partial class X11XamlRootHost
 						_nextRenderParams = new RenderParams(picture, nativeClippingPath, (float)scale, (float)scale);
 					}
 
-					if (!Interlocked.Exchange(ref _renderingScheduled, true))
+					if (Interlocked.Exchange(ref _renderingScheduled, 1) == 0)
 					{
 						_renderingEventLoop.Schedule(() =>
 						{
-							Volatile.Write(ref _renderingScheduled, false);
+							Volatile.Write(ref _renderingScheduled, 1);
 							if (_nextRenderParams is { } renderParams)
 							{
 								_renderer.Render(renderParams.Picture, renderParams.NativeClippingPath, renderParams.ScaleX, renderParams.ScaleY);
