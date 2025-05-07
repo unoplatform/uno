@@ -96,7 +96,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/test-scripts/android-run-skia-runtime-tests.sh

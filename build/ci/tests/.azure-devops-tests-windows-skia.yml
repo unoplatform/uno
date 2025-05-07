@@ -87,7 +87,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - script: |
       # Build source generators for hot reload runtime tests
@@ -152,7 +152,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - pwsh: build/test-scripts/run-windows-islands-skia-runtime-tests.ps1
     displayName: Run Uno Islands Skia WPF Runtime Tests
