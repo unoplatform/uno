@@ -43,24 +43,8 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		_displayInfo = newInfo;
 		if (oldInfo.LogicalDpi != newInfo.LogicalDpi)
 		{
+			RasterizationScale = (float)newInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
 			_displayInformation?.NotifyDpiChanged();
-			if (oldInfo == DisplayInfo.Default)
-			{
-				// First time. We need to rescale the window dimensions to
-				// match the "new" DPI scaling, otherwise the initial size
-				// will be too small on larger scaling values. This is
-				// similar to OnWmDpiChanged but without the WM_DPICHANGED
-				// message.
-				var success = PInvoke.SetWindowPos(
-					_hwnd,
-					HWND.Null,
-					(int)(Position.X * RasterizationScale),
-					(int)(Position.Y * RasterizationScale),
-					(int)(Size.Width * RasterizationScale),
-					(int)(Size.Height * RasterizationScale),
-					SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-				if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
-			}
 		}
 	}
 
