@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
+
 using CClassInfo = System.Type; // fixme@xy: is that the equivalent or suitable here
 
 namespace DirectUI;
@@ -44,8 +47,9 @@ internal abstract partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\Prop
 	//protected:
 	//protected abstract void Disconnect();
 	protected virtual void DisconnectCurrentItem() { }
-	//protected virtual void CollectionViewCurrentChanged();
-
+	protected virtual void CollectionViewCurrentChanged() =>
+		// return E_NOTIMPL;
+		throw new NotImplementedException();
 
 	//protected void AddCurrentChangedEventHandler();
 
@@ -58,7 +62,8 @@ internal abstract partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\Prop
 	protected PropertyPathStep m_tpNext;
 	protected WeakReference m_spListener;
 
-	protected event CurrentChangedEventCallback m_epCurrentChangedHandler;
+	//ctl::EventPtr<CurrentChangedEventCallback> m_epCurrentChangedHandler;
+	protected IDisposable m_epCurrentChangedHandler;
 	protected ICollectionView m_tpSourceAsCV;
 }
 partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
@@ -70,9 +75,9 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 
 	protected void Disconnect()
 	{
-		if (m_epCurrentChangedHandler)
+		if (m_epCurrentChangedHandler is { })
 		{
-			m_epCurrentChangedHandler.DetachEventHandler(m_tpSourceAsCV.Get());
+			m_epCurrentChangedHandler.Dispose();
 		}
 
 		m_tpSourceAsCV.Clear();
@@ -85,31 +90,31 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 		SafeRemoveCurrentChangedEventHandler();
 	}
 
-	protected virtual void CollectionViewCurrentChanged()
+	protected virtual void AddCurrentChangedEventHandler()
 	{
 		//ASSERT(!m_epCurrentChangedHandler);
 		//ASSERT(m_tpSourceAsCV.Get());
 
-		// todo@xy: IDisposable subscription?
-		IFC(m_epCurrentChangedHandler.AttachEventHandler(m_tpSourceAsCV.Get(),
-			[this](IInspectable * sender, IInspectable * args){
-			return CollectionViewCurrentChanged();
-		}));
+		m_tpSourceAsCV.CurrentChanged += OnCurrentChanged;
+		m_epCurrentChangedHandler = Disposable.Create(() =>
+			m_tpSourceAsCV.CurrentChanged -= OnCurrentChanged
+		);
+
+		void OnCurrentChanged(object sender, object args) => CollectionViewCurrentChanged();
 	}
 
 	protected void SafeRemoveCurrentChangedEventHandler()
 	{
-		// todo@xy: IDisposable subscription?
-
 		// if we do not have an event handler allocated
 		// this means that we have nothing to do here
-		if (m_epCurrentChangedHandler)
+		if (m_epCurrentChangedHandler is { })
 		{
-			auto spSource = m_tpSourceAsCV.GetSafeReference();
-			if (spSource)
-			{
-				IFC(m_epCurrentChangedHandler.DetachEventHandler(spSource.Get()));
-			}
+			//auto spSource = m_tpSourceAsCV.GetSafeReference();
+			//if (spSource)
+			//{
+			//	IFC(m_epCurrentChangedHandler.DetachEventHandler(spSource.Get()));
+			//}
+			m_epCurrentChangedHandler.Dispose();
 		}
 	}
 
@@ -123,7 +128,8 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 	}
 }
 
-internal partial class SourceAccessPathStep : PropertyPathStep
+internal partial class SourceAccessPathStep : // src\dxaml\xcp\dxaml\lib\SourceAccessPathStep.h
+	PropertyPathStep
 {
 	//public:
 	public override void ReConnect(object pSource)
@@ -146,7 +152,7 @@ internal partial class SourceAccessPathStep : PropertyPathStep
 	//private:
 	private object m_Source;
 }
-partial class SourceAccessPathStep : PropertyPathStep
+partial class SourceAccessPathStep // src\dxaml\xcp\dxaml\lib\SourceAccessPathStep.cpp
 {
 	public override object GetValue()
 	{
@@ -161,26 +167,26 @@ partial class SourceAccessPathStep : PropertyPathStep
 		// a scenario that doesn't cannot TwoWay binding. For correctness it is left here
 		// in the event we use the GetType methods for other purposes.
 
-		// TODO UNO
-		throw new NotImplementedException();
-		//IInspectable* source = m_Source.Get();
-		//if (source)
-		//{
-		//	IFC_RETURN(MetadataAPI::GetClassInfoFromObject_SkipWinRTPropertyOtherType(source, ppType));
-		//}
-		//else
-		//{
-		//	//*ppType = MetadataAPI::GetClassInfoByIndex(KnownTypeIndex::Object);
-		//	return typeof(object);
-		//}
+		object source = m_Source;
+		if (source is { })
+		{
+			return source.GetType();
+		}
+		else
+		{
+			return typeof(object);
+		}
 	}
 
 	public override CClassInfo GetSourceType()
 	{
-		// TODO UNO
-		throw new NotImplementedException();
-		//IFCEXPECT(m_Source);
-		//IFC(GetType(ppType));
+		if (m_Source is null)
+		{
+			//IFCEXPECT(m_Source);
+			throw new InvalidOperationException();
+		}
+
+		return GetType2();
 	}
 }
 
@@ -349,27 +355,27 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 		}
 
 		// First try to access the property on the source itself
-		ConnectPropertyAccessForObject(pSource, fListenToChanges, &bConnected);
+		bConnected = ConnectPropertyAccessForObject(pSource, fListenToChanges, &);
 
 		// If accessing the property on the object failed
 		// we will check if the source is a collection view and if so
 		// will get the property from the current item
 		if (!bConnected)
 		{
-			spSourceAsCV = ctl::query_interface_cast<xaml_data::ICollectionView>(pSource);
-			SetPtrValue(m_tpSourceAsCV, spSourceAsCV);
-			if (!m_tpSourceAsCV)
+			spSourceAsCV = pSource as ICollectionView;
+			m_tpSourceAsCV = spSourceAsCV;
+			if (m_tpSourceAsCV is null)
 			{
-				goto Cleanup;
+				return;
 			}
 
-			IFC(AddCurrentChangedEventHandler());
+			AddCurrentChangedEventHandler();
 
 			// Before Phase 2 the current item is suposed to be
 			// a PropertyValue
-			IFC(m_tpSourceAsCV.get_CurrentItem(&spInsp));
+			spInsp = m_tpSourceAsCV.CurrentItem;
 
-			IFC(ConnectPropertyAccessForObject(spInsp.Get(), fListenToChanges, &bConnected));
+			bConnected = ConnectPropertyAccessForObject(spInsp, fListenToChanges);
 		}
 	}
 
@@ -377,27 +383,29 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 		object pSource,
 		bool fListenToChanges)
 	{
-		ctl::ComPtr<wfc::IMap<HSTRING, IInspectable*>> spMap;
-		ctl::ComPtr<PropertyAccess> spResult;
-		ctl::ComPtr<xaml_data::ICustomPropertyProvider> spPropertyProvider;
-		ctl::ComPtr<IInspectable> spInsp;
-		ctl::ComPtr<IInspectable> spSourceForDP;
-		const CClassInfo* pSourceType = NULL;
+		bool pbConnected;
 
-		*pbConnected = FALSE;
+		IDictionary<string, object> spMap;
+		PropertyAccess spResult = null;
+		ICustomPropertyProvider spPropertyProvider;
+		object spInsp;
+		object spSourceForDP;
+		CClassInfo pSourceType = null;
+
+		pbConnected = false;
 
 		// If the incoming source is a weak IInspectable then
 		// we need to extract the wrapped value from it to
 		// see what kind of property access to create
-		if (ctl::is < IWeakInspectable > (pSource))
-		{
-			// We will never wrap an IInspectable in a ValueWeakReference
-			spInsp.Attach(ValueWeakReference::get_value_as<xaml::IDependencyObject>(pSource));
-			spSourceForDP = pSource;     // If the source is a weak reference wrapper we want to keep that
+		//if (ctl::is <IWeakInspectable> (pSource))
+		//{
+		//	// We will never wrap an IInspectable in a ValueWeakReference
+		//	spInsp.Attach(ValueWeakReference::get_value_as<xaml::IDependencyObject>(pSource));
+		//	spSourceForDP = pSource;     // If the source is a weak reference wrapper we want to keep that
 
-			ASSERT(!ctl::is < wf::IPropertyValue > (spInsp));
-		}
-		else
+		//	ASSERT(!ctl::is<wf::IPropertyValue>(spInsp));
+		//}
+		//else
 		{
 			// The incoming source is just an IInspectable, if it happens to be an
 			// IPropertyValue we will get the IInspectable out of it
@@ -406,98 +414,99 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 		}
 
 		// Nothing we can create if the value is NULL
-		if (!spInsp)
+		if (spInsp is null)
 		{
-			if (m_tpPropertyAccess)
+			if (m_tpPropertyAccess is { })
 			{
-				IFC(m_tpPropertyAccess.DisconnectEventHandlers());
-				IFC(m_tpPropertyAccess.SetSource(nullptr, /* fListenToChanges */ FALSE));
+				m_tpPropertyAccess.DisconnectEventHandlers();
+				m_tpPropertyAccess.SetSource(null, fListenToChanges: false);
 			}
-			goto Cleanup;
+			return pbConnected;
 		}
 
-		if (m_tpPropertyAccess != nullptr)
+		if (m_tpPropertyAccess != null)
 		{
-			IFC(m_tpPropertyAccess.TryReconnect(spInsp.Get(), !!fListenToChanges, *pbConnected, pSourceType));
-			if (*pbConnected)
+			pbConnected = m_tpPropertyAccess.TryReconnect(spInsp, !!fListenToChanges, out pSourceType);
+			if (pbConnected)
 			{
-				goto Cleanup;
+				return pbConnected;
 			}
 		}
 
 		// If this is the first time we connect, or re-connect failed and we didn't resolve a source type yet,
 		// resolve it now.
-		if (!pSourceType)
+		if (pSourceType == null)
 		{
-			IFC(MetadataAPI::GetClassInfoFromObject_SkipWinRTPropertyOtherType(spInsp.Get(), &pSourceType));
+			//IFC(MetadataAPI::GetClassInfoFromObject_SkipWinRTPropertyOtherType(spInsp.Get(), &pSourceType));
+			pSourceType = spInsp.GetType();
 		}
 
 		// See if we can create one of the known types of property accessors
-		if (ctl::is < xaml::IDependencyObject > (spInsp))
+		if (spInsp is DependencyObject)
 		{
 			// The dependency object property access gets the original source because it
 			// can be a weak reference wrapper
-			if (m_pDP)
+			if (m_pDP is { })
 			{
-				IFC(DependencyObjectPropertyAccess::CreateInstance(this, spSourceForDP.Get(), pSourceType, m_pDP, fListenToChanges, &spResult));
+				spResult = DependencyObjectPropertyAccess.CreateInstance(this, spSourceForDP, pSourceType, m_pDP, fListenToChanges);
 			}
 			else
 			{
-				IFC(DependencyObjectPropertyAccess::CreateInstance(this, spSourceForDP.Get(), pSourceType, fListenToChanges, &spResult));
+				spResult = DependencyObjectPropertyAccess.CreateInstance(this, spSourceForDP, pSourceType, fListenToChanges);
 			}
 		}
 
 		// If we havent resolved the property yet and we were not asked to bind to a DP
 		// keep looking
-		if (!spResult && !m_pDP)
+		if (spResult is null && m_pDP is null)
 		{
 			// First try to acquire a property access through application metadata
-			IFC(PropertyInfoPropertyAccess::CreateInstance(this, spInsp.Get(), pSourceType, fListenToChanges, &spResult));
+			spResult = PropertyInfoPropertyAccess.CreateInstance(this, spInsp, pSourceType, fListenToChanges);
 
 			// If the metadata doesn't contain information about this property then try
 			// the object itself for metadata
-			if (!spResult)
+			if (spResult is { })
 			{
 				// The object might also be a POCO, try to resolve the property there
-				if ((spMap = spInsp.AsOrNull<wfc::IMap<HSTRING, IInspectable*>>()))
+				if ((spMap = spInsp as IDictionary<string, object>) is { })
 				{
-					IFC(MapPropertyAccess::CreateInstance(this, spMap.Get(), fListenToChanges, &spResult));
+					spResult = MapPropertyAccess.CreateInstance(this, spMap, fListenToChanges);
 				}
 				else
 				{
 					// Check for ICustomPropertyProvider
-					spPropertyProvider = spInsp.AsOrNull<xaml_data::ICustomPropertyProvider>();
-					if (!spPropertyProvider)
+					spPropertyProvider = spInsp as ICustomPropertyProvider;
+					if (spPropertyProvider is null)
 					{
 						// If we couldn't get an ICPP directly, and this is a CLR application, get an
 						// ICPP wrapper from there.
-						ctl::ComPtr<IInspectable> spWrapper;
-						spWrapper.Attach(ReferenceTrackerManager::GetTrackerTarget(spInsp.Get()));
-						if (spWrapper)
+						if (spInsp is { } spWrapper)
 						{
-							spPropertyProvider = spWrapper.AsOrNull<xaml_data::ICustomPropertyProvider>();
+							spPropertyProvider = spWrapper as ICustomPropertyProvider;
 						}
 					}
 
-					if (spPropertyProvider)
+					if (spPropertyProvider is { })
 					{
-						IFC(PropertyProviderPropertyAccess::CreateInstance(this, spPropertyProvider.Get(), fListenToChanges, &spResult));
+						spResult = PropertyProviderPropertyAccess.CreateInstance(this, spPropertyProvider, fListenToChanges);
 					}
 				}
 			}
 		}
 
 		// If we haven't found the property log about it
-		if (!spResult)
+		if (spResult is { })
 		{
-			TraceConnectionError(spInsp.Get());
+			TraceConnectionError(spInsp);
 		}
 		else
 		{
 			// Remember the property connection
-			SetPtrValue(m_tpPropertyAccess, spResult);
-			*pbConnected = TRUE;
+			m_tpPropertyAccess = spResult;
+			pbConnected = true;
 		}
+
+		return pbConnected;
 	}
 
 	private void TraceConnectionError(object pSource)
@@ -567,9 +576,6 @@ internal partial class IntIndexerPathStep : // src\dxaml\xcp\dxaml\lib\IntIndexe
 		m_nIndex = nIndex;
 		m_fListenToChanges = fListenToChanges;
 	}
-
-	public void SourceChanged() => throw new NotImplementedException();
-
 	//    ~IntIndexerPathStep() override;
 
 	//public:
@@ -618,14 +624,15 @@ internal partial class IntIndexerPathStep : // src\dxaml\xcp\dxaml\lib\IntIndexe
 	//    void TraceConnectionFailure(_In_ IInspectable *pSource);
 
 	//private:
-	private ICollection<object> m_tpVector;
-	private ICollectionView<object> m_tpVectorView;
-	PropertyAccess m_tpIndexer;
-	int m_nIndex;
-	string m_szIndexerName;
-	bool m_fListenToChanges;
+	private IVector<object> m_tpVector;
+	private IVectorView<object> m_tpVectorView;
+	private PropertyAccess m_tpIndexer;
+	private int m_nIndex;
+	private string m_szIndexerName;
+	private bool m_fListenToChanges;
 
-	//    ctl::EventPtr<VectorChangedEventCallback> m_epVectorChangedEventHandler;
+	//ctl::EventPtr<VectorChangedEventCallback> m_epVectorChangedEventHandler;
+	private IDisposable m_epVectorChangedEventHandler;
 }
 partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.cpp
 {
@@ -634,13 +641,12 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		SafeRemoveVectorChangedHandler();
 	}
 
-	protected void DisconnectCurrentItem()
+	protected override void DisconnectCurrentItem()
 	{
-		// fixme@xy: disposable pattern
-		//if (m_epVectorChangedEventHandler)
-		//{
-		//	VERIFYHR(m_epVectorChangedEventHandler.DetachEventHandler(m_tpVector.Get()));
-		//}
+		if (m_epVectorChangedEventHandler is { })
+		{
+			m_epVectorChangedEventHandler.Dispose();
+		}
 
 		m_tpVector.Clear();
 		m_tpVectorView.Clear();
@@ -652,7 +658,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		}
 	}
 
-	protected void CollectionViewCurrentChanged()
+	protected override void CollectionViewCurrentChanged()
 	{
 		object spItem;
 
@@ -667,6 +673,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		// Notify of the change
 		RaiseSourceChanged();
 	}
+
 	private void VectorChanged(IVectorChangedEventArgs pArgs)
 	{
 		bool fChanged = false;
@@ -699,7 +706,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		}
 	}
 
-	public void SourceChanged()
+	public virtual void SourceChanged()
 	{
 		RaiseSourceChanged();
 	}
@@ -798,7 +805,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		//	szTraceString));
 	}
 
-	void TraceConnectionFailure(_In_ IInspectable *pSource)
+	void TraceConnectionFailure(object pSource)
 	{
 		// TODO UNO
 		throw new NotImplementedException();
@@ -831,12 +838,12 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 	private void InitializeFromSource(object pRawSource)
 	{
 		ICustomPropertyProvider spProvider;
-		wxaml_interop::TypeName sTypeName = { 0 };
+		wxaml_interop::TypeName sTypeName = default;
 		string strTypeName;
-		ctl::ComPtr<IInspectable> spIndex;
+		object spIndex;
 		bool fInitialized = false;
-		ctl::ComPtr<IInspectable> spSource;
-		ctl::ComPtr<IInspectable> spWrapper;
+		object spSource;
+		object spWrapper;
 		//spSource.Attach(ValueWeakReference::get_value_as<IInspectable>(pRawSource));
 		spSource = pRawSource;
 
@@ -846,11 +853,11 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 		{
 			// We couldn't find a vector interface in the source, if this is
 			// a CLR app try to wrap it in a CLR wrapper to see if we have something
-			spWrapper.Attach(ReferenceTrackerManager::GetTrackerTarget(spSource.Get()));
-			if (spWrapper)
-			{
-				fInitialized = InitializeFromVector(spWrapper);
-			}
+			//spWrapper.Attach(ReferenceTrackerManager.GetTrackerTarget(spSource));
+			//if (spWrapper)
+			//{
+			//	fInitialized = InitializeFromVector(spWrapper);
+			//}
 		}
 
 		// We coudn't find a vector, we will look for an integer indexer instead
@@ -867,7 +874,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 			// ____^ create a WinRT boxed int from c++?
 			spIndex = m_nIndex;
 
-			spIndexer = IndexerPropertyAccess::CreateInstance(
+			spIndexer = IndexerPropertyAccess.CreateInstance(
 				this,
 				spProvider, sTypeName,
 				spIndex,
@@ -881,5 +888,555 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 			AddVectorChangedHandler();
 		}
 	}
+
+	private bool InitializeFromVector(object pSource)
+	{
+		bool pfResult;
+		object source = pSource;
+		// We should be clean at this point
+		//ASSERT(!m_tpVector && !m_tpVectorView && !m_tpIndexer);
+
+		// Not initialzed yet
+		pfResult = false;
+
+		// Get the vector from the property value
+		// if the source is not a vector, then nothing to do
+		// todo@xy: fixme
+		if (false) { }
+		//if (source is IBindableVector spBindableVector)
+		//{
+		//	IVector<object> bindableVectorWrapper;
+		//	if (source is INotifyCollectionChanged spINCC)
+		//	{
+		//		BindableObservableVectorWrapper.CreateInstance(spBindableVector, spINCC, bindableVectorWrapper);
+		//	}
+		//	else if (source is IBindableObservableVector spObservableBindable)
+		//	{
+		//		BindableObservableVectorWrapper.CreateInstance(spObservableBindable, bindableVectorWrapper);
+		//	}
+		//	else
+		//	{
+		//		bindableVectorWrapper = spBindableVector as IVector<object>;
+		//	}
+		//
+		//	m_tpVector = bindableVectorWrapper;
+		//	pfResult = true;
+		//}
+		else if (source is IVector<object> spVector)
+		{
+			m_tpVector = spVector;
+			pfResult = true;
+		}
+		// The source could also be a vector view, account for that
+		else if (source is IVectorView<object> spVectorView)
+		{
+			m_tpVectorView = spVectorView;
+			pfResult = true;
+		}
+		//else if (source is IBindableVectorView spBindableView)
+		//{
+		//	m_tpVectorView = spBindableView as IVectorView<object>;
+		//	pfResult = true;
+		//}
+		//else if (source is ValidationErrorsCollection validationErrorsCollection)
+		//{
+		//	// We want to create our own special wrapper to ensures that Text="{Binding Path=(Validation.Errors)[0].ErrorMessage}"
+		//	// works as expected
+		//	m_tpVector = ValidationErrorsObservableVectorWrapper.CreateInstanceAsVector(validationErrorsCollection);
+		//	pfResult = true;
+		//}
+
+		return pfResult;
+	}
+
+	private void AddVectorChangedHandler()
+	{
+		IObservableVector<object> spObservableVector;
+
+		spObservableVector = m_tpVector as IObservableVector<object>;
+		if (spObservableVector is { })
+		{
+			spObservableVector.VectorChanged += OnVectorChanged;
+			m_epVectorChangedEventHandler = Disposable.Create(() =>
+				spObservableVector.VectorChanged -= OnVectorChanged
+			);
+
+			void OnVectorChanged(object sender, IVectorChangedEventArgs args) => VectorChanged(args);
+		}
+	}
+
+	private void SafeRemoveVectorChangedHandler()
+	{
+		if (m_epVectorChangedEventHandler is { })
+		{
+			var spVector = m_tpVector;
+			if (spVector is { })
+			{
+				m_epVectorChangedEventHandler.Dispose();
+			}
+		}
+	}
+
+	private int GetVectorSize()
+	{
+		int pnSize = default;
+		if (!(m_tpVector is { } || m_tpVectorView is { }))
+		{
+			throw new InvalidOperationException();
+		}
+
+		if (m_tpVector is { })
+		{
+			pnSize = m_tpVector.Count;
+		}
+		else if (m_tpVectorView is { })
+		{
+			pnSize = m_tpVectorView.Count;
+		}
+		else
+		{
+			throw new InvalidOperationException();
+		}
+
+		return pnSize;
+	}
+
+	private object GetValueAtIndex()
+	{
+		object ppValue = default;
+
+		if (!(m_tpVector is { } || m_tpVectorView is { } || m_tpIndexer is { }))
+		{
+			throw new InvalidOperationException();
+		}
+
+		if (m_tpVector is { })
+		{
+			ppValue = m_tpVector[m_nIndex];
+		}
+		else if (m_tpVectorView is { })
+		{
+			ppValue = m_tpVectorView[m_nIndex];
+		}
+		else
+		{
+			ppValue = m_tpIndexer.GetValue();
+		}
+
+		return ppValue;
+	}
+
+	private void SetValueAtIndex(object pValue)
+	{
+		if (!((m_tpVector is { } || m_tpIndexer is { }) && m_tpVectorView is not { }))
+		{
+			throw new InvalidOperationException();
+		}
+
+		if (m_tpVector is { })
+		{
+			m_tpVector[m_nIndex] = pValue;
+		}
+		else
+		{
+			m_tpIndexer.SetValue(pValue);
+		}
+	}
+
+	public override bool IsConnected()
+	{
+		//HRESULT hr = S_OK; // WARNING_IGNORES_FAILURES
+		bool fReturn = false;
+		int nSize = 0;
+
+		// No vector or indexer means we're not connected
+		if (m_tpVector is null && m_tpVectorView is null && m_tpIndexer is null)
+		{
+			return fReturn;
+		}
+
+		// Check if we're accessing the data through an indexer or through IVector
+		if (m_tpIndexer is { })
+		{
+			// If we have an indexer, nothing else to check, we're connected
+			fReturn = true;
+		}
+		else
+		{
+			// We're connected as long as 1) there's a vector
+			// and 2) the index is within range
+			nSize = GetVectorSize();
+			fReturn = m_nIndex < nSize ? true : false;
+		}
+
+		return fReturn;
+	}
+
+	public override object GetValue()
+	{
+		object ppValue = default;
+		//try
+		{
+			// If we're not connected nothing to do
+			if (!IsConnected())
+			{
+				ppValue = null;
+				return ppValue;
+			}
+
+			// Read the value
+			ppValue = GetValueAtIndex();
+		}
+		//catch (Exception)
+		//{
+		//	TraceGetterFailure();
+		//	throw;
+		//}
+
+		return ppValue;
+	}
+
+	public override void SetValue(object pValue)
+	{
+		// Set value can only work if we're connected and the caller must know this
+		if (!IsConnected())
+		{
+			throw new InvalidOperationException();
+		}
+
+		// Write the value
+		SetValueAtIndex(pValue);
+	}
+
+	public override CClassInfo GetType2()
+	{
+		// If we have an indexer then get the type of it directly
+		if (m_tpIndexer is { })
+		{
+			return m_tpIndexer.GetType();
+		}
+
+		// Since we operate only with IVector<object>/IVectorView<object> the
+		// type will always be of object
+		return typeof(object);
+	}
+
+	public override CClassInfo GetSourceType()
+	{
+		if (m_tpIndexer is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		return m_tpIndexer.GetSourceType();
+	}
 }
-internal partial class StringIndexerPathStep;
+
+internal partial class StringIndexerPathStep : // src\dxaml\xcp\dxaml\lib\StringIndexerPathStep.h
+	PropertyPathStep,
+	IIndexedPropertyAccessHost
+{
+	//public:
+	public StringIndexerPathStep()
+	{
+		m_szIndex = null;
+		m_fListenToChanges = false;
+		m_szIndexerName = null;
+	}
+	public void Initialize(
+		PropertyPathListener pOwner,
+		string szIndex,
+		bool fListenToChanges)
+	{
+		Initialize(pOwner);
+		m_szIndex = szIndex;
+		m_fListenToChanges = fListenToChanges;
+	}
+	//    using PropertyPathStep::Initialize;
+	//    ~StringIndexerPathStep() override;
+
+	//public:
+	//    // PropertyPathStep overrides    
+	//    _Check_return_ HRESULT ReConnect(_In_ IInspectable *pSource) override;
+	//    _Check_return_ HRESULT GetValue(_Out_ IInspectable **ppValue) override;
+	//    _Check_return_ HRESULT SetValue(_In_  IInspectable *pValue) override;
+	public override bool IsConnected() => m_tpPropertyAccess is { } && m_tpPropertyAccess.IsConnected();
+	//    bool IsConnected() override
+	//    { return m_tpPropertyAccess && m_tpPropertyAccess->IsConnected(); }
+	//    _Check_return_ HRESULT GetType(_Outptr_ const CClassInfo **ppType) override;
+	//    _Check_return_ HRESULT GetSourceType(_Outptr_ const CClassInfo **ppType) override;
+
+	//protected:
+	//    // PropertyPathStep overrides
+	//    void DisconnectCurrentItem() override;
+	//    _Check_return_ HRESULT CollectionViewCurrentChanged() override;
+
+	//private:
+	//    _Check_return_ HRESULT InitializeFromSource(_In_ IInspectable *pRawSource);
+	//    void TraceGetterFailure();
+	//    void TraceConnectionFailure(_In_ IInspectable *pSource);
+
+	//public:
+	//    // IPropertyAccessHost 
+	//    _Check_return_ HRESULT SourceChanged() override;
+	public string GetPropertyName() => m_szIndex;
+	//    // IIndexedPropertyAccessHost
+	//    _Check_return_ HRESULT GetIndexedPropertyName(_Outptr_result_z_ WCHAR **pszPropertyName) override;
+
+	//private:
+	private PropertyAccess m_tpPropertyAccess;
+	private string m_szIndex;
+	private bool m_fListenToChanges;
+	private string m_szIndexerName;
+}
+partial class StringIndexerPathStep // src\dxaml\xcp\dxaml\lib\StringIndexerPathStep.cpp
+{
+	//~StringIndexerPathStep()
+	//{
+	//	delete[] m_szIndex;
+	//	delete[] m_szIndexerName;
+	//	m_szIndex = null;
+	//}
+
+	protected override void DisconnectCurrentItem()
+	{
+		if (m_tpPropertyAccess is { })
+		{
+			m_tpPropertyAccess.DisconnectEventHandlers();
+			m_tpPropertyAccess.Clear();
+		}
+	}
+
+	protected override void CollectionViewCurrentChanged()
+	{
+		object spItem;
+
+		// Disconnect from the vector source
+		DisconnectCurrentItem();
+
+		// Now get the new current value and
+		// try to connect again to it
+		spItem = m_tpSourceAsCV.CurrentItem;
+
+		InitializeFromSource(spItem);
+
+		// Notify the source of changes
+		RaiseSourceChanged();
+	}
+
+	public override void ReConnect(object pSource)
+	{
+		object spInsp;
+		ICollectionView spSourceAsCV;
+
+		// First cleanup ourselves
+		Disconnect();
+
+		// If the value is null or empty nothing to do
+		if (pSource == nul)
+		{
+			Cleanup();
+			return;
+		}
+
+		// Get the property map out, if it is not one then nothing to do
+		InitializeFromSource(pSource);
+		if (m_tpPropertyAccess is { })
+		{
+			spSourceAsCV = pSource as ICollectionView;
+			m_tpSourceAsCV = spSourceAsCV;
+			if (m_tpSourceAsCV is { })
+			{
+				Cleanup();
+				return;
+			}
+
+			AddCurrentChangedEventHandler();
+
+			// Before Phase 2 the current item is suposed to be
+			// a PropertyValue
+			spInsp = m_tpSourceAsCV.CurrentItem;
+
+			InitializeFromSource(spInsp);
+		}
+
+		Cleanup();
+
+		void Cleanup()
+		{
+			if (pSource != null && !IsConnected())
+			{
+				TraceConnectionFailure(pSource);
+			}
+		}
+	}
+
+	private void InitializeFromSource(object pRawSource)
+	{
+		IDictionary<string, object> spMap;
+		ICustomPropertyProvider spPropertyProvider;
+		TypeName sTypeName = default;
+		string strTypeName;
+		object spIndex;
+		PropertyAccess spPropertyAccess;
+		object spSource;
+		spSource = pRawSource;
+
+		spMap = spSource as IDictionary<string, object>;
+		if (spMap is { })
+		{
+			spPropertyAccess = MapPropertyAccess.CreateInstance(this, spMap, m_fListenToChanges);
+			m_tpPropertyAccess = spPropertyAccess;
+		}
+		else
+		{
+			spPropertyProvider = spSource as ICustomPropertyProvider;
+			if (spPropertyProvider is { })
+			{
+				strTypeName = "String";
+
+				sTypeName.Name = strTypeName;
+				sTypeName.Kind = TypeKind.Primitive;
+
+				//PropertyValue.CreateFromString(wrl_wrappers.HStringReference(m_szIndex, wcslen(m_szIndex)), &spIndex);
+				spIndex = m_szIndex;
+
+				spPropertyAccess = IndexerPropertyAccess.CreateInstance(
+					this,
+					spPropertyProvider,
+					sTypeName,
+					spIndex,
+					m_fListenToChanges);
+				m_tpPropertyAccess = spPropertyAccess;
+			}
+		}
+	}
+
+	private void TraceConnectionFailure(object pSource)
+	{
+		// TODO UNO
+		throw new NotImplementedException();
+		//xstring_ptr strClassName;
+		//const WCHAR* szTraceString = NULL;
+		//wrl_wrappers::HString strErrorString;
+		//ctl::ComPtr<IPropertyPathListener> spListener;
+
+		//if (!DebugOutput::IsLoggingForBindingEnabled())
+		//{
+		//	goto Cleanup;
+		//}
+
+		//IFC(MetadataAPI::GetFriendlyRuntimeClassName(pSource, &strClassName));
+
+		//IFC(m_spListener.As(&spListener));
+		//IFCEXPECT_ASSERT(spListener.Get());
+		//IFC(spListener.Cast<PropertyPathListener>()->GetTraceString(&szTraceString));
+
+		//IFC(DXamlCore::GetCurrentNoCreate()->GetNonLocalizedErrorString(TEXT_BINDINGTRACE_STR_INDEXER_CONNECTION_FAILED, strErrorString.GetAddressOf()));
+
+		//DebugOutput::LogBindingErrorMessage(StringCchPrintfWWrapper(
+		//	const_cast<WCHAR*>(strErrorString.GetRawBuffer(nullptr)),
+		//	m_szIndex,
+		//	const_cast<WCHAR*>(strClassName.GetBuffer()),
+		//	szTraceString));
+
+		//Cleanup:
+		//	return;
+	}
+
+	public override object GetValue()
+	{
+		//try
+		{
+			if (!IsConnected())
+			{
+				return null;
+			}
+
+			return m_tpPropertyAccess.GetValue();
+		}
+		//catch (Exception)
+		//{
+		//	TraceGetterFailure();
+		//	throw;
+		//}
+	}
+
+	private void TraceGetterFailure()
+	{
+		// TODO UNO
+		throw new NotImplementedException();
+		//HRESULT hr = S_OK;
+		//const CClassInfo* pTypeInfo = NULL;
+		//const WCHAR* szTraceString = NULL;
+		//xstring_ptr strSourceClassName;
+		//ctl::ComPtr<IInspectable> spSource;
+		//wrl_wrappers::HString strErrorString;
+		//ctl::ComPtr<IPropertyPathListener> spListener;
+
+		//if (!DebugOutput::IsLoggingForBindingEnabled())
+		//{
+		//	goto Cleanup;
+		//}
+
+		//IFC(m_tpPropertyAccess->GetSource(&spSource));
+		//IFC(MetadataAPI::GetFriendlyRuntimeClassName(spSource.Get(), &strSourceClassName));
+
+		//IFC(m_tpPropertyAccess->GetType(&pTypeInfo));
+
+		//IFC(m_spListener.As(&spListener));
+		//IFCEXPECT_ASSERT(spListener.Get());
+		//IFC(spListener.Cast<PropertyPathListener>()->GetTraceString(&szTraceString));
+
+		//IFC(DXamlCore::GetCurrentNoCreate()->GetNonLocalizedErrorString(TEXT_BINDINGTRACE_STR_INDEXER_FAILED, strErrorString.GetAddressOf()));
+
+		//DebugOutput::LogBindingErrorMessage(StringCchPrintfWWrapper(
+		//	const_cast<WCHAR*>(strErrorString.GetRawBuffer(nullptr)),
+		//	m_szIndex,
+		//	pTypeInfo->GetName().GetBuffer(),
+		//	const_cast<WCHAR*>(strSourceClassName.GetBuffer()),
+		//	szTraceString));
+
+		//Cleanup:
+		//	return;
+	}
+
+	public override void SetValue(object pValue)
+	{
+		if (IsConnected() is false) throw new InvalidOperationException();
+
+		m_tpPropertyAccess.SetValue(pValue);
+	}
+
+	public override CClassInfo GetType2()
+	{
+		if (m_tpPropertyAccess is null) throw new InvalidOperationException();
+
+		// Use the type of the property access instead of assuming
+		// that everything is of type object. We can have indexers
+		// that accept a string but are of different types.
+		return m_tpPropertyAccess.GetType();
+	}
+
+	public void SourceChanged()
+	{
+		RaiseSourceChanged();
+	}
+
+	public string GetIndexedPropertyName()
+	{
+		if (m_szIndexerName == null)
+		{
+			m_szIndexerName = $"Item[{m_szIndex}]";
+		}
+
+		return m_szIndexerName;
+	}
+
+	public override CClassInfo GetSourceType()
+	{
+		if (m_tpPropertyAccess is null) throw new InvalidOperationException();
+
+		return m_tpPropertyAccess.GetSourceType();
+	}
+}

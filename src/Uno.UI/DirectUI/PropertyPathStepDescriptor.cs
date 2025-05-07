@@ -63,7 +63,7 @@ internal class StringIndexerPathStepDescriptor(string szIndex) : PropertyPathSte
 	{
 		StringIndexerPathStep spStep;
 		spStep = new StringIndexerPathStep();
-		spStep.Initialize(pListener, szIndexCopy, fListenToChanges);
+		spStep.Initialize(pListener, m_szIndex, fListenToChanges);
 
 		return spStep;
 	}

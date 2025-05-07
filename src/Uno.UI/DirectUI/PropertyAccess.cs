@@ -25,14 +25,17 @@ internal abstract class PropertyAccess // : public ctl::WeakReferenceSource
 	public abstract void DisconnectEventHandlers();
 	public abstract bool TryReconnect(object pSource, bool fListenToChanges, out CClassInfo pResolvedType);
 	public abstract bool IsConnected();
+
+	// undefined:
+	public abstract void Clear();
 }
 
-internal interface IPropertyAccessHost
+internal interface IPropertyAccessHost // fixme@xy: we should implement explicitly
 {
 	void SourceChanged();
 	string GetPropertyName();
 }
-internal interface IIndexedPropertyAccessHost : IPropertyAccessHost
+internal interface IIndexedPropertyAccessHost : IPropertyAccessHost // fixme@xy: we should implement explicitly
 {
 	string GetIndexedPropertyName();
 };
