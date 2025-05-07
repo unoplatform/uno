@@ -2,7 +2,7 @@
 uid: Uno.Contributing.Wasm
 ---
 
-# How Uno works on WebAssembly
+# How Uno works on WebAssembly Native
 
 This article explores WebAssembly-specific details of Uno's internals, with a focus on information that's useful for contributors to Uno. For an overview of how Uno works on all platforms, see [this article](uno-internals-overview.md).
 

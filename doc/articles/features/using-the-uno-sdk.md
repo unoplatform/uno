@@ -79,7 +79,7 @@ Here are the supported features:
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
 | `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
-| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
+| `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
 | `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
 
@@ -192,7 +192,6 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | Android | 21 |
 | iOS | 14.2 |
 | macOS | 10.14 |
-| MacCatalyst | 14.0 |
 | tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
 
@@ -218,11 +217,6 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
       <PropertyGroup>
         <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-      <PropertyGroup>
-        <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$(TargetFramework.Contains('windows10'))">
@@ -287,9 +281,9 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 - `*.wasm.cs` (WebAssembly)
 - `*.skia.cs` (Skia)
 - `*.reference.cs` (Reference only)
-- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS & MacCatalyst)
+- `*.iOS.cs`, `*.iOSmacOS.cs` (iOS)
 - `*.tvOS.cs`(tvOS)
-- `*.UIKit.cs`, `*.Apple.cs` (iOS & Mac Catalyst & tvOS)
+- `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
 - `*.Android.cs` (Android)
 - `*.WinAppSDK.cs` (Windows App SDK)
 

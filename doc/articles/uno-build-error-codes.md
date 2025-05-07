@@ -131,7 +131,7 @@ See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Ride
 
 ### UNOB0015: The desktop TargetFramework must be placed first
 
-In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`, `-maccatalyst`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
+In Visual Studio 17.13 or earlier, when both mobile (`-ios`, `-android`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
 
 If `-desktop` is not first, the following message will appear:
 
@@ -173,9 +173,9 @@ A member is not implemented, see [this page](xref:Uno.Development.NotImplemented
 
 **Do not call Dispose() on XXX**
 
-On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting directly from `UIKit.UIView` can lead to unstable results. It is not needed to call `Dispose` as the runtime will do so automatically during garbage collection.
+On iOS, calling `Dispose()` or `Dispose(bool)` on a type inheriting directly from `UIKit.UIView` can lead to unstable results. It is not needed to call `Dispose` as the runtime will do so automatically during garbage collection.
 
-Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
+Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, causing `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
 
 ### UNO0006
 
@@ -214,10 +214,10 @@ The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie
 
 ### UVSC0001
 
-Building for the specified target framework is not supported on the current platform or architecture. For examples:
+Building for the specified target framework is not supported on the current platform or architecture. For example:
 
-- a Mac computer is required to build iOS, Mac Catalyst and macOS applications
-- a Windows computer is required to build WinUI applications
+- A Mac computer is required to build iOS and macOS applications
+- A Windows computer is required to build WinUI applications
 
 ### UVSC0002
 
