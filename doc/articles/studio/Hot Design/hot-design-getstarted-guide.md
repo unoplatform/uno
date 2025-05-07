@@ -53,9 +53,9 @@ Below the **Toolbox**, the **Elements** window displays the hierarchical structu
 
 ### Canvas
 
-The main **Canvas** in the center of the interface represents your running app. It is an interactive area where you can visually design and interact with the user interface. You can select controls, see their outlines, and preview any changes made to the layout or properties.
+The main **[Canvas](Uno.HotDesign.Canvas)** in the center of the interface represents your running app. It is an interactive area where you can visually design and interact with the user interface. You can select controls, see their outlines, and preview any changes made to the layout or properties.
 
-[➜ Learn more about the interactive Canvas]()
+[➜ Learn more about the interactive Canvas](xref:Uno.HotDesign.Canvas)
 
 ### Properties
 
