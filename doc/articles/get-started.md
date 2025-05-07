@@ -73,14 +73,13 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                   | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|-----------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)         | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
-| Android                           | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
-| iOS                               | ✔️†                                             | ✔️††                                       | ❌                                                   | ❌                                              |
-| Web (WebAssembly)                 | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️†††                                           |
-| mac Catalyst                      | ❌                                              | ✔️††                                       | ❌                                                   | ❌                                              |
-| Skia Desktop                      | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
+|                                    | [**Visual Studio**](xref:Uno.GetStarted.vs2022) | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
+|------------------------------------|-------------------------------------------------|--------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
+| Windows 10/11 (UWP/WinUI)          | ✔️                                              | ❌                                         | ❌                                                   | ✔️                                              |
+| Android                            | ✔️                                              | ✔️                                         | ❌                                                   | ✔️                                              |
+| iOS                                | ✔️†                                             | ✔️††                                       | ❌                                                   | ❌                                              |
+| Web (WebAssembly)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️†††                                           |
+| Skia Desktop (Windows/Linux/macOS) | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
 
 - † You will need to be connected to a Mac to run and debug iOS apps from Windows.
 - †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
@@ -97,14 +96,13 @@ You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                   | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|-----------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)         | ❌                                       | ❌                                                   | ❌                                               |
-| Android                           | ✔️                                       | ❌                                                   | ✔️                                               |
-| iOS                               | ✔️                                       | ❌                                                   | ✔️                                               |
-| Web (WebAssembly)                 | ✔️                                       | ✔️                                                   | ✔️                                               |
-| mac Catalyst                      | ✔️                                       | ❌                                                   | ✔️                                               |
-| Skia Desktop                      | ✔️                                       | ✔️                                                   | ✔️                                              |
+|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
+|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
+| Windows 10/11 (UWP/WinUI)          | ❌                                       | ❌                                                   | ❌                                               |
+| Android                            | ✔️                                       | ❌                                                   | ✔️                                               |
+| iOS                                | ✔️                                       | ❌                                                   | ✔️                                               |
+| Web (WebAssembly)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
+| Skia Desktop (Windows/Linux/macOS) | ✔️                                       | ✔️                                                   | ✔️                                               |
 
 The latest macOS release and Xcode version are required to develop with Uno Platform for iOS targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.Ios#developing-on-older-mac-hardware).
 
@@ -119,14 +117,13 @@ The latest macOS release and Xcode version are required to develop with Uno Plat
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
-|                                   | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
-|-----------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
-| Windows 10/11 (UWP/WinUI)         | ❌                                        | ❌                                                     | ❌                                            |
-| Android                           | ✔️                                        | ❌                                                     | ✔️                                            |
-| iOS                               | ❌                                        | ❌                                                     | ❌                                            |
-| Web (WebAssembly)                 | ✔️                                        | ✔️                                                     | ✔️†                                           |
-| mac Catalyst                      | ❌                                        | ❌                                                     | ❌                                            |
-| Skia Desktop                      | ✔️                                        | ✔️                                                     | ✔️                                            |
+|                                    | [**VS Code**](xref:Uno.GetStarted.vscode) | [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | [**JetBrains Rider**](xref:Uno.GetStarted.Rider) |
+|------------------------------------|------------------------------------------|-------------------------------------------------------|--------------------------------------------------|
+| Windows 10/11 (UWP/WinUI)          | ❌                                        | ❌                                                     | ❌                                            |
+| Android                            | ✔️                                        | ❌                                                     | ✔️                                            |
+| iOS                                | ❌                                        | ❌                                                     | ❌                                            |
+| Web (WebAssembly)                  | ✔️                                        | ✔️                                                     | ✔️†                                           |
+| Skia Desktop (Windows/Linux/macOS) | ✔️                                        | ✔️                                                     | ✔️                                            |
 
 **Notes:**
 

@@ -37,6 +37,10 @@ When building for an iOS physical device, the following error may happen in your
 
 Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/dotnet/maui/ios/device-provisioning/automatic-provisioning?view=net-maui-9.0#enable-automatic-provisioning), or in some cases, selecting the development team and provisioning profile is required.
 
+## Debugging takes a long time when connecting from a Windows machine
+
+In case your debugging experience is slow when connecting from a Windows VS environment to a Mac machine, make sure that you're not connected through Wifi on either end. Try pinging your Mac from your Windows machine and ensure it's lower than 5ms.
+
 ## Additional troubleshooting
 
 You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).
