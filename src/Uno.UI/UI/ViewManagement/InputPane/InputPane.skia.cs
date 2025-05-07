@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Extensions;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement;
 
@@ -55,7 +57,16 @@ partial class InputPane
 					scp = outerScv;
 				}
 
-				_padScrollContentPresenter = scp.Pad(OccludedRect);
+				var focusedElementPoint = focusedElement.TransformToVisual(scp).TransformPoint(new Point());
+				Size focusedElementSize = focusedElement.ActualSize.ToSize();
+				Rect focusedElementRect = new(
+					focusedElementPoint.X,
+					focusedElementPoint.Y,
+					focusedElementSize.Width,
+					focusedElementSize.Height
+				);
+
+				_padScrollContentPresenter = scp.Pad(OccludedRect, focusedElementRect);
 			}
 
 			// As we changed the layout properties of the ScrollContentPresenter, we need to wait for the next layout pass for
