@@ -39,7 +39,7 @@ Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/do
 
 ## Debugging takes a long time when connecting from a Windows machine
 
-In case your debugging experience is slow when connecting from a Windows VS environment to a mac machine, make sure that you're not connected through Wifi on either ends. Try pinging your mac from your windows machine and ensure it's lower than 5ms.
+In case your debugging experience is slow when connecting from a Windows VS environment to a Mac machine, make sure that you're not connected through Wifi on either end. Try pinging your Mac from your Windows machine and ensure it's lower than 5ms.
 
 ## Additional troubleshooting
 

@@ -33,7 +33,7 @@ The feature collects the following data:
 * The duration of the step
 * The exception type if the generation fails
 * If the build is running under a CI (Travis, Azure Devops, AppVeyor, Jenkins, GitHub Actions, BitBucket, Build kite, Codebuild, Drone, MyGet, Space, TeamCity)
-* Operating system name, version, kernel version and architecture
+* Operating system name, version, kernel version, and architecture
 * The current culture
 * The current Uno Platform nuget package version
 * Target frameworks

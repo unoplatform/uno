@@ -24,8 +24,8 @@ Android deployment requires a few considerations:
   - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/dotnet/maui/android/emulator/hardware-acceleration))
   - Try disabling `Fast Deployment` in your app configuration
         1. Open your project properties
-        1. In the android section search for `Fast Deployment`
-        1. uncheck all target platforms
+        1. In the Android section, search for `Fast Deployment`
+        1. Uncheck all target platforms
 - Try setting `<EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>` in the debug configuration of your `.csproj`.
 
 ## Android Warning XA4218

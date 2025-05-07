@@ -23,7 +23,7 @@ For more information about XAML, see the [Microsoft documentation](https://learn
 
 C# Markup is a declarative, fluent-style syntax for defining the layout of an application in C#.
 
-With C# Markup you can define both the layout and the logic of your application using the same language. C# Markup leverages the same underlying object model as XAML, meaning that it has all the same capabilities such as data binding, converters, and access to resources. You can use all the built-in controls, any custom controls you create, and any 3rd party controls all from C# Markup.
+With C# Markup, you can define both the layout and the logic of your application using the same language. C# Markup leverages the same underlying object model as XAML, meaning that it has all the same capabilities, such as data binding, converters, and access to resources. You can use all the built-in controls, any custom controls you create, and any 3rd party controls, all from C# Markup.
 
 For more information, see our overview of [C# Markup](xref:Uno.Extensions.Markup.Overview).
 
