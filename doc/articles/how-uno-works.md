@@ -36,7 +36,7 @@ The Skia Rendering backend has a very cheap cost for creating UI elements, which
 
 For more information, see our documentation on the [Skia renderer](xref:uno.features.renderer.skia).
 
-### Native Rendering Targets
+### Native Rendering
 
 The native rendering is our oldest rendering backend, which uses the native components and APIs to render the UI.
 

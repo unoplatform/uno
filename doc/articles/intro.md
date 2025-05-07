@@ -154,7 +154,7 @@ This means that existing WinUI code is compatible with Uno Platform. Existing Wi
 
 ![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-diagram.png)
 
-Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it can either use the native UI framework on most target platforms or use a Skia-based rendering approach, while making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
+Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it can either use the [native UI framework](xref:uno.features.renderer.native) on some target platforms or use a [Skia-based rendering](xref:uno.features.renderer.skia) approach, while making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
 
 Learn more about [how Uno Platform works](xref:Uno.Development.HowItWorks).
 
