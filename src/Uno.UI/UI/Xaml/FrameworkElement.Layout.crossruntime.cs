@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml
 				// Create VisualState StateTriggers and perform evaulation to determine initial state,
 				// if we're in the visual tree (since we need it to get our qualifier context).
 				// If we're not in the visual tree, we'll do this when we enter it.
-				// VisualStateManager.InitializeStateTriggers(pControl);
+				VisualStateManager.InitializeStateTriggers(pControl);
 			}
 
 			//var control = this as Control;
