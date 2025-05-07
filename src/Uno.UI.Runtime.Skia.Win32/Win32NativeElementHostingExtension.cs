@@ -5,6 +5,7 @@ using Uno.Foundation.Logging;
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -20,7 +21,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
 {
-	private static HWND _enumProcRet;
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 	private static string? _lastFinalSvgClipPath;
@@ -263,38 +263,26 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 
 	public unsafe object CreateSampleComponent(string text)
 	{
+		var windowTitle = Random.Shared.NextInt64().ToString(CultureInfo.InvariantCulture);
 		var process = new Process
 		{
 			StartInfo = new ProcessStartInfo
 			{
 				FileName = "powershell.exe",
+				Arguments = $"-NoExit -Command \"$Host.UI.RawUI.WindowTitle = '{windowTitle}'\"",
 				UseShellExecute = true
 			}
 		};
 
 		process.Start();
 
-		_enumProcRet = HWND.Null;
 		HWND hwnd = default;
 		var success = SpinWait.SpinUntil(() =>
 		{
-			PInvoke.EnumWindows(&EnumFunc, process.Id);
-			hwnd = _enumProcRet;
+			hwnd = PInvoke.FindWindow(null, windowTitle);
 			return hwnd != HWND.Null;
 		}, TimeSpan.FromSeconds(5));
 
-		[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
-		static BOOL EnumFunc(HWND hwnd, LPARAM lParam)
-		{
-			uint processId = default;
-			_ = PInvoke.GetWindowThreadProcessId(hwnd, &processId);
-			if (processId == lParam.Value)
-			{
-				_enumProcRet = hwnd;
-				return false;
-			}
-			return true;
-		}
 
 		if (!success)
 		{
