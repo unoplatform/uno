@@ -2,74 +2,100 @@
 uid: Uno.HotDesign.Elements
 ---
 
-# Elements window
+# Elements
 
-The Elements window, located below the Toolbox, shows a hierarchical view of all the elements currently added to the page. This tree represents the visual structure of your app and lets you easily interact with elements by selecting, organizing, or editing them.
+The **Elements** window gives you a hierarchical view of your app’s user interface. It mirrors the XAML visual tree, showing how controls are nested and organized on the current page. You can use it to select elements, change layout structure, wrap items in containers, or quickly jump between components, making it easier to manage complex UIs during live design.
 
-We'll go through the key actions you can perform in this window.
+Whether you're organizing layout containers, editing a UserControl, or deleting an unused element, the Elements window gives you precise control over your app’s structure.
 
-## Selection
+## Select Elements in the Visual Tree
 
-To select an element, simply click on it. It will be highlighted in blue and also selected on the Canvas.
+Click an element in the visual tree to select it. The selected element is also highlighted in the **Canvas** so you can see it visually.
 
 ![Elements Selection](Assets/elements-selection.png)
 
-### Multi-selection
+### Select Multiple Elements
 
-To select multiple elements, hold down `Ctrl` on your keyboard and click the elements you want. This is useful when you need to update shared properties at once.
+Hold `Ctrl` (or `Cmd` on macOS) and click multiple items to select them together. This is helpful when applying the same property changes to multiple elements.
 
 ![Elements Multi-selection](Assets/elements-multi-selection.png)
 
-## Drag and Drop
+## Rearrange Elements with Drag and Drop
 
-You can rearrange the order of elements by dragging and dropping them inside the tree. Just click the element you want, drag it to the desired location, and release it. If there are no restrictions, the element will be successfully moved.
+To move an element:
 
-<img src="Assets/elements-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on the Elements window" />
+1. Click and drag it within the visual tree in the **Elements** window.
+2. Drop it at the new location, either within the same parent or under a different one.
 
-You can either change the order of siblings within the same parent or move an element to a completely different parent.
+You can:
 
-<img src="Assets/elements-drag-drop-other-parent.gif" height="600" alt="GIF showing how to drag and drop to another Parent on the Elements window" />
+- Reorder elements within the same container
+  <img src="Assets/elements-drag-drop.gif" height="600" alt="How to drag and drop in the Elements window." />
 
-## Expandable Nodes
+- Move an element to a new parent, such as placing a `Button` inside another `StackPanel`
+  <img src="Assets/elements-drag-drop-other-parent.gif" height="600" alt="How to drag and drop into another parent in the Elements window." />
 
-Layout elements like `Grid`, `Border`, `StackPanel`, and others act as containers and can hold child elements. These elements are expandable in the tree. You can collapse or expand them using the arrow icon next to their name.
+## Expand and Collapse Containers
 
-This makes it easier to navigate large structures by hiding children when not needed.
+Layout controls like `Grid`, `Border`, and `StackPanel` can contain child elements. In the visual tree, these appear as expandable nodes.
 
-<img src="Assets/elements-expandable-sections.gif" height="350" alt="GIF showing how to expand and collapse nodes on the Elements window" />
+Use the arrow next to a node to collapse or expand its contents, helpful when working on large UIs, so you can reduce visual clutter and focus on the section you're actively editing.
 
-## Add Parent
+<img src="Assets/elements-expandable-sections.gif" height="350" alt="How to expand and collapse nodes in the Elements window." />
 
-To wrap an element with a new parent, right-click the element and select **Add parent**. A list of available container elements will appear - simply choose one, and the new parent will be added around the selected element.
+## Wrap an Element with a New Parent
 
-<img src="Assets/elements-add-parent.gif" height="350" alt="GIF showing how to add a parent on the Elements window" />
+To nest an element inside a new container:
 
-## Select Parent
+1. Right-click the element.
+2. Choose **Add parent**.
+3. Select a layout control (e.g., `StackPanel`, `Grid`) from the list.
 
-To quickly jump to the parent of an element, right-click on the element and choose **Select parent**. The parent element will then be selected in both the Elements window and the Canvas.
+This wraps the element in the chosen parent, updating the visual tree and the layout structure.
 
-<img src="Assets/elements-select-parent.gif" height="350" alt="GIF showing how to select a parent on the Elements window" />
+<img src="Assets/elements-add-parent.gif" height="350" alt="How to add a parent in the Elements window." />
 
-## Delete Element
+## Jump to an Element’s Parent
 
-To remove an element from the page, right-click it and choose **Delete [ElementName]**. For example, right-clicking on a `TextBlock` and selecting **Delete TextBlock** will remove it from your layout.
+To quickly select an element’s parent:
 
-<img src="Assets/elements-delete-element.gif" height="350" alt="GIF showing how to delete an element on the Elements window" />
+1. Right-click the child element.
+2. Choose **Select parent**.
 
-## Edit UserControls
+This selects the parent in both the **Elements** window and the **Canvas**, helping you navigate complex trees.
 
-UserControls are reusable components often used to organize parts of your UI. If you have a `UserControl` added to your page and want to edit it, click on the pencil icon located on the right side of the UserControl node, or right-click it and select **Edit [UserControlName]**.
+<img src="Assets/elements-select-parent.gif" height="350" alt="How to select a parent in the Elements window." />
 
-This opens the UserControl for editing. To return to your main page, click the back icon at the top-left of the interface or in the **Elements** window.
+## Delete an Element in the Visual Tree
 
-<img src="Assets/elements-edit-user-control.gif" height="600" alt="GIF showing how to edit an UserControl on the Elements window" />
+To remove an element:
 
-## Teaching Tips
+1. Right-click it.
+2. Choose **Delete [ElementName]** (e.g., **Delete Button**).
 
-If an element is disabled or can't be interacted with for any reason, hovering your mouse over it will show a Teaching Tip. This provides context or explanation - for example, if a `UserControl` was created using only C# and no XAML, it may not be editable.
+The element is immediately removed from the layout and visual tree.
+
+<img src="Assets/elements-delete-element.gif" height="350" alt="How to delete an element in the Elements window." />
+
+## Edit a UserControl from the Visual Tree
+
+A `UserControl` is a reusable component that encapsulates a set of UI elements and their associated behavior. It's commonly used to organize parts of your interface into self-contained, maintainable units that can be reused across different parts of your application.
+
+If your page includes a `UserControl`, you can edit it directly by:
+
+- Clicking the pencil icon next to the `UserControl` in the visual tree.
+- Or, right-clicking the node and choosing **Edit [UserControlName]**.
+
+This opens the editor for the `UserControl`, allowing you to modify its internal structure or layout. To return to your previous page edition, click the `../` back icon in the top-left corner of the interface or the **Elements** window.
+
+<img src="Assets/elements-edit-user-control.gif" height="600" alt="How to edit a UserControl from the Elements window." />
+
+## Get Help from Teaching Tips
+
+If an element can’t be edited, for example, if it was created entirely in C# with no associated XAML, hovering over it may display a **Teaching Tip**. These offer helpful guidance and explain any restrictions.
 
 ![Elements Teaching Tip](Assets/elements-teaching-tip.png)
 
-## Next
+## Next Steps
 
-- [Canvas](xref:Uno.HotDesign.Canvas)
+- [Interactive Canvas](xref:Uno.HotDesign.Canvas)
