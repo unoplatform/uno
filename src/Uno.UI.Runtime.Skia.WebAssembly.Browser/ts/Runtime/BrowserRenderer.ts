@@ -77,19 +77,19 @@ namespace Uno.UI.Runtime.Skia {
 
 						// unless there's already another queueued render
 						&& !instance.queued) {
-						window.requestAnimationFrame(() => {
-							instance.queued = true;
-							render();
-						});
+
+							queueRender();
 					}
 				}
 			};
 
-			if (!instance.queued) {
+			const queueRender = () => {
 				instance.queued = true;
-
-				// add the draw to the next frame
 				window.requestAnimationFrame(() => render());
+			};
+
+			if (!instance.queued) {
+				queueRender();
 			}
 		}
 
