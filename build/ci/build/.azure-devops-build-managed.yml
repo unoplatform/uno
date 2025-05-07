@@ -78,7 +78,7 @@ jobs:
     displayName: Building Wasm Binaries
 
   - task: MSBuild@1
-    displayName: Building WinAppSDK/UWP package binaries
+    displayName: Building WinAppSDK package binaries
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
