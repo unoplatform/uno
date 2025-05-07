@@ -12,7 +12,7 @@ Uno Platform currently supports targeting the following operating systems:
   - Windows App SDK
 
 > [!NOTE]
-> For most platforms the name of the command line argument is just the platform name (eg windows or ios). However, for WebAssembly and Mac, use the abbreviation in braces in the above list (i.e. wasm).
+> For most platforms, the name of the command line argument is just the platform name (eg, windows or ios). However, for WebAssembly and Mac, use the abbreviation in braces in the above list (i.e., wasm).
 
 By default, when you create a new Uno Platform app, it will target the following platforms: Windows App SDK, iOS, Android, and Skia Desktop.
 

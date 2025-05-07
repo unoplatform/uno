@@ -106,7 +106,7 @@ Uno Platform allows you to use the same feature on multiple platforms. However, 
 
 Not all scales are supported on all platforms:
 
-| Scale | WinUI       | iOS | Android |
+| Scale | WinUI       | iOS/tvOS | Android |
 |-------|:-----------:|:---------------:|:-------:|
 | `100` | scale-100   | @1x             | mdpi    |
 | `125` | scale-125   | N/A             | N/A     |

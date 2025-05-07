@@ -43,7 +43,7 @@ It involves two things - setting an override for the target framework that will 
 
 The step-by-step process is:
 
-1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed)
+1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instance. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed)
 1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>xxx</UnoTargetFrameworkOverride>`
 1. Set the build target inside `<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>` to the identifier for the target platform you wish to build for (Identifiers for each platform are listed in the `crosstargeting_override.props` file), then save the file.
@@ -52,7 +52,7 @@ The step-by-step process is:
    - For iOS/Android native you can right-click on the `Uno.UI` project
    - For WebAssembly/native, you can right-click on the `Uno.UI.Runtime.WebAssembly` project
    - For Skia, you can right-click on the corresponding `Uno.UI.Runtime.Skia.[Win32|X11|macOS|iOS|Android|Wpf]` project
-1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers` which can improve the build time during debugging sessions.
+1. Optionally adjust additional parameters in `crosstargeting_override.props`, such as `UnoDisableNetAnalyzers`, which can improve the build time during debugging sessions.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
 

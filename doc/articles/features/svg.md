@@ -12,7 +12,7 @@ Uno Platform supports using vector SVG graphics inside of your cross-platform ap
 
 ## [**Single Project**](#tab/singleproject)
 
-To use an SVG, for iOS, and Android, you'll need to add the `Svg` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+To use an SVG, for iOS and Android, you'll need to add the `Svg` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
 
 ```xml
 <UnoFeatures>
@@ -70,8 +70,8 @@ You can also explicitly use `SvgImageSource`:
 
 SVG is supported on all Uno Platform targets.
 
-* On Android, iOS, macOS, and Skia, Uno Platform is using SkiaSharp to render the SVG graphics.
-* On WebAssembly, the SVG images are rendered directly by the browser.
+* On Android, iOS, macOS, and Skia, Uno Platform uses SkiaSharp to render the SVG graphics.
+* On WebAssembly, the browser renders the SVG images directly.
 * On Windows, the OS is responsible for SVG rendering (and complex SVG files may not render properly).
 
 ## When to use SVG
