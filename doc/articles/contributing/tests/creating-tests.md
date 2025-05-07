@@ -12,9 +12,9 @@ This guide offers an overview of the various types of tests used within Uno, and
 
 The 'TLDR' rule of thumb for adding tests is:
 
-- if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
-- if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
-- if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
+- if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](./creating-mocked-tests.md);
+- if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](./creating-runtime-tests.md);
+- if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](./creating-ui-tests.md).
 
 ## Types of tests
 
