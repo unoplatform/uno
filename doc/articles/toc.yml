@@ -450,8 +450,8 @@
             href: xref:Uno.HotDesign.Properties.Editors
           - name: Advanced Flyout
             href: xref:Uno.HotDesign.Properties.AdvancedFlyout
-          - name: Responsive Extension
-            href: xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtension
+          - name: Responsive Extensions
+            href: xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtensions
           - name: Template Editor
             href: xref:Uno.HotDesign.Properties.TemplateEditor
       - name: Counter Tutorial

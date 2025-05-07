@@ -94,19 +94,18 @@ To edit a Complex Type, simply click the icon. The Properties window will switch
 
 After you're done, to return to the default Properties view, just click the name of the main element you're editing, shown in the top-left breadcrumb area of the Properties window. You'll then see that the chosen Complex Type appears next to the property, confirming it's been set.
 
-<img src="Assets/core-tools/media/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />
+<img src="Assets/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />
 
 ## Next Steps
 
 - **[Advanced Flyout Editor](xref:Uno.HotDesign.Properties.AdvancedFlyout)**
-  Use the **Advanced Flyout** to choose how a property value is provided: enter a literal **Value**, set up a **Binding**, reference a **Resource**, or apply **Responsive Extensions** for adaptive layouts.  
+  Use the **Advanced Flyout** to choose how a property value is provided: enter a literal **Value**, set up a **Binding**, reference a **Resource**, or apply **Responsive Extensions** for adaptive layouts.
 
 - **[Template Editor](xref:Uno.HotDesign.Properties.TemplateEditor)**
-  The **Template Editor** provides a visual canvas for creating and customizing control templates, enabling you to design complex UI structures without hand-coding XAML.  
+  The **Template Editor** provides a visual canvas for creating and customizing control templates, enabling you to design complex UI structures without hand-coding XAML.
 
-- **[Responsive Extension](xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtension)**
-  **Responsive Extensions** let you define multiple values for a single property based on screen size or form factor, ensuring your UI adapts seamlessly across devices.  
+- **[Responsive Extensions](xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtensions)**
+  **Responsive Extensions** let you define multiple values for a single property based on screen size or form factor, ensuring your UI adapts seamlessly across devices.
 
 - **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**
   A hands-on walkthrough for building the [Counter App](xref:Uno.Workshop.Counter) using **Hot Design**, showcasing its features and workflow in action.
-  
