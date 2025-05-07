@@ -6,7 +6,7 @@ parameters:
 
 jobs:
 - job: skia_package_macos_native_build
-  displayName: 'Skia macOS Native Binaries'
+  displayName: 'macOS Build'
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 

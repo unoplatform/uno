@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: binaries_win_build
-  displayName: 'Build Binaries'
+  displayName: 'Build'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
 
