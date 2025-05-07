@@ -256,16 +256,27 @@ So you can test responsive layouts and comfortable viewing:
 ---
 
 
-## 6. Theme Toggle
+## 6. Theme Toggle 
 
-Light/Dark
+Easily switch between **Light** and **Dark** modes within the designer, with no need to change your operating system or IDE theme.
 
-| Icon | Action                                       |
-|:----:|:---------------------------------------------|
-| <img src="Assets/toolbar-light-theme.png" alt="Light theme icon" height="30" /> | **Light Theme**: Render your app with the system light theme. |
-| <img src="Assets/toolbar-dark-theme.png" alt="Dark theme icon" height="30" />   | **Dark Theme**: Render your app with the system dark theme. |
+This option helps you preview and validate how your layouts will appear in both light and dark environments, making it easier to spot issues like missing contrast, transparency glitches, or unreadable text.
 
----
+- **Light Theme** <img src="Assets/toolbar-light-theme.png" alt="Light theme icon" height="24" />  
+  Renders the canvas using the system **light** theme for bright, clean visuals.
+
+- **Dark Theme** <img src="Assets/toolbar-dark-theme.png" alt="Dark theme icon" height="24" />  
+  Renders the canvas using the system **dark** theme for a modern, eye-friendly UI.
+
+### Why it matters
+
+Designs that look good in one theme can break in another. This toggle lets you verify your UI against both modes quickly—ensuring contrast ratios, icons, and styles adapt properly across the board.
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Theme.gif" alt="Demo: changing Theme Light/Dark" />
+</p>
 
 ## 7. Connection & Hot Reload Status
 
