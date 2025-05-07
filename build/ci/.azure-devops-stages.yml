@@ -175,7 +175,7 @@ stages:
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
-  - template: .azure-devops-publish-nuget-dev.yml
+  - template: publish/.azure-devops-publish-nuget-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
 
@@ -184,7 +184,7 @@ stages:
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
-  - template: .azure-devops-publish-nuget-prod-dev.yml
+  - template: publish/.azure-devops-publish-nuget-prod-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
   
@@ -193,6 +193,6 @@ stages:
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:
-  - template: .azure-devops-publish-nuget-prod.yml
+  - template: publish/.azure-devops-publish-nuget-prod.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
