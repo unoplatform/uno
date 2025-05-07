@@ -435,14 +435,12 @@
         items:
         - name: Toolbox
           href: xref:Uno.HotDesign.Toolbox
+        - name: Elements
+          href: xref:Uno.HotDesign.Elements
         - name: Canvas
           href: xref:Uno.HotDesign.Canvas
       - name: Counter Tutorial
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
-      - name: Advanced
-        items:
-          - name: Elements
-            href: xref:Uno.HotDesign.Elements
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
     - name: Feedback
