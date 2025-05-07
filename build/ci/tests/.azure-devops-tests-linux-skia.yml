@@ -37,7 +37,7 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - template: templates/linux-install-deps.yml
+  - template: ../templates/linux-install-deps.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
@@ -84,8 +84,8 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
-  - template: templates/linux-install-deps.yml
+  - template: ../templates/dotnet-install.yml
+  - template: ../templates/linux-install-deps.yml
 
   - script: |
       chmod +x build/test-scripts/linux-skia-runtime-tests.sh

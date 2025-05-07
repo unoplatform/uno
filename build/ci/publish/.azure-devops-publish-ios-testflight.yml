@@ -55,19 +55,19 @@ jobs:
       provisioningProfileLocation: secureFiles
       provProfileSecureFile: 'Uno_Dev_Samples_Skia.mobileprovision'
 
-  - template: templates/nuget-cache.yml
+  - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
       UnoCheckParameters: '--tfm net9.0-ios'
 
-  - template: templates/ios-build-select-version.yml
+  - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
   - bash: |
       cd $(_BuildFolder)

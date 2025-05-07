@@ -33,9 +33,9 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
-  - template: templates/gitversion.yml
-  - template: templates/dotnet-mobile-install-windows.yml
-  - template: templates/uno-dev-feed.yml
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/uno-dev-feed.yml
 
   - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -92,14 +92,14 @@ jobs:
       echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
     displayName: Install Android 34
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
-  - template: templates/ios-build-select-version.yml
+  - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
-  - template: templates/dotnet-mobile-install-mac.yml
-  - template: templates/uno-dev-feed.yml
+  - template: ../templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/uno-dev-feed.yml
 
   - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -146,16 +146,16 @@ jobs:
     inputs:
       artifactName: 'Nuget_Packages'
 
-  - template: templates/gitversion.yml
-  - template: templates/dotnet-mobile-install-linux.yml
-  - template: templates/gitversion.yml
-  - template: templates/uno-dev-feed.yml
-  - template: templates/host-cleanup-linux.yml
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-mobile-install-linux.yml
+  - template: ../templates/gitversion.yml
+  - template: ../templates/uno-dev-feed.yml
+  - template: ../templates/host-cleanup-linux.yml
 
   - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - bash: |
       set -x
