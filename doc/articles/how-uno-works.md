@@ -8,10 +8,10 @@ How does Uno Platform make the same application code run on all platforms?
 
 ## Uno Platform at Runtime
 
-The [`Uno.WinUI` NuGet package](https://www.nuget.org/packages/Uno.WinUI/) implements the entire WinUI API surface across platforms. This includes:
+The [`Uno.WinUI` NuGet package](https://www.nuget.org/packages/Uno.WinUI/) and [`Uno.WinRT` NuGet package](xref:uno.features.uno.winrt) implement the entire WinUI and WinRT API surface across platforms. This includes:
 
-- Namespaces like `Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, and more.
-- Classes, enums, and all relevant members.
+- Namespaces like `Microsoft.UI` and related UI APIs
+- The support for cross-platform non-UI APIs, such as file system access, devices and sensors, pickers, etc...
 
 > [!NOTE]
 > As the API surface is very large, some parts are included but not implemented. These features are marked with the [`Uno.NotImplementedAttribute`] attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
