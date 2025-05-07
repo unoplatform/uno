@@ -4,7 +4,7 @@ uid: Uno.GetStarted.vscode
 
 # Get Started on VS Code
 
-This guide will walk you through the set-up process for building apps with Uno Platform under Windows, Linux or macOS.
+This guide will walk you through the setup process for building apps with Uno Platform under Windows, Linux, or macOS.
 
 See these sections for information about using Uno Platform with:
 
