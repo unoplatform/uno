@@ -120,15 +120,15 @@ internal static class FontDetailsCache
 
 		if (typeface == null)
 		{
-			if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
+			if (typeof(Inline).Log().IsEnabled(LogLevel.Debug))
 			{
 				if (canChange)
 				{
-					typeof(Inline).Log().LogWarning($"{key} is still loading, using system default for now.");
+					typeof(Inline).Log().LogDebug($"{key} is still loading, using system default for now.");
 				}
 				else
 				{
-					typeof(Inline).Log().LogWarning($"{key} could not be found, using system default");
+					typeof(Inline).Log().LogDebug($"{key} could not be found, using system default");
 				}
 			}
 
