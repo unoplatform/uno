@@ -53,7 +53,7 @@ public partial class Control
 			// since we need for it to be part of the main visual tree to know which visual tree's
 			// qualifier context to use.  We also need to force an update because our visual tree root
 			// may have changed since the last enter.
-			// VisualStateManager.InitializeStateTriggers(this, true /* forceUpdate */);
+			VisualStateManager.InitializeStateTriggers(this, true /* forceUpdate */);
 		}
 	}
 #endif
