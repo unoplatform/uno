@@ -27,7 +27,7 @@ uid: Uno.GetStarted.Rider
 
 |                       | **Rider for Windows** | **Rider for Mac**  | **Rider for Linux** |
 |-----------------------|-----------------------|--------------------|---------------------|
-| Windows (UWP/WinUI)   | ✔️                   | ❌                 | ❌                 |
+| Windows (WinUI)       | ✔️                   | ❌                 | ❌                 |
 | Android               | ✔️                   | ✔️                 | ✔️                |
 | iOS                   | ❌                   | ✔️                 | ❌                 |
 | Wasm                  | ✔️†                  | ✔️†                | ✔️†                |
