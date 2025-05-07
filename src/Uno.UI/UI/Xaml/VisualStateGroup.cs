@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml
 			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
 		}
 
-		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
+		internal void OnOwnerElementLoaded(object sender, RoutedEventArgs args)
 		{
 			if (_pendingOnOwnerElementChanged)
 			{
