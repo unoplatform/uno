@@ -56,7 +56,7 @@ stages:
     - binaries_build_winui
 
   jobs: 
-  - template: .azure-devops-project-template-tests.yml
+  - template: tests/.azure-devops-tests-templates.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
@@ -71,7 +71,7 @@ stages:
 
   jobs:
 
-  - template: .azure-devops-unit-tests.yml
+  - template: tests/.azure-devops-tests-unit-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -82,11 +82,11 @@ stages:
 
   jobs:
   
-  - template: .azure-devops-wasm-uitests.yml
+  - template: tests/.azure-devops-tests-webassembly-native.yml
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- template: .azure-devops-skia-tests.yml
+- template: tests/.azure-devops-tests-skia-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
@@ -105,7 +105,7 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-android-tests.yml
+  - template: tests/.azure-devops-tests-android-native.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
@@ -119,7 +119,7 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-ios-tests.yml
+  - template: tests/.azure-devops-tests-ios-native.yml
     parameters:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
@@ -132,7 +132,7 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-wasdk.yml
+  - template: tests/.azure-devops-tests-winappsdk.yml
     parameters:
       poolName: '$(windows2022HostedVMImage)'
 
@@ -150,7 +150,7 @@ stages:
     - runtime_tests_skia_windows
 
   jobs:
-  - template: .azure-devops-screenshot-compare.yml
+  - template: tests/.azure-devops-tests-screenshots.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -160,14 +160,7 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-ios-testflight.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      vmImageTest: '$(macOSVMImage_UITests)'
-      xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-
-  - template: .azure-devops-publish-ios-testflight.yml
+  - template: publish/.azure-devops-publish-ios-testflight.yml
     parameters:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
