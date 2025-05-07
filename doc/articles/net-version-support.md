@@ -22,4 +22,4 @@ This page lists supported .NET versions and [C# language versions](https://learn
 ### Notes
 
 - In Uno 5.3, support for .NET 7 has been removed.
-- In Uno 5.0, support for .NET 6 (iOS, Android, mac Catalyst), Xamarin.Android, Xamarin.iOS, and Xamarin.macOS was removed.
+- In Uno 5.0, support for .NET 6 (iOS, Android, mac Catalyst), Xamarin.Android, Xamarin.iOS, and Xamarin.macOS were removed.

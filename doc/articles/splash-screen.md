@@ -101,9 +101,9 @@ While the new templates simplify adding a splash screen, this article covers how
     >
     > Simply rebuild the Android target to get rid of these errors.
 
-### 4. iOS/MacCatalyst
+### 4. iOS
 
-* In the `MyApp` project, open the subfolder for `Platforms/iOS` or `Platforms/MacCatalyst`.
+* In the `MyApp` project, open the subfolder for `Platforms/iOS`
 
   * Delete the old splash screen files:
     * `Resources\SplashScreen@2x.png`
