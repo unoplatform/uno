@@ -16,7 +16,6 @@ However, only Android includes the `.pdb` of the referenced assemblies inside de
 
 This situation [should be](https://github.com/dotnet/sdk/issues/1458#issuecomment-1244736464) fixed with net7.0. A workaround for .NET 6 mobile projects is to install [Cymbal](https://github.com/SimonCropp/Cymbal).
 
-
 ### Remote SSH
 
 VS Code can [connect to a remote computer](https://code.visualstudio.com/docs/remote/ssh) (using `ssh`) to develop and debug projects. Note that all the sources, build and debugging are done on the remote computer, where the Uno Platform extension is being executed.
