@@ -2,9 +2,9 @@
 uid: Uno.HotDesign.Toolbar
 ---
 
-# Hot Design® Toolbar
+# Toolbar
 
-The **Hot Design® Toolbar** is your main control panel when working in the Uno Platform’s live design environment. 
+The **Hot Design<sup>®</sup> Toolbar** is your main control panel when working in the Uno Platform’s live design environment. 
 
 
 Positioned at the top of the interactive canvas, it provides fast, intuitive access to tools that help you:
@@ -24,8 +24,6 @@ Whether you're fine-tuning the layout, testing behavior, or previewing responsiv
 </p>
 
 Below is a breakdown of every button and what it does:
-
----
 
 ## 1. Diagnostics Overlay
 
@@ -50,11 +48,8 @@ You can **drag** the entire overlay (click and hold its header area) to any edge
 #### Quick Visual Guide
 
 <p align="center">
-	<img src="Assets/gifs/ToolBar-Diagnostics-Overlay.gif" height="600" alt="GIF showing how to use Diagnostic Overlay to Enter Hot Design" />
+	<img src="Assets/media/ToolBar-Diagnostics-Overlay.gif" height="600" alt="GIF showing how to use Diagnostic Overlay to Enter Hot Design" />
 </p>
-
----
-
 
 ## 2. Enter & Exit Hot Design
 
@@ -81,8 +76,6 @@ Within the **Diagnostics Overlay**, you’ll see the familiar **flame icon**:
 > - Keep your focus: switch instantly between design without rebuilding and your live app.  
 > - Stay in context: your last UI state remains visible when you exit.  
 
----
-
 #### Quick Visual Guide
 
 <p align="center">
@@ -100,8 +93,6 @@ Play/Pause icon
 | <img src="Assets/toolbar-play.png" alt="Play icon" height="30" />   | **Play**: Resume the app’s runtime inside the Hot Design canvas. Use this to test animations, navigation, and logic. |
 | <img src="Assets/toolbar-pause.png" alt="Pause icon" height="30" /> | **Pause**: Freeze the app at its current state so you can tweak layouts, styles, and properties without losing context. |
 
----
-
 ## 4. Undo & Redo
 
 Undo/Redo changes
@@ -111,8 +102,6 @@ Undo/Redo changes
 |:----:|:--------------------------------------------------|
 | <img src="Assets/toolbar-undo.png" alt="Undo icon" height="30" /> | **Undo**: Step backwards through recent design changes. |
 | <img src="Assets/toolbar-redo.png" alt="Redo icon" height="30" /> | **Redo**: Step forwards again through undone changes. |
-
----
 
 ## 6. Form Factor
 
@@ -130,8 +119,6 @@ Auto Fit
 - **Change Form Factor**: Switch between device frames (phone, tablet, desktop, watch) to preview how your UI adapts to different screen sizes and orientations.  
 - **Dropdown menu**: Click the chevron next to the icon to choose custom resolutions or rotate the current frame.
 
----
-
 ## 6. Theme Toggle
 
 Light/Dark
@@ -141,7 +128,6 @@ Light/Dark
 | <img src="Assets/toolbar-light-theme.png" alt="Light theme icon" height="30" /> | **Light Theme**: Render your app with the system light theme. |
 | <img src="Assets/toolbar-dark-theme.png" alt="Dark theme icon" height="30" />   | **Dark Theme**: Render your app with the system dark theme. |
 
----
 
 ## 7. Connection & Hot Reload Status
 
@@ -151,8 +137,6 @@ Dev Server status/notifications
 
 - **Connection status**: Indicates whether Hot Design is currently connected to the running app.  
 - **Hot Reload indicator**: Flashes when XAML or code changes are pushed live; hover for details on the last update.
-
----
 
 ## 8. More Options
 
@@ -177,8 +161,6 @@ YouTube channel
 Privacy Policy
 Terms of Use
 
----
-
 ## Getting Started
 
 1. **Open your Uno Platform project** in Visual Studio.  
@@ -187,8 +169,7 @@ Terms of Use
 4. **Make XAML changes** and watch them apply instantly.  
 5. Use **Play/Pause**, **Form Factor**, and **Theme** toggles to explore and refine your UI across contexts.
 
----
 
 ## Next Steps
 
-- Explore more on **[???](xref:Uno.HotDesign.::;)**  
+- [Toolbox](xref:Uno.HotDesign.Toolbox)

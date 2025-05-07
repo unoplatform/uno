@@ -51,4 +51,4 @@ Alternatively, select the parent element directly on the **Canvas** or on the **
 
 ## Next
 
-- [Canvas](xref:Uno.HotDesign.Canvas)
+- [Elements](xref:Uno.HotDesign.Elements)
