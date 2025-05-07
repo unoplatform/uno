@@ -115,7 +115,7 @@ You can add controls to your app by dragging them from the **Toolbox** onto the 
 
 Alternatively, you can drag them directly into the **Elements** window to position them within a specific hierarchical level.
 
-![Dragging item from Toolbox into the Elements window](Assets/gifs/toolbox-drag.gif)
+![Dragging item from Toolbox into the Elements window](Assets/toolbox-drag.gif)
 
 To delete a control, right-click on it either in the canvas or the **Elements** window and select the delete option.
 

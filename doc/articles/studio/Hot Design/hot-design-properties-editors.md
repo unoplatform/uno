@@ -10,39 +10,39 @@ The Properties window uses different types of editors depending on the property�
 
 For properties with predefined values, like `Visibility`, you’ll see a dropdown. Click it to open the list and select the value you want.
 
-<img src="Assets/core-tools/media/properties-editors-dropdown.gif" height="600" alt="GIF showing how to set values on a dropdown on the Properties window" />
+<img src="Assets/properties-editors-dropdown.gif" height="600" alt="GIF showing how to set values on a dropdown on the Properties window" />
 
 ## TextField
 
 For properties that accept text or numbers (like strings, decimals, or integers), a text field will be shown. Click it to focus and enter the value directly.
 
-<img src="Assets/core-tools/media/properties-editors-textfield.gif" height="600" alt="GIF showing how to set values on a text field on the Properties window" />
+<img src="Assets/properties-editors-textfield.gif" height="600" alt="GIF showing how to set values on a text field on the Properties window" />
 
 For properties like `Background` or `Foreground` that accept both predefined and custom values, the text field may suggest default values when it receives focus. A list will appear, showing commonly used options - you can simply click on one of the suggestions to apply it.
 
-![Properties TextField suggestions](Assets/core-tools/properties-editors-textbox-suggestion.png)
+![Properties TextField suggestions](Assets/properties-editors-textbox-suggestion.png)
 
 ## CheckBox
 
 For boolean properties (true or false), a checkbox is used. Click it to toggle between checked (true) and unchecked (false).
 
-<img src="Assets/core-tools/media/properties-editors-checkbox.gif" height="600" alt="GIF showing how to set values on a check box field on the Properties window" />
+<img src="Assets/properties-editors-checkbox.gif" height="600" alt="GIF showing how to set values on a check box field on the Properties window" />
 
 ## Multiple Values
 
 For properties that accept multiple values, simply click on the label showing the current selection. A menu will appear listing the available options—check the ones you want, and click outside the menu to close it.
 
-<img src="Assets/core-tools/media/properties-editors-multi-selection.gif" height="600" alt="GIF showing how to set values on a multi selection field on the Properties window" />
+<img src="Assets/properties-editors-multi-selection.gif" height="600" alt="GIF showing how to set values on a multi selection field on the Properties window" />
 
 ## Thickness and Corner Radius Editor
 
 For properties like `Padding`, `Margin`, and `BorderThickness`, you can click the three-dot “more options” button next to the property. This opens a flyout with a thickness editor. By default, only the first (left) text field will be enabled, so that you can set the same value for all sides. If you click the center toggle button once, it enables the top text field - one for horizontal (left and right) and one for vertical (top and bottom). Clicking the button again enables the four fields, letting you set individual values for Left, Top, Right, and Bottom.
 
-![Properties Thickness Editor](Assets/core-tools/properties-thickness-editor.png)
+![Properties Thickness Editor](Assets/properties-thickness-editor.png)
 
 The `CornerRadius` editor works similarly to the thickness editor. It displays four text fields, each with an icon indicating which corner (TopLeft, TopRight, BottomRight, BottomLeft) the field corresponds to. Unlike the thickness editor, all fields are enabled by default, and there’s no central toggle button - you can freely enter values for each corner right away.
 
-![Properties Corner Radius Editor](Assets/core-tools/properties-radius-editor.png)
+![Properties Corner Radius Editor](Assets/properties-radius-editor.png)
 
 ## Alignment Editors
 
@@ -50,11 +50,11 @@ Alignment editors display four visual options for alignment-related properties s
 
 For vertical alignment, the options represent (from left to right): Top, Center, Bottom, and Stretch.
 
-![Properties Vertical Alignment Editors](Assets/core-tools/properties-editor-vertical-alignment.png)
+![Properties Vertical Alignment Editors](Assets/properties-editor-vertical-alignment.png)
 
 For horizontal alignment, the options represent: Left, Center, Right, and Stretch.
 
-![Properties Horizontal Alignment Editors](Assets/core-tools/properties-editor-horizontal-alignment.png)
+![Properties Horizontal Alignment Editors](Assets/properties-editor-horizontal-alignment.png)
 
 You can select the desired option by clicking on the corresponding icon.
 
@@ -62,13 +62,13 @@ You can select the desired option by clicking on the corresponding icon.
 
 When editing properties that accept orientation, you'll see two icon buttons: the first represents horizontal orientation with an arrow pointing left and right, and the second represents vertical orientation with an arrow pointing up and down. Just click the desired option to apply it.
 
-![Properties Orientation Editor](Assets/core-tools/properties-editor-orientation.png)
+![Properties Orientation Editor](Assets/properties-editor-orientation.png)
 
 ## Templates
 
 For properties that use templates, a button labeled "Create" will appear if no template has been set yet, or "Edit" if a template already exists. Clicking this button will open the Template Editor. For more advanced details on how the Template Editor works, refer to our [Template Editor docs](xref:Uno.HotDesign.Properties.TemplateEditor).
 
-![Properties Template Editor](Assets/core-tools/properties-editor-template-editor.png)
+![Properties Template Editor](Assets/properties-editor-template-editor.png)
 
 ## Complex Types
 
@@ -78,20 +78,20 @@ A common example is when setting an icon for a control. Instead of just choosing
 
 Another case for Complex Types is when defining the `Layout` property of an `ItemsRepeater` element.
 
-![Properties Complex Type](Assets/core-tools/properties-complex-type.png)
+![Properties Complex Type](Assets/properties-complex-type.png)
 
 In some cases, a property might support both a literal value (like a string or number) *and* a Complex Type. When that happens, both the Complex Type icon and a tag icon (representing the literal mode) will be visible. You can choose either approach by clicking the corresponding icon.
 
-![Properties Complex Type and String Value](Assets/core-tools/properties-complex-type-string.png)
+![Properties Complex Type and String Value](Assets/properties-complex-type-string.png)
 
 ### Editing a Complex Type
 
 To edit a Complex Type, simply click the icon. The Properties window will switch to a new view. At the top, you’ll see a dropdown listing all available Complex Types for that property. Click the arrow to browse the options. Once you've selected a type, the UI will show the editable properties for that specific Complex Type.
 
-<img src="Assets/core-tools/media/properties-edit-complex-type.gif" height="600" alt="GIF showing how to edit a Complex Type on the Properties window" />
+<img src="Assets/properties-edit-complex-type.gif" height="600" alt="GIF showing how to edit a Complex Type on the Properties window" />
 
 ### Leaving the Complex Type editor
 
 After you're done, to return to the default Properties view, just click the name of the main element you're editing, shown in the top-left breadcrumb area of the Properties window. You'll then see that the chosen Complex Type appears next to the property, confirming it's been set.
 
-<img src="Assets/core-tools/media/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />
+<img src="Assets/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />

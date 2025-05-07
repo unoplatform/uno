@@ -26,7 +26,7 @@ Each category has its own toggle switch, so you can choose which breakpoints to 
 
 After activating a breakpoint, an editor for that property will appear. You can now enter a value that will only apply when the screen is within that size range. This editor behaves just like the regular one you use for the default value - if it’s a number, you’ll get a text field; if it’s a Brush, you’ll get suggestions, and so on.
 
-<img src="Assets/core-tools/media/properties-flyout-responsive-extensions.gif" height="600" alt="GIF showing how to use Responsive Extensions on the Advanced Flyout" />
+<img src="Assets/properties-flyout-responsive-extensions.gif" height="600" alt="GIF showing how to use Responsive Extensions on the Advanced Flyout" />
 
 ## Resetting Values
 
