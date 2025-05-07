@@ -4,51 +4,58 @@ uid: Uno.HotDesign.Toolbox
 
 # Toolbox
 
-The **Toolbox** is one of Hot Design’s core tools. It’s located in the top-left corner of the screen and shows a full list of all controls and elements you can add to your app. You can drag and drop these items directly into the **Canvas** or the **Elements** window, making it easy to build and organize your UI.
+The **Toolbox** window is where you find and insert controls and layout elements to build your app's UI. Located in the top-left corner of the Hot Design window, it provides a searchable, categorized list of available controls that you can drag into the **Canvas** or the visual tree with the **Elements** window.
 
-Below, we’ll go through some of the key features of the Toolbox.
+Whether you're adding a button, creating a layout with a `Grid`, or inserting a custom control, the Toolbox helps you quickly locate and add what you need.
 
-## Search
+## Find the Right Control
 
-At the top of the Toolbox, there’s a search box. As you start typing, the list below updates automatically to show matching controls or elements. This helps you find what you need quickly, without scrolling through the full list.
+At the top of the Toolbox, there’s a search box. As you type, the list updates instantly to show matching controls or elements. This helps you locate what you need without scrolling through the full list.
 
 ![Search](Assets/toolbox-search.png)
 
-## Expandable Sections
+## Browse Controls by Category
 
-When the search box is empty, the Toolbox shows all available controls and elements, organized into collapsible sections. Each section groups related items to help you find what you need more easily.
+When the search box is empty, the Toolbox displays all available controls organized into collapsible categories. These include standard WinUI 3 controls, layout containers, collection views, and any custom or third-party controls available in your project.
 
-Here’s a quick overview of the main categories:
+- **Common**: Frequently used WinUI 3 controls such as `Button`, `TextBox`, `CheckBox`, and `TextBlock`.
+- **Layout**: Layout elements like `Grid`, `StackPanel`, and `Border` are used to structure the visual hierarchy of your XAML UI.
+- **Collections**: Data-bound controls like `ListView`, `GridView`, and `ItemsRepeater`, typically used to present lists or repeated content.
+- **Project**: Custom user controls and components defined in your current project or solution.
+- **Custom**: Third-party controls, grouped by their assembly name.
+- **All**: A complete, ungrouped list of all available controls and elements in the Toolbox.
 
-- **Common**: Includes frequently used controls in WinUI 3, such as `Button`, `CheckBox`, `TextBox`, and `ToggleSwitch`.
-- **Layout**: Contains layout containers like `Grid`, `StackPanel`, and `Border` that help you organize and structure your UI.
-- **Collections**: Focused on list-based controls like `ListView`, `GridView`, and `ItemsRepeater`, which are used to display collections of data.
-- **Project**: Shows custom controls that exist within your current project.
-- **Custom**: Lists third-party controls, grouped by their assembly name.
-- **All**: Displays all controls and elements in a single, ungrouped list.
+Click the arrow beside a category name to expand or collapse its contents.
 
-You can expand or collapse each section by clicking the arrow icon on the right side of the header.
+<img src="Assets/toolbox-expand-section.gif" height="400" alt="How to expand and collapse sections in the Toolbox." />
 
-<img src="Assets/toolbox-expand-section.gif" height="400" alt="GIF showing how to expand and collapse sections in the Toolbox." />
+## Add a Control to the Canvas
 
-## Adding elements to the interactive Canvas
+To insert a control into your layout in the interactive **Canvas**:
 
-To add a control or element to the **Canvas**, you can drag and drop the desired item from the Toolbox onto the Canvas. Drop it inside the element you want it to be a child of.
+1. Drag a control from the **Toolbox** window.
+2. Drop it onto the **Canvas**, inside the element where you want it to appear.
 
-  <img src="Assets/toolbox-add-to-canvas.gif" height="600" alt="Demonstration of dragging and dropping an element from the Toolbox to the Canvas" />
+<img src="Assets/toolbox-add-to-canvas.gif" height="600" alt="How to drag and drop an element from the Toolbox window to the Canvas." />
 
-## Adding elements to the Elements window
+## Add a Control to the Visual Tree
 
-To add a control or element to the **Elements** window, you can drag and drop the desired item from the Toolbox into the **Elements** window. Drop it inside the element where you want it to be a child.
+To insert a control into the **Elements** window:
 
-  <img src="Assets/toolbox-add-to-tree.gif" height="600" alt="Drag and drop an item from the Toolbox into the Elements window to add it as a child element." />
+1. Drag a control from the **Toolbox** window.
+2. Drop it into the desired parent node in the visual tree inside the **Elements** window.
 
-## Adding Element via double click
+<img src="Assets/toolbox-add-to-tree.gif" height="600" alt="How to drag and drop a control from the Toolbox window into the Elements window." />
 
-Alternatively, select the parent element directly on the **Canvas** or on the **Element** window, then double-click the control in the Toolbox. It will be added as a child of the selected element.
+## Insert a Control Using Double-Click
 
-<img src="Assets/toolbox-add-to-tree-double-click.gif" height="600" alt="Double-click a control in the Toolbox to add it as a child of the selected element." />
+To quickly insert a control:
 
-## Next
+1. Select a parent element on the **Canvas** or in the visual tree in the **Elements** window.
+2. Double-click the wanted new control in the **Toolbox**. It will be added as a child of the previously selected element.
 
-- [Elements](xref:Uno.HotDesign.Elements)
+<img src="Assets/toolbox-add-to-tree-double-click.gif" height="600" alt="How to double-click a control in the Toolbox to add it as a child of the parent selected element." />
+
+## Next Steps
+
+- [Elements window](xref:Uno.HotDesign.Elements)
