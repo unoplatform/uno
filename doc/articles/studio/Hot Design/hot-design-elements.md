@@ -96,6 +96,6 @@ If an element can’t be edited, for example, if it was created entirely in C# w
 
 ![Elements Teaching Tip](Assets/elements-teaching-tip.png)
 
-## Next Steps
+## Next Step
 
 - [Interactive Canvas](xref:Uno.HotDesign.Canvas)
