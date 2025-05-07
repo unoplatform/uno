@@ -7,6 +7,7 @@ uid: uno.publishing.overview
 ## Preparing
 
 - [Configure the IL Linker](xref:uno.articles.features.illinker)
+- [Enable XAML and Resource Trimming](xref:Uno.Features.ResourcesTrimming)
 - [Improve Performance](xref:Uno.Development.Performance)
 
 ## Packaging
