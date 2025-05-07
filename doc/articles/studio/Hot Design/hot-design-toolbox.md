@@ -31,14 +31,13 @@ You can expand or collapse each section by clicking the arrow icon on the right 
 
 <img src="Assets/core-tools/media/toolbox-expand-section.gif" height="400" alt="GIF showing how to expand and collapse sections in the Toolbox." />
 
-## Adding elements to Canvas
+## Adding elements to the interactive Canvas
 
 To add a control or element to the **Canvas**, you can drag and drop the desired item from the Toolbox onto the Canvas. Drop it inside the element you want it to be a child of.
 
   <img src="Assets/core-tools/media/toolbox-add-to-canvas.gif" height="600" alt="Demonstration of dragging and dropping an element from the Toolbox to the Canvas" />
 
-
-## Adding elements to Elements window
+## Adding elements to the Elements window
 
 To add a control or element to the **Elements** window, you can drag and drop the desired item from the Toolbox into the **Elements** window. Drop it inside the element where you want it to be a child.
 
@@ -52,4 +51,4 @@ Alternatively, select the parent element directly on the **Canvas** or on the **
 
 ## Next
 
- - [Canvas](xref:Uno.HotDesign.Canvas)
+- [Canvas](xref:Uno.HotDesign.Canvas)
