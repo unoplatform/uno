@@ -68,13 +68,13 @@ namespace Uno
 			/// Sets whether the composition timer (if available on current platform) is used for inertia in direct manipulation.
 			/// </summary>
 			[DefaultValue(_defaultUseCompositionTimer)]
-			public static bool UseCompositionTimerForDirectManipulation { get; set; }
+			public static bool UseCompositionTimerForDirectManipulation { get; set; } = _defaultUseCompositionTimer;
 
 			/// <summary>
 			/// Sets whether the composition timer (if available on current platform) is used for inertia in UI element manipulation.
 			/// </summary>
 			[DefaultValue(_defaultUseCompositionTimer)]
-			public static bool UseCompositionTimerForUiElement { get; set; }
+			public static bool UseCompositionTimerForUiElement { get; set; } = _defaultUseCompositionTimer;
 		}
 	}
 }

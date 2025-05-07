@@ -160,9 +160,9 @@ public partial class GestureRecognizer
 				if (this.Log().IsDebugEnabled())
 				{
 					this.Log().Debug($"InertiaProcessor started with using timer {_timer.GetType().Name} ("
-						+ $"tr: (x={_isTranslateInertiaXEnabled}|x={_isTranslateInertiaYEnabled})/{DesiredDisplacementDeceleration}/{DesiredDisplacement} "
-						+ $"| rot: {_isRotateInertiaEnabled}/{DesiredRotationDeceleration}/{DesiredDisplacement} "
-						+ $"| scale: {_isScaleInertiaEnabled}/{DesiredExpansionDeceleration}/{DesiredExpansion})");
+						+ $"tr: (x={_isTranslateInertiaXEnabled}|x={_isTranslateInertiaYEnabled})/(x={_velocities0.Linear.X}|y={_velocities0.Linear.Y})/{DesiredDisplacementDeceleration}/{DesiredDisplacement} "
+						+ $"| rot: {_isRotateInertiaEnabled}/{_velocities0.Angular}/{DesiredRotationDeceleration}/{DesiredDisplacement} "
+						+ $"| scale: {_isScaleInertiaEnabled}/{_velocities0.Expansion}/{DesiredExpansionDeceleration}/{DesiredExpansion})");
 				}
 
 				_timer.Start();
