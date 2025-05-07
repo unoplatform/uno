@@ -131,7 +131,7 @@ Easily roll back or reapply changes you’ve made in Hot Design:
   Handy if you hit Undo too many times or want to compare before/after states without redoing your work manually.
   Or when the next change is better than the previous one.
 
-### Examples of use**  
+### Examples of use 
 
   - You adjust a button’s Backgroun and it breaks your layout: hit **Undo** to quickly get back.  
   - You realize the previous Background was better: hit **Redo** to reapply it.
@@ -144,23 +144,117 @@ Easily roll back or reapply changes you’ve made in Hot Design:
 
 ---
 
-## 6. Form Factor
+## 5. Designer Settins <img src="Assets/toolbar-form-factor.png" alt="Designer Settins icon" height="30" />
 
-Zoom/Form factor
-Form factor
-Canvas size
-Canvas/Window options (more options button 3 dots)
-Zoom
-Percentage
-Zoom options (more options button 3 dots)
-Auto Fit
+The **Designer Settings** area lets you tailor the Hot Design canvas to match any target device or viewing preference. 
 
-<img src="Assets/toolbar-form-factor.png" alt="Form factor icon" height="30" />
+<p align="center">
+	<img src="Assets/DesignerSettings.png" alt="Designer Settins" width="500" />
+</p>
 
-- **Change Form Factor**: Switch between device frames (phone, tablet, desktop, watch) to preview how your UI adapts to different screen sizes and orientations.  
-- **Dropdown menu**: Click the chevron next to the icon to choose custom resolutions or rotate the current frame.
+So you can test responsive layouts and comfortable viewing:
+
+### Form Factor
+
+  Click the device-frame icon to choose phone, tablet, desktop, or watch simulations.
+  Or you can change to a custom-size and use exact width/height to match any target screen.
+  Adjust how you view and test your UI across devices and scales:
+
+  - **Narrowest (IoT)**  
+    Simulates very small screens (149 × 298 px). 
+	Ideal for embedded or IoT scenarios where every pixel counts and UI elements must be ultra-compact.
+
+  - **Narrow (Phone)**  
+    Emulates a typical smartphone portrait view (390 × 844 px). 
+	Use this to verify touch targets, navigation bars, and mobile-specific layouts.
+
+  - **Normal (Tablet)**  
+    Represents a standard tablet portrait orientation (768 × 1 024 px). 
+	Great for multi-pane designs, responsive grids, and ensuring content scales gracefully.
+
+  - **Wide (Laptop)**  
+    Mimics a laptop or small desktop window in landscape (768 × 1 024 px). 
+	Useful for verifying menus, toolbars, and wider aspect ratios.
+
+  - **Widest (Desktop)**  
+    Covers large desktop and high-resolution displays (1 080 × 1 920 px). 
+	Perfect for full-screen layouts, complex dashboards, and widescreen presentations.
+
+  - **Custom**  
+    Use custom input fields where you can enter any width and height, or easyly toggle between width and height.
+	Use this to match unusual screen sizes or prototype future device form factors.
+	
+<p align="center">
+	<img src="Assets/DesignerSettings-FormFactor.png" alt="Designer Settins - FormFactor" width="500" />
+</p>
+
+#### Keyboard Shortcuts
+
+  Here are the convenient key combinations you can use anywhere in Hot Design to control Form Factor custom Size:
+  
+  - **Ctrl + Shift + 0** - Window Size
+  Set to the Size of the full window.
+  
+  - **Ctrl + Shift + 1** - Canvas Size
+  Set to the Content area size - Calculated if you change the content area (eg. closing the Property Grid Panel - Shortcut: Control + Shift + P)
+
+<p align="center">
+	<img src="Assets/DesignerSettings-FormFactor-Shortcut.png" alt="Designer Settins - Form Factor ShortCut" width="500" />
+</p>
+
+
+### Zoom
+  On the zoom menu you can select a custom percentage or use the Slider to set the Zoom level.
+  Great for focusing on fine details or getting an overview of the full layout.
+
+<p align="center">
+	<img src="Assets/DesignerSettings-Zoom.png" alt="Designer Settins - Zoom" width="500" />
+</p>
+
+
+#### Keyboard Shortcuts
+
+  Here are the convenient key combinations you can use anywhere in Hot Design to control zoom and fitting:
+
+  - **Ctrl + Plus ( + )** - Zoom in  
+  - **Ctrl + Minus ( – )** - Zoom out  
+  - **Ctrl + 0** - Fit the canvas to your window  
+  - **Ctrl + 1** - Zoom to 100%  
+  - **Ctrl + 2** - Zoom to 200%  
+  - **Ctrl + 3** - Zoom to 300%  
+  - **Ctrl + 9** - Toggle **Auto-Fit** on or off  
+  
+> **Tip:** You can also hold **Ctrl** and scroll the mouse wheel to zoom in or out dynamically.  
+
+
+<p align="center">
+	<img src="Assets/DesignerSettings-ZoomPanel.png" alt="Designer Settins - Zoom Panel" width="500" />
+</p>
+
+
+### Auto-Fit
+
+  When **Auto-Fit** is enable the entire canvas scales to your window. 
+  Great for focusing on fine details or getting an overview of the full layout.
+
+<p align="center">
+	<img src="Assets/DesignerSettings-AutoFit.png" alt="Designer Settins - FormFactor" width="500" />
+</p>
+
+
+### Why it matters
+
+ - Verify that your UI adapts across screens without pixel-perfect builds.  
+ - Maintain legibility while designing by zooming in on tricky details or zooming out for context.
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-DesignerSettings.gif" alt="Demo: changing form factor and zoom level" />
+</p>
 
 ---
+
 
 ## 6. Theme Toggle
 
