@@ -22,7 +22,7 @@ In your Uno Platform projects:
 
 - Add the [Uno.Fonts.Fluent](https://nuget.info/packages/Uno.Fonts.Fluent) package to all your app heads.
 - You will also need to make small modifications to individual platforms.
-- For all heads, in respective `.csproj` files remove all font files named `winjs-symbols.ttf` or `uno-fluentui-assets.ttf`.
+- For all heads, in respective `.csproj` files, remove all font files named `winjs-symbols.ttf` or `uno-fluentui-assets.ttf`.
 - For iOS and macOS, the `info.plist` file should be updated for both platforms to remove the `UIAppFonts` block:
 
     ```xml
