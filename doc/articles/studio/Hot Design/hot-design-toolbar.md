@@ -35,8 +35,8 @@ Hot Design<sup>®</sup> surfaces a small **Diagnostics Overlay** on top of your 
 This overlay:
 
 - Hosts the **Enter Hot Design<sup>®</sup>** flame button.  Entry point to the Hot Design<sup>®</sup>.
-- Shows current **connection status** and **Hot Reload** activity.  [LINK TO HOT RELOAD]
-- Keeps essential controls always within reach—without cluttering the main canvas. [LINK TO CANVAS]
+- Shows current **connection status** and [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) activity.
+- Keeps essential controls always within reach—without cluttering the main [Canvas](xref:Uno.HotDesign.Canvas).
 
 By default, the overlay appears in the **top-left** corner, but it won’t block your UI:
 
@@ -89,27 +89,24 @@ The **Play/Pause** toggle lets you switch between editing your app live in Hot D
 
 
 1. **Play**: Activate Hot Design<sup>®</sup> mode.
+  While playing, you can use Hot Design<sup>®</sup> to:  
+   - Adjust properties in the [Property Grid](xref:Uno.HotDesign.Properties).
+   - Drag new controls from the [Toolbox](xref:Uno.HotDesign.Toolbox) onto the [Canvas](xref:Uno.HotDesign.Canvas).
+   - Navigate and select elements in the [Elements](xref:Uno.HotDesign.Elements).
+   - Interact directly with UI elements on the [Canvas](xref:Uno.HotDesign.Canvas) (resize, move, style).
 
 <p align="center">
  <img src="Assets/toolbar-play.png" alt="Play icon" height="30" />  
 </p>
 
-  While playing, you can use Hot Design<sup>®</sup> to:  
-   - Adjust properties in the **Property Grid**. [LINK TO PROPERTYGRID DOCS]
-   - Drag new controls from the **Toolbox** onto the canvas.  [LINK TO TOOLBOX]
-   - Navigate and select elements in the **Elements**.  [link to hierarchy]
-   - Interact directly with UI elements on the **canvas** (resize, move, style). [LINK TO CANVAS]
-
-
 2. **Pause**: Deactivate Hot Design<sup>®</sup> editing and return to the live app view. 
+   - See all your XAML changes applied in the running application.  
+   - Test animations, data bindings, and navigation exactly as end users will.
+   - You can click on any Panels to return to Play mode.
 
 <p align="center">
   <img src="Assets/toolbar-pause.png" alt="Pause icon" height="30" />
 </p>
-
-   - See all your XAML changes applied in the running application.  
-   - Test animations, data bindings, and navigation exactly as end users will.
-   - You can click on any Panels to return to Play mode.
 
 ### When to Use Each Mode
 
@@ -130,30 +127,26 @@ The **Play/Pause** toggle lets you switch between editing your app live in Hot D
   <img src="Assets/gifs/ToolBar-Play-Pause.gif" alt="Demo: toggling Play and Pause in Hot Design" />
 </p>
 
----
-
 ## 4. Undo & Redo
 
 Easily roll back or reapply changes you’ve made in Hot Design:
 
 - **Undo**
+  Reverts your last action—whether you moved a control, tweaked a margin, or updated a style. 
+  Perfect for moments when a tweak didn’t turn out as expected.
 
 <p align="center">
  <img src="Assets/toolbar-undo.png" alt="Undo icon" height="30" />
 </p>
- 
-  Reverts your last action—whether you moved a control, tweaked a margin, or updated a style. 
-  Perfect for moments when a tweak didn’t turn out as expected.
 
 - **Redo**
+  Restores an action you just undid. 
+  Handy if you hit Undo too many times or want to compare before/after states without redoing your work manually.
+  Or when the next change is better than the previous one.
 
 <p align="center">
   <img src="Assets/toolbar-redo.png" alt="Redo icon" height="30" />
 </p>
-
-  Restores an action you just undid. 
-  Handy if you hit Undo too many times or want to compare before/after states without redoing your work manually.
-  Or when the next change is better than the previous one.
 
 ### Examples of use 
 
@@ -166,56 +159,64 @@ Easily roll back or reapply changes you’ve made in Hot Design:
   <img src="Assets/gifs/ToolBar-Undo-Redo.gif" alt="Demo: using Undo and Redo in Hot Design" />
 </p>
 
----
-
-## 5. Designer Settins
-
-<p align="center">
-  <img src="Assets/toolbar-form-factor.png" alt="Designer Settins icon" height="30" />
-</p>
- 
+## 5. Designer Settings
 
 The **Designer Settings** area lets you tailor the Hot Design<sup>®</sup> canvas to match any target device or viewing preference. 
 
 <p align="center">
-	<img src="Assets/DesignerSettings.png" alt="Designer Settins" width="500" />
+  <img src="Assets/toolbar-form-factor.png" alt="Designer Settings icon" height="30" />
+</p>
+ 
+
+This is the full window when click on the Designer Settings, 
+where you can test responsive layouts and comfortable viewing:
+
+<p align="center">
+	<img src="Assets/DesignerSettings.png" alt="Designer Settings" width="500" />
 </p>
 
-So you can test responsive layouts and comfortable viewing:
 
 ### Form Factor
 
   Click the device-frame icon to choose phone, tablet, desktop, or watch simulations.
   Or you can change to a custom-size and use exact width/height to match any target screen.
+    
+<p align="center">
+	<img src="Assets/DesignerSettings-FormFactor.png" alt="Designer Settings - FormFactor" width="500" />
+</p>
+
   Adjust how you view and test your UI across devices and scales:
 
   - **Narrowest (IoT)**  
     Simulates very small screens (149 × 298 px). 
+
 	Ideal for embedded or IoT scenarios where every pixel counts and UI elements must be ultra-compact.
 
   - **Narrow (Phone)**  
     Emulates a typical smartphone portrait view (390 × 844 px). 
+
 	Use this to verify touch targets, navigation bars, and mobile-specific layouts.
 
   - **Normal (Tablet)**  
     Represents a standard tablet portrait orientation (768 × 1 024 px). 
+
 	Great for multi-pane designs, responsive grids, and ensuring content scales gracefully.
 
   - **Wide (Laptop)**  
     Mimics a laptop or small desktop window in landscape (768 × 1 024 px). 
+
 	Useful for verifying menus, toolbars, and wider aspect ratios.
 
   - **Widest (Desktop)**  
     Covers large desktop and high-resolution displays (1 080 × 1 920 px). 
+
 	Perfect for full-screen layouts, complex dashboards, and widescreen presentations.
 
   - **Custom**  
     Use custom input fields where you can enter any width and height, or easyly toggle between width and height.
+
 	Use this to match unusual screen sizes or prototype future device form factors.
 	
-<p align="center">
-	<img src="Assets/DesignerSettings-FormFactor.png" alt="Designer Settins - FormFactor" width="500" />
-</p>
 
 #### Keyboard Shortcuts
 
@@ -228,16 +229,17 @@ So you can test responsive layouts and comfortable viewing:
   Set to the Content area size - Calculated if you change the content area (eg. closing the Property Grid Panel - Shortcut: Control + Shift + P)
 
 <p align="center">
-	<img src="Assets/DesignerSettings-FormFactor-Shortcut.png" alt="Designer Settins - Form Factor ShortCut" width="500" />
+	<img src="Assets/DesignerSettings-FormFactor-Shortcut.png" alt="Designer Settings - Form Factor ShortCut" width="500" />
 </p>
 
 
 ### Zoom
   On the zoom menu you can select a custom percentage or use the Slider to set the Zoom level.
+
   Great for focusing on fine details or getting an overview of the full layout.
 
 <p align="center">
-	<img src="Assets/DesignerSettings-Zoom.png" alt="Designer Settins - Zoom" width="500" />
+	<img src="Assets/DesignerSettings-Zoom.png" alt="Designer Settings - Zoom" width="500" />
 </p>
 
 
@@ -257,7 +259,7 @@ So you can test responsive layouts and comfortable viewing:
 
 
 <p align="center">
-	<img src="Assets/DesignerSettings-ZoomPanel.png" alt="Designer Settins - Zoom Panel" width="500" />
+	<img src="Assets/DesignerSettings-ZoomPanel.png" alt="Designer Settings - Zoom Panel" width="500" />
 </p>
 
 
@@ -267,7 +269,7 @@ So you can test responsive layouts and comfortable viewing:
   Great for focusing on fine details or getting an overview of the full layout.
 
 <p align="center">
-	<img src="Assets/DesignerSettings-AutoFit.png" alt="Designer Settins - FormFactor" width="500" />
+	<img src="Assets/DesignerSettings-AutoFit.png" alt="Designer Settings - FormFactor" width="500" />
 </p>
 
 
@@ -282,29 +284,26 @@ So you can test responsive layouts and comfortable viewing:
   <img src="Assets/gifs/ToolBar-DesignerSettings.gif" alt="Demo: changing form factor and zoom level" />
 </p>
 
----
-
-
 ## 6. Theme Toggle 
 
 Easily switch between **Light** and **Dark** modes within the designer, with no need to change your operating system or IDE theme.
 
 This option helps you preview and validate how your layouts will appear in both light and dark environments, making it easier to spot issues like missing contrast, transparency glitches, or unreadable text.
 
-- **Light Theme** 
-  Renders the canvas using the system **light** theme for bright, clean visuals.
+  - **Light Theme** 
+    Renders the canvas using the system **light** theme for bright, clean visuals.
 
 <p align="center">
   <img src="Assets/toolbar-light-theme.png" alt="Light theme icon" height="24" />  
 </p>
- 
-- **Dark Theme** 
-  Renders the canvas using the system **dark** theme for a modern, eye-friendly UI.
+
+  - **Dark Theme** 
+    Renders the canvas using the system **dark** theme for a modern, eye-friendly UI.
 
 <p align="center">
   <img src="Assets/toolbar-dark-theme.png" alt="Dark theme icon" height="24" />  
 </p>
- 
+
 ### Why it matters
 
 Designs that look good in one theme can break in another. This toggle lets you verify your UI against both modes quickly—ensuring contrast ratios, icons, and styles adapt properly across the board.
@@ -315,15 +314,13 @@ Designs that look good in one theme can break in another. This toggle lets you v
   <img src="Assets/gifs/ToolBar-Theme.gif" alt="Demo: changing Theme Light/Dark" />
 </p>
 
----
-
 ## 7. Connection & Hot Reload Status 
+
+The connection status icon gives you real-time feedback on whether Hot Design<sup>®</sup> is actively connected to your app and if Hot Reload is functioning correctly.
 
 <p align="center">
   <img src="Assets/toolbar-connection-status.png" alt="Connection status icon" height="30" />
 </p>
-
-The connection status icon gives you real-time feedback on whether Hot Design<sup>®</sup> is actively connected to your app and if Hot Reload is functioning correctly.
 
 The icon updates dynamically to reflect the current state:
 
@@ -354,15 +351,15 @@ Use this feature to keep track of your live design updates and identify any prob
   <img src="Assets/gifs/ToolBar-Events.gif" alt="Demo: Hot Reload Status and Event Panel" />
 </p>
 
----
-
 ## 8. More Options 
+
+Clicking the three-dot icon opens the **More Options** menu, giving you full control over your Hot Design<sup>®</sup> workspace, access to help resources, and quick links for feedback.
 
 <p align="center">
   <img src="Assets/toolbar-more-options.png" alt="More options icon" height="30" />
 </p>
 
-Clicking the three-dot icon opens the **More Options** menu, giving you full control over your Hot Design<sup>®</sup> workspace, access to help resources, and quick links for feedback:
+Here you can find:
 
 - **Windows**  
   Toggle panel visibility to focus on what matters:  
@@ -402,8 +399,6 @@ Clicking the three-dot icon opens the **More Options** menu, giving you full con
   <img src="Assets/gifs/ToolBar-Help.gif" alt="Demo: opening the More Options menu" />
 </p>
 
----
-
 ## Next Steps
 
-- Explore more on **[???](xref:Uno.HotDesign.::;)**  
+- [Toolbox](xref:Uno.HotDesign.Toolbox)
