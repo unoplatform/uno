@@ -153,25 +153,25 @@ We are all set to start adding controls to create our Counter app. Follow the st
 
 1. Remove the existing `StackPanel`. In the **Elements** window, select the `StackPanel`, right-click, and choose **Delete StackPanel**.
 
-    ![Removing the StackPanel](Assets/gifs/1-remove-stackpanel.gif)
+    ![Removing the StackPanel](Assets/1-remove-stackpanel.gif)
 
 ### Add a `StackPanel`
 
 1. Let's add the container to hold our elements by adding a `StackPanel`. In the **Toolbox** window, search for "StackPanel". Once it appears in the search results, drag it onto the **Canvas**.
 
-    ![StackPanel](Assets/gifs/2-add-stackpanel.gif)
+    ![StackPanel](Assets/2-add-stackpanel.gif)
 
     Alternatively, you can drag the element from the **Toolbox** and drop it onto the **Elements** window.
 
-    ![StackPanel](Assets/gifs/2.1-add-stackpanel.gif)
+    ![StackPanel](Assets/2.1-add-stackpanel.gif)
 
     Another way would be to select the **existing element** in the **Elements** window where you want to add a new item, then double-click the desired item in the **Toolbox** window to add it as a child of the target.
 
-    ![StackPanel](Assets/gifs/2.2-add-stackpanel.gif)
+    ![StackPanel](Assets/2.2-add-stackpanel.gif)
 
 1. Now, let's edit a property of the `StackPanel` to align it vertically and horizontally to the center. Select the `StackPanel` from the **Elements** window or the **Canvas**. In the **Properties** window, on the right side of the app, find the `VerticalAlignment` property and set it to **Center**, then do the same for `HorizontalAlignment`.
 
-    ![StackPanel Alignment](Assets/gifs/3-stackpanel-alignment.gif)
+    ![StackPanel Alignment](Assets/3-stackpanel-alignment.gif)
 
 ### Add an `Image` element
 
@@ -182,18 +182,18 @@ We are all set to start adding controls to create our Counter app. Follow the st
 
 1. Now that the `Image` element is added, let's set the source for our `Image` element. In the **Properties** window, locate the `Source` property. Start typing the name of the image we previously added, and the results should appear. Select **Assets/logo.png**.
 
-    ![Image Source](Assets/gifs/4-add-image-source.gif)
+    ![Image Source](Assets/4-add-image-source.gif)
 
 1. Now, let's edit some properties to enhance its appearance. In the **Properties** window, use the search button to find properties. Search for "Width" and set its value to **150**. Do the same for `Height`. Our `Image` element is now complete!
 
-    ![Image](Assets/gifs/4.1-search-properties.gif)
+    ![Image](Assets/4.1-search-properties.gif)
 
 ### Add a `TextBox` element
 
 1. The next step is to add a `TextBox` that will hold the increasing step value for our Counter app. In the **Toolbox** window, search for "TextBox." Once it appears in the results, drag it onto the `StackPanel`, making sure to place it under the `Image` element.
 1. Now, let's set the `TextBox` properties. In the **Properties** window, set the `PlaceholderText` to "Step Size" and set the `TextAlignment` to **Center**. Reset the `Text` property by clicking the **Advanced** button to open the **Advanced Property** flyout, followed by clicking the **Reset** button.
 
-    ![Reset Text](Assets/gifs/3.1-textbox-clear-text.gif)
+    ![Reset Text](Assets/3.1-textbox-clear-text.gif)
 
 ### Add a `TextBlock` element
 
@@ -208,7 +208,7 @@ We are all set to start adding controls to create our Counter app. Follow the st
 > [!NOTE]
 > If there's insufficient room to edit the `Content` property you can resize the **Properties** window by dragging the left edge of the **Properties** window to the left.
 
-![Resize Properties Window](Assets/gifs/4.2-resize-property-view.gif)
+![Resize Properties Window](Assets/4.2-resize-property-view.gif)
 
 ### Multi-selection
 
@@ -217,7 +217,7 @@ Hot Design allows you to select multiple elements and edit common properties sim
 1. Hold the **Ctrl** key on your keyboard and click on the `Image`, the `TextBox` and the `TextBlock` (the `Button` should still be selected from the previous step).
 2. In the **Properties** window, set `HorizontalAlignment` to **Center** and `Margin` to **12**.
 
-    ![Multi Selection](Assets/gifs/5-multi-selection.gif)
+    ![Multi Selection](Assets/5-multi-selection.gif)
 
 > [!NOTE]
 > You can also use multi-selection from the **Elements** window by holding the **Ctrl** key while clicking on each node.
@@ -230,7 +230,7 @@ Hot Design allows you to apply existing styles to your elements for a polished a
 2. At the top of the **Properties** window, locate the Style Picker.
 3. Choose **ButtonRevealStyle** to apply it.
 
-    ![Button Style](Assets/gifs/6-button-style.gif)
+    ![Button Style](Assets/6-button-style.gif)
 
 ## MainModel and Data Binding
 
@@ -272,7 +272,7 @@ After making these changes in the IDE, save all files and return to Hot Design.
 Now, we need to bind the `TextBox`'s `Text` to the `Countable.Step` property of our ViewModel.
 In the **Properties** window, locate the `Text` property. Click the **Advanced** button to the right of the `TextBox` to open the **Advanced Property** flyout. Select **Binding**. In the **Path** dropdown, locate the `Countable` property of our ViewModel, click the arrow to expand its properties, and select `Step`. Finally, from the **Mode** dropdown, select **TwoWay**.
 
-![TextBox](Assets/gifs/7-textbox-binding.gif)
+![TextBox](Assets/7-textbox-binding.gif)
 
 #### TextBlock
 
@@ -282,7 +282,7 @@ For the `TextBlock`, bind the `Text` property to `Countable.Count`, just as we d
 
 Finally, let's bind the **Command** to the `IncrementCounter` task of our ViewModel.
 
-![Button Command](Assets/gifs/8-button-command.gif)
+![Button Command](Assets/8-button-command.gif)
 
 ## Wrap Up
 
@@ -291,4 +291,4 @@ At this point, you should have a working counter application. Click the **Play**
 > [!NOTE]
 > The **Play** button lets you interact with the app directly within **Hot Design**, without needing to leave the editor. Once you're done interacting with the application, you can click the **Pause** button to return to designing your application. If you wish to leave Hot Design and return to the running application, you can click the **Flame** button in the **Toolbar**.
 
-![WrapUp](Assets/gifs/9-wrapup.gif)
+![WrapUp](Assets/9-wrapup.gif)
