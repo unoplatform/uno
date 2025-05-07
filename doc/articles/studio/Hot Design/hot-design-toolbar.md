@@ -389,6 +389,6 @@ Here you can find:
   <img src="Assets/ToolBar-Help.gif" alt="Demo: opening the More Options menu" />
 </p>
 
-## Next
+## Next Step
 
 - [Toolbox](xref:Uno.HotDesign.Toolbox)

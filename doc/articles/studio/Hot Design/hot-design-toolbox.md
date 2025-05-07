@@ -56,6 +56,6 @@ To quickly insert a control:
 
 <img src="Assets/toolbox-add-to-tree-double-click.gif" height="600" alt="How to double-click a control in the Toolbox to add it as a child of the parent selected element." />
 
-## Next Steps
+## Next Step
 
-- [Elements window](xref:Uno.HotDesign.Elements)
+- [Elements](xref:Uno.HotDesign.Elements)
