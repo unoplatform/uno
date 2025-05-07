@@ -8,7 +8,7 @@ This article covers some basic best practices when developing cross-platform app
 
 ## Questions to ask
 
-1. Which [platforms](getting-started/requirements.md) do I plan to target?
+1. Which [platforms](xref:Uno.GettingStarted.Requirements) do I plan to target?
 2. What framework features do I plan to use? Are they supported on all of my planned target platforms?
 3. Which major third-party dependencies will I use? Are they supported on all of my planned target platforms?
 
@@ -26,7 +26,7 @@ Testing and debugging your application is easier and more rapid on some platform
 
 It's likely that some part of your application's code, be it C# code or XAML markup, will be specific to only one platform - perhaps because you want to access platform-specific APIs, implement a feature using native third-party libraries, or simply customize the experience to be more idiomatic to that particular platform.
 
-You can read more on the mechanics of platform-specific code [here for C#](platform-specific-csharp.md) and [here for XAML](platform-specific-xaml.md). You should also make sure you understand [an Uno Platform App solution structure](uno-app-solution-structure.md).
+You can read more on the mechanics of platform-specific code [here for C#](xref:Uno.Development.PlatformSpecificCSharp) and [here for XAML](xref:Uno.Development.PlatformSpecificXaml). You should also make sure you understand [an Uno Platform App solution structure](xref:Uno.Development.AppStructure).
 
 The main goals where platform-specific code is concerned are to:
 
@@ -50,4 +50,4 @@ Sometimes so much freedom can be paralyzing. To help you get started, we've crea
 
 ## Performance
 
- See a checklist of performance-related best practices [here](Uno-UI-Performance.md).
+See a checklist of performance-related best practices [here](Uno-UI-Performance.md).

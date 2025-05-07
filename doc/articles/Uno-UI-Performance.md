@@ -8,6 +8,7 @@ This article lists various performance tips to optimize your Uno Platform applic
 
 Here's what to look for:
 
+- Make sure to choose the right renderer ([Skia](xref:uno.features.renderer.skia) or [Native](xref:uno.features.renderer.native)) for your application, depending on the feature set you'll be using.
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible, using explicit `Width` and `Height` properties.
