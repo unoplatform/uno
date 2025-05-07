@@ -18,7 +18,7 @@ jobs:
             targetPath: '$(Pipeline.Workspace)/NuGet_Packages'
           displayName: Download artifacts
 
-        - template: templates/nuget-publish-public.yml
+        - template: ../templates/nuget-publish-public.yml
 
 - job: Tag_Release
   displayName: 'Set git tag'
@@ -32,7 +32,7 @@ jobs:
     persistCredentials: true
     fetchDepth: 0
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
   - script: |
       git config user.email "info@platform.uno"

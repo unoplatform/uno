@@ -41,15 +41,15 @@ jobs:
       echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
     displayName: Install Android 34
 
-  - template: templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
       UnoCheckParameters: '--tfm net9.0-android'
 
-  - template: templates/nuget-cache.yml
+  - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
@@ -164,7 +164,7 @@ jobs:
         artifactName: uitests-failure-results
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   # - task: PowerShell@2
   #   displayName: 'Install coreutils'

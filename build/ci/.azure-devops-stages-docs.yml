@@ -22,14 +22,14 @@ stages:
       displayName: Cache npm packages
 
     - template: templates/gitversion-run.yml
-    - template: .azure-devops-commitsar.yml
-    - template: .azure-devops-spell-check.yml
-    - template: .azure-devops-markdown-lint.yml
+    - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-spell-check.yml
+    - template: setup/.azure-devops-setup-markdown-lint.yml
 
 - stage: docs_generation
   displayName: Docs Generation
   dependsOn: Setup
   jobs:
-  - template: .azure-devops-docs.yml
+  - template: docs/.azure-devops-docs.yml
     parameters:
       poolName: '$(windowsScaledPool)'
