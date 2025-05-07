@@ -3,271 +3,327 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.System;
 using Uno.Extensions;
-using static System.Math;
+using Uno.Foundation.Logging;
 using static System.Double;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-namespace Microsoft.UI.Input
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+
+namespace Microsoft.UI.Input;
 #else
-namespace Windows.UI.Input
+namespace Windows.UI.Input;
 #endif
+
+public partial class GestureRecognizer
 {
-	public partial class GestureRecognizer
+	internal partial class Manipulation
 	{
-		internal partial class Manipulation
+		internal class InertiaProcessor : IDisposable
 		{
-			internal class InertiaProcessor : IDisposable
+			private const double _defaultDurationMs = 1000;
+
+			private delegate double Get(in ManipulationDelta delta);
+			private delegate void Set(ref ManipulationDelta delta, double value);
+			private record struct ManipulationDeltaProperty(Get Get, Set Set);
+
+			private static readonly ManipulationDeltaProperty TranslationX = new(
+				Get: static (in ManipulationDelta m) => m.Translation.X,
+				Set: static (ref ManipulationDelta m, double value) => m.Translation.X = value);
+
+			private static readonly ManipulationDeltaProperty TranslationY = new(
+				Get: static (in ManipulationDelta m) => m.Translation.Y,
+				Set: static (ref ManipulationDelta m, double value) => m.Translation.Y = value);
+
+			private static readonly ManipulationDeltaProperty Rotation = new(
+				Get: static (in ManipulationDelta m) => m.Rotation,
+				Set: static (ref ManipulationDelta m, double value) => m.Rotation = (float)value);
+
+			private static readonly ManipulationDeltaProperty Expansion = new(
+				Get: static (in ManipulationDelta m) => m.Expansion,
+				Set: static (ref ManipulationDelta m, double value) => m.Expansion = (float)value);
+
+			private readonly Manipulation _owner;
+			private readonly ulong _t0;
+			private readonly Point _position0;
+			private readonly ManipulationDelta _cumulative0; // Cumulative of the whole manipulation at t=0
+			private readonly ManipulationVelocities _velocities0;
+
+			private IInertiaProcessorTimer? _timer;
+			private ManipulationState _stateOnLastTick;
+
+			private readonly bool _isTranslateInertiaXEnabled;
+			private readonly bool _isTranslateInertiaYEnabled;
+			private readonly bool _isRotateInertiaEnabled;
+			private readonly bool _isScaleInertiaEnabled;
+
+			internal const double DefaultDesiredDisplacementDeceleration = .001;
+			internal const double DefaultDesiredRotationDeceleration = .0001;
+			internal const double DefaultDesiredExpansionDeceleration = .001;
+
+			// Those values can be customized by the application through the ManipInertiaStartingArgs.Inertia<Tr|Rot|Exp>Behavior
+			public double DesiredDisplacement = NaN;
+			public double DesiredDisplacementDeceleration = NaN;
+			public double DesiredRotation = NaN;
+			public double DesiredRotationDeceleration = NaN;
+			public double DesiredExpansion = NaN;
+			public double DesiredExpansionDeceleration = NaN;
+
+			public InertiaProcessor(Manipulation owner, ulong timestamp, Point position, ManipulationDelta cumulative, ManipulationVelocities velocities)
 			{
-				// TODO: We should somehow sync tick with frame rendering
-				private const double _framesPerSecond = 25;
-				private const double _defaultDurationMs = 1000;
+				_owner = owner;
+				_t0 = timestamp;
+				_position0 = position;
+				_cumulative0 = cumulative;
+				_velocities0 = velocities;
 
-				private readonly DispatcherQueueTimer _timer;
-				private readonly Manipulation _owner;
-				private readonly Point _position0;
-				private readonly ManipulationDelta _cumulative0; // Cumulative of the whole manipulation at t=0
-				private readonly ManipulationVelocities _velocities0;
+				_stateOnLastTick = new ManipulationState(timestamp, position, cumulative);
 
-				private ManipulationDelta _inertiaCumulative; // Cumulative of the inertia only at last tick
+				_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled
+					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
+					&& Math.Abs(velocities.Linear.X) > _owner._inertiaThresholds.TranslateX;
+				_isTranslateInertiaYEnabled = _owner._isTranslateYEnabled
+					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
+					&& Math.Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
+				_isRotateInertiaEnabled = _owner._isRotateEnabled
+					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
+					&& Abs(velocities.Angular) > _owner._inertiaThresholds.Rotate;
+				_isScaleInertiaEnabled = _owner._isScaleEnabled
+					&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
+					&& Abs(velocities.Expansion) > _owner._inertiaThresholds.Expansion;
 
-				private readonly bool _isTranslateInertiaXEnabled;
-				private readonly bool _isTranslateInertiaYEnabled;
-				private readonly bool _isRotateInertiaEnabled;
-				private readonly bool _isScaleInertiaEnabled;
+				global::System.Diagnostics.Debug.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
 
-				internal const double DefaultDesiredDisplacementDeceleration = .001;
-				internal const double DefaultDesiredRotationDeceleration = .0001;
-				internal const double DefaultDesiredExpansionDeceleration = .001;
+				// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
+				_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;
+				_isTranslateInertiaYEnabled |= _isTranslateInertiaXEnabled && _owner._isTranslateYEnabled;
+			}
 
-				// Those values can be customized by the application through the ManipInertiaStartingArgs.Inertia<Tr|Rot|Exp>Behavior
-				public double DesiredDisplacement = NaN;
-				public double DesiredDisplacementDeceleration = NaN;
-				public double DesiredRotation = NaN;
-				public double DesiredRotationDeceleration = NaN;
-				public double DesiredExpansion = NaN;
-				public double DesiredExpansionDeceleration = NaN;
+			public bool IsRunning => _timer?.IsRunning ?? false;
 
-				public InertiaProcessor(Manipulation owner, Point position, ManipulationDelta cumulative, ManipulationVelocities velocities)
+			private void CompleteConfiguration()
+			{
+				// Be aware this method will be invoked twice in case of GetNextCumulative().
+
+				// As of 2021-07-21, according to test, Displacement takes over Deceleration.
+				if (!IsNaN(DesiredDisplacement))
 				{
-					_owner = owner;
-					_position0 = position;
-					_cumulative0 = cumulative;
-					_velocities0 = velocities;
-
-					_isTranslateInertiaXEnabled = _owner._isTranslateXEnabled
-						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-						&& Math.Abs(velocities.Linear.X) > _owner._inertiaThresholds.TranslateX;
-					_isTranslateInertiaYEnabled = _owner._isTranslateYEnabled
-						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationTranslateInertia)
-						&& Math.Abs(velocities.Linear.Y) > _owner._inertiaThresholds.TranslateY;
-					_isRotateInertiaEnabled = _owner._isRotateEnabled
-						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationRotateInertia)
-						&& Abs(velocities.Angular) > _owner._inertiaThresholds.Rotate;
-					_isScaleInertiaEnabled = _owner._isScaleEnabled
-						&& _owner._settings.HasFlag(Input.GestureSettings.ManipulationScaleInertia)
-						&& Abs(velocities.Expansion) > _owner._inertiaThresholds.Expansion;
-
-					global::System.Diagnostics.Debug.Assert(_isTranslateInertiaXEnabled || _isTranslateInertiaYEnabled || _isRotateInertiaEnabled || _isScaleInertiaEnabled);
-
-					// For better experience, as soon inertia kicked-in on an axis, we bypass threshold on the second axis.
-					_isTranslateInertiaXEnabled |= _isTranslateInertiaYEnabled && _owner._isTranslateXEnabled;
-					_isTranslateInertiaYEnabled |= _isTranslateInertiaXEnabled && _owner._isTranslateYEnabled;
-
-					_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-					_timer.Interval = TimeSpan.FromMilliseconds(1000d / _framesPerSecond);
-					_timer.IsRepeating = true;
-					_timer.Tick += (snd, e) => Process(snd.LastTickElapsed.TotalMilliseconds);
+					var v0 = (Math.Abs(_velocities0.Linear.X) + Math.Abs(_velocities0.Linear.Y)) / 2;
+					DesiredDisplacementDeceleration = GetDecelerationFromDesiredDisplacement(v0, DesiredDisplacement);
+				}
+				if (!IsNaN(DesiredRotation))
+				{
+					DesiredRotationDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Angular, DesiredRotation);
+				}
+				if (!IsNaN(DesiredExpansion))
+				{
+					DesiredExpansionDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Expansion, DesiredExpansion);
 				}
 
-				public bool IsRunning => _timer.IsRunning;
-
-				/// <summary>
-				/// Gets the elapsed time of the inertia (cf. Remarks)
-				/// </summary>
-				/// <remarks>
-				/// Depending of the platform, the timestamp provided by pointer events might not be absolute,
-				/// so it's preferable to not compare timestamp between pointers and inertia processor.
-				/// </remarks>
-				public TimeSpan Elapsed => _timer.LastTickElapsed;
-
-				private void CompleteConfiguration()
+				// Default values are **inspired** by https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#smooth-object-animation-using-the-velocity-and-deceleration-properties
+				if (IsNaN(DesiredDisplacementDeceleration))
 				{
-					// Be aware this method will be invoked twice in case of GetNextCumulative().
+					DesiredDisplacementDeceleration = DefaultDesiredDisplacementDeceleration;
+				}
+				if (IsNaN(DesiredRotationDeceleration))
+				{
+					DesiredRotationDeceleration = DefaultDesiredRotationDeceleration;
+				}
+				if (IsNaN(DesiredExpansionDeceleration))
+				{
+					DesiredExpansionDeceleration = DefaultDesiredExpansionDeceleration;
+				}
+			}
 
-					// As of 2021-07-21, according to test, Displacement takes over Deceleration.
-					if (!IsNaN(DesiredDisplacement))
-					{
-						var v0 = (Math.Abs(_velocities0.Linear.X) + Math.Abs(_velocities0.Linear.Y)) / 2;
-						DesiredDisplacementDeceleration = GetDecelerationFromDesiredDisplacement(v0, DesiredDisplacement);
-					}
-					if (!IsNaN(DesiredRotation))
-					{
-						DesiredRotationDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Angular, DesiredRotation);
-					}
-					if (!IsNaN(DesiredExpansion))
-					{
-						DesiredExpansionDeceleration = GetDecelerationFromDesiredDisplacement(_velocities0.Expansion, DesiredExpansion);
-					}
-
-					// Default values are **inspired** by https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#smooth-object-animation-using-the-velocity-and-deceleration-properties
-					if (IsNaN(DesiredDisplacementDeceleration))
-					{
-						DesiredDisplacementDeceleration = DefaultDesiredDisplacementDeceleration;
-					}
-					if (IsNaN(DesiredRotationDeceleration))
-					{
-						DesiredRotationDeceleration = DefaultDesiredRotationDeceleration;
-					}
-					if (IsNaN(DesiredExpansionDeceleration))
-					{
-						DesiredExpansionDeceleration = DefaultDesiredExpansionDeceleration;
-					}
+			public void Start(bool useCompositionTimer)
+			{
+				if (_timer is not null)
+				{
+					return;
 				}
 
-				public void Start()
+				CompleteConfiguration();
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+				_timer = useCompositionTimer
+					? new CompositionInertiaProcessorTimer(Process)
+					: new DispatcherInertiaProcessorTimer(Process);
+#else
+				_timer = new DispatcherInertiaProcessorTimer(Process);
+#endif
+
+				if (this.Log().IsDebugEnabled())
 				{
-					CompleteConfiguration();
-					_timer.Start();
+					this.Log().Debug($"InertiaProcessor started with using timer {_timer.GetType().Name} ("
+						+ $"tr: (x={_isTranslateInertiaXEnabled}|x={_isTranslateInertiaYEnabled})/(x={_velocities0.Linear.X}|y={_velocities0.Linear.Y})/{DesiredDisplacementDeceleration}/{DesiredDisplacement} "
+						+ $"| rot: {_isRotateInertiaEnabled}/{_velocities0.Angular}/{DesiredRotationDeceleration}/{DesiredDisplacement} "
+						+ $"| scale: {_isScaleInertiaEnabled}/{_velocities0.Expansion}/{DesiredExpansionDeceleration}/{DesiredExpansion})");
 				}
 
-				private void Process(double t)
+				_timer.Start();
+			}
+
+			internal ManipulationState GetStateOnLastTick() => _stateOnLastTick;
+
+			private void Process(TimeSpan elapsed)
+			{
+				// First we update the internal state (i.e. the current cumulative manip delta for the current time)
+				var previous = _stateOnLastTick.Cumulative;
+				var current = previous;
+				var updated = UpdateCumulative(elapsed.TotalMilliseconds, ref current);
+
+				_stateOnLastTick = new(_t0 + (ulong)elapsed.TotalMicroseconds, _position0 + current.Translation, current);
+
+				// Then we request to the owner to raise its events (will cause the GetCumulative())
+				// We notify in any cases in order to make sure to raise at least one ManipDelta (even if Delta.IsEmpty ^^) before stop the processor
+				_owner.NotifyUpdate();
+
+				if (!updated)
 				{
-					// First we update the internal state (i.e. the current cumulative manip delta for the current time)
-					var previous = _inertiaCumulative;
-					var current = GetInertiaCumulative(t, previous);
-
-					_inertiaCumulative = current;
-
-					// Then we request to the owner to raise its events (will cause the GetCumulative())
-					// We notify in any cases in order to make sure to raise at least one ManipDelta (even if Delta.IsEmpty ^^) before stop the processor
+					_timer?.Stop();
 					_owner.NotifyUpdate();
-
-					if (previous.Translation.X == current.Translation.X
-						&& previous.Translation.Y == current.Translation.Y
-						&& previous.Rotation == current.Rotation
-						&& previous.Expansion == current.Expansion) // Note: we DO NOT compare the scaling, expansion is enough here!
-					{
-						_timer.Stop();
-						_owner.NotifyUpdate();
-					}
 				}
+			}
 
-				public Point GetPosition()
-					=> _position0 + _inertiaCumulative.Translation;
-
-				/// <summary>
-				/// Gets the cumulative delta, including the manipulation cumulative when this processor was started
-				/// </summary>
-				public ManipulationDelta GetCumulative()
-					=> _cumulative0.Add(_inertiaCumulative);
-
-				/// <summary>
-				/// Gets the **expected** cumulative delta at the tick expected close to the given time, including the manipulation cumulative when this processor was started.
-				/// </summary>
-				/// <remarks>This is only the expected value, actual value might be slightly different depending on how precise is the underlying timer.</remarks>
-				public ManipulationDelta GetCumulativeTickAligned(ref TimeSpan dueIn, out int ticks)
+			private bool UpdateCumulative(double t, ref ManipulationDelta cumulative)
+			{
+				var isUpdated = false;
+				isUpdated |= _isTranslateInertiaXEnabled && Update(TranslationX, ref cumulative, _velocities0.Linear.X, DesiredDisplacementDeceleration, t);
+				isUpdated |= _isTranslateInertiaYEnabled && Update(TranslationY, ref cumulative, _velocities0.Linear.Y, DesiredDisplacementDeceleration, t);
+				isUpdated |= _isRotateInertiaEnabled && Update(Rotation, ref cumulative, _velocities0.Angular, DesiredRotationDeceleration, t);
+				if (_isScaleInertiaEnabled && Update(Expansion, ref cumulative, _velocities0.Expansion, DesiredExpansionDeceleration, t))
 				{
-					CompleteConfiguration(); // Make sure to compute desired values in case this method is being invoked during the OnManipulationInertiaStarting event
-
-					var interval = _timer.Interval;
-					if (dueIn <= TimeSpan.Zero)
-					{
-						ticks = 1;
-						dueIn = interval;
-					}
-					else
-					{
-						var linearX = GetCompletionTime(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration);
-						var linearY = GetCompletionTime(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration);
-						var angular = GetCompletionTime(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration);
-						var expansion = GetCompletionTime(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration);
-
-						var maxTicks = Math.Max(linearX, Math.Max(linearY, Math.Max(angular, expansion))) * TimeSpan.TicksPerMillisecond;
-						var dueInTicks = Math.Min(dueIn.Ticks, maxTicks);
-
-						ticks = Math.Max(1, (int)Math.Round(dueInTicks / interval.Ticks));
-						dueIn = ticks * interval;
-					}
-
-					var inertiaCumulative = GetInertiaCumulative((_timer.LastTickElapsed + dueIn).TotalMilliseconds, _inertiaCumulative);
-
-					return _cumulative0.Add(inertiaCumulative);
+					cumulative.Scale = (_owner._origins.State.Distance + cumulative.Expansion) / _owner._origins.State.Distance;
+					isUpdated = true;
 				}
 
-				private ManipulationDelta GetInertiaCumulative(double t, ManipulationDelta previousCumulative)
+				return isUpdated;
+			}
+
+			private bool Update(ManipulationDeltaProperty property, ref ManipulationDelta cumulative, double v0, double d, double t)
+			{
+				if (IsCompleted(v0, d, t))
 				{
-					var linearX = GetValue(_isTranslateInertiaXEnabled, _velocities0.Linear.X, DesiredDisplacementDeceleration, t, (float)previousCumulative.Translation.X);
-					var linearY = GetValue(_isTranslateInertiaYEnabled, _velocities0.Linear.Y, DesiredDisplacementDeceleration, t, (float)previousCumulative.Translation.Y);
-					var angular = GetValue(_isRotateInertiaEnabled, _velocities0.Angular, DesiredRotationDeceleration, t, previousCumulative.Rotation);
-					var expansion = GetValue(_isScaleInertiaEnabled, _velocities0.Expansion, DesiredExpansionDeceleration, t, previousCumulative.Expansion);
-
-					var scale = _isScaleInertiaEnabled ? (_owner._origins.State.Distance + expansion) / _owner._origins.State.Distance : 1;
-
-					var delta = new ManipulationDelta
-					{
-						Translation = new Point(linearX, linearY),
-						Rotation = angular,
-						Expansion = expansion,
-						Scale = scale
-					};
-
-					return delta;
+					return false;
 				}
 
-				private float GetValue(bool enabled, double v0, double d, double t, float lastValue)
-					=> (enabled, IsCompleted(v0, d, t)) switch
-					{
-						(false, _) => 0,
-						(_, true) => lastValue, // Avoid bounce effect by replaying the last value
-						(true, false) => GetValue(v0, d, t)
-					};
+				var current = property.Get(in cumulative);
+				var updated = property.Get(in _cumulative0) + GetValue(v0, d, t);
+				if (current == updated)
+				{
+					return false;
+				}
 
-				// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
-				internal static float GetValue(double v0, double d, double t)
-					=> v0 >= 0
-						? (float)(v0 * t - d * Math.Pow(t, 2))
-						: -(float)(-v0 * t - d * Math.Pow(t, 2));
+				property.Set(ref cumulative, updated);
+				return true;
+			}
 
-				private bool IsCompleted(double v0, double d, double t)
-					=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
+			// https://docs.microsoft.com/en-us/windows/win32/wintouch/inertia-mechanics#inertia-physics-overview
+			internal static double GetValue(double v0, double d, double t)
+				=> v0 >= 0
+					? v0 * t - d * Math.Pow(t, 2)
+					: -(-v0 * t - d * Math.Pow(t, 2));
 
-				private double GetCompletionTime(bool enabled, double v0, double d)
-					=> enabled ? GetCompletionTime(v0, d) : 0;
+			private static bool IsCompleted(double v0, double d, double t)
+				=> Math.Abs(v0) - d * 2 * t <= 0; // The derivative of the GetValue function
 
-				internal static double GetCompletionTime(double v0, double d)
-					=> Math.Abs(v0) / (2 * d);
+			internal static double GetCompletionTime(double v0, double d)
+				=> Math.Abs(v0) / (2 * d);
 
-				internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
-					=> Math.Abs(v0) / (2 * durationMs);
+			internal static double GetDecelerationFromDesiredDuration(double v0, double durationMs)
+				=> Math.Abs(v0) / (2 * durationMs);
 
-				private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
-					=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
+			private static double GetDecelerationFromDesiredDisplacement(double v0, double displacement, double durationMs = _defaultDurationMs)
+				=> (v0 * durationMs - displacement) / Math.Pow(_defaultDurationMs, 2);
 
-				/// <inheritdoc />
-				public void Dispose()
-					=> _timer.Stop();
+			/// <inheritdoc />
+			public void Dispose()
+				=> _timer?.Stop();
 
 #if IS_UNIT_TESTS
-				/// <summary>
-				/// For test purposes only!
-				/// </summary>
-				public void RunSync()
+			/// <summary>
+			/// For test purposes only!
+			/// </summary>
+			public void RunSync(double framePerSeconds = 25)
+			{
+				var frameDuration = 1000 / framePerSeconds;
+				var time = frameDuration;
+				while (IsRunning)
 				{
-					var frameDuration = 1000 / _framesPerSecond;
-					var time = frameDuration;
-					while (IsRunning)
-					{
-						Process(time);
-						time += frameDuration;
-					}
+					Process(TimeSpan.FromMilliseconds(time));
+					time += frameDuration;
 				}
-#endif
 			}
+#endif
 		}
+
+		private interface IInertiaProcessorTimer
+		{
+			public bool IsRunning { get; }
+			public void Start();
+
+			public void Stop();
+		}
+
+		private sealed class DispatcherInertiaProcessorTimer : IInertiaProcessorTimer
+		{
+			private readonly DispatcherQueueTimer _timer;
+
+			public const double DefaultFramePerSeconds = 30d;
+
+			public DispatcherInertiaProcessorTimer(Action<TimeSpan> OnTick, double framePerSeconds = DefaultFramePerSeconds)
+			{
+				_timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+				_timer.Interval = TimeSpan.FromMilliseconds(1000d / framePerSeconds);
+				_timer.IsRepeating = true;
+				_timer.Tick += (snd, e) => OnTick(snd.LastTickElapsed);
+			}
+
+			public bool IsRunning => _timer.IsRunning;
+
+			public void Start() => _timer.Start();
+			public void Stop() => _timer.Stop();
+		}
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
+		{
+			private EventHandler<object>? _handler;
+			private Stopwatch? _time;
+
+			public bool IsRunning => _handler is not null;
+
+			public void Start()
+			{
+				Stop();
+
+				_time = Stopwatch.StartNew();
+				_handler = (_, args) =>
+				{
+					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
+					onTick(_time.Elapsed);
+				};
+
+				CompositionTarget.Rendering += _handler;
+			}
+
+			public void Stop()
+			{
+				if (_handler is not null)
+				{
+					CompositionTarget.Rendering -= _handler;
+					_handler = null;
+				}
+			}
+
+			~CompositionInertiaProcessorTimer() => Stop();
+		}
+#endif
 	}
 }
 #endif
