@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: Skia_Tests_Build
-  displayName: 'Build Skia Samples App'
+  displayName: 'Build Samples App'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
 
