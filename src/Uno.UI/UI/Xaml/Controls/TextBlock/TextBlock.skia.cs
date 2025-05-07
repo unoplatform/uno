@@ -39,9 +39,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
-			DoubleTapped += (s, e) => ((TextBlock)s).OnDoubleTapped(e);
-			RightTapped += (s, e) => ((TextBlock)s).OnRightTapped(e);
-			KeyDown += (s, e) => ((TextBlock)s).OnKeyDown(e);
+			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
+			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
+			RightTapped += static (s, e) => ((TextBlock)s).OnRightTapped(e);
+			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
@@ -186,7 +187,13 @@ namespace Microsoft.UI.Xaml.Controls
 		string IBlock.GetText() => Text;
 
 		partial void OnSelectionChanged()
-			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+		{
+			Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+
+			var start = Math.Min(Selection.start, Selection.end);
+			var end = Math.Max(Selection.start, Selection.end);
+			SelectedText = Text[start..end];
+		}
 
 		private static SKPaint _spareSelectionFoundPaint = new SKPaint();
 
@@ -222,6 +229,14 @@ namespace Microsoft.UI.Xaml.Controls
 					SelectAll();
 					args.Handled = true;
 					break;
+			}
+		}
+
+		private void OnTapped(TappedRoutedEventArgs _)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				Selection = default;
 			}
 		}
 
@@ -335,9 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Selection.start != Selection.end)
 			{
-				var start = Math.Min(Selection.start, Selection.end);
-				var end = Math.Max(Selection.start, Selection.end);
-				var text = Text[start..end];
+				var text = SelectedText;
 				var dataPackage = new DataPackage();
 				dataPackage.SetText(text);
 				Clipboard.SetContent(dataPackage);
@@ -347,6 +360,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public void SelectAll() => Selection = new Range(0, Text.Length);
 
 		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		#region SelectionHighlightColor (DP)
 		public SolidColorBrush SelectionHighlightColor
 		{
 			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
@@ -372,6 +386,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+		#endregion
+
+		#region SelectedText (DP - readonly)
+		public static DependencyProperty SelectedTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectedText), typeof(string),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(default(string)));
+
+		public string SelectedText
+		{
+			get => (string)this.GetValue(SelectedTextProperty);
+			private set => this.SetValue(SelectedTextProperty, value);
+		}
+		#endregion
 
 		partial void UpdateIsTextTrimmed()
 		{
