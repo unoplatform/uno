@@ -46,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
+		private Range _selectionOnPointerPressed;
 #endif
 
 		private Hyperlink _hyperlinkOver;
@@ -56,7 +57,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
 		private Range _selection;
-		private Range _selectionOnPointerPressed;
 
 		// end can be less than or equal to start when the selection starts ahead and then goes back
 		// see the selection in TextBox.skia.cs for more info
@@ -906,6 +906,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
+#if !__WASM__
 		// https://github.com/unoplatform/uno-private/issues/1238
 		// For pen and touch selection, we need to:
 		// * Start selection using a long-press and/or double-tap (platform specific)
@@ -915,6 +916,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// * Show a magnifier when finger can hide the text being (un)selected (platform specific)
 		private static bool SupportsSelection(PointerRoutedEventArgs args)
 			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
+#endif
 
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
