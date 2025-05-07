@@ -21,9 +21,9 @@ stages:
       displayName: Cache npm packages
 
     - template: templates/gitversion-run.yml
-    - template: .azure-devops-commitsar.yml
-    - template: .azure-devops-spell-check.yml
-    - template: .azure-devops-markdown-lint.yml
+    - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-spell-check.yml
+    - template: setup/.azure-devops-setup-markdown-lint.yml
 
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
