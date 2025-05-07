@@ -69,7 +69,7 @@ If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Pl
 
 ### XAML Fundamentals for Web and Mobile (Free)
 
-Any WinUI/XAML material is a great starting point as all we do is take that over the Uno Platform bridge. To that point, one Uno Platform contributor and Microsoft MVP, Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
+Any WinUI/XAML material is a great starting point, as all we do is take that over the Uno Platform bridge. To that point, one Uno Platform contributor and Microsoft MVP, Nick Randolph, has been revitalizing older XAML resources on his [.NET Travels blog](https://nicksnettravels.builttoroam.com/xaml-basics/). Uno Platform will be continuing the series on our blog.
 
 ## Microsoft docs and blogs on Uno Platform (Free)
 
