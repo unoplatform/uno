@@ -70,6 +70,6 @@ If an element is disabled or can't be interacted with for any reason, hovering y
 
 ![Elements Teaching Tip](Assets/core-tools/elements-teaching-tip.png)
 
-# Next
+## Next
 
- - [Toolbar](xref:Uno.HotDesign.Toolbar)
+- [Toolbar](xref:Uno.HotDesign.Toolbar)
