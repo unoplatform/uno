@@ -59,11 +59,11 @@ The main **[Canvas](Uno.HotDesign.Canvas)** in the center of the interface repre
 
 ### Properties
 
-The **Properties** window, located on the right side of the interactive canvas, displays the attributes of the currently selected element on the canvas. By default, it highlights **Smart** properties, prioritizing the most commonly adjusted settings for the element. If you need access to all available properties, you can switch to the **All** view.
+The **[Properties](xref:Uno.HotDesign.Properties)** window, located on the right side of the interactive canvas, displays the attributes of the currently selected element on the canvas. By default, it highlights **Smart** properties, prioritizing the most commonly adjusted settings for the element. If you need access to all available properties, you can switch to the **All** view.
 
 This window also allows you to search for specific properties and make adjustments directly, such as modifying styles, layouts, appearances, data bindings, resources, responsiveness, and interactions, to customize your UI elements effectively.
 
-[➜ Learn more about the Properties window]()
+[➜ Learn more about the Properties window](xref:Uno.HotDesign.Properties)
 
 ### Toolbar
 
@@ -89,7 +89,7 @@ Located at the top of the interactive canvas, the **Toolbar** streamlines your d
 
 - <img src="Assets/toolbar-more-options.png" alt="Hot Design Toolbar more options icon" height=30  />  More options, including showing or hiding the various tool windows, providing flexibility in customizing your design workspace.
 
-[➜ Learn more about the Toolbar]()
+[➜ Learn more about the Toolbar](xref:Uno.HotDesign.Toolbar)
 
 ## Using Hot Design
 
