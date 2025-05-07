@@ -44,7 +44,7 @@ namespace Windows.UI.ViewManagement
 						scp = outerScv;
 					}
 
-					_padScrollContentPresenter = scp.Pad(OccludedRect);
+					_padScrollContentPresenter = scp.Pad(OccludedRect, Rect.Empty);
 				}
 				focusedElement.StartBringIntoView();
 			}
