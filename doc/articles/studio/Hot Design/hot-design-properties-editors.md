@@ -91,6 +91,7 @@ To edit a Complex Type, simply click the icon. The Properties window will switch
 <img src="Assets/core-tools/media/properties-edit-complex-type.gif" height="600" alt="GIF showing how to edit a Complex Type on the Properties window" />
 
 ### Leaving the Complex Type editor
+
 After you're done, to return to the default Properties view, just click the name of the main element you're editing, shown in the top-left breadcrumb area of the Properties window. You'll then see that the chosen Complex Type appears next to the property, confirming it's been set.
 
 <img src="Assets/core-tools/media/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />
