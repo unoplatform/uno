@@ -315,38 +315,47 @@ Use this feature to keep track of your live design updates and identify any prob
 
 ---
 
-## 8. More Options
+## 8. More Options <img src="Assets/toolbar-more-options.png" alt="More options icon" height="30" />
 
-<img src="Assets/toolbar-more-options.png" alt="More options icon" height="30" />
+Clicking the three-dot icon opens the **More Options** menu, giving you full control over your Hot Design workspace, access to help resources, and quick links for feedback:
 
-Click to open the **More Options** menu, where you can:
+- **Windows**  
+  Toggle panel visibility to focus on what matters:  
+  - **Show Tools In-App**: dock Properties, Assets, Live Visual Tree inside the canvas or disable to open a external window.  
+  - **All**: show or hide every tool panel at once (Ctrl + Shift + A)  
+  - **Toolbox**: toggle the ToolBox (List of Elements to Drag and Drop to your application) visibility (Ctrl + Shift + T)  
+  - **Elements**: toggle the Elements (Live Visual Tree of all Elements) visibility (Ctrl + Shift + E)  
+  - **Properties**: toggle the Property Grid (Where you can change all Properties values) visibility (Ctrl + Shift + P)
 
-- Toggle visibility of **Tool Windows** (Properties, Assets, Live Visual Tree).  
-- Reset the Hot Design canvas to its default layout.  
-- Access **Settings** for fine-tuning behavior (e.g., auto-reload on save, custom hotkeys).  
-- View **About** information and version details.
+- **Help**  
+  - **Documentation**  
 
-More Options
-Windows
-In App / Show All / Show Panels
-Resizable window panel sections
-Help
-Documentation
-Feedback
-Discord server
-YouTube channel
-Privacy Policy
-Terms of Use
+    Find guidance and tutorials:  
+    - **Overview**: high-level Hot Design guide  
+    - **Getting Started**: step-by-step introduction  
+    - **Counter App Tutorial**: hands-on example  
+  
+  - **Feedback**  
+    Share your experience or suggest improvements:  
+    - **Report an issue/bug**: open an external window to Create new **Bug** issue on GitHub 
+    - **Suggest a feature**:  open an external window to Create **Enhancement Request** new  issue on GitHub 
+    - **Ask a question**: open an external window to Uno Platform Studio Discussions page
+  
+  - **Community & Resources**  
+    Quick links to stay connected:  
+    - **Discord server**: open an external window to Discord Community
+    - **YouTube channel**: open an external window to Youtube channel, where you can see the more recent Uno Platform videos.
+  
+  - **Legal & About**  
+    View policies and version info:  
+    - **Privacy Policy**: open an external window to Uno Platform Privacy Policy
+    - **Terms of Use**:  open an external window to Terms of Use for Uno Platform Websites & Apps
 
----
+#### Quick Visual Guide
 
-## Getting Started
-
-1. **Open your Uno Platform project** in Visual Studio.  
-2. **Build and run** in Debug configuration.  
-3. **Click the Enter Hot Design** button on the Toolbar to attach the live designer.  
-4. **Make XAML changes** and watch them apply instantly.  
-5. Use **Play/Pause**, **Form Factor**, and **Theme** toggles to explore and refine your UI across contexts.
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Help.gif" alt="Demo: opening the More Options menu" />
+</p>
 
 ---
 
