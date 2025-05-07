@@ -278,14 +278,40 @@ Designs that look good in one theme can break in another. This toggle lets you v
   <img src="Assets/gifs/ToolBar-Theme.gif" alt="Demo: changing Theme Light/Dark" />
 </p>
 
-## 7. Connection & Hot Reload Status
+---
 
-Dev Server status/notifications
+## 7. Connection & Hot Reload Status <img src="Assets/toolbar-connection-status.png" alt="Connection status icon" height="30" />
 
-<img src="Assets/toolbar-connection-status.png" alt="Connection status icon" height="30" />
+The connection status icon gives you real-time feedback on whether Hot Design is actively connected to your app and if Hot Reload is functioning correctly.
 
-- **Connection status**: Indicates whether Hot Design is currently connected to the running app.  
-- **Hot Reload indicator**: Flashes when XAML or code changes are pushed live; hover for details on the last update.
+The icon updates dynamically to reflect the current state:
+
+- **Initializing** – Hot Design is setting up the connection to your running app.
+- **Ready** – Connected and ready to push live updates as you work.
+- **Unlicensed** – Hot Reload is unavailable due to a missing or invalid license.
+- **Disabled** – Hot Reload has been turned off or failed to initialize.
+
+Clicking the status icon opens the **event log panel**, which shows a timeline of key events during your session.
+
+This log provides:
+
+- Detailed **status updates**, including successful reloads, warnings, and errors.
+- **Timestamps** for each event, helping you trace what happened and when.
+- Insights to help you understand and troubleshoot any issues with sync or live changes.
+
+### What to look for:
+
+- The **status icon** visually changes depending on the current connection state.
+- A **Hot Reload notification** appears when important events occur (e.g., failed update, reload blocked).
+- Hover over events in the log panel to get extra context and error messages.
+
+Use this feature to keep track of your live design updates and identify any problems quickly.
+
+#### Quick Visual Guide
+
+<p align="center">
+  <img src="Assets/gifs/ToolBar-Events.gif" alt="Demo: Hot Reload Status and Event Panel" />
+</p>
 
 ---
 
