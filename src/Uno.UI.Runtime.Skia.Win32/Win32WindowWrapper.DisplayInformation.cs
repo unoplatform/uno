@@ -2,7 +2,9 @@ using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -42,6 +44,23 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		if (oldInfo.LogicalDpi != newInfo.LogicalDpi)
 		{
 			_displayInformation?.NotifyDpiChanged();
+			if (oldInfo == DisplayInfo.Default)
+			{
+				// First time. We need to rescale the window dimensions to
+				// match the "new" DPI scaling, otherwise the initial size
+				// will be too small on larger scaling values. This is
+				// similar to OnWmDpiChanged but without the WM_DPICHANGED
+				// message.
+				var success = PInvoke.SetWindowPos(
+					_hwnd,
+					HWND.Null,
+					(int)(Position.X * RasterizationScale),
+					(int)(Position.Y * RasterizationScale),
+					(int)(Size.Width * RasterizationScale),
+					(int)(Size.Height * RasterizationScale),
+					SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+				if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+			}
 		}
 	}
 
