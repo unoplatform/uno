@@ -18,10 +18,9 @@ body:
     id: enhancement-renderer
     attributes:
       label: Renderer
-      multiple: true
       options:
-        - Skia
-        - Native
+        - label: Skia
+        - label: Native
 
   - type: dropdown
     id: enhancement-platforms
