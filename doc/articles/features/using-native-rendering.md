@@ -2,9 +2,9 @@
 uid: uno.features.renderer.native
 ---
 
-# The Native Rendering
+# The Native Renderer
 
-The native rendering is our oldest rendering backend, which uses the native components and APIs to render the UI.
+The native renderer is our oldest backend, which uses the native components and APIs to render the UI.
 
 Each supported platform (iOS, Android and WebAssembly) has its own set of platform interactions, listed below, allowing for deep integration of native components into the visual tree. Each `UIElement` has a corresponding native element (`div` on WebAssembly, `UIView` on iOS, `ViewGroup` on Android).
 
