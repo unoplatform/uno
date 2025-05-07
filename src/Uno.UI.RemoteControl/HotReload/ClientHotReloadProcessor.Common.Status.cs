@@ -213,35 +213,69 @@ public partial class ClientHotReloadProcessor
 
 		private string[] GetCuratedTypes()
 		{
+			// Build a _pretty list_ of types that are not too verbose.
+			// The type "HotReloadException" could be injected by Hot Reload into the app.
+			// The type "EmbeddedXamlSourcesProvider" is used by the XamlSourceGenerator to provide the XAML sources,
+			// we don't want to surface it to the user.
+
+			// Eventually we should use reflection to remove _generated code_ from the list using attributes discovery.
+
 			return Types
 				.Select(GetFriendlyName)
-				.Where(name => name is { Length: > 0 } and not "HotReloadException")
+				.Where(name => name is { Length: > 0 } and not "HotReloadException" and not "EmbeddedXamlSourcesProvider")
 				.Distinct()
+				.OrderBy(n => n, StringComparer.Ordinal) // make the list deterministic
 				.ToArray()!;
 
-			string? GetFriendlyName(Type type)
+			static string GetFriendlyName(Type type)
 			{
-				var name = type.FullName ?? type.Name;
+				// Possible incoming names – each should resolve to "Foo":
+				// - Application.Foo                  (regular class)
+				// - Application.Foo#1                (hot‑reload update)
+				// - Application.Foo+Bar              (nested class)
+				// - Application.Foo+Bar#1            (nested class, hot‑reload update)
+				// - Application.Foo`1                (open generic)
+				// - Application.Foo`1#1              (open generic, hot‑reload update)
+				// - Application.Foo`1+Bar            (nested open generic)
+				// - Application.Foo`1+Bar#1          (nested open generic, hot‑reload update)
+				// - Application.Foo`1+Bar`1          (nested generic-with-generic)
+				// - Application.Foo`1+Bar`1#1        (nested generic-with-generic, hot‑reload update)
+				// - Application.Foo+Bar+_Internal    (deeper nesting)
 
-				var versionIndex = name.IndexOf('#');
-				if (versionIndex >= 0)
+				var name = (type.FullName ?? type.Name).AsSpan();
+
+				// Strip any “[TArg,…]” generic‑argument list (closed generics).
+				// Hot‑Reload never delivers closed generics, but this keeps us future‑proof.
+				if (name.IndexOf('[') is var bracketIndex and >= 0)
+				{
+					name = name[..bracketIndex];
+				}
+
+				// Remove Hot‑Reload version suffix (“#n”).
+				if (name.IndexOf('#') is var versionIndex and >= 0)
 				{
 					name = name[..versionIndex];
 				}
 
-				var nestingIndex = name.IndexOf('+');
-				if (nestingIndex >= 0)
+				// Retain only the outermost class in a nesting chain (“Foo+Bar” → “Foo”).
+				if (name.IndexOf('+') is var nestingIndex and >= 0)
 				{
 					name = name[..nestingIndex];
 				}
 
-				var endOfNamespaceIndex = name.LastIndexOf('.');
-				if (endOfNamespaceIndex >= 0)
+				// Drop the namespace, keeping just the type name (“Namespace.Foo” → “Foo”).
+				if (name.LastIndexOf('.') is var nsIndex and >= 0)
 				{
-					name = name[(endOfNamespaceIndex + 1)..];
+					name = name[(nsIndex + 1)..];
 				}
 
-				return name;
+				// Remove the generic arity suffix (“Foo`1” → “Foo”).
+				if (name.IndexOf('`') is var genericIndex and >= 0)
+				{
+					name = name[..genericIndex];
+				}
+
+				return name.ToString(); // never null
 			}
 		}
 
