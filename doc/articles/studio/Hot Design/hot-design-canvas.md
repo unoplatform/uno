@@ -122,4 +122,4 @@ _TO_DO_
 
 ## Next
 
-- [Property window](xref:Uno.HotDesign.PropertyGrid)
+- [Properties](xref:Uno.HotDesign.Properties)

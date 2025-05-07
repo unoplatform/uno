@@ -72,4 +72,4 @@ If an element is disabled or can't be interacted with for any reason, hovering y
 
 ## Next
 
-- [Toolbar](xref:Uno.HotDesign.Toolbar)
+- [Canvas](xref:Uno.HotDesign.Canvas)
