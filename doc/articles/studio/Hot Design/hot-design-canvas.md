@@ -4,122 +4,129 @@ uid: Uno.HotDesign.Canvas
 
 # Canvas
 
-The **Canvas** is the main area in the center of the screen that represents your running app. It’s where you visually design and interact with your UI. You can select, move, and manage elements directly on the Canvas, seeing live feedback as you work.
+The **Canvas** is the central design surface where you build and interact with your running app's user interface. It reflects the live visual output of your XAML page and allows you to select, move, edit, and organize controls directly. Actions you take on the Canvas are reflected in real time, making it the most visual and interactive part of **Hot Design**.
 
-Below are some of the key features available on the Canvas.
+Whether you're adjusting layout, editing a `UserControl`, or testing structure with live feedback, the Canvas helps you work faster and more intuitively.
 
 ## Zoom and Scroll
 
 ### Zoom
 
-You can zoom in and out of the Canvas view to get a better look at your design.
+To zoom in or out of the **Canvas**:
 
-- **Mouse**: Hold `Ctrl` and scroll with your mouse wheel.
-- **Keyboard**: Use `Ctrl +` to zoom in, and `Ctrl -` to zoom out.
+- **Mouse**: Hold `Ctrl` (or `Cmd` on macOS) and scroll with your mouse wheel.
+- **Keyboard**: Press `Ctrl +` / `Ctrl -` (or `Cmd +` / `Cmd -` on macOS) to zoom in or out.
 
-<img src="Assets/canvas-zoom.gif" height="600" alt="GIF showing how to zoom in and out on canvas" />
+<img src="Assets/canvas-zoom.gif" height="600" alt="How to zoom in and out of the Canvas" />
 
 ### Scroll
 
-You can also scroll vertically using the mouse wheel, and horizontally by holding `Shift` and using the mouse wheel.
+To scroll the **Canvas** area:
 
-<img src="Assets/canvas-scroll.gif" height="600" alt="GIF showing how to scroll on canvas" />
+- Scroll vertically using your mouse wheel.
+- Scroll horizontally by holding `Shift` while using the mouse wheel.
 
-## Selection
+<img src="Assets/canvas-scroll.gif" height="600" alt="How to scroll the Canvas" />
 
-To select an element on the Canvas, just click on it. The selected element will show a blue border (visual adorner).
+## Select Elements on the Canvas
+
+To select a control or layout element, click it directly on the **Canvas**. The selected element is highlighted with a blue border, known as a **visual adorner**.
 
 ![Canvas Selection](Assets/canvas-selection.png)
 
-### Multi-selection
+### Select Multiple Elements
 
-You can select multiple elements at the same time by holding `Ctrl` and clicking each element. This is helpful when you want to change common properties at the same time.
+Hold `Ctrl` (or `Cmd` on macOS) and click additional elements to select them together. This is useful for applying shared properties or moving groups of elements.
 
 ![Canvas Multi-selection](Assets/canvas-multi-selection.png)
 
-## Visual Adorner
+## Visual Adorner Details
 
-When you select an element on the Canvas, a blue border (called a *visual adorner*) will appear around it.  
-This shows that the element is selected. Below the adorner, you'll also see:
+When an element is selected, a blue border (called a *visual adorner*) appears around it. It includes:
 
-- The name of the control
-- The size (width and height) of the control
+- The control’s name (e.g., `Button`, `TextBlock`)
+- The control’s size in pixels (width × height)
 
 ![Visual Adorner on Canvas](Assets/canvas-visual-adorner.png)
 
-## Drag and Drop
+## Rearranging Elements with Drag and Drop
 
-You can rearrange elements on the Canvas by dragging and dropping them to a new position. To do this, simply click and hold the element you want to move, drag it to the new desired location, and release the mouse button.
+You can reposition controls directly in the layout:
 
-If there are no layout restrictions or invalid placements, the element will be moved to the new position and the structure will update accordingly. This makes it easy to reorganize your layout visually and quickly.
+1. Click and hold an element.
+2. Drag it to a new location on the **Canvas**.
+3. Release to drop it.
 
-<img src="Assets/canvas-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on canvas" />
+If the layout allows it, the element will be moved and the structure updated accordingly.
 
-## Add Parent
+<img src="Assets/canvas-drag-drop.gif" height="600" alt="How to drag and drop on the Canvas" />
 
-To add a parent container around an existing element:
+## Wrap an Element with a Parent Container
+
+To surround an existing element with a new layout container:
 
 1. Right-click the element.
-1. In the flyout menu, choose **Add parent**.
-1. A list of available parent controls will appear. Select the one you want.
+2. Choose **Add parent**.
+3. Select a parent control such as `Grid` or `StackPanel`.
 
-The selected parent will be wrapped around your element in the visual layout.
+The new parent will be added to the visual tree and reflected on the **Canvas**.
 
 ![Canvas Add Parent](Assets/canvas-add-parent.png)
 
-## Select Parent
+## Select an Element’s Parent
 
-Sometimes it's hard to click directly on a parent element. To help with this:
+If you're trying to select a layout container of a specific control:
+
+1. Right-click the child element.
+2. Choose **Select parent** from the context menu.
+
+This selects the parent element on both the **Canvas** and in the **Elements** window.
+
+<img src="Assets/canvas-select-parent.gif" height="450" alt="How to select a parent element on the Canvas" />
+
+## Delete an Element
+
+To remove a control from the **Canvas**:
 
 1. Right-click the element.
-1. Choose **Select parent** from the flyout menu.
+2. Choose **Delete [ControlName]** from the menu (e.g., **Delete Button**).
 
-The parent of the selected element will then become selected.
+The element will be removed from both the **Canvas** and the **Elements** window.
 
-<img src="Assets/canvas-select-parent.gif" height="450" alt="GIF showing how to select a parent element on canvas" />
+<img src="Assets/canvas-delete-element.gif" height="450" alt="How to delete an element from the Canvas" />
 
-## Delete Element
+## Edit a UserControl from the Canvas
 
-To remove an element from the page:
+A `UserControl` is a reusable component that encapsulates a set of UI elements and their associated behavior. It's commonly used to organize parts of your interface into self-contained, maintainable units that can be reused across different parts of your application.
 
-1. Right-click the element.
-2. Choose **Delete [ControlName]** from the menu.
-For example: "Delete TextBlock"
+If your layout includes a `UserControl`, you can open it directly from the **Canvas** for editing:
 
-The element will be removed from both the Canvas and the Element window.
+1. Right-click the `UserControl`.
+2. Choose **Edit [UserControlName]**.
 
-<img src="Assets/canvas-delete-element.gif" height="450" alt="GIF showing how to delete an element from the canvas" />
+This opens the editor for the `UserControl`, allowing you to modify its internal structure or layout. To return to your previous page edition, click the `../` back icon in the top-left corner of the interface or the **Elements** window.
 
-## Edit
+<img src="Assets/canvas-edit-user-control.gif" height="600" alt="How to edit a UserControl from the canvas" />
 
-If you’ve added a **UserControl** (for example, something like a reusable page section), you can edit it by:
+## Layout Separators
 
-1. Right-clicking the UserControl.
-2. Choosing **Edit [UserControlName]**.
-
-You’ll be taken to a separate area where you can make changes to that control.
-
-To return to your main page, click the back icon in the top-left corner or the back icon in the **Elements** window.
-
-<img src="Assets/canvas-edit-user-control.gif" height="600" alt="GIF showing how to edit a UserControl on the canvas" />
-
-## Notifications
-
-While working in the Canvas, notifications may appear to provide feedback:
-
-- When applying certain changes, a loading notification may appear.
-- If there's an error updating XAML or applying changes, an error notification will show in the bottom-right corner of the Canvas.
-
-## Controls Separation
-
-When working with layouts like `Grid` and `StackPanel`, you’ll see visual separators that mark rows and columns. These are shown as pink dashed lines and help you understand the structure of your layout.
+When working with layout containers like `Grid` or `StackPanel`, pink dashed lines appear to show row and column boundaries. These **visual separators** help you understand the layout structure and spacing.
 
 ![Canvas Layout Separation](Assets/canvas-layout-separator.png)
 
-## How To Edit Flyouts
+## Helpful Notifications
+
+While designing on the Canvas, notifications may appear:
+
+- When changes are applied, a loading indicator may display briefly.
+- If an error occurs (e.g., invalid XAML), an error notification appears in the bottom-right corner.
+
+These notifications help you track changes and issues in real time.
+
+## Editing Flyouts
 
 To Do
 
-## Next
+## Next Step
 
 - [Properties](xref:Uno.HotDesign.Properties)
