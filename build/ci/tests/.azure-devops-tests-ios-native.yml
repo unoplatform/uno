@@ -65,19 +65,19 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/nuget-cache.yml
+  - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-mobile-install-mac.yml
+  - template: ../templates/dotnet-mobile-install-mac.yml
     parameters:
       UnoCheckParameters: '--tfm net9.0-ios'
 
-  - template: templates/ios-build-select-version.yml
+  - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
   - bash: |
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
@@ -117,7 +117,7 @@ jobs:
 ## Automated tests
 ##
 - ${{ each AutomatedTestGroup in parameters.AUTOMATED_TESTS_GROUPS }}:
-  - template: .azure-devops-ios-tests-run.yml
+  - template: .azure-devops-tests-ios-runner.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
@@ -139,7 +139,7 @@ jobs:
 ## Runtime tests
 ##
 - ${{ each RuntimeTestGroup in parameters.RUNTIME_TESTS_GROUPS }}:
-  - template: .azure-devops-ios-tests-run.yml
+  - template: .azure-devops-tests-ios-runner.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
@@ -160,7 +160,7 @@ jobs:
         - iOS_Build
 
 # Disabled for benchmkarks timeout
-# - template: .azure-devops-ios-tests-run.yml
+# - template: .azure-devops-tests-ios-runner.yml
 #   parameters:
 #     nugetPackages: $(NUGET_PACKAGES)
 #     JobName: 'iOS_Automated_Tests_Benchmarks'
@@ -173,7 +173,7 @@ jobs:
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
 - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
-  - template: .azure-devops-ios-tests-run.yml
+  - template: .azure-devops-tests-ios-runner.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'

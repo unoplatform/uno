@@ -21,7 +21,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - powershell: |
       dotnet build -c Release src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj /bl:$(build.artifactstagingdirectory)/test-comparer.binlog

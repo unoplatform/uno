@@ -7,4 +7,4 @@ steps:
 
   condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
 
-- template: templates/generate-changelog.yml
+- template: .azure-devops-setup-generate-changelog.yml

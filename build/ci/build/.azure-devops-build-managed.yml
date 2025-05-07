@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: binaries_win_build
-  displayName: 'Build Binaries'
+  displayName: 'Build'
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 1
 
@@ -31,13 +31,13 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/nuget-cache.yml
+  - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
 
-  - template: templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
       UnoCheckParameters: '--tfm net9.0-ios --tfm net9.0-maccatalyst --tfm net9.0-android --tfm net9.0-tvos'
 
@@ -78,7 +78,7 @@ jobs:
     displayName: Building Wasm Binaries
 
   - task: MSBuild@1
-    displayName: Building WinAppSDK/UWP package binaries
+    displayName: Building WinAppSDK package binaries
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version

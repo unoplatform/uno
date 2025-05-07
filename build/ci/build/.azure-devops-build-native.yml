@@ -6,7 +6,7 @@ parameters:
 
 jobs:
 - job: skia_package_macos_native_build
-  displayName: 'Skia macOS Native Binaries'
+  displayName: 'macOS Build'
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 
@@ -26,7 +26,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/gitversion.yml
+  - template: ../templates/gitversion.yml
   
   - bash: |
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
