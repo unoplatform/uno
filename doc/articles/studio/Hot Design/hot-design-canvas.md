@@ -17,25 +17,25 @@ You can zoom in and out of the Canvas view to get a better look at your design.
 - **Mouse**: Hold `Ctrl` and scroll with your mouse wheel.
 - **Keyboard**: Use `Ctrl +` to zoom in, and `Ctrl -` to zoom out.
 
-<img src="Assets/core-tools/media/canvas-zoom.gif" height="600" alt="GIF showing how to zoom in and out on canvas" />
+<img src="Assets/canvas-zoom.gif" height="600" alt="GIF showing how to zoom in and out on canvas" />
 
 ### Scroll
 
 You can also scroll vertically using the mouse wheel, and horizontally by holding `Shift` and using the mouse wheel.
 
-<img src="Assets/core-tools/media/canvas-scroll.gif" height="600" alt="GIF showing how to scroll on canvas" />
+<img src="Assets/canvas-scroll.gif" height="600" alt="GIF showing how to scroll on canvas" />
 
 ## Selection
 
 To select an element on the Canvas, just click on it. The selected element will show a blue border (visual adorner).
 
-![Canvas Selection](Assets/core-tools/canvas-selection.png)
+![Canvas Selection](Assets/canvas-selection.png)
 
 ### Multi-selection
 
 You can select multiple elements at the same time by holding `Ctrl` and clicking each element. This is helpful when you want to change common properties at the same time.
 
-![Canvas Multi-selection](Assets/core-tools/canvas-multi-selection.png)
+![Canvas Multi-selection](Assets/canvas-multi-selection.png)
 
 ## Visual Adorner
 
@@ -45,7 +45,7 @@ This shows that the element is selected. Below the adorner, you'll also see:
 - The name of the control
 - The size (width and height) of the control
 
-![Visual Adorner on Canvas](Assets/core-tools/canvas-visual-adorner.png)
+![Visual Adorner on Canvas](Assets/canvas-visual-adorner.png)
 
 ## Drag and Drop
 
@@ -53,7 +53,7 @@ You can rearrange elements on the Canvas by dragging and dropping them to a new 
 
 If there are no layout restrictions or invalid placements, the element will be moved to the new position and the structure will update accordingly. This makes it easy to reorganize your layout visually and quickly.
 
-<img src="Assets/core-tools/media/canvas-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on canvas" />
+<img src="Assets/canvas-drag-drop.gif" height="600" alt="GIF showing how to drag and drop on canvas" />
 
 ## Add Parent
 
@@ -65,7 +65,7 @@ To add a parent container around an existing element:
 
 The selected parent will be wrapped around your element in the visual layout.
 
-![Canvas Add Parent](Assets/core-tools/canvas-add-parent.png)
+![Canvas Add Parent](Assets/canvas-add-parent.png)
 
 ## Select Parent
 
@@ -76,7 +76,7 @@ Sometimes it's hard to click directly on a parent element. To help with this:
 
 The parent of the selected element will then become selected.
 
-<img src="Assets/core-tools/media/canvas-select-parent.gif" height="450" alt="GIF showing how to select a parent element on canvas" />
+<img src="Assets/canvas-select-parent.gif" height="450" alt="GIF showing how to select a parent element on canvas" />
 
 ## Delete Element
 
@@ -88,7 +88,7 @@ For example: "Delete TextBlock"
 
 The element will be removed from both the Canvas and the Element window.
 
-<img src="Assets/core-tools/media/canvas-delete-element.gif" height="450" alt="GIF showing how to delete an element from the canvas" />
+<img src="Assets/canvas-delete-element.gif" height="450" alt="GIF showing how to delete an element from the canvas" />
 
 ## Edit
 
@@ -101,7 +101,7 @@ You’ll be taken to a separate area where you can make changes to that control.
 
 To return to your main page, click the back icon in the top-left corner or the back icon in the **Elements** window.
 
-<img src="Assets/core-tools/media/canvas-edit-user-control.gif" height="600" alt="GIF showing how to edit a UserControl on the canvas" />
+<img src="Assets/canvas-edit-user-control.gif" height="600" alt="GIF showing how to edit a UserControl on the canvas" />
 
 ## Notifications
 
@@ -114,11 +114,11 @@ While working in the Canvas, notifications may appear to provide feedback:
 
 When working with layouts like `Grid` and `StackPanel`, you’ll see visual separators that mark rows and columns. These are shown as pink dashed lines and help you understand the structure of your layout.
 
-![Canvas Layout Separation](Assets/core-tools/canvas-layout-separator.png)
+![Canvas Layout Separation](Assets/canvas-layout-separator.png)
 
 ## How To Edit Flyouts
 
-_TO_DO_
+To Do
 
 ## Next
 

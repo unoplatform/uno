@@ -15,7 +15,7 @@ This is the default way of setting a property value. Depending on the property t
 - For `string`, `int`, `decimal`, or similar types, a simple **TextField** is shown.
 - For layout-related properties like `Padding`, `Margin`, `CornerRadius`, and `BorderThickness`, a custom editor appears. This editor lets you configure each side (Left, Top, Right, Bottom) individually, or use shortcut modes to apply one or two values at once.
 
-<img src="Assets/core-tools/media/properties-flyout.gif" height="600" alt="GIF showing the Advanced Flyout" />
+<img src="Assets/properties-flyout.gif" height="600" alt="GIF showing the Advanced Flyout" />
 
 ## Binding
 
@@ -34,7 +34,7 @@ Binding allows dynamic data connection between your UI and data source. Here's a
   - `OneWay`: Updates the UI when the source changes.
   - `TwoWay`: Syncs changes both ways between UI and source.
 
-<img src="Assets/core-tools/media/properties-flyout-binding.gif" height="600" alt="GIF showing how to set bindings on the Advanced Flyout" />
+<img src="Assets/properties-flyout-binding.gif" height="600" alt="GIF showing how to set bindings on the Advanced Flyout" />
 
 ### Advanced
 
@@ -52,7 +52,7 @@ Binding allows dynamic data connection between your UI and data source. Here's a
 
 - **Update Source Trigger**: Controls when the data flows from the UI back to the source. For example, it can be set to update immediately on change or only after focus is lost.
 
-<img src="Assets/core-tools/media/properties-flyout-binding-advanced.gif" height="600" alt="GIF showing how to set advanced bindings on the Advanced Flyout" />
+<img src="Assets/properties-flyout-binding-advanced.gif" height="600" alt="GIF showing how to set advanced bindings on the Advanced Flyout" />
 
 ## Resource
 
@@ -60,4 +60,4 @@ This option lets you apply a `StaticResource` or `ThemeResource` from your app. 
 
 When focused, the input will suggest available resources. Just click on one to assign it to the property.
 
-<img src="Assets/core-tools/media/properties-flyout-resources.gif" height="600" alt="GIF showing how to set resources on the Advanced Flyout" />
+<img src="Assets/properties-flyout-resources.gif" height="600" alt="GIF showing how to set resources on the Advanced Flyout" />
