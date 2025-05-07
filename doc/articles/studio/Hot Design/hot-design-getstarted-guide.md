@@ -41,21 +41,29 @@ Here are the tool windows available on the interactive canvas:
 
 ### Toolbox
 
-Located on the upper-left side, the **Toolbox** window provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **Elements** window for easy integration into your design.
+Located on the upper-left side, the **[Toolbox](xref:Uno.HotDesign.Toolbox)** window provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **Elements** window for easy integration into your design.
+
+[➜ Learn more about the Toolbox window](xref:Uno.HotDesign.Toolbox)
 
 ### Elements
 
 Below the **Toolbox**, the **Elements** window displays the hierarchical structure of your app. It represents the visual tree of your app, allowing you to select and organize elements. Clicking on an element in this window highlights it on the canvas for detailed modifications.
 
+[➜ Learn more about the Elements window]()
+
 ### Canvas
 
 The main **Canvas** in the center of the interface represents your running app. It is an interactive area where you can visually design and interact with the user interface. You can select controls, see their outlines, and preview any changes made to the layout or properties.
+
+[➜ Learn more about the interactive Canvas]()
 
 ### Properties
 
 The **Properties** window, located on the right side of the interactive canvas, displays the attributes of the currently selected element on the canvas. By default, it highlights **Smart** properties, prioritizing the most commonly adjusted settings for the element. If you need access to all available properties, you can switch to the **All** view.
 
 This window also allows you to search for specific properties and make adjustments directly, such as modifying styles, layouts, appearances, data bindings, resources, responsiveness, and interactions, to customize your UI elements effectively.
+
+[➜ Learn more about the Properties window]()
 
 ### Toolbar
 
@@ -80,6 +88,8 @@ Located at the top of the interactive canvas, the **Toolbar** streamlines your d
 - <img src="Assets/toolbar-connection-status.png" alt="Hot Design Toolbar connection status icon" height=30  />  Viewing the connection status and the latest updates from **Hot Reload**.
 
 - <img src="Assets/toolbar-more-options.png" alt="Hot Design Toolbar more options icon" height=30  />  More options, including showing or hiding the various tool windows, providing flexibility in customizing your design workspace.
+
+[➜ Learn more about the Toolbar]()
 
 ## Using Hot Design
 
