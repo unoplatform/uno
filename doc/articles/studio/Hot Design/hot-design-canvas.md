@@ -11,6 +11,7 @@ Below are some of the key features available on the Canvas.
 ## Zoom and Scroll
 
 ### Zoom
+
 You can zoom in and out of the Canvas view to get a better look at your design.
 
 - **Mouse**: Hold `Ctrl` and scroll with your mouse wheel.
@@ -40,6 +41,7 @@ You can select multiple elements at the same time by holding `Ctrl` and clicking
 
 When you select an element on the Canvas, a blue border (called a *visual adorner*) will appear around it.  
 This shows that the element is selected. Below the adorner, you'll also see:
+
 - The name of the control
 - The size (width and height) of the control
 
@@ -114,6 +116,10 @@ When working with layouts like `Grid` and `StackPanel`, you’ll see visual sepa
 
 ![Canvas Layout Separation](Assets/core-tools/canvas-layout-separator.png)
 
-# Next
+## How To Edit Flyouts
 
- - [Property window](xref:Uno.HotDesign.PropertyGrid)
+_TO_DO_
+
+## Next
+
+- [Property window](xref:Uno.HotDesign.PropertyGrid)
