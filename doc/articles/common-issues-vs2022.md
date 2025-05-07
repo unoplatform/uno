@@ -37,21 +37,6 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
-## Deploying an Android app takes a long time
-
-Android deployment requires a few considerations:
-
-- Android physical device
-  - Make sure to have a good cable (USB 3 or C) to have a good connection
-  - Avoid debugging through wifi
-- Android Emulators
-  - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/dotnet/maui/android/emulator/device-manager).
-  - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/dotnet/maui/android/emulator/hardware-acceleration))
-  - Try disabling `Fast Deployment` in your app configuration
-        1. Open your project properties
-        1. In the android section search for `Fast Deployment`
-        1. uncheck all target platforms
-
 ### My application does not start under WSL
 
 Your application may fail to run under WSL for multiple reasons:
