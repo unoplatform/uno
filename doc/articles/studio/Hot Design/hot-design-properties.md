@@ -17,8 +17,10 @@ You can quickly find a specific property by using the search box located below t
 ### Smart and All tabs
 
 At the top of the Properties window, you'll see two tabs: **Smart** and **All**.
+
 - **Smart** displays the most commonly adjusted properties for the selected element, providing quicker access for typical use cases.
 - **All** shows the complete list of properties available for that element.
+
 Just click the tab you want to switch views.
 
 <img src="Assets/core-tools/media/properties-smart-tab.gif" height="600" alt="GIF showing how to switch between tabs on the Properties window" />

@@ -433,15 +433,14 @@
       - name: Getting Started with Hot Design
         href: xref:Uno.HotDesign.GetStarted.Guide
         items:
+        - name: Toolbar
+          href: xref:Uno.HotDesign.Toolbar
         - name: Toolbox
           href: xref:Uno.HotDesign.Toolbox
         - name: Elements
           href: xref:Uno.HotDesign.Elements
         - name: Canvas
           href: xref:Uno.HotDesign.Canvas
-        items:
-        - name: OverView
-          href: xref:Uno.HotDesign.GetStarted.Guide
         - name: Properties
           href: xref:Uno.HotDesign.Properties
           items:
