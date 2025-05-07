@@ -27,7 +27,7 @@ jobs:
 ## Runtime tests
 ##
 - ${{ each RuntimeTestGroup in parameters.IOS_RUNTIME_TESTS_GROUPS }}:
-  - template: .azure-devops-ios-tests-run.yml
+  - template: .azure-devops-tests-ios-runner.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
