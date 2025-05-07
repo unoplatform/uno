@@ -41,15 +41,15 @@ Here are the tool windows available on the interactive canvas:
 
 ### Toolbox
 
-Located on the upper-left side, the **[Toolbox](xref:Uno.HotDesign.Toolbox)** window provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **Elements** window for easy integration into your design.
+Located on the upper-left side, the **[Toolbox](xref:Uno.HotDesign.Toolbox)** window provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **[Elements](xref:Uno.HotDesign.Elements)** window for easy integration into your design.
 
 [➜ Learn more about the Toolbox window](xref:Uno.HotDesign.Toolbox)
 
 ### Elements
 
-Below the **Toolbox**, the **Elements** window displays the hierarchical structure of your app. It represents the visual tree of your app, allowing you to select and organize elements. Clicking on an element in this window highlights it on the canvas for detailed modifications.
+Below the **[Toolbox](xref:Uno.HotDesign.Toolbox)**, the **[Elements](xref:Uno.HotDesign.Elements)** window displays the hierarchical structure of your app. It represents the visual tree of your app, allowing you to select and organize elements. Clicking on an element in this window highlights it on the canvas for detailed modifications.
 
-[➜ Learn more about the Elements window]()
+[➜ Learn more about the Elements window](xref:Uno.HotDesign.Elements)
 
 ### Canvas
 
