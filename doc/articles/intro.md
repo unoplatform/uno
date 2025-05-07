@@ -152,7 +152,7 @@ Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](http
 
 This means that existing WinUI code is compatible with Uno Platform. Existing WinUI libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](xref:Uno.Development.SupportedLibraries) have been ported to Uno Platform.
 
-![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-copy.png)
+![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-diagram.png)
 
 Uno Platform is pixel-perfect by design, delivering consistent visuals on every platform. At the same time, it can either use the native UI framework on most target platforms or use a Skia-based rendering approach, while making it easy to [integrate native views](xref:Uno.Development.NativeViews) and tap into native platform features.
 
