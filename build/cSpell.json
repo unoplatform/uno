@@ -212,7 +212,8 @@
 	"tvos",
 	"appleuikit",
 	"uikit",
-	"settingscard"
+	"settingscard",
+	"trackpad"
   ],
   "patterns": [
 	{
