@@ -4168,6 +4168,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		public async Task When_Touch_Focused_Then_Scrolled_Away()
+		{
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Text = "Some Text"
+			};
+
+			var sv = new ScrollViewer()
+			{
+				Height = 100,
+				Content = new StackPanel()
+				{
+					Children =
+					{
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+							Width = 100,
+							Height = 500
+						},
+						SUT,
+						new Microsoft.UI.Xaml.Shapes.Rectangle()
+						{
+							Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+							Width = 100,
+							Height = 500
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sv);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			SUT.StartBringIntoView();
+			await UITestHelper.WaitForIdle(true);
+
+			// make the textbox touch knob appear
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+
+			// scroll
+			finger.Press(sv.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle(true);
+			finger.MoveBy(0, 300, stepOffsetInMilliseconds: 20);
+			await UITestHelper.WaitForIdle(true);
+			finger.Release();
+			await UITestHelper.WaitForIdle(true);
+
+			await Task.Delay(TimeSpan.FromSeconds(2));
+
+			SUT.GetAbsoluteBoundsRect().Bottom.Should().BeApproximately(sv.GetAbsoluteBoundsRect().Bottom, 5);
+		}
+
+		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/1199")]
 		public async Task When_TextBox_TextChange_Not_Trigger_Selection_Change_To_Start()
 		{
