@@ -30,6 +30,8 @@ Expand your skills with these in-depth tutorials.
 
 Explore a range of sample projects showcasing the versatility of Uno Platform.
 
+[**Chefs**](xref:Uno.Chefs.Overview): A recipe app that combines recipe browsing with interactive features, allowing users to explore step-by-step instructions, video tutorials, nutritional information, user reviews, and even create their own personalized cookbooks, all while showcasing powerful features of the Uno Platform in a practical, real-world scenario.
+
 [**Samples Repository**](xref:Uno.Samples): A curated list of sample projects that demonstrate various functionalities and use cases ranging from small single-feature samples to larger showcase applications.
 
 ## Additional Resources
