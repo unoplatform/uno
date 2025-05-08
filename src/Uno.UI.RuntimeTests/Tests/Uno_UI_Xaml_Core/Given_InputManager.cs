@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Extensions;
@@ -69,7 +70,7 @@ public class Given_InputManager
 		col1.PointerExited += (snd, args) => col2.Visibility = Visibility.Collapsed;
 		col2.PointerEntered += (snd, args) => failed = true;
 
-		injector.GetFinger().Drag(position.Location.Offset(10), position.Location.Offset(180, 10));
+		injector.GetFinger().Drag(position.Location.OffsetLinear(10), position.Location.Offset(180, 10));
 
 		Assert.AreEqual(Visibility.Collapsed, col2.Visibility, "The visibility should have been changed when the pointer left the col1.");
 		Assert.IsFalse(failed, "The pointer should not have been dispatched to the col2 as it has been set to visibility collapsed.");
@@ -711,6 +712,109 @@ public class Given_InputManager
 		root.GetAllChildren().OfType<UIElement>().Any(elt => elt.IsPointerOver).Should().BeFalse();
 		root.GetAllChildren().OfType<UIElement>().Any(elt => elt.IsPointerPressed).Should().BeFalse();
 	}
+
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored()
+	{
+		Border elt;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				new ScrollViewer
+				{
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				},
+			}
+		};
+
+		var bounds = await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// Start inertial scrolling
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -3000), steps: 1, stepOffsetInMilliseconds: 300);
+
+		var events = root.SubscribeToPointerEvents();
+		elt.SubscribeToPointerEvents(events);
+
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Give opportunity to ui thread to doe some work
+
+		finger.Press(bounds.GetCenter());
+		finger.Release(bounds.GetCenter());
+
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Give opportunity to ui thread to doe some work
+
+		events.Should().BeEmpty(because: "all pointer events should have been muted by direct manipulation");
+	}
+
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationInertial_Then_SubsequentManipulationStillPassingThrough()
+	{
+		ScrollViewer sv;
+		Border elt;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}),
+			}
+		};
+
+		var bounds = await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// Start inertial scrolling
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -1000), steps: 1, stepOffsetInMilliseconds: 100);
+
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Give opportunity to ui thread to do some work (process inertia)
+
+		var currentOffset = sv.VerticalOffset;
+
+		// Scroll a bit more
+		var secondScrollDelta = 100;
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -secondScrollDelta), steps: 1, stepOffsetInMilliseconds: 3000);
+
+		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta, precision: 2, because: "second press should have stop inertia and then the slow scroll have been applied");
+	}
+
 
 	private CoreCursorType? GetCursorShape()
 	{
