@@ -123,10 +123,6 @@ While designing on the Canvas, notifications may appear:
 
 These notifications help you track changes and issues in real time.
 
-## Editing Flyouts
-
-To Do
-
 ## Next Step
 
 - [Properties](xref:Uno.HotDesign.Properties)
