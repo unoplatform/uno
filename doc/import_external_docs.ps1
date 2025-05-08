@@ -17,7 +17,8 @@ $external_docs = @{
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
     "uno.extensions"     = "caadf295630fb154d7d75c8d820f75aa8e014d92" #latest release/stable/5.2 branch commit
     "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
-    "uno.samples"        = "e9ccf60d7d830acf7db4108a8aa5a2a1fc90c481" #latest master commit
+    "uno.samples"        = "5cadd7bf2321f78bf41d23b276d9e0d75071cd65" #latest master commit
+    "uno.chefs"          = "f48b7b5aab5c8972611b2528e1be838373afe723" #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
