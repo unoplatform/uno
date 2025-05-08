@@ -131,6 +131,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+			_touchInertia?.Complete();
+			_touchInertia = null;
 		}
 
 		/// <inheritdoc />
