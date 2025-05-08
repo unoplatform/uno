@@ -80,7 +80,7 @@ If you're trying to select a layout container of a specific control:
 1. Right-click the child element.
 2. Choose **Select parent** from the context menu.
 
-This selects the parent element on both the **Canvas** and in the **Elements** window.
+This selects the parent element on both the **Canvas** and in the **Elements** panel.
 
 <img src="Assets/canvas-select-parent.gif" height="450" alt="How to select a parent element on the Canvas" />
 
@@ -91,7 +91,7 @@ To remove a control from the **Canvas**:
 1. Right-click the element.
 2. Choose **Delete [ControlName]** from the menu (e.g., **Delete Button**).
 
-The element will be removed from both the **Canvas** and the **Elements** window.
+The element will be removed from both the **Canvas** and the **Elements** panel.
 
 <img src="Assets/canvas-delete-element.gif" height="450" alt="How to delete an element from the Canvas" />
 
@@ -104,7 +104,7 @@ If your layout includes a `UserControl`, you can open it directly from the **Can
 1. Right-click the `UserControl`.
 2. Choose **Edit [UserControlName]**.
 
-This opens the editor for the `UserControl`, allowing you to modify its internal structure or layout. To return to your previous page edition, click the `../` back icon in the top-left corner of the interface or the **Elements** window.
+This opens the editor for the `UserControl`, allowing you to modify its internal structure or layout. To return to your previous page edition, click the `../` back icon in the top-left corner of the interface or the **Elements** panel.
 
 <img src="Assets/canvas-edit-user-control.gif" height="600" alt="How to edit a UserControl from the canvas" />
 

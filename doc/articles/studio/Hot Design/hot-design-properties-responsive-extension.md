@@ -35,7 +35,7 @@ To remove a value set for a specific breakpoint, click the **trash icon** next t
 ## Next Steps
 
 - **[Different Editors](xref:Uno.HotDesign.Properties.Editors)**
- The Properties window automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
+ The Properties panel automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
 
 - **[Advanced Flyout Editor](xref:Uno.HotDesign.Properties.AdvancedFlyout)**
   Use the **Advanced Flyout** to choose how a property value is provided: enter a literal **Value**, set up a **Binding**, reference a **Resource**, or apply **Responsive Extensions** for adaptive layouts.

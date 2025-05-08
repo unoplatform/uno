@@ -4,19 +4,19 @@ uid: Uno.HotDesign.Properties.Editors
 
 # Editors
 
-The Properties window uses different types of editors depending on the property’s expected value. These editors make it easier to enter, select, or adjust values, ensuring that each property is edited in a way that matches its data type.
+The Properties panel uses different types of editors depending on the property’s expected value. These editors make it easier to enter, select, or adjust values, ensuring that each property is edited in a way that matches its data type.
 
 ## DropDown
 
 For properties with predefined values, like `Visibility`, you’ll see a dropdown. Click it to open the list and select the value you want.
 
-<img src="Assets/properties-editors-dropdown.gif" height="600" alt="GIF showing how to set values on a dropdown on the Properties window" />
+<img src="Assets/properties-editors-dropdown.gif" height="600" alt="GIF showing how to set values on a dropdown on the Properties panel" />
 
 ## TextField
 
 For properties that accept text or numbers (like strings, decimals, or integers), a text field will be shown. Click it to focus and enter the value directly.
 
-<img src="Assets/properties-editors-textfield.gif" height="600" alt="GIF showing how to set values on a text field on the Properties window" />
+<img src="Assets/properties-editors-textfield.gif" height="600" alt="GIF showing how to set values on a text field on the Properties panel" />
 
 For properties like `Background` or `Foreground` that accept both predefined and custom values, the text field may suggest default values when it receives focus. A list will appear, showing commonly used options - you can simply click on one of the suggestions to apply it.
 
@@ -26,13 +26,13 @@ For properties like `Background` or `Foreground` that accept both predefined and
 
 For boolean properties (true or false), a checkbox is used. Click it to toggle between checked (true) and unchecked (false).
 
-<img src="Assets/properties-editors-checkbox.gif" height="600" alt="GIF showing how to set values on a check box field on the Properties window" />
+<img src="Assets/properties-editors-checkbox.gif" height="600" alt="GIF showing how to set values on a check box field on the Properties panel" />
 
 ## Multiple Values
 
 For properties that accept multiple values, simply click on the label showing the current selection. A menu will appear listing the available options—check the ones you want, and click outside the menu to close it.
 
-<img src="Assets/properties-editors-multi-selection.gif" height="600" alt="GIF showing how to set values on a multi selection field on the Properties window" />
+<img src="Assets/properties-editors-multi-selection.gif" height="600" alt="GIF showing how to set values on a multi selection field on the Properties panel" />
 
 ## Thickness and Corner Radius Editor
 
@@ -86,15 +86,15 @@ In some cases, a property might support both a literal value (like a string or n
 
 ### Editing a Complex Type
 
-To edit a Complex Type, simply click the icon. The Properties window will switch to a new view. At the top, you’ll see a dropdown listing all available Complex Types for that property. Click the arrow to browse the options. Once you've selected a type, the UI will show the editable properties for that specific Complex Type.
+To edit a Complex Type, simply click the icon. The Properties panel will switch to a new view. At the top, you’ll see a dropdown listing all available Complex Types for that property. Click the arrow to browse the options. Once you've selected a type, the UI will show the editable properties for that specific Complex Type.
 
-<img src="Assets/properties-edit-complex-type.gif" height="600" alt="GIF showing how to edit a Complex Type on the Properties window" />
+<img src="Assets/properties-edit-complex-type.gif" height="600" alt="GIF showing how to edit a Complex Type on the Properties panel" />
 
 ### Leaving the Complex Type editor
 
-After you're done, to return to the default Properties view, just click the name of the main element you're editing, shown in the top-left breadcrumb area of the Properties window. You'll then see that the chosen Complex Type appears next to the property, confirming it's been set.
+After you're done, to return to the default Properties view, just click the name of the main element you're editing, shown in the top-left breadcrumb area of the Properties panel. You'll then see that the chosen Complex Type appears next to the property, confirming it's been set.
 
-<img src="Assets/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties window" />
+<img src="Assets/properties-leave-complex-type-editor.gif" height="600" alt="GIF showing how to leave the Complex Type editor on the Properties panel" />
 
 ## Next Steps
 
