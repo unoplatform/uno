@@ -53,6 +53,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal partial bool ShouldSnapToTouchTextBox();
+#if !__SKIA__
+		internal partial bool ShouldSnapToTouchTextBox() => false;
+#endif
 
 		private void AdjustOffsetWithMandatorySnapPoints(
 			bool isForHorizontalOffset,
