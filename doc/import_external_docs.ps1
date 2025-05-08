@@ -7,18 +7,18 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "969829c0aaa8f3341b196e31e2627953d39a9526" #latest release/stable/9.0 branch commit
-    "uno.themes"         = "22df5299701fe9a6f96e4414b559f8dfd5789540" #latest release/stable/5.4 branch commit
-    "uno.toolkit.ui"     = "790ebb232a216bd07097868c0cc3d896f8f8dc4e" #latest release/stable/6.4 branch commit
-    "uno.check"          = "89780d485a56114537445615f1157d3157c517d7" #latest release/stable/1.30 branch commit
+    "uno.wasm.bootstrap" = "a422451cc4c12377ec8a93e2a0f2f2ae1085a9e3" #latest release/stable/9.0 branch commit
+    "uno.themes"         = "8923df90fa1336117bafabf1498c3ddab2030d05" #latest release/stable/5.5 branch commit
+    "uno.toolkit.ui"     = "8c4630ef6a7292e5f44ee0cdb6eb6a80e0adf03d" #latest release/stable/7.0 branch commit
+    "uno.check"          = "650e0310bb6b44bdfc647f9d39197be587b2dcb5" #latest release/stable/1.31 branch commit
     "uno.xamlmerge.task" = "377ce2d9fdeab0d4f0b94a61e008731a40b10220" #latest release/stable/1.33 branch commit
     "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
-    "uno.resizetizer"    = "dfcb976c40eb66cb33c5def4c81d2e4e374dc678" #latest main commit
-    "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
-    "uno.extensions"     = "caadf295630fb154d7d75c8d820f75aa8e014d92" #latest release/stable/5.2 branch commit
+    "uno.resizetizer"    = "559897ecfa8b509ec67746bd51d35f44eed56160" #latest main commit
+    "uno.uitest"         = "a375f3dc1898e3d34bb03477bb45d2fd86fea60a" #latest master commit
+    "uno.extensions"     = "e3021a6b082a2bb1871190ad6a1429a1c06e3ab4" #latest release/stable/5.3 branch commit
     "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
-    "uno.samples"        = "5cadd7bf2321f78bf41d23b276d9e0d75071cd65" #latest master commit
-    "uno.chefs"          = "f48b7b5aab5c8972611b2528e1be838373afe723" #latest main commit
+    "uno.samples"        = "8261367edffd836512f9b37fbb526f620d0a381e" #latest master commit
+    "uno.chefs"          = "25da718f7aba5719b7053b9c53e1f4c8abce2193" #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
