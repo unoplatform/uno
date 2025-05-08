@@ -19,7 +19,7 @@ This is the default way of setting a property value. Depending on the property t
 
 ## Binding
 
-Binding allows dynamic data connection between your UI and data source. Here's a breakdown of the fields available:
+Binding allows for a dynamic data connection between your UI and data source. Here's a breakdown of the fields available:
 
 - **Type**: Choose the type of binding:
   - `Binding`: Standard runtime binding.
@@ -56,7 +56,7 @@ Binding allows dynamic data connection between your UI and data source. Here's a
 
 ## Resource
 
-This option lets you apply a `StaticResource` or `ThemeResource` from your app. It's especially useful for things like brushes or predefined values.
+This option lets you apply a `StaticResource` or `ThemeResource` from your app. It's especially useful for brushes or predefined values, for example.
 
 When focused, the input will suggest available resources. Just click on one to assign it to the property.
 
@@ -71,7 +71,7 @@ When focused, the input will suggest available resources. Just click on one to a
   The **Template Editor** provides a visual canvas for creating and customizing control templates, enabling you to design complex UI structures without hand-coding XAML.
 
 - **[Responsive Extensions](xref:Uno.HotDesign.Properties.AdvancedFlyout.ResponsiveExtensions)**
-  **Responsive Extensions** let you define multiple values for a single property based on screen size or form factor, ensuring your UI adapts seamlessly across devices.
+  **Responsive Extensions** let you define multiple values for a single property based on the screen size or form factor, ensuring your UI adapts seamlessly across devices.
 
 - **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**
   A hands-on walkthrough for building the [Counter App](xref:Uno.Workshop.Counter) using **Hot Design**, showcasing its features and workflow in action.

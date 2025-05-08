@@ -49,7 +49,7 @@ The **Play** and **Pause** buttons let you switch between two modes while using 
 
 - <img src="Assets/toolbar-pause.png" alt="Pause icon" height="30" style="vertical-align:middle; margin-right:6px;" /> **Pause**: Returns you to **selection/editing mode**, where you can adjust layout, modify properties, and refine the structure of your UI.
 
-Click **Play** to preview behavior, then **Pause** to continue designing.
+Click **Play** to preview your new updates, then **Pause** to continue designing.
 
 <p align="center">
   <img src="Assets/toolbar-play-pause.gif" alt="How to Play and Pause your App in Hot Design" />
@@ -153,7 +153,7 @@ When **Auto-Fit** is enabled, the canvas scales to fit your window automatically
 
 ## Switch Between Light and Dark Themes
 
-Quickly preview your app in **Light** or **Dark** mode without changing your system or IDE settings. This helps ensure your UI adapts correctly to both themes, including text readability, background contrast, and resource behavior.
+Quickly preview your app in **Light** or **Dark** theme without changing your system or IDE settings. This helps ensure your UI adapts correctly to both themes, including text readability, background contrast, and resource behavior.
 
 - <img src="Assets/toolbar-light-theme.png" alt="Light theme icon" height="30" style="vertical-align:middle; margin-right:6px;" /> **Light Theme**: Uses light theme resources.
 - <img src="Assets/toolbar-dark-theme.png" alt="Dark theme icon" height="30" style="vertical-align:middle; margin-right:6px;" /> **Dark Theme**: Uses dark theme resources.
