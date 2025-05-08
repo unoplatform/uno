@@ -94,6 +94,8 @@
     - name: Tube Player
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
+    - name: ToDo-App
+      href: external/uno.samples/reference/todo/toc.yml
     - name: Tutorials
       topicHref: xref:Uno.Tutorials.Intro
       items:
