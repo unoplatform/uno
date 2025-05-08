@@ -104,7 +104,7 @@ This will create a new folder called **Counter** containing the new application.
 First, we need to add the image file to the application. Download this [SVG image](https://aka.platform.uno/counter-tutorial-svg-uno-logo) (Open this [link](https://aka.platform.uno/counter-tutorial-svg-uno-logo), right-click on the SVG image and select "Save as") and add it to the **Assets** folder. Once added, rebuild the application to ensure the image is included in the application package.
 
 > [!NOTE]
-> If you're working in Visual Studio, select the newly added **logo.svg** file in the **Solution Explorer**, open the **Properties** window, and ensure the **Build Action** property is set to **`UnoImage`**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **`UnoImage`** for all files in the **Assets** folder.  
+> If you're working in Visual Studio, select the newly added **logo.svg** file in the **Solution Explorer**, open the **Properties** panel, and ensure the **Build Action** property is set to **`UnoImage`**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **`UnoImage`** for all files in the **Assets** folder.  
 >
 > For more information on **Uno.Resizetizer** functionalities, visit [Get Started with Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
@@ -151,83 +151,83 @@ We are all set to start adding controls to create our Counter app. Follow the st
 
 ### Remove Existing Elements
 
-1. Remove the existing `StackPanel`. In the **Elements** window, select the `StackPanel`, right-click, and choose **Delete StackPanel**.
+1. Remove the existing `StackPanel`. In the **Elements** panel, select the `StackPanel`, right-click, and choose **Delete StackPanel**.
 
     ![Removing the StackPanel](Assets/1-remove-stackpanel.gif)
 
 ### Add a `StackPanel`
 
-1. Let's add the container to hold our elements by adding a `StackPanel`. In the **Toolbox** window, search for "StackPanel". Once it appears in the search results, drag it onto the **Canvas**.
+1. Let's add the container to hold our elements by adding a `StackPanel`. In the **Toolbox** panel, search for "StackPanel". Once it appears in the search results, drag it onto the **Canvas**.
 
     ![StackPanel](Assets/2-add-stackpanel.gif)
 
-    Alternatively, you can drag the element from the **Toolbox** and drop it onto the **Elements** window.
+    Alternatively, you can drag the element from the **Toolbox** and drop it onto the **Elements** panel.
 
     ![StackPanel](Assets/2.1-add-stackpanel.gif)
 
-    Another way would be to select the **existing element** in the **Elements** window where you want to add a new item, then double-click the desired item in the **Toolbox** window to add it as a child of the target.
+    Another way would be to select the **existing element** in the **Elements** panel where you want to add a new item, then double-click the desired item in the **Toolbox** panel to add it as a child of the target.
 
     ![StackPanel](Assets/2.2-add-stackpanel.gif)
 
-1. Now, let's edit a property of the `StackPanel` to align it vertically and horizontally to the center. Select the `StackPanel` from the **Elements** window or the **Canvas**. In the **Properties** window, on the right side of the app, find the `VerticalAlignment` property and set it to **Center**, then do the same for `HorizontalAlignment`.
+1. Now, let's edit a property of the `StackPanel` to align it vertically and horizontally to the center. Select the `StackPanel` from the **Elements** panel or the **Canvas**. In the **Properties** panel, on the right side of the app, find the `VerticalAlignment` property and set it to **Center**, then do the same for `HorizontalAlignment`.
 
     ![StackPanel Alignment](Assets/3-stackpanel-alignment.gif)
 
 ### Add an `Image` element
 
-1. Next, add an `Image` element to the `StackPanel`. In the **Toolbox** window, search for "Image". Once it appears in the results, drag it onto the `StackPanel` using either the **Canvas** or the **Elements** window.
+1. Next, add an `Image` element to the `StackPanel`. In the **Toolbox** panel, search for "Image". Once it appears in the results, drag it onto the `StackPanel` using either the **Canvas** or the **Elements** panel.
 
     > [!NOTE]
     > The image will appear with zero height until a source is set.
 
-1. Now that the `Image` element is added, let's set the source for our `Image` element. In the **Properties** window, locate the `Source` property. Start typing the name of the image we previously added, and the results should appear. Select **Assets/logo.png**.
+1. Now that the `Image` element is added, let's set the source for our `Image` element. In the **Properties** panel, locate the `Source` property. Start typing the name of the image we previously added, and the results should appear. Select **Assets/logo.png**.
 
     ![Image Source](Assets/4-add-image-source.gif)
 
-1. Now, let's edit some properties to enhance its appearance. In the **Properties** window, use the search button to find properties. Search for "Width" and set its value to **150**. Do the same for `Height`. Our `Image` element is now complete!
+1. Now, let's edit some properties to enhance its appearance. In the **Properties** panel, use the search button to find properties. Search for "Width" and set its value to **150**. Do the same for `Height`. Our `Image` element is now complete!
 
     ![Image](Assets/4.1-search-properties.gif)
 
 ### Add a `TextBox` element
 
-1. The next step is to add a `TextBox` that will hold the increasing step value for our Counter app. In the **Toolbox** window, search for "TextBox." Once it appears in the results, drag it onto the `StackPanel`, making sure to place it under the `Image` element.
-1. Now, let's set the `TextBox` properties. In the **Properties** window, set the `PlaceholderText` to "Step Size" and set the `TextAlignment` to **Center**. Reset the `Text` property by clicking the **Advanced** button to open the **Advanced Property** flyout, followed by clicking the **Reset** button.
+1. The next step is to add a `TextBox` that will hold the increasing step value for our Counter app. In the **Toolbox** panel, search for "TextBox." Once it appears in the results, drag it onto the `StackPanel`, making sure to place it under the `Image` element.
+1. Now, let's set the `TextBox` properties. In the **Properties** panel, set the `PlaceholderText` to "Step Size" and set the `TextAlignment` to **Center**. Reset the `Text` property by clicking the **Advanced** button to open the **Advanced Property** flyout, followed by clicking the **Reset** button.
 
     ![Reset Text](Assets/3.1-textbox-clear-text.gif)
 
 ### Add a `TextBlock` element
 
-1. The next element to add is the `TextBlock`, which will display the current value of our Counter app. In the **Toolbox** window, search for "TextBlock." Once it appears in the results, drag it onto the `StackPanel`, ensuring it is placed under the `TextBox`.
-1. Let's edit the `TextBlock` properties. In the **Properties** window, set the `Text` to "Counter: 1"; and, set the `TextAlignment` to **Center**.
+1. The next element to add is the `TextBlock`, which will display the current value of our Counter app. In the **Toolbox** panel, search for "TextBlock." Once it appears in the results, drag it onto the `StackPanel`, ensuring it is placed under the `TextBox`.
+1. Let's edit the `TextBlock` properties. In the **Properties** panel, set the `Text` to "Counter: 1"; and, set the `TextAlignment` to **Center**.
 
 ### Add a `Button` element
 
-1. The final element is the `Button` that will increment the **Count** value. From the **Toolbox** window, search for "Button" and once the result appears, drag it onto the `StackPanel`, making sure it is added under the `TextBlock` element.
-1. Set the `Button` properties. In the **Properties** window, set the `Content` to "Increment Counter by Step Size".
+1. The final element is the `Button` that will increment the **Count** value. From the **Toolbox** panel, search for "Button" and once the result appears, drag it onto the `StackPanel`, making sure it is added under the `TextBlock` element.
+1. Set the `Button` properties. In the **Properties** panel, set the `Content` to "Increment Counter by Step Size".
 
 > [!NOTE]
-> If there's insufficient room to edit the `Content` property you can resize the **Properties** window by dragging the left edge of the **Properties** window to the left.
+> If there's insufficient room to edit the `Content` property you can resize the **Properties** panel by dragging the left edge of the **Properties** panel to the left.
 
-![Resize Properties Window](Assets/4.2-resize-property-view.gif)
+![Resize Properties panel](Assets/4.2-resize-property-view.gif)
 
 ### Multi-selection
 
 Hot Design allows you to select multiple elements and edit common properties simultaneously. Let's try it:
 
 1. Hold the **Ctrl** key on your keyboard and click on the `Image`, the `TextBox` and the `TextBlock` (the `Button` should still be selected from the previous step).
-2. In the **Properties** window, set `HorizontalAlignment` to **Center** and `Margin` to **12**.
+2. In the **Properties** panel, set `HorizontalAlignment` to **Center** and `Margin` to **12**.
 
     ![Multi Selection](Assets/5-multi-selection.gif)
 
 > [!NOTE]
-> You can also use multi-selection from the **Elements** window by holding the **Ctrl** key while clicking on each node.
+> You can also use multi-selection from the **Elements** panel by holding the **Ctrl** key while clicking on each node.
 
 ### Style Picker
 
 Hot Design allows you to apply existing styles to your elements for a polished appearance. Let's change the style of our `Button`:
 
-1. Select the `Button`, either from the **Elements** window or the **Canvas**.
-2. At the top of the **Properties** window, locate the Style Picker.
+1. Select the `Button`, either from the **Elements** panel or the **Canvas**.
+2. At the top of the **Properties** panel, locate the Style Picker.
 3. Choose **ButtonRevealStyle** to apply it.
 
     ![Button Style](Assets/6-button-style.gif)
@@ -270,7 +270,7 @@ After making these changes in the IDE, save all files and return to Hot Design.
 #### TextBox
 
 Now, we need to bind the `TextBox`'s `Text` to the `Countable.Step` property of our ViewModel.
-In the **Properties** window, locate the `Text` property. Click the **Advanced** button to the right of the `TextBox` to open the **Advanced Property** flyout. Select **Binding**. In the **Path** dropdown, locate the `Countable` property of our ViewModel, click the arrow to expand its properties, and select `Step`. Finally, from the **Mode** dropdown, select **TwoWay**.
+In the **Properties** panel, locate the `Text` property. Click the **Advanced** button to the right of the `TextBox` to open the **Advanced Property** flyout. Select **Binding**. In the **Path** dropdown, locate the `Countable` property of our ViewModel, click the arrow to expand its properties, and select `Step`. Finally, from the **Mode** dropdown, select **TwoWay**.
 
 ![TextBox](Assets/7-textbox-binding.gif)
 

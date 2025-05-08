@@ -30,10 +30,10 @@ To move an element:
 You can:
 
 - Reorder elements within the same container
-  <img src="Assets/elements-drag-drop.gif" height="600" alt="How to drag and drop in the Elements window." />
+  <img src="Assets/elements-drag-drop.gif" height="600" alt="How to drag and drop in the Elements panel." />
 
 - Move an element to a new parent, such as placing a `Button` inside another `StackPanel`
-  <img src="Assets/elements-drag-drop-other-parent.gif" height="600" alt="How to drag and drop into another parent in the Elements window." />
+  <img src="Assets/elements-drag-drop-other-parent.gif" height="600" alt="How to drag and drop into another parent in the Elements panel." />
 
 ## Expand and Collapse Containers
 
