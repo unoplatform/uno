@@ -48,10 +48,8 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 				ScanCode = 0, // not implemented
 				RepeatCount = 1,
 			},
-			// From https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
-			// We heuristically decide that if we're given a length-1 key, that it's an actual unicode character and not a
-			// description of the key.
-			unicodeKey: key.Length == 1 ? key[0] : null);
+
+			unicodeKey: GetUnicodeKey(key));
 
 		if (down)
 		{
@@ -63,5 +61,25 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		return (byte)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
+	}
+
+	private static char? GetUnicodeKey(string key)
+	{
+		// From https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+		// We heuristically decide that if we're given a length-1 key, that it's an actual unicode character and not a
+		// description of the key.
+		if (key.Length == 1)
+		{
+			return key;
+		}
+
+		// If the key is not a single character, we can try to convert
+		switch (key.ToLowerInvariant())
+		{
+			case "enter":
+				return "\r";
+			default:
+				return null;
+		}
 	}
 }
