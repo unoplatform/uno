@@ -19,7 +19,7 @@ Scope and priority are determined by the following rules:
 - if the `{ThemeResource}` assignation is itself inside a dictionary, other than inside a template, then the containing dictionary is checked first.
 - if the assignation is on a `frameworkElement` or the logical child of a `frameworkElement`, and the `frameworkElement` is in the visual tree, then the `Resources` of the `frameworkElement` and its visual ancestors are checked in order, outwards from the `frameworkElement`. This typically occurs when the element is first loaded into the visual tree, or when the active theme changes (see below).
 - the `Application.Resources` dictionary is checked next.
-- if the XAML containing the assignation comes from an external assembly (ie a class library), then next the dictionaries within that assembly are checked. (Note that Uno's behavior departs somewhat from UWP here, because only the `Themes/Generic.xaml` dictionary from that assembly should be checked - see [issue #4424](https://github.com/unoplatform/uno/issues/4424).)
+- if the XAML containing the assignation comes from an external assembly (ie a class library), then next the dictionaries within that assembly are checked. (Note that Uno's behavior departs somewhat from WinUI here, because only the `Themes/Generic.xaml` dictionary from that assembly should be checked - see [issue #4424](https://github.com/unoplatform/uno/issues/4424).)
 - finally, 'system level' resources are checked. This simply means the resources that are defined within the Uno.UI assembly.
 
 ### Searching within a ResourceDictionary

@@ -12,8 +12,8 @@ Legend
 
 - ✔  Supported
 
-| Picker             | WinUI/UWP | WebAssembly | Android | iOS/Mac Catalyst   | macOS | Skia Desktop |
-|--------------------|-----------|-------------|---------|--------------------|-------|--------------|
+| Picker             | WinUI      | WebAssembly | Android | iOS/Mac Catalyst   | macOS | Skia Desktop |
+|--------------------|------------|-------------|---------|--------------------|-------|--------------|
 | `LocalFolder`      | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
 | `RoamingFolder`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
 | `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |

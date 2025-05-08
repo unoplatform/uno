@@ -80,7 +80,7 @@ Here's what to look for:
 - [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
-  - It is also supported as `not_win:Phase` on controls that do not have bindings. This feature is not supported by UWP.
+  - It is also supported as `not_win:Phase` on controls that do not have bindings. This feature is not supported by WinUI.
   - It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The
  attribute is ignored for templates of `ContentControl` instances, or any other control.
   - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:

@@ -63,7 +63,7 @@ The complete sample code can be found in the [StatusBarThemeColor sample in Uno.
     public CommandBar GetCommandBar() => MyCommandBar;
     ```
 
-5. In `App.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
+5. In `App.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the WinUI style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
 
     ```csharp
     public App()
