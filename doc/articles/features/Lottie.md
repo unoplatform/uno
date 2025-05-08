@@ -7,11 +7,9 @@ uid: Uno.Features.Lottie
 > [!TIP]
 > This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, see [Lottie](https://learn.microsoft.com/windows/communitytoolkit/animations/lottie).
 
-* The `CommunityToolkit.WinUI.Lottie` (for WinUI) and `Microsoft.Toolkit.Uwp.UI.Lottie` (for UWP) namespaces provide classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
+* The `CommunityToolkit.WinUI.Lottie` (for WinUI) namespace provides classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
 
 ## Using the `LottieVisualSource`
-
-### [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
 
@@ -58,44 +56,6 @@ Additionally, on Skia Desktop targets, you'll need the following packages:
 
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
-### [**UWP**](#tab/uwp)
-
-Add the following namespaces:
-
-```xml
-<Page
-    ...
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
-    ...>
-```
-
-```xml
-<winui:AnimatedVisualPlayer
-    x:Name="player"
-    AutoPlay="true">
-
-    <lottie:LottieVisualSource
-        UriSource="ms-appx:///Lottie/4930-checkbox-animation.json" />
-</winui:AnimatedVisualPlayer>
-```
-
-On all Uno Platform targets, you'll need the following packages:
-
-* `Uno.UI.Lottie` (for the `LottieVisualSource`)
-
-Additionally, on Skia Desktop targets, you'll need the following packages:
-
-* `SkiaSharp.Views.Uno` version 3.119.0-preview.1.2 or later
-* `SkiaSharp.Skottie` version 3.119.0-preview.1.2 or later
-
-On UWP, you'll need to reference the following packages in your head project:
-
-* `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
-* `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
-
----
-
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
 ## Lottie JSON file location
@@ -109,7 +69,7 @@ To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-ap
 ## Using `embedded://` scheme
 
 > [!WARNING]
-> This feature is only available on Uno Platform targets. WinUI and UWP on Windows is not supported.
+> This feature is only available on Uno Platform targets. WinUI on Windows is not supported.
 
 You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
 

@@ -105,7 +105,7 @@ Now we can use the data in the `MainPage.xaml`:
 
 ## How to use Uno Islands in blank Uno app
 
-The starting point for creating an Uno Islands-enabled application is to create a blank Uno Platform app. Both `Uno.WinUI`- and `Uno.UI`-based solutions are supported.
+The starting point for creating an Uno Islands-enabled application is to create a blank Uno Platform app.
 
 ### Preparing solution
 
@@ -113,7 +113,7 @@ In the new solution, feel free to remove targets which are not needed for your p
 
 ![XamlHost Solution layout](../Assets/guides/uno-islands/solution-layout.png)
 
-Right-click the solution node in Solution Explorer and select `Manage NuGet Packages for Solution...`. In the NuGet Package Manager window search for `Uno.WinUI.XamlHost` (for WinUI-based apps) or `Uno.UI.XamlHost` (for UWP-based apps).
+Right-click the solution node in Solution Explorer and select `Manage NuGet Packages for Solution...`. In the NuGet Package Manager window search for `Uno.WinUI.XamlHost`.
 
 ![XamlHost NuGet packages](../Assets/guides/uno-islands/xamlhost-packages.png)
 

@@ -11,7 +11,7 @@ The `Windows.Media.Capture` namespace provides classes for capturing photos, aud
 
 ## `CameraCaptureUI`
 
-`CameraCaptureUI` is currently only supported on Android, iOS, and UWP. On other platforms, `CaptureFileAsync` will return `null`.
+`CameraCaptureUI` is currently only supported on Android, iOS, and WinUI. On other platforms, `CaptureFileAsync` will return `null`.
 
 > [!IMPORTANT]
 > `CaptureFileAsync` should only be called from the UI thread. Calling them from a background thread will throw an `InvalidOperationException`.
@@ -50,9 +50,9 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 > [!IMPORTANT]
 > iOS simulators do not have access to a camera. To test the camera functionality, you need to run the app on a physical device. When using a simulator, your app will open the Photo Library instead of the camera, but the functionality will work as expected once the app is deployed to a physical device.
 
-#### WinUI/UWP
+#### WinUI
 
-On UWP, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
+On WinUI, `CameraCaptureUI` provides a unified interface for capturing photos and videos, fully leveraging the platform's APIs. WinUI support is coming with v1.7+.
 
 ### Example
 
