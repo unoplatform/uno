@@ -2,9 +2,9 @@
 uid: Uno.HotDesign.GetStarted.Guide
 ---
 
-# Getting Started with Hot Design®
+# Getting Started with Hot Design<sup>®</sup>
 
-Hot Design® is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
+**Hot Design<sup>®</sup>** is the next-generation runtime Visual Designer for cross-platform .NET applications, transforming your live, running app into a real-time Designer.
 
 This guide provides the steps to set up Hot Design and introduces its key features and visual design capabilities.
 
@@ -12,14 +12,8 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 
 ## Set Up Your Environment for Hot Design
 
-> [!IMPORTANT]
-> **Hot Design®** is currently in **beta**. To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
->
-> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization. See the list of [known issues](https://aka.platform.uno/hot-design-known-issues).
-> - Hot Design does not support C# Markup and is only available with XAML and .NET 9. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
-> - Hot Design relies on [Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview) for updates, so be sure to check the [current support for your OS, IDE, and target platforms](xref:Uno.Platform.Studio.HotReload.Overview#supported-features-per-os) before testing.
-> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
->
+[!include[hd-important-info](includes/hd-important-info.md)]
+
 > [!IMPORTANT]
 > If you're new to developing with Uno Platform, make sure to set up your environment by [following our getting started guide](xref:Uno.GetStarted).
 
@@ -30,38 +24,46 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 > [!IMPORTANT]
 > When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, and provided you have been granted Beta access, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher** and **[signed in with your Uno Platform account](xref:Uno.GetStarted.Licensing)**, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
 
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
 </p>
 
-## Hot Design Core Tool Windows
+## Hot Design Core Tool Panels
 
-Once in Hot Design, your running app becomes an interactive canvas.  
+Once in Hot Design, your running app becomes an interactive canvas.
 Hot Design offers an intuitive interface for designing and interacting with your app. This enables you to seamlessly create, edit, and refine your app's user interface in real-time, streamlining the design process for maximum efficiency and simplicity.
 
-![Hot Design Core Tool Windows Highlighted](Assets/hot-design-views-highlighted.png)
+![Hot Design Core Tool Panels Highlighted](Assets/hot-design-views-highlighted.png)
 
-Here are the tool windows available on the interactive canvas:
+Here are the tool panels available on the interactive canvas:
 
 ### Toolbox
 
-Located on the upper-left side, the **Toolbox** window provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **Elements** window for easy integration into your design.
+Located on the upper-left side, the **[Toolbox](xref:Uno.HotDesign.Toolbox)** panel provides a categorized list of available controls you can use in your application, including available custom and third-party UI controls. It features a search bar for quickly finding specific controls, which you can drag and drop directly onto the canvas or the **[Elements](xref:Uno.HotDesign.Elements)** panel for easy integration into your design.
+
+[➜ Learn more about the Toolbox panel](xref:Uno.HotDesign.Toolbox)
 
 ### Elements
 
-Below the **Toolbox**, the **Elements** window displays the hierarchical structure of your app. It represents the visual tree of your app, allowing you to select and organize elements. Clicking on an element in this window highlights it on the canvas for detailed modifications.
+Below the **[Toolbox](xref:Uno.HotDesign.Toolbox)**, the **[Elements](xref:Uno.HotDesign.Elements)** panel displays the hierarchical structure of your app. It represents the visual tree of your app, allowing you to select and organize elements. Clicking on an element in this panel highlights it on the canvas for detailed modifications.
+
+[➜ Learn more about the Elements panel](xref:Uno.HotDesign.Elements)
 
 ### Canvas
 
-The main **Canvas** in the center of the interface represents your running app. It is an interactive area where you can visually design and interact with the user interface. You can select controls, see their outlines, and preview any changes made to the layout or properties.
+The main **[Canvas](Uno.HotDesign.Canvas)** in the center of the interface represents your running app. It is an interactive area where you can visually design and interact with the user interface. You can select controls, see their outlines, and preview any changes made to the layout or properties.
+
+[➜ Learn more about the interactive Canvas](xref:Uno.HotDesign.Canvas)
 
 ### Properties
 
-The **Properties** window, located on the right side of the interactive canvas, displays the attributes of the currently selected element on the canvas. By default, it highlights **Smart** properties, prioritizing the most commonly adjusted settings for the element. If you need access to all available properties, you can switch to the **All** view.
+The **[Properties](xref:Uno.HotDesign.Properties)** panel, located on the right side of the interactive canvas, displays the attributes of the currently selected element on the canvas. By default, it highlights **Smart** properties, prioritizing the most commonly adjusted settings for the element. If you need access to all available properties, you can switch to the **All** view.
 
-This window also allows you to search for specific properties and make adjustments directly, such as modifying styles, layouts, appearances, data bindings, resources, responsiveness, and interactions, to customize your UI elements effectively.
+This panel also allows you to search for specific properties and make adjustments directly, such as modifying styles, layouts, appearances, data bindings, resources, responsiveness, and interactions, to customize your UI elements effectively.
+
+[➜ Learn more about the Properties panel](xref:Uno.HotDesign.Properties)
 
 ### Toolbar
 
@@ -85,7 +87,9 @@ Located at the top of the interactive canvas, the **Toolbar** streamlines your d
 
 - <img src="Assets/toolbar-connection-status.png" alt="Hot Design Toolbar connection status icon" height=30  />  Viewing the connection status and the latest updates from **Hot Reload**.
 
-- <img src="Assets/toolbar-more-options.png" alt="Hot Design Toolbar more options icon" height=30  />  More options, including showing or hiding the various tool windows, providing flexibility in customizing your design workspace.
+- <img src="Assets/toolbar-more-options.png" alt="Hot Design Toolbar more options icon" height=30  />  More options, including showing or hiding the various tool panels, providing flexibility in customizing your design workspace.
+
+[➜ Learn more about the Toolbar](xref:Uno.HotDesign.Toolbar)
 
 ## Using Hot Design
 
@@ -97,9 +101,9 @@ You can select controls on the app's current screen by simply clicking on them. 
   <img src="Assets/canvas-select-single-item.png" alt="Selecting a single item on the main canvas" />
 </p>
 
-You can also click on controls in the **Elements** window. This provides an alternative to clicking directly on the canvas, making it easier to precisely select small elements or to choose the container of a visual element rather than the element itself.
+You can also click on controls in the **Elements** panel. This provides an alternative to clicking directly on the canvas, making it easier to precisely select small elements or to choose the container of a visual element rather than the element itself.
 
-To select multiple elements, hold down the `Ctrl` key while clicking. This enables you to view and edit shared properties in the **Properties** window.
+To select multiple elements, hold down the `Ctrl` key while clicking. This enables you to view and edit shared properties in the **Properties** panel.
 
 <p align="center">
   <img src="Assets/canvas-select-multiple-items.png" alt="Selecting multiple items on the main canvas" />
@@ -109,19 +113,19 @@ To select multiple elements, hold down the `Ctrl` key while clicking. This enabl
 
 You can add controls to your app by dragging them from the **Toolbox** onto the canvas.
 
-Alternatively, you can drag them directly into the **Elements** window to position them within a specific hierarchical level.
+Alternatively, you can drag them directly into the **Elements** panel to position them within a specific hierarchical level.
 
-![Dragging item from Toolbox into the Elements window](Assets/gifs/toolbox-drag.gif)
+![Dragging item from Toolbox into the Elements panel](Assets/toolbox-drag.gif)
 
-To delete a control, right-click on it either in the canvas or the **Elements** window and select the delete option.
+To delete a control, right-click on it either in the canvas or the **Elements** panel and select the delete option.
 
 <p align="center">
-  <img src="Assets/delete-elements.png" alt="Delete an element from the Element window" />
+  <img src="Assets/delete-elements.png" alt="Delete an element from the Element panel" />
 </p>
 
 ### Setting Properties
 
-The **Properties** window displays the current values of a control's properties, which can be modified in various ways. Examples include:
+The **Properties** panel displays the current values of a control's properties, which can be modified in various ways. Examples include:
 
 - **Changing a property value**, such as the **Text** property of a `TextBlock` control:
 
@@ -189,4 +193,4 @@ You can interact with the canvas using the following mouse and keyboard shortcut
 
 ### Tutorial
 
-For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design®](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
+For a step-by-step tutorial on getting started with Hot Design, refer to the [Create a Counter App with Hot Design<sup>®</sup>](xref:Uno.HotDesign.GetStarted.CounterTutorial) tutorial.
