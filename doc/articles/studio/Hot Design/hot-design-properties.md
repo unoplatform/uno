@@ -21,7 +21,7 @@ At the top of the Properties window, you'll see two tabs: **Smart** and **All**.
 - **Smart** displays the most commonly adjusted properties for the selected element, providing quicker access for typical use cases.
 - **All** shows the complete list of properties available for that element.
 
-Just click the tab you want to switch views.
+Just click the tab you want to switch between views.
 
 <img src="Assets/properties-smart-tab.gif" height="600" alt="GIF showing how to switch between tabs on the Properties window" />
 
@@ -33,11 +33,11 @@ To make things easier to navigate, properties are grouped into sections such as 
 
 ### Assistive Text
 
-If you enter something wrong in a property, a message will show up just below it. A yellow message means a warning, and a red one means an error. This helps you understand what went wrong so you can fix it quickly. <!-- TODO: Add screenshot?  -->
+If you enter an incorrect value in a property, a message will show up just below it. A yellow message means a warning, and a red one means an error. This helps you understand what went wrong so you can fix it quickly. <!-- TODO: Add screenshot?  -->
 
 ## Applying Styles
 
-You can apply predefined styles to your elements. To do this, go to the Style section at the top of the Properties window. There you'll see a field called "Implicit Style." Click it to view the available styles for the selected element, or type in the name to filter the list. Once you click a style, it will be applied to your element. To remove it, click the more options icon next to the field and choose "Reset."
+You can apply predefined styles to your elements. To do this, go to the Style section at the top of the Properties window. There you'll see a field called "Implicit Style". Click it to view the available styles for the selected element, or type in the name to filter the list. Once you click a style, it will be applied to your element. To remove it, click the "More Options" icon next to the field and choose "Reset".
 
 <img src="Assets/properties-apply-styles.gif" height="600" alt="GIF showing how to apply styles on the Properties window" />
 
