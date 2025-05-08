@@ -38,7 +38,7 @@ Binding allows for a dynamic data connection between your UI and data source. He
 
 ### Advanced
 
-- **Converter**: Select a value converter from your app. The list will show available converter classes defined in your project. Converters are used to transform the data between the source and the UI - for example, converting a `bool` to a `Visibility` value. To see the available options, start typing a converter name and it will be listed.
+- **Converter**: Select a value converter from your app. The list will show available converter classes defined in your project. Converters are used to transform the data between the source and the UI. To see the available options, start typing a converter name and it will be listed.
 
 - **Converter Parameter**: An optional extra input for the converter. This lets you pass additional information to adjust how the conversion works. For instance, you might use it to pass a format string or a multiplier.
 
@@ -65,7 +65,7 @@ When focused, the input will suggest available resources. Just click on one to a
 ## Next Steps
 
 - **[Different Editors](xref:Uno.HotDesign.Properties.Editors)**
- The Properties window automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
+ The Properties panel automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
 
 - **[Template Editor](xref:Uno.HotDesign.Properties.TemplateEditor)**
   The **Template Editor** provides a visual canvas for creating and customizing control templates, enabling you to design complex UI structures without hand-coding XAML.

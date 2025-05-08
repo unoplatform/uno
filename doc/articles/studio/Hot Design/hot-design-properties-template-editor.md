@@ -8,7 +8,7 @@ uid: Uno.HotDesign.Properties.TemplateEditor
 
 For properties that accept a template-like `ItemTemplate` in an `ItemsRepeater`, or `ContentTemplate` in a `ContentControl` - you can use the **Template Editor** to visually build and customize the template content.
 
-To open the Template Editor, click the **Create** button next to the property in the Properties window. If a template already exists, the button will say **Edit** instead. Clicking it takes you into the dedicated template editing area.
+To open the Template Editor, click the **Create** button next to the property in the Properties panel. If a template already exists, the button will say **Edit** instead. Clicking it takes you into the dedicated template editing area.
 
 <img src="Assets/properties-enter-template-editor.gif" height="600" alt="GIF showing how to enter the Template Editor" />
 
@@ -45,7 +45,7 @@ Once you return, the control’s template will be updated with your changes, and
 ## Next Steps
 
 - **[Different Editors](xref:Uno.HotDesign.Properties.Editors)**
- The Properties window automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
+ The Properties panel automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
 
 - **[Advanced Flyout Editor](xref:Uno.HotDesign.Properties.AdvancedFlyout)**
   Use the **Advanced Flyout** to choose how a property value is provided: enter a literal **Value**, set up a **Binding**, reference a **Resource**, or apply **Responsive Extensions** for adaptive layouts.

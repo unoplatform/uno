@@ -199,13 +199,13 @@ You can also toggle the visibility of each tool panel individually:
 - **All**: Show or hide all panels
 
   `Ctrl + Shift + A` (or `Cmd + Shift + A` on macOS)
-- **Toolbox**: Toggle Toolbox window visibility
+- **Toolbox**: Toggle Toolbox panel visibility
 
   `Ctrl + Shift + T` (or `Cmd + Shift + T` on macOS)
-- **Elements**: Toggle Elements visual tree window visibility
+- **Elements**: Toggle Elements visual tree panel visibility
 
   `Ctrl + Shift + E` (or `Cmd + Shift + E` on macOS)
-- **Properties**: Toggle Properties window visibility
+- **Properties**: Toggle Properties panel visibility
 
   `Ctrl + Shift + P` (or `Cmd + Shift + P` on macOS)
 

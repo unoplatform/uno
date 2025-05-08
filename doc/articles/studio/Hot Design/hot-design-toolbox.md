@@ -36,7 +36,7 @@ To insert a control into your layout in the interactive **Canvas**:
 1. Drag a control from the **Toolbox** panel.
 2. Drop it onto the **Canvas**, inside the element where you want it to appear.
 
-<img src="Assets/toolbox-add-to-canvas.gif" height="600" alt="How to drag and drop an element from the Toolbox window to the Canvas." />
+<img src="Assets/toolbox-add-to-canvas.gif" height="600" alt="How to drag and drop an element from the Toolbox panel to the Canvas." />
 
 ## Add a Control to the Visual Tree
 
@@ -45,7 +45,7 @@ To insert a control into the **Elements** panel:
 1. Drag a control from the **Toolbox** panel.
 2. Drop it into the desired parent node in the visual tree inside the **Elements** panel.
 
-<img src="Assets/toolbox-add-to-tree.gif" height="600" alt="How to drag and drop a control from the Toolbox window into the Elements panel." />
+<img src="Assets/toolbox-add-to-tree.gif" height="600" alt="How to drag and drop a control from the Toolbox panel into the Elements panel." />
 
 ## Insert a Control Using Double-Click
 
