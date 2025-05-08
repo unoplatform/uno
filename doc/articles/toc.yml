@@ -96,6 +96,7 @@
       href: external/workshops/tube-player/toc.yml
     - name: Chefs
       href: external/uno.chefs/doc/toc.yml
+      topicHref: xref:Uno.Chefs.Overview
     - name: Tutorials
       topicHref: xref:Uno.Tutorials.Intro
       items:
