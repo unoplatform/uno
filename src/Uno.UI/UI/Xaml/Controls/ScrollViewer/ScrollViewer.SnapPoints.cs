@@ -46,7 +46,13 @@ namespace Microsoft.UI.Xaml.Controls
 					ref vOffset);
 				verticalOffset = vOffset;
 			}
+
+#if __SKIA__
+			(horizontalOffset, verticalOffset) = ClampOffsetsToFocusedTextBox(horizontalOffset, verticalOffset);
+#endif
 		}
+
+		internal partial bool ShouldSnapToTouchTextBox();
 
 		private void AdjustOffsetWithMandatorySnapPoints(
 			bool isForHorizontalOffset,
