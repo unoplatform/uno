@@ -1255,22 +1255,13 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 					)
 				{
-#if __SKIA__
-					var enableSnapPointTimer = XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing };
-#else
-					var enableSnapPointTimer = false;
-#endif
-
 					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None)
+						|| VerticalSnapPointsType != SnapPointsType.None
+						|| ShouldSnapToTouchTextBox())
 					{
-						enableSnapPointTimer = true;
 						_horizontalOffsetForSnapPoints = horizontalOffset;
 						_verticalOffsetForSnapPoints = verticalOffset;
-					}
 
-					if (enableSnapPointTimer)
-					{
 						if (_snapPointsTimer == null)
 						{
 							_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -1278,19 +1269,7 @@ namespace Microsoft.UI.Xaml.Controls
 							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
 							_snapPointsTimer.Tick += (snd, evt) =>
 							{
-								if (_horizontalOffsetForSnapPoints is not null || _verticalOffsetForSnapPoints is not null)
-								{
-									DelayedMoveToSnapPoint();
-								}
-
-#if __SKIA__
-								if (XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } textBox)
-								{
-									// If we do this call synchronously we get a stack overflow because StartBringIntoView will cause a scroll
-									// which causes a new call for this method, so we enqueue on the dispatcher instead.
-									textBox.StartBringIntoView();
-								}
-#endif
+								DelayedMoveToSnapPoint();
 							};
 						}
 						_snapPointsTimer.Start();
