@@ -1,101 +1,124 @@
-param(
-  [Parameter(ValueFromPipeLineByPropertyName = $true)]
-  $branches = $null
-)
+function Invoke-ImportExternalDocs {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeLineByPropertyName = $true)]$branches = $null,
+        $custom_git_urls = $null
 
-Set-PSDebug -Trace 1
+    )
 
-$external_docs = @{
-    # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "969829c0aaa8f3341b196e31e2627953d39a9526" #latest release/stable/9.0 branch commit
-    "uno.themes"         = "22df5299701fe9a6f96e4414b559f8dfd5789540" #latest release/stable/5.4 branch commit
-    "uno.toolkit.ui"     = "790ebb232a216bd07097868c0cc3d896f8f8dc4e" #latest release/stable/6.4 branch commit
-    "uno.check"          = "89780d485a56114537445615f1157d3157c517d7" #latest release/stable/1.30 branch commit
-    "uno.xamlmerge.task" = "377ce2d9fdeab0d4f0b94a61e008731a40b10220" #latest release/stable/1.33 branch commit
-    "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
-    "uno.resizetizer"    = "dfcb976c40eb66cb33c5def4c81d2e4e374dc678" #latest main commit
-    "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
-    "uno.extensions"     = "caadf295630fb154d7d75c8d820f75aa8e014d92" #latest release/stable/5.2 branch commit
-    "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
-    "uno.samples"        = "e9ccf60d7d830acf7db4108a8aa5a2a1fc90c481" #latest master commit
-}
+    begin {
+        Set-PSDebug -Trace 1
+        $script:hasErrors = $false
+        $external_docs = @{
+            # use either commit, or branch name to use its latest commit
+            "uno.wasm.bootstrap" = "969829c0aaa8f3341b196e31e2627953d39a9526" #latest release/stable/9.0 branch commit
+            "uno.themes"         = "22df5299701fe9a6f96e4414b559f8dfd5789540" #latest release/stable/5.4 branch commit
+            "uno.toolkit.ui"     = "790ebb232a216bd07097868c0cc3d896f8f8dc4e" #latest release/stable/6.4 branch commit
+            "uno.check"          = "89780d485a56114537445615f1157d3157c517d7" #latest release/stable/1.30 branch commit
+            "uno.xamlmerge.task" = "377ce2d9fdeab0d4f0b94a61e008731a40b10220" #latest release/stable/1.33 branch commit
+            "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
+            "uno.resizetizer"    = "dfcb976c40eb66cb33c5def4c81d2e4e374dc678" #latest main commit
+            "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
+            "uno.extensions"     = "caadf295630fb154d7d75c8d820f75aa8e014d92" #latest release/stable/5.2 branch commit
+            "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
+            "uno.samples"        = "e9ccf60d7d830acf7db4108a8aa5a2a1fc90c481" #latest master commit
+        }
 
-$uno_git_url = "https://github.com/unoplatform/"
-
-if($branches -ne $null)
-{
-    foreach ($repo in $branches.keys)
-    {
-        $branch = $branches[$repo]
-
-        $external_docs[$repo] = $branch
+        $uno_git_url = "https://github.com/unoplatform/"
     }
-}
 
-echo "Current setup:"
-$external_docs
+    process {
 
-$ErrorActionPreference = 'Stop'
+        if ($custom_git_urls -ne $null -and -not ($custom_git_urls -is [hashtable])) {
+            throw "The parameter 'custom_git_urls' must be a hashtable or null."
+        }
 
-function Assert-ExitCodeIsZero()
-{
-    if ($LASTEXITCODE -ne 0)
-    {
-        popd
-        popd
+        if ($branches -ne $null) {
+            foreach ($repo in $branches.keys) {
+                $branch = $branches[$repo]
 
+                $external_docs[$repo] = $branch
+            }
+        }
+        Write-Output "Current setup:"
+        $external_docs
+
+        $ErrorActionPreference = 'Stop'
+       
+        if (-Not (Test-Path articles\external)) {
+            mkdir articles\external -ErrorAction Continue
+        }
+
+        Push-Location articles\external
+
+        # ensure long paths are supported on Windows
+        git config --global core.longpaths true
+
+        $detachedHeadConfig = git config --get advice.detachedHead
+        git config advice.detachedHead false
+
+        # Heads - Release
+        foreach ($repoPath in $external_docs.keys) {
+            if ($custom_git_urls -ne $null -and $custom_git_urls.ContainsKey($repoPath)) {
+                $repoUrl = "$custom_git_url$repoPath"
+            }
+            else {
+                $repoUrl = "$uno_git_url$repoPath"
+            }
+            Write-Output "Importing $repoPath from $repoUrl..."
+            $repoBranch = $external_docs[$repoPath]
+
+            # if the repository is already cloned, just update it, not clone it again, because git will otherwise fail
+            if (-Not (Test-Path $repoPath)) {
+                Write-Output "Cloning $repoPath ($repoUrl@$repoBranch)..."
+                git clone $repoUrl $repoPath
+                Assert-ExitCodeIsZero -ErrorMessage "Failed to clone repository $repoUrl."
+            }
+
+            Push-Location $repoPath
+
+            Write-Output "Checking out $repoUrl@$repoBranch..."
+            git fetch
+            git checkout --force $repoBranch
+            Assert-ExitCodeIsZero -ErrorMessage "Failed to fetch and checkout updates for repository $repoUrl."
+
+            # if not detached
+            if ((git symbolic-ref -q HEAD) -ne $null) {
+                Write-Output "Resetting to $repoUrl@$repoBranch..."
+                git reset --hard origin/$repoBranch
+                Assert-ExitCodeIsZero -ErrorMessage "Failed to reset repository $repoUrl to branch $repoBranch."
+            }
+
+            Pop-Location
+        }
+
+        git config advice.detachedHead $detachedHeadConfig
+
+    }
+    end {
+        Pop-Location
+
+        if ($hasErrors) {
+            Write-Output "Some external repositories failed to import or update. Check the logs for details."
+        }
+        else {
+            Write-Output "All external repositories are imported and up to date."
+        }
+
+        $script:hasErrors = $false
         Set-PSDebug -Off
-
-        throw "Exit code must be zero."
     }
 }
 
-if (-Not (Test-Path articles\external))
-{
-    mkdir articles\external -ErrorAction Continue
-}
-
-pushd articles\external
-
-# ensure long paths are supported on Windows
-git config --global core.longpaths true
-
-$detachedHeadConfig = git config --get advice.detachedHead
-git config advice.detachedHead false
-
-# Heads - Release
-foreach ($repoPath in $external_docs.keys)
-{
-    $repoUrl = "$uno_git_url$repoPath"
-    $repoBranch = $external_docs[$repoPath]
-        
-    if (-Not (Test-Path $repoPath))
-    {        
-        echo "Cloning $repoPath ($repoUrl@$repoBranch)..."
-        git clone $repoUrl $repoPath
-        Assert-ExitCodeIsZero
+function Assert-ExitCodeIsZero {
+    param (
+        [string]$ErrorMessage = "A command failed with a non-zero exit code."
+    )
+    Set-PSDebug -Off
+    if ($LASTEXITCODE -ne 0) {
+        $script:hasErrors = $true
+        # Provide detailed context about the failure
+        Write-Error "$ErrorMessage Exit code: $LASTEXITCODE"
+        throw "Command failed with exit code $LASTEXITCODE."
     }
-
-    pushd $repoPath
-
-    echo "Checking out $repoUrl@$repoBranch..."
-    git fetch
-    git checkout --force $repoBranch
-    Assert-ExitCodeIsZero
-
-    # if not detached
-    if ((git symbolic-ref -q HEAD) -ne $null)
-    {
-        echo "Resetting to $repoUrl@$repoBranch..."
-        git reset --hard origin/$repoBranch
-        Assert-ExitCodeIsZero
-    }
-
-    popd
 }
-
-git config advice.detachedHead $detachedHeadConfig
-
-popd
-
-Set-PSDebug -Off
