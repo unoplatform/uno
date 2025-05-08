@@ -70,14 +70,14 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		// description of the key.
 		if (key.Length == 1)
 		{
-			return key;
+			return key[0];
 		}
 
 		// If the key is not a single character, we can try to convert
 		switch (key.ToLowerInvariant())
 		{
 			case "enter":
-				return "\r";
+				return '\r';
 			default:
 				return null;
 		}
