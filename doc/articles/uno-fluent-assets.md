@@ -6,7 +6,7 @@ uid: Uno.Development.FluentAssets
 
 Starting from Uno.UI 4.7, Uno Platform provides a cross platform fluent symbols font, provided by the [Uno.Fonts.Fluent](https://nuget.info/packages/Uno.Fonts.Fluent) NuGet package.
 
-When included in the Uno Platform heads (excluding Windows and UWP heads), the symbols fonts will be used to display any control that makes use of it, such as the "burger" menu icon in a `NavigationView`.
+When included in the Uno Platform heads (excluding WinUI head), the symbols fonts will be used to display any control that makes use of it, such as the "burger" menu icon in a `NavigationView`.
 
 ## Usage
 
