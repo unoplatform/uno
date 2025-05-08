@@ -328,7 +328,7 @@ public partial class Given_MediaPlayerElement
 		sut.TransportControls.IsFastForwardEnabled = true;
 		sut.TransportControls.IsFastRewindEnabled = true;
 		sut.TransportControls.IsPlaybackRateEnabled = true;
-#if !WINAPPSDK
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
 		sut.TransportControls.IsFullWindowEnabled = true;
 #endif
 		sut.TransportControls.IsRepeatEnabled = true;
@@ -345,7 +345,7 @@ public partial class Given_MediaPlayerElement
 		//// step 3: Collapsed Visibility from all to make sure that we have space
 		sut.TransportControls.IsFastForwardButtonVisible = false;
 		sut.TransportControls.IsFastRewindButtonVisible = false;
-#if !WINAPPSDK
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
 		sut.TransportControls.IsFullWindowButtonVisible = false;
 #endif
 		sut.TransportControls.IsNextTrackButtonVisible = false;
@@ -393,7 +393,7 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
 				);
 
-#if !WINAPPSDK
+#if !WINAPPSDK && !__SKIA__ // Full window mode is not supported on Skia yet https://github.com/unoplatform/uno-private/issues/1276
 		sut.TransportControls.IsFullWindowButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("FullWindowButton");
 		await WindowHelper.WaitFor(
