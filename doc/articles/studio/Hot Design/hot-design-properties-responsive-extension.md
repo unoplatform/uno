@@ -35,13 +35,17 @@ To remove a value set for a specific breakpoint, click the **trash icon** next t
 ## Next Steps
 
 - **[Different Editors](xref:Uno.HotDesign.Properties.Editors)**
- The Properties panel automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
+
+  The Properties panel automatically selects the editor best suited for each property’s data type. Visit this page to explore all available editor types and when to use them.
 
 - **[Advanced Flyout Editor](xref:Uno.HotDesign.Properties.AdvancedFlyout)**
+
   Use the **Advanced Flyout** to choose how a property value is provided: enter a literal **Value**, set up a **Binding**, reference a **Resource**, or apply **Responsive Extensions** for adaptive layouts.
 
 - **[Template Editor](xref:Uno.HotDesign.Properties.TemplateEditor)**
+
   The **Template Editor** provides a visual canvas for creating and customizing control templates, enabling you to design complex UI structures without hand-coding XAML.
 
 - **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**
+
   A hands-on walkthrough for building the [Counter App](xref:Uno.Workshop.Counter) using **Hot Design**, showcasing its features and workflow in action.
