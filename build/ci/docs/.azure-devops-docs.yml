@@ -17,16 +17,16 @@ jobs:
     XAML_FLAVOR_BUILD: WinUI
 
   steps:
-  - template: templates/nuget-cache.yml
+  - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-mobile-install-windows.yml
+  - template: ../templates/dotnet-mobile-install-windows.yml
 
-  - template: templates/gitversion.yml
-  - template: templates/jdk-setup.yml
+  - template: ../templates/gitversion.yml
+  - template: ../templates/jdk-setup.yml
 
-  - template: templates/docfx-intermediary-assets.yml
+  - template: ../templates/docfx-intermediary-assets.yml
 
   - task: MSBuild@1
     inputs:

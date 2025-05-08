@@ -94,26 +94,6 @@ Once that's printed, go ahead and start profiling:
 dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
 ```
 
-## Profiling Catalyst apps
-
-1. Launch the executable, passing the `DOTNET_DiagnosticPorts` variable directly:
-
-    ```bash
-    DOTNET_DiagnosticPorts=~/my-desktop-port,suspend ./bin/Debug/net7.0-*/*/MyTestApp.app/Contents/MacOS/MyTestApp
-    ```
-
-2. At this point it's necessary to wait until the following line shows up in the terminal:
-
-    ```bash
-    The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
-    ```
-
-3. Once that's printed, go ahead and start profiling:
-
-    ```bash
-    dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
-    ```
-
 ## Profiling .NET Android applications (.NET 8)
 
 ### Enable profiling in your application

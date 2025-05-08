@@ -625,7 +625,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// weak reference contents to a known type that it's guaranteed
 			// to be (if it isn't null), and we then AsOrNull() the ComPtr,
 			// once it's safe to ask about a type that we're not sure of.
-			FrameworkElement subMenuPresenterAsFE = m_wpSubMenuPresenter?.Target as Frame;
+			var subMenuPresenterAsFE = m_wpSubMenuPresenter?.IsAlive == true ? m_wpSubMenuPresenter.Target as FrameworkElement : null;
 
 			IMenuPresenter subMenuPresenter = null;
 

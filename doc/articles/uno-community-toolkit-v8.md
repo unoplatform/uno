@@ -25,7 +25,7 @@ Uno Platform is now supported out of the box by the Windows Community Toolkit an
 > [!IMPORTANT]
 > If you are already using Windows Community Toolkit version 7.x in your Uno Platform project and want to update to version 8.x, note that Uno Platform has its [own fork](https://github.com/unoplatform/Uno.WindowsCommunityToolkit) of the Windows Community Toolkit for [version 7.x](xref:Uno.Development.CommunityToolkit.v7).
 >
-> In your project, these Windows Community Toolkit Uno packages were referenced behind a conditional to allow for use on Windows, Android, iOS, mac Catalyst, Linux, and WebAssembly.
+> In your project, these Windows Community Toolkit Uno packages were referenced behind a conditional to allow for use on Windows, Android, iOS, Linux, and WebAssembly.
 >
 > Conditional references are no longer necessary with version 8.x, you can remove the Uno Windows Community Toolkit references and all `Condition` statements around the packages.
 

@@ -21,7 +21,7 @@ For a step-by-step guide to installing the prerequisites for your preferred IDE 
 ## NuGet Packages for Uno Platform
 
 Uno Platform has ported the Windows Community Toolkit 7.x for use in Uno Platform applications to allow for use on Windows,
-Android, iOS, mac Catalyst, Linux, and WebAssembly.
+Android, iOS, Linux, and WebAssembly.
 
 The following packages are available:
 

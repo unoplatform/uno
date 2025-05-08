@@ -90,9 +90,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
-		var success2 = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0;
-		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
-
 		UpdateWindowPropertiesFromPackage();
 
 		Win32Host.RegisterWindow(_hwnd);
@@ -107,6 +104,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		// synchronously initialize Position and Size here before anyone reads their values
 		OnWindowSizeOrLocationChanged();
+		UpdateDisplayInfo();
+		if (RasterizationScale != 1)
+		{
+			// https://github.com/unoplatform/uno/issues/20021
+			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
+		}
 
 		// TODO: extending into titlebar
 	}
@@ -171,11 +174,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		// Update DPI to rescale the window if scaling != 1
-		UpdateDisplayInfo();
-
 		var success = PInvoke.RegisterTouchWindow(hwnd, 0);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.RegisterTouchWindow)} failed: {Win32Helper.GetErrorMessage()}"); }
 		var success2 = PInvoke.EnableMouseInPointer(true);
 		if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.EnableMouseInPointer)} failed: {Win32Helper.GetErrorMessage()}"); }
 		return hwnd;
@@ -269,7 +269,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
 		// the order of the next lines matters or else the canvas might not be resized correctly
-		RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
 		UpdateDisplayInfo();
 		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }

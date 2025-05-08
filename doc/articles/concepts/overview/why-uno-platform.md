@@ -132,7 +132,7 @@ Displaying consistent shadows in cross-platform apps was always a problem. We ar
 
 Uno Platform offers charting components via integration with [Maps UI](https://github.com/Mapsui/Mapsui) (Open Source) on all targets.
 
-Also, for targeting just mobile and MacCatalyst, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
+Also, for targeting just mobile, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
 
 In addition, we are looking into integrating the new WinUI [MapControl](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mapcontrol?view=windows-app-sdk-1.5) into our core offering.
 

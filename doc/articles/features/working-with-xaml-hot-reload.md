@@ -12,8 +12,8 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
 
 ## Features
 
-- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod) and **Rider** (Linux, macOS, Windows).
-- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
+- Supported in **Visual Studio 2022** (Windows), **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod), and **Rider** (Linux, macOS, Windows).
+- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Android, WebAssembly, and Skia (X11, Windows, macOS and FrameBuffer)**.
 - All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio, VS Code and Rider. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support.
 - **Hot Reload Indicator** visuals for an enhanced development experience on Uno Platform targets (not currently supported on WinAppSDK target).
@@ -62,7 +62,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ---
 
 > [!IMPORTANT]
-> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features per OS
 
@@ -150,12 +150,6 @@ For existing applications, take this opportunity to update to the [latest **Uno.
             <td>🔳</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
-            <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
-        </tr>
     </tbody>
 </table>
 
@@ -204,11 +198,6 @@ For existing applications, take this opportunity to update to the [latest **Uno.
         </tr>
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
-            <td>🔳</td><td>✅</td>
-            <td>🔳</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
             <td>🔳</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
@@ -262,11 +251,6 @@ For existing applications, take this opportunity to update to the [latest **Uno.
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
             <td>🔳</td><td>✅</td>
             <td>🔳</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
-            <td>🔳</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
@@ -327,12 +311,6 @@ Mobile targets now support both XAML and C# Hot Reload. Debugger-specific variat
 - In VS Code, and Rider:
   - Hot Reload is not supported when using the debugger.
 - XAML `x:Bind` Hot Reload is limited to simple expressions and events.
-
-### [**Catalyst**](#tab/catalyst)
-
-Mobile targets now support both XAML and C# Hot Reload.
-
-- XAML `x:Bind` hot reload is limited to simple expressions and events.
 
 ### [**WinAppSDK**](#tab/winappsdk)
 

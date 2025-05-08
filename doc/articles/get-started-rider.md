@@ -31,7 +31,6 @@ uid: Uno.GetStarted.Rider
 | Android               | ✔️                   | ✔️                 | ✔️                |
 | iOS                   | ❌                   | ✔️                 | ❌                 |
 | Wasm                  | ✔️†                  | ✔️†                | ✔️†                |
-| Catalyst              | ❌                   | ✔️                 | ❌                 |
 | Skia Desktop          | ✔️                   | ✔️                 | ✔️                |
 
 <details>

@@ -73,10 +73,9 @@ body:
     id: renderer
     attributes:
       label: Renderer
-      multiple: true
       options:
-        - Skia
-        - Native
+        - label: Skia
+        - label: Native
 
   - type: dropdown
     id: platforms

@@ -72,7 +72,7 @@ function postWebViewMessage(message){
             // Android
             unoWebView.postMessage(JSON.stringify(message));
         } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-            // iOS and macOS (Catalyst)
+            // iOS and macOS
             webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
         }
     }

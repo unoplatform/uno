@@ -982,6 +982,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
+		public async Task When_IsTextSelectionEnabled_TappedMouse_Then_ClearSelection()
+		{
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			sut.SelectAll();
+			Assert.AreEqual(sut.Text, sut.SelectedText);
+
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Press();
+			mouse.Release();
+
+			Assert.AreEqual("", sut.SelectedText);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_ClearSelection()
+		{
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			sut.SelectAll();
+			Assert.AreEqual(sut.Text, sut.SelectedText);
+
+			finger.Press(bounds.GetCenter());
+			finger.Release();
+
+			Assert.AreEqual("", sut.SelectedText);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_DoubleTapped()
 		{
 			var SUT = new TextBlock
@@ -1397,6 +1454,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotSelectText()
+		{
+			TextBlock sut;
+			var root = new ScrollViewer
+			{
+				Width = 150,
+				Height = 300,
+				IsScrollInertiaEnabled = false,
+				Content = sut = new TextBlock
+				{
+					Text = Enumerable.Range(0, 4096).Select(i => $"Hello uno #{i:D4}!").JoinBy(" "),
+					TextWrapping = TextWrapping.WrapWholeWords,
+					IsTextSelectionEnabled = true,
+				}
+			};
+
+			var bounds = await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Drag(
+				from: bounds.GetCenter(),
+				to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 300));
+
+			Assert.AreEqual("", sut.SelectedText);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotAlterSelection()
+		{
+			TextBlock sut;
+			var root = new ScrollViewer
+			{
+				Width = 150,
+				Height = 300,
+				IsScrollInertiaEnabled = false,
+				Content = sut = new TextBlock
+				{
+					Text = Enumerable.Range(0, 4096).Select(i => $"Hello uno #{i:D4}!").JoinBy(" "),
+					TextWrapping = TextWrapping.WrapWholeWords,
+					IsTextSelectionEnabled = true,
+				}
+			};
+
+			var bounds = await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using (var mouse = injector.GetMouse()) // We use mouse to select text as currently we do not support selection using touch
+			{
+				// Drag horizontally to select some text
+				mouse.Drag(
+					from: new(bounds.X + 5, bounds.GetCenter().Y),
+					to: new(bounds.Right - 5, bounds.GetCenter().Y));
+			}
+
+			var selectedText = sut.SelectedText;
+			Assert.AreNotEqual("", sut.SelectedText);
+
+			// Scroll vertically
+			using (var finger = injector.GetFinger())
+			{
+				finger.Drag(
+					from: bounds.GetCenter(),
+					to: new(bounds.GetCenter().X, bounds.GetCenter().Y - 300));
+			}
+			Assert.AreEqual(selectedText, sut.SelectedText);
 		}
 		#endregion
 #endif

@@ -281,6 +281,8 @@ partial class InputManager
 
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnDirectManipulationInertiaStarting = (sender, args) =>
 			{
+				args.UseCompositionTimer = WinRTFeatureConfiguration.GestureRecognizer.UseCompositionTimerForDirectManipulation;
+
 				var that = (DirectManipulation)sender.Owner;
 
 				if (_trace)

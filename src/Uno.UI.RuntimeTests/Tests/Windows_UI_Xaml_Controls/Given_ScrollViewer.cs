@@ -5,21 +5,24 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using MUXControlsTestApp.Utilities;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
+
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.Extensions;
+
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
@@ -1644,5 +1647,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(Math.Abs(parentEndOffset - parent.VerticalOffset) < 1);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Hosting_TextBlock_With_Margin()
+		{
+			// test built specifically to verify that a SV nesting a TextBlock with Margin
+			// doesnt includes that Margin twice when calculating its Extent.
+
+			ScrollViewer sv;
+			var setup = new Border()
+			{
+				Height = 100,
+				Child = sv = new ScrollViewer
+				{
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					Content = new TextBlock
+					{
+						Text = "Hello",
+						Margin = new Thickness(8, 8, 8, 8),
+					},
+				},
+			};
+
+			await UITestHelper.Load(setup);
+
+			// shouldnt happen, sanity check. if it ever did, we have other problem(s), and the entire test is invalid.
+			Assert.IsTrue(sv.ActualHeight < setup.ActualHeight, $"ScrollViewer (ActualHeight={sv.ActualHeight}) should be shorter than its parent (ActualHeight={setup.Height}).");
+
+			// double Margin inclusion would cause the Extent to "overflow" the Viewport, into the Scrollable
+			Assert.AreEqual(sv.ViewportHeight, sv.ExtentHeight, delta: 1.0, "In a free expanding SV, the Viewport should the same as the Extend.");
+			Assert.AreEqual(0, sv.ScrollableHeight, delta: 1.0, "In a free expanding SV, it should never be scrollable.");
+		}
 	}
 }

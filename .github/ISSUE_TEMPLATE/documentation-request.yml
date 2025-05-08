@@ -34,10 +34,9 @@ body:
     id: docs-request-renderer
     attributes:
       label: Renderer
-      multiple: true
       options:
-        - Skia
-        - Native
+        - label: Skia
+        - label: Native
 
   - type: dropdown
     id: docs-request-platforms

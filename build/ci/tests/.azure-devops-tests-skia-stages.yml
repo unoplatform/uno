@@ -17,7 +17,7 @@ stages:
     - binaries_build_native_macos
 
   jobs:
-  - template: .azure-devops-skia-tests-build.yml
+  - template: .azure-devops-tests-skia-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
@@ -29,13 +29,13 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-skia-tests-build-browser.yml
+  - template: .azure-devops-tests-webassembly-skia-build.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-  - template: .azure-devops-skia-tests-browser.yml
+  - template: .azure-devops-tests-webassembly-skia.yml
     parameters:
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
@@ -47,12 +47,12 @@ stages:
     - Setup
 
   jobs:
-  - template: .azure-devops-skia-tests-build-android.yml
+  - template: .azure-devops-tests-android-skia-build.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-skia-tests-android.yml
+  - template: .azure-devops-tests-android-skia.yml
     parameters:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
@@ -64,7 +64,7 @@ stages:
     - binaries_build_native_macos
 
   jobs:
-  - template: .azure-devops-skia-tests-build-ios.yml
+  - template: .azure-devops-tests-ios-skia-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -76,7 +76,7 @@ stages:
       poolName: '${{ parameters.poolName }}'
       UNO_UWP_BUILD: '${{ parameters.UNO_UWP_BUILD }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-skia-tests-ios.yml
+  - template: .azure-devops-tests-ios-skia.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -95,7 +95,7 @@ stages:
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-skia-tests-linux.yml
+  - template: .azure-devops-tests-linux-skia.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -114,7 +114,7 @@ stages:
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-skia-tests-macos.yml
+  - template: .azure-devops-tests-macos-skia.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
@@ -133,7 +133,7 @@ stages:
     - runtime_tests_skia_build
 
   jobs:
-  - template: .azure-devops-skia-tests-windows.yml
+  - template: .azure-devops-tests-windows-skia.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
       vmMacImage: '${{ parameters.vmMacImage }}'
