@@ -4,14 +4,15 @@ uid: Uno.GetStarted.NextSteps
 
 # Next steps
 
-If you have already [completed the initial getting started tutorial](ref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way.
+If you have already [completed the initial getting started tutorial](xref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way.
 
 You will find below resources provided by our team, the community and Microsoft.
 
-## Uno Platform provided Workshops / Step-by-step Tutorials (Free)
+## Uno Platform provided Workshops / Step-by-step Tutorials / Samples (Free)
 
 - [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment and learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
 - [Tube Player Workshop](external/workshops/tube-player/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of an Uno Platform application that enables the user to search for and stream YouTube videos. You will learn how to easily import Figma designs into your application.
+- [Uno Chefs Sample](xref:Uno.Chefs.Overview). A robust sample app showcasing the power of Uno. With Uno Chefs, you’ll explore how to build an interactive recipe app, demonstrating everything from UI customization, navigation, and state management to integrating advanced features like media playback, responsive design, and external APIs. Plus, you can dive deeper into the app’s [Recipe Books](xref:Uno.Recipes.Overview) to see step-by-step guides on how to implement various Uno features and solve real-world problems.
 
 ## Community Provided Learning Resources (Free and Paid)
 
