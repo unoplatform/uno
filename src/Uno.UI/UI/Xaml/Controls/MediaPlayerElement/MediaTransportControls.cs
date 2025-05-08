@@ -955,7 +955,15 @@ namespace Microsoft.UI.Xaml.Controls
 					BindIsEnabled(m_tpTHVolumeButton, IsVolumeEnabled);
 					break;
 				case var _ when property == IsFullWindowButtonVisibleProperty:
-					BindVisibility(m_tpFullWindowButton, IsFullWindowButtonVisible);
+#if HAS_UNO // Currently full screen mode is not supported by the control on Skia targets
+					var isVisible =
+#if !__SKIA__
+					IsFullWindowButtonVisible;
+#else
+					false;
+#endif
+#endif
+					BindVisibility(m_tpFullWindowButton, isVisible);
 					break;
 				case var _ when property == IsFullWindowEnabledProperty:
 					BindIsEnabled(m_tpFullWindowButton, IsFullWindowEnabled);
