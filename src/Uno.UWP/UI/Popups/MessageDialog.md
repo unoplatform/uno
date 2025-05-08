@@ -11,7 +11,7 @@ The implementation of MessageDialog for iOS and Android are based on their respe
 #### Android
 
 - There is a limit of 3 items displayed in an AlertDialog
-- It is possible to tap outside of the AlertDialog. If the user performs this action, the result of the MessageDialog will be equal to the CancelIndex provided. Unlike UWP, if no CancelIndex is provided, the result will be null
+- It is possible to tap outside of the AlertDialog. If the user performs this action, the result of the MessageDialog will be equal to the CancelIndex provided. Unlike WinUI, if no CancelIndex is provided, the result will be null
 
 #### iOS
 

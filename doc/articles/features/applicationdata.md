@@ -12,14 +12,14 @@ Legend
 
 - ✔  Supported
 
-| Picker             | WinUI/UWP | WebAssembly | Android | iOS    | macOS | Skia Desktop |
-|--------------------|-----------|-------------|---------|--------|-------|--------------|
-| `LocalFolder`      | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
-| `RoamingFolder`    | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
-| `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
-| `TemporaryFolder`  | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
-| `LocalSettings`    | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
-| `RoamingSettings`  | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
+| Picker             | WinUI      | WebAssembly | Android | iOS/Mac Catalyst   | macOS | Skia Desktop |
+|--------------------|------------|-------------|---------|--------------------|-------|--------------|
+| `LocalFolder`      | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingFolder`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalCacheFolder` | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `TemporaryFolder`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `LocalSettings`    | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
+| `RoamingSettings`  | ✔         | ✔          | ✔       | ✔                 | ✔     | ✔            |
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 
