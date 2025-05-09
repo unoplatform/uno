@@ -33,14 +33,14 @@ partial class InputManager
 	{
 		/// <remarks>>
 		/// Unlike manipulations on a UIElement, we can "resume" it, so the sequence can be:
-		/// Starting{1} ──► Started{1} ──► Updated{1-*} ────────────────────────────────────────────────► Completed
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ────────────────────────────────────────────────► Completed{1}
 		///                                  ▲   │                                                            ▲
 		///                                  │   └────► InertiaStarting ──► Updated(isInertial=true){1-*} ────┤
 		///                                  │                                                                │
 		///                                  └─────────────────── Started(isResuming=true){1} ◄───────────────┘
 		/// 
 		/// While on UIElement it could be only
-		/// Starting{1} ──► Started{1} ──► Updated{1-*} ───────────────────────────────────────────────────► Completed
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ───────────────────────────────────────────────────► Completed{1}
 		///                                      │                                                               ▲
 		///                                      └────► InertiaStarting{1} ──► Updated(isInertial=true){1-*} ────┘
 		/// </remarks>>
