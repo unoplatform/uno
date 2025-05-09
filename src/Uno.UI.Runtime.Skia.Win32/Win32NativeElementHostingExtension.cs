@@ -257,6 +257,8 @@ internal class Win32NativeElementHostingExtension(ContentPresenter presenter) : 
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+
+		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
 	}
 
