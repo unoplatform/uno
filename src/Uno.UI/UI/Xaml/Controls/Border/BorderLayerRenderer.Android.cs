@@ -45,7 +45,7 @@ namespace Uno.UI.Xaml.Controls
 			var newState = new BorderLayerState(drawArea.Size, _borderInfoProvider);
 			var previousLayoutState = _currentState;
 
-			if (newState.Equals(previousLayoutState) && !forceUpdate)
+			if (newState.Equals((BorderLayerState)previousLayoutState) && !forceUpdate)
 			{
 				return;
 			}

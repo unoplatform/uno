@@ -33,7 +33,7 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.BorderThickness,
 			_borderInfoProvider.CornerRadius);
 		var previousLayoutState = _currentState;
-		if (!newState.Equals(previousLayoutState) || forceUpdate)
+		if (!newState.Equals((BorderLayerState)previousLayoutState) || forceUpdate)
 		{
 			if (previousLayoutState.Background != newState.Background && _owner is FrameworkElement fwElt)
 			{
