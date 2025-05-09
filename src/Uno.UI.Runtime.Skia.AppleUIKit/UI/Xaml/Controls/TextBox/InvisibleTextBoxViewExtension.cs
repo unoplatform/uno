@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
@@ -12,6 +13,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
 internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
+	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
@@ -45,9 +47,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
+		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
+
+		RemoveViewFromTextInputLayer();
 
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
@@ -234,6 +240,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
+			_latestNativeView = layer.Subviews.LastOrDefault();
 			layer.AddSubview(nativeView);
 
 			// Push the overlay native view out of the visible view - this way
@@ -244,7 +251,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void RemoveViewFromTextInputLayer()
 	{
-		if (_textBoxView is not UIView nativeView)
+		if (_latestNativeView is not UIView nativeView)
 		{
 			return;
 		}
@@ -252,6 +259,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		if (nativeView.Superview is not null)
 		{
 			nativeView.RemoveFromSuperview();
+			_latestNativeView = null;
 		}
 	}
 
