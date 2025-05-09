@@ -30,37 +30,55 @@ See [Microsoft API reference for MediaPlayerElement](https://learn.microsoft.com
 
 ## Features
 
-| Section            | Feature                                        | iOS | Android | Wasm | Skia Desktop  | Remarks                                      |
-|--------------------|------------------------------------------------|:---:|:-------:|:----:|:--------:|------------------------------------------------|
-| MediaPlayerElement | AutoPlay                                       |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Poster image                                   |  ✅  |    ✅    |  ✅   |    ✅     | Does not show when playing music             |
-|                    | Enable/Disable MediaTransportControls          |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Stretch                                        |  ✅  |    ✅    |  ✅   |    ✅     | Stretch.None behave like Stretch.Fill on iOS |
-|                    | Pause media when headphones unplugged          |  ✅  |    ✅    |  -     |    -     |                                               |
-| TransportControls  | Transport controls custom style                |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Play/Pause                                     |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Stop                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Seek                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Volume change                                  |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Mute                                           |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show elapsed time                              |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show remaining time                            |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show/Hide MediaTransportControls automatically |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | MediaTransportControls compact mode            |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show/Hide MediaTransportControls commands      |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Enable/Disable MediaTransportControls commands |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Skip forward                                   |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Skip backward                                  |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Show buffering progress                        |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Zoom mode                                      |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Full-screen mode                               |  ✅  |    ✅    |  ✅   |    ✅     |                                              |
-|                    | Playlists support                              |  ✅  |    ✅    |  -     |    -      |                                          |
-|                    | Change playback rate                           |  -    |    -     |  ✅   |    ✅     |                                           |
-|                    | Player controls on locked screen support       |  -    |    -     |  -     |    -     |                                           |
-|                    | Subtitles support                              |  -    |    -     |  -     |    -     |                                           |
-|                    | Languages support                              |  -    |    -     |  -     |    -     |                                           |
+| Section            | Feature                                        | iOS & Android (native) | Wasm (native) | Skia | Remarks                                       |
+| ------------------ | ---------------------------------------------- | :--------------------: | :-----------: | :--: | --------------------------------------------- |
+| MediaPlayerElement | AutoPlay                                       |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Poster image                                   |            ✅           |       ✅       |   ✅  | Does not show when playing music              |
+|                    | Enable/Disable MediaTransportControls          |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Stretch                                        |            ✅           |       ✅       |   ✅  | Stretch.None behaves like Stretch.Fill on iOS |
+|                    | Pause media when headphones unplugged          |            ✅           |       -         |   -   |                                               |
+| TransportControls  | Transport controls custom style                |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Play/Pause                                     |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Stop                                           |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Seek                                           |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Volume change                                  |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Mute                                           |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Show elapsed time                              |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Show remaining time                            |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Show/Hide MediaTransportControls automatically |            ✅           |       ✅       |   ✅  |                                               |
+|                    | MediaTransportControls compact mode            |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Show/Hide MediaTransportControls commands      |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Enable/Disable MediaTransportControls commands |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Skip forward                                   |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Skip backward                                  |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Show buffering progress                        |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Zoom mode                                      |            ✅           |       ✅       |   ✅  |                                               |
+|                    | Full-screen mode                               |            ✅           |       ✅       |   -    |                                               |
+|                    | Playlists support                              |            ✅           |       -        |   -    |                                               |
+|                    | Change playback rate                           |            -             |       ✅       |   ✅  |                                               |
+|                    | Player controls on locked screen support       |            -             |       -        |   -   |                                               |
+|                    | Subtitles support                              |            -             |       -        |   -   |                                               |
+|                    | Languages support                              |            -             |       -        |   -   |                                               |
 
-## Requirement
+## Getting Started
+
+To add video playback functionality, include the following XAML snippet:
+
+```xml
+<MediaPlayerElement Source="ms-appx:///Assets/SampleMedia/myfile.mp4"
+                    MaxWidth="400"
+                    AutoPlay="False"
+                    AreTransportControlsEnabled="True" />
+```
+
+Make sure to enable the required feature in your `UnoFeatures` to include the necessary packages. Add `MediaElement;` as shown below:
+
+```diff
+<UnoFeatures>
+<!-- Existing features -->
++  MediaElement;
+</UnoFeatures>
+```
 
 ### iOS
 
@@ -89,37 +107,8 @@ Add the following to your AndroidManifest.xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
-### WebAssembly
-
-Using the `MediaPlayerElement` on WebAssembly head requires adding the [`Uno.WinUI.MediaPlayer.WebAssembly`](https://www.nuget.org/packages/Uno.WinUI.MediaPlayer.WebAssembly) package to the `MyApp.Wasm` project.
-
-> [!IMPORTANT]
-> The `Uno.WinUI.MediaPlayer.WebAssembly` package version must use the same version as the other `Uno.WinUI.*` packages in your project.
-
-### Skia.GTK (legacy)
-
-Using the `MediaPlayerElement` on the Skia+GTK head requires adding the [`Uno.WinUI.MediaPlayer.Skia.Gtk`](https://www.nuget.org/packages/Uno.WinUI.MediaPlayer.Skia.Gtk) package to the `MyApp.Skia.Gtk` project.
-
-> [!IMPORTANT]
-> The `Uno.WinUI.MediaPlayer.Skia.Gtk` package version must use the same version as the other `Uno.WinUI.*` packages in your project.
-
-#### Skia on Linux
-
-The `MediaPlayerElement` support is based on libVLC, and needs the system to provide the appropriate libraries to work properly.
-
-You'll need to install the following packages (Debian based distros):
-
-```bash
-sudo apt-get install libvlc-dev libx11-dev vlc libgtk2.0-0 libx11dev
-```
-
-#### Skia on Windows
-
-Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`](https://www.nuget.org/packages/VideoLAN.LibVLC.Windows) package to your application.
-
 ## Future improvement
 
-- Support for Skia Desktop `net9.0-desktop`
 - React to audio focus changes (pause/stop playback or reduce audio volume)
 - Subtitles support
 - Languages support
