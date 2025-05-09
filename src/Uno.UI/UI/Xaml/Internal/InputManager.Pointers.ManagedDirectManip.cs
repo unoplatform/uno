@@ -31,6 +31,19 @@ partial class InputManager
 {
 	partial class PointerManager
 	{
+		/// <remarks>>
+		/// Unlike manipulations on a UIElement, we can "resume" it, so the sequence can be:
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ────────────────────────────────────────────────► Completed
+		///                                  ▲   │                                                            ▲
+		///                                  │   └────► InertiaStarting ──► Updated(isInertial=true){1-*} ────┤
+		///                                  │                                                                │
+		///                                  └─────────────────── Started(isResuming=true){1} ◄───────────────┘
+		/// 
+		/// While on UIElement it could be only
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ───────────────────────────────────────────────────► Completed
+		///                                      │                                                               ▲
+		///                                      └────► InertiaStarting{1} ──► Updated(isInertial=true){1-*} ────┘
+		/// </remarks>>
 		internal interface IDirectManipulationHandler
 		{
 			ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args);
@@ -49,6 +62,9 @@ partial class InputManager
 
 			void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta) { }
 
+			/// <remarks>
+			/// Be aware that unlike manipulations on a UIElement, we can "resume" it, so this can be invoked more than once.
+			/// </remarks>>
 			void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled) { }
 
 			void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs? args) { }
