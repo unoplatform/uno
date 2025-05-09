@@ -131,12 +131,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+			_touchInertia?.Complete();
+			_touchInertia = null;
 		}
 
 		/// <inheritdoc />
 		internal override bool HitTest(Point point)
 			=> true; // Makes sure to get pointers events, even if no background.
 
+#nullable enable
 		private void HookScrollEvents(ScrollViewer sv)
 		{
 			UnhookScrollEvents(sv);
@@ -208,54 +211,62 @@ namespace Microsoft.UI.Xaml.Controls
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
 		{
-			var success = true;
+			bool success = true, updated = false;
 
 			if (horizontalOffset is double hOffset)
 			{
 				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
-				var scrollX = ValidateInputOffset(hOffset, 0, maxOffset);
+				var targetHorizontalOffset = ValidateInputOffset(hOffset, 0, maxOffset);
 
-				success &= scrollX == hOffset;
+				success &= targetHorizontalOffset == hOffset;
 
-				if (!NumericExtensions.AreClose(HorizontalOffset, scrollX))
+				if (!NumericExtensions.AreClose(HorizontalOffset, targetHorizontalOffset))
 				{
-					HorizontalOffset = scrollX;
+					HorizontalOffset = targetHorizontalOffset;
+					updated = true;
 				}
 			}
 
 			if (verticalOffset is double vOffset)
 			{
 				var maxOffset = Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
-				var scrollY = ValidateInputOffset(vOffset, 0, maxOffset);
+				var targetVerticalOffset = ValidateInputOffset(vOffset, 0, maxOffset);
 
-				success &= scrollY == vOffset;
+				success &= targetVerticalOffset == vOffset;
 
-				if (!NumericExtensions.AreClose(VerticalOffset, scrollY))
+				if (!NumericExtensions.AreClose(VerticalOffset, targetVerticalOffset))
 				{
-					VerticalOffset = scrollY;
+					VerticalOffset = targetVerticalOffset;
+					updated = true;
 				}
 			}
 
-			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
+			_trace?.Invoke($"Scroll [{callerName}@{callerLine}] (success: {success} | updated: {updated} | req: h={horizontalOffset} v={verticalOffset} | actual: h={HorizontalOffset} v={VerticalOffset} | inter: {isIntermediate} | opts: {options})");
 
 			if (!options.IsInertial)
 			{
-				// If we get a request to scroll to a specific offset **that is not flagged as IsDependentOnly** (i.e. not coming from the inertia processing),
+				// If we get a request to scroll to a specific offset **that is not flagged as IsInertial** (i.e. not coming from the inertia processing),
 				// we stop the pending inertia processor.
 				_touchInertia?.Complete();
 			}
 
-			if (Content is UIElement contentElt)
+			if (updated)
 			{
-				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, options);
+				var updatedHorizontalOffset = HorizontalOffset;
+				var updatedVerticalOffset = VerticalOffset;
+
+				if (Content is UIElement contentElt)
+				{
+					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
+				}
+
+				Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+				// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
+				//		 we will apply only the final ScrollOffsets and only once.
+				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
+				InvalidateViewport();
 			}
-
-			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
-
-			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
-			//		 we will apply only the final ScrollOffsets and only once.
-			ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
-			InvalidateViewport();
 
 			return success;
 		}
@@ -273,12 +284,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
 		{
-			if (args.Pointer.Type is not (PointerDeviceType.Pen or PointerDeviceType.Touch)
-				|| (PointerCapture.TryGet(args.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventDirectManipulation)))
-			{
-				return ManipulationModes.None;
-			}
-
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
 			if (scrollable.Horizontally)
@@ -310,6 +315,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return mode;
+		}
+
+		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
+		{
+			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
+			_touchInertia = null;
 		}
 
 		/// <inheritdoc />
@@ -466,14 +477,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs args)
+		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs? args)
 		{
-			if ((PointerDeviceType)args.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				return;
-			}
-
-			if (args.IsInertial && _touchInertia is null)
+			if (args?.IsInertial is true && _touchInertia is null)
 			{
 				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
 				return;

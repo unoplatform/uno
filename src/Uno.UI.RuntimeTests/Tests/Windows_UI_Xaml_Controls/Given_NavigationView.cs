@@ -118,9 +118,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var screenShot = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorAt(screenShot, item9.GetLocation().Offset(5), "#E6E6E6");
-			ImageAssert.HasColorAt(screenShot, item7.GetLocation().Offset(5), "#E6E6E6");
-			ImageAssert.HasColorAt(screenShot, item5.GetLocation().Offset(5), "#E6E6E6");
+			ImageAssert.HasColorAt(screenShot, item9.GetLocation().OffsetLinear(5), "#E6E6E6");
+			ImageAssert.HasColorAt(screenShot, item7.GetLocation().OffsetLinear(5), "#E6E6E6");
+			ImageAssert.HasColorAt(screenShot, item5.GetLocation().OffsetLinear(5), "#E6E6E6");
 
 			async Task OpenPane()
 			{
