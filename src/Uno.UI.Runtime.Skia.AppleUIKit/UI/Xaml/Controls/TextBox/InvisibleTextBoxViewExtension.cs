@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
+using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -45,9 +47,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
+		// change FirstResponder before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
+
+		RemoveViewFromTextInputLayer(textBox.XamlRoot);
 
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
@@ -58,7 +64,6 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
-			RemoveViewFromTextInputLayer();
 			_textBoxView = null;
 		}
 	}
@@ -193,11 +198,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// The current TextBoxView is not compatible with the given TextBox state.
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
-			_textBoxView = CreateNativeView(textBox);
+
+			_textBoxView = CreateNativeView();
+
 			if (_textBoxView is UIView nativeView)
 			{
 				nativeView.Alpha = 0.01f;
 			}
+
 			UpdateProperties();
 			SetText(inputText ?? string.Empty);
 		}
@@ -207,12 +215,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_owner?.TextBox is { } textBox)
 		{
-			var selectionStart = textBox.SelectionStart;
-			var selectionLength = textBox.SelectionLength;
-
 			var newSelectionStart = GetSelectionStart();
 			textBox.SetPendingSelection(newSelectionStart, 0);
 			var updatedText = textBox.ProcessTextInput(text);
+
 			if (text != updatedText)
 			{
 				SetText(updatedText);
@@ -222,39 +228,39 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private string? GetNativeText() => _textBoxView?.Text;
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
-		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
+	private IInvisibleTextBoxView CreateNativeView()
+	{
+		return _owner?.TextBox?.AcceptsReturn != true ?
+			new SinglelineInvisibleTextBoxView(this) :
+			new MultilineInvisibleTextBoxView(this);
+	}
 
-	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
+	private void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{
 		if (_textBoxView is not UIView nativeView)
 		{
 			return;
 		}
 
-		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
+		if (GetHost(xamlRoot) is { } host && GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-			layer.AddSubview(nativeView);
+			host.AddViewToTextInputLayer(nativeView);
 
-			// Push the overlay native view out of the visible view - this way
-			// the blue typing suggestion overlay will not be shown to the user.
 			nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
 		}
 	}
 
-	public void RemoveViewFromTextInputLayer()
+	private void RemoveViewFromTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (_textBoxView is not UIView nativeView)
+		if (GetHost(xamlRoot) is { } host)
 		{
-			return;
-		}
-
-		if (nativeView.Superview is not null)
-		{
-			nativeView.RemoveFromSuperview();
+			host.RemoveLatestViewFromTextInputLayer();
 		}
 	}
 
-	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
-		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.TextInputLayer;
+	private static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
+		GetHost(xamlRoot)?.TextInputLayer;
+
+	private static IAppleUIKitXamlRootHost? GetHost(XamlRoot xamlRoot) =>
+		AppManager.XamlRootMap.GetHostForRoot(xamlRoot);
 }
