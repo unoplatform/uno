@@ -134,6 +134,8 @@ namespace Microsoft.UI.Composition
 							}
 						}
 
+						// var nShaderApplications = Math.Max(sigmaX, sigmaY) / ;
+
 						var uniforms = new SKRuntimeEffectUniforms(_effect)
 						{
 							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
@@ -207,23 +209,49 @@ namespace Microsoft.UI.Composition
 			float gaussian(float x, float sigma) {
 				return exp(-(x * x)/(2.0 * sigma * sigma)) / (sigma * sqrt(2.0 * PI));
 			}
-
+			
+			float lanczos(float x, float a) {
+				if (abs(x) < 1e-6) {
+					return 1;
+				}
+				return a * sin(PI * x) * sin(PI * x / a) / PI / PI / x / x;
+			}
 			vec4 main(vec2 texCoords){
 				vec4 finalColor = vec4(0.0);
 				float totalWeight = 0.0;
-			   
-				// A window size of 5 was empirically selected
-				// Theoretically, we would want to sample as wide as 3*sigma 
-				// in all directions where sigma is the resizing ratio (new size / old size)
-				// but SKSL (and GLSL) don't allow variable-length loops.
-				for (float x = -2; x <= 2; x += 1.0) {
-					for (float y = -2; y <= 2; y += 1.0) {
-						float weight = gaussian(x, sigmaX) * gaussian(y, sigmaY);
+				
+				const float a = 3;
+				
+				for (float x = 0; x < 20; x++) {
+					if (x >= a * sigmaX) {
+						break;
+					}
+					for (float y = 0; y < 20; y++) {
+						if (y >= a * sigmaY) {
+							break;
+						}
+						
+						float weight = lanczos(x / sigmaX, a) * lanczos(y / sigmaY, a);
 						finalColor += image.eval(texCoords + vec2(x, y)) * weight;
 						totalWeight += weight;
+						
+						if (x != 0) {
+							finalColor += image.eval(texCoords + vec2(-x, y)) * weight;
+							totalWeight += weight;
+						}
+						
+						if (y != 0) {
+							finalColor += image.eval(texCoords + vec2(x, -y)) * weight;
+							totalWeight += weight;
+						}
+						
+						if (y != 0 && x != 0) {
+							finalColor += image.eval(texCoords + vec2(-x, -y)) * weight;
+							totalWeight += weight;
+						}
 					}
 				}
-
+				
 				return finalColor / totalWeight;
 			}
 			""";
