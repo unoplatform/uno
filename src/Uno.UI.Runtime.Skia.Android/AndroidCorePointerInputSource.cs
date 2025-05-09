@@ -211,13 +211,13 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 		{
 			var nativeTimestamp = nativeArgs.EventTimeNanos;
 			frameId = (uint)nativeTimestamp;
-			ts = (ulong)nativeTimestamp / 1000; // ns to µs
+			ts = (ulong)nativeTimestamp / 1000; // ns to Âµs
 		}
 		else
 		{
 			var nativeTimestamp = nativeArgs.EventTime;
 			frameId = (uint)nativeTimestamp;
-			ts = (ulong)nativeTimestamp * 1000; // ms to µs
+			ts = (ulong)nativeTimestamp * 1000; // ms to Âµs
 		}
 
 		var isInContact = PointerHelpers.IsInContact(nativeArgs, pointerType, nativePointerAction, nativePointerButtons);
