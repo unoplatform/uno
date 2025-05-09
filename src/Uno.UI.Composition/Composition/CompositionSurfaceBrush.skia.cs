@@ -113,18 +113,17 @@ namespace Microsoft.UI.Composition
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
 					SKShader imageShader;
-					var sigmaX = scs.Image.Width / bounds.Width;
-					var sigmaY = scs.Image.Height / bounds.Height;
-					if (sigmaX < 3 || sigmaY < 3)
+					var scaleX = scs.Image.Width / bounds.Width;
+					var scaleY = scs.Image.Height / bounds.Height;
+					if (scaleX < 1 || scaleY < 1)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}
 					else
 					{
-						// Severe Downsampling : we use a gaussian blur instead of Catmull-Rom which is absolutely
-						// terrible when downsampling. We can't use a blur SKImageFilter because the bluring will happen
-						// after resizing, so we're forced to write the blurring shader manually. Ideally, we should
-						// implement a Lanczos resampling shader.
+						// Severe Downsampling : we use our own downsampler instead of Catmull-Rom which is absolutely
+						// terrible when downsampling. We can't use SKImageFilters because they would apply
+						// after resizing, so we're forced to write the shader manually.
 						if (_effect is null)
 						{
 							_effect = SKRuntimeEffect.CreateShader(ImageDownsamplingShader, out var error);
@@ -136,18 +135,24 @@ namespace Microsoft.UI.Composition
 
 						// var nShaderApplications = Math.Max(sigmaX, sigmaY) / ;
 
-						var uniforms = new SKRuntimeEffectUniforms(_effect)
+						var uniforms1 = new SKRuntimeEffectUniforms(_effect)
 						{
 							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
-							{ "sigmaX", sigmaX },
-							{ "sigmaY", sigmaY }
+							{ "scale", scaleX },
+							{ "stepSize", new[] { 1.0f, 0 } }
+						};
+						var uniforms2 = new SKRuntimeEffectUniforms(_effect)
+						{
+							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
+							{ "scale", scaleY },
+							{ "stepSize", new[] { 0, 1.0f } }
 						};
 						var children = new SKRuntimeEffectChildren(_effect)
 						{
 							["image"] = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal)
 						};
 
-						imageShader = _effect.ToShader(uniforms, children, matrix.ToSKMatrix());
+						imageShader = SKShader.CreateCompose(_effect.ToShader(uniforms1, children, matrix.ToSKMatrix()), _effect.ToShader(uniforms2, children, matrix.ToSKMatrix()));
 					}
 
 					if (UsePaintColorToColorSurface)
@@ -196,19 +201,16 @@ namespace Microsoft.UI.Composition
 				skiaSurface.UpdateSurface(session);
 		}
 
-		// A gaussian blur filter for downsampling
+		// A Lanczor resampling shader for downsampling
 		private const string ImageDownsamplingShader =
 			"""
 			uniform shader image;
 			uniform vec2 imageSize;
-			uniform float sigmaX;
-			uniform float sigmaY;
+			uniform float scale;
+			uniform vec2 stepSize;
 
+			const float a = 3;
 			const float PI = 3.14159265359;
-
-			float gaussian(float x, float sigma) {
-				return exp(-(x * x)/(2.0 * sigma * sigma)) / (sigma * sqrt(2.0 * PI));
-			}
 			
 			float lanczos(float x, float a) {
 				if (abs(x) < 1e-6) {
@@ -216,40 +218,26 @@ namespace Microsoft.UI.Composition
 				}
 				return a * sin(PI * x) * sin(PI * x / a) / PI / PI / x / x;
 			}
+			
 			vec4 main(vec2 texCoords){
 				vec4 finalColor = vec4(0.0);
 				float totalWeight = 0.0;
+
+				// i = 0
+				float weight = 1; // lanczos(0, a)
+				finalColor += image.eval(texCoords) * weight;
 				
-				const float a = 3;
-				
-				for (float x = 0; x < 20; x++) {
-					if (x >= a * sigmaX) {
+				// we need this combination of const loop parameters + check-and-break
+				// to mimick variable-length loops which are not supported by SKSL
+				// since on some backends loops are actually unrolled at compile time.
+				for (float i = 1; i < 20; i++) {
+					if (i > scale * a) {
 						break;
 					}
-					for (float y = 0; y < 20; y++) {
-						if (y >= a * sigmaY) {
-							break;
-						}
-						
-						float weight = lanczos(x / sigmaX, a) * lanczos(y / sigmaY, a);
-						finalColor += image.eval(texCoords + vec2(x, y)) * weight;
-						totalWeight += weight;
-						
-						if (x != 0) {
-							finalColor += image.eval(texCoords + vec2(-x, y)) * weight;
-							totalWeight += weight;
-						}
-						
-						if (y != 0) {
-							finalColor += image.eval(texCoords + vec2(x, -y)) * weight;
-							totalWeight += weight;
-						}
-						
-						if (y != 0 && x != 0) {
-							finalColor += image.eval(texCoords + vec2(-x, -y)) * weight;
-							totalWeight += weight;
-						}
-					}
+					
+					float weight = lanczos(i / scale, a);
+					finalColor += (image.eval(texCoords + i * stepSize) + image.eval(texCoords - i * stepSize)) * weight;
+					totalWeight += 2 * weight;
 				}
 				
 				return finalColor / totalWeight;
