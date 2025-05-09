@@ -14,6 +14,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 
 	public SingleFrameProvider(SKImage image)
 	{
+		GC.AddMemoryPressure(image.Info.BytesSize);
 		_image = image;
 	}
 
@@ -21,7 +22,10 @@ internal sealed class SingleFrameProvider : IFrameProvider
 
 	public void Dispose()
 	{
-		_image?.Dispose();
-		_image = null;
+		if (_image != null)
+		{
+			GC.RemoveMemoryPressure(_image.Info.BytesSize);
+			_image.Dispose();
+		}
 	}
 }
