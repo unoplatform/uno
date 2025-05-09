@@ -6,14 +6,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 using SkiaSharp;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Composition;
 
 internal sealed class SingleFrameProvider : IFrameProvider
 {
-	private SKImage? _image;
-	private int _bytes;
-	private int _disposed;
+	private readonly SKImage _image;
+	private readonly int _bytes;
+	private bool _disposed;
 
 	public SingleFrameProvider(SKImage image)
 	{
@@ -26,10 +27,18 @@ internal sealed class SingleFrameProvider : IFrameProvider
 
 	public void Dispose()
 	{
-		if (Interlocked.Exchange(ref _disposed, 1) == 0)
+		lock (this)
 		{
-			_image?.Dispose();
-			GC.RemoveMemoryPressure(_bytes);
+			if (!_disposed)
+			{
+				_disposed = true;
+				_image.Dispose();
+				GC.RemoveMemoryPressure(_bytes);
+			}
+			else
+			{
+				this.LogError()?.Error("Detected a double dispose.");
+			}
 		}
 	}
 
