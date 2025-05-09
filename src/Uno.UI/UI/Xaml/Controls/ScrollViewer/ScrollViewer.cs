@@ -1242,19 +1242,22 @@ namespace Microsoft.UI.Xaml.Controls
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None)
+						|| VerticalSnapPointsType != SnapPointsType.None
+						|| ShouldSnapToTouchTextBox())
 					{
+						_horizontalOffsetForSnapPoints = horizontalOffset;
+						_verticalOffsetForSnapPoints = verticalOffset;
+
 						if (_snapPointsTimer == null)
 						{
 							_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
 							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
-							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();
+							_snapPointsTimer.Tick += (snd, evt) =>
+							{
+								DelayedMoveToSnapPoint();
+							};
 						}
-
-						_horizontalOffsetForSnapPoints = horizontalOffset;
-						_verticalOffsetForSnapPoints = verticalOffset;
-
 						_snapPointsTimer.Start();
 					}
 				}
