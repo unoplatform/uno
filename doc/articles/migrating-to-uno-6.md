@@ -89,7 +89,7 @@ To upgrade:
 
     ...
 
-    public static Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         App.InitializeLogging();
 
@@ -102,7 +102,7 @@ To upgrade:
     }
     ```
 
-    If your startup code contained a static `_app` field, you can remove it as well. You can also use the top-level program code, as found in the default uno platform templates.
+    If your startup code contained a static `_app` field, you can remove it as well. You can also use the top-level program code, as found in the default Uno Platform templates.
 
 - In your `Platforms/iOS/Main.iOS.cs` change the following:
 
@@ -111,13 +111,9 @@ To upgrade:
 
     ...
 
-    public static int Main(string[] args)
+    public static void Main(string[] args)
     {
-        App.InitializeLogging();
-
-        Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
-
-        return 0;
+        UIApplication.Main(args, null, typeof(App));
     }
     ```
 
@@ -128,7 +124,7 @@ To upgrade:
 
     ...
 
-    public static int Main(string[] args)
+    public static void Main(string[] args)
     {
         App.InitializeLogging();
 
@@ -137,7 +133,7 @@ To upgrade:
             .UseAppleUIKit()
             .Build();
 
-        return 0;
+        host.Run();
     }
     ```
 
