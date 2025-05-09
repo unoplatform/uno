@@ -115,7 +115,7 @@ namespace Microsoft.UI.Composition
 					SKShader imageShader;
 					var scaleX = scs.Image.Width / bounds.Width;
 					var scaleY = scs.Image.Height / bounds.Height;
-					if (scaleX < 1 || scaleY < 1)
+					if (scaleX < 3 || scaleY < 3)
 					{
 						imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.CatmullRom), matrix.ToSKMatrix());
 					}
@@ -209,23 +209,22 @@ namespace Microsoft.UI.Composition
 			uniform float scale;
 			uniform vec2 stepSize;
 
-			const float a = 3;
+			const float a = 2;
 			const float PI = 3.14159265359;
 			
 			float lanczos(float x, float a) {
 				if (abs(x) < 1e-6) {
 					return 1;
 				}
-				return a * sin(PI * x) * sin(PI * x / a) / PI / PI / x / x;
+				float piX = PI * x;
+				float pi2X2 = pow(piX, 2);
+				return a * sin(piX) * sin(piX / a) / pi2X2;
 			}
 			
 			vec4 main(vec2 texCoords){
-				vec4 finalColor = vec4(0.0);
-				float totalWeight = 0.0;
-
 				// i = 0
-				float weight = 1; // lanczos(0, a)
-				finalColor += image.eval(texCoords) * weight;
+				float totalWeight = 1; // lanczos(0, a)
+				vec4 finalColor = image.eval(texCoords) * totalWeight;
 				
 				// we need this combination of const loop parameters + check-and-break
 				// to mimick variable-length loops which are not supported by SKSL
