@@ -275,7 +275,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				from: rect.GetCenter(),
 				to: new(rect.GetCenter().X, rect.GetCenter().Y - 100),
 				steps: 5,
-				stepOffsetInMilliseconds: 100);
+				stepOffsetInMilliseconds: 300);
 
 			await UITestHelper.WaitForIdle();
 
@@ -288,7 +288,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			var pixel = (await UITestHelper.ScreenShot(sut))[50, 1];
+			var result = await UITestHelper.ScreenShot(sut);
+			var pixel = result[50, 1];
 			Assert.IsTrue(pixel != Colors.Chartreuse && pixel != Colors.DeepPink);
 			Assert.AreEqual(0, requested);
 		}
