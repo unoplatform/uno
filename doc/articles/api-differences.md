@@ -2,9 +2,9 @@
 uid: Uno.Development.ApiDifferences
 ---
 
-# Differences between Uno.UI and UWP/WinUI
+# Differences between Uno.UI and WinUI
 
-Uno Platform strives to closely replicate the UWP/WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
+Uno Platform strives to closely replicate the WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
 
 This article doesn't cover parts of the API which haven't been implemented yet. You can consult a [complete list of implemented and unimplemented controls here](implemented-views.md).
 

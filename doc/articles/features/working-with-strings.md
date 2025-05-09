@@ -12,7 +12,7 @@ uid: Uno.Features.Localization
 
 Localization is done through the `resw` files in the current project. Normally, you would put these files in the `strings/[lang]` folder in the `[AppName]` project.  Resources are then referenced using [`x:Uid`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-uid-directive).
 
-See the UWP documentation on [localizing strings in your UI](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
+See the WinUI documentation on [localizing strings in your UI](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
 
 Resources may be placed in the default scope file `Resources.resw`, or in a custom-named file. Custom-named file content
 can be used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files).

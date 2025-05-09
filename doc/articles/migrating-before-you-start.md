@@ -2,9 +2,9 @@
 uid: Uno.Development.MigratingBeforeYouStart
 ---
 
-# Migrating UWP-only code - Checklist
+# Migrating WinUI/UWP-only code - Checklist
 
-Before you start migrating a UWP-only application or library to be Uno compatible, it's a good idea to assess the degree of effort involved in getting the port fully functional. Depending on the code in question, it may be as easy as copying the files, or it may involve significant extra effort.
+Before you start migrating a WinUI/UWP-only application or library to be Uno compatible, it's a good idea to assess the degree of effort involved in getting the port fully functional. Depending on the code in question, it may be as easy as copying the files, or it may involve significant extra effort.
 
 The key questions to ask are:
 
@@ -39,9 +39,9 @@ You can check if there is a version of the package for your target platform by v
 
 Unfortunately, it's less easy to check if a platform-dependent package supports WebAssembly or Linux. Uno builds .NETStandard binaries for these targets, but the fact that a .NETStandard version exists for any given dependency doesn't guarantee that it will function as expected on those platforms, if platform-specific APIs are involved. You'll generally have to do some additional research.
 
-### Depends on UWP
+### Depends on WinUI/UWP
 
-Libraries that depend on UWP itself, such as the [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular UWP libraries have already been retargeted to Uno; a partial list is given [here](https://github.com/unoplatform/Uno#uno-features).
+Libraries that depend on WinUI/UWP itself, such as the [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/), must be recompiled against Uno Platform in order to be used. A number of popular WinUI/UWP libraries have already been retargeted to Uno; a partial list is given [here](https://github.com/unoplatform/Uno#uno-features).
 
 ## .NET runtime features
 

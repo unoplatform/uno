@@ -4,7 +4,7 @@ uid: Uno.Development.AdditionalFeatures
 
 # Other Uno.UI Features
 
-Uno.UI.Toolkit is a set of extension methods or behaviors used to enhance UWP and activate device/OS specific features.
+Uno.UI.Toolkit is a set of extension methods or behaviors used to enhance WinUI and activate device/OS specific features.
 
 Those methods are built to have no effect on platform that does not support the enhanced feature: no need to wrap them into conditional code.
 

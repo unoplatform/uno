@@ -50,7 +50,7 @@ So currently we preferred to **not** implement the `PasswordVault`. It will thro
 
 ## PasswordCredential
 
-This class is implemented, however it never hides the password like the UWP does.
+This class is implemented, however it never hides the password like the WinUI does.
 This means that the [`RetrievePassword` method](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
 but we recommend to still use it in order to ensure cross-platform compatibility.
 

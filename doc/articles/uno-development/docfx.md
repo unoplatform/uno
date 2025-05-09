@@ -63,11 +63,11 @@ Markdown:
 ```md
 # [WinUI](#tab/tabid-1)
 
-`Microsoft.UI.Xaml.FrameworkElement`
+`WinUI.Namespace`
 
-# [UWP](#tab/tabid-2)
+# [Uno Platform](#tab/tabid-2)
 
-`Windows.UI.Xaml.FrameworkElement`
+`Uno.Namespace`
 
 ---
 ```
@@ -76,11 +76,11 @@ Html output:
 
 # [WinUI](#tab/tabid-1)
 
-`Microsoft.UI.Xaml.FrameworkElement`
+`WinUI.Namespace`
 
-# [UWP](#tab/tabid-2)
+# [Uno Platform](#tab/tabid-2)
 
-`Windows.UI.Xaml.FrameworkElement`
+`Uno.Namespace`
 
 ---
 

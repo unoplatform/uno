@@ -25,8 +25,6 @@ Android, iOS, Linux, and WebAssembly.
 
 The following packages are available:
 
-### [WinUI / WinAppSDK](#tab/tabid-winui)
-
 - [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
 - [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
 - [Uno.CommunityToolkit.WinUI.DeveloperTools](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.DeveloperTools)
@@ -44,25 +42,6 @@ The following packages are available:
 - [Uno.CommunityToolkit.WinUI.UI.Media](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Media)
 
 These package ids are for Uno Platform (non-Windows) projects. For WinUI 3 projects, you should use the equivalent packages published by Microsoft (`CommunityToolkit.WinUI`, `CommunityToolkit.WinUI.UI.Controls` etc).
-
-### [UWP](#tab/tabid-uwp)
-
-- [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
-- [Uno.Microsoft.Toolkit.Parsers](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Parsers)
-- [Uno.Microsoft.Toolkit.Services](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Services)
-- [Uno.Microsoft.Toolkit.UWP](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.UWP)
-- [Uno.Microsoft.Toolkit.Uwp.Notifications](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Notifications)
-- [Uno.Microsoft.Toolkit.Uwp.Services](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Services)
-- [Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid)
-- [Uno.Microsoft.Toolkit.Uwp.UI](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.UWP.UI)
-- [Uno.Microsoft.Toolkit.Uwp.UI.Animations](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.UI.Animations)
-- [Uno.Microsoft.Toolkit.Uwp.UI.Controls](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.UI.Controls)
-- [Uno.Microsoft.Toolkit.Uwp.UI.Controls.Graph](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.UWP.UI.Controls.Graph)
-- [Uno.Microsoft.Toolkit.Uwp.Connectivity](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Connectivity)
-
-These package ids are for Uno (non-Windows) projects. For UWP project, you should use the equivalent packages published by Microsoft (`Microsoft.Toolkit`, `Microsoft.Toolkit.Parsers` etc).
-
----
 
 ## Referencing the Windows Community Toolkit
 
@@ -129,31 +108,6 @@ When using the Uno Platform solution templates, add the following to your applic
     </ItemGroup>
     ```
 
-    ### [Multi-Head Project Template (Legacy) [UWP]](#tab/multihead-uwp)
-
-    Edit your project file `PROJECT_NAME.csproj` and add the following conditional references:
-
-    ```xml
-    <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.19041'">
-      <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-      <!-- Add more community toolkit references here -->
-    </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.19041'">
-      <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-      <!-- Add more uno community toolkit references here -->
-    </ItemGroup>
-    ```
-
-    You may need to replace `uap10.0.19041` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
-
-    If you already had a reference to the community toolkit, you should remove this line:
-
-    ```xml
-    <ItemGroup>
-      <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-    </ItemGroup>
-    ```
-
     ### [Shared Project (.shproj) Template (Legacy) [WinUI / WinAppSDK]](#tab/shproj-winui)
 
     1. Select the following project `PROJECT_NAME.Windows.csproj` for installation and add the following reference:
@@ -186,40 +140,6 @@ When using the Uno Platform solution templates, add the following to your applic
         </ItemGroup>
         ```
 
-    ### [Shared Project (.shproj) Template (Legacy) [UWP]](#tab/shproj-uwp)
-
-    1. Select the following project `PROJECT_NAME.UWP.csproj` for installation and add the following reference:
-
-        ```xml
-        <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.19041'">
-          <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-          <!-- Add more community toolkit references here -->
-        </ItemGroup>
-        ```
-
-    1. Select the following projects for installation and add the following reference to each of them:
-        - `PROJECT_NAME.Wasm.csproj`
-        - `PROJECT_NAME.Mobile.csproj` (or `PROJECT_NAME.iOS.csproj`, `PROJECT_NAME.Droid.csproj`, and `PROJECT_NAME.macOS.csproj` if you have an existing project)
-        - `PROJECT_NAME.Skia.Gtk.csproj`
-        - `PROJECT_NAME.Skia.WPF.csproj`
-
-        ```xml
-        <ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.19041'">
-          <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-          <!-- Add more uno community toolkit references here -->
-        </ItemGroup>
-        ```
-
-        You may need to replace `uap10.0.19041` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
-
-        If you already had a reference to the community toolkit, you should remove this line:
-
-        ```xml
-        <ItemGroup>
-          <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
-        </ItemGroup>
-        ```
-
     ---
 
     If you're getting an error like this one :
@@ -234,23 +154,11 @@ When using the Uno Platform solution templates, add the following to your applic
 
 1. Add the the related needed namespaces
 
-    ### [WinUI / WinAppSDK](#tab/tabid-winui)
-
       In XAML:  
         ```xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"```
 
       In C#:  
         ```using CommunityToolkit.WinUI.UI.Controls;```
-
-    ### [UWP](#tab/tabid-uwp)
-
-      In XAML:  
-        ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```
-
-      In C#:  
-        ```using Microsoft.Toolkit.Uwp;```
-
-    ---
 
 ## Example with the DataGrid Control
 

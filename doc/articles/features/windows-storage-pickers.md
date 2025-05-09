@@ -69,8 +69,6 @@ var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
 
 The latest Uno Platform app templates already contain such `MainWindow` property, so you can use it out of the box.
 
-For UWP-based Uno Platform apps, these two lines of code are not needed.
-
 ## Examples
 
 ### FolderPicker
@@ -97,7 +95,7 @@ else
 ```
 
 > [!NOTE]
-> While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, and `FileTypeFilter` has no effect for `FolderPicker`, they both must be set, otherwise the dialog crashes on UWP.
+> While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, and `FileTypeFilter` has no effect for `FolderPicker`, they both must be set, otherwise the dialog crashes on WinUI.
 
 ### FileOpenPicker
 
@@ -126,7 +124,7 @@ else
 ```
 
 > [!NOTE]
-> While the `SuggestedStartLocation` has currently no effect on Uno Platform targets, it must be set, otherwise, the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+> While the `SuggestedStartLocation` has currently no effect on Uno Platform targets, it must be set, otherwise, the dialog crashes on WinUI. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
 #### Picking multiple files
 
@@ -195,7 +193,7 @@ var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
 ```
 
 > [!NOTE]
-> `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+> `SuggestedStartLocation` should be set to prevent crashes on WinUI. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 >
 > [!NOTE]
 > On iOS, the built-in image picker does not support selection of multiple files. Therefore we fall back to the document picker instead. However, this requires you to specify not only the `SuggestedStartLocation` set to `PicturesLibrary`, but also specifying file type extensions in `FileTypeFilter` (e.g. `.jpg` and `.png`), otherwise OS will not display the Photos app as a file provider in the picker.
@@ -232,11 +230,11 @@ else
 > The `CachedFileManager` only affects Windows and WebAssembly. For more information, see [WebAssembly section](#webassembly) below.
 >
 > [!NOTE]
-> While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
+> While the `SuggestedStartLocation` has no effect, it must be set for WinUI. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
 
 ## Picker configuration
 
-File pickers have various configuration options that customize the experience. For a full list of properties, see the [UWP documentation](https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker). Not all options are supported on all target platforms, in which case these are ignored.
+File pickers have various configuration options that customize the experience. For a full list of properties, see the [WinUI documentation](https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker). Not all options are supported on all target platforms, in which case these are ignored.
 
 To set which file type extensions you want to allow, use the `FileTypeFilter` property on `FileOpenPicker` and `FolderPicker`, and the `FileTypeChoices` property on `FileSavePicker`. Extensions must be in the format ".xyz" (starting with a dot). For `FileOpenPicker` and `FolderPicker` you can also include a "*" (star) entry, which represents the fact that any file extension is allowed.
 
@@ -355,7 +353,7 @@ if (file.Provider.Id == "computer")
 }
 ```
 
-The local files have provider ID of `computer`, which matches the UWP behavior. `jsfileaccessapi` is used for files coming from the File System Access API.
+The local files have provider ID of `computer`, which matches the WinUI behavior. `jsfileaccessapi` is used for files coming from the File System Access API.
 
 ### Choosing supported type of pickers
 

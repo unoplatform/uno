@@ -12,7 +12,7 @@ Legend
 
 - ✔  Supported
 
-| Picker             | WinUI/UWP | WebAssembly | Android | iOS    | macOS | Skia Desktop |
+| Picker             | WinUI     | WebAssembly | Android | iOS    | macOS | Skia Desktop |
 |--------------------|-----------|-------------|---------|--------|-------|--------------|
 | `LocalFolder`      | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
 | `RoamingFolder`    | ✔         | ✔          | ✔       | ✔     | ✔     | ✔            |
