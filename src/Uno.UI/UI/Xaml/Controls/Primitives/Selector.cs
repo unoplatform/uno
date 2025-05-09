@@ -170,10 +170,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				isSelectionUnset = true;
 			}
 
-			var newIndex = -1;
 			if (!_changingSelectedIndex)
 			{
-				newIndex = IndexFromItem(selectedItem);
+				var newIndex = IndexFromItem(selectedItem);
 				if (SelectedIndex != newIndex)
 				{
 					SelectedIndex = newIndex;
@@ -191,22 +190,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 #if !IS_UNIT_TESTS
-			if (newIndex != -1 && IsInLiveTree)
+			if (SelectedIndex != -1 && IsInLiveTree)
 			{
-				if (this is ListViewBase lvb
-#if __APPLE_UIKIT__
-					// workaround to prevent scrolling when it is not ready
-					// without this, the ios TabView could render blank if the selection happens too early.
-					&& ContainerFromIndex(newIndex) is FrameworkElement { IsLoaded: true }
-#endif
-				)
-				{
-#if __APPLE_UIKIT__ || __ANDROID__
-					lvb.InstantScrollToIndex(newIndex);
-#else
-					lvb.ScrollIntoView(selectedItem);
-#endif
-				}
+				ScrollSelectionIntoView();
 			}
 #endif
 
@@ -219,6 +205,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
 					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
 				);
+			}
+		}
+
+		private void ScrollSelectionIntoView()
+		{
+			if (SelectedIndex == -1 || !IsInLiveTree) return;
+
+			if (this is ListViewBase lvb)
+			{
+#if __APPLE_UIKIT__
+				// workaround to prevent scrolling when it is not ready
+				// without this, the ios TabView could render blank if the selection happens too early.
+				if (ContainerFromIndex(SelectedIndex) is not FrameworkElement { IsLoaded: true }) return;
+#endif
+
+#if __APPLE_UIKIT__ || __ANDROID__
+				lvb.InstantScrollToIndex(SelectedIndex);
+#else
+				lvb.ScrollIntoView(SelectedItem);
+#endif
+			}
+			else if (this is ComboBox cb)
+			{
+#if __APPLE_UIKIT__ || __ANDROID__
+				// TODO
+#else
+				cb.ScrollIntoView(SelectedItem);
+#endif
 			}
 		}
 

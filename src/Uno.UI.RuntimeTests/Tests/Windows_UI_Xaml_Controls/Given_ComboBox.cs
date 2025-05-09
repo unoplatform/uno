@@ -1410,6 +1410,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(dropDownClosedFired, "DropDownClosed event was not fired");
 		}
 
+		[TestMethod]
+		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
+
+		[TestMethod]
+		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
+
+		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
+		{
+			var source = ( // 12x20=240 items, enough to overflow
+				from a in "qwerasdfzxcv"
+				from b in Enumerable.Range(0, 20)
+				select string.Concat(a, b)
+			).ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = source,
+			};
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			var popup = sut.FindFirstDescendantOrThrow<Popup>("Popup");
+
+			// open the popup
+			sut.IsDropDownOpen = true;
+			await UITestHelper.WaitFor(() => popup.IsOpen, timeoutMS: 2000, "timed out waiting on the popup to open");
+
+			// wait until the dropdown panel is ready
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot is { }, timeoutMS: 2000, "timed out waiting on the ItemsPanelRoot");
+
+			// set selection
+			if (viaIndex)
+			{
+				sut.SelectedIndex = source.Length - 3;
+			}
+			else
+			{
+				sut.SelectedItem = source[^3];
+			}
+			await UITestHelper.WaitForIdle();
+
+			// sanity check
+			Assert.AreEqual(source.Length - 3, sut.SelectedIndex, "SelectedIndex should be the 3rd last");
+			Assert.AreEqual(source[^3], sut.SelectedItem, "SelectedItem should be the 3rd last");
+
+			var sv = sut.ItemsPanelRoot.FindFirstAncestorOrThrow<ScrollViewer>();
+			var cbi = sut.ContainerFromIndex(sut.SelectedIndex) as FrameworkElement;
+			Assert.IsNotNull(cbi, "Selected container should not be null");
+
+			var cbiAbsRect = new Rect(cbi.ActualOffset.X, cbi.ActualOffset.Y, cbi.ActualWidth, cbi.ActualHeight);
+			var viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
+			var intersection = viewportAbsRect;
+			intersection.Intersect(cbiAbsRect);
+
+			Assert.IsTrue(cbiAbsRect == intersection, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(cbiAbsRect)}, VP={PrettyPrint.FormatRect(viewportAbsRect)}");
+		}
+
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{
 			public enum Themes

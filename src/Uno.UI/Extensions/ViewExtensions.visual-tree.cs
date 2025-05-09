@@ -234,6 +234,19 @@ static partial class ViewExtensions
 		.FirstOrDefault();
 
 	/// <summary>
+	/// Returns the first ancestor of a specified type.
+	/// </summary>
+	/// <typeparam name="T">The type of ancestor to find.</typeparam>
+	/// <param name="reference">Any node of the visual tree</param>
+	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
+	/// <exception cref="Exception">If the specified node could not be found.</exception>
+	public static T? FindFirstAncestorOrThrow<T>(this _View? reference) => EnumerateAncestors(reference)
+		.OfType<T>()
+		.FirstOrDefault() ??
+		throw new Exception($"Unable to find element: {typeof(T).Name}");
+
+
+	/// <summary>
 	/// Returns the first ancestor of a specified type that satisfies the <paramref name="predicate"/>.
 	/// </summary>
 	/// <typeparam name="T">The type of ancestor to find.</typeparam>
