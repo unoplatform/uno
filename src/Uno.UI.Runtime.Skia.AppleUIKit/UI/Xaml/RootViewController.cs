@@ -324,7 +324,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void RemoveLatestViewFromTextInputLayer()
 	{
-		if (_textInputLayer is { } textInputLayer && _latestInputLayerView is { } latestView && latestView.Superview == textInputLayer)
+		if (_textInputLayer is { } textInputLayer &&
+			_latestInputLayerView is { } latestView &&
+			latestView.Superview == textInputLayer)
 		{
 			latestView.RemoveFromSuperview();
 			_latestInputLayerView = null;
