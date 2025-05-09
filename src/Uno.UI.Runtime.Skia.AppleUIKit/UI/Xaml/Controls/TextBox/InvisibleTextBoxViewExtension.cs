@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
-using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -14,6 +13,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
 internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
+	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
@@ -50,10 +50,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
-		// change FirstResponder before removing the previous view to avoid flickering
+		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
-		RemoveViewFromTextInputLayer(textBox.XamlRoot);
+		RemoveViewFromTextInputLayer();
 
 		var start = textBox?.SelectionStart ?? 0;
 		var length = textBox?.SelectionLength ?? 0;
@@ -64,6 +64,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
+			RemoveViewFromTextInputLayer();
 			_textBoxView = null;
 		}
 	}
@@ -198,14 +199,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// The current TextBoxView is not compatible with the given TextBox state.
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
-
-			_textBoxView = CreateNativeView();
-
+			_textBoxView = CreateNativeView(textBox);
 			if (_textBoxView is UIView nativeView)
 			{
 				nativeView.Alpha = 0.01f;
 			}
-
 			UpdateProperties();
 			SetText(inputText ?? string.Empty);
 		}
@@ -215,10 +213,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_owner?.TextBox is { } textBox)
 		{
+			var selectionStart = textBox.SelectionStart;
+			var selectionLength = textBox.SelectionLength;
+
 			var newSelectionStart = GetSelectionStart();
 			textBox.SetPendingSelection(newSelectionStart, 0);
 			var updatedText = textBox.ProcessTextInput(text);
-
 			if (text != updatedText)
 			{
 				SetText(updatedText);
@@ -228,39 +228,41 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private string? GetNativeText() => _textBoxView?.Text;
 
-	private IInvisibleTextBoxView CreateNativeView()
-	{
-		return _owner?.TextBox?.AcceptsReturn != true ?
-			new SinglelineInvisibleTextBoxView(this) :
-			new MultilineInvisibleTextBoxView(this);
-	}
+	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
+		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
-	private void AddViewToTextInputLayer(XamlRoot xamlRoot)
+	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{
 		if (_textBoxView is not UIView nativeView)
 		{
 			return;
 		}
 
-		if (GetHost(xamlRoot) is { } host && GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
+		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-			host.AddViewToTextInputLayer(nativeView);
+			_latestNativeView = layer.Subviews.LastOrDefault();
+			layer.AddSubview(nativeView);
 
+			// Push the overlay native view out of the visible view - this way
+			// the blue typing suggestion overlay will not be shown to the user.
 			nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
 		}
 	}
 
-	private void RemoveViewFromTextInputLayer(XamlRoot xamlRoot)
+	public void RemoveViewFromTextInputLayer()
 	{
-		if (GetHost(xamlRoot) is { } host)
+		if (_latestNativeView is not UIView nativeView)
 		{
-			host.RemoveLatestViewFromTextInputLayer();
+			return;
+		}
+
+		if (nativeView.Superview is not null)
+		{
+			nativeView.RemoveFromSuperview();
+			_latestNativeView = null;
 		}
 	}
 
-	private static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
-		GetHost(xamlRoot)?.TextInputLayer;
-
-	private static IAppleUIKitXamlRootHost? GetHost(XamlRoot xamlRoot) =>
-		AppManager.XamlRootMap.GetHostForRoot(xamlRoot);
+	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
+		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.TextInputLayer;
 }

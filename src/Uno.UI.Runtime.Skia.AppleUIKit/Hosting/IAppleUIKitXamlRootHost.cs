@@ -13,8 +13,4 @@ internal interface IAppleUIKitXamlRootHost : IXamlRootHost
 	UIView TextInputLayer { get; }
 
 	UIView? NativeOverlayLayer { get; }
-
-	void AddViewToTextInputLayer(UIView view);
-	void RemoveViewFromTextInputLayer(UIView view);
-	void RemoveLatestViewFromTextInputLayer();
 }
