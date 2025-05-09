@@ -239,8 +239,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
-
 		private static void PreloadFonts()
 		{
 			if (OperatingSystem.IsBrowser())
