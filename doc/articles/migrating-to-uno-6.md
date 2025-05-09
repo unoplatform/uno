@@ -128,7 +128,7 @@ To upgrade:
 
     ...
 
-    public static int Main(string[] args)
+    public static void Main(string[] args)
     {
         App.InitializeLogging();
 
@@ -137,7 +137,7 @@ To upgrade:
             .UseAppleUIKit()
             .Build();
 
-        return 0;
+        host.Run();
     }
     ```
 
