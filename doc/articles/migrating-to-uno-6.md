@@ -102,7 +102,7 @@ To upgrade:
     }
     ```
 
-    If your startup code contained a static `_app` field, you can remove it as well. You can also use the top-level program code, as found in the default uno platform templates.
+    If your startup code contained a static `_app` field, you can remove it as well. You can also use the top-level program code, as found in the default Uno Platform templates.
 
 - In your `Platforms/iOS/Main.iOS.cs` change the following:
 
@@ -137,7 +137,7 @@ To upgrade:
             .UseAppleUIKit()
             .Build();
 
-        return 0;
+        host.Run();
     }
     ```
 
