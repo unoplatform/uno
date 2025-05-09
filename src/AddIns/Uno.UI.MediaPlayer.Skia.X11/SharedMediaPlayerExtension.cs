@@ -368,12 +368,29 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering);
 
 	private void OnLengthChange(object? _, MediaPlayerLengthChangedEventArgs _1)
-		=> NativeDispatcher.Main.Enqueue(() => Events?.NaturalDurationChanged());
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (Player.PlaybackSession.NaturalDuration != NaturalDuration)
+			{
+				Events?.NaturalDurationChanged();
+			}
+		});
 
 	private void OnEndReached(object? _, EventArgs _1)
 	{
 		NativeDispatcher.Main.Enqueue(() =>
 		{
+			if (VlcPlayer.Media is { Mrl: { } url } media)
+			{
+				// without recreating the media object, any attempt at
+				// rewinding and replaying the video fails.
+				// cf. https://github.com/unoplatform/uno-private/issues/1230
+				VlcPlayer.Media.Dispose();
+				url = url.TrimStart("file:///").Replace('/', '\\');
+				VlcPlayer.Media = new LibVLCSharp.Shared.Media(_vlc, url);
+				// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
+				VlcPlayer.Play();
+			}
 			Events?.RaiseMediaEnded();
 			Player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 			if (this is { IsLoopingEnabled: false, IsLoopingAllEnabled: false })
