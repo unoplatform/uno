@@ -762,7 +762,7 @@ namespace Microsoft.UI.Xaml
 		{
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
-			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Light;
+			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
 		}
 	}
 }
