@@ -15,6 +15,8 @@ using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
+using System.Linq;
+
 
 #if __IOS__
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
@@ -33,7 +35,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
-
+	private UIView? _latestInputLayerView;
 	public RootViewController()
 	{
 		Initialize();
@@ -302,6 +304,31 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
 	public UIView TextInputLayer => _textInputLayer!;
+
+	public void AddViewToTextInputLayer(UIView view)
+	{
+		if (_textInputLayer is { } textInputLayer)
+		{
+			_latestInputLayerView = textInputLayer.Subviews.LastOrDefault();
+			textInputLayer.AddSubview(view);
+		}
+	}
+
+	public void RemoveViewFromTextInputLayer(UIView view)
+	{
+		if (_textInputLayer is not null && view.Superview == _textInputLayer)
+		{
+			view.RemoveFromSuperview();
+		}
+	}
+
+	public void RemoveLatestViewFromTextInputLayer()
+	{
+		if (_textInputLayer is { } textInputLayer && _latestInputLayerView is { } latestView && latestView.Superview == textInputLayer)
+		{
+			latestView.RemoveFromSuperview();
+		}
+	}
 
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()
