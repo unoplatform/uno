@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Android.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -31,7 +32,12 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (UnoSKCanvasView.Instance is { } canvasView)
 		{
-			canvasView.TextInputPlugin.HideTextInput();
+			var xamlRoot = textBox.XamlRoot;
+			if (xamlRoot is null || FocusManager.GetFocusedElement(xamlRoot) is not TextBox)
+			{
+				canvasView.TextInputPlugin.HideTextInput();
+			}
+
 			canvasView.TextInputPlugin.NotifyViewExited(textBox.GetHashCode());
 		}
 	}
