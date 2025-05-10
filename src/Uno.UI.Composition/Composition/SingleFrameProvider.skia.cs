@@ -20,6 +20,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 	{
 		_image = image;
 		_bytes = _image.Info.BytesSize;
+		// https://github.com/unoplatform/uno/issues/20285
 		GC.AddMemoryPressure(_bytes);
 	}
 
