@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Uno.Storage;
 using Windows.Foundation.Collections;
 
@@ -32,7 +33,7 @@ public partial class ApplicationDataContainer : IDisposable
 
 		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
 		_values = new ApplicationDataContainerSettings(this, locality);
-		_containers = new(() => CreateContainersDictionary());
+		_containers = new(CreateContainersDictionary);
 	}
 
 	internal ApplicationDataContainer(ApplicationDataContainer parent, string name) : this(name, parent.Locality)
@@ -122,28 +123,28 @@ public partial class ApplicationDataContainer : IDisposable
 
 	internal void ClearIncludingInternals()
 	{
-		Clear();
+		Values.Clear();
 		_nativeApplicationSettings.RemoveKeysWithPrefix(InternalSettingPrefix);
 	}
 
 	private void AddContainerToList(string containerName)
 	{
-		var containerList = _nativeApplicationSettings.Get(ContainerPath + ContainerListKey) ?? "";
+		var containerList = _nativeApplicationSettings[ContainerPath + ContainerListKey] as string ?? "";
 		if (containerList.Length > 0)
 		{
-			containerList += ContainerListSeparator;
+			containerList += ContainerSeparator;
 		}
 
 		containerList += containerName;
-		_nativeApplicationSettings.Set(ContainerPath + ContainerListKey) = containerList;
+		_nativeApplicationSettings[ContainerPath + ContainerListKey] = containerList;
 	}
 
 	private void RemoveContainerFromList(string containerName)
 	{
-		var containerList = _nativeApplicationSettings.Get(ContainerPath + ContainerListKey) ?? "";
+		var containerList = _nativeApplicationSettings[ContainerPath + ContainerListKey] as string ?? "";
 		var containerListParts = containerList.Split(ContainerSeparator);
 		var newContainerList = string.Join(ContainerSeparator, containerListParts.Where(c => c != containerName));
-		_nativeApplicationSettings.Set(ContainerPath + ContainerListKey) = newContainerList;
+		_nativeApplicationSettings[ContainerPath + ContainerListKey] = newContainerList;
 	}
 
 	public void Dispose() => DisposePartial();
