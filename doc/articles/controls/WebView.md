@@ -31,6 +31,18 @@ MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 > [!IMPORTANT]
 > For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
 
+## Desktop support
+
+To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
+
+```diff
+<UnoFeatures>
+<!-- Existing features -->
++  WebView;
+</UnoFeatures>
+```
+
+
 ## WebAssembly support
 
 In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:

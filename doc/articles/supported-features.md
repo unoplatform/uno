@@ -4,6 +4,9 @@ uid: Uno.Development.SupportedFeatures
 
 # Uno Platform Features
 
+> [!NOTE]
+> If you are looking for `UnoFeature` reference, check the [Using the Uno.Sdk article](xref:Uno.Features.Uno.Sdk) instead.
+
 ## Development Flow
 
 - Uno Platform's WinUI/UWP XAML
