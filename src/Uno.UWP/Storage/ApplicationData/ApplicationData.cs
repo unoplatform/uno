@@ -37,8 +37,8 @@ public sealed partial class ApplicationData
 		_localCacheFolderLazy = new(() => CreateStorageFolder(GetLocalCacheFolder()));
 		_temporaryFolderLazy = new(() => CreateStorageFolder(GetTemporaryFolder()));
 
-		_localSettingsLazy = new(() => new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local));
-		_roamingSettingsLazy = new(() => new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming));
+		_localSettingsLazy = new(() => new ApplicationDataContainer("Local", ApplicationDataLocality.Local));
+		_roamingSettingsLazy = new(() => new ApplicationDataContainer("Roaming", ApplicationDataLocality.Roaming));
 
 		InitializePartial();
 	}

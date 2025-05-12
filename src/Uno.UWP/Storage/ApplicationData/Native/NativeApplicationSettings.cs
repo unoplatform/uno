@@ -17,6 +17,8 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 
 	private readonly ApplicationDataLocality _locality;
 
+	public IEnumerable<string> Keys => throw new NotImplementedException();
+
 	private NativeApplicationSettings(ApplicationDataLocality locality)
 	{
 		_locality = locality;
@@ -57,14 +59,31 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 			}
 			else
 			{
-				Remove(key);
+				RemoveSetting(key);
 			}
 		}
 	}
 
+	public bool TryGetValue(string key, out object? value)
+	{
+		if (TryGetSetting(key, out var stringValue))
+		{
+			value = DeserializeValue(stringValue);
+			return true;
+		}
+		value = null;
+		return false;
+	}
+
+	public bool ContainsKey(string key) => ContainsSetting(key);
+
+	private partial bool ContainsSetting(string key);
+
 	private partial void SetSetting(string key, string value);
 
 	private partial bool TryGetSetting(string key, out string? value);
+
+	private partial bool RemoveSetting(string key);
 
 	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
 		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
@@ -72,4 +91,5 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 	private object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
 
 	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
+	internal void RemoveKeysWithPrefix(string internalSettingPrefix) => throw new NotImplementedException();
 }

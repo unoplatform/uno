@@ -11,6 +11,4 @@ internal interface INativeApplicationSettings
 	object this[string key] { get; set; }
 
 	IEnumerable<string> Keys { get; }
-
-
 }
