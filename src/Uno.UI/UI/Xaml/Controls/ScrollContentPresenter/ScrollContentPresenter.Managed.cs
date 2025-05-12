@@ -35,8 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 		private GestureRecognizer.Manipulation? _touchInertia;
-		private static readonly TimeSpan _defaultTouchIndependentAnimationDuration = TimeSpan.FromMilliseconds(80); // Inertia processors is configured to be at 25 fps, with 80 we skip half of the ticks.
-		private static readonly TimeSpan _defaultTouchIndependentAnimationOverlap = TimeSpan.FromMilliseconds(5); // Duration of the animation to run after the expected next tick, to make sure we don't have a gap between animations.
+		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -250,18 +249,25 @@ namespace Microsoft.UI.Xaml.Controls
 				_touchInertia?.Complete();
 			}
 
+			var updatedHorizontalOffset = HorizontalOffset;
+			var updatedVerticalOffset = VerticalOffset;
 			if (updated)
 			{
-				var updatedHorizontalOffset = HorizontalOffset;
-				var updatedVerticalOffset = VerticalOffset;
-
 				if (Content is UIElement contentElt)
 				{
 					_strategy.Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, 1, options);
 				}
+			}
 
+			// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
+			if (updated || _lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
+			{
+				_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
 				Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+			}
 
+			if (updated)
+			{
 				// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
 				//		 we will apply only the final ScrollOffsets and only once.
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
