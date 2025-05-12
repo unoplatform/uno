@@ -29,7 +29,7 @@ partial class NativeApplicationSettings
 		ReadFromFile();
 	}
 
-	public ICollection<string> Keys => _values.Keys;
+	//public ICollection<string> Keys => _values.Keys;
 
 	public void Add(string key, object value)
 	{
@@ -53,11 +53,7 @@ partial class NativeApplicationSettings
 		WriteToFile();
 	}
 
-	public bool Contains(KeyValuePair<string, object> item)
-		=> throw new NotSupportedException();
-
-	public bool ContainsKey(string key)
-		=> _values.ContainsKey(key);
+	private partial bool ContainsSetting(string key) => _values.ContainsKey(key);
 
 	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 		=> throw new NotSupportedException();
@@ -65,7 +61,7 @@ partial class NativeApplicationSettings
 	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 		=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
 
-	public bool Remove(string key)
+	private partial bool RemoveSetting(string key)
 	{
 		var ret = _values.Remove(key);
 
