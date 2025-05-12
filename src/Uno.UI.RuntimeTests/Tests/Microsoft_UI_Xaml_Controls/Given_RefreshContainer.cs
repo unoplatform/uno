@@ -145,6 +145,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
 
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
+
 			// Slowly swipe up (scroll down - no inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
@@ -194,6 +197,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			var finger = injector.GetFinger();
 
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
+
 			// Slowly swipe down (scroll up - no inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
@@ -232,6 +238,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			var finger = injector.GetFinger();
 
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
+
 			// Fast swipe down (scroll up - with inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
@@ -256,7 +265,19 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 300,
-				Content = new ListView { ItemsSource = Enumerable.Range(0, 50).Select(i => new Border { Height = 50, Width = 100, Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink) }) }
+				Content = new ListView
+				{
+					SelectionMode = ListViewSelectionMode.None,
+					ItemsSource = Enumerable
+						.Range(0, 50)
+						.Select(i => new Border
+						{
+							Height = 50,
+							Width = 100,
+							Background = new SolidColorBrush(i % 2 is 0 ? Colors.Chartreuse : Colors.DeepPink),
+							Child = new TextBlock { Text = i.ToString() },
+						})
+				}
 			};
 
 			var requested = 0;
@@ -270,14 +291,20 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			var finger = injector.GetFinger();
 
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
+
 			// Slowly swipe up (scroll down - no inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
-				to: new(rect.GetCenter().X, rect.GetCenter().Y - 100),
+				to: new(rect.GetCenter().X, rect.GetCenter().Y - 95),
 				steps: 5,
 				stepOffsetInMilliseconds: 300);
 
 			await UITestHelper.WaitForIdle();
+			var intermediate = await UITestHelper.ScreenShot(sut);
+			var intermediatePixel = intermediate[50, 1];
+			Assert.IsTrue(intermediatePixel == Colors.DeepPink); // Check for the refresh container style
 
 			// Fast swipe down (scroll up - with inertia)
 			finger.Drag(
@@ -290,7 +317,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			var result = await UITestHelper.ScreenShot(sut);
 			var pixel = result[50, 1];
-			Assert.IsTrue(pixel != Colors.Chartreuse && pixel != Colors.DeepPink);
+			Assert.IsTrue(pixel != Colors.Chartreuse && pixel != Colors.DeepPink); // Check for the refresh container style
 			Assert.AreEqual(0, requested);
 		}
 
@@ -313,6 +340,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var rect = await UITestHelper.Load(sut);
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			var finger = injector.GetFinger();
+
+			// Make sure to abort any pending direct manip
+			finger.Tap(rect.Location.Offset(-1, -1));
 
 			Assert.AreEqual(-1, lv.SelectedIndex);
 
