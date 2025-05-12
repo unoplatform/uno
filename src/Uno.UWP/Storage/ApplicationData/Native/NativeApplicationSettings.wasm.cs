@@ -118,12 +118,6 @@ partial class NativeApplicationSettings
 		return kvps.GetEnumerator();
 	}
 
-	public bool Remove(string key)
-	{
-		var ret = NativeMethods.Remove(_locality, key);
-		return ret;
-	}
-
 	private void ReadFromLegacyFile()
 	{
 		//const string UWPFileName = ".UWPAppSettings";
@@ -196,7 +190,8 @@ partial class NativeApplicationSettings
 
 	private partial bool RemoveSetting(string key)
 	{
-		throw new NotImplementedException();
+		var ret = NativeMethods.Remove(_locality, key);
+		return ret;
 	}
 
 	private partial bool ContainsSetting(string key) => NativeMethods.ContainsKey(_locality, key);
