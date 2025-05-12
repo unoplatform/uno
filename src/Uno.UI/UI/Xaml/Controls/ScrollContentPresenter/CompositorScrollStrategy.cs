@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// ... and which is about to complete
 				&& controller.Remaining < TimeSpan.FromMilliseconds(50))
 			{
-				// We keep the animation running, making sure that we are abruptly stopping scrolling animation
+				// We keep the animation running, making sure that we are not abruptly stopping scrolling animation
 				// due to completion of the inertia processor a bit earlier than the animation itself.
 				return;
 			}
