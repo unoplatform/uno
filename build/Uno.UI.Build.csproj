@@ -387,8 +387,8 @@
 			<_diffPackage Include="Uno.Foundation.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Logging.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.Runtime.WebAssembly.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.UI.Adapter.Microsoft.Extensions.Logging.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.Foundation" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.Foundation.$(NBGV_SemVer2).nupkg" />
-			<_diffPackage Include="Uno.WinRT" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\Uno.WinRT.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.Foundation" Other="Uno.Foundation.$(NBGV_SemVer2).nupkg" />
+			<_diffPackage Include="Uno.WinRT" Other="Uno.WinRT.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.WebAssembly.Browser.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Win32" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.Win32.$(NBGV_SemVer2).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.X11" Other="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\$(PackageNamePrefix).Runtime.Skia.X11.$(NBGV_SemVer2).nupkg" />
