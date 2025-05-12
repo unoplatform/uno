@@ -134,7 +134,7 @@ namespace SamplesApp
 
 #if __WASM__
 			DispatcherQueue.Main.TryEnqueue(
-				DispatcherQueuePriority.Low,
+				DispatcherQueuePriority.High,
 				() => InitWasmSampleRunner()
 			);
 #endif
