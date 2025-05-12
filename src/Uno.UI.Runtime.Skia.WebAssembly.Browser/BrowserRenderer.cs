@@ -13,6 +13,7 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserRenderer
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly IXamlRootHost _host;
 	private int _renderCount;
 	private DisplayInformation? _displayInformation;
@@ -63,6 +64,7 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
+		using var _ = _fpsHelper.BeginFrame();
 		if (!_jsInfo.IsValid)
 		{
 			Initialize();
@@ -93,7 +95,7 @@ internal partial class BrowserRenderer
 		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
 
 		// manage the drawing surface
-		if (_surface == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
+		if (_surface == null || _canvas == null || _renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -131,7 +133,8 @@ internal partial class BrowserRenderer
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface.Canvas);
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _canvas);
+				_fpsHelper.DrawFps(_canvas);
 				// Unlike other skia platforms, on skia/wasm we need to undo the scaling  adjustment that happens inside
 				// RenderRootVisualAndReturnNegativePath since the numbers we get from native are already scaled, so we
 				// don't need to do our own scaling in RenderRootVisualAndReturnNegativePath.

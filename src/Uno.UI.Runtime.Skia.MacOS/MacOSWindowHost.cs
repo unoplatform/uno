@@ -26,6 +26,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource
 {
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
@@ -82,6 +83,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
 	{
+		using var _ = _fpsHelper.BeginFrame();
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
@@ -92,6 +94,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface.Canvas);
+				_fpsHelper.DrawFps(canvas);
 				var clip = path.IsEmpty ? null : path.ToSvgPathData();
 				if (clip != _lastSvgClipPath)
 				{
