@@ -5,6 +5,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -38,6 +39,10 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		{
 			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, meta={meta}, code={code}, key=${key}");
 		}
+
+		// Ensure that the async context is set properly, since we're raising
+		// events from outside the dispatcher.
+		using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
 
 		var args = new KeyEventArgs(
 			"keyboard",
