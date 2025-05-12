@@ -172,7 +172,13 @@ public partial class ContainerVisual : Visual
 
 	internal override int GetSubTreeVisualCount()
 	{
-		_subtreeVisualCount ??= Children.Count + Children.InnerList.Aggregate(0, (acc, visual) => acc + visual.GetSubTreeVisualCount());
+		var acc = 0;
+		foreach (var visual in Children.InnerList)
+		{
+			acc += visual.GetSubTreeVisualCount();
+		}
+		_subtreeVisualCount ??= Children.Count + acc;
+
 		return _subtreeVisualCount.Value;
 	}
 }
