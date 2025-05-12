@@ -15,6 +15,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 	private readonly SKImage _image;
 	private readonly int _bytes;
 	private bool _disposed;
+	private readonly object _lock = new();
 
 	public SingleFrameProvider(SKImage image)
 	{
@@ -28,7 +29,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 
 	public void Dispose()
 	{
-		lock (this)
+		lock (_lock)
 		{
 			if (!_disposed)
 			{
