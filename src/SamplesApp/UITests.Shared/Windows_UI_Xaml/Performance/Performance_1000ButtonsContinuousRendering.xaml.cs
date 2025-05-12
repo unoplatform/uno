@@ -1,4 +1,7 @@
-﻿using Uno.UI.Samples.Controls;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Composition;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -14,12 +17,29 @@ namespace UITests.Windows_UI_Xaml.Performance
 		public Performance_1000ButtonsContinuousRendering()
 		{
 			this.InitializeComponent();
-			for (var i = 0; i < 1000; i++)
+
+			Loaded += (s, e) =>
 			{
-				(wp as Panel).Children.Add(new Button { Content = i.ToString() });
+				colorStoryboard.Begin();
+#if __SKIA__
+				NumberBoxValueChanged(this, new NumberBoxValueChangedEventArgs(0, 100));
+#endif
+			};
+		}
+
+		private async void NumberBoxValueChanged(object sender, NumberBoxValueChangedEventArgs e)
+		{
+#if __SKIA__
+			wp.Children.Clear();
+			var val = (int)Math.Round(Math.Max(0, e.NewValue));
+			for (var i = 0; i < val; i++)
+			{
+				wp.Children.Add(new Button { Content = i.ToString() });
 			}
 
-			Loaded += (s, e) => colorStoryboard.Begin();
+			await Task.Delay(TimeSpan.FromSeconds(1));
+			tb.Text = $"Number of visuals in WrapPanel: {wp.Visual.GetSubTreeVisualCount()}";
+#endif
 		}
 	}
 }
