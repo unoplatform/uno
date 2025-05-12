@@ -26,6 +26,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
 	}
 
+	//TODO:MZ: Use MapChanged event
+#pragma warning disable CS0067
 	/// <summary>
 	/// Occurs when the map changes.
 	/// </summary>
@@ -66,7 +68,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		.GetKeysWithPrefix(_container.ContainerPath)
 		.Except(
 			_nativeApplicationSettings.GetKeysWithPrefix(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix))
-		);
+		)
+		.ToArray();
 
 	public global::System.Collections.Generic.ICollection<object> Values
 	{
@@ -76,25 +79,30 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		}
 	}
 
-	public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
 	public void Add(string key, object value)
 	{
-		throw new global::System.NotSupportedException();
+		if (ContainsKey(key))
+		{
+			throw new ArgumentException("An item with the same key has already been added.");
+		}
+
+		if (value != null)
+		{
+			_nativeApplicationSettings[_container.GetSettingKey(key)] = SerializeValue(value);
+		}
 	}
 
-	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
+	public void Add(KeyValuePair<string, object> item)
+		=> Add(item.Key, item.Value);
 
-	public bool ContainsKey(string key)
-	{
-		throw new global::System.NotSupportedException();
-	}
+	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item) =>
+		ContainsKey(item.Key) &&
+		Equals(
+			_nativeApplicationSettings[_container.GetSettingKey(item.Key)],
+			SerializeValue(item.Value)
+		);
+
+	public bool ContainsKey(string key) => _nativeApplicationSettings.ContainsKey(_container.GetSettingKey(key));
 
 	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
 	{
@@ -110,25 +118,16 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 
 	public bool TryGetValue(string key, out object value)
 	{
-		throw new global::System.NotSupportedException();
+		if (_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out var serializedValue))
+		{
+			value = DeserializeValue(serializedValue as string);
+			return true;
+		}
+		value = null;
+		return false;
 	}
 
 	public void Clear()
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
-	{
-		throw new global::System.NotSupportedException();
-	}
-
-	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
 	{
 		throw new global::System.NotSupportedException();
 	}
