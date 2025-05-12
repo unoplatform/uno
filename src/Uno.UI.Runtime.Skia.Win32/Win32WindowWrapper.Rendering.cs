@@ -15,7 +15,7 @@ internal partial class Win32WindowWrapper
 
 	private Size? _lastSize;
 	private SKSurface? _surface;
-	private SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 

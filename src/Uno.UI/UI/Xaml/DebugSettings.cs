@@ -9,7 +9,9 @@ namespace Microsoft.UI.Xaml
 		public LayoutCycleTracingLevel LayoutCycleTracingLevel { get; set; }
 #endif
 
+#if !UNO_REFERENCE_API
 		[Uno.NotImplemented]
+#endif
 		public bool EnableFrameRateCounter { get; set; }
 
 		[Uno.NotImplemented]
