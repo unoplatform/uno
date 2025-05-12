@@ -64,6 +64,8 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		}
 	}
 
+	public bool Remove(string key) => RemoveSetting(key);
+
 	public bool TryGetValue(string key, out object? value)
 	{
 		if (TryGetSetting(key, out var stringValue))
@@ -76,6 +78,15 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 	}
 
 	public bool ContainsKey(string key) => ContainsSetting(key);
+
+	public void RemoveKeys(Predicate<string> shouldRemove)
+	{
+		var keysToRemove = Keys.Where(k => shouldRemove(k)).ToList();
+		foreach (var key in keysToRemove)
+		{
+			RemoveSetting(key);
+		}
+	}
 
 	private partial bool ContainsSetting(string key);
 
@@ -91,5 +102,6 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 	private object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
 
 	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
+
 	internal void RemoveKeysWithPrefix(string internalSettingPrefix) => throw new NotImplementedException();
 }
