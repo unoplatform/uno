@@ -42,7 +42,6 @@ To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in y
 </UnoFeatures>
 ```
 
-
 ## WebAssembly support
 
 In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
