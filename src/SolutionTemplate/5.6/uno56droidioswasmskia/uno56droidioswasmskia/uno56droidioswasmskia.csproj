@@ -30,6 +30,8 @@
     -->
     <UnoFeatures>
       SkiaRenderer;
+      MediaPlayer;
+      WebView;
     </UnoFeatures>
   </PropertyGroup>
 
