@@ -109,10 +109,7 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		throw new global::System.NotSupportedException();
 	}
 
-	public bool Remove(string key)
-	{
-		throw new global::System.NotSupportedException();
-	}
+	public bool Remove(string key) => _nativeApplicationSettings.Remove(_container.GetSettingKey(key));
 
 	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
@@ -127,10 +124,10 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 		return false;
 	}
 
-	public void Clear()
-	{
-		throw new global::System.NotSupportedException();
-	}
+	// TODO:MZ: Does clearing with public Clear also remove subcontainers?
+	public void Clear() => _nativeApplicationSettings.RemoveKeys(key =>
+		key.StartsWith(_container.ContainerPath, StringComparison.Ordinal) &&
+		!key.StartsWith(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix), StringComparison.Ordinal));
 
 	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
 	{
