@@ -33,9 +33,9 @@ internal sealed class SingleFrameProvider : IFrameProvider
 			if (!_disposed)
 			{
 				_disposed = true;
-				GC.SuppressFinalize();
 				_image.Dispose();
 				GC.RemoveMemoryPressure(_bytes);
+				GC.SuppressFinalize(this);
 			}
 			else
 			{
