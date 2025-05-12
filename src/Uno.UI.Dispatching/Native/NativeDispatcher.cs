@@ -71,6 +71,18 @@ namespace Uno.UI.Dispatching
 		}
 
 		/// <summary>
+		/// Gets the synchronizations contexts for the available priorities from <see cref="NativeDispatcherPriority"/>.
+		/// </summary>
+		internal NativeDispatcherSynchronizationContext GetSynchronizationContext(NativeDispatcherPriority priority)
+		{
+			if ((int)priority < 0 || (int)priority > 3)
+			{
+				throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+			return _synchronizationContexts[(int)priority];
+		}
+
+		/// <summary>
 		/// Enforce access on the UI thread.
 		/// </summary>
 		internal static void CheckThreadAccess()
