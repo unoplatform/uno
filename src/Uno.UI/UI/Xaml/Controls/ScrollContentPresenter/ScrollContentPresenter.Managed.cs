@@ -433,7 +433,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// However, we determine the final value of the inertia to snap on the right snap-point.
 			var shouldSnapHorizontally = scrollable.Horizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
 			var shouldSnapVertically = scrollable.Vertically && sv is { VerticalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
-			var shouldSnapToTouchTextBox = Scroller.ShouldSnapToTouchTextBox();
+			var shouldSnapToTouchTextBox = sv.ShouldSnapToTouchTextBox();
 			if (shouldSnapHorizontally || shouldSnapVertically || shouldSnapToTouchTextBox)
 			{
 				// Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
