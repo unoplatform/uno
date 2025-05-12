@@ -5,7 +5,8 @@
     xmlns:local="using:UITests.Windows_UI_Xaml.Performance"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
 		<SolidColorBrush x:Key="ColorAnimation_Background_Brush"
@@ -24,6 +25,13 @@
 			<TextBlock Text="A border that has a ColorAnimation to keep rendering active: " />
 			<Border x:Name="TargetBorder" Width="10" Height="10" Background="{StaticResource ColorAnimation_Background_Brush}" />
 		</StackPanel>
-		<WrapPanel x:Name="wp" Orientation="Horizontal" />
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Number of Buttons: " />
+			<NumberBox Minimum="1" ValueChanged="NumberBoxValueChanged" Value="100" />
+		</StackPanel>
+		<TextBlock x:Name="tb" Text="Number of visuals in WrapPanel: N/A" />
+		<Viewbox Width="500" Height="300">
+			<not_win:WrapPanel Width="500" x:Name="wp" Orientation="Horizontal" />
+		</Viewbox>
 	</StackPanel>
 </Page>
