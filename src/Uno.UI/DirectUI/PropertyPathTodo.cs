@@ -20,7 +20,7 @@ internal partial class DependencyObjectPropertyAccess
 }
 internal partial class PropertyInfoPropertyAccess
 {
-	internal static PropertyAccess CreateInstance(PropertyAccessPathStep propertyAccessPathStep, object spInsp, Type pSourceType, bool fListenToChanges) => throw new NotImplementedException();
+	//internal static PropertyAccess CreateInstance(PropertyAccessPathStep propertyAccessPathStep, object spInsp, Type pSourceType, bool fListenToChanges) => throw new NotImplementedException();
 }
 internal partial class MapPropertyAccess
 {
@@ -42,7 +42,17 @@ internal partial class BindableObservableVectorWrapper
 	internal static void CreateInstance(IList spBindableVector, INotifyCollectionChanged spINCC, IVector<object> bindableVectorWrapper) => throw new NotImplementedException();
 }
 
-internal partial class AsdAsdAsd001;
+internal partial class CCustomProperty
+{
+#if !!true
+	internal CCustomProperty GetXamlPropertyNoRef() => this;
+	internal void SetValue(object source, object value) { }
+	internal object GetValue(object source) => null;
+	internal Type GetPropertyType() => GetType();
+	internal bool IsValid() => false;
+#endif
+}
+
 internal partial class AsdAsdAsd002;
 internal partial class AsdAsdAsd002;
 internal partial class AsdAsdAsd003;

@@ -72,7 +72,7 @@ partial class PropertyPathListener // src\dxaml\xcp\dxaml\lib\PropertyPath.cpp
 
 	private void AppendStep(PropertyPathStep pStep)
 	{
-		if (m_tpFirst != null)
+		if (m_tpFirst is null)
 		{
 			m_tpFirst = pStep;
 			m_tpLast = pStep;

@@ -39,7 +39,7 @@ internal partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPat
 	//	XamlServiceProviderContext context);
 
 	// private:
-	private List<PropertyPathStepDescriptor> m_descriptors;
+	private List<PropertyPathStepDescriptor> m_descriptors = new();
 }
 partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.cpp
 {
@@ -103,7 +103,8 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 		{
 			// We found a typed property, (Class.Property) and thus we will have to 
 			// collect all of the property name
-			if (path[iPropertyPath] == '(')
+			//if (path[iPropertyPath] == '(')
+			if (iPropertyPath < path.Length && path[iPropertyPath] == '(') // dont have the extra 1char from null-terminate string here.
 			{
 				// Collect all of the property name
 				//const WCHAR *pProperty = pPropertyPath + 1;
@@ -156,13 +157,14 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 			// We found a separator then we need to separate the strings that represent the 
 			// property name and create another instance of an step. The end of the string
 			// also counts as a separator
-			if (path[iPropertyPath] == '.' || path[iPropertyPath] == '[' || iPropertyPath >= path.Length)
+			//if (path[iPropertyPath] == '.' || path[iPropertyPath] == '[' || iPropertyPath >= path.Length)
+			if (iPropertyPath >= path.Length || path[iPropertyPath] == '.' || path[iPropertyPath] == '[')
 			{
 				// The name of the property starts after the last separator until
 				// the current character
 				var cProperty = iPropertyPath - iCurrentProperty;
 				var iProperty = iCurrentProperty;
-				bool fHitIndexer = path[iPropertyPath] == '[';
+				bool fHitIndexer = iPropertyPath < path.Length && path[iPropertyPath] == '[';
 
 				// Only if actually have characters to collect can we create
 				// a property, if we have something like [0][1][2] then there

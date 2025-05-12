@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_ComboBox
+	public partial class Given_ComboBox
 	{
 		private ResourceDictionary _testsResources;
 
@@ -1465,6 +1465,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(cbiAbsRect == intersection, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(cbiAbsRect)}, VP={PrettyPrint.FormatRect(viewportAbsRect)}");
 		}
 
+		[TestMethod]
+		public async Task When_ComboBox_DisplayMemberPath_TextSearch_AsdAsd()
+		{
+			// note: ComboBox would normally perform text search with ToString(),
+			// which in our case is defaulted to 'A' property.
+			// However we have the DisplayMemberPath set to 'B', which should make the text search based on it 'B' instead.
+
+			const string TopRow = "qwertyu";
+			const string BottomRow = "zxcvbnm";
+			var sources =
+			(
+				from ci in Enumerable.Range(0, TopRow.Length)
+				from i in Enumerable.Range(0, 20)
+				select new DataItem_WCB_DMP_TS($"{TopRow[ci]}{i:00}", $"{BottomRow[ci]}{i:00}")
+			).ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = sources,
+				DisplayMemberPath = nameof(DataItem_WCB_DMP_TS.B)
+			};
+
+			await UITestHelper.Load(sut);
+		}
+
+		[TestMethod]
+		public async Task When_ComboBox_DisplayMemberPath_TextSearch_QweQwe()
+		{
+			// note: ComboBox would normally perform text search with ToString(),
+			// which in our case is defaulted to 'A' property.
+			// However we have the DisplayMemberPath set to 'B', which should make the text search based on it 'B' instead.
+
+			const string TopRow = "qwertyu";
+			const string BottomRow = "zxcvbnm";
+			var sources =
+			(
+				from ci in Enumerable.Range(0, TopRow.Length)
+				from i in Enumerable.Range(0, 20)
+				select new DataItem_WCB_DMP_TS2($"{TopRow[ci]}{i:00}", $"{BottomRow[ci]}{i:00}")
+			).ToArray();
+			var sut = new ComboBox
+			{
+				ItemsSource = sources,
+				DisplayMemberPath = nameof(DataItem_WCB_DMP_TS.B)
+			};
+
+			await UITestHelper.Load(sut);
+		}
+
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{
 			public enum Themes
@@ -1587,6 +1635,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public TType GetAt(int index) => this[index];
 		}
 
+		public record DataItem_WCB_DMP_TS(string A, string B)
+		{
+			public override string ToString() => A;
+		}
+
+		public partial class DataItem_WCB_DMP_TS2 : DependencyObject
+		{
+			#region DependencyProperty: A
+
+			public static DependencyProperty AProperty { get; } = DependencyProperty.Register(
+				nameof(A),
+				typeof(String),
+				typeof(DataItem_WCB_DMP_TS2),
+				new PropertyMetadata(default(String)));
+
+			public String A
+			{
+				get => (String)GetValue(AProperty);
+				set => SetValue(AProperty, value);
+			}
+
+			#endregion
+			#region DependencyProperty: B
+
+			public static DependencyProperty BProperty { get; } = DependencyProperty.Register(
+				nameof(B),
+				typeof(String),
+				typeof(DataItem_WCB_DMP_TS2),
+				new PropertyMetadata(default(String)));
+
+			public String B
+			{
+				get => (String)GetValue(BProperty);
+				set => SetValue(BProperty, value);
+			}
+
+			#endregion
+
+			public DataItem_WCB_DMP_TS2(string a, string b)
+			{
+				this.A = a;
+				this.B = b;
+			}
+
+			public override string ToString() => A;
+		}
 	}
 
 

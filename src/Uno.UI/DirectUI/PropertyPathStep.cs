@@ -80,7 +80,7 @@ partial class PropertyPathStep // src\dxaml\xcp\dxaml\lib\PropertyPathStep.cpp
 			m_epCurrentChangedHandler.Dispose();
 		}
 
-		m_tpSourceAsCV.Clear();
+		m_tpSourceAsCV = null;
 
 		DisconnectCurrentItem();
 	}
@@ -305,18 +305,20 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 
 	public override object GetValue()
 	{
-		if (!IsConnected())
+		try
 		{
-			return null;
+			if (!IsConnected())
+			{
+				return null;
+			}
+
+			return m_tpPropertyAccess.GetValue();
 		}
-
-		return m_tpPropertyAccess.GetValue();
-
-		// cleanup:
-		//if (FAILED(hr))
-		//{
-		//	TraceGetterError();
-		//}
+		catch (Exception)
+		{
+			TraceGetterError();
+			throw;
+		}
 	}
 
 	private void TraceGetterError()
@@ -355,7 +357,7 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 		}
 
 		// First try to access the property on the source itself
-		bConnected = ConnectPropertyAccessForObject(pSource, fListenToChanges, &);
+		bConnected = ConnectPropertyAccessForObject(pSource, fListenToChanges);
 
 		// If accessing the property on the object failed
 		// we will check if the source is a collection view and if so
@@ -465,7 +467,7 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 
 			// If the metadata doesn't contain information about this property then try
 			// the object itself for metadata
-			if (spResult is { })
+			if (spResult is null)
 			{
 				// The object might also be a POCO, try to resolve the property there
 				if ((spMap = spInsp as IDictionary<string, object>) is { })
@@ -492,10 +494,16 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 					}
 				}
 			}
+#if HAS_UNO
+			if (spResult is null)
+			{
+
+			}
+#endif
 		}
 
 		// If we haven't found the property log about it
-		if (spResult is { })
+		if (spResult is null)
 		{
 			TraceConnectionError(spInsp);
 		}
@@ -512,7 +520,6 @@ partial class PropertyAccessPathStep // src\dxaml\xcp\dxaml\lib\PropertyAccessPa
 	private void TraceConnectionError(object pSource)
 	{
 		// TODO UNO
-		throw new NotImplementedException();
 	}
 
 	protected override void CollectionViewCurrentChanged()
@@ -648,13 +655,13 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 			m_epVectorChangedEventHandler.Dispose();
 		}
 
-		m_tpVector.Clear();
-		m_tpVectorView.Clear();
+		m_tpVector = null;
+		m_tpVectorView = null;
 
 		if (m_tpIndexer is { })
 		{
 			m_tpIndexer.DisconnectEventHandlers();
-			m_tpIndexer.Clear();
+			m_tpIndexer = null;
 		}
 	}
 
@@ -838,13 +845,12 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 	private void InitializeFromSource(object pRawSource)
 	{
 		ICustomPropertyProvider spProvider;
-		wxaml_interop::TypeName sTypeName = default;
+		TypeName sTypeName = default;
 		string strTypeName;
 		object spIndex;
 		bool fInitialized = false;
 		object spSource;
-		object spWrapper;
-		//spSource.Attach(ValueWeakReference::get_value_as<IInspectable>(pRawSource));
+		//object spWrapper;
 		spSource = pRawSource;
 
 		// Try to look for a vector in the source
@@ -867,11 +873,9 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 
 			// The source at this point is neither a vector or a vector view, default to try
 			// to get a custom indexer of type int
-			//IFC(strTypeName.Set(STR_LEN_PAIR(L"Int32")));
-			//sTypeName.Name = strTypeName.Get();
-			//sTypeName.Kind = wxaml_interop::TypeKind_Primitive;
-			//IFC(PropertyValue::CreateFromInt32(m_nIndex, &spIndex));
-			// ____^ create a WinRT boxed int from c++?
+			strTypeName = "Int32";
+			sTypeName.Name = strTypeName;
+			sTypeName.Kind = TypeKind.Primitive;
 			spIndex = m_nIndex;
 
 			spIndexer = IndexerPropertyAccess.CreateInstance(
@@ -1203,7 +1207,7 @@ partial class StringIndexerPathStep // src\dxaml\xcp\dxaml\lib\StringIndexerPath
 		if (m_tpPropertyAccess is { })
 		{
 			m_tpPropertyAccess.DisconnectEventHandlers();
-			m_tpPropertyAccess.Clear();
+			m_tpPropertyAccess = null;
 		}
 	}
 
@@ -1233,7 +1237,7 @@ partial class StringIndexerPathStep // src\dxaml\xcp\dxaml\lib\StringIndexerPath
 		Disconnect();
 
 		// If the value is null or empty nothing to do
-		if (pSource == nul)
+		if (pSource == null)
 		{
 			Cleanup();
 			return;

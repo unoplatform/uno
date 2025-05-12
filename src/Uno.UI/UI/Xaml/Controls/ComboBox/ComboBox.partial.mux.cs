@@ -2848,10 +2848,10 @@ partial class ComboBox
 
 	private string TryGetStringValue2(object @object, PropertyPathListener pathListener)
 	{
-
 		object spBoxedValue;
 		object spObject = @object;
 
+#if !HAS_UNO
 		if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
 		{
 			if (pathListener != null)
@@ -2868,6 +2868,15 @@ partial class ComboBox
 				return spObjectPropertyAccessor.GetStringRepresentation();
 			}
 		}
+#else
+		if (pathListener != null)
+		{
+			// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+			// This is our boxedValue, which we effectively ToString below.
+			pathListener.SetSource(spObject);
+			spBoxedValue = pathListener.GetValue();
+		}
+#endif
 		else
 		{
 			// Try to get the string value by unboxing the object itself.
