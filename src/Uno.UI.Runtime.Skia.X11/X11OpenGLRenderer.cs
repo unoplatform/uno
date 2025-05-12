@@ -17,6 +17,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private readonly GRContext _grContext;
 		private readonly X11Window _x11Window;
 		private readonly IXamlRootHost _host;
+		private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 
 		private int _renderCount;
 		private Size _lastSize;
@@ -38,6 +39,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.Render()
 		{
+			using var fpsDisposable = _fpsHelper.BeginFrame();
+
 			var display = _x11Window.Display;
 			var window = _x11Window.Window;
 			using var lockDiposable = X11Helper.XLock(display);
@@ -116,6 +119,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
 					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface.Canvas);
+					_fpsHelper.DrawFps(canvas);
 					_airspaceHelper.XShapeClip(path);
 				}
 			}
