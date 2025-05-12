@@ -413,6 +413,12 @@ public static class InjectedPointerExtensions
 		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
 		pointer.Release();
 	}
+
+	public static void Tap(this IInjectedPointer pointer, Point location)
+	{
+		pointer.Press(location);
+		pointer.Release();
+	}
 }
 
 public partial class Finger : IInjectedPointer, IDisposable
