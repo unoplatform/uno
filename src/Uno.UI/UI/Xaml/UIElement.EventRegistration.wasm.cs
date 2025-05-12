@@ -6,12 +6,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Serialization;
-
+using Microsoft.UI.Xaml.Controls;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 
 namespace Microsoft.UI.Xaml
@@ -250,6 +250,10 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n, bool onCapturePhase = false)
 		{
+			// Ensure that the async context is set properly, since we're raising
+			// events from outside the dispatcher.
+			using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
+
 			if (_eventHandlers.TryGetValue((n, onCapturePhase), out var registration))
 			{
 				return registration.Dispatch(eventArgs, nativeEventPayload);
