@@ -172,6 +172,10 @@ public partial class ContainerVisual : Visual
 
 	internal override int GetSubTreeVisualCount()
 	{
+		if (_subtreeVisualCount is { } count)
+		{
+			return count;
+		}
 		var acc = 0;
 		foreach (var visual in Children.InnerList)
 		{
