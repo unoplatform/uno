@@ -1,21 +1,21 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Controls;
 using static Windows.UI.Input.PointerUpdateKind;
-using Uno.Foundation.Logging;
-using System.Runtime.InteropServices.JavaScript;
-
-using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
-using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
-using System.Runtime.InteropServices;
-using Windows.System;
-using Microsoft.UI.Xaml;
+using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 
 namespace Uno.UI.Runtime;
 
@@ -99,6 +99,10 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		try
 		{
 			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+
+			// Ensure that the async context is set properly, since we're raising
+			// events from outside the dispatcher.
+			using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
