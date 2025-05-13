@@ -531,7 +531,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		[UnoWorkItem("https://github.com/unoplatform/uno-private/issues/868")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/868")]
 		public async Task When_Focus_TextBox_Inside_NavigationView()
 		{
 			var SUT = new NavigationViewPage();
