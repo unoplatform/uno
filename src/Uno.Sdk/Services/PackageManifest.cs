@@ -134,6 +134,7 @@ internal class PackageManifest
 		public const string WasmBootstrap = nameof(WasmBootstrap);
 		public const string OSLogging = nameof(OSLogging);
 		public const string VlcNativeWindowsAssets = nameof(VlcNativeWindowsAssets);
+		public const string MicrosoftWebView2 = nameof(MicrosoftWebView2);
 		public const string CoreLogging = nameof(CoreLogging);
 		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);

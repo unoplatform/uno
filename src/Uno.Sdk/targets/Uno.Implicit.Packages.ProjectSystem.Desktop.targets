@@ -18,6 +18,7 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';webview;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebView.Skia.X11" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Web.WebView2" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup>
