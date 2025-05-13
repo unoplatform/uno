@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 	[
 	{
 	  "group": "Core",
@@ -341,6 +342,12 @@
 	}
   ]
 =======
+=======
+﻿[
+  {
+    "group": "Core",
+    "version": "DefaultUnoVersion",
+>>>>>>> 0ddd4f8cf9 (chore: Indentation)
     "packages": [
       "Uno.WinUI",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging",
@@ -678,5 +685,9 @@
       "VideoLAN.LibVLC.Windows"
     ]
   }
+<<<<<<< HEAD
 ]
 >>>>>>> 403b68d891 (fix: Correctly package and publish X11 WebView)
+=======
+]
+>>>>>>> 0ddd4f8cf9 (chore: Indentation)
