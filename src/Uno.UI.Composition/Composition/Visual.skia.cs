@@ -18,14 +18,19 @@ namespace Microsoft.UI.Composition;
 
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
-	private const int PictureCollapsingOptimizationFrameThreshold = 120;
-	private const int PictureCollapsingOptimizationVisualCountThreshold = 100;
-
 	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
+
+	internal static bool EnablePictureCollapsingOptimization { get; set; } = true;
+	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
+	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
+
+	private bool _enablePictureCollapsingOptimization;
+	private int _pictureCollapsingOptimizationFrameThreshold;
+	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
 	// Since painting (and recording) is done on the UI thread, we need a single SKPictureRecorder per UI thread.
 	// If we move to a UI-thread-per-window model, then we need multiple recorders.
@@ -81,6 +86,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				child.SetAsNativeHostVisual(newValue, true);
 			}
 		}
+	}
+
+	partial void InitializePartial()
+	{
+		_enablePictureCollapsingOptimization = EnablePictureCollapsingOptimization;
+		_pictureCollapsingOptimizationFrameThreshold = PictureCollapsingOptimizationFrameThreshold;
+		_pictureCollapsingOptimizationVisualCountThreshold = PictureCollapsingOptimizationVisualCountThreshold;
 	}
 
 	/// <summary>
@@ -416,9 +428,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				session.Canvas.DrawPicture(visual._childrenPicture);
 			}
-			else if (visual._framesSinceSubtreeNotChanged < PictureCollapsingOptimizationFrameThreshold
+			else if (!visual._enablePictureCollapsingOptimization
+					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
 					 || !applyChildOptimization
-					 || visual.GetSubTreeVisualCount() < PictureCollapsingOptimizationVisualCountThreshold)
+					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
 			{
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
