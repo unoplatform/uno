@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 #if !WINAPPSDK
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15662")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15662")]
 		public async Task When_SymbolIcon_Verify_Size()
 		{
 			var SUT = new AutoSuggestBox()
@@ -1126,7 +1126,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
+		[GitHubWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
 #if ANDROID && IS_CI
 		[Ignore("This test is failing on Android in CI only.")]
 #endif

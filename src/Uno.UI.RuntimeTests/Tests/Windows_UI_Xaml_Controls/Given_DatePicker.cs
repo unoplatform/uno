@@ -197,7 +197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15409")]
 		public async Task When_Opened_From_Button_Flyout()
 		{
 			var button = new Button();
@@ -264,11 +264,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
 		private async Task When_Opened_And_Unloaded(bool useNative)
@@ -316,11 +316,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
 		private async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
@@ -401,7 +401,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __IOS__
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{
 			using var _ = ThemeHelper.UseDarkTheme();
@@ -409,7 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
 
 		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
