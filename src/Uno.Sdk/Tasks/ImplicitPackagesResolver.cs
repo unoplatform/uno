@@ -61,6 +61,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? VlcNativeWindowsAssetsVersion { get; set; }
 
+	public string? MicrosoftWebView2Version { get; set; }
+
 	public string? WindowsCompatibilityVersion { get; set; }
 
 	public string? UnoWasmBootstrapVersion { get; set; }
@@ -243,6 +245,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
 			.UpdateManifest(PackageManifest.Group.OSLogging, UnoLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.VlcNativeWindowsAssets, VlcNativeWindowsAssetsVersion)
+			.UpdateManifest(PackageManifest.Group.MicrosoftWebView2, MicrosoftWebView2Version)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
 			.UpdateManifest(PackageManifest.Group.UniversalImageLoading, UnoUniversalImageLoaderVersion)
 			.UpdateManifest(PackageManifest.Group.Dsp, UnoDspTasksVersion)
