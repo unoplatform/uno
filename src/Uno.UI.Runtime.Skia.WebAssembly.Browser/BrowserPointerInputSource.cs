@@ -12,6 +12,7 @@ using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // i
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using System.Runtime.InteropServices;
 using Windows.System;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -75,6 +76,10 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		try
 		{
 			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+
+			// Ensure that the async context is set properly, since we're raising
+			// events from outside the dispatcher.
+			using var syncContextScope = NativeDispatcher.Main.GetSynchronizationContext(NativeDispatcherPriority.Normal).Apply();
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
