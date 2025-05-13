@@ -51,7 +51,18 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_shouldDismissControlPanel;
 
 		private bool m_isPointerMove;
-		private bool m_controlPanelHasPointerOver;
+		private bool m_controlPanelHasPointerOver_temp;
+
+		private bool m_controlPanelHasPointerOver
+		{
+			get => m_controlPanelHasPointerOver_temp;
+			set
+			{
+				m_controlPanelHasPointerOver_temp = value;
+				Console.WriteLine($"m_controlPanelHasPointerOver = {m_controlPanelHasPointerOver}");
+			}
+		}
+
 		private bool m_rootHasPointerPressed;
 		private bool m_isFlyoutOpen;
 		private bool m_isInScrubMode;
@@ -1300,7 +1311,11 @@ namespace Microsoft.UI.Xaml.Controls
 				!m_isAudioOnly &&
 				!m_hasError &&
 #endif
+#if HAS_UNO // m_shouldDismissControlPanel is set when the playback state changes from buffering to playing and on VLC-backed implementations of MPE, seeking causes a sequence of buffer-play-buffer-play states which keep showing and hiding the controls. cf. https://github.com/unoplatform/uno/issues/20346
+				!m_controlPanelHasPointerOver &&
+#else
 				(m_shouldDismissControlPanel || !m_controlPanelHasPointerOver) &&
+#endif
 				!m_rootHasPointerPressed &&
 #if !HAS_UNO
 				// Do not need to check this on the Xbox only if commandbar should exist in the template.
