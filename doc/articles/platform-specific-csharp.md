@@ -60,7 +60,7 @@ The following conditional symbols are predefined for each Uno platform:
 | Catalyst        | `__MACCATALYST__`  | |
 | iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
 | WebAssembly     | `__WASM__`         | Only available in the `net9.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
-| Skia            | `__UNO_SKIA__`     | Only available in the `net9.0-desktop` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| Skia            | `__UNO_SKIA__`     | Only available with `SkiaRenderer` feature.) |
 | _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 
 > [!TIP]
