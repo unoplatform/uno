@@ -31,7 +31,7 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-#### References in a Single Project
+### References in a Single Project
 
 In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
 
@@ -43,7 +43,7 @@ In Uno Platform Single Project, you'll need to add the `Lottie` [Uno Feature](xr
 </UnoFeatures>
 ```
 
-#### References in a Legacy Project
+### References in a Legacy Project
 
 On all Uno Platform targets, you'll need the following packages:
 
