@@ -17,6 +17,9 @@ public enum UnoFeature
 	[UnoArea(UnoArea.Core)]
 	MediaElement,
 
+	[UnoArea(UnoArea.Core)]
+	WebView,
+
 	[UnoArea(UnoArea.CSharpMarkup)]
 	CSharpMarkup,
 
