@@ -55,13 +55,11 @@ internal record UnitTestMethodInfo
 		_ignoredBecauseOfConditionalTestAttribute = ignoredBecauseOfConditionalTestClassAttribute | ignoredBecauseOfConditionalTestAttribute;
 
 		_casesParameters = method
-			.GetCustomAttributes<DataRowAttribute>()
-			.Select(d => d.Data)
+			.GetCustomAttributes<Attribute>()
+			.OfType<ITestDataSource>()
+			.SelectMany(d => d.GetData(method))
 			.ToList();
-		if (method.GetCustomAttribute<DynamicDataAttribute>() is { } dynamicData)
-		{
-			_casesParameters.AddRange(dynamicData.GetData(method));
-		}
+
 		if (_casesParameters is { Count: 0 })
 		{
 			_casesParameters.Add(Array.Empty<object>());
