@@ -1,55 +1,70 @@
-﻿#if __WASM__
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml.Media;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
+
+[TestClass]
+public class Given_FontFamily
 {
-	[TestClass]
-	public class Given_FontFamily
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Non_Existing_Font_Path_Does_Not_Break_Layout()
 	{
-		[TestMethod]
-		public void With_Pure_Name()
+		try
 		{
-			var fontName = "My happy font";
-			var fontFamily = new FontFamily(fontName);
-			Assert.AreEqual(fontName, fontFamily.CssFontName);
-		}
+			var outerStack = new Microsoft.UI.Xaml.Controls.StackPanel() { Spacing = 20 };
+			var fontFamilyPath = new Uri("ms-appx:///Assets/Data/Fonts/SomeDefinitelyNotRealFont.ttf#IDontExist");
+			var fontFamily = new Microsoft.UI.Xaml.Media.FontFamily(fontFamilyPath.AbsoluteUri);
+			var textBlock = new Microsoft.UI.Xaml.Controls.TextBlock
+			{
+				Text = "Hello World",
+				FontFamily = fontFamily,
+				TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center,
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center
+			};
+			var rootGrid = new Microsoft.UI.Xaml.Controls.Grid();
+			rootGrid.Children.Add(textBlock);
+			outerStack.Children.Add(rootGrid);
 
-		[TestMethod]
-		public void With_Path_And_Hash()
-		{
-			var fontName = "My font name";
-			var fontFamilyPath = $"/Assets/Data/Fonts/MyFont.ttf#{fontName}";
-			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
-		}
+			TestServices.WindowHelper.WindowContent = outerStack;
 
-		[TestMethod]
-		public void With_Path_Without_Hash()
-		{
-			var fontName = "FontName";
-			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";
-			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
-		}
+			// This previously never loaded and caused layout exception.
+			await TestServices.WindowHelper.WaitForLoaded(outerStack);
 
-		[TestMethod]
-		public void With_Msappx()
-		{
-			var fontName = "Msappx font name";
-			var fontFamilyPath = $"ms-appx:///Assets/Data/Fonts/MyFont.ttf#{fontName}";
-			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
-		}
+#if HAS_RENDER_TARGET_BITMAP
+			var textBlockDuplicate = new Microsoft.UI.Xaml.Controls.TextBlock
+			{
+				Text = "Hello World",
+				TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center,
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center
+			};
+			var rootGridDuplicate = new Microsoft.UI.Xaml.Controls.Grid();
+			rootGridDuplicate.Children.Add(textBlockDuplicate);
 
-		[TestMethod]
-		public void Without_Path_With_Hash()
+			outerStack.Children.Add(rootGridDuplicate);
+			await TestServices.WindowHelper.WaitForLoaded(rootGridDuplicate);
+
+			rootGrid.Width = 100;
+			rootGrid.Height = 100;
+			rootGridDuplicate.Width = 100;
+			rootGridDuplicate.Height = 100;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Compare screenshots
+			var screenshotRootGrid = await UITestHelper.ScreenShot(rootGrid);
+			var screenshotRootGridDuplicate = await UITestHelper.ScreenShot(rootGridDuplicate);
+			await ImageAssert.AreSimilarAsync(screenshotRootGrid, screenshotRootGridDuplicate);
+#endif
+		}
+		finally
 		{
-			var fontName = "Font name";
-			var fontFamilyPath = $"SomeFont.woff2#{fontName}";
-			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
+			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
 }
-#endif
