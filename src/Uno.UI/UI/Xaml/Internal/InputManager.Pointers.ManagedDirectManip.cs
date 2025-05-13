@@ -304,7 +304,7 @@ partial class InputManager
 
 					// If a control has captured the pointer with our internal PreventDirectManipulation patch flag,
 					// it means that it does not want to be redirected to direct manipulation.
-					that._settings = GestureSettings.None;
+					that._settings = args.Settings = GestureSettings.None;
 				}
 				else
 				{

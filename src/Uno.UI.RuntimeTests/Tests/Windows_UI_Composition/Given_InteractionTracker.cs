@@ -251,17 +251,6 @@ public partial class Given_InteractionTracker
 		helper.Advance();
 
 		Assert.AreEqual(
-			TrackerLogsConstructingHelper.GetInertiaStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
-				requestId: 0,
-				naturalRestingPosition: new(-50.0f, 0.0f, 0.0f),
-				modifiedRestingPosition: new(-50.0f, 0.0f, 0.0f),
-				positionVelocityInPixelsPerSecond: new(-0.0f, -0.0f, -0.0f)),
-			helper.Current);
-
-		helper.Advance();
-
-		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
 				trackerPosition: new(-50.0f, 0.0f, 0.0f),
 				requestId: 0),
