@@ -43,7 +43,7 @@ As the Skia Renderer bypasses native UI components, Skia can offer pixel-perfect
 You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to create a new project. By default, the Wizard uses the Skia rendering engine, automatically setting up the necessary MSBuild properties and references for you. If you prefer to use native rendering instead, you can select it in the Wizard’s configuration options. You can find more details on how to use the Wizard here: [Creating a new project](xref:Uno.GettingStarted.UsingWizard).
 
 > [!NOTE]
-> If you're upgrading an existing project to Uno Platform 6.0, be sure to also check our migration guidance in [Migrating from previous releases](xref:Uno.MigratingFromPreviousReleases).
+> If you're upgrading an existing project to Uno Platform 6.0, be sure to also check our migration guidance in [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases).
 
 ## Using Skia rendering for existing apps
 
