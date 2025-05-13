@@ -36,6 +36,17 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		_presenter = presenter;
 	}
 
+	~Win32NativeElementHostingExtension()
+	{
+		if (!_lastClipHrgn.IsNull)
+		{
+			if (PInvoke.DeleteObject(_lastClipHrgn))
+			{
+				typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		}
+	}
+
 	private HWND Hwnd
 	{
 		get
