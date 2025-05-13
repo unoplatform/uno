@@ -39,6 +39,9 @@ To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in y
 </UnoFeatures>
 ```
 
+> [!IMPORTANT]
+> If your project's desktop builder in `Platforms/Desktop/Program.cs` uses `.UseWindows()`, you'll also need to add the `<UnoUseWebView2WPF>true</UnoUseWebView2WPF>` property for the integration to work. However, it is recommended to [migrate to `.UseWin32()`](xref:Uno.Development.MigratingToUno6) for better performance and reliability.
+
 ## WebAssembly support
 
 In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
