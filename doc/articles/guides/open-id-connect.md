@@ -86,7 +86,7 @@ Alternatively, you can use the editor integrated in Visual Studio to set it, in 
 
 ### WinUI
 
-There's nothing special for WinUI. Any return Uri will work.  You can force it to `oidc-auth:` if you want, but you won't have any special registration to do to support it.
+There's nothing special for WinUI. Any return URI will work.  You can force it to `oidc-auth:` if you want, but you won't have any special registration to do to support it.
 
 ### WebAssembly
 

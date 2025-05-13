@@ -6,7 +6,7 @@ uid: Uno.Development.ApiDifferences
 
 Uno Platform strives to closely replicate the WinUI API on all platforms and ensure that existing WinUI code is 100% compatible with Uno. This article covers areas where Uno.UI's implementation differs, typically to better integrate with the native platform, or where the capabilities of .NET differ due to inherent limitations of the native platform.
 
-This article doesn't cover parts of the API which haven't been implemented yet. You can consult a [complete list of implemented and unimplemented controls here](implemented-views.md).
+This article doesn't cover parts of the API that haven't been implemented yet. You can consult a [complete list of implemented and unimplemented controls here](implemented-views.md).
 
 For a practical guide to addressing differences between Uno Platform and WinUI, [read this article](migrating-guidance.md).
 

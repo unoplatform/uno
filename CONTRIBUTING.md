@@ -12,7 +12,7 @@ To better foster an open, innovative, and inclusive community, please refer to o
 
 ## Provide feedback
 
-The Uno Platform is an ongoing effort, and as Microsoft progresses on WinUI, the Uno platform follows the trails. While the development remained closed for a while, the areas covered by Uno may not suit everyone's needs, which is why your feedback is important to us.
+The Uno Platform is an ongoing effort, and as Microsoft progresses on WinUI, the Uno Platform follows the trails. While the development remained closed for a while, the areas covered by Uno may not suit everyone's needs, which is why your feedback is important to us.
 
 We want to hear about your experience, scenarios, and requirements.
 
@@ -41,7 +41,7 @@ If you need a [WinUI feature](https://learn.microsoft.com/uwp/api/microsoft.ui.x
 
 To help us understand and prioritize your idea, please provide as much detail about your scenario and why the feature or enhancement would be useful.
 
-Wherever we possible we prefer to implement WinUI APIs for maximum cross-platform compatibility and existing code support, but for features/functionality not covered by WinUI's API, the same feature request process applies.
+Wherever possible, we prefer to implement WinUI APIs for maximum cross-platform compatibility and existing code support, but for features/functionality not covered by WinUI's API, the same feature request process applies.
 
 ### Ask (and answer) questions
 

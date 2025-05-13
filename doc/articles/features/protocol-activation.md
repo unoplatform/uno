@@ -65,7 +65,7 @@ To register the custom theme, call the WASM-specific `Uno.Helpers.ProtocolActiva
 
 The first argument is the scheme name, the second is the base URL of your application (it must match the current domain to be registered successfully), and the third is a text prompt, which will be displayed to the user to ask for permission.
 
-When a link with the custom scheme gets executed, the browser will navigate to a your URL with additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
+When a link with the custom scheme gets executed, the browser will navigate to the URL with an additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
 
 ### WinUI
 
@@ -89,7 +89,7 @@ protected override void OnActivated(IActivatedEventArgs e)
 }
 ```
 
-Note that in line with WinUI, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform similar initialization of root app frame and activate the current `Window` at the end. If the application was running, this initialization can be skipped.
+Note that in line with WinUI, if the application is not running, the `OnLaunched` method is not called and only `OnActivated` is executed instead. You must perform a similar initialization of the root app frame and activate the current `Window` at the end. If the application is running, this initialization can be skipped.
 
 A full application lifecycle handling with shared logic between `OnLaunched` and `OnActivated` could look as follows:
 
