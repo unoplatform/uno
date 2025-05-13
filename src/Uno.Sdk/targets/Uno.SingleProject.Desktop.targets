@@ -65,4 +65,42 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- 
+		Removes the WebView2 WPF reference by default. When using `.UseWindows()`, 
+		setting `UnoUseWebView2WPF` to true is required by the user
+	-->
+	<Target Name="_UnoWebView2RemoveWpf"
+			BeforeTargets="ResolveAssemblyReferences"
+			Condition=" '$(UnoUseWebView2WPF)' != 'true' and '$(UnoDisableWebView2Workarounds)' != 'true' ">
+		<ItemGroup>
+			<_wpfWebViewReference Include="@(Reference)" Condition="'%(Reference.FileName)' == 'Microsoft.Web.WebView2.Wpf'" />
+		</ItemGroup>
+		
+		<ItemGroup Condition=" '@(_wpfWebViewReference)' != ''">
+			<Reference Remove="@(_wpfWebViewReference)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+		Workarounds for manual inclusion of WebView2's files which prevent 
+		`PackageReference.Aliases` from being used.
+	-->
+	<Target Name="_UnoWebView2Workaround"
+			AfterTargets="ResolveAssemblyReferences"
+			Condition=" '$(UnoDisableWebView2Workarounds)' != 'true' ">
+		<ItemGroup>
+			<_webView2WithAliases Include="@(PackageReference)" Condition="'%(PackageReference.Aliases)' != ''" />
+		</ItemGroup>
+
+		<PropertyGroup Condition=" '@(_webView2WithAliases)' != ''">
+			<_webViewPackageAliases>%(_webView2WithAliases.Aliases)</_webViewPackageAliases>
+		</PropertyGroup>
+
+		<ItemGroup Condition=" '@(_webView2WithAliases)' != ''">
+			<ReferencePath Update="@(ReferencePath)" Condition="'%(FileName)' == 'Microsoft.Web.WebView2.Core'">
+				<Aliases>$(_webViewPackageAliases)</Aliases>
+			</ReferencePath>
+		</ItemGroup>
+	</Target>
+
 </Project>
