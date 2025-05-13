@@ -28,9 +28,6 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
-> [!IMPORTANT]
-> For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
-
 ## Desktop support
 
 To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
