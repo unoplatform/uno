@@ -30,7 +30,7 @@
     -->
     <UnoFeatures>
       SkiaRenderer;
-      MediaPlayer;
+      MediaElement;
       WebView;
     </UnoFeatures>
   </PropertyGroup>
