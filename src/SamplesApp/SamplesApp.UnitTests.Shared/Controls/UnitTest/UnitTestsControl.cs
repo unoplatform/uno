@@ -1237,7 +1237,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			var testClasses =
 				from type in types
-				where type?.GetCustomAttributes<ConditionalTestClassAttribute>().SingleOrDefault()?.ShouldRun() ?? true
 				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				orderby type.Name
 				select type;

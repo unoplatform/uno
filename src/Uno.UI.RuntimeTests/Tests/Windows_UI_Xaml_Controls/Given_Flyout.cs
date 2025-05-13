@@ -319,7 +319,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
@@ -1629,7 +1630,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Unbound_FullFlyout_Any() =>
 			When_Unbound_FullFlyout_Impl(skiaFullScreen: false);
 
-		[ConditionalTest(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaMobile)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMobile)]
 		[RunsOnUIThread]
 		public Task When_Unbound_FullFlyout_SkiaMobile() =>
 			// canvas for skia mobile is in absolute fullscreen, including area taken by status bar or bottom navigation bar.

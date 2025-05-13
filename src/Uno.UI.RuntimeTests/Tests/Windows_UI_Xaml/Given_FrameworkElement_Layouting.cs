@@ -146,8 +146,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #if __WASM__
 		[Ignore("Fails for unknown reason")]
 #endif
+		[TestMethod]
 		// https://github.com/unoplatform/uno-private/issues/801
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
 		{
 			var wr = GetWeakReference();

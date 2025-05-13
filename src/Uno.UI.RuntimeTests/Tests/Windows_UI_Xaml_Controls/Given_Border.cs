@@ -844,7 +844,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		[ConditionalTest(IgnoredPlatforms = (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, (~RuntimeTestPlatforms.SkiaDesktop) | RuntimeTestPlatforms.SkiaMacOS)]
 		[RequiresScaling(1.0f)]
 		public async Task When_CornerRadius_AntiAliasing()
 		{
