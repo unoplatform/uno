@@ -243,8 +243,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(initialWidth < sv.ActualWidth);
 		}
 
+		[TestMethod]
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 #if __WASM__
 		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
 #endif
@@ -283,8 +284,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 		}
 
+		[TestMethod]
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 #if !__SKIA__
 		[Ignore("This test specifically tests the skia-rendered TextBox")]
 #endif
