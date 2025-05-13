@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
@@ -873,6 +874,53 @@ namespace Uno.UI
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Enables certain optimizations that skip rendering some subtrees
+			/// of the visual tree that do not change often and instead caches their
+			/// rendering output. This optimization is only for skia targets.
+			/// </summary>
+			public static bool EnableVisualSubtreeSkippingOptimization
+			{
+#if __SKIA__
+				get => Visual.EnablePictureCollapsingOptimization;
+				set => Visual.EnablePictureCollapsingOptimization = value;
+#else
+				get => false;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// When <see cref="EnableVisualSubtreeSkippingOptimization"/> is enabled, determines the number
+			/// of frames that a visual subtree needs to remain unchanged through, after which the subtree
+			/// is considered for the subtree skipping optimization.
+			/// </summary>
+			public static int VisualSubtreeSkippingOptimizationCleanFramesThreshold
+			{
+#if __SKIA__
+				get => Visual.PictureCollapsingOptimizationFrameThreshold;
+				set => Visual.PictureCollapsingOptimizationFrameThreshold = value;
+#else
+				get => 0;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// When <see cref="EnableVisualSubtreeSkippingOptimization"/> is enabled, determines the minimum
+			/// size of visual subtrees considered for the subtree skipping optimization.
+			/// </summary>
+			public static int VisualSubtreeSkippingOptimizationVisualCountThreshold
+			{
+#if __SKIA__
+				get => Visual.PictureCollapsingOptimizationVisualCountThreshold;
+				set => Visual.PictureCollapsingOptimizationVisualCountThreshold = value;
+#else
+				get => 0;
+				set { }
+#endif
+			}
 		}
 
 		public static class DependencyProperty
