@@ -26,6 +26,7 @@ See [Microsoft API reference for MediaPlayerElement](https://learn.microsoft.com
 ### Notes
 
 - Uno's MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please, refer to those native players documentation for more information about supported audio and video formats.
+- Uno's MediaPlayerElement relies on VLC and libvlc on Linux. please follow [these instructions](https://github.com/videolan/libvlcsharp/blob/3.x/docs/linux-setup.md) to get the necessary dependencies.
 - If you need to set source programmatically (i.e., using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported.
 
 ## Features
