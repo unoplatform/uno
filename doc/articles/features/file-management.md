@@ -101,6 +101,6 @@ Make sure the server that hosts the file is configured accordingly.
 
 ## Support for `CachedFileManager`
 
-For all targets except WinUI and WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows us to easily write code that requires deferring updates on Windows but is shared across all targets.
+For all targets except WinUI and WebAssembly, the `CachedFileManager` does not provide any functionality, and its methods immediately return. This allows us to easily write code that requires deferring updates on Windows but is shared across all targets.
 
 In the case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described extensively within the [documentation](xref:Uno.Features.WSPickers#webassembly) for storage pickers.

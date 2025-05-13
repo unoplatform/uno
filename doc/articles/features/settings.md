@@ -19,7 +19,7 @@ uid: Uno.Features.Settings
 ## Using Settings with Uno
 
 * On each target platform, the native user preferences APIs are used for storage.
-* `RoamingSettings` are not roamed across devices, as this feature has been disabled by WinUI
+* `RoamingSettings` are not roamed across devices, as this feature has been disabled by WinUI.
 
 ## Examples
 

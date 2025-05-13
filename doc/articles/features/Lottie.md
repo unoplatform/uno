@@ -71,7 +71,7 @@ To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-ap
 > [!WARNING]
 > This feature is only available on Uno Platform targets. WinUI on Windows is not supported.
 
-You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
+You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following URL format as `UriSource`:
 
 ```uri
 embedded://<assemblyname>/<resource name>

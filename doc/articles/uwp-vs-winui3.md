@@ -4,7 +4,7 @@ uid: Uno.Development.UwpVsWinUI3
 
 # WinUI 3 and Uno Platform
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://learn.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://learn.microsoft.com/windows/apps/windows-app-sdk/).
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://learn.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://learn.microsoft.com/windows/apps/windows-app-sdk/).
 
 > [!TIP]
 > If you just want to add Fluent styles to legacy Uno Platform projects, [check the guide here](features/using-winui2.md).
@@ -31,7 +31,7 @@ When you create a new Uno Platform application, you can choose to create a WinUI
 
 ### Do you want to use .NET 5 or .NET 6/7/8 or later?
 
-WinUI 3 applications using the Win32 application model can use .NET 5 and latest C# versions right now. Microsoft has announced they will not invest into moving UWP to .NET 5 or later. However, this does not change anything for Uno Platform users, as described in this [blog](https://platform.uno/blog/recent-uwp-and-net-5-net-6-news-and-uno-platform-plans/).
+WinUI 3 applications using the Win32 application model can use .NET 5 and the latest C# versions right now. Microsoft has announced they will not invest in moving UWP to .NET 5 or later. However, this does not change anything for Uno Platform users, as described in this [blog](https://platform.uno/blog/recent-uwp-and-net-5-net-6-news-and-uno-platform-plans/).
 
 Note that not all non-Windows platforms support .NET 5, see a [full support matrix here](net-version-support.md).
 

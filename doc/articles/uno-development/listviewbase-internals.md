@@ -25,7 +25,7 @@ Other important features of `ListView`:
 
 On Android and iOS, `ListView` uses a platform-specific implementation that maps the XAML API to an inner instance of the native list control on each platform, being [RecyclerView](https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView) and [UICollectionView](https://developer.apple.com/documentation/uikit/uicollectionview) respectively. Using the native list control brings the advantage of getting advanced features like item animations 'for free', along with the disadvantage of added maintenance burden, the possibility of platform-specific differences in behavior, and the additional complexity of having non-`FrameworkElement` views in the visual tree.
 
-Other platforms (WebAssembly, Skia, and macOS at time of writing) use a purely managed implementation of `ListView`. This implementation is closer to WinUI in its comportment, for example it actually uses the items panel (`ItemsStackPanel`) to host items. However, it's not a direct port of the WinUI control.
+Other platforms (WebAssembly, Skia, and macOS at the time of writing) use a purely managed implementation of `ListView`. This implementation is closer to WinUI in its comportment, for example, it actually uses the items panel (`ItemsStackPanel`) to host items. However, it's not a direct port of the WinUI control.
 
 The managed ListView implementation is newer and lacks some features that are supported by the Android and iOS ListViews (and of course WinUI); the feature gap is tracked by [this issue](https://github.com/unoplatform/uno/issues/234).
 
@@ -50,11 +50,11 @@ Architecturally, the Android and iOS implementations share a similar high-level 
 
 [This diagram](../controls/ListViewBase.md#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from WinUI. The key differences are:
 
-- the scrolling container is the `NativeListViewBase` itself, not the `ScrollViewer`. Thus the `ItemsPresenter` is **outside** the scrollable region. Additionally, there's no ScrollContentPresenter; instead there's a ListViewBaseScrollContentPresenter. (It was implemented this way back when ScrollContentPresenter inherited directly from the native scroll container.)
-- the `ItemsStackPanel` (or `ItemsWrapGrid`) is not actually present in the visual tree. These items panels are created, and their configured values (eg `Orientation`) are used to set the behavior of the list, but they are not actually loaded into the visual hierarchy or measured and arranged. They just act as a facade for the native layouter.
-- the Header and Footer, if present, are managed by the native list on Android and iOS, whereas on WinUI they're outside the ItemsStackPanel/ItemsWrapGrid.
+- the scrolling container is the `NativeListViewBase` itself, not the `ScrollViewer`. Thus, the `ItemsPresenter` is **outside** the scrollable region. Additionally, there's no ScrollContentPresenter; instead, there's a ListViewBaseScrollContentPresenter. (It was implemented this way back when ScrollContentPresenter inherited directly from the native scroll container.)
+- the `ItemsStackPanel` (or `ItemsWrapGrid`) is not actually present in the visual tree. These items' panels are created, and their configured values (eg, `Orientation`) are used to set the behavior of the list, but they are not actually loaded into the visual hierarchy or measured and arranged. They just act as a facade for the native layouter.
+- the Header and Footer, if present, are managed by the native list on Android and iOS, whereas on WinUI, they're outside the ItemsStackPanel/ItemsWrapGrid.
 
-Much of the time, these are implementation details that are invisible to the end user. In certain cases they can have a visible impact. They're useful to be aware of when working on `ListView` bugs.
+Much of the time, these are implementation details that are invisible to the end user. In certain cases, they can have a visible impact. They're useful to be aware of when working on `ListView` bugs.
 
 #### Android
 
@@ -118,7 +118,7 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
 On WASM, Skia, and macOS, `ListViewBase` uses a shared implementation that's dubbed 'managed' because it doesn't rely upon an external native control. The visible implementation details of the managed `ListView` are much closer to WinUI. Specifically:
 
 - the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
-- the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
+- the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie, it is in fact responsible for scrolling.
 
 The internals of the managed `ListView` were originally implemented independently of the WinUI source, but have been gradually converging on the internals of WinUI.
 
@@ -128,8 +128,8 @@ Consistent with the other platforms, the managed `ListView` delegates layouting 
 
 1. On measure, `ItemsStackPanel.MeasureOverride()` directly calls `VirtualizingPanelLayout.MeasureOverride()`.
 2. `VirtualizingPanelLayout.MeasureOverride()` 'scraps' the existing layout. The 'scrap' concept is borrowed from Android: existing containers are returned to the item generator, but marked as able to be reused without rebinding during the current pass, if they are still needed (which will often be the case).
-3. `VirtualizingPanelLayout.MeasureOverride()` => `UpdateLayout()`. `UpdateLayout()` calls `UnfillLayout()` and `FillLayout()`, which respectively dematerialize containers that are no longer visible within the current viewport, and materialize containers for newly-visible items.
+3. `VirtualizingPanelLayout.MeasureOverride()` => `UpdateLayout()`. `UpdateLayout()` calls `UnfillLayout()` and `FillLayout()`, which respectively dematerialize containers that are no longer visible within the current viewport and materialize containers for newly visible items.
 4. `FillLayout()` calls `CreateLine()` for every missing 'line', which in turn calls `AddView()` for the view(s) in the line. `AddView()` measures the view, adds it to the panel, and stores its planned `Bounds` (size and offset) in `VirtualizationInformation` attached to the view.
-5. `MeasureOverride()` returns an estimate of the panel size, based on the current extent of materialized items, the number of unmaterialized items and the best guess of their size. (This estimate is potentially inaccurate, in the case that the unmaterialized items have a different data-bound size or use a template with a different size; this is a fundamental limitation of the `ListView` that's also present on WinUI.)
+5. `MeasureOverride()` returns an estimate of the panel size, based on the current extent of materialized items, the number of unmaterialized items, and the best guess of their size. (This estimate is potentially inaccurate, in the case that the unmaterialized items have a different data-bound size or use a template with a different size; this is a fundamental limitation of the `ListView` that's also present on WinUI.)
 6. `ArrangeOverride()` calls `ArrangeElements()` which arranges each child view according to its stored Bounds, adjusted for the actual arranged size of the panel itself and also the parent `ScrollViewer`.
 7. The panel listens to the `ViewChanged` event of its parent `ScrollViewer`. `VirtualizingPanelLayout.OnScrollChanged()` calls `UpdateLayout()`, in small increments to ensure that vanished views are recycled at the same rate as appearing views are materialized. `OnScrollChanged()` then calls `ArrangeElements()` to ensure newly-added views are arranged.

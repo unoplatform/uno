@@ -16,11 +16,11 @@ Follow the instructions to [set up your development environment for Uno Platform
 
 ## Migrating files to the Uno solution structure
 
-Note: these steps will **destructively modify** your existing WinUI/UWP-only solution. Make sure you have a copy in source control or in a back-up folder.
+Note: these steps will **destructively modify** your existing WinUI/UWP-only solution. Make sure you have a copy in source control or in a backup folder.
 
 1. In order to reuse the name of the existing WinUI/UWP project, we want to first rename it and its containing folder. (If you don't want to reuse the name, you can skip this step.)
 
-    i. First, rename the project itself within the solution, by right-clicking on the project and choosing 'Rename'. For example, if the project is called `BugTracker`, we can rename it to `BugTracker_OLD`.
+    i. First, rename the project itself within the solution by right-clicking on the project and choosing 'Rename'. For example, if the project is called `BugTracker`, we can rename it to `BugTracker_OLD`.
 
     ii. Next the folder containing the project must be renamed (assuming it still has the default name from when the project was originally created). Navigate to the folder containing the project. (Eg, by right-clicking on the project in Visual Studio and choosing 'Open Folder in File Explorer'.) Close your Visual Studio instance. Rename the folder, so that the project path becomes `./BugTracker_OLD/BugTracker_OLD.csproj`.
 

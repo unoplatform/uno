@@ -104,7 +104,7 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 
 ### Exceptions
 
-* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from WinUI where `AccessViolationException` is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from WinUI, where `AccessViolationException` is thrown.
 * When the method is called from a non-UI thread, `InvalidOperationException` is thrown.
 
 Exceptions are in line with WinUI.
@@ -149,6 +149,6 @@ Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSch
 
 ### Exceptions
 
-* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from WinUI where a plain `Exception` with HRESULT is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from WinUI, where a plain `Exception` with HRESULT is thrown.
 
 Exceptions are in line with WinUI.

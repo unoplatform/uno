@@ -109,11 +109,11 @@ The starting point for creating an Uno Islands-enabled application is to create 
 
 ### Preparing solution
 
-In the new solution, feel free to remove targets which are not needed for your purposes, but make sure to keep at least the Shared project and WPF project.
+In the new solution, feel free to remove targets that are not needed for your purposes, but make sure to keep at least the Shared project and WPF project.
 
 ![XamlHost Solution layout](../Assets/guides/uno-islands/solution-layout.png)
 
-Right-click the solution node in Solution Explorer and select `Manage NuGet Packages for Solution...`. In the NuGet Package Manager window search for `Uno.WinUI.XamlHost`.
+Right-click the solution node in Solution Explorer and select `Manage NuGet Packages for Solution...`. In the NuGet Package Manager window, search for `Uno.WinUI.XamlHost`.
 
 ![XamlHost NuGet packages](../Assets/guides/uno-islands/xamlhost-packages.png)
 

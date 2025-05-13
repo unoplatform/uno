@@ -62,7 +62,7 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 
 * [Migrating single-platform WinUI/UWP code](howto-migrate-existing-code.md)
 * [Creating a cross-targeted library](migrating-libraries.md)
-* [Upgrading from older Uno.UI releases](migrating-from-previous-releases.md)
+* [Upgrading from an older Uno.UI releases](migrating-from-previous-releases.md)
 
 ## Debugging Uno Platform applications
 
