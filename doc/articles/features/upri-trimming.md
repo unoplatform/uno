@@ -4,7 +4,7 @@ uid: Uno.Features.StringResourceTrimming
 
 # String Resource Trimming
 
-Uno Platform provides a set of controls that are localization in many cultures, which may not be required for your app.
+Uno Platform provides a set of controls that are localized in many cultures, which may not be required for your app.
 
 String resource trimming is an optional feature used to reduce the final payload size of an Uno Platform application by removing unused localization languages throughout the app.
 
