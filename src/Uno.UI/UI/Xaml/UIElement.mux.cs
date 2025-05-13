@@ -678,7 +678,7 @@ namespace Microsoft.UI.Xaml
 			ref bool handled,
 			ref bool handledShouldNotImpedeTextInput)
 		{
-			var contentRoot = VisualTree.GetContentRootForElement(pElement)!;
+			var contentRoot = VisualTree.GetContentRootForElement(pElement);
 
 			if (contentRoot is null)
 			{
