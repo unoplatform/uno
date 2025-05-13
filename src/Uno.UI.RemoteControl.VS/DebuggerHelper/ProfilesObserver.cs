@@ -161,8 +161,15 @@ internal class ProfilesObserver : IDisposable
 							PropagateCompletion = true
 						};
 
-						var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(evaluationLinkOptions, true);
-						var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(unconfiguredProject.Capabilities.SourceBlock);
+						var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(
+							evaluationLinkOptions,
+							// Request for the initial values of the source
+							initialDataAsNewForProjectSubscriptionUpdate: true);
+
+						var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(
+							unconfiguredProject.Capabilities.SourceBlock,
+							// Request for the initial values of the source
+							initialDataAsNewForProjectSubscriptionUpdate: true);
 
 						_projectRuleSubscriptionLink = ProjectDataSources.SyncLinkTo(
 							projectBlock,
@@ -215,7 +222,7 @@ internal class ProfilesObserver : IDisposable
 	{
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-		_debugLog($"unconfiguredProject was unloaded");
+		_debugLog($"ProfilesObserver: unconfiguredProject was unloaded");
 
 		UnsubscribeCurrentProject();
 	}
@@ -224,6 +231,8 @@ internal class ProfilesObserver : IDisposable
 	{
 		_currentActiveDebugFramework = null;
 		_currentActiveDebugProfile = null;
+		_lastActiveDebugProfile = null;
+		_lastActiveDebugFramework = null;
 
 		// Force a refresh of reflection calls
 		_projectFrameworkServices = null;
