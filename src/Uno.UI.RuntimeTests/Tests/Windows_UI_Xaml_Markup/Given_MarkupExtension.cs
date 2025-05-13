@@ -104,6 +104,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.IsTrue(page.Control.IsChecked, "sanity check failed: Control.IsChecked is not true");
 			Assert.IsNull(page.SUT.IsChecked, "Property value should be set to null by the markup-extension");
 		}
+
+		[TestMethod]
+		public void When_MarkupExtension_FullNameFirst()
+		{
+			var page = new MarkupExtension_FullNameFirst();
+
+			Assert.AreEqual(nameof(FullNameFirstMarkupExtension), (page.FullName as TextBlock).Tag);
+			Assert.AreEqual(nameof(ShortNameMarkup), (page.ShortName as TextBlock).Tag);
+		}
 #endif
 	}
 }
