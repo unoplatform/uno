@@ -43,9 +43,17 @@ To upgrade to the Win32 support, in your `Platforms/Desktop/Program.cs`, replace
 
 ### WinAppSDK 1.7 considerations
 
-Uno Platform 6 updates to WinAppSDK 1.7 if using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk).
+Uno Platform 6 updates to WinAppSDK 1.7 when using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk).
 
-In your project, you may need to add the following lines to get the `net9.0-windowsXX` target to build:
+If you encounter the following build error:
+
+```output
+error CS1705: Assembly 'Assembly_Name' with identity 'Assembly_Name, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null' uses 'WinRT.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=99ea127f02d97709' which has a higher version than referenced assembly 'WinRT.Runtime' with identity 'WinRT.Runtime, Version=2.1.0.0, Culture=neutral, PublicKeyToken=99ea127f02d97709'
+```
+
+This may be due to a mismatch in the Windows SDK version used by your project.
+
+To fix this issue, add the following to your `.csproj` file to ensure the correct Windows SDK is referenced for the `net9.0-windowsXX` target to build properly:
 
 ```xml
 <PropertyGroup>
