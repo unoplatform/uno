@@ -41,7 +41,7 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - script: |
         cd $(SamplesAppArtifactPath)
