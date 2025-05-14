@@ -678,11 +678,18 @@ namespace Microsoft.UI.Xaml
 			ref bool handled,
 			ref bool handledShouldNotImpedeTextInput)
 		{
+			var contentRoot = VisualTree.GetContentRootForElement(pElement);
+
+			if (contentRoot is null)
+			{
+				return;
+			}
+
 			//Try to process accelerators on current CUIElement.
 			KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
 				key,
 				keyModifiers,
-				VisualTree.GetContentRootForElement(pElement)!.GetAllLiveKeyboardAccelerators(),
+				contentRoot.GetAllLiveKeyboardAccelerators(),
 				pElement,
 				out handled,
 				out handledShouldNotImpedeTextInput,
