@@ -101,7 +101,8 @@
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="Microsoft.Windows.Compatibility" Version="9.0.0-rc.2.24474.4" />
 		<PackageReference Update="NuGet.Packaging" Version="6.3.4" />
-		<PackageReference Update="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Update="System.Formats.Asn1" Version="8.0.2" />
+		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />

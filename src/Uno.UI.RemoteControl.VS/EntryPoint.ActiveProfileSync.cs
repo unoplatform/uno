@@ -29,7 +29,8 @@ public partial class EntryPoint : IDisposable
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
 	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
-	private Stopwatch _lastOperation = new Stopwatch();
+	private Stopwatch _lastProfileOperation = new Stopwatch();
+	private Stopwatch _lastTargetOperation = new Stopwatch();
 	private TimeSpan _profileOrFrameworkDelay = TimeSpan.FromSeconds(1);
 	private bool _pendingRequestedChanged;
 	private bool _isFirstProfileTfmChange = true;
@@ -50,7 +51,7 @@ public partial class EntryPoint : IDisposable
 			// is the right one.
 			await WriteProjectUserSettingsAsync(newFramework);
 
-			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+			if (!_pendingRequestedChanged && _lastTargetOperation.IsRunning && _lastTargetOperation.Elapsed < _profileOrFrameworkDelay)
 			{
 				// This debouncing needs to happen when VS intermittently changes the active
 				// profile or target framework on project reloading. We skip the change if it
@@ -62,7 +63,7 @@ public partial class EntryPoint : IDisposable
 			}
 
 			_pendingRequestedChanged = false;
-			_lastOperation.Restart();
+			_lastTargetOperation.Restart();
 
 			if (!isFirstProfileTfmChange && !forceReload && string.IsNullOrEmpty(previousFramework))
 			{
@@ -123,7 +124,7 @@ public partial class EntryPoint : IDisposable
 		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
 		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile}) isFirstProfileTfmChange:{isFirstProfileTfmChange}");
 
-		if (!isFirstProfileTfmChange && !_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		if (!isFirstProfileTfmChange && !_pendingRequestedChanged && _lastProfileOperation.IsRunning && _lastProfileOperation.Elapsed < _profileOrFrameworkDelay)
 		{
 			// This debouncing needs to happen when VS intermittently changes the active
 			// profile or target framework on project reloading. We skip the change if it
@@ -135,7 +136,7 @@ public partial class EntryPoint : IDisposable
 		}
 
 		_pendingRequestedChanged = false;
-		_lastOperation.Restart();
+		_lastProfileOperation.Restart();
 
 		if (!isFirstProfileTfmChange && string.IsNullOrEmpty(previousProfile))
 		{
