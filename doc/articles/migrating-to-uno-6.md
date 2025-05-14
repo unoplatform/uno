@@ -41,6 +41,18 @@ Uno Platform 6.0 provides support for a new, faster, and leaner Windows support,
 
 To upgrade to the Win32 support, in your `Platforms/Desktop/Program.cs`, replace `.UseWindows()` with `.UseWin32()`.
 
+### WinAppSDK 1.7 considerations
+
+Uno Platform 6 updates to WinAppSDK 1.7 if using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk).
+
+In your project, you may need to add the following lines to get the `net9.0-windowsXX` target to build:
+
+```xml
+<PropertyGroup>
+    <WindowsSdkPackageVersion>10.0.19041.57</WindowsSdkPackageVersion>
+</PropertyGroup>
+```
+
 ### Uno Extensions
 
 Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
