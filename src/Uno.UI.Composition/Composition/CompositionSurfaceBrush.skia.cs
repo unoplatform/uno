@@ -133,8 +133,6 @@ namespace Microsoft.UI.Composition
 							}
 						}
 
-						// var nShaderApplications = Math.Max(sigmaX, sigmaY) / ;
-
 						var uniforms1 = new SKRuntimeEffectUniforms(_effect)
 						{
 							{ "imageSize", new[] { (float)backgroundArea.Width, (float)backgroundArea.Height } },
@@ -149,7 +147,7 @@ namespace Microsoft.UI.Composition
 						};
 						var children = new SKRuntimeEffectChildren(_effect)
 						{
-							["image"] = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal)
+							["image"] = SKShader.CreateImage(scs.Image)
 						};
 
 						imageShader = SKShader.CreateCompose(_effect.ToShader(uniforms1, children, matrix.ToSKMatrix()), _effect.ToShader(uniforms2, children, matrix.ToSKMatrix()));
