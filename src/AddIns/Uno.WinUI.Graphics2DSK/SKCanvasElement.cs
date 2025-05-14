@@ -15,7 +15,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	private protected override ContainerVisual CreateElementVisual() => new SKCanvasVisual(this, Compositor.GetSharedCompositor());
 
 	/// <summary>
-	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.
+	/// Invalidates the element and triggers a redraw.
 	/// </summary>
 	public void Invalidate() => _visual.Compositor.InvalidateRender(_visual);
 

@@ -21,7 +21,7 @@ protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
 When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the origin is already translated so that `0,0` is the origin of the element, not the entire window. Drawing outside this area will be clipped.
 
-Additionally, `SKCanvasElement` has an `Invalidate` method that can be used at any time to tell the Uno Platform runtime to redraw the window, calling `RenderOverride` in the process.
+Additionally, `SKCanvasElement` has an `Invalidate` method that invalidates the `SKCanvasElement` and triggers a redraw. The drawing of the `SKCanvasElement` is often cached and will not be updated unless `Invalidate` is called.
 
 Since `SKCanvasElement` is just a FrameworkElement, controlling the dimensions of the drawing area is done by manipulating the layout of the element, e.g. by overriding MeasureOverride and ArrangeOverride.
 
