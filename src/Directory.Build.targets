@@ -105,7 +105,7 @@
 		<PackageReference Update="System.Net.Http" Version="4.3.4" />
 		<PackageReference Update="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Update="NuGet.Packaging" Version="6.3.4" />
-		<PackageReference Update="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Update="System.Formats.Asn1" Version="8.0.2" />
 		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" NoWarn="NU5104" />
