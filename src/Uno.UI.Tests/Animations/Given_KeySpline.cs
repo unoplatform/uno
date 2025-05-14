@@ -11,7 +11,7 @@ namespace Uno.UI.Tests.Animations
 	[TestClass]
 	public class Given_KeySpline
 	{
-		[DataTestMethod]
+		[TestMethod]
 		[DataRow(0.0, 0.0, 1.0, 1.0)]
 		[DataRow(0.0, 1.0, 1.0, 0.0)]
 		[DataRow(1.0, 1.0, 1.0, 1.0)]
