@@ -51,18 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_shouldDismissControlPanel;
 
 		private bool m_isPointerMove;
-		private bool m_controlPanelHasPointerOver_temp;
-
-		private bool m_controlPanelHasPointerOver
-		{
-			get => m_controlPanelHasPointerOver_temp;
-			set
-			{
-				m_controlPanelHasPointerOver_temp = value;
-				Console.WriteLine($"m_controlPanelHasPointerOver = {m_controlPanelHasPointerOver}");
-			}
-		}
-
+		private bool m_controlPanelHasPointerOver;
 		private bool m_rootHasPointerPressed;
 		private bool m_isFlyoutOpen;
 		private bool m_isInScrubMode;
