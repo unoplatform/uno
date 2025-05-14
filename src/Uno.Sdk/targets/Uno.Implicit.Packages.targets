@@ -76,7 +76,7 @@
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
-				MicrosoftWebView2="$(MicrosoftWebView2Version)"
+				MicrosoftWebView2Version="$(MicrosoftWebView2Version)"
 				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />
