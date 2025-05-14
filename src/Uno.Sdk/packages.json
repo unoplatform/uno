@@ -39,7 +39,7 @@
       "Uno.Wasm.Bootstrap.Server"
     ],
     "versionOverride": {
-      "net9.0": "9.0.16"
+      "net10.0": "9.0.16"
     }
   },
   {
@@ -140,7 +140,7 @@
       "Microsoft.Extensions.Logging.Console"
     ],
     "versionOverride": {
-      "net9.0": "9.0.4"
+      "net10.0": "9.0.4"
     }
   },
   {
@@ -150,7 +150,7 @@
       "Microsoft.Windows.Compatibility"
     ],
     "versionOverride": {
-      "net9.0": "9.0.4"
+      "net10.0": "9.0.4"
     }
   },
   {
@@ -269,7 +269,7 @@
       "Microsoft.Maui.Graphics"
     ],
     "versionOverride": {
-      "net9.0": "9.0.60"
+      "net10.0": "9.0.60"
     }
   },
   {

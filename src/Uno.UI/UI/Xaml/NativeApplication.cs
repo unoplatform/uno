@@ -1,4 +1,5 @@
 ﻿#nullable disable
+#pragma warning disable DNAA0001 // Application class 'NativeApplication' does not have an Activation Constructor (NativeApplication is used by apps, not by itself)
 
 #if __ANDROID__
 using System;

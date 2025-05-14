@@ -13,7 +13,7 @@
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">300,300</UnoSplashScreenBaseSize>
 		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
 
-		<!-- Support net8.0, without a platform identifier -->
+		<!-- Support net9.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
 			$(_IsUnoSingleProjectAndLegacy) == 'true' 
 			AND '$(TargetFramework)' != '' 

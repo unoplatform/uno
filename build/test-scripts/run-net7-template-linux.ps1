@@ -76,7 +76,7 @@ $projects =
 
     # 5.3 Blank with net9
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
     @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
@@ -86,7 +86,7 @@ $projects =
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
-    # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
+    # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net10.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.6 Android/ios/Wasm+Skia
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @()),
