@@ -16,9 +16,13 @@
 		<_UnoProjectSystemPackageReference Include="VideoLAN.LibVLC.Windows" ProjectSystem="true" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<UnoWebView2Aliases Condition=" '$(UnoWebView2Aliases)' == '' ">mswebview2</UnoWebView2Aliases>
+	</PropertyGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';webview;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.WebView.Skia.X11" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Web.WebView2" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Web.WebView2" ProjectSystem="true" Aliases="$(UnoWebView2Aliases)" />
 	</ItemGroup>
 
 	<ItemGroup>
