@@ -10,7 +10,7 @@
         href: xref:Uno.GetStarted.vscode
       - name: Rider
         href: xref:Uno.GetStarted.Rider
-        
+
     - name: Create an App
       topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
@@ -76,7 +76,7 @@
     - name: Counter
       href: xref:Uno.Workshop.Counter
       items:
-      - name: Counter App
+      - name: Counter App TEST
         href: xref:Uno.Workshop.Counter
       - name: XAML + MVUX
         href: xref:Uno.Workshop.Counter.XAML.MVUX
@@ -95,8 +95,8 @@
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
     - name: Chefs
-      href: external/uno.chefs/doc/toc.yml
       topicHref: xref:Uno.Chefs.Overview
+      href: external/uno.chefs/doc/toc.yml
     - name: Tutorials
       topicHref: xref:Uno.Tutorials.Intro
       items:

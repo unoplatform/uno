@@ -17,7 +17,7 @@ $external_docs = @{
     "uno.extensions"     = "main"
     "workshops"          = "master"
     "uno.samples"        = "master"
-    "uno.chefs"          = "main"
+    "uno.chefs"          = "dev/agzi/FixChefsDocsMenu"
 }
 
 ./import_external_docs $external_docs
