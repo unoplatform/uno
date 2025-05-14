@@ -39,7 +39,7 @@ jobs:
 
   - template: ../templates/linux-install-deps.yml
 
-  - template: templates/dotnet-install.yml
+  - template: ../templates/dotnet-install.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
