@@ -91,7 +91,7 @@ namespace Uno.UI.Tests.Animations
 			yield return SafeGuard("Forever", RepeatBehavior.Forever);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		[DynamicData(nameof(GetParsingTestData), DynamicDataSourceType.Method)]
 		public void When_RepeatBehavior_From_String(string raw, RepeatBehavior expected)
 		{
