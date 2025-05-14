@@ -3,7 +3,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 
-internal interface INativeWebViewProvider
+public interface INativeWebViewProvider
 {
-	INativeWebView CreateNativeWebView(ContentPresenter contentPresenter);
+	internal INativeWebView CreateNativeWebView(ContentPresenter contentPresenter);
 }
