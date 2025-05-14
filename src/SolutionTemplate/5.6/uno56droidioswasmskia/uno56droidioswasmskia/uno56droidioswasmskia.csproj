@@ -1,6 +1,6 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net9.0-browserwasm;net9.0-ios;net9.0-android</TargetFrameworks>
+    <TargetFrameworks>net9.0-browserwasm;net9.0-ios;net9.0-android;net9.0-desktop</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
