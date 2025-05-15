@@ -170,7 +170,7 @@ public App()
 
 ## X11 specifics
 
-In order to use WebView2 on Linux, you'll need to install libwebkit and libgtk3-0:
+In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:
 
 - On Ubuntu 22.04:
 
