@@ -144,10 +144,8 @@ To exit the **Flyout Editor**, you can:
 
 > [!NOTE]
 > In external tool windows, zoom features are disabled. This means you won’t be able to adjust form factor, zoom, or scroll while editing a Flyout.
-
 > [!TIP]
 > **UserControl** and **DataTemplate** editors are fully supported inside the Flyout Editor, so you can edit them directly within the Flyout context.
-
 > [!IMPORTANT]
 > Editing *nested flyouts* is not supported at the moment.
 
