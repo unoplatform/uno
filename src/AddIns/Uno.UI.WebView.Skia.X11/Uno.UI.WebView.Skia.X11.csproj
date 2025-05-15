@@ -30,4 +30,8 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<None Include=".\..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
 </Project>

@@ -26,6 +26,7 @@
 		"Uno.WinUI.MediaPlayer.WebAssembly",
 		"Uno.WinUI.MediaPlayer.Skia.X11",
 		"Uno.WinUI.MediaPlayer.Skia.Win32",
+		"Uno.WinUI.WebView.Skia.X11",
 		"Uno.WinUI.Graphics3DGL",
 		"Uno.WinUI.Graphics2DSK"
 	  ]
@@ -337,5 +338,12 @@
 	  "packages": [
 		"VideoLAN.LibVLC.Windows"
 	  ]
+	},
+	{
+		"group": "MicrosoftWebView2",
+		"version": "1.0.3240.44",
+		"packages": [
+			"Microsoft.Web.WebView2"
+		]
 	}
   ]
