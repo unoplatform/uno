@@ -129,8 +129,16 @@ To open the Flyout Editor, follow these steps:
 5. With the flyout still opened, disable **Interactive Mode** by clicking the **Pause** button in the Toolbar.
    This will activate the **Flyout Editor**.
 
+Now you can freely make any changes to the flyout.
 
-Now you can freely make any changes to the flyout. To exit the Flyout Editor, click the **Enter Interactive Mode** option on the Toolbar represented by the Play icon.
+To exit the **Flyout Editor**, you can:
+
+- Click the **Enter Interactive Mode** button in the Toolbar (Play icon)
+- Or click the **Back** icon in the top-left corner of the **Canvas** or **Tree window**
+
+  ![alt text](Assets/canvas-leave-flyout-editor.png)
+
+  ![alt text](Assets/tree-leave-flyout-editor.png)
 
 <img src="Assets/canvas-edit-flyouts.gif" alt="How to edit flyouts from the canvas" />
 
