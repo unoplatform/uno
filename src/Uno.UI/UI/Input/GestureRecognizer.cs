@@ -112,9 +112,7 @@ namespace Windows.UI.Input
 			}
 		}
 
-		public void ProcessMoveEvents(IList<PointerPoint> value) => ProcessMoveEvents(value, true);
-
-		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
+		public void ProcessMoveEvents(IList<PointerPoint> value)
 		{
 			// Even if the pointer was considered as irrelevant, we still buffer it as it is part of the user interaction
 			// and we should considered it for the gesture recognition when processing the up.

@@ -67,6 +67,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// This is a GestureSettings, but we're actually only interested in a few gesture event-related
 		/// flags like Tapped and Hold.
 		/// </summary>
+		/// <remarks>For UNO_HAS_MANAGED_POINTERS, we should move this to the aggregated manipulation support in the InputManager.</remarks>
 		internal GestureSettings GestureEventsAlreadyRaised { get; set; }
 
 		public VirtualKeyModifiers KeyModifiers { get; }
