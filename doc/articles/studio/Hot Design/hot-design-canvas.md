@@ -126,12 +126,22 @@ To open the Flyout Editor, follow these steps:
    This will move the Toolbox, Elements window, and Property window to external windows, leaving only the Canvas in the main window.
 3. Enable **Interactive Mode** by clicking the **Play** button in the toolbar.
 4. Perform the action that opens the flyout (e.g., click the button that has a flyout).
-5. Disable **Interactive Mode** by clicking the **Pause** button in the toolbar.
+5. With the flyout still opened, disable **Interactive Mode** by clicking the **Pause** button in the Toolbar.
    This will activate the **Flyout Editor**.
+
 
 Now you can freely make any changes to the flyout. To exit the Flyout Editor, click the **Enter Interactive Mode** option on the Toolbar represented by the Play icon.
 
 <img src="Assets/canvas-edit-flyouts.gif" alt="How to edit flyouts from the canvas" />
+
+> [!NOTE]
+> In external tool windows, zoom features are disabled. This means you won’t be able to adjust form factor, zoom, or scroll while editing a Flyout.
+
+> [!TIP]
+> **UserControl** and **DataTemplate** editors are fully supported inside the Flyout Editor, so you can edit them directly within the Flyout context.
+
+> [!IMPORTANT]
+> Editing *nested flyouts* is not supported at the moment.
 
 ## Layout Separators
 
