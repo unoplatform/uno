@@ -16,7 +16,7 @@ $external_docs = @{
     "uno.uitest"         = "master"
     "uno.extensions"     = "main"
     "workshops"          = "master"
-    "uno.samples"        = "master"
+    "uno.samples"        = "dev/skha/UpdateCounterTutorialDoc"
     "uno.chefs"          = "main"
 }
 
