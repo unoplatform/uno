@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -272,6 +273,9 @@ public partial class RemoteControlClient : IRemoteControlClient
 		return connection?.Socket;
 	}
 
+	[JSImport("globalThis.eval")]
+	private static partial string Eval(string js);
+
 	private async Task<Connection?> StartConnection()
 	{
 		try
@@ -287,11 +291,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 				return default;
 			}
 
-#if __WASM__
-			var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
-#else
-			const bool isHttps = false;
-#endif
+			var isHttps = false;
+			if (OperatingSystem.IsBrowser())
+			{
+				isHttps = Eval("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
+			}
 
 			_status.Report(ConnectionState.Connecting);
 
