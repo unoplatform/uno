@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Media.Core;
@@ -20,14 +21,6 @@ using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 using Windows.Web.Http.Headers;
 using Uno.Logging;
 
-#if IS_MPE_X11
-[assembly: ApiExtension(
-	typeof(IMediaPlayerExtension),
-	typeof(Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension),
-	ownerType: typeof(MediaPlayer),
-	operatingSystemCondition: "linux")]
-#endif
-
 #if IS_MPE_WIN32
 namespace Uno.UI.MediaPlayer.Skia.Win32;
 #else
@@ -36,7 +29,8 @@ namespace Uno.UI.MediaPlayer.Skia.X11;
 
 public class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
-	private static readonly LibVLC _vlc = new LibVLC("--start-paused");
+	private static int _vlcInitialized;
+	private static LibVLC _vlc = null!;
 
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
@@ -135,10 +129,46 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	// On Win32, EnableMouseInput needs to be false, or else libvlc will capture the pointer and we won't receive
 	// any mouse events. Attempting to do this later below doesn't work for some reason. It needs to be
 	// right after constructing the LibVLCSharp.Shared.MediaPlayer
-	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
+	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; }
+
+	public static void PreloadVlc()
+	{
+		Task.Run(() =>
+		{
+			if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+			{
+				var vlc = new LibVLC("--start-paused");
+				try
+				{
+					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
+					var stream = typeof(SharedMediaPlayerExtension).Assembly.GetManifestResourceStream($"{typeof(SharedMediaPlayerExtension).Assembly.GetName().Name}.Assets.libvlc_init_sample.mp4");
+					var media = new LibVLCSharp.Shared.Media(vlc, new StreamMediaInput(stream!));
+					media.ParsedChanged += (_, a) =>
+					{
+						_vlc = vlc;
+					};
+					mediaPlayer.Media = media;
+					mediaPlayer.Play();
+				}
+				catch (Exception e)
+				{
+					typeof(SharedMediaPlayerExtension).Log().Error(e.Message);
+					_vlc = vlc;
+				}
+			}
+		});
+	}
 
 	public SharedMediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{
+		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+		{
+			_vlc = new LibVLC("--start-paused");
+		}
+
+		SpinWait.SpinUntil(() => Volatile.Read(ref _vlc) is not null);
+
+		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 		Player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
 

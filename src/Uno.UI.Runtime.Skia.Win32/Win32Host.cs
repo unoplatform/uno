@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -93,8 +94,13 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}
 	}
 
-	public Win32Host(Func<Application> appBuilder)
+	public Win32Host(Func<Application> appBuilder, bool preloadVlc = false)
 	{
+		if (preloadVlc && Type.GetType("Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.Win32") is { } mediaExtensionType)
+		{
+			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
+		}
+
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>
 		{

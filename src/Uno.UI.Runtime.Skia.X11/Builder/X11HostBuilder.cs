@@ -11,6 +11,7 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 	private static partial Regex DisplayRegex();
 
 	private int _renderFrameRate = 60;
+	private bool _preloadMediaPlayer;
 
 	public X11HostBuilder()
 	{
@@ -25,11 +26,17 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 		return this;
 	}
 
+	public X11HostBuilder PreloadMediaPlayer(bool preload)
+	{
+		_preloadMediaPlayer = preload;
+		return this;
+	}
+
 	public bool IsSupported
 		=> OperatingSystem.IsLinux() &&
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
 	public UnoPlatformHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
-		=> new X11ApplicationHost(appBuilder, _renderFrameRate);
+		=> new X11ApplicationHost(appBuilder, _renderFrameRate, preloadVlc: _preloadMediaPlayer);
 }
