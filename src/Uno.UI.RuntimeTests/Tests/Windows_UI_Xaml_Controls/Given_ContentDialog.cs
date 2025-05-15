@@ -175,8 +175,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await ShowDialog(SUT);
 
-					var tree = SUT._popup.Child.TreeGraph();
-
 					var bgeScreenRect = SUT.BackgroundElement.GetOnScreenBounds();
 					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 
