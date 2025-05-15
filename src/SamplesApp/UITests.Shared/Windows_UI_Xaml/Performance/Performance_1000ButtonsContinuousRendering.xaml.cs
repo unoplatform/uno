@@ -39,6 +39,8 @@ namespace UITests.Windows_UI_Xaml.Performance
 
 			await Task.Delay(TimeSpan.FromSeconds(1));
 			tb.Text = $"Number of visuals in WrapPanel: {wp.Visual.GetSubTreeVisualCount()}";
+#else
+			await Task.CompletedTask;
 #endif
 		}
 	}
