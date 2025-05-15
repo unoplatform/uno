@@ -12,20 +12,24 @@ steps:
   - pwsh: |
         if ($IsMacOS -or $IsLinux)
         {
-          echo "##vso[task.setvariable variable=WasmCachePath;]$(Build.SourcesDirectory)/.emscripten-cache"
+          $emsdkPath="$(Build.SourcesDirectory)/.emscripten-cache"
         }
         else
         {
           # The cache must be in the user folder if the emsdk tooling
           # is on a separate drive as the workspace
-          echo "##vso[task.setvariable variable=WasmCachePath;]$env:USERPROFILE\\.emscripten-cache"
+          $emsdkPath="$env:USERPROFILE\\.emscripten-cache"
         }
+
+        echo "##vso[task.setvariable variable=WasmCachePath;]$emsdkPath"
+
+        mkdir $emsdkPath
     displayName: Set EMSDK Path
 
   - task: Cache@2
     condition: eq(variables['enable_emsdk_cache'], 'true')
     inputs:
-      key: emsdk | "$(Agent.OS)" | "$(Agent.JobName)" | "$(GlobalUnoCheckVersion)"
+      key: emsdk | "$(Agent.OS)" | "$(Agent.JobName)" | "$(System.StageName)" | "$(GlobalUnoCheckVersion)"
       path: $(WasmCachePath)
     displayName: Set Cache for EMSDK
 
