@@ -131,6 +131,8 @@ To open the Flyout Editor, follow these steps:
 
 Now you can freely make any changes to the flyout.
 
+<img src="Assets/canvas-edit-flyouts.gif" alt="How to edit flyouts from the canvas" />
+
 To exit the **Flyout Editor**, you can:
 
 - Click the **Enter Interactive Mode** button in the Toolbar (Play icon)
@@ -139,8 +141,6 @@ To exit the **Flyout Editor**, you can:
   ![alt text](Assets/canvas-leave-flyout-editor.png)
 
   ![alt text](Assets/tree-leave-flyout-editor.png)
-
-<img src="Assets/canvas-edit-flyouts.gif" alt="How to edit flyouts from the canvas" />
 
 > [!NOTE]
 > In external tool windows, zoom features are disabled. This means you won’t be able to adjust form factor, zoom, or scroll while editing a Flyout.
