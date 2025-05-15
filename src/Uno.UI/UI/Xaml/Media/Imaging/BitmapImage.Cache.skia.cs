@@ -1,17 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Uno;
 using Uno.Buffers;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
-using Windows.ApplicationModel.UserDataTasks;
 using Windows.System;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
@@ -97,30 +93,44 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				}
 			}
 
+			public static void Remove(Uri uri, Task<ImageData> task)
+			{
+				lock (_gate)
+				{
+					if (_table.Remove(uri.OriginalString, out var node))
+					{
+						_queue.Remove(node);
+					}
+				}
+			}
+
 			public static void Add(Uri uri, Task<ImageData> task)
 			{
 				var originalString = uri.OriginalString;
 
-				if (_queue.Count == _maxEntryCount)
+				lock (_gate)
 				{
-					var last = _queue.Last!.Value.Uri;
-					_table.Remove(last);
-					_queue.RemoveLast();
+					if (_queue.Count == _maxEntryCount)
+					{
+						var last = _queue.Last!.Value.Uri;
+						_table.Remove(last);
+						_queue.RemoveLast();
+
+						if (_log.IsEnabled(LogLevel.Trace))
+						{
+							_log.Trace($"{nameof(BitmapImageCache)} is full. Evicting [{last}]");
+						}
+					}
 
 					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						_log.Trace($"{nameof(BitmapImageCache)} is full. Evicting [{last}]");
+						_log.Trace($"Caching image [{originalString}]");
 					}
-				}
 
-				if (_log.IsEnabled(LogLevel.Trace))
-				{
-					_log.Trace($"Caching image [{originalString}]");
+					var node = new LinkedListNode<KeyEntry>(new KeyEntry(originalString, task, _watch.Elapsed));
+					_queue.AddFirst(node);
+					_table[originalString] = node;
 				}
-
-				var node = new LinkedListNode<KeyEntry>(new KeyEntry(originalString, task, _watch.Elapsed));
-				_queue.AddFirst(node);
-				_table[originalString] = node;
 			}
 
 			private static bool Trim()
