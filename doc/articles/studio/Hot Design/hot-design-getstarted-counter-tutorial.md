@@ -110,7 +110,7 @@ First, we need to add the image file to the application. Download this [SVG imag
 
 ## Run the app
 
-Before you run the application, switch the target platform to **Desktop** (`net9.0-desktop`) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
+Before you run the application, switch the target platform to **Desktop** (`net10.0-desktop`) to enable Hot Design during debugging. For more information on how to switch the target platform, visit the documentation page for your IDE:
 
 - [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022#debug-the-app)
 - [VS Code](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
