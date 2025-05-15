@@ -89,7 +89,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
+		<EmbeddedResource Include="UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
 	<PropertyGroup>
