@@ -1079,7 +1079,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18040")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
@@ -1157,7 +1157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18790")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18790")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

@@ -199,7 +199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/17642")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17642")]
 		public async Task When_Clipping_Changes_During_Arrange()
 		{
 			await UITestHelper.Load(new ButtonChangingClipDuringArrange() { Content = "Hello" });
@@ -1708,7 +1708,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18770")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18770")]
 		[DataRow(true)]
 		[DataRow(false)]
 #if !HAS_INPUT_INJECTOR
