@@ -14,4 +14,10 @@ public static class HostBuilder
 		builder.AddHostBuilder(() => new X11HostBuilder());
 		return builder;
 	}
+
+	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder, bool preloadMediaPlayer)
+	{
+		builder.AddHostBuilder(() => new X11HostBuilder().PreloadMediaPlayer(preloadMediaPlayer));
+		return builder;
+	}
 }
