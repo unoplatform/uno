@@ -108,6 +108,31 @@ This opens the editor for the `UserControl`, allowing you to modify its internal
 
 <img src="Assets/canvas-edit-user-control.gif" height="600" alt="How to edit a UserControl from the canvas" />
 
+## Edit Flyouts from the Canvas
+
+You can edit flyouts in Hot Design in two main ways.
+
+### Using the Property Window
+
+You can locate the `Flyout` property in the **Property Window** and edit it using the **Complex Type Editor**. To learn more about how the Complex Type Editor works, refer to the [Complex Type Editor documentation](xref:Uno.HotDesign.Properties.Editors#complex-types).
+
+### Using the Flyout Editor
+
+The **Flyout Editor** allows you to edit the contents of the flyout directly. You can add, remove, or modify individual elements inside the flyout.
+To open the Flyout Editor, follow these steps:
+
+1. In the **Toolbar**, click the **More Options** button (three dots).
+2. Hover over the **Window** menu and uncheck the option **Show tools in-app**.
+   This will move the Toolbox, Elements window, and Property window to external windows, leaving only the Canvas in the main window.
+3. Enable **Interactive Mode** by clicking the **Play** button in the toolbar.
+4. Perform the action that opens the flyout (e.g., click the button that has a flyout).
+5. Disable **Interactive Mode** by clicking the **Pause** button in the toolbar.
+   This will activate the **Flyout Editor**.
+
+Now you can freely make any changes to the flyout. To exit the Flyout Editor, click the **Enter Interactive Mode** option on the Toolbar represented by the Play icon.
+
+<img src="Assets/canvas-edit-flyouts.gif" alt="How to edit flyouts from the canvas" />
+
 ## Layout Separators
 
 When working with layout containers like `Grid` or `StackPanel`, pink dashed lines appear to show row and column boundaries. These **visual separators** help you understand the layout structure and spacing.
