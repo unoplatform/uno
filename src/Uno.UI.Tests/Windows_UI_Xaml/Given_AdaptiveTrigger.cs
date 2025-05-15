@@ -169,7 +169,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			group.CurrentState.Should().Be(state);
 		}
 
-		[DataTestMethod]
+		[TestMethod]
 		// when the widths differ, the widest win
 		[DataRow(1, 100, 100, "{10,10}|{20,0}")]
 		[DataRow(1, 100, 100, "{10,10}|{20,20}")]

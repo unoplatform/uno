@@ -23,7 +23,7 @@ public class Given_CurrencyFormatter
 		Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-us";
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(double.PositiveInfinity, "∞")]
 	[DataRow(double.NegativeInfinity, "-∞")]
 	[DataRow(double.NaN, "NaN")]
@@ -35,7 +35,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(text, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(1.5d, 1, 2, "1.50")]
 	[DataRow(1.567d, 1, 2, "1.567")]
 	[DataRow(1.5602d, 1, 2, "1.5602")]
@@ -55,7 +55,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(-1.5602d, 1, 2, "1.5602")]
 	public void When_FormatNegative(double value, int integerDigits, int fractionDigits, string text)
 	{
@@ -69,7 +69,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(1234, 2, 0, "1,234")]
 	[DataRow(1234, 6, 0, "001,234")]
 	[DataRow(1234.56, 2, 2, "1,234.56")]
@@ -88,7 +88,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(0, 0, "0")]
 	[DataRow(0, 2, ".00")]
 	[DataRow(2, 0, "00")]
@@ -105,7 +105,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(0, 0, "0")]
 	[DataRow(0, 2, ".00")]
 	[DataRow(2, 0, "00")]
@@ -123,7 +123,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(1d, "1.")]
 	public void When_FormatDoubleWithIsDecimalPointerAlwaysDisplayedSetTrue(double value, string text)
 	{
@@ -138,7 +138,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(123.4567d, 5, 1, 2, "123.4567")]
 	[DataRow(123.4567d, 10, 1, 2, "123.4567000")]
 	[DataRow(123.4567d, 2, 1, 2, "123.4567")]
@@ -240,7 +240,7 @@ public class Given_CurrencyFormatter
 	}
 
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("HNL", "1.00", "L.")]
 	[DataRow("AED", "1.00", "د.إ.‏")]
 	[DataRow("AFN", "1.00", "؋")]
@@ -431,7 +431,7 @@ public class Given_CurrencyFormatter
 		Assert.AreEqual(expected, actual);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("HNL", "1.00")]
 	[DataRow("AED", "1.00")]
 	[DataRow("AFN", "1.00")]
