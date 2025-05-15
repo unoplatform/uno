@@ -622,7 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 			Assert.AreEqual(CompositorScrollStrategy.Instance, strategy);
 #else
-			if (CompositorScrollStrategy.Instance != strategy)
+			if (strategy is null || strategy.GetType().Name != "CompositorScrollStrategy")
 			{
 				Assert.Inconclusive("This test is valid only on platforms that uses the CompositorScrollStrategy.");
 			}
