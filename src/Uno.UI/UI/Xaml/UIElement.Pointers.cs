@@ -309,10 +309,12 @@ namespace Microsoft.UI.Xaml
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
+#if UNO_HAS_MANAGED_POINTERS
 			if (args.Settings is not GestureSettings.None)
 			{
 				that.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.RegisterUiElementManipulationRecognizer(args.Pointer, that, sender);
 			}
+#endif
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
