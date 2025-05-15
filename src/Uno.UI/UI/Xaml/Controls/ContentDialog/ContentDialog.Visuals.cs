@@ -223,7 +223,11 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+#if !HAS_UNO
 			var xamlRootSize = XamlRoot.Size;
+#else
+			var xamlRootSize = XamlRoot.VisualTree.TrueVisibleBounds.Size;
+#endif
 
 			var flowDirection = FlowDirection;
 
