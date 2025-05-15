@@ -19,6 +19,7 @@ using System.Runtime.InteropServices;
 using Windows.Devices.Input;
 using Uno.UI.Extensions;
 using System.Runtime.CompilerServices;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Input;
@@ -30,22 +31,48 @@ partial class InputManager
 {
 	partial class PointerManager
 	{
+		/// <remarks>>
+		/// Unlike manipulations on a UIElement, we can "resume" it, so the sequence can be:
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ────────────────────────────────────────────────► Completed{1}
+		///                                  ▲   │                                                            ▲
+		///                                  │   └────► InertiaStarting ──► Updated(isInertial=true){1-*} ────┤
+		///                                  │                                                                │
+		///                                  └─────────────────── Started(isResuming=true){1} ◄───────────────┘
+		/// 
+		/// While on UIElement it could be only
+		/// Starting{1} ──► Started{1} ──► Updated{1-*} ───────────────────────────────────────────────────► Completed{1}
+		///                                      │                                                               ▲
+		///                                      └────► InertiaStarting{1} ──► Updated(isInertial=true){1-*} ────┘
+		/// </remarks>>
 		internal interface IDirectManipulationHandler
 		{
 			ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args);
 
-			void OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args) { }
+			/// <summary>
+			/// Invoked when the manipulation has started.
+			/// Starting from here, other elements in the tree will no longer receive pointer events (get PointerCaptureLost)
+			/// </summary>
+			/// <param name="recognizer">The associated gesture recognizer.</param>
+			/// <param name="args"></param>
+			/// <param name="isResuming">
+			/// Indicates if this start is resuming a previous manipulation (e.g. touch again while in an inertial translation).
+			/// WARNING: Args.Cumulative will be reset starting from here. If using it in OnUpdated or any other handlers, make sure to aggregate them!
+			/// </param>
+			void OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming) { }
 
 			void OnUpdated(GestureRecognizer recognizer, ManipulationUpdatedEventArgs args, ref ManipulationDelta unhandledDelta) { }
 
+			/// <remarks>
+			/// Be aware that unlike manipulations on a UIElement, we can "resume" it, so this can be invoked more than once.
+			/// </remarks>>
 			void OnInertiaStarting(GestureRecognizer recognizer, ManipulationInertiaStartingEventArgs args, ref bool isHandled) { }
 
-			void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args) { }
+			void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs? args) { }
 		}
 
 		// TODO: Consider using https://github.com/dotnet/roslyn/blob/d9272a3f01928b1c3614a942bdbbfeb0fb17a43b/src/Compilers/Core/Portable/Collections/SmallDictionary.cs
 		// This dictionary is not going to be large, so SmallDictionary might be more efficient.
-		private Dictionary<PointerIdentifier, DirectManipulation>? _directManipulations;
+		private Dictionary<PointerDeviceType, DirectManipulation>? _directManipulations;
 		private Windows.UI.Core.PointerEventArgs? _directManipulationsCurrentPointerArgs;
 
 		private CurrentArgSubscription AsCurrentForDirectManipulation(Windows.UI.Core.PointerEventArgs args)
@@ -63,7 +90,7 @@ partial class InputManager
 
 		private void RegisterDirectManipulationTargetCore(PointerIdentifier pointer, IDirectManipulationHandler directManipulationTarget)
 		{
-			ref var manip = ref CollectionsMarshal.GetValueRefOrAddDefault(_directManipulations ??= new(), pointer, out var exists);
+			ref var manip = ref CollectionsMarshal.GetValueRefOrAddDefault(_directManipulations ??= new(), pointer.Type, out var exists);
 			if (exists)
 			{
 				manip!.Handlers.Add(directManipulationTarget);
@@ -80,7 +107,7 @@ partial class InputManager
 		}
 
 		private bool IsRedirectedToDirectManipulation(PointerIdentifier pointerId)
-			=> _directManipulations?.ContainsKey(pointerId) == true;
+			=> _directManipulations?.ContainsKey(pointerId.Type) == true;
 
 		private bool TryRedirectPressToDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
@@ -92,15 +119,34 @@ partial class InputManager
 
 				// So we cancel all gesture recognizer, except the one that is for the same kind of pointer (to allow multi-touch manipulation).
 				var currentPointer = args.CurrentPoint.Pointer;
-				foreach ((var manipPointer, var manip) in new Dictionary<PointerIdentifier, DirectManipulation>(_directManipulations))
+				foreach ((var manipPointerType, var manip) in new Dictionary<PointerDeviceType, DirectManipulation>(_directManipulations))
 				{
-					if (manipPointer.Type != currentPointer.Type // Not the same type
-						|| manip.Recognizer.PendingManipulation is { Inertia: not null } // Manipulation is processing inertia, we want to stop it as soon as a new pointer is pressed
-						|| manip.Recognizer.PendingManipulation?.IsActive(currentPointer) is true) // Second press on the same pointer, we cancel the previous one!
+					if (manipPointerType == currentPointer.Type)
+					{
+						// The pointer is of the same type of the pending manipulation:
+						//		* Single touch: inertial
+						//		* Multi touch: multiples pinches (to zoom) with the release of only one pointer **NOT SUPPORTED**
+
+						if (_trace)
+						{
+							Trace($"[DirectManipulation] [{manipPointerType}] Resuming previous manipulation (as we have a down for {currentPointer}).");
+						}
+
+						using var _ = manip.Resuming();
+						using var __ = AsCurrentForDirectManipulation(args);
+
+						// Note: This will most probably invoke the Completed event, which will remove the manipulation from the dictionary (therefore we use a clone).
+						manip.Recognizer.CompleteGesture();
+						manip.Recognizer.ProcessDownEvent(args.CurrentPoint); // Starts a new manipulation
+
+						return true;
+					}
+					else if (manipPointerType != currentPointer.Type // Not the same type
+						|| manip.Recognizer.PendingManipulation is { Inertia: not null }) // Manipulation is processing inertia, we want to stop it as soon as a new pointer is pressed
 					{
 						if (_trace)
 						{
-							Trace($"[DirectManipulation] [{manipPointer}] Completing previous manipulation (as we have a down for {currentPointer}).");
+							Trace($"[DirectManipulation] [{manipPointerType}] Completing previous manipulation (as we have a down for {currentPointer}).");
 						}
 
 						// Note: This will most probably invoke the Completed event, which will remove the manipulation from the dictionary (therefore we use a clone).
@@ -114,10 +160,11 @@ partial class InputManager
 
 		private void EndPressForDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			// SV will register them during the PointerPressed event bubbling, then once bubbling is over,
-			// we forward the press event to the gesture recognizer (so we will fire the ManipStarting event).
+			// Direct manip handlers will register them during the PointerPressed event bubbling, then once bubbling is over,
+			// we forward the press event to the gesture recognizer (so we will fire the ManipStarting event)
 
-			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true
+			if (_directManipulations?.TryGetValue(args.CurrentPoint.PointerDeviceType, out var manip) is true
+				&& manip.HasStarted is false // resuming, no needs to forward pointer again
 				&& manip.Recognizer.PendingManipulation?.IsActive(args.CurrentPoint.Pointer) is not true)
 			{
 				if (_trace)
@@ -132,7 +179,7 @@ partial class InputManager
 
 		private bool TryRedirectMoveToDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true)
+			if (_directManipulations?.TryGetValue(args.CurrentPoint.PointerDeviceType, out var manip) is true)
 			{
 				if (_trace)
 				{
@@ -150,7 +197,7 @@ partial class InputManager
 
 		private bool TryRedirectReleaseToDirectManipulation(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_directManipulations?.TryGetValue(args.CurrentPoint.Pointer, out var manip) is true)
+			if (_directManipulations?.TryGetValue(args.CurrentPoint.PointerDeviceType, out var manip) is true)
 			{
 				// Note: We do NOT remove the recognizer from the manipulation, it will self-remove when the manipulation is completed (i.e. once inertia is completed!).
 				//		 This is to allow the manipulation to be cancelled if the pointer is re-pressed.
@@ -170,7 +217,7 @@ partial class InputManager
 		}
 
 		private bool TryClearDirectManipulationRedirection(PointerIdentifier pointerId)
-			=> _directManipulations?.Remove(pointerId) is true;
+			=> _directManipulations?.Remove(pointerId.Type) is true;
 
 		private void TraceIgnoredForDirectManipulation(Windows.UI.Core.PointerEventArgs args, [CallerMemberName] string caller = "")
 		{
@@ -183,6 +230,9 @@ partial class InputManager
 		private sealed class DirectManipulation
 		{
 			private readonly PointerManager _pointerManager;
+
+			private bool _resuming;
+			private GestureSettings _settings;
 
 			public GestureRecognizer Recognizer { get; }
 
@@ -211,32 +261,69 @@ partial class InputManager
 				recognizer.ManipulationUpdated += OnDirectManipulationUpdated;
 				recognizer.ManipulationInertiaStarting += OnDirectManipulationInertiaStarting;
 				recognizer.ManipulationCompleted += OnDirectManipulationCompleted;
+				recognizer.ManipulationAborted += OnDirectManipulationAborted;
 
 				return recognizer;
 			}
 
+			public struct ResumingManipulation(DirectManipulation manip) : IDisposable
+			{
+				/// <inheritdoc />
+				public void Dispose()
+					=> manip._resuming = false;
+			}
+
+			public ResumingManipulation Resuming()
+			{
+				_resuming = true;
+				return new ResumingManipulation(this);
+			}
+
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnDirectManipulationStarting = (sender, args) =>
 			{
-				if (_trace)
-				{
-					Trace($"[DirectManipulation] [{args.Pointer}] Starting");
-				}
-
 				// TODO: Make sure ManipulationStarting is fired on UIElement.
 
-				var manipulation = (DirectManipulation)sender.Owner;
+				var that = (DirectManipulation)sender.Owner;
 				var supportedMode = ManipulationModes.None;
 
-				foreach (var handler in manipulation.Handlers)
+				if (that.HasStarted)
 				{
-					supportedMode |= handler.OnStarting(sender, args);
+					if (_trace)
+					{
+						Trace($"[DirectManipulation] **RESUMING** Starting. ==> Restoring mode {that._settings}.");
+					}
+
+					args.Settings = that._settings;
 				}
-
-				args.Settings = supportedMode.ToGestureSettings();
-
-				if (_trace)
+				else if (PointerCapture.TryGet(args.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventDirectManipulation))
 				{
-					Trace($"[DirectManipulation] [{args.Pointer}] Starting ==> Final configured mode is {supportedMode}.");
+					if (_trace)
+					{
+						Trace("[DirectManipulation] Ignored ==> An element in the tree prevented direct-manipulation.");
+					}
+
+					// If a control has captured the pointer with our internal PreventDirectManipulation patch flag,
+					// it means that it does not want to be redirected to direct manipulation.
+					that._settings = args.Settings = GestureSettings.None;
+				}
+				else
+				{
+					if (_trace)
+					{
+						Trace($"[DirectManipulation] [{args.Pointer}] Starting");
+					}
+
+					foreach (var handler in that.Handlers)
+					{
+						supportedMode |= handler.OnStarting(sender, args);
+					}
+
+					that._settings = args.Settings = supportedMode.ToGestureSettings();
+
+					if (_trace)
+					{
+						Trace($"[DirectManipulation] [{args.Pointer}] Starting ==> Final configured mode is {supportedMode}.");
+					}
 				}
 			};
 
@@ -249,17 +336,32 @@ partial class InputManager
 					return;
 				}
 
-				if (_trace)
+				if (that.HasStarted)
 				{
-					Trace($"[DirectManipulation] [{args.Pointers[0]}] Started @={args.Position.ToDebugString()}");
+					if (_trace)
+					{
+						Trace($"[DirectManipulation] [{args.Pointers[0]}] **RESUMING** Started @={args.Position.ToDebugString()}");
+					}
+
+					foreach (var handler in that.Handlers)
+					{
+						handler.OnStarted(sender, args, isResuming: true);
+					}
 				}
-
-				that.HasStarted = true;
-				manager.CancelPointer(pointerArgs, isDirectManipulation: true);
-
-				foreach (var handler in that.Handlers)
+				else
 				{
-					handler.OnStarted(sender, args);
+					if (_trace)
+					{
+						Trace($"[DirectManipulation] [{args.Pointers[0]}] Started @={args.Position.ToDebugString()}");
+					}
+
+					that.HasStarted = true;
+					manager.CancelPointer(pointerArgs, isDirectManipulation: true);
+
+					foreach (var handler in that.Handlers)
+					{
+						handler.OnStarted(sender, args, isResuming: false);
+					}
 				}
 			};
 
@@ -300,7 +402,13 @@ partial class InputManager
 			private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnDirectManipulationCompleted = (sender, args) =>
 			{
 				var that = (DirectManipulation)sender.Owner;
-				that._pointerManager._directManipulations!.Remove(args.Pointers[0]);
+
+				if (that._resuming)
+				{
+					return;
+				}
+
+				that._pointerManager._directManipulations!.Remove((PointerDeviceType)args.PointerDeviceType);
 
 				if (_trace)
 				{
@@ -310,6 +418,23 @@ partial class InputManager
 				foreach (var handler in that.Handlers)
 				{
 					handler.OnCompleted(sender, args);
+				}
+			};
+
+			private static readonly TypedEventHandler<GestureRecognizer, GestureRecognizer.Manipulation> OnDirectManipulationAborted = (sender, manip) =>
+			{
+				var that = (DirectManipulation)sender.Owner;
+
+				that._pointerManager._directManipulations!.Remove((PointerDeviceType)manip.PointerDeviceType);
+
+				if (_trace)
+				{
+					Trace($"[DirectManipulation] Aborted");
+				}
+
+				foreach (var handler in that.Handlers)
+				{
+					handler.OnCompleted(sender, null);
 				}
 			};
 		}
@@ -335,8 +460,8 @@ partial class InputManager
 				=> Tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
 
 			/// <inheritdoc />
-			public void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args)
-				=> Tracker.CompleteUserManipulation(new Vector3((float)(args.Velocities.Linear.X * 1000), (float)(args.Velocities.Linear.Y * 1000), 0));
+			public void OnCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs? args)
+				=> Tracker.CompleteUserManipulation(new Vector3((float)(args?.Velocities.Linear.X * 1000 ?? 0), (float)(args?.Velocities.Linear.Y * 1000 ?? 0), 0));
 		}
 
 		private struct CurrentArgSubscription(PointerManager manager) : IDisposable

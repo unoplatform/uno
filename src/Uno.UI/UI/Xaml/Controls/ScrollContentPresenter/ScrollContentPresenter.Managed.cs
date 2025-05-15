@@ -131,12 +131,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UnhookScrollEvents(sv);
 			}
+			_touchInertia?.Complete();
+			_touchInertia = null;
 		}
 
 		/// <inheritdoc />
 		internal override bool HitTest(Point point)
 			=> true; // Makes sure to get pointers events, even if no background.
 
+#nullable enable
 		private void HookScrollEvents(ScrollViewer sv)
 		{
 			UnhookScrollEvents(sv);
@@ -273,12 +276,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
 		{
-			if (args.Pointer.Type is not (PointerDeviceType.Pen or PointerDeviceType.Touch)
-				|| (PointerCapture.TryGet(args.Pointer, out var capture) && capture.Options.HasFlag(PointerCaptureOptions.PreventDirectManipulation)))
-			{
-				return ManipulationModes.None;
-			}
-
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
 			if (scrollable.Horizontally)
@@ -310,6 +307,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return mode;
+		}
+
+		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
+		{
+			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
+			_touchInertia = null;
 		}
 
 		/// <inheritdoc />
@@ -466,14 +469,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs args)
+		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs? args)
 		{
-			if ((PointerDeviceType)args.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				return;
-			}
-
-			if (args.IsInertial && _touchInertia is null)
+			if (args?.IsInertial is true && _touchInertia is null)
 			{
 				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
 				return;
