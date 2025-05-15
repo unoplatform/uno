@@ -39,7 +39,7 @@ Uno Platform 5.4 contains breaking changes for Uno.Extensions.
 
 ### WinAppSDK 1.6 considerations
 
-Uno Platform 5.4 updates to WinAppSDK 1.6 if you using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
+Uno Platform 5.4 updates to WinAppSDK 1.6 if you are using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
 
 In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net8.0-windowsXX` target to build:
 
