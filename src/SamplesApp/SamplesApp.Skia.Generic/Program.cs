@@ -56,7 +56,7 @@ namespace SkiaSharpExample
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
 					}
 				})
-				.UseX11();
+				.UseX11(preloadMediaPlayer: true);
 
 			if (OperatingSystem.IsWindows())
 			{
@@ -66,7 +66,7 @@ namespace SkiaSharpExample
 					// This assumes that the runtime loads dependencies when entering the method.
 
 					builder = builder
-						.UseWin32();
+						.UseWin32(preloadMediaPlayer: true);
 				}
 
 				Build();
