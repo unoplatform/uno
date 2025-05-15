@@ -28,8 +28,19 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
+## Desktop support
+
+To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
+
+```diff
+<UnoFeatures>
+<!-- Existing features -->
++  WebView;
+</UnoFeatures>
+```
+
 > [!IMPORTANT]
-> For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
+> If your project's desktop builder in `Platforms/Desktop/Program.cs` uses `.UseWindows()`, you'll also need to add the `<UnoUseWebView2WPF>true</UnoUseWebView2WPF>` property for the integration to work. However, it is recommended to [migrate to `.UseWin32()`](xref:Uno.Development.MigratingToUno6) for better performance and reliability.
 
 ## WebAssembly support
 

@@ -427,6 +427,10 @@
 					"description": "Adds a native references where needed to use MediaElement.",
 					"helpUrl": "https://aka.platform.uno/feature-media-element"
 				},
+				"WebView": {
+					"description": "Adds a native references where needed to use WebView and WebView2.",
+					"helpUrl": "https://aka.platform.uno/feature-webview"
+				},
 				"CSharpMarkup": {
 					"description": "Adds a reference to Uno.Extensions.Markup.WinUI (Requires UnoExtensionsVersion to be defined.)",
 					"helpUrl": "https://aka.platform.uno/feature-csharp-markup"
