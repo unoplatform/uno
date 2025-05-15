@@ -23,7 +23,7 @@ public partial class Given_PersonPicture
 	}
 
 	[TestMethod]
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16006")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16006")]
 	public async Task TestInitialsTextBlockFontFamily()
 	{
 		var personPicture = new MyPersonPicture();

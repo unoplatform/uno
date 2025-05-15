@@ -632,7 +632,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __WASM__
 		[TestMethod]
-		[UnoWorkItem("https://github.com/unoplatform/uno/issues/19380")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19380")]
 		public async Task When_Changing_Text_Through_Inlines()
 		{
 			var SUT = new TextBlock { Text = "Initial Text" };

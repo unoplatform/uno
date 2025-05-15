@@ -27,7 +27,7 @@ public class Given_CalendarView
 	const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
 
 	[TestMethod]
-	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16123")]
 	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
 	public async Task When_ReMeasure_After_Changing_MaxDate()
 	{
