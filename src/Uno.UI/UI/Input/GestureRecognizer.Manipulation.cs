@@ -79,6 +79,11 @@ namespace Windows.UI.Input
 			private InertiaProcessor? _inertia;
 
 			/// <summary>
+			/// Type of the pointers handled by this manipulation.
+			/// </summary>
+			public PointerDeviceType PointerDeviceType => _deviceType;
+
+			/// <summary>
 			/// Indicates that this manipulation **has started** and is for drag-and-drop.
 			/// (i.e. raises Drag event instead of Manipulation&lt;Started Delta Completed&gt; events).
 			/// </summary>
@@ -180,6 +185,11 @@ namespace Windows.UI.Input
 				StartDragTimer();
 			}
 
+			/// <summary>
+			/// Gets a boolean indicating if the given pointer is still active in the manipulation.
+			/// Active means that manipulation is not completed and pointer has been used at least at some point in the manipulation.
+			/// </summary>
+			/// <param name="pointer">Identifier of the pointer to test.</param>
 			public bool IsActive(PointerIdentifier pointer)
 				=> _status != ManipulationStatus.Completed
 					&& _deviceType == (PointerDeviceType)pointer.Type
