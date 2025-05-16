@@ -40,7 +40,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (!_lastClipHrgn.IsNull)
 		{
-			if (PInvoke.DeleteObject(_lastClipHrgn))
+			if (!PInvoke.DeleteObject(_lastClipHrgn))
 			{
 				typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
 			}
@@ -244,7 +244,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 			if (!@this._lastClipHrgn.IsNull)
 			{
-				if (PInvoke.DeleteObject(@this._lastClipHrgn))
+				if (!PInvoke.DeleteObject(@this._lastClipHrgn))
 				{
 					typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
 				}
