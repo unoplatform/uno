@@ -36,17 +36,7 @@ internal sealed class SingleFrameProvider : IFrameProvider
 				_disposed = true;
 				_image.Dispose();
 				GC.RemoveMemoryPressure(_bytes);
-				GC.SuppressFinalize(this);
-			}
-			else
-			{
-				this.LogError()?.Error("Detected a double dispose.");
 			}
 		}
-	}
-
-	~SingleFrameProvider()
-	{
-		Dispose();
 	}
 }
