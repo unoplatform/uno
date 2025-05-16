@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,18 @@ public static class HostBuilder
 		return builder;
 	}
 
-	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder, bool preloadMediaPlayer)
+	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder, Action<X11HostBuilder> action)
 	{
-		builder.AddHostBuilder(() => new X11HostBuilder().PreloadMediaPlayer(preloadMediaPlayer));
+		builder.AddHostBuilder(() =>
+		{
+			var x11Builder = new X11HostBuilder();
+			if (((IPlatformHostBuilder)x11Builder).IsSupported)
+			{
+				action.Invoke(x11Builder);
+			}
+			return x11Builder;
+		});
+
 		return builder;
 	}
 }
