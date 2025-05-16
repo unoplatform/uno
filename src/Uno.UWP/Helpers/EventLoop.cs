@@ -74,7 +74,7 @@ namespace Uno.Helpers
 			_readyList = new Queue<Action>();
 		}
 
-		public void Schedule(Action action, NativeDispatcherPriority p)
+		public void Schedule(Action action)
 		{
 			if (action == null)
 			{
