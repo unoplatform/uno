@@ -578,6 +578,8 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// Rect helpers
+		public static bool DoesRectContainPoint(Rect rect, Point point)
+			=> RectHelper.Contains(rect, point);
 
 		// Returns TRUE if either rect is empty or the rects
 		// have an empty intersection.
