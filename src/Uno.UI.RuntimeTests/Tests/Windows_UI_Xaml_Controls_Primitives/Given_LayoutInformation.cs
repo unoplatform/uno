@@ -104,6 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
+		[CombinatorialData]
 #if __SKIA__
 		[Ignore("Fails on CI for unkown reason (wokrs locally).")]
 #endif
@@ -300,6 +301,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
+		[CombinatorialData]
 		public async Task When_PaddedElementBiggerThanParentScrollViewer_Then_LayoutSlot(
 			HorizontalAlignment hAlign,
 			VerticalAlignment vAlign,
