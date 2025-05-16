@@ -815,6 +815,207 @@ public class Given_InputManager
 		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta, precision: 2, because: "second press should have stop inertia and then the slow scroll have been applied");
 	}
 
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMixedWithUIElementManipulation_Then_TopMostWins()
+	{
+		ScrollViewer sv1, sv2;
+		Border elt;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.System,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 800,
+						Child = (sv2 = new ScrollViewer
+						{
+							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+							IsScrollInertiaEnabled = false,
+							Content = new Border
+							{
+								Background = new SolidColorBrush(Colors.Chartreuse),
+								Margin = new Thickness(10),
+								Width = 2400,
+								Height = 2400,
+							}
+						})
+					}
+				}),
+			}
+		};
+
+		int starting = 0, started = 0, delta = 0, completed = 0;
+		elt.ManipulationStarting += (snd, e) => starting++;
+		elt.ManipulationStarted += (snd, e) => started++;
+		elt.ManipulationDelta += (snd, e) => delta++;
+		elt.ManipulationCompleted += (snd, e) => completed++;
+
+		var bounds = await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -100));
+
+		await UITestHelper.WaitForIdle();
+
+		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2);
+		starting.Should().Be(1, because: "pointer should have reached the element, giving it the opportunity to init the manipulation");
+		started.Should().Be(0, because: "pointer should have been grabbed by the direct manipulation before the manipulation started on the element");
+		delta.Should().Be(0);
+		completed.Should().Be(0);
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMixedWithUIElementManipulationInDifferentDirection_Then_TopMostWins()
+	{
+		ScrollViewer sv1, sv2;
+		Border elt;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.System,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 800,
+						Child = (sv2 = new ScrollViewer
+						{
+							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+							IsScrollInertiaEnabled = false,
+							Content = new Border
+							{
+								Background = new SolidColorBrush(Colors.Chartreuse),
+								Margin = new Thickness(10),
+								Width = 2400,
+								Height = 2400,
+							}
+						})
+					}
+				}),
+			}
+		};
+
+		int starting = 0, started = 0, delta = 0, completed = 0;
+		elt.ManipulationStarting += (snd, e) => starting++;
+		elt.ManipulationStarted += (snd, e) => started++;
+		elt.ManipulationDelta += (snd, e) => delta++;
+		elt.ManipulationCompleted += (snd, e) => completed++;
+
+		var bounds = await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(x: -100));
+
+		await UITestHelper.WaitForIdle();
+
+		sv2.HorizontalOffset.Should().Be(0, because: "horizontal scrolling has not been enabled");
+		starting.Should().Be(1, because: "pointer should have reached the element, giving it the opportunity to init the manipulation");
+		started.Should().Be(1, because: "the manipulation should have kick-in as the ScrollViewer was not able to start");
+		delta.Should().NotBe(0);
+		completed.Should().Be(1);
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_DirectManipulationMixedWithUIElementManipulation_Then_TopMostWinsAndChainingWorks()
+	{
+		ScrollViewer sv1, sv2;
+		Border elt;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Children =
+			{
+				(sv1 = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = elt = new Border
+					{
+						ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.System,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 800,
+						Child = (sv2 = new ScrollViewer
+						{
+							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+							IsScrollInertiaEnabled = false,
+							Content = new Border
+							{
+								Background = new SolidColorBrush(Colors.Chartreuse),
+								Margin = new Thickness(10),
+								Width = 2400,
+								Height = 2400,
+							}
+						})
+					}
+				}),
+			}
+		};
+
+		int starting = 0, started = 0, delta = 0, completed = 0;
+		elt.ManipulationStarting += (snd, e) => starting++;
+		elt.ManipulationStarted += (snd, e) => started++;
+		elt.ManipulationDelta += (snd, e) => delta++;
+		elt.ManipulationCompleted += (snd, e) => completed++;
+
+		var bounds = await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -8000));
+
+		await UITestHelper.WaitForIdle();
+
+		sv1.VerticalOffset.Should().BeApproximately(620, precision: 2);
+		sv2.VerticalOffset.Should().BeApproximately(1620, precision: 2);
+		starting.Should().Be(1, because: "pointer should have reached the element, giving it the opportunity to init the manipulation");
+		started.Should().Be(0, because: "pointer should have been grabbed by the direct manipulation before the manipulation started on the element");
+		delta.Should().Be(0);
+		completed.Should().Be(0);
+	}
 
 	private CoreCursorType? GetCursorShape()
 	{
