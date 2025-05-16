@@ -111,6 +111,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			SynchronizeHtmlParagraphAttributes();
 
+			// We measure the size needed for the text to fit, so
+			// we make the height unbounded and we only bound the
+			// width if the text wraps, otherwise it will be measured
+			// as if all the text is on one line.
+			availableSize.Height = int.MaxValue;
+			if (TextWrapping == TextWrapping.NoWrap)
+			{
+				availableSize.Width = double.PositiveInfinity;
+			}
+
 			if (UseInlinesFastPath)
 			{
 				if (TextBlockMeasureCache.Instance.FindMeasuredSize(this, availableSize) is Size desiredSize)
