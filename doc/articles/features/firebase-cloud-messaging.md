@@ -169,7 +169,7 @@ namespace YourAppNamespace.Platforms.Android
 
             // Show the notification
             var notification = notificationBuilder.Build();
-            notificationManager.Notify(new Random().Next(), notification);
+            notificationManager.Notify(_random.Next(), notification);
         }
     }
 }
