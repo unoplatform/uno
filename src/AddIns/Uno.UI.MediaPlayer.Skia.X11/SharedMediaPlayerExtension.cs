@@ -143,10 +143,13 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
 					var stream = typeof(SharedMediaPlayerExtension).Assembly.GetManifestResourceStream($"{typeof(SharedMediaPlayerExtension).Assembly.GetName().Name}.Assets.libvlc_init_sample.mp4");
 					var media = new LibVLCSharp.Shared.Media(vlc, new StreamMediaInput(stream!));
-					media.ParsedChanged += (_, a) =>
+					EventHandler<MediaParsedChangedEventArgs>? mediaOnParsedChanged = default;
+					mediaOnParsedChanged = (_, a) =>
 					{
 						_vlc = vlc;
+						media.ParsedChanged -= mediaOnParsedChanged;
 					};
+					media.ParsedChanged += mediaOnParsedChanged;
 					mediaPlayer.Media = media;
 					mediaPlayer.Play();
 				}
