@@ -135,7 +135,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 	{
 		Task.Run(() =>
 		{
-			if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+			if (Volatile.Read(ref _vlcInitialized) == 0)
 			{
 				var vlc = new LibVLC("--start-paused");
 				try
@@ -146,7 +146,14 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 					EventHandler<MediaParsedChangedEventArgs>? mediaOnParsedChanged = default;
 					mediaOnParsedChanged = (_, a) =>
 					{
-						_vlc = vlc;
+						if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
+						{
+							_vlc = vlc;
+						}
+						else
+						{
+							vlc.Dispose();
+						}
 						media.ParsedChanged -= mediaOnParsedChanged;
 					};
 					media.ParsedChanged += mediaOnParsedChanged;
@@ -168,8 +175,6 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 		{
 			_vlc = new LibVLC("--start-paused");
 		}
-
-		SpinWait.SpinUntil(() => Volatile.Read(ref _vlc) is not null);
 
 		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 		Player = player;
